@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Keep user-auth and account utilities out of the index
+Disallow: /account.html
+Disallow: /profile.html
+Disallow: /auth-callback.html
+Disallow: /membership.html
+Disallow: /404.html
+Disallow: /api/
+
+# Block test / debug / internal artifacts
+Disallow: /test-
+Disallow: /debug-
+Disallow: /_
+
+# Sitemap
+Sitemap: https://alexiatwerkgroup.com/sitemap.xml

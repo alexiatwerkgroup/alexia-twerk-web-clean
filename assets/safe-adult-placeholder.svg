@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<defs>
+<linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+<stop offset="0%" stop-color="#111827"/>
+<stop offset="100%" stop-color="#0b0b0b"/>
+</linearGradient>
+</defs>
+<rect width="1280" height="720" fill="url(#g)"/>
+<rect x="30" y="30" width="1220" height="660" rx="28" fill="none" stroke="#2dd4bf" stroke-opacity=".45" stroke-width="4"/>
+<text x="640" y="310" text-anchor="middle" fill="#f5f5f5" font-size="56" font-family="Arial, Helvetica, sans-serif" font-weight="700">
+Adult-safe thumbnail
+</text>
+<text x="640" y="390" text-anchor="middle" fill="#bdbdbd" font-size="28" font-family="Arial, Helvetica, sans-serif">
+Replaced to avoid legal / reputation issues
+</text>
+</svg>

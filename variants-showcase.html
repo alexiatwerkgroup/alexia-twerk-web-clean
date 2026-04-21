@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot Ranking Variants Showcase · TWERKHUB</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Trebuchet MS, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a1f 0%, #1a1a3e 50%, #0f0f2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffb454;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .variants-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .variant-section {
+            border: 2px solid #ffb454;
+            border-radius: 16px;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(20, 20, 45, 0.8) 0%, rgba(30, 30, 60, 0.8) 100%);
+            box-shadow: 0 20px 60px rgba(255, 180, 84, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .variant-section:hover {
+            box-shadow: 0 30px 80px rgba(255, 180, 84, 0.4);
+            transform: translateY(-5px);
+        }
+
+        .variant-header {
+            background: linear-gradient(135deg, #ffb454, #ffc470);
+            color: #000;
+            padding: 1.5rem 2rem;
+            font-weight: 800;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .variant-description {
+            padding: 2rem;
+            background: rgba(20, 20, 45, 0.5);
+            border-bottom: 1px solid rgba(255, 180, 84, 0.2);
+        }
+
+        .variant-description p {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .variant-description .feature {
+            color: #ffb454;
+            font-weight: 600;
+        }
+
+        .variant-preview {
+            padding: 2rem;
+            min-height: 500px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== VARIANTE A: MINIMAL LUXE ===== */
+        .ranking-grid-a {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        .ranking-item-a {
+            position: relative;
+            width: calc(25% - 1.125rem);
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 180, 84, 0.4);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .ranking-item-a:hover {
+            transform: scale(1.08);
+            border-color: #ffb454;
+            box-shadow: 0 0 20px rgba(255, 180, 84, 0.6);
+        }
+
+        .ranking-item-a img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ranking-item-a .ranking-number {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ffb454, #ffc470);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(255, 180, 84, 0.4);
+            z-index: 2;
+        }
+
+        /* ===== VARIANTE B: PREMIUM GRID ===== */
+        .ranking-grid-b {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .ranking-item-b {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 180, 84, 0.3);
+            transition: all 0.4s ease;
+        }
+
+        .ranking-item-b:hover {
+            border-color: #ffb454;
+            box-shadow: 0 15px 40px rgba(255, 180, 84, 0.3);
+            transform: translateY(-8px);
+        }
+
+        .ranking-item-b:nth-child(5) {
+            grid-column: 1 / -1;
+        }
+
+        .ranking-thumbnail-b {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            display: block;
+        }
+
+        .ranking-item-b .ranking-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ffb454, #ffc470);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            box-shadow: 0 8px 24px rgba(255, 180, 84, 0.5);
+            z-index: 2;
+        }
+
+        .ranking-info-b {
+            padding: 1.2rem;
+        }
+
+        .ranking-title-b {
+            color: #ffb454;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            font-size: 0.95rem;
+        }
+
+        .ranking-meta-b {
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+
+        /* ===== VARIANTE C: ULTRA LUXURY ===== */
+        .ranking-grid-c {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .ranking-item-c {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 180, 84, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .ranking-item-c:nth-child(1) {
+            grid-column: 1 / -1;
+            aspect-ratio: 21/9;
+        }
+
+        .ranking-item-c:nth-child(n+2) {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+        }
+
+        .ranking-item-c:hover {
+            border-color: #ffb454;
+            box-shadow: 0 20px 50px rgba(255, 180, 84, 0.4);
+            transform: translateY(-10px);
+        }
+
+        .ranking-thumbnail-c {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .ranking-item-c:nth-child(1) .ranking-thumbnail-c {
+            aspect-ratio: 21/9;
+        }
+
+        .ranking-item-c:nth-child(n+2) .ranking-thumbnail-c {
+            aspect-ratio: auto;
+        }
+
+        .ranking-info-c {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .ranking-item-c .ranking-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ffb454, #ffc470);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.8rem;
+            box-shadow: 0 10px 30px rgba(255, 180, 84, 0.6);
+            z-index: 2;
+        }
+
+        .ranking-title-c {
+            color: #ffb454;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .ranking-meta-c {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 180, 84, 0.2);
+            color: #ffb454;
+            border: 2px solid #ffb454;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #ffb454;
+            color: #000;
+        }
+
+        @media (max-width: 1024px) {
+            .ranking-item-a {
+                width: calc(33.333% - 1rem);
+            }
+
+            .ranking-grid-b {
+                grid-template-columns: 1fr;
+            }
+
+            .ranking-item-b:nth-child(5) {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ranking-item-a {
+                width: calc(50% - 0.75rem);
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="premium-cosplay-fancam.html" class="back-button">← Back to Main Page</a>
+
+        <h1>🎨 Hot Ranking Design Variants</h1>
+        <p class="subtitle">Three premium layout options for the hot ranking section</p>
+
+        <div class="variants-grid">
+            <!-- VARIANTE A: MINIMAL LUXE -->
+            <div class="variant-section">
+                <div class="variant-header">✨ VARIANTE A: MINIMAL LUXE</div>
+                <div class="variant-description">
+                    <p><span class="feature">Compact luxury showcase</span> - Perfect for showcasing more videos at a glance</p>
+                    <p>• 4-column horizontal flex layout</p>
+                    <p>• Small thumbnails (100px × 56px equivalent)</p>
+                    <p>• Minimal spacing for maximum density</p>
+                    <p>• Subtle hover scale effect (1.08x)</p>
+                </div>
+                <div class="variant-preview">
+                    <div class="ranking-grid-a">
+                        <div class="ranking-item-a">
+                            <div class="ranking-number">1</div>
+                            <img src="https://i.ytimg.com/vi/qoho-dzADrc/maxresdefault.jpg" alt="Item 1">
+                        </div>
+                        <div class="ranking-item-a">
+                            <div class="ranking-number">2</div>
+                            <img src="https://i.ytimg.com/vi/wLWDZQmzPOY/maxresdefault.jpg" alt="Item 2">
+                        </div>
+                        <div class="ranking-item-a">
+                            <div class="ranking-number">3</div>
+                            <img src="https://i.ytimg.com/vi/XDkH0yaocJ8/maxresdefault.jpg" alt="Item 3">
+                        </div>
+                        <div class="ranking-item-a">
+                            <div class="ranking-number">4</div>
+                            <img src="https://i.ytimg.com/vi/hDFe_Lq-S1U/maxresdefault.jpg" alt="Item 4">
+                        </div>
+                        <div class="ranking-item-a">
+                            <div class="ranking-number">5</div>
+                            <img src="https://i.ytimg.com/vi/cJfDUDYaWYo/maxresdefault.jpg" alt="Item 5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VARIANTE B: PREMIUM GRID -->
+            <div class="variant-section">
+                <div class="variant-header">👑 VARIANTE B: PREMIUM GRID</div>
+                <div class="variant-description">
+                    <p><span class="feature">Balanced elegance</span> - Currently applied to your main page</p>
+                    <p>• 2-column grid layout</p>
+                    <p>• Full-width showcase for item #5</p>
+                    <p>• Larger golden numbered badges (48px)</p>
+                    <p>• Enhanced hover effects with shadow elevation</p>
+                </div>
+                <div class="variant-preview">
+                    <div class="ranking-grid-b">
+                        <div class="ranking-item-b">
+                            <div class="ranking-number">1</div>
+                            <img src="https://i.ytimg.com/vi/qoho-dzADrc/maxresdefault.jpg" alt="Item 1" class="ranking-thumbnail-b">
+                            <div class="ranking-info-b">
+                                <div class="ranking-title-b">Premium CosForce03 Sweet Maid Day 2</div>
+                                <div class="ranking-meta-b">Miiya & Nazo • 4:33</div>
+                            </div>
+                        </div>
+                        <div class="ranking-item-b">
+                            <div class="ranking-number">2</div>
+                            <img src="https://i.ytimg.com/vi/wLWDZQmzPOY/maxresdefault.jpg" alt="Item 2" class="ranking-thumbnail-b">
+                            <div class="ranking-info-b">
+                                <div class="ranking-title-b">Hottest Busan Cosplay Fancam</div>
+                                <div class="ranking-meta-b">Bamp VIDEO 8K • 3:30</div>
+                            </div>
+                        </div>
+                        <div class="ranking-item-b">
+                            <div class="ranking-number">3</div>
+                            <img src="https://i.ytimg.com/vi/XDkH0yaocJ8/maxresdefault.jpg" alt="Item 3" class="ranking-thumbnail-b">
+                            <div class="ranking-info-b">
+                                <div class="ranking-title-b">Exclusive Golaniyule Cosplay Fancam</div>
+                                <div class="ranking-meta-b">阿风而起 • 5:45</div>
+                            </div>
+                        </div>
+                        <div class="ranking-item-b">
+                            <div class="ranking-number">4</div>
+                            <img src="https://i.ytimg.com/vi/hDFe_Lq-S1U/maxresdefault.jpg" alt="Item 4" class="ranking-thumbnail-b">
+                            <div class="ranking-info-b">
+                                <div class="ranking-title-b">Premium Osaka Auto Messe 2025</div>
+                                <div class="ranking-meta-b">チア cheerleader • 6:52</div>
+                            </div>
+                        </div>
+                        <div class="ranking-item-b">
+                            <div class="ranking-number">5</div>
+                            <img src="https://i.ytimg.com/vi/cJfDUDYaWYo/maxresdefault.jpg" alt="Item 5" class="ranking-thumbnail-b">
+                            <div class="ranking-info-b">
+                                <div class="ranking-title-b">Hottest Kadorin Hitomi Thailand - NIKKE Cosplay Performance</div>
+                                <div class="ranking-meta-b">TZWG • 8:25</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VARIANTE C: ULTRA LUXURY -->
+            <div class="variant-section">
+                <div class="variant-header">💎 VARIANTE C: ULTRA LUXURY SHOWCASE</div>
+                <div class="variant-description">
+                    <p><span class="feature">Maximum impact design</span> - Hero-focused premium aesthetic</p>
+                    <p>• Featured hero item at 100% width (largest)</p>
+                    <p>• Secondary items in split layout (2:1 ratio)</p>
+                    <p>• Largest golden badges (60px)</p>
+                    <p>• Premium spacing and visual hierarchy</p>
+                </div>
+                <div class="variant-preview">
+                    <div class="ranking-grid-c">
+                        <div class="ranking-item-c">
+                            <div class="ranking-number">1</div>
+                            <img src="https://i.ytimg.com/vi/qoho-dzADrc/maxresdefault.jpg" alt="Item 1" class="ranking-thumbnail-c">
+                        </div>
+                        <div class="ranking-item-c">
+                            <div class="ranking-number">2</div>
+                            <img src="https://i.ytimg.com/vi/wLWDZQmzPOY/maxresdefault.jpg" alt="Item 2" class="ranking-thumbnail-c">
+                            <div class="ranking-info-c">
+                                <div class="ranking-title-c">Hottest Busan Cosplay Fancam - AOA Cover Performance 4K</div>
+                                <div class="ranking-meta-c">Bamp VIDEO 8K • 3:30</div>
+                            </div>
+                        </div>
+                        <div class="ranking-item-c">
+                            <div class="ranking-number">3</div>
+                            <img src="https://i.ytimg.com/vi/XDkH0yaocJ8/maxresdefault.jpg" alt="Item 3" class="ranking-thumbnail-c">
+                            <div class="ranking-info-c">
+                                <div class="ranking-title-c">Exclusive Golaniyule Cosplay Fancam - Premium Interactive</div>
+                                <div class="ranking-meta-c">阿风而起 • 5:45</div>
+                            </div>
+                        </div>
+                        <div class="ranking-item-c">
+                            <div class="ranking-number">4</div>
+                            <img src="https://i.ytimg.com/vi/hDFe_Lq-S1U/maxresdefault.jpg" alt="Item 4" class="ranking-thumbnail-c">
+                            <div class="ranking-info-c">
+                                <div class="ranking-title-c">Premium Osaka Auto Messe 2025 - Sexy Cosplay 4K</div>
+                                <div class="ranking-meta-c">チア cheerleader • 6:52</div>
+                            </div>
+                        </div>
+                        <div class="ranking-item-c">
+                            <div class="ranking-number">5</div>
+                            <img src="https://i.ytimg.com/vi/cJfDUDYaWYo/maxresdefault.jpg" alt="Item 5" class="ranking-thumbnail-c">
+                            <div class="ranking-info-c">
+                                <div class="ranking-title-c">Hottest Kadorin Hitomi Thailand - NIKKE Performance</div>
+                                <div class="ranking-meta-c">TZWG • 8:25</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: rgba(255, 180, 84, 0.1); border-radius: 12px; border: 2px solid rgba(255, 180, 84, 0.3);">
+            <h3 style="color: #ffb454; margin-bottom: 1rem;">Current Status</h3>
+            <p style="margin-bottom: 1rem;"><strong>✅ VARIANTE B</strong> is currently applied to your main <code>premium-cosplay-fancam.html</code> page</p>
+            <p style="color: #aaa;">Visit the <a href="premium-cosplay-fancam.html" style="color: #ffb454; text-decoration: underline;">main page</a> to see the active design</p>
+        </div>
+    </div>
+</body>
+</html>

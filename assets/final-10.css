@@ -1,0 +1,771 @@
+
+/* Final 10 pass: safe visual polish */
+html{scroll-behavior:smooth}
+body{overflow-x:hidden !important}
+.site-nav-final{backdrop-filter:blur(10px)}
+
+/* Center main shells on main pages */
+.wrap{margin-left:auto !important;margin-right:auto !important}
+
+/* Home */
+body.home-page .wrap,
+body[data-page="home"] .wrap{max-width:980px !important;padding-top:18px !important;padding-bottom:120px !important}
+body.home-page .card,
+body[data-page="home"] .card{overflow:visible !important;margin-bottom:0 !important}
+body.home-page .heroRow,
+body[data-page="home"] .heroRow{align-items:center !important}
+body.home-page .panel,
+body[data-page="home"] .panel{box-shadow:0 18px 44px rgba(0,0,0,.32)}
+body.home-page .heroImg .frame,
+body[data-page="home"] .heroImg .frame{box-shadow:0 18px 44px rgba(0,0,0,.28)}
+
+/* Main index overlay */
+body.intro-page .overlay .panel,
+body[data-page="intro"] .overlay .panel{backdrop-filter:blur(10px);box-shadow:0 24px 64px rgba(0,0,0,.45)}
+
+/* Shared content polish */
+.panel,.hero,.card,.tile,.pack,.rank-card{box-shadow:0 24px 64px rgba(0,0,0,.34)}
+.card,.tile,.pack,.rank-card,.model-card,.video-card,.group-card{transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease}
+
+/* Page heroes */
+.hero-top h1,.content h1,.hero-copy h1,.headerBlock h1{letter-spacing:.04em !important}
+.hero-top .lede,.content .lede,.hero-copy .sub,.headerBlock .subtitle{max-width:72ch}
+
+/* Top100 / Best dancers / Packs / Community / Profile centering & polish */
+body.top100-page .wrap, body.best-page .wrap, body.packs-page .wrap, body.community-page .wrap{max-width:1220px !important}
+body.profile-page .wrap{max-width:1040px !important}
+body.community-page .panel, body.profile-page .panel{backdrop-filter:blur(10px)}
+
+/* Video pages */
+body.video-page .side p,
+body.video-page aside.side p{font-size:14px !important;line-height:1.6 !important;color:rgba(255,255,255,.78) !important}
+body.video-page .vote-box,
+body.video-page .alexia-hm-box,
+body.video-page .clip-finder{box-shadow:0 16px 40px rgba(0,0,0,.24) !important}
+body.video-page #alexia-jump-most,
+body.video-page .unlock-paid-content-btn,
+body.video-page a[href$="paid-content.html"]{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;font-weight:800;letter-spacing:.02em}
+
+/* Reduce visual noise on video pages */
+body.video-page .particle-layer,
+body.video-page .noise-overlay,
+body.video-page .fx-layer,
+body.video-page .glow-orb{display:none !important}
+
+/* Consistent buttons */
+.btn,button,.quick-link,.nav-btn,.topnav a,.topnav span{font-weight:700}
+
+
+/* === VISUAL 10 SAFE POLISH === */
+:root{
+  --ax-pink:#ff47c7;
+  --ax-pink-soft:rgba(255,71,199,.20);
+  --ax-border-soft:rgba(255,255,255,.10);
+  --ax-surface-soft:linear-gradient(180deg, rgba(255,255,255,.048), rgba(255,255,255,.022));
+}
+
+/* Keep pages elegant without changing layout logic */
+.wrap.page{
+  max-width:1220px !important;
+}
+/* Ocultar h2 fantasma dentro de seo-intro */
+.seo-intro h2{
+  display:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  height:0 !important;
+}
+
+.breadcrumb{
+  margin:6px 0 14px !important;
+  color:rgba(255,255,255,.82) !important;
+  font-size:13px !important;
+  line-height:1.45 !important;
+  letter-spacing:.01em !important;
+}
+
+.seo-intro{
+  margin-bottom:18px !important;
+  padding:14px 18px !important;
+  border-radius:24px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018)) !important;
+  box-shadow:0 18px 44px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04) !important;
+  backdrop-filter:blur(10px) !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+  width:100% !important;
+}
+.seo-intro p{
+  margin:0 0 12px !important;
+  max-width:92ch !important;
+  color:rgba(255,255,255,.84) !important;
+  font-size:15px !important;
+  line-height:1.62 !important;
+}
+.seo-pills{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  justify-content:center !important;
+  gap:8px 10px !important;
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+/* Cada pill: tamaño flexible para que quepan en el ancho disponible */
+.seo-pill,.seo-pills span,.seo-pills a{
+  flex-shrink:1 !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+  max-width:100% !important;
+}
+.seo-pills .pill,
+.seo-pills .chip,
+.seo-pills a{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-height:34px !important;
+  padding:0 14px !important;
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.026)) !important;
+  color:#fff !important;
+  font-size:12px !important;
+  font-weight:700 !important;
+  letter-spacing:.04em !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.18) !important;
+}
+
+.video-shell,
+.player,
+.vote-box,
+.alexia-hm-box,
+.recommend-cta,
+.side,
+.yt-comments{
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:var(--ax-surface-soft) !important;
+  box-shadow:0 20px 48px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.03) !important;
+  backdrop-filter:blur(10px) !important;
+}
+.video-shell,
+.recommend-cta,
+.side,
+.yt-comments{
+  border-radius:24px !important;
+}
+.alexia-hm-box,
+.vote-box{
+  border-radius:18px !important;
+}
+
+.video-shell{
+  overflow:hidden !important;
+}
+.video-shell .embed iframe,
+.video-shell .embed,
+.video-shell .player iframe{
+  border-radius:20px 20px 0 0 !important;
+}
+
+.content h1,
+.video-shell h1,
+.alexia-seo-h1,
+.hero-top h1{
+  letter-spacing:-.035em !important;
+  line-height:.96 !important;
+  text-wrap:balance;
+}
+body.video-page .side h2,
+body.video-page aside.side h2,
+.side h2{
+  font-size:28px !important;
+  line-height:1.12 !important;
+  letter-spacing:-.03em !important;
+}
+.side p,
+.side .meta,
+.side .section-sub,
+.vote-box .video-meta-line{
+  color:rgba(255,255,255,.78) !important;
+}
+
+.page-top-actions{
+  gap:10px !important;
+}
+.streak-pill,
+.replay-chip,
+.heat-chip,
+.badge,
+.pill,
+.seo-pill,
+.card-tag,
+.play-badge{
+  box-shadow:0 8px 22px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.03) !important;
+}
+
+.alexia-hm-head{
+  margin-bottom:10px !important;
+}
+.alexia-hm-title,
+.recommend-title{
+  font-size:clamp(18px, 2vw, 24px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.03em !important;
+}
+.vote-box-title{
+  font-size:12px !important;
+  font-weight:700 !important;
+  letter-spacing:.01em !important;
+  white-space:nowrap !important;
+}
+.alexia-hm-status,
+.recommend-sub,
+.alexia-hm-note{
+  color:rgba(255,255,255,.74) !important;
+}
+#alexia-jump-most,
+.unlock-paid-content-btn,
+a[href$="paid-content.html"],
+.replay-chip[href$="paid-content.html"],
+.paid-unlock-btn{
+  min-height:42px !important;
+  padding:0 22px !important;
+  border-radius:999px !important;
+  border:1px solid rgba(255,0,127,.55) !important;
+  background:linear-gradient(180deg,#ff007f,#ff1493) !important;
+  color:#fff !important;
+  font-weight:800 !important;
+  box-shadow:0 0 22px rgba(255,0,127,.55),0 12px 28px rgba(0,0,0,.28) !important;
+}
+#alexia-jump-most:hover,
+.unlock-paid-content-btn:hover,
+a[href$="paid-content.html"]:hover,
+.replay-chip[href$="paid-content.html"]:hover,
+.paid-unlock-btn:hover{
+  transform:translateY(-1px);
+  background:linear-gradient(180deg,#ff1493,#ff69b4) !important;
+  border-color:rgba(255,0,127,.75) !important;
+  box-shadow:0 0 32px rgba(255,0,127,.7),0 16px 34px rgba(0,0,0,.30) !important;
+}
+
+/* === COMENTARIOS === */
+.yt-comments{
+  padding:18px 18px 18px !important;
+}
+/* Misma tipografía para Comments / HOT REPLAYS / TOP DISCUSSION */
+.yt-comments-head h2,
+.alexia-discussion-head strong{
+  font-size:18px !important;
+  font-weight:900 !important;
+  letter-spacing:.16em !important;
+  text-transform:uppercase !important;
+}
+/* === COMPOSE BOX: botones Cancel/Comment DENTRO de la caja === */
+.yt-compose{
+  display:grid !important;
+  grid-template-columns:46px 1fr !important;
+  grid-template-rows:auto !important;
+  height:auto !important;
+  min-height:auto !important;
+  max-height:none !important;
+  border-radius:16px !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03)) !important;
+  padding:14px !important;
+  gap:10px 12px !important;
+  overflow:visible !important;
+  flex:unset !important;
+}
+.yt-avatar{
+  grid-column:1 !important;
+  grid-row:1 !important;
+  align-self:flex-start !important;
+}
+.yt-compose-main{
+  grid-column:2 !important;
+  grid-row:1 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:10px !important;
+  min-width:0 !important;
+}
+.yt-input{
+  border-radius:0 !important;
+  border:none !important;
+  border-bottom:1px solid rgba(255,255,255,.16) !important;
+  background:transparent !important;
+  padding:4px 0 8px !important;
+}
+.yt-compose-actions{
+  display:flex !important;
+  justify-content:flex-end !important;
+  gap:10px !important;
+  margin-top:0 !important;
+  padding-bottom:0 !important;
+}
+.yt-input,
+.yt-compose textarea,
+.yt-compose input{
+  border-radius:16px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)) !important;
+  color:#fff !important;
+  padding:12px 14px !important;
+}
+.yt-btn-post,
+.yt-btn-lite{
+  min-height:40px !important;
+  border-radius:999px !important;
+}
+
+.recommend-cta{
+  margin-top:18px !important;
+  padding:20px 18px !important;
+}
+.recommend-sub{line-height:1.58 !important}
+
+/* === BOTÓN RECOMMEND — mismo rosa fluo que unlock/jump === */
+.recommend-btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:14px 32px !important;
+  border-radius:999px !important;
+  border:1px solid rgba(255,0,127,.55) !important;
+  background:linear-gradient(180deg,#ff007f,#ff1493) !important;
+  color:#fff !important;
+  font-weight:800 !important;
+  font-size:15px !important;
+  letter-spacing:.04em !important;
+  box-shadow:0 0 22px rgba(255,0,127,.55),0 12px 28px rgba(0,0,0,.28) !important;
+  text-decoration:none !important;
+  cursor:pointer !important;
+  animation:none !important;
+}
+.recommend-btn:hover{
+  background:linear-gradient(180deg,#ff1493,#ff69b4) !important;
+  box-shadow:0 0 32px rgba(255,0,127,.7),0 16px 34px rgba(0,0,0,.30) !important;
+}
+
+/* === JUMP TO MOST REPLAYED — centrado en su bloque === */
+.alexia-hm-actions{
+  justify-content:center !important;
+  display:flex !important;
+}
+
+/* === NETFLIX HOVER — todos los bloques principales === */
+.panel,.hero,.card,.tile,.pack,.rank-card,.model-card,.video-card,.group-card,
+.seo-intro,.alexia-hm-box,.vote-box,.clip-finder,.yt-comments,
+.alexia-quick-routes a,.model{
+  border:1px solid rgba(255,255,255,.10) !important;
+  transition:transform .22s cubic-bezier(.25,.46,.45,.94),box-shadow .22s ease !important;
+}
+.panel:hover,.hero:hover,.card:hover,.tile:hover,.pack:hover,
+.rank-card:hover,.model-card:hover,.video-card:hover,.group-card:hover,
+.seo-intro:hover,.alexia-hm-box:hover,.vote-box:hover,.clip-finder:hover{
+  transform:scale(1.015) translateY(-4px) !important;
+  box-shadow:0 32px 80px rgba(0,0,0,.42) !important;
+}
+
+/* === CONSISTENCIA: mismo aire superior y ancho en bloques principales === */
+.video-shell,.alexia-hm-box,.vote-box,.clip-finder,.yt-comments,.recommend-cta,.comment-invite-cta,.seo-intro{
+  margin-top:16px !important;
+  box-sizing:border-box !important;
+}
+.alexia-hm-box,.vote-box{
+  padding:16px 18px !important;
+}
+
+/* === ANIMACIÓN GATO ENCERRADO — unlock paid content === */
+@keyframes alexiaCatTrapped{
+  0%,100%{transform:translate(0,0) rotate(0deg) scale(1);}
+  /* Pequeños movimientos — el gato se acomoda */
+  4%{transform:translate(-2px,1px) rotate(-.3deg);}
+  6%{transform:translate(3px,-1px) rotate(.4deg);}
+  8%{transform:translate(-1px,0) rotate(-.2deg);}
+  10%{transform:translate(0,0) rotate(0deg);}
+  /* Gran golpe contra la pared izquierda */
+  38%{transform:translate(0,0) scaleX(1) scaleY(1);}
+  40%{transform:translate(-5px,0) scaleX(.94) scaleY(1.06);}
+  42%{transform:translate(6px,0) scaleX(1.07) scaleY(.95);}
+  44%{transform:translate(-4px,0) scaleX(.96) scaleY(1.04);}
+  46%{transform:translate(3px,0) scaleX(1.03) scaleY(.98);}
+  48%{transform:translate(0,0) scaleX(1) scaleY(1);}
+  /* Sacudida rápida de desesperación */
+  72%{transform:translate(0,0);}
+  73%{transform:translate(-4px,0) rotate(-.5deg);}
+  74%{transform:translate(5px,0) rotate(.6deg);}
+  75%{transform:translate(-5px,1px) rotate(-.7deg);}
+  76%{transform:translate(4px,-1px) rotate(.5deg);}
+  77%{transform:translate(-3px,0) rotate(-.3deg);}
+  78%{transform:translate(2px,0) rotate(.2deg);}
+  79%{transform:translate(0,0) rotate(0deg);}
+  /* Pequeño golpe desde abajo */
+  90%{transform:translate(0,0) scaleY(1);}
+  91%{transform:translate(0,-4px) scaleY(1.06) scaleX(.96);}
+  93%{transform:translate(0,3px) scaleY(.96) scaleX(1.04);}
+  95%{transform:translate(0,0) scaleY(1) scaleX(1);}
+}
+.paid-unlock-btn,
+a[href$="paid-content.html"],
+.replay-chip[href$="paid-content.html"]{
+  animation:alexiaCatTrapped 5.5s ease-in-out infinite !important;
+  transform-origin:center center !important;
+}
+
+/* === COMMENT-INVITE-CTA (igual estilo que recommend-cta) === */
+.comment-invite-cta{
+  margin-top:18px !important;
+  padding:20px 18px !important;
+  border-radius:24px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018)) !important;
+  box-shadow:0 18px 44px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.04) !important;
+  text-align:center !important;
+}
+
+
+/* final nav to first-block alignment */
+body.has-final-nav .wrap,
+body.site-nav-final--playlist .wrap{box-sizing:border-box !important;}
+body.has-final-nav .wrap > :first-child,
+body.site-nav-final--playlist .wrap > :first-child{
+  width:100% !important;
+  max-width:100% !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+  box-sizing:border-box !important;
+}
+
+/* ===== alexia director polish v1 ===== */
+:root{
+  --ax-shell-980:944px;
+  --ax-shell-1040:1004px;
+  --ax-shell-1220:1184px;
+  --ax-side-gap-desktop:40px;
+  --ax-side-gap-tablet:28px;
+  --ax-side-gap-mobile:16px;
+  --ax-surface-hero:linear-gradient(180deg, rgba(255,255,255,.040), rgba(255,255,255,.018));
+  --ax-surface-panel:linear-gradient(180deg, rgba(255,255,255,.036), rgba(255,255,255,.016));
+  --ax-stroke-soft:rgba(255,255,255,.10);
+  --ax-shadow-soft:0 22px 56px rgba(0,0,0,.26);
+  --ax-shadow-strong:0 32px 84px rgba(0,0,0,.34);
+  --ax-radius-xl:30px;
+  --ax-radius-lg:24px;
+  --ax-radius-md:18px;
+}
+
+body.has-final-nav,
+body.site-nav-final--playlist{overflow-x:hidden !important;}
+
+body.has-final-nav .wrap,
+body.site-nav-final--playlist .wrap{
+  width:min(var(--ax-page-frame, var(--ax-shell-1220)), calc(100% - (var(--ax-side-gap-desktop) * 2))) !important;
+  max-width:none !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  padding-top:34px !important;
+  padding-bottom:96px !important;
+  box-sizing:border-box !important;
+}
+
+body.has-final-nav .site-nav-final,
+body.site-nav-final--playlist .site-nav-final{
+  margin-top:16px !important;
+  margin-bottom:28px !important;
+}
+
+body.has-final-nav .site-nav-final__inner,
+body.site-nav-final--playlist .site-nav-final__inner{
+  border-radius:22px !important;
+  padding:15px 18px !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.042), rgba(255,255,255,.020)) !important;
+  box-shadow:0 18px 44px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+body.has-final-nav .wrap > :first-child,
+body.site-nav-final--playlist .wrap > :first-child{
+  margin-top:0 !important;
+}
+
+body.has-final-nav .wrap > * + *,
+body.site-nav-final--playlist .wrap > * + *{
+  margin-top:22px !important;
+}
+
+body.has-final-nav .panel,
+body.has-final-nav .hero,
+body.has-final-nav .card,
+body.has-final-nav .tile,
+body.has-final-nav .pack,
+body.has-final-nav .rank-card,
+body.has-final-nav .model-card,
+body.has-final-nav .video-card,
+body.has-final-nav .group-card,
+body.site-nav-final--playlist .panel,
+body.site-nav-final--playlist .hero,
+body.site-nav-final--playlist .card,
+body.site-nav-final--playlist .tile,
+body.site-nav-final--playlist .pack,
+body.site-nav-final--playlist .rank-card,
+body.site-nav-final--playlist .model-card,
+body.site-nav-final--playlist .video-card,
+body.site-nav-final--playlist .group-card,
+body.site-nav-final--playlist .playlist-pro-panel,
+body.site-nav-final--playlist .playlist-rows,
+body.site-nav-final--playlist .playlist-row,
+body.site-nav-final--playlist .keep-exploring{
+  border-radius:var(--ax-radius-xl) !important;
+  border:1px solid var(--ax-stroke-soft) !important;
+  background:var(--ax-surface-panel) !important;
+  box-shadow:var(--ax-shadow-soft) !important;
+  overflow:hidden !important;
+}
+
+body.has-final-nav .panel:hover,
+body.has-final-nav .hero:hover,
+body.has-final-nav .card:hover,
+body.has-final-nav .tile:hover,
+body.has-final-nav .pack:hover,
+body.has-final-nav .rank-card:hover,
+body.has-final-nav .model-card:hover,
+body.has-final-nav .video-card:hover,
+body.has-final-nav .group-card:hover,
+body.site-nav-final--playlist .panel:hover,
+body.site-nav-final--playlist .hero:hover,
+body.site-nav-final--playlist .card:hover,
+body.site-nav-final--playlist .tile:hover,
+body.site-nav-final--playlist .pack:hover,
+body.site-nav-final--playlist .rank-card:hover,
+body.site-nav-final--playlist .model-card:hover,
+body.site-nav-final--playlist .video-card:hover,
+body.site-nav-final--playlist .group-card:hover,
+body.site-nav-final--playlist .playlist-pro-panel:hover,
+body.site-nav-final--playlist .playlist-rows:hover,
+body.site-nav-final--playlist .playlist-row:hover,
+body.site-nav-final--playlist .keep-exploring:hover{
+  transform:translateY(-3px) scale(1.006) !important;
+  box-shadow:var(--ax-shadow-strong) !important;
+}
+
+body.has-final-nav .headerBlock,
+body.has-final-nav .hero,
+body.has-final-nav .hero-copy,
+body.has-final-nav .content,
+body.site-nav-final--playlist .hero,
+body.site-nav-final--playlist .content,
+body.site-nav-final--playlist .playlist-pro-panel,
+body.site-nav-final--playlist .playlist-row,
+body.site-nav-final--playlist .keep-exploring{
+  position:relative !important;
+}
+
+body.has-final-nav .headerBlock::before,
+body.has-final-nav .hero::before,
+body.has-final-nav .panel::before,
+body.site-nav-final--playlist .hero::before,
+body.site-nav-final--playlist .playlist-pro-panel::before,
+body.site-nav-final--playlist .playlist-row::before,
+body.site-nav-final--playlist .keep-exploring::before{
+  content:"";
+  position:absolute;
+  inset:-1px auto auto -1px;
+  width:36%;
+  height:52%;
+  background:radial-gradient(circle, rgba(173,34,72,.16), transparent 72%);
+  pointer-events:none;
+}
+
+body.has-final-nav .headerBlock::after,
+body.has-final-nav .hero::after,
+body.has-final-nav .panel::after,
+body.site-nav-final--playlist .hero::after,
+body.site-nav-final--playlist .playlist-pro-panel::after,
+body.site-nav-final--playlist .playlist-row::after,
+body.site-nav-final--playlist .keep-exploring::after{
+  content:"";
+  position:absolute;
+  right:-88px;
+  top:-88px;
+  width:280px;
+  height:280px;
+  background:radial-gradient(circle, rgba(118,108,255,.10), transparent 70%);
+  pointer-events:none;
+}
+
+body.has-final-nav .headerBlock > *,
+body.has-final-nav .hero > *,
+body.has-final-nav .panel > *,
+body.site-nav-final--playlist .hero > *,
+body.site-nav-final--playlist .playlist-pro-panel > *,
+body.site-nav-final--playlist .playlist-row > *,
+body.site-nav-final--playlist .keep-exploring > *{
+  position:relative;
+  z-index:1;
+}
+
+body.has-final-nav h1,
+body.has-final-nav .hero h1,
+body.has-final-nav .headerBlock h1,
+body.site-nav-final--playlist h1,
+body.site-nav-final--playlist .hero h1{
+  font-size:clamp(34px, 4.6vw, 62px) !important;
+  line-height:1.01 !important;
+  letter-spacing:-.035em !important;
+  font-weight:900 !important;
+  text-wrap:balance !important;
+  margin:0 0 14px !important;
+}
+
+body.has-final-nav .kicker,
+body.site-nav-final--playlist .kicker,
+body.site-nav-final--playlist .playlist-kicker,
+body.site-nav-final--playlist .badge,
+body.site-nav-final--playlist .signal-pill,
+body.site-nav-final--playlist .live-pill{
+  letter-spacing:.16em !important;
+}
+
+body.has-final-nav .lede,
+body.has-final-nav .hero p,
+body.has-final-nav .sub,
+body.has-final-nav .subtitle,
+body.site-nav-final--playlist .playlist-hero-subtitle,
+body.site-nav-final--playlist .hero p,
+body.site-nav-final--playlist .sub{
+  font-size:16px !important;
+  line-height:1.72 !important;
+  color:rgba(255,255,255,.80) !important;
+  max-width:72ch !important;
+  margin:0 !important;
+}
+
+body.has-final-nav .content,
+body.site-nav-final--playlist .content{
+  padding:30px 32px !important;
+}
+
+body.has-final-nav .headerBlock,
+body.site-nav-final--playlist .hero{
+  padding:38px 40px !important;
+}
+
+body.has-final-nav .grid,
+body.has-final-nav .rank-grid,
+body.has-final-nav .podium,
+body.site-nav-final--playlist .grid,
+body.site-nav-final--playlist .mini-rail,
+body.site-nav-final--playlist .keep-grid{
+  gap:18px !important;
+}
+
+body.has-final-nav .card img,
+body.has-final-nav .tile img,
+body.has-final-nav .pack img,
+body.has-final-nav .rank-card img,
+body.has-final-nav .model-card img,
+body.has-final-nav .video-card img,
+body.has-final-nav .group-card img,
+body.site-nav-final--playlist .card img,
+body.site-nav-final--playlist .mini-card img{
+  transition:transform .35s ease !important;
+}
+
+body.has-final-nav .card:hover img,
+body.has-final-nav .tile:hover img,
+body.has-final-nav .pack:hover img,
+body.has-final-nav .rank-card:hover img,
+body.has-final-nav .model-card:hover img,
+body.has-final-nav .video-card:hover img,
+body.has-final-nav .group-card:hover img,
+body.site-nav-final--playlist .card:hover img,
+body.site-nav-final--playlist .mini-card:hover img{
+  transform:scale(1.035) !important;
+}
+
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/home.html"].is-active),
+body.has-final-nav .wrap:has(.headerBlock),
+body.has-final-nav .wrap:has(.heroRow){--ax-page-frame:var(--ax-shell-980);}
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/profile.html"].is-active),
+body.has-final-nav .wrap:has(.profile-grid){--ax-page-frame:var(--ax-shell-1040);}
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/community.html"].is-active),
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/top-100-twerk-videos.html"].is-active),
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/best-twerk-dancers.html"].is-active),
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/alexia-video-packs.html"].is-active),
+body.site-nav-final--playlist .site-nav-final,
+body.site-nav-final--playlist .wrap{--ax-page-frame:var(--ax-shell-1220);}
+
+@media (max-width:1180px){
+  body.has-final-nav .wrap,
+  body.site-nav-final--playlist .wrap{width:min(var(--ax-page-frame, var(--ax-shell-1220)), calc(100% - (var(--ax-side-gap-tablet) * 2))) !important;}
+  body.has-final-nav .headerBlock,
+  body.site-nav-final--playlist .hero{padding:32px 30px !important;}
+  body.has-final-nav .content,
+  body.site-nav-final--playlist .content{padding:26px 24px !important;}
+}
+
+@media (max-width:760px){
+  body.has-final-nav .wrap,
+  body.site-nav-final--playlist .wrap{width:min(var(--ax-page-frame, var(--ax-shell-1220)), calc(100% - (var(--ax-side-gap-mobile) * 2))) !important;padding-top:22px !important;padding-bottom:64px !important;}
+  body.has-final-nav .site-nav-final,
+  body.site-nav-final--playlist .site-nav-final{margin-top:12px !important;margin-bottom:18px !important;}
+  body.has-final-nav .headerBlock,
+  body.site-nav-final--playlist .hero{padding:24px 18px !important;}
+  body.has-final-nav .content,
+  body.site-nav-final--playlist .content,
+  body.site-nav-final--playlist .playlist-pro-panel,
+  body.site-nav-final--playlist .playlist-row,
+  body.site-nav-final--playlist .keep-exploring{padding:20px 18px !important;}
+  body.has-final-nav h1,
+  body.has-final-nav .hero h1,
+  body.has-final-nav .headerBlock h1,
+  body.site-nav-final--playlist h1,
+  body.site-nav-final--playlist .hero h1{font-size:clamp(30px, 9vw, 44px) !important;}
+  body.has-final-nav .grid,
+  body.has-final-nav .rank-grid,
+  body.has-final-nav .podium,
+  body.site-nav-final--playlist .grid,
+  body.site-nav-final--playlist .mini-rail,
+  body.site-nav-final--playlist .keep-grid{gap:14px !important;}
+}
+
+/* profile + community widened to match top100 */
+body.has-final-nav.profile-page .site-nav-final,
+body.has-final-nav.community-page .site-nav-final{
+  --ax-nav-frame-width:1184px !important;
+}
+body.profile-page .wrap,
+body.community-page .wrap{
+  max-width:1220px !important;
+  width:min(1184px, calc(100% - 48px)) !important;
+}
+body.profile-page .hero,
+body.profile-page .panel,
+body.community-page .hero,
+body.community-page .content-shell,
+body.community-page .section,
+body.community-page .triple-rank-grid{
+  max-width:1184px !important;
+  width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+body.profile-page .sub,
+body.community-page .hero p{
+  max-width:880px !important;
+}
+@media (max-width:1100px){
+  body.profile-page .wrap,
+  body.community-page .wrap{
+    width:min(1184px, calc(100% - 36px)) !important;
+  }
+}
+@media (max-width:760px){
+  body.profile-page .wrap,
+  body.community-page .wrap{
+    width:min(1184px, calc(100% - 28px)) !important;
+  }
+}

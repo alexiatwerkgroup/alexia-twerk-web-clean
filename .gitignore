@@ -1,0 +1,30 @@
+*.zip
+*.rar
+*.7z
+__MACOSX/
+.DS_Store
+
+# Claude operational docs (session memory, not project source)
+CLAUDE_RULES.md
+CLAUDE_VIEW.html
+CLAUDE_VIEW.md
+
+# Generated preview frames / thumbnails
+_preview_frames/
+profile_frames/
+
+# Legacy push/batch scripts (one-off session artifacts)
+PUSH_THEN_PA.ps1
+PUSH_TANDA_A.ps1
+PUSH_NOW.bat
+
+# Temp preview HTMLs (regenerated from source pages)
+PACK_PREVIEWS.html
+PACK_PREVIEW.html
+alexia-twerk-leaks-PREVIEW.html
+
+# Stray scratch files
+testwrite.txt
+textareas.txt
+olve*
+tatus*

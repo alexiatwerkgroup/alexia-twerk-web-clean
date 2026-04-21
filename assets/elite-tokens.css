@@ -1,0 +1,140 @@
+/* =========================================================================
+   ELITE TOKENS — Alexia Twerk Group · The Wild Project Agency
+   Single source of truth for brand primitives. Load BEFORE any other CSS.
+   ========================================================================= */
+
+/* ── Google fonts: 1 serif editorial + 1 sans ────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+  /* ── Palette: 2 colors + neutrals + 1 accent ───────────────────────────── */
+  --elite-bg:            #08080b;   /* canvas */
+  --elite-bg-soft:       #0e0e13;   /* raised surface */
+  --elite-bg-card:       #13131a;   /* card fill */
+  --elite-line:          #1f1f28;   /* hairlines */
+  --elite-line-strong:   #2a2a35;
+
+  --elite-text:          #f4f3f7;   /* primary text */
+  --elite-text-dim:      #a8a6b4;   /* secondary */
+  --elite-text-mute:     #6e6c7c;   /* tertiary */
+
+  --elite-primary:       #ff2e7e;   /* signature pink */
+  --elite-primary-ink:   #d4185d;
+  --elite-primary-glow:  rgba(255, 46, 126, .28);
+
+  --elite-gold:          #e8c880;   /* editorial accent */
+  --elite-gold-ink:      #b99350;
+  --elite-gold-glow:     rgba(232, 200, 128, .22);
+
+  --elite-danger:        #ff5a5a;
+  --elite-ok:            #38d9a9;
+
+  /* ── Typography ────────────────────────────────────────────────────────── */
+  --elite-font-serif:    "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  --elite-font-sans:     "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --elite-font-mono:     ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Modular scale 1.25 (major third) — fluid via clamp */
+  --elite-fs-eyebrow:    clamp(11px, .72vw + 9px, 13px);
+  --elite-fs-xs:         clamp(12px, .8vw + 10px, 14px);
+  --elite-fs-sm:         clamp(14px, .9vw + 11px, 16px);
+  --elite-fs-body:       clamp(15px, 1vw + 12px, 18px);
+  --elite-fs-lg:         clamp(18px, 1.4vw + 14px, 22px);
+  --elite-fs-xl:         clamp(22px, 2vw + 16px, 30px);
+  --elite-fs-h3:         clamp(26px, 2.6vw + 18px, 38px);
+  --elite-fs-h2:         clamp(34px, 4vw + 20px, 58px);
+  --elite-fs-h1:         clamp(44px, 6vw + 22px, 84px);
+  --elite-fs-display:    clamp(56px, 9vw + 24px, 128px);
+
+  --elite-leading-tight: 1.05;
+  --elite-leading-snug:  1.2;
+  --elite-leading-body:  1.55;
+  --elite-tracking-wide: .22em;
+  --elite-tracking-mid:  .08em;
+
+  /* ── Spacing ───────────────────────────────────────────────────────────── */
+  --elite-s-1:  4px;
+  --elite-s-2:  8px;
+  --elite-s-3:  12px;
+  --elite-s-4:  16px;
+  --elite-s-5:  24px;
+  --elite-s-6:  32px;
+  --elite-s-7:  48px;
+  --elite-s-8:  64px;
+  --elite-s-9:  96px;
+  --elite-s-10: 128px;
+
+  /* ── Radius ────────────────────────────────────────────────────────────── */
+  --elite-r-xs:  4px;
+  --elite-r-sm:  8px;
+  --elite-r:     14px;
+  --elite-r-lg:  22px;
+  --elite-r-xl:  32px;
+  --elite-r-pill: 999px;
+
+  /* ── Shadows / glows ───────────────────────────────────────────────────── */
+  --elite-shadow-xs: 0 1px 2px rgba(0,0,0,.4);
+  --elite-shadow-sm: 0 4px 14px rgba(0,0,0,.35);
+  --elite-shadow:    0 10px 40px rgba(0,0,0,.5), 0 0 0 1px var(--elite-line);
+  --elite-shadow-lg: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px var(--elite-line);
+  --elite-glow-primary: 0 0 0 1px var(--elite-primary), 0 14px 40px var(--elite-primary-glow);
+  --elite-glow-gold:    0 0 0 1px var(--elite-gold),    0 14px 40px var(--elite-gold-glow);
+
+  /* ── Motion ────────────────────────────────────────────────────────────── */
+  --elite-ease:       cubic-bezier(.2,.7,.2,1);
+  --elite-ease-out:   cubic-bezier(.16,1,.3,1);
+  --elite-dur-fast:   180ms;
+  --elite-dur:        320ms;
+  --elite-dur-slow:   520ms;
+
+  /* ── Layout ────────────────────────────────────────────────────────────── */
+  --elite-max:       1280px;
+  --elite-max-narrow: 820px;
+  --elite-gutter:    clamp(16px, 3vw, 40px);
+}
+
+/* =========================================================================
+   Defensive resets that only activate when elite class is set on <html>/<body>
+   ========================================================================= */
+html.elite,
+html.elite body,
+body.elite{
+  background: var(--elite-bg);
+  color: var(--elite-text);
+  font-family: var(--elite-font-sans);
+  font-size: var(--elite-fs-body);
+  line-height: var(--elite-leading-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html.elite ::selection{ background: var(--elite-primary); color: #fff; }
+
+html.elite *{
+  scrollbar-width: thin;
+  scrollbar-color: var(--elite-line-strong) transparent;
+}
+html.elite *::-webkit-scrollbar{ width: 8px; height: 8px; }
+html.elite *::-webkit-scrollbar-thumb{
+  background: var(--elite-line-strong);
+  border-radius: 999px;
+}
+
+html.elite a{ color: inherit; text-decoration: none; }
+html.elite img, html.elite video{ max-width: 100%; display: block; }
+
+/* Base typographic rhythm only inside a wrapper to avoid breaking legacy pages */
+html.elite .elite-scope h1,
+html.elite .elite-scope h2,
+html.elite .elite-scope h3{
+  font-family: var(--elite-font-serif);
+  font-weight: 700;
+  line-height: var(--elite-leading-tight);
+  letter-spacing: -.01em;
+  color: var(--elite-text);
+}
+html.elite .elite-scope h1{ font-size: var(--elite-fs-h1); }
+html.elite .elite-scope h2{ font-size: var(--elite-fs-h2); }
+html.elite .elite-scope h3{ font-size: var(--elite-fs-h3); }
+html.elite .elite-scope p{  font-size: var(--elite-fs-body); color: var(--elite-text-dim); }

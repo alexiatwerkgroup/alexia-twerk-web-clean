@@ -1,0 +1,144 @@
+{
+  "playlist": "try-on-haul-leaks",
+  "source_youtube_list": "PLMzWifnZnpVIEC44D0SQnnk-NRs9yIx7T",
+  "curated_by": "Anti (firestarter)",
+  "updated": "2026-04-20",
+  "notes": "Top 5 hot-ranking are free previews with real id/title. Grid is paywall-gated + anti-piracy: hidden_id is base64+sha256 tag, real fields prefixed with \"_\" are only rendered after subscription.",
+  "hot_ranking": [
+    {
+      "id": "jXBni3AN52M",
+      "title": "These Shorts Are Way Too Short!! Try On Haul",
+      "channel": "VICTORIA XAVIER",
+      "duration": "10:07",
+      "rank": 1,
+      "free": true,
+      "badge": "gold"
+    },
+    {
+      "id": "y3Kqov7zZXA",
+      "title": "HOTTEST HALLOWEEN COSTUME TRY ON HAUL FASHION NOVA",
+      "channel": "VICTORIA XAVIER",
+      "duration": "8:45",
+      "rank": 2,
+      "free": true,
+      "badge": "purple"
+    },
+    {
+      "id": "cimL6f-9e3Q",
+      "title": "MINI SKIRT TRY ON HAUL",
+      "channel": "VICTORIA XAVIER",
+      "duration": "6:05",
+      "rank": 3,
+      "free": true,
+      "badge": "pink"
+    },
+    {
+      "id": "RTFL7VpjW3E",
+      "title": "Four sets of swimsuits and underwear in VR Fashion Room",
+      "channel": "SUN Media Group",
+      "duration": "19:12",
+      "rank": 4,
+      "free": true,
+      "badge": "monochrome"
+    },
+    {
+      "id": "wCL45YPpWiA",
+      "title": "Trying On Yoga Suits in VR Fashion Room",
+      "channel": "SUN Media Group",
+      "duration": "14:27",
+      "rank": 5,
+      "free": true,
+      "badge": "monochrome"
+    }
+  ],
+  "grid": [
+    {
+      "hidden_id": "WDQ4SS1yU1RyVW8.cbdf0cf5",
+      "number": "#006",
+      "channel": "VICTORIA XAVIER",
+      "duration": "4:24",
+      "_id": "X48I-rSTrUo",
+      "_title": "Guess The Outfit Try On Haul"
+    },
+    {
+      "hidden_id": "R2l6aXhwakpvQjA.a5acb1da",
+      "number": "#007",
+      "channel": "VICTORIA XAVIER",
+      "duration": "6:21",
+      "_id": "GizixpjJoB0",
+      "_title": "These Popilush Styles Are Too Hot to Handle!!"
+    },
+    {
+      "hidden_id": "RUkxM3hnbU1mOVk.d32b524c",
+      "number": "#008",
+      "channel": "SUN Media Group",
+      "duration": "2:56",
+      "_id": "EI13xgmMf9Y",
+      "_title": "Fashion VR. My Favorite Looks with Annet (Part 2) @AnnetOfficial1 in VR180 3D"
+    },
+    {
+      "hidden_id": "SEo4bXBRQXppTE0.cea0adc2",
+      "number": "#009",
+      "channel": "SUN Media Group",
+      "duration": "3:11",
+      "_id": "HJ8mpQAziLM",
+      "_title": "Fashion VR. My Favorite Looks with Annet (Part 4) @AnnetOfficial1 in VR180 3D"
+    },
+    {
+      "hidden_id": "TjlXVGJybzJrVk0.6f5c63ff",
+      "number": "#010",
+      "channel": "SUN Media Group",
+      "duration": "11:24",
+      "_id": "N9WTbro2kVM",
+      "_title": "Are These Leggings Good For Dancing? Tanya Safonova in VR180 3D"
+    },
+    {
+      "hidden_id": "cGhsUFJyWXBtejA.d719471c",
+      "number": "#011",
+      "channel": "SUN Media Group",
+      "duration": "2:39",
+      "_id": "phlPRrYpmz0",
+      "_title": "Trying on summer outfits by Toree & Hareniks in VR180 3D"
+    },
+    {
+      "hidden_id": "YmsyTVVQRldTUjg.5f1b8d5c",
+      "number": "#012",
+      "channel": "SUN Media Group",
+      "duration": "2:54",
+      "_id": "bk2MUPFWSR8",
+      "_title": "Dame Un GRRR in VR180 3D"
+    },
+    {
+      "hidden_id": "UHVYeWVOQXl3aHc.f3fd3d2d",
+      "number": "#013",
+      "channel": "SUN Media Group",
+      "duration": "4:12",
+      "_id": "PuXyeNAywhw",
+      "_title": "Toree rehearses a popular dance in VR180 3D"
+    },
+    {
+      "hidden_id": "TjQ4ZGdzc1locVE.8e04a97a",
+      "number": "#014",
+      "channel": "SUN Media Group",
+      "duration": "2:59",
+      "_id": "N48dgssYhqQ",
+      "_title": "VR180 3D. Model Olena tries on a blue lingerie set"
+    },
+    {
+      "hidden_id": "aUJVLXUzVnFEMUU.26c3942c",
+      "number": "#015",
+      "channel": "SUN Media Group",
+      "duration": "9:28",
+      "_id": "iBU-u3VqD1E",
+      "_title": "Will you help her choose a swimsuit? Treadmill Swim Week VR Show in VR180 3D"
+    },
+    {
+      "hidden_id": "NTFBYjBPRlpCVTQ.2f93f600",
+      "number": "#016",
+      "channel": "SUN Media Group",
+      "duration": "2:08",
+      "_id": "51Ab0OFZBU4",
+      "_title": "VR180 3D. Model Olena tries on a red lingerie"
+    }
+  ]
+}

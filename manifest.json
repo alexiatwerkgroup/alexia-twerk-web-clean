@@ -1,0 +1,53 @@
+{
+        "name": "Alexia Twerk Group",
+        "short_name": "Alexia",
+        "description": "Official Alexia Twerk Group archive and premium routes.",
+        "id": "/?source=pwa",
+        "start_url": "/?source=pwa",
+        "scope": "/",
+        "display": "standalone",
+        "orientation": "portrait",
+        "background_color": "#0b0b12",
+        "theme_color": "#0b0b12",
+        "icons": [
+                    {
+                                    "src": "/icon-192.png",
+                                    "sizes": "192x192",
+                                    "type": "image/png",
+                                    "purpose": "any"
+                    },
+                    {
+                                    "src": "/icon-192.png",
+                                    "sizes": "192x192",
+                                    "type": "image/png",
+                                    "purpose": "maskable"
+                    },
+                    {
+                                    "src": "/icon-512.png",
+                                    "sizes": "512x512",
+                                    "type": "image/png",
+                                    "purpose": "any"
+                    },
+                    {
+                                    "src": "/icon-512.png",
+                                    "sizes": "512x512",
+                                    "type": "image/png",
+                                    "purpose": "maskable"
+                    }
+        ],
+        "screenshots": [
+                    {
+                                    "src": "/hero_alexia.jpg",
+                                    "sizes": "1280x720",
+                                    "type": "image/jpeg",
+                                    "form_factor": "wide",
+                                    "label": "Alexia Twerk Group - Desktop"
+                    },
+                    {
+                                    "src": "/hero_alexia_local.png",
+                                    "sizes": "390x844",
+                                    "type": "image/png",
+                                    "label": "Alexia Twerk Group - Mobile"
+                    }
+        ]
+}

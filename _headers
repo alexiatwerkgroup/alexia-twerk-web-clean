@@ -1,0 +1,16 @@
+/manifest.json
+  Content-Type: application/json
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/service-worker.js
+  Content-Type: application/javascript
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Real-time counter scripts — must always be fresh so bug fixes take effect immediately
+/assets/online-count-global.js
+  Cache-Control: no-cache, must-revalidate
+  Content-Type: application/javascript
+
+/assets/global-nav-online.js
+  Cache-Control: no-cache, must-revalidate
+  Content-Type: application/javascript

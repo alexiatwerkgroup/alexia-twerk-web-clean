@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Oriental Block — Final</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Serif+JP:wght@400;700;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #000; font-family: 'Inter', sans-serif; color: #fff; overflow: hidden; }
+
+    /* ── 3-COL LAYOUT ── */
+    .three-col { display: flex; width: 100%; height: 100vh; }
+    .col {
+      flex: 1; position: relative; overflow: hidden;
+      border-right: 1px solid rgba(255,255,255,.07);
+    }
+    .col:last-child { border-right: none; }
+
+    /* backgrounds */
+    .col-video { position: absolute; inset: 0; z-index: 0; }
+    .col-video .fake-bg { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .fake-bg-1 { background: radial-gradient(ellipse at 55% 35%, #0a2a18, #000 72%); }
+    .fake-bg-2 { background: radial-gradient(ellipse at 50% 28%, #18060d, #040005 72%); }
+
+    /* gradient overlay */
+    .overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to bottom,
+        rgba(0,0,0,.04) 0%, rgba(0,0,0,0) 28%,
+        rgba(0,0,0,.42) 62%, rgba(0,0,0,.76) 100%);
+      pointer-events: none;
+    }
+
+    /* video count — reference cols */
+    .vid-count {
+      position: absolute; top: 18px; right: 18px; z-index: 5; text-align: right;
+      pointer-events: none;
+    }
+    .vid-count .num { font: 800 28px/1 'Inter',sans-serif; display: block; }
+    .vid-count .lbl {
+      font: 700 8px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(255,255,255,.28); display: block; margin-top: 3px;
+    }
+
+    /* ── REFERENCE BOTTOM CONTENT ── */
+    .ref-content {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
+      padding: 0 22px 28px;
+    }
+    .r-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 100px;
+      font: 700 9px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .r-sub {
+      font: 700 9px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(255,255,255,.28); margin-bottom: 10px;
+    }
+    .r-title { font: 800 34px/1.05 'Inter',sans-serif; margin-bottom: 8px; color: #fff; }
+    .r-desc { font: 400 12px/1.6 'Inter',sans-serif; color: rgba(255,255,255,.4); margin-bottom: 12px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 16px; }
+    .pill {
+      padding: 4px 10px; border-radius: 100px;
+      border: 1px solid rgba(255,255,255,.12);
+      font: 600 8px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,.28); background: rgba(255,255,255,.03);
+    }
+    .r-btn {
+      width: 100%; padding: 13px; border: none; cursor: pointer; border-radius: 4px;
+      font: 700 11px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .14em; text-transform: uppercase; transition: filter .2s;
+    }
+    .r-btn:hover { filter: brightness(1.15); }
+
+    /* ══════════════════════════════
+       COL 3 — ORIENTAL BLOCK
+    ══════════════════════════════ */
+
+    /* Two videos, stacked */
+    #vid1, #vid2 {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover; z-index: 0;
+    }
+    #vid2 { display: none; }
+
+    /* Design panels — centered */
+    .design-panel {
+      display: none;
+      position: absolute; inset: 0; z-index: 3;
+      align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .design-panel.active { display: flex; }
+    .design-panel .btns { pointer-events: all; }
+
+    /* vid count inside panel */
+    .vc {
+      position: absolute; top: 18px; right: 18px; text-align: right;
+    }
+    .vc .num { font: 800 28px/1 'Inter',sans-serif; display: block; }
+    .vc .lbl {
+      font: 700 8px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(255,255,255,.28); display: block; margin-top: 3px;
+    }
+
+    /* shared block */
+    .o-block { width: 100%; padding: 0 22px; text-align: center; }
+
+    .o-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 11px; border-radius: 100px;
+      font: 700 9px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .14em; text-transform: uppercase; margin-bottom: 9px;
+    }
+    .o-sub {
+      font: 700 9px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .26em; text-transform: uppercase; margin-bottom: 11px;
+    }
+    .o-title { margin-bottom: 9px; line-height: 1.05; }
+    .o-desc {
+      font: 400 12px/1.6 'Inter',sans-serif;
+      color: rgba(255,255,255,.38); margin-bottom: 12px;
+    }
+    .o-pills {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      margin-bottom: 16px; justify-content: center;
+    }
+    .o-pill {
+      padding: 4px 10px; border-radius: 100px;
+      font: 600 8px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .1em; text-transform: uppercase;
+    }
+
+    /* buttons — both 50% opacity, only one visible at a time */
+    .o-btn {
+      display: none; /* JS controls visibility */
+      width: 100%; padding: 13px; border: none; cursor: pointer; border-radius: 4px;
+      font: 700 11px/1 'Space Grotesk',sans-serif;
+      letter-spacing: .14em; text-transform: uppercase;
+      opacity: .5; transition: opacity .2s, filter .2s;
+    }
+    .o-btn:hover { opacity: .75; filter: brightness(1.2); }
+
+    /* ── PANEL 1 colors (purple / existing style) ── */
+    #pv1 .o-badge { background: rgba(124,58,237,.15); border: 1px solid rgba(124,58,237,.38); color: #a78bfa; }
+    #pv1 .o-sub   { color: rgba(167,139,250,.38); }
+    #pv1 .o-title { font: 800 34px/1.05 'Inter',sans-serif; color: #fff; }
+    #pv1 .o-title .a { color: #a78bfa; }
+    #pv1 .o-pill  { border: 1px solid rgba(124,58,237,.28); color: rgba(167,139,250,.55); background: rgba(124,58,237,.08); }
+    #pv1 .vc .num { color: #a78bfa; }
+    /* spicy btn panel 1 */
+    #pv1 .btn-spicy { background: #cc0000; color: #fff; }
+    /* purple btn panel 1 */
+    #pv1 .btn-purple { background: #7c3aed; color: #fff; }
+
+    /* ── PANEL 2 colors (red / Asia Uncensored) ── */
+    #pv2 .o-badge { background: rgba(200,0,0,.18); border: 1px solid rgba(200,0,0,.45); color: #ff2020; }
+    #pv2 .o-sub   { color: rgba(255,30,30,.4); }
+    #pv2 .o-title { font: 900 34px/1.05 'Noto Serif JP',serif; color: #fff; }
+    #pv2 .o-title .a { color: #ff2020; }
+    #pv2 .o-pill  { border: 1px solid rgba(200,0,0,.3); color: rgba(255,40,40,.55); background: rgba(200,0,0,.08); }
+    #pv2 .vc .num { color: #ff2020; }
+    /* spicy btn panel 2 */
+    #pv2 .btn-spicy { background: #cc0000; color: #fff; }
+    /* purple btn panel 2 */
+    #pv2 .btn-purple { background: #7c3aed; color: #fff; }
+  </style>
+  <link rel="stylesheet" href="/assets/elite-tokens.css">
+  <link rel="stylesheet" href="/assets/elite-components.css">
+<script src="/assets/age-gate.js"></script>
+</head>
+<body class="elite-defensive">
+<div class="three-col">
+
+  <!-- ══ COL 1 — TWERK PLAYLIST ══ -->
+  <div class="col">
+    <div class="col-video"><div class="fake-bg fake-bg-1"></div></div>
+    <div class="overlay"></div>
+    <div class="vid-count">
+      <span class="num" style="color:#00ffa0">275</span><span class="lbl">Videos</span>
+    </div>
+    <div class="ref-content">
+      <div class="r-badge" style="background:rgba(0,255,160,.1);border:1px solid rgba(0,255,160,.25);color:#00ffa0">🔥 Free Access</div>
+      <div class="r-sub">Twerk Archive · Live</div>
+      <h2 class="r-title">Twerk Playlist</h2>
+      <p class="r-desc">The hottest archive on the internet. Ranked. Raw. Real.</p>
+      <div class="pills">
+        <span class="pill">Top 100</span><span class="pill">Studio</span>
+        <span class="pill">Trending</span><span class="pill">4K Videos</span>
+        <span class="pill">Rankings</span><span class="pill">Battles</span>
+      </div>
+      <button class="r-btn" style="background:#00c880;color:#000">Enter →</button>
+    </div>
+  </div>
+
+  <!-- ══ COL 2 — PREMIUM MODELS ══ -->
+  <div class="col">
+    <div class="col-video"><div class="fake-bg fake-bg-2"></div></div>
+    <div class="overlay"></div>
+    <div class="vid-count">
+      <span class="num" style="color:#ff3c64">1200</span><span class="lbl">Videos</span>
+    </div>
+    <div class="ref-content">
+      <div class="r-badge" style="background:rgba(255,60,100,.12);border:1px solid rgba(255,60,100,.28);color:#ff3c64">💎 Paid Only</div>
+      <div class="r-sub">Exclusive · Verified</div>
+      <h2 class="r-title">Premium Models</h2>
+      <p class="r-desc">Young Latin models &amp; dancers. No filters. Fully private.</p>
+      <div class="pills">
+        <span class="pill">Personalized</span><span class="pill">Custom</span>
+        <span class="pill">Private</span><span class="pill">XXX</span>
+        <span class="pill">Verified</span><span class="pill">OnlyFans</span>
+      </div>
+      <button class="r-btn" style="background:#e8205a;color:#fff">Unlock →</button>
+    </div>
+  </div>
+
+  <!-- ══ COL 3 — ORIENTAL BLOCK ══ -->
+  <div class="col" id="col3">
+
+    <!-- VIDEO 1: primary fancam oriental -->
+    <video id="vid1" preload="metadata" muted playsinline>
+      <source src="../uploads/Fancam Hot-29ede2af.mp4" type="video/mp4"/>
+    </video>
+
+    <!-- VIDEO 2: secondary try-on -->
+    <video id="vid2" preload="metadata" muted playsinline>
+      <source src="../uploads/try on hot-1-3a472897.mp4" type="video/mp4"/>
+    </video>
+
+    <div class="overlay"></div>
+
+    <!-- PANEL 1 — purple style (video 1) -->
+    <div class="design-panel active" id="pv1">
+      <div class="vc"><span class="num" data-stat-total-videos>590</span><span class="lbl">Videos</span></div>
+      <div class="o-block">
+        <div class="o-badge">🔥 18+ · Adults Only</div>
+        <div class="o-sub">Adults Only · Free</div>
+        <h2 class="o-title">Watch <span class="a">Free.</span> Unlock <span class="a">More.</span></h2>
+        <p class="o-desc">Try-On. Fancam. Cosplay. Content so bold it won't last long.</p>
+        <div class="o-pills">
+          <span class="o-pill">Fancam</span>
+          <span class="o-pill">Try-On Haul</span>
+          <span class="o-pill">Cosplay</span>
+          <span class="o-pill">Animated</span>
+          <span class="o-pill">Hentai</span>
+          <span class="o-pill">Fresh Drops</span>
+        </div>
+        <div class="btns">
+          <button class="o-btn btn-spicy">🔥 Surrender to the East →</button>
+          <button class="o-btn btn-purple">✦ Enter Before It's Gone 🕐 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2 — red Asia Uncensored style (video 2) -->
+    <div class="design-panel" id="pv2">
+      <div class="vc"><span class="num" data-stat-total-videos>590</span><span class="lbl">Videos</span></div>
+      <div class="o-block">
+        <div class="o-badge">⛩ 18+ · Adults Only</div>
+        <div class="o-sub">Asian Archive · Free</div>
+        <h2 class="o-title">Asia. <span class="a">Uncensored.</span> Uncut.</h2>
+        <p class="o-desc">No edits. No limits. Real girls from the East — exactly how they want to be seen.</p>
+        <div class="o-pills">
+          <span class="o-pill">Fancam</span>
+          <span class="o-pill">Try-On Haul</span>
+          <span class="o-pill">Cosplay</span>
+          <span class="o-pill">Animated</span>
+          <span class="o-pill">Hentai</span>
+          <span class="o-pill">Fresh Drops</span>
+        </div>
+        <div class="btns">
+          <button class="o-btn btn-spicy">🔥 Surrender to the East →</button>
+          <button class="o-btn btn-purple">✦ Enter Before It's Gone 🕐 →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /col3 -->
+</div>
+
+<script>
+  const col3 = document.getElementById('col3');
+  const vid1 = document.getElementById('vid1');
+  const vid2 = document.getElementById('vid2');
+  const pv1  = document.getElementById('pv1');
+  const pv2  = document.getElementById('pv2');
+
+  let activeVid = vid1;
+  let isHovered = false;
+
+  /* ── video sequencing ── */
+  vid1.addEventListener('ended', () => {
+    vid1.style.display = 'none';
+    vid2.style.display = 'block';
+    activeVid = vid2;
+    pv1.classList.remove('active');
+    pv2.classList.add('active');
+    if (isHovered) vid2.play();
+  });
+
+  vid2.addEventListener('ended', () => {
+    vid2.style.display = 'none';
+    vid1.style.display = 'block';
+    vid1.currentTime = 0;
+    activeVid = vid1;
+    pv2.classList.remove('active');
+    pv1.classList.add('active');
+    if (isHovered) vid1.play();
+  });
+
+  /* ── hover play / pause ── */
+  col3.addEventListener('mouseenter', () => {
+    isHovered = true;
+    const others = [...document.querySelectorAll('video')]
+      .filter(v => v !== vid1 && v !== vid2);
+    const anyPlaying = others.some(v => !v.paused && !v.ended);
+    if (!anyPlaying) activeVid.play();
+  });
+
+  col3.addEventListener('mouseleave', () => {
+    isHovered = false;
+    activeVid.pause();
+  });
+
+  /* ── 50 / 50 random button on load ── */
+  (function pickButton() {
+    const showSpicy = Math.random() < 0.5;
+    document.querySelectorAll('.btn-spicy').forEach(b => {
+      b.style.display = showSpicy ? 'block' : 'none';
+    });
+    document.querySelectorAll('.btn-purple').forEach(b => {
+      b.style.display = showSpicy ? 'none' : 'block';
+    });
+  })();
+</script>
+  <script defer src="/assets/enter-now-widget.js?v=20260417-02"></script>
+<script src="/assets/token-system.js" defer></script>
+
+<!-- Alexia Twerk global scripts (Master Directive nro 1 · Bloque B) -->
+<script defer src="/assets/global-brand.js?v=2026-04-19"></script>
+<script defer src="/assets/global-counters.js?v=2026-04-19"></script>
+<script defer src="/assets/global-i18n.js?v=2026-04-19"></script>
+<script defer src="/assets/online-count-global.js?v=2026-04-18-b"></script>
+</body>
+</html>

@@ -1,0 +1,1288 @@
+/*!
+ * TWERKHUB · Page shell stylesheet (clean-room · 2026-04-20)
+ * --------------------------------------------------------------
+ * Authored from scratch. Zero CSS inherited from legacy Alexia Twerk
+ * Group code. Every selector under `.twerkhub-*` is NEW. Module-interface
+ * selectors (.vcard / .grid / .hotrank / .rk-* / .fomo-pill / .lock-overlay
+ * / .rank-badge / .embed-modal) retain their names because they are the
+ * DOM contract with:
+ *   · /assets/twerkhub-paywall.js
+ *   · /assets/twerkhub-playlist-renderer.js
+ *   · /assets/global-brand.js (injects matching styles at runtime)
+ * Renaming them would break those modules. Anti: usálos, no los modifiques.
+ * --------------------------------------------------------------
+ */
+
+/* ═══ design tokens ═══ */
+:root{
+  --twerkhub-bg:#05050a;
+  --twerkhub-bg-soft:#0a0a11;
+  --twerkhub-surface:#0e0e18;
+  --twerkhub-surface-2:#14141f;
+  --twerkhub-line:rgba(255,255,255,.08);
+  --twerkhub-line-2:rgba(255,255,255,.14);
+  --twerkhub-ink:#f5f5fb;
+  --twerkhub-ink-soft:#c7c7d3;
+  --twerkhub-ink-dim:#9a9aab;
+  --twerkhub-pink:#ff2d87;
+  --twerkhub-pink-soft:#ff6fa8;
+  --twerkhub-purple:#9d4edd;
+  --twerkhub-gold:#ffb454;
+  --twerkhub-green:#1ee08f;
+  --twerkhub-max:1220px;
+  --twerkhub-r:18px;
+  --twerkhub-r-lg:22px;
+  --twerkhub-ease:cubic-bezier(.2,1.2,.3,1);
+  --twerkhub-font-display:'Playfair Display',Georgia,serif;
+  --twerkhub-font-body:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --twerkhub-font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --twerkhub-shadow:0 24px 70px rgba(0,0,0,.45);
+  /* --tw-* aliases (2026-04-20-p22): the second :root block lower in the file
+   * was silently dropped by Chrome's CSS parser, leaving every sagrada-clean
+   * playlist with undefined --tw-bg / --tw-max / --tw-pink / etc. → white
+   * background, topbar stretched viewport-wide, gradient text invisible.
+   * Merging the tokens into this first :root so they actually resolve. */
+  --tw-bg:#05050a;
+  --tw-bg-soft:#0a0a11;
+  --tw-surface:#0e0e18;
+  --tw-line:rgba(255,255,255,.08);
+  --tw-line-2:rgba(255,255,255,.14);
+  --tw-ink:#f5f5fb;
+  --tw-ink-soft:#c7c7d3;
+  --tw-ink-dim:#9a9aab;
+  --tw-pink:#ff2d87;
+  --tw-pink-soft:#ff6fa8;
+  --tw-purple:#9d4edd;
+  --tw-gold:#ffb454;
+  --tw-green:#1ee08f;
+  --tw-max:1220px;
+  --tw-r:18px;
+  --tw-r-lg:22px;
+  --tw-ease:cubic-bezier(.2,1.2,.3,1);
+  --tw-font-display:'Playfair Display',Georgia,serif;
+  --tw-font-body:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --tw-font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --tw-shadow:0 24px 70px rgba(0,0,0,.45);
+}
+
+/* ═══ reset ═══ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body.twerkhub-page{
+  font-family:var(--twerkhub-font-body);
+  color:var(--twerkhub-ink);
+  background:var(--twerkhub-bg);
+  background:
+    radial-gradient(1100px 620px at 12% 8%,rgba(255,45,135,.14),transparent 58%),
+    radial-gradient(900px 580px at 88% 10%,rgba(157,78,221,.14),transparent 58%),
+    radial-gradient(700px 420px at 50% 110%,rgba(255,180,84,.08),transparent 60%),
+    linear-gradient(180deg,var(--twerkhub-bg),var(--twerkhub-bg-soft));
+  min-height:100vh;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:80px;
+}
+body.twerkhub-page a{color:inherit;text-decoration:none}
+
+/* ═══ topbar ═══ */
+.twerkhub-topbar{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:rgba(5,5,10,.72);
+  border-bottom:1px solid var(--twerkhub-line);
+}
+.twerkhub-topbar-inner{
+  max-width:var(--twerkhub-max);margin:0 auto;
+  padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px;
+}
+.twerkhub-brand{display:inline-flex;align-items:center;gap:10px}
+.twerkhub-logo{height:34px;width:auto;filter:drop-shadow(0 3px 10px rgba(255,45,135,.35))}
+.twerkhub-brand-sub{
+  font-family:var(--twerkhub-font-mono);font-size:9px;font-weight:700;
+  letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(255,111,168,.82);line-height:1;
+}
+.twerkhub-nav{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.twerkhub-nav a{
+  padding:9px 14px;border-radius:999px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--twerkhub-ink-soft);
+  transition:background .25s,color .25s,border-color .25s;
+  border:1px solid transparent;white-space:nowrap;
+}
+.twerkhub-nav a:hover{background:rgba(255,255,255,.05);color:#fff;border-color:var(--twerkhub-line)}
+.twerkhub-nav a.active{background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-purple));color:#fff}
+.twerkhub-avatar{
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid rgba(255,180,84,.65);
+  overflow:hidden;background:#0e0e18;flex-shrink:0;
+  box-shadow:0 6px 18px rgba(255,180,84,.25);padding:0;
+}
+.twerkhub-avatar img{width:100%;height:100%;object-fit:cover;object-position:center}
+@media (max-width:880px){.twerkhub-nav{display:none}}
+
+/* ═══ shared kicker ═══ */
+.twerkhub-kicker{
+  font-family:var(--twerkhub-font-mono);font-size:11px;font-weight:700;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--twerkhub-pink-soft);
+  display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;
+}
+.twerkhub-kicker::before{content:"";display:inline-block;width:26px;height:1px;background:var(--twerkhub-pink)}
+
+/* ═══ per-video hero ═══ */
+.twerkhub-hero{max-width:var(--twerkhub-max);margin:34px auto 20px;padding:0 22px}
+.twerkhub-hero h1{
+  font-family:var(--twerkhub-font-display);
+  font-size:clamp(30px,4.6vw,56px);font-weight:900;line-height:1.06;letter-spacing:-.02em;
+  margin-bottom:14px;
+}
+.twerkhub-hero h1 em{
+  font-style:italic;font-weight:800;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.twerkhub-hero p{color:var(--twerkhub-ink-soft);font-size:16px;line-height:1.7;max-width:820px;margin-bottom:14px}
+.twerkhub-hero-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.twerkhub-hero-stat{
+  display:inline-flex;align-items:center;gap:9px;padding:8px 14px;border-radius:999px;
+  background:rgba(255,255,255,.04);border:1px solid var(--twerkhub-line);
+  font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--twerkhub-ink-soft);
+}
+.twerkhub-hero-stat .twerkhub-dot{width:7px;height:7px;border-radius:50%;background:var(--twerkhub-green);box-shadow:0 0 10px var(--twerkhub-green)}
+.twerkhub-hero-stat.twerkhub-gold{border-color:rgba(255,180,84,.35);color:#ffd69a}
+.twerkhub-hero-stat.twerkhub-pink{border-color:rgba(255,45,135,.4);color:#ffbfd5}
+
+/* ═══ two-column layout (player + sticky ranking) ═══ */
+.twerkhub-layout{
+  max-width:var(--twerkhub-max);margin:20px auto 0;padding:0 22px;
+  display:grid;grid-template-columns:1fr 300px;gap:30px;
+}
+@media (max-width:1000px){.twerkhub-layout{grid-template-columns:1fr}}
+
+/* ═══ player ═══ */
+.twerkhub-player-shell{
+  border-radius:var(--twerkhub-r-lg);overflow:hidden;
+  border:1px solid var(--twerkhub-line);
+  background:#000;box-shadow:var(--twerkhub-shadow);
+}
+.twerkhub-player-embed{position:relative;aspect-ratio:16/9;width:100%;background:#000}
+.twerkhub-player-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.twerkhub-player-meta{
+  padding:16px 18px;border-top:1px solid var(--twerkhub-line);
+  background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));
+  display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.twerkhub-player-title{
+  font-family:var(--twerkhub-font-display);font-size:16px;font-weight:800;
+  letter-spacing:-.005em;color:#fff;line-height:1.25;
+}
+.twerkhub-player-sub{
+  font-family:var(--twerkhub-font-mono);font-size:10px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--twerkhub-ink-dim);margin-top:4px;
+}
+.twerkhub-cta{
+  display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:999px;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-purple));color:#fff;
+  font-family:var(--twerkhub-font-mono);font-size:10px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;
+  box-shadow:0 10px 24px rgba(255,45,135,.3);cursor:pointer;border:0;
+}
+.twerkhub-cta:hover{transform:translateY(-1px)}
+
+/* ═══ section head ═══ */
+.twerkhub-section-head{
+  display:flex;justify-content:space-between;align-items:baseline;
+  margin:28px 0 14px;gap:14px;flex-wrap:wrap;
+}
+.twerkhub-section-head h2{
+  font-family:var(--twerkhub-font-display);
+  font-size:clamp(22px,3vw,30px);font-weight:900;line-height:1.1;letter-spacing:-.01em;
+}
+.twerkhub-section-head h2 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.twerkhub-section-head .twerkhub-kicker{margin-bottom:0}
+
+/* ═══ grid (.vcard is module-contract) ═══ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.vcard{
+  position:relative;display:block;border-radius:var(--twerkhub-r);overflow:hidden;
+  border:1px solid var(--twerkhub-line);background:var(--twerkhub-surface);
+  transition:transform .4s var(--twerkhub-ease),border-color .3s,box-shadow .3s;
+  isolation:isolate;
+}
+.vcard:hover{transform:translateY(-4px);border-color:var(--twerkhub-pink-soft);box-shadow:0 18px 40px rgba(255,45,135,.2)}
+.vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+.vthumb img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease;will-change:transform}
+.vcard:hover .vthumb img{transform:scale(1.06)}
+.vscrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,transparent 55%,rgba(0,0,0,.78) 100%)}
+.vplay{
+  position:absolute;bottom:12px;right:12px;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,45,135,.92);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(255,45,135,.5);transition:transform .35s var(--twerkhub-ease);
+}
+.vcard:hover .vplay{transform:scale(1.12)}
+.vplay::before{content:"";width:0;height:0;border-left:10px solid #fff;border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:2px}
+
+/* ═══ hot ranking (module-contract .hotrank / .rk-*) ═══ */
+.hotrank{
+  position:sticky;top:96px;align-self:start;
+  border:1px solid var(--twerkhub-line);border-radius:var(--twerkhub-r-lg);
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+  padding:22px;box-shadow:var(--twerkhub-shadow);
+}
+.hotrank .rk-head{
+  font-family:var(--twerkhub-font-mono);font-size:10.5px;font-weight:700;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--twerkhub-pink-soft);
+  display:flex;align-items:center;gap:8px;margin-bottom:16px;
+}
+.hotrank .rk-head::before{content:"";display:inline-block;width:18px;height:1px;background:var(--twerkhub-pink)}
+.hotrank h3{
+  font-family:var(--twerkhub-font-display);font-size:22px;font-weight:800;line-height:1.08;margin-bottom:18px;
+}
+.hotrank h3 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.rk-list{display:flex;flex-direction:column;gap:10px}
+.rk-item{
+  display:grid;grid-template-columns:44px 1fr;gap:12px;padding:10px;border-radius:12px;
+  border:1px solid transparent;transition:background .25s,border-color .25s;align-items:center;
+}
+.rk-item:hover{background:rgba(255,255,255,.04);border-color:var(--twerkhub-line)}
+.rk-num{font-family:var(--twerkhub-font-display);font-size:20px;font-weight:900;line-height:1;text-align:center}
+.rk-copy{min-width:0}
+.rk-title{font-size:13px;font-weight:700;line-height:1.3;color:var(--twerkhub-ink)}
+.rk-sub{
+  font-family:var(--twerkhub-font-mono);font-size:9.5px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--twerkhub-ink-dim);margin-top:3px;
+}
+
+/* ═══ footer ═══ */
+.twerkhub-footer{
+  max-width:var(--twerkhub-max);margin:60px auto 0;padding:36px 22px;
+  border-top:1px solid var(--twerkhub-line);text-align:center;
+}
+.twerkhub-footer-slogan{
+  font-family:var(--twerkhub-font-display);font-size:20px;font-style:italic;font-weight:700;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;
+}
+.twerkhub-footer-credit{
+  font-family:var(--twerkhub-font-mono);font-size:10.5px;font-weight:700;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--twerkhub-ink-dim);
+}
+.twerkhub-footer-credit em{font-style:normal;color:var(--twerkhub-pink-soft);font-weight:900}
+
+/* ═══ embed modal (.embed-* is module-contract for related-card playback) ═══ */
+.embed-modal{
+  position:fixed;inset:0;z-index:9998;
+  background:rgba(3,3,8,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.embed-modal.open{display:flex}
+.embed-box{
+  width:min(1040px,100%);aspect-ratio:16/9;background:#000;
+  border:1px solid var(--twerkhub-line-2);border-radius:20px;overflow:hidden;
+  box-shadow:0 30px 100px rgba(0,0,0,.6);position:relative;
+}
+.embed-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.embed-close{
+  position:absolute;top:-52px;right:0;
+  border:1px solid var(--twerkhub-line-2);background:rgba(0,0,0,.6);color:#fff;
+  padding:10px 18px;border-radius:999px;
+  font-family:var(--twerkhub-font-mono);font-size:11px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;cursor:pointer;
+}
+.embed-close:hover{background:rgba(255,45,135,.25);border-color:var(--twerkhub-pink-soft)}
+
+/* ═══ home landing specifics ═══ */
+.twerkhub-hero-home{max-width:var(--twerkhub-max);margin:60px auto 28px;padding:0 22px;text-align:center}
+.twerkhub-hero-home h1{
+  font-family:var(--twerkhub-font-display);
+  font-size:clamp(42px,7vw,96px);font-weight:900;line-height:.98;letter-spacing:-.03em;
+  margin:14px 0 16px;
+}
+.twerkhub-hero-home h1 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.twerkhub-hero-home p{color:var(--twerkhub-ink-soft);font-size:18px;line-height:1.65;max-width:720px;margin:0 auto 24px}
+.twerkhub-hero-ctas{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.twerkhub-btn{
+  padding:14px 26px;border-radius:999px;
+  font-family:var(--twerkhub-font-mono);font-size:11px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;
+  transition:transform .25s var(--twerkhub-ease),box-shadow .25s;cursor:pointer;border:0;
+}
+.twerkhub-btn.twerkhub-btn-primary{
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-purple));color:#fff;
+  box-shadow:0 12px 32px rgba(255,45,135,.35);
+}
+.twerkhub-btn.twerkhub-btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 44px rgba(255,45,135,.5)}
+.twerkhub-btn.twerkhub-btn-ghost{background:transparent;border:1px solid var(--twerkhub-line-2);color:var(--twerkhub-ink-soft)}
+.twerkhub-btn.twerkhub-btn-ghost:hover{border-color:var(--twerkhub-pink-soft);color:#fff}
+.twerkhub-btn.twerkhub-btn-gold{
+  background:linear-gradient(135deg,var(--twerkhub-gold),var(--twerkhub-pink));color:#2a1500;
+  box-shadow:0 14px 32px rgba(255,180,84,.35);padding:15px 30px;font-size:12px;
+}
+.twerkhub-btn.twerkhub-btn-gold:hover{transform:translateY(-2px)}
+
+.twerkhub-fomo-strip{
+  display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;
+  margin:22px auto 10px;padding:0 22px;max-width:1100px;
+}
+.twerkhub-fomo-strip span{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;
+  background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,45,135,.35);color:#ffd8ea;
+  font-family:var(--twerkhub-font-mono);font-size:10.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+}
+.twerkhub-fomo-strip span.twerkhub-live{border-color:rgba(30,224,143,.45);color:#b9f6d4}
+.twerkhub-fomo-strip span.twerkhub-gold{border-color:rgba(255,180,84,.45);color:#ffe1b3}
+
+.twerkhub-playlists{max-width:var(--twerkhub-max);margin:50px auto 0;padding:0 22px}
+.twerkhub-playlists-head{text-align:center;margin-bottom:28px}
+.twerkhub-playlists-head h2{
+  font-family:var(--twerkhub-font-display);
+  font-size:clamp(30px,4.5vw,54px);font-weight:900;line-height:1.05;letter-spacing:-.02em;
+}
+.twerkhub-playlists-head h2 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.twerkhub-playlists-head p{color:var(--twerkhub-ink-soft);max-width:620px;margin:10px auto 0;font-size:15px;line-height:1.65}
+
+.twerkhub-pl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;margin-top:8px}
+.twerkhub-pl-card{
+  position:relative;display:block;border-radius:var(--twerkhub-r-lg);overflow:hidden;
+  border:1px solid var(--twerkhub-line);background:var(--twerkhub-surface);
+  transition:transform .4s var(--twerkhub-ease),border-color .3s,box-shadow .3s;isolation:isolate;
+}
+.twerkhub-pl-card:hover{transform:translateY(-6px);border-color:var(--twerkhub-pink-soft);box-shadow:0 26px 60px rgba(255,45,135,.25)}
+.twerkhub-pl-card.twerkhub-tint-pink:hover{box-shadow:0 26px 60px rgba(255,45,135,.3)}
+.twerkhub-pl-card.twerkhub-tint-purple:hover{box-shadow:0 26px 60px rgba(157,78,221,.3);border-color:#c18bff}
+.twerkhub-pl-card.twerkhub-tint-gold:hover{box-shadow:0 26px 60px rgba(255,180,84,.3);border-color:var(--twerkhub-gold)}
+.twerkhub-pl-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000}
+.twerkhub-pl-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease}
+.twerkhub-pl-card:hover .twerkhub-pl-thumb img{transform:scale(1.05)}
+.twerkhub-pl-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,transparent 50%,rgba(0,0,0,.8) 100%)}
+.twerkhub-pl-badge{
+  position:absolute;top:14px;left:14px;padding:6px 12px;border-radius:999px;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,45,135,.45);color:#ffd8ea;
+  font-family:var(--twerkhub-font-mono);font-size:10px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+}
+.twerkhub-pl-body{padding:20px 22px 22px;position:relative}
+.twerkhub-pl-body h3{
+  font-family:var(--twerkhub-font-display);font-size:26px;font-weight:900;line-height:1.1;
+  letter-spacing:-.02em;margin:4px 0 6px;
+}
+.twerkhub-pl-body p{color:var(--twerkhub-ink-soft);font-size:14px;line-height:1.55;margin-bottom:14px}
+.twerkhub-pl-cta{
+  font-family:var(--twerkhub-font-mono);font-size:10.5px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--twerkhub-pink-soft);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:color .25s,transform .25s var(--twerkhub-ease);
+}
+.twerkhub-pl-card:hover .twerkhub-pl-cta{color:var(--twerkhub-gold);transform:translateX(4px)}
+
+.twerkhub-subscribe-cta{
+  max-width:var(--twerkhub-max);margin:60px auto 0;padding:36px 26px;border-radius:24px;
+  background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(157,78,221,.18));
+  border:1px solid rgba(255,45,135,.35);text-align:center;box-shadow:0 24px 60px rgba(255,45,135,.18);
+}
+.twerkhub-subscribe-cta h2{
+  font-family:var(--twerkhub-font-display);
+  font-size:clamp(28px,4vw,40px);font-weight:900;line-height:1.1;margin-bottom:10px;
+}
+.twerkhub-subscribe-cta h2 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.twerkhub-subscribe-cta p{color:var(--twerkhub-ink-soft);max-width:560px;margin:0 auto 18px;font-size:15px;line-height:1.6}
+.twerkhub-subscribe-cta .twerkhub-sub{
+  font-family:var(--twerkhub-font-mono);font-size:10px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--twerkhub-ink-dim);margin-top:14px;
+}
+
+/* ═══ community ═══ */
+.twerkhub-comm-hero{max-width:var(--twerkhub-max);margin:48px auto 24px;padding:0 22px}
+.twerkhub-comm-hero h1{
+  font-family:var(--twerkhub-font-display);
+  font-size:clamp(36px,5.2vw,64px);font-weight:900;line-height:1.04;letter-spacing:-.02em;
+  margin:14px 0 12px;
+}
+.twerkhub-comm-hero h1 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.twerkhub-comm-hero p{color:var(--twerkhub-ink-soft);max-width:720px;font-size:16px;line-height:1.65}
+.twerkhub-comm-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.twerkhub-comm-stat{
+  display:inline-flex;align-items:center;gap:9px;padding:9px 16px;border-radius:999px;
+  background:rgba(255,255,255,.04);border:1px solid var(--twerkhub-line);
+  font-family:var(--twerkhub-font-mono);font-size:10.5px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--twerkhub-ink-soft);
+}
+.twerkhub-comm-stat .twerkhub-dot{width:7px;height:7px;border-radius:50%;background:var(--twerkhub-green);box-shadow:0 0 10px var(--twerkhub-green)}
+
+.twerkhub-threads{
+  max-width:var(--twerkhub-max);margin:28px auto 0;padding:0 22px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px;
+}
+.twerkhub-thread{
+  border:1px solid var(--twerkhub-line);border-radius:var(--twerkhub-r-lg);
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
+  padding:22px;transition:transform .3s var(--twerkhub-ease),border-color .25s,box-shadow .3s;
+}
+.twerkhub-thread:hover{transform:translateY(-4px);border-color:var(--twerkhub-pink-soft);box-shadow:0 18px 44px rgba(255,45,135,.18)}
+.twerkhub-thread-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.twerkhub-thread-tag{
+  display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;
+  background:rgba(255,45,135,.12);border:1px solid rgba(255,45,135,.35);color:#ffbfd5;
+  font-family:var(--twerkhub-font-mono);font-size:9.5px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;
+}
+.twerkhub-thread-user{
+  font-family:var(--twerkhub-font-mono);font-size:10.5px;font-weight:700;
+  letter-spacing:.16em;color:var(--twerkhub-ink-dim);
+}
+.twerkhub-thread h3{
+  font-family:var(--twerkhub-font-display);font-size:19px;font-weight:800;line-height:1.2;
+  margin:4px 0 8px;color:#fff;
+}
+.twerkhub-thread p{color:var(--twerkhub-ink-soft);font-size:14px;line-height:1.55;margin-bottom:14px}
+.twerkhub-thread-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--twerkhub-line)}
+.twerkhub-thread-foot span{
+  font-family:var(--twerkhub-font-mono);font-size:10px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--twerkhub-ink-dim);
+}
+.twerkhub-thread-reply{
+  padding:7px 14px;border-radius:999px;border:0;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-purple));color:#fff;
+  font-family:var(--twerkhub-font-mono);font-size:9.5px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;cursor:pointer;
+  transition:transform .25s var(--twerkhub-ease);
+}
+.twerkhub-thread-reply:hover{transform:translateY(-1px)}
+.twerkhub-comm-join{
+  max-width:920px;margin:60px auto 0;padding:32px 26px;border-radius:24px;
+  background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(157,78,221,.18));
+  border:1px solid rgba(255,45,135,.35);text-align:center;
+}
+.twerkhub-comm-join h2{
+  font-family:var(--twerkhub-font-display);
+  font-size:clamp(26px,3.6vw,36px);font-weight:900;line-height:1.1;margin-bottom:8px;
+}
+.twerkhub-comm-join h2 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--twerkhub-pink),var(--twerkhub-gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.twerkhub-comm-join p{color:var(--twerkhub-ink-soft);max-width:500px;margin:0 auto 18px;font-size:15px;line-height:1.6}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * PHASE 1 · Leaks page extensions (merged 2026-04-20)
+ * Covers: /playlist-cosplay-fancam-leaks.html
+ *         /playlist-try-on-haul-leaks.html
+ *         /playlist-latina-model-leaks.html
+ * All new selectors prefixed twerkhub-pl-* (non-conflicting with the
+ * home grid selectors above — home uses .twerkhub-pl-card/grid/thumb/
+ * scrim/badge/body/cta · leaks uses .twerkhub-pl-page/topbar/hero/
+ * layout/stats/intro/related/rc-*/footer/slogan/founded/grid-error/
+ * noscript-grid/skip/visually-hidden).
+ * ═══════════════════════════════════════════════════════════ */
+
+:root{
+  --tw-bg:#05050a; --tw-bg-soft:#0a0a11; --tw-surface:#0e0e18;
+  --tw-line:rgba(255,255,255,.08); --tw-line-2:rgba(255,255,255,.14);
+  --tw-ink:#f5f5fb; --tw-ink-soft:#c7c7d3; --tw-ink-dim:#9a9aab;
+  --tw-pink:#ff2d87; --tw-pink-soft:#ff6fa8; --tw-purple:#9d4edd;
+  --tw-gold:#ffb454; --tw-green:#1ee08f;
+  --tw-max:1220px; --tw-r:18px; --tw-r-lg:22px;
+  --tw-ease:cubic-bezier(.2,1.2,.3,1);
+  --tw-font-display:'Playfair Display',Georgia,serif;
+  --tw-font-body:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --tw-font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --tw-shadow:0 24px 70px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body.twerkhub-pl-page{
+  font-family:var(--tw-font-body); color:var(--tw-ink); background:var(--tw-bg);
+  background:
+    radial-gradient(1100px 620px at 12% 8%, rgba(255,45,135,.14), transparent 58%),
+    radial-gradient(900px 580px at 88% 10%, rgba(157,78,221,.14), transparent 58%),
+    radial-gradient(700px 420px at 50% 110%, rgba(255,180,84,.08), transparent 60%),
+    linear-gradient(180deg,var(--tw-bg),var(--tw-bg-soft));
+  min-height:100vh; line-height:1.55; -webkit-font-smoothing:antialiased; padding-bottom:80px;
+}
+body.twerkhub-pl-page a{color:inherit;text-decoration:none}
+.twerkhub-pl-visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ═══ TOPBAR ═══ */
+.twerkhub-pl-topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(5,5,10,.72);border-bottom:1px solid var(--tw-line)}
+.twerkhub-pl-topbar-inner{max-width:var(--tw-max);margin:0 auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.twerkhub-pl-tb-brand{display:inline-flex;align-items:center;gap:10px}
+.twerkhub-pl-tb-logo{height:34px;width:auto;filter:drop-shadow(0 3px 10px rgba(255,45,135,.35))}
+.twerkhub-pl-tb-brand-sub{font-family:var(--tw-font-mono);font-size:9px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,111,168,.82);line-height:1}
+.twerkhub-pl-tb-nav{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.twerkhub-pl-tb-nav a{padding:9px 14px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--tw-ink-soft);transition:background .25s,color .25s,border-color .25s;border:1px solid transparent;white-space:nowrap}
+.twerkhub-pl-tb-nav a:hover{background:rgba(255,255,255,.05);color:#fff;border-color:var(--tw-line)}
+.twerkhub-pl-tb-nav a.is-active{background:linear-gradient(135deg,var(--tw-pink),var(--tw-purple));color:#fff}
+@media (max-width:880px){.twerkhub-pl-tb-nav{display:none}}
+
+/* ═══ HERO ═══ */
+.twerkhub-pl-hero{max-width:var(--tw-max);margin:44px auto 28px;padding:0 22px}
+.twerkhub-pl-kicker{font-family:var(--tw-font-mono);font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--tw-pink-soft);display:inline-flex;align-items:center;gap:8px;margin-bottom:18px}
+.twerkhub-pl-kicker::before{content:"";display:inline-block;width:26px;height:1px;background:var(--tw-pink);vertical-align:middle}
+.twerkhub-pl-hero h1{font-family:var(--tw-font-display);font-size:clamp(40px,6vw,76px);font-weight:900;line-height:1.02;letter-spacing:-.02em;margin-bottom:20px}
+.twerkhub-pl-hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--tw-pink),var(--tw-gold));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+.twerkhub-pl-intro{color:var(--tw-ink-soft);font-size:17px;line-height:1.7;max-width:780px;margin-bottom:22px}
+.twerkhub-pl-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.twerkhub-pl-stat{display:inline-flex;align-items:center;gap:9px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--tw-line);font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--tw-ink-soft)}
+.twerkhub-pl-stat .twerkhub-pl-dot{width:7px;height:7px;border-radius:50%;background:var(--tw-green);box-shadow:0 0 10px var(--tw-green)}
+.twerkhub-pl-stat.twerkhub-pl-stat-gold{border-color:rgba(255,180,84,.35);color:#ffd69a}
+.twerkhub-pl-stat.twerkhub-pl-stat-pink{border-color:rgba(255,45,135,.4);color:#ffbfd5}
+
+/* ═══ LAYOUT ═══ */
+.twerkhub-pl-layout{max-width:var(--tw-max);margin:20px auto 0;padding:0 22px;display:grid;grid-template-columns:1fr 300px;gap:36px}
+@media (max-width:1000px){.twerkhub-pl-layout{grid-template-columns:1fr}}
+
+/* ═══ GRID — Capa A: contract with twerkhub-playlist-renderer.js / twerkhub-paywall.js ═══ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.vcard{position:relative;display:block;border-radius:var(--tw-r);overflow:hidden;border:1px solid var(--tw-line);background:var(--tw-surface);transition:transform .4s var(--tw-ease),border-color .3s,box-shadow .3s;isolation:isolate}
+.vcard:hover{transform:translateY(-5px);border-color:var(--tw-pink-soft);box-shadow:0 22px 50px rgba(255,45,135,.22)}
+.vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+.vthumb img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease;will-change:transform}
+.vcard:hover .vthumb img{transform:scale(1.08)}
+.vscrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,transparent 55%,rgba(0,0,0,.78) 100%)}
+.vplay{position:absolute;bottom:14px;right:14px;width:42px;height:42px;border-radius:50%;background:rgba(255,45,135,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(255,45,135,.5);transition:transform .35s var(--tw-ease);z-index:6}
+.vcard:hover .vplay{transform:scale(1.12)}
+.vplay::before{content:"";width:0;height:0;border-left:12px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px}
+.vmeta{padding:14px 14px 16px;position:relative;z-index:2}
+.vtitle{font-family:var(--tw-font-display);font-size:15px;font-weight:800;line-height:1.25;margin-bottom:4px;letter-spacing:-.005em;display:inline-block}
+.video-tagline{font-family:var(--tw-font-body);font-style:italic;color:var(--tw-ink-soft);font-size:13px;margin-left:4px}
+.video-duration{display:inline-block;margin-left:8px;font-family:var(--tw-font-mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--tw-ink-dim)}
+
+/* ═══ FOMO BANNER (renderer mounts .twk-playlist-fomo) ═══ */
+.twk-playlist-fomo{margin:0 0 18px;padding:14px 18px;border-radius:14px;border:1px solid rgba(255,180,84,.35);background:linear-gradient(135deg,rgba(255,45,135,.12),rgba(157,78,221,.08));box-shadow:0 10px 30px rgba(255,45,135,.12)}
+.twk-fomo-line{font-family:var(--tw-font-display);font-size:17px;font-weight:800;letter-spacing:-.005em;color:#fff;margin-bottom:4px}
+.twk-fomo-sub{font-family:var(--tw-font-mono);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ffd69a}
+.twk-fomo-sub strong{color:#1ee08f;font-weight:800}
+
+/* ═══ HOT RANKING SIDEBAR — Capa A: contract names ═══ */
+.hotrank{position:sticky;top:96px;align-self:start;border:1px solid var(--tw-line);border-radius:var(--tw-r-lg);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));padding:22px;box-shadow:var(--tw-shadow)}
+.hotrank .rk-head{font-family:var(--tw-font-mono);font-size:10.5px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--tw-pink-soft);display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.hotrank .rk-head::before{content:"";display:inline-block;width:18px;height:1px;background:var(--tw-pink)}
+.hotrank h2{font-family:var(--tw-font-display);font-size:22px;font-weight:800;line-height:1.08;margin-bottom:18px}
+.hotrank h2 em{font-style:italic;background:linear-gradient(135deg,var(--tw-pink),var(--tw-gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.rk-list{display:flex;flex-direction:column;gap:10px}
+.rk-item{display:grid;grid-template-columns:36px 1fr;gap:12px;padding:10px;border-radius:12px;border:1px solid transparent;transition:background .25s,border-color .25s;align-items:center;cursor:pointer}
+.rk-item:hover{background:rgba(255,255,255,.04);border-color:var(--tw-line)}
+.rk-num{font-family:var(--tw-font-display);font-size:16px;font-weight:900;line-height:1;padding:5px 9px;border-radius:999px;text-align:center;display:inline-block;letter-spacing:-.01em}
+.rk-num.gold{background:linear-gradient(135deg,#ffd98c,#ff9a3d);color:#2a1500}
+.rk-num.purple{background:linear-gradient(135deg,#c18bff,#7c3ae4);color:#fff}
+.rk-num.pink{background:linear-gradient(135deg,#ff9ec4,#ff2d87);color:#fff}
+.rk-num.monochrome{background:linear-gradient(135deg,#e3e3ec,#9b9bab);color:#0e0e18}
+.rk-copy{min-width:0}
+.rk-title{font-size:12.5px;font-weight:700;line-height:1.3;color:var(--tw-ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rk-sub{font-family:var(--tw-font-mono);font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--tw-ink-dim);margin-top:3px}
+
+/* ═══ RELATED PLAYLISTS ═══ */
+.twerkhub-pl-related{max-width:var(--tw-max);margin:56px auto 0;padding:0 22px}
+.twerkhub-pl-related h2{font-family:var(--tw-font-display);font-size:28px;font-weight:800;letter-spacing:-.01em;margin-bottom:18px}
+.twerkhub-pl-related h2 em{font-style:italic;background:linear-gradient(135deg,var(--tw-pink),var(--tw-gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.twerkhub-pl-related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.twerkhub-pl-related-card{display:block;padding:18px 20px;border-radius:var(--tw-r);border:1px solid var(--tw-line);background:rgba(255,255,255,.03);transition:border-color .25s,background .25s,transform .35s var(--tw-ease)}
+.twerkhub-pl-related-card:hover{border-color:var(--tw-pink-soft);background:rgba(255,45,135,.06);transform:translateY(-3px)}
+.twerkhub-pl-related-card .twerkhub-pl-rc-name{font-family:var(--tw-font-display);font-size:18px;font-weight:800;margin-bottom:4px;letter-spacing:-.005em;display:block}
+.twerkhub-pl-related-card .twerkhub-pl-rc-desc{font-family:var(--tw-font-mono);font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--tw-ink-dim);display:block}
+
+/* ═══ FOOTER ═══ */
+.twerkhub-pl-footer{max-width:var(--tw-max);margin:60px auto 0;padding:36px 22px;border-top:1px solid var(--tw-line);text-align:center}
+.twerkhub-pl-footer .twerkhub-pl-slogan{font-family:var(--tw-font-display);font-size:20px;font-style:italic;font-weight:700;background:linear-gradient(135deg,var(--tw-pink),var(--tw-gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px}
+.twerkhub-pl-footer .twerkhub-pl-founded{font-family:var(--tw-font-mono);font-size:10.5px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--tw-ink-dim)}
+.twerkhub-pl-footer .twerkhub-pl-founded em{font-style:normal;color:var(--tw-pink-soft);font-weight:900}
+
+/* ═══ EMBED MODAL — Capa A: contract name (renderer also mounts its own twk-embed-modal on demand) ═══ */
+.embed-modal{position:fixed;inset:0;z-index:9998;background:rgba(3,3,8,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
+.embed-modal.open{display:flex}
+.embed-box{width:min(1040px,100%);aspect-ratio:16/9;background:#000;border:1px solid var(--tw-line-2);border-radius:20px;overflow:hidden;box-shadow:0 30px 100px rgba(0,0,0,.6);position:relative}
+.embed-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.embed-close{position:absolute;top:-52px;right:0;border:1px solid var(--tw-line-2);background:rgba(0,0,0,.6);color:#fff;padding:10px 18px;border-radius:999px;font-family:var(--tw-font-mono);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
+.embed-close:hover{background:rgba(255,45,135,.25);border-color:var(--tw-pink-soft)}
+
+/* ═══ Error boundary + noscript fallback (bulletproof rules 9, 17) ═══ */
+.twerkhub-pl-grid-error{margin:18px 0;padding:22px 24px;border-radius:var(--tw-r);border:1px solid rgba(255,180,84,.4);background:linear-gradient(135deg,rgba(255,45,135,.08),rgba(157,78,221,.06));text-align:center}
+.twerkhub-pl-grid-error p{color:var(--tw-ink-soft);font-size:14px;margin-bottom:12px}
+.twerkhub-pl-grid-error button{padding:9px 20px;border-radius:999px;border:1px solid rgba(255,180,84,.6);background:rgba(0,0,0,.4);color:#fff;font-family:var(--tw-font-mono);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .25s,border-color .25s}
+.twerkhub-pl-grid-error button:hover{background:rgba(255,180,84,.2);border-color:var(--tw-gold)}
+.twerkhub-pl-noscript-grid{margin:18px 0;padding:22px 24px;border-radius:var(--tw-r);border:1px solid var(--tw-line);background:rgba(255,255,255,.02)}
+.twerkhub-pl-noscript-grid ul{margin:10px 0 10px 22px;color:var(--tw-ink-soft)}
+.twerkhub-pl-noscript-grid a{color:var(--tw-pink-soft);text-decoration:underline;text-decoration-color:rgba(255,111,168,.3);text-underline-offset:3px}
+.twerkhub-pl-noscript-grid a:hover{color:var(--tw-pink);text-decoration-color:var(--tw-pink)}
+
+/* ═══ Skip link full styles (extends critical CSS) ═══ */
+.twerkhub-pl-skip:hover{background:#ff1a7a}
+
+/* ═══ Print — hide interactive chrome ═══ */
+@media print{
+  .twerkhub-pl-topbar, .twerkhub-pl-skip, .embed-modal, .twerkhub-pl-grid-error{display:none!important}
+}
+
+/* ═══ Reduced motion — disable reveal/scale (rule 12 a11y) ═══ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .vcard:hover{transform:none!important}
+  .vcard:hover .vthumb img{transform:none!important}
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * SAGRADA RULES · clean card scope (body.twerkhub-pl-clean)
+ * Applied only to /playlist-cosplay-fancam-leaks.html for now.
+ * Rule 3: hide the FOMO banner
+ * Rule 4: cards show only number (green) + play (pink) + thumb
+ * Rule 6: simple hot ranking header
+ * Rule 8: never reveal paywall early
+ * ═══════════════════════════════════════════════════════════ */
+
+/* 3 — kill the full-width FOMO banner emitted by the renderer */
+body.twerkhub-pl-clean .twk-playlist-fomo{display:none!important}
+
+/* 4 — hide the decorative FOMO pill on each hot card */
+body.twerkhub-pl-clean .fomo-pill{display:none!important}
+
+/* 4 — strip shadows on hover (no 'shadow' on cards) */
+body.twerkhub-pl-clean .vcard{box-shadow:none!important;border-color:rgba(255,255,255,.06)!important}
+body.twerkhub-pl-clean .vcard:hover{box-shadow:none!important;border-color:rgba(30,224,143,.5)!important;transform:translateY(-3px)!important}
+
+/* 4 — suppress the rank-badge gradient and lock-overlay; we'll inject a single
+ *     green number via ::before using data-number on the <a class="vcard"> */
+body.twerkhub-pl-clean .vcard .rank-badge,
+body.twerkhub-pl-clean .vcard .lock-overlay{display:none!important}
+
+/* 4 — the green number chip (top-left of every card, both hot & gated) */
+body.twerkhub-pl-clean .vcard{position:relative}
+body.twerkhub-pl-clean .vcard::before{
+  content:attr(data-number);
+  position:absolute;
+  top:12px;
+  left:12px;
+  z-index:5;
+  padding:5px 11px;
+  border-radius:999px;
+  background:rgba(30,224,143,.16);
+  border:1px solid rgba(30,224,143,.65);
+  color:#1ee08f;
+  font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.08em;
+  line-height:1;
+  pointer-events:none;
+  box-shadow:none;
+}
+/* Hot cards on the renderer don't have data-number by default — the renderer
+ * sets it in buildHotCard(). If for any reason it's missing, fall back to the
+ * vrank-style "#01" text which lived in .rank-badge previously. */
+body.twerkhub-pl-clean .vcard:not([data-number])::before{content:"#—"}
+
+/* 4 — play button is the only other card chrome, pink (default already pink) */
+body.twerkhub-pl-clean .vplay{
+  background:#ff2d87!important;
+  box-shadow:0 6px 18px rgba(255,45,135,.4)!important;
+}
+
+/* 4 — card meta: drop the tagline (no info beyond number + play on the card
+ *     front). If the renderer still adds a tagline line, hide it. */
+body.twerkhub-pl-clean .vmeta .video-tagline,
+body.twerkhub-pl-clean .vmeta .video-duration{display:none!important}
+body.twerkhub-pl-clean .vmeta{padding:12px 14px;min-height:0}
+body.twerkhub-pl-clean .vmeta .vtitle{font-size:13px;opacity:.82}
+
+/* 6 — sidebar ranking: simple header only, hide the "rk-sub" paywall hint  */
+body.twerkhub-pl-clean .hotrank .rk-head{display:none!important}
+body.twerkhub-pl-clean .hotrank .rk-sub{display:none!important}
+body.twerkhub-pl-clean .twerkhub-pl-hotrank-h2{
+  font-family:var(--tw-font-display,'Playfair Display',Georgia,serif);
+  font-size:22px;
+  font-weight:800;
+  line-height:1.15;
+  color:#f5f5fb;
+  margin-bottom:14px;
+  letter-spacing:-.005em;
+}
+/* Sidebar rk-num — recolor the medal to the same clean green */
+body.twerkhub-pl-clean .hotrank .rk-num{
+  background:rgba(30,224,143,.16)!important;
+  border:1px solid rgba(30,224,143,.65)!important;
+  color:#1ee08f!important;
+  box-shadow:none!important;
+}
+
+/* 8 — hide any stray lock pills / "USD 9.99/mes" text injected by paywall */
+body.twerkhub-pl-clean .twk-lock-pill{display:none!important}
+
+/* 4/5/8 HARD FIX (2026-04-20-p20) — auth-patch.js injects class `twk-gated`
+ * on every vcard + a sibling stylesheet with `.twk-gated::before{inset:0;
+ * background:dark-gradient}`. Since every vcard has a single ::before
+ * pseudo, that rule MERGES with our sagrada `.vcard::before` (the green
+ * #NNN pill). Our rule wins conflicts by specificity but it doesn't
+ * declare right/bottom, so `inset:0` from twk-gated leaks in as
+ * `right:0; bottom:0` → stretches the pill edge-to-edge into a giant
+ * green oval. Also, twk-gated darkens the thumb via filter:saturate/
+ * brightness — violates sagrada rule 5 ("top 5 hot thumbnails visible,
+ * no lock, no blur") and rule 4 ("cards limpios"). Kill both here,
+ * inside the clean scope, without touching legacy JS. */
+body.twerkhub-pl-clean .vcard::before{
+  right:auto !important;
+  bottom:auto !important;
+  width:max-content !important;
+  height:max-content !important;
+  inset:auto !important;
+  top:12px !important;
+  left:12px !important;
+  background:rgba(30,224,143,.16) !important;
+  border:1px solid rgba(30,224,143,.65) !important;
+  border-radius:999px !important;
+  padding:5px 11px !important;
+  z-index:5 !important;
+}
+body.twerkhub-pl-clean .twk-gated .vthumb img,
+body.twerkhub-pl-clean .twk-gated .vthumb video,
+body.twerkhub-pl-clean .twk-gated .thumb img,
+body.twerkhub-pl-clean .twk-gated img.thumb,
+body.twerkhub-pl-clean .twk-gated:hover .vthumb img,
+body.twerkhub-pl-clean .twk-gated:hover .vthumb video{filter:none !important}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * HOME · Bio section (text-only placeholder · new video coming)
+ * Added 2026-04-20-p3 per sagrada rules rule 12.
+ * ═══════════════════════════════════════════════════════════ */
+.twerkhub-bio{max-width:var(--twerkhub-max,1220px);margin:0 auto;padding:44px 22px 12px}
+.twerkhub-bio-inner{max-width:820px;margin:0 auto}
+.twerkhub-bio-text h2{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:clamp(28px,4vw,44px);
+  font-weight:900;
+  line-height:1.08;
+  letter-spacing:-.015em;
+  margin:10px 0 18px;
+}
+.twerkhub-bio-text h2 em{
+  font-style:italic;
+  background:linear-gradient(135deg,#ff2d87,#ffb454);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  font-weight:800;
+}
+.twerkhub-bio-text p{
+  color:#c7c7d3;
+  font-size:16px;
+  line-height:1.7;
+  margin-bottom:14px;
+}
+.twerkhub-bio-text strong{color:#f5f5fb;font-weight:700}
+.twerkhub-bio-text em{font-style:italic;color:#ff6fa8}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * TTL 4K · disclaimer callout + muted intro line
+ * Added 2026-04-20-p4 for /playlist-ttl-4k-leaks.html.
+ * Scoped to .twerkhub-pl-disclaimer so no leakage to other pages.
+ * ═══════════════════════════════════════════════════════════ */
+.twerkhub-pl-disclaimer{
+  margin:0 0 22px;
+  padding:18px 20px;
+  border-radius:var(--tw-r,18px);
+  border:1px solid rgba(255,180,84,.35);
+  background:linear-gradient(135deg,rgba(255,180,84,.08),rgba(255,45,135,.04));
+}
+.twerkhub-pl-disclaimer-kicker{
+  font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:#ffd69a;
+  margin-bottom:8px;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.twerkhub-pl-disclaimer-kicker::before{
+  content:"";display:inline-block;width:18px;height:1px;background:#ffb454;
+}
+.twerkhub-pl-disclaimer p{
+  color:#c7c7d3;
+  font-size:13.5px;
+  line-height:1.65;
+}
+.twerkhub-pl-disclaimer p strong{color:#f5f5fb;font-weight:700}
+.twerkhub-pl-intro-muted{
+  font-size:14.5px!important;
+  color:#9a9aab!important;
+  margin-top:4px!important;
+}
+.twerkhub-pl-intro-muted em{color:#c7c7d3;font-style:italic}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * HOME · million-dollar layout (2026-04-20-p7)
+ * Covers: ticker · hero split · stack · bio+timeline · club ·
+ * coming-soon · tiers-compare · 4 tiers · farm-tokens · footer
+ * Added for body.twerkhub-home (home-only scope).
+ * ═══════════════════════════════════════════════════════════ */
+
+/* TICKER */
+.twerkhub-ticker{position:relative;background:linear-gradient(90deg,rgba(255,45,135,.14),rgba(157,78,221,.1),rgba(255,180,84,.12));border-bottom:1px solid rgba(255,255,255,.08);overflow:hidden;padding:10px 0}
+.twerkhub-ticker-track{display:inline-flex;gap:32px;white-space:nowrap;animation:tw-ticker 48s linear infinite;padding-left:100%;will-change:transform}
+.twerkhub-ticker-track span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ffd69a}
+@keyframes tw-ticker{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+/* HOME HERO · split left copy / right featured card */
+.twerkhub-home-hero{max-width:1320px;margin:40px auto 30px;padding:0 26px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:44px;align-items:start}
+@media(max-width:1000px){.twerkhub-home-hero{grid-template-columns:1fr}}
+.twerkhub-home-hero-copy h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(48px,6.2vw,84px);font-weight:900;line-height:1.02;letter-spacing:-.025em;margin:10px 0 16px;color:#fff}
+.twerkhub-home-hero-copy h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+.twerkhub-home-hero-sub{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#9a9aab;margin-bottom:22px}
+.twerkhub-home-hero-body{color:#c7c7d3;font-size:17px;line-height:1.7;max-width:620px;margin-bottom:26px}
+.twerkhub-home-hero-body strong,.twerkhub-home-hero-body b{color:#ff6fa8}
+.twerkhub-home-hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}
+.twerkhub-home-hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:640px}
+@media(max-width:520px){.twerkhub-home-hero-stats{grid-template-columns:repeat(2,1fr)}}
+.twerkhub-hh-stat{padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+.twerkhub-hh-stat strong{display:block;font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:900;color:#fff;line-height:1;margin-bottom:4px}
+.twerkhub-hh-stat span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#9a9aab}
+
+/* HERO featured card */
+.twerkhub-home-hero-media{position:relative;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,45,135,.12)}
+.twerkhub-hh-media-inner{position:relative;aspect-ratio:16/9;background:#000;border-radius:inherit;overflow:hidden}
+.twerkhub-hh-media-inner img{width:100%;height:100%;object-fit:cover;display:block}
+.twerkhub-hh-media-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 20%,rgba(0,0,0,.4) 60%,rgba(0,0,0,.92) 100%)}
+.twerkhub-hh-media-pills{position:absolute;top:16px;left:16px;display:flex;gap:8px;z-index:3}
+.twerkhub-hh-pill{padding:5px 12px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.twerkhub-hh-pill-pink{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;box-shadow:0 4px 14px rgba(255,45,135,.4)}
+.twerkhub-hh-pill-ghost{background:rgba(0,0,0,.55);color:#ffd69a;border:1px solid rgba(255,255,255,.18)}
+.twerkhub-hh-media-meta{position:absolute;left:18px;right:18px;bottom:18px;z-index:3}
+.twerkhub-hh-live{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,45,135,.22);border:1px solid rgba(255,45,135,.5);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#ffd8ea;margin-bottom:8px}
+.twerkhub-hh-media-meta h2{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:900;color:#fff;letter-spacing:-.01em}
+
+/* STACK · TWERKHUB 2.0 */
+.twerkhub-stack{max-width:1320px;margin:70px auto;padding:0 26px}
+.twerkhub-stack-head{text-align:center;margin-bottom:34px}
+.twerkhub-stack-head h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,4.6vw,58px);font-weight:900;line-height:1.1;letter-spacing:-.015em;color:#fff;margin-top:10px}
+.twerkhub-plus{color:#9d4edd;font-weight:800;margin:0 8px}
+.twerkhub-stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.twerkhub-stack-card{padding:22px 24px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);transition:transform .35s cubic-bezier(.2,1.2,.3,1),border-color .25s}
+.twerkhub-stack-card:hover{transform:translateY(-3px);border-color:rgba(255,45,135,.4)}
+.twerkhub-stack-card-accent{background:linear-gradient(135deg,rgba(255,180,84,.1),rgba(255,255,255,.02));border-color:rgba(255,180,84,.35)}
+.twerkhub-stack-card-accent2{background:linear-gradient(135deg,rgba(255,45,135,.1),rgba(255,255,255,.02));border-color:rgba(255,45,135,.35)}
+.twerkhub-stack-ico{font-size:22px;margin-bottom:10px}
+.twerkhub-stack-card h3{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;letter-spacing:-.005em}
+.twerkhub-stack-card-accent h3{color:#ffd69a}
+.twerkhub-stack-card-accent2 h3{color:#ff6fa8}
+.twerkhub-stack-card p{color:#c7c7d3;font-size:13.5px;line-height:1.6}
+.twerkhub-stack-foot{text-align:center;margin-top:26px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#9a9aab}
+
+/* BIO home + timeline */
+.twerkhub-bio-home{max-width:1220px;margin:70px auto;padding:0 26px}
+.twerkhub-bio-home h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,4.8vw,56px);font-weight:900;line-height:1.1;letter-spacing:-.015em;color:#fff;margin:14px 0 22px}
+.twerkhub-bio-home h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+.twerkhub-bio-home-text{max-width:680px}
+.twerkhub-bio-home-text p{color:#c7c7d3;font-size:16px;line-height:1.75;margin-bottom:16px}
+.twerkhub-bio-home-text strong{color:#fff;font-weight:700}
+.twerkhub-bio-home-text p:first-child strong:first-child{background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+.twerkhub-bio-flag{margin-top:18px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8}
+.twerkhub-timeline{margin-top:46px;padding-top:26px;border-top:1px solid rgba(255,255,255,.08)}
+.twerkhub-timeline-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#9a9aab;margin-bottom:20px}
+.twerkhub-timeline-grid{display:flex;gap:10px;align-items:stretch;overflow-x:auto;padding-bottom:4px}
+.twerkhub-tl-node{flex:1;min-width:220px;padding:18px 20px;border-radius:16px;background:linear-gradient(180deg,rgba(20,20,32,.9),rgba(10,10,20,.9));border:1px solid rgba(255,255,255,.08);position:relative}
+.twerkhub-tl-active{border-color:rgba(255,45,135,.6);box-shadow:0 10px 30px rgba(255,45,135,.18)}
+.twerkhub-tl-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);padding:4px 12px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#9d4edd);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#fff;box-shadow:0 6px 14px rgba(255,45,135,.4)}
+.twerkhub-tl-ico{font-size:20px;margin-bottom:6px}
+.twerkhub-tl-year{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:900;line-height:1;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px}
+.twerkhub-tl-label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#ffd69a;margin-bottom:8px}
+.twerkhub-tl-body{color:#c7c7d3;font-size:13px;line-height:1.55}
+.twerkhub-tl-body strong{color:#fff}
+.twerkhub-tl-arrow{display:flex;align-items:center;color:#6b6b7a;font-size:20px;padding:0 4px}
+.twerkhub-bio-ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+
+/* CLUB MEMBERS */
+.twerkhub-club{max-width:1320px;margin:70px auto;padding:0 26px}
+.twerkhub-club-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin:8px 0 6px}
+.twerkhub-club-head h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,4vw,44px);font-weight:900;line-height:1.1;letter-spacing:-.015em;color:#fff}
+.twerkhub-club-head h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#9d4edd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.twerkhub-club-sub{color:#c7c7d3;font-size:15px;line-height:1.65;margin-bottom:22px;max-width:780px}
+.twerkhub-club-sub strong{color:#fff}
+.twerkhub-club-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.twerkhub-club-card{position:relative;display:block;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.6);transition:transform .35s cubic-bezier(.2,1.2,.3,1),border-color .25s}
+.twerkhub-club-card:hover{transform:translateY(-4px);border-color:rgba(255,45,135,.45)}
+.twerkhub-club-pill{position:absolute;top:12px;left:12px;z-index:3;padding:5px 12px;border-radius:999px;background:linear-gradient(135deg,#ff6fa8,#9d4edd);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#fff;box-shadow:0 4px 10px rgba(255,45,135,.35)}
+.twerkhub-club-pill-new{background:linear-gradient(135deg,#ff2d87,#ff6fa8)}
+.twerkhub-club-thumb{aspect-ratio:3/4;background:#000;overflow:hidden;display:flex;align-items:flex-start;justify-content:center}
+.twerkhub-club-thumb img{width:100%;height:100%;object-fit:contain;object-position:center top;display:block}
+.twerkhub-club-thumb-empty{background:linear-gradient(135deg,#1a1f4d,#0a0d2a)}
+.twerkhub-club-thumb-green{background:linear-gradient(135deg,#0d3326,#0a1f1a)}
+.twerkhub-club-thumb-empty::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50%;aspect-ratio:1/1.2;border-radius:50% 50% 0 0;background:rgba(255,255,255,.05)}
+.twerkhub-club-meta{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 16px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.85) 60%)}
+.twerkhub-club-handle{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#ff6fa8;margin-bottom:3px}
+.twerkhub-club-meta h3{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;color:#fff;line-height:1.1;letter-spacing:-.01em;margin-bottom:4px}
+.twerkhub-club-sub2{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#9a9aab;margin-bottom:6px}
+.twerkhub-club-foot{font-size:11.5px;color:#ff6fa8;font-weight:600}
+.twerkhub-club-card-slot .twerkhub-club-foot{color:#ffd69a}
+
+/* COMING SOON · colombian */
+.twerkhub-coming{max-width:1320px;margin:70px auto;padding:0 26px}
+.twerkhub-coming-head{display:flex;justify-content:space-between;align-items:flex-start;gap:22px;flex-wrap:wrap;margin-bottom:24px}
+.twerkhub-coming-head h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,4.4vw,50px);font-weight:900;line-height:1.1;letter-spacing:-.015em;color:#fff;margin:4px 0 10px}
+.twerkhub-coming-head h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#9d4edd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.twerkhub-coming-head p{color:#c7c7d3;font-size:14.5px;line-height:1.7;max-width:620px}
+.twerkhub-coming-head p strong{color:#fff}
+.twerkhub-coming-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.twerkhub-coming-card{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);padding:14px;display:flex;flex-direction:column;justify-content:space-between}
+.twerkhub-coming-card-c1{background:linear-gradient(160deg,#3a0d1f,#1a0d2a 65%,#0a0a14)}
+.twerkhub-coming-card-c2{background:linear-gradient(160deg,#0d1f3a,#0d0f2a 65%,#0a0a14)}
+.twerkhub-coming-card-c3{background:linear-gradient(160deg,#0d3320,#0a2518 65%,#0a140d)}
+.twerkhub-coming-card-c4{background:linear-gradient(160deg,#3a1f0d,#2a1a0d 65%,#140d0a)}
+.twerkhub-coming-pill{align-self:flex-start;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,180,84,.4);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#ffd69a}
+.twerkhub-coming-arch{position:absolute;left:20%;right:20%;top:30%;bottom:30%;border-radius:50% 50% 0 0;background:rgba(255,255,255,.04);pointer-events:none}
+.twerkhub-coming-meta{position:relative;z-index:2}
+.twerkhub-coming-handle{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#ff6fa8;margin-bottom:3px}
+.twerkhub-coming-meta h3{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:4px}
+.twerkhub-coming-tag{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#9a9aab;margin-bottom:6px}
+.twerkhub-coming-drop{font-size:11px;color:#ff6fa8;font-weight:600}
+.twerkhub-coming-foot{text-align:center;margin-top:26px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#9a9aab}
+
+/* TIERS COMPARE · 2-column */
+.twerkhub-tiers-compare{max-width:1220px;margin:70px auto;padding:0 26px}
+.twerkhub-tiers-compare h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,4.4vw,52px);font-weight:900;line-height:1.1;letter-spacing:-.015em;color:#fff;margin:10px 0 10px}
+.twerkhub-tiers-compare h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#9d4edd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.twerkhub-tiers-compare-sub{color:#c7c7d3;font-size:14.5px;line-height:1.65;margin-bottom:26px;max-width:620px}
+.twerkhub-tiers-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:820px){.twerkhub-tiers-grid-2{grid-template-columns:1fr}}
+.twerkhub-tier-card{padding:26px 26px 22px;border-radius:20px;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.6);display:flex;flex-direction:column;gap:12px}
+.twerkhub-tier-card-featured{background:radial-gradient(900px 500px at 90% 0%,rgba(255,45,135,.14),transparent 60%),linear-gradient(180deg,rgba(60,10,40,.7),rgba(20,10,30,.8));border-color:rgba(255,45,135,.4);box-shadow:0 20px 60px rgba(255,45,135,.16)}
+.twerkhub-tier-card h3{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:900;color:#fff;letter-spacing:-.01em}
+.twerkhub-tier-price{display:flex;align-items:baseline;gap:6px}
+.twerkhub-tier-price strong{font-family:'Playfair Display',Georgia,serif;font-size:44px;font-weight:900;color:#fff;line-height:1}
+.twerkhub-tier-price span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#9a9aab}
+.twerkhub-tier-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;color:#c7c7d3;font-size:14px;line-height:1.5}
+.twerkhub-tier-list li{color:#c7c7d3}
+.twerkhub-tier-list li.twerkhub-tier-cross{color:#6b6b7a}
+.twerkhub-tier-card .twerkhub-btn{margin-top:6px;width:100%;justify-content:center;text-align:center}
+
+/* 4 TIERS grid */
+.twerkhub-tiers{max-width:1320px;margin:70px auto;padding:0 26px}
+.twerkhub-tiers-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;margin:10px 0 22px}
+.twerkhub-tiers-head h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,4.4vw,50px);font-weight:900;line-height:1.1;letter-spacing:-.015em;color:#fff}
+.twerkhub-tiers-head h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#9d4edd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.twerkhub-tiers-head p{color:#c7c7d3;font-size:14px;line-height:1.65;max-width:520px;margin-top:8px}
+.twerkhub-tiers-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:1000px){.twerkhub-tiers-grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.twerkhub-tiers-grid-4{grid-template-columns:1fr}}
+.twerkhub-tier4-card{position:relative;padding:22px 22px 18px;border-radius:18px;background:rgba(20,20,32,.6);border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;min-height:440px}
+.twerkhub-tier4-card-featured{background:radial-gradient(600px 400px at 50% 0%,rgba(255,45,135,.16),transparent 60%),linear-gradient(180deg,rgba(70,10,50,.7),rgba(20,10,30,.8));border-color:rgba(255,45,135,.6);box-shadow:0 20px 60px rgba(255,45,135,.2)}
+.twerkhub-tier4-card-vip{background:radial-gradient(600px 400px at 50% 0%,rgba(255,180,84,.14),transparent 60%),linear-gradient(180deg,rgba(60,40,10,.7),rgba(20,10,30,.8));border-color:rgba(255,180,84,.55);box-shadow:0 20px 60px rgba(255,180,84,.18)}
+.twerkhub-tier4-label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#9d4edd}
+.twerkhub-tier4-card h3{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:-.01em}
+.twerkhub-tier4-price{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:900;color:#fff;line-height:1}
+.twerkhub-tier4-price span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#9a9aab}
+.twerkhub-tier4-price-free{color:#6ee6ff}
+.twerkhub-tier4-alt{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#6ee6ff}
+.twerkhub-tier4-card .twerkhub-tier-list{font-size:13px}
+.twerkhub-tier4-ribbon{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:5px 14px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#9d4edd);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#fff;box-shadow:0 6px 14px rgba(255,45,135,.4);white-space:nowrap}
+.twerkhub-tier4-ribbon-gold{background:linear-gradient(135deg,#ffd98c,#ff9a3d);color:#2a1500}
+.twerkhub-tier4-card button.twerkhub-btn,.twerkhub-tier4-card a.twerkhub-btn{margin-top:auto;width:100%;justify-content:center}
+
+/* FARM TOKENS */
+.twerkhub-farm{max-width:1080px;margin:70px auto;padding:30px 26px;text-align:center;background:radial-gradient(900px 500px at 50% 0%,rgba(255,45,135,.14),transparent 60%);border-radius:26px;border:1px solid rgba(255,45,135,.25);position:relative}
+.twerkhub-farm-ribbon{display:inline-block;padding:6px 18px;border-radius:999px;background:linear-gradient(135deg,#ff6fa8,#ffb454);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#2a0a14;margin-bottom:16px}
+.twerkhub-farm h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,4.8vw,56px);font-weight:900;line-height:1.08;letter-spacing:-.02em;color:#fff;margin-bottom:14px}
+.twerkhub-farm h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+.twerkhub-farm p{color:#c7c7d3;font-size:15px;line-height:1.7;max-width:640px;margin:0 auto 20px}
+.twerkhub-farm-hot{color:#ffd98c}
+.twerkhub-farm-gold{color:#ffb454}
+.twerkhub-farm-countdown{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:18px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.12);margin-bottom:26px}
+.twerkhub-farm-cd{text-align:center}
+.twerkhub-farm-cd strong{display:block;font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:900;color:#ffd98c;line-height:1}
+.twerkhub-farm-cd span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#9a9aab}
+.twerkhub-farm-cd-sep{font-size:28px;color:#6b6b7a;align-self:center}
+.twerkhub-farm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+@media(max-width:720px){.twerkhub-farm-grid{grid-template-columns:1fr}}
+.twerkhub-farm-card{padding:22px 20px;border-radius:16px;border:1px solid rgba(255,255,255,.1);background:rgba(20,20,32,.6)}
+.twerkhub-farm-card-gold{border-color:rgba(255,180,84,.5);background:linear-gradient(180deg,rgba(60,40,10,.5),rgba(20,10,30,.7))}
+.twerkhub-farm-card-purple{border-color:rgba(157,78,221,.5);background:linear-gradient(180deg,rgba(45,20,80,.5),rgba(20,10,30,.7))}
+.twerkhub-farm-card-violet{border-color:rgba(180,120,255,.5);background:linear-gradient(180deg,rgba(50,30,90,.5),rgba(20,10,30,.7))}
+.twerkhub-farm-ico{font-size:28px;margin-bottom:8px}
+.twerkhub-farm-card strong{display:block;font-family:'Playfair Display',Georgia,serif;font-size:34px;font-weight:900;line-height:1;color:#ffd98c;margin-bottom:4px}
+.twerkhub-farm-card-purple strong,.twerkhub-farm-card-violet strong{color:#c18bff}
+.twerkhub-farm-card p{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ffd69a;margin:6px 0 10px}
+.twerkhub-farm-note{font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:400;letter-spacing:0;text-transform:none;color:#9a9aab;line-height:1.55}
+.twerkhub-farm-ctas{display:inline-flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.twerkhub-farm-foot{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#6b6b7a;margin-top:10px}
+
+/* FOOTER · home 4 columns */
+.twerkhub-footer-home{margin-top:90px;padding:50px 26px 36px;border-top:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(0,0,0,.4),rgba(0,0,0,.8))}
+.twerkhub-footer-grid{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:34px}
+@media(max-width:860px){.twerkhub-footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.twerkhub-footer-grid{grid-template-columns:1fr}}
+.twerkhub-footer-brand img{height:44px;width:auto;display:block;margin-bottom:10px;filter:drop-shadow(0 3px 10px rgba(255,45,135,.3))}
+.twerkhub-footer-brand-name{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:900;letter-spacing:-.01em;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px}
+.twerkhub-footer-brand p{color:#9a9aab;font-size:13.5px;line-height:1.65;margin-bottom:12px}
+.twerkhub-footer-flag{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#ffd69a}
+.twerkhub-footer-col ul{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.twerkhub-footer-col li a{color:#c7c7d3;font-size:14px;transition:color .2s}
+.twerkhub-footer-col li a:hover{color:#fff}
+.twerkhub-footer-bottom{max-width:1320px;margin:30px auto 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);text-align:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#6b6b7a}
+.twerkhub-footer-bottom em{font-style:normal;color:#ff6fa8;font-weight:900}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * HERO FEATURED VIDEO · YouTube iframe + unmute overlay
+ * Added 2026-04-20-p8. Silenced by default · hover desktop + tap
+ * mobile toggle unmute via YT postMessage.
+ * ═══════════════════════════════════════════════════════════ */
+.twerkhub-hh-iframe{
+  position:absolute;inset:0;width:100%;height:100%;border:0;
+  display:block;background:#000;pointer-events:none;
+}
+
+.twerkhub-hh-mute{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  z-index:4;padding:14px 26px;border-radius:999px;
+  background:linear-gradient(135deg,rgba(255,45,135,.92),rgba(157,78,221,.92));
+  border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+  box-shadow:0 14px 40px rgba(255,45,135,.45),inset 0 0 0 1px rgba(255,255,255,.1);
+  transition:transform .28s cubic-bezier(.2,1.2,.3,1),opacity .3s,background .25s;
+  -webkit-appearance:none;appearance:none;
+}
+.twerkhub-hh-mute:hover{transform:translate(-50%,-50%) scale(1.05)}
+.twerkhub-hh-mute.is-muted{
+  background:linear-gradient(135deg,rgba(255,45,135,.92),rgba(157,78,221,.92));
+}
+.twerkhub-hh-mute:not(.is-muted){
+  background:linear-gradient(135deg,rgba(30,224,143,.85),rgba(22,163,106,.88));
+  opacity:.85;
+}
+.twerkhub-home-hero-media:hover .twerkhub-hh-mute{opacity:.45}
+.twerkhub-hh-mute-ico{font-size:18px;line-height:1}
+.twerkhub-hh-mute-label{white-space:nowrap}
+@media (max-width:520px){
+  .twerkhub-hh-mute{padding:11px 20px;font-size:11px}
+  .twerkhub-hh-mute-ico{font-size:15px}
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * TWERK HUB LEAKS · theater layout (2026-04-20-p9)
+ * Mirrors the /playlist-corean design: main player on the left,
+ * hot ranking sidebar on the right, then a full-width thumbnail
+ * grid. Scoped to body.twerkhub-pl-theater so it doesn't leak
+ * to cosplay/try-on/ttl/latina Leaks pages.
+ * ═══════════════════════════════════════════════════════════ */
+body.twerkhub-pl-theater .twerkhub-pl-hero{max-width:1320px;padding:40px 26px 18px}
+body.twerkhub-pl-theater .twerkhub-pl-hero h1{font-size:clamp(40px,5.4vw,72px)}
+
+.twerkhub-pl-theater-main{
+  max-width:1320px;margin:16px auto 28px;padding:0 26px;
+  display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start;
+}
+@media(max-width:1000px){.twerkhub-pl-theater-main{grid-template-columns:1fr}}
+
+.twerkhub-pl-player-col{display:flex;flex-direction:column;gap:12px}
+.twerkhub-pl-player-wrap{
+  position:relative;aspect-ratio:16/9;background:#000;
+  border-radius:22px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,45,135,.12);
+}
+.twerkhub-pl-player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+
+.twerkhub-pl-player-meta{display:flex;flex-direction:column;gap:4px;padding:4px 2px}
+.twerkhub-pl-player-now{
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:10.5px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;
+  color:#ff6fa8;
+}
+#twerkhub-pl-now-title{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:22px;font-weight:800;line-height:1.15;letter-spacing:-.01em;color:#f5f5fb;
+}
+
+.twerkhub-pl-theater-rank{position:sticky;top:88px;align-self:start;padding:18px}
+.twerkhub-pl-theater-rank .rk-list{display:flex;flex-direction:column;gap:8px}
+.twerkhub-pl-theater-rank .rk-item{
+  display:grid;grid-template-columns:40px 100px;gap:10px;
+  padding:8px;border-radius:12px;border:1px solid transparent;
+  transition:background .25s,border-color .25s;align-items:center;cursor:pointer;
+}
+.twerkhub-pl-theater-rank .rk-item:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+.twerkhub-pl-theater-rank .rk-num{align-self:center;text-align:center}
+.twerkhub-pl-theater-rank .rk-thumb{
+  position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;
+  border:1px solid rgba(255,255,255,.08);
+}
+.twerkhub-pl-theater-rank .rk-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Full archive grid · below the split */
+.twerkhub-pl-grid-section{max-width:1320px;margin:50px auto 0;padding:0 26px}
+.twerkhub-pl-grid-head{margin-bottom:18px;max-width:720px}
+.twerkhub-pl-grid-head h2{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:clamp(28px,4vw,44px);font-weight:900;
+  line-height:1.1;letter-spacing:-.015em;color:#f5f5fb;margin:8px 0 8px;
+}
+.twerkhub-pl-grid-head h2 em{
+  font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.twerkhub-pl-grid-head p{color:#c7c7d3;font-size:14.5px;line-height:1.65}
+body.twerkhub-pl-theater .grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;
+}
+body.twerkhub-pl-theater .grid .vcard{
+  aspect-ratio:16/10;border-radius:12px;overflow:hidden;position:relative;
+  border:1px solid rgba(255,255,255,.06);cursor:pointer;
+}
+body.twerkhub-pl-theater .grid .vcard .vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+body.twerkhub-pl-theater .grid .vcard .vthumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 6s ease;will-change:transform}
+body.twerkhub-pl-theater .grid .vcard:hover .vthumb img{transform:scale(1.06)}
+
+/* CTA final */
+.twerkhub-pl-cta-final{
+  max-width:1320px;margin:60px auto 0;padding:40px 26px;
+  text-align:center;background:radial-gradient(900px 420px at 50% 0%,rgba(255,45,135,.14),transparent 65%);
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.twerkhub-pl-cta-final h2{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:clamp(28px,4.4vw,48px);font-weight:900;line-height:1.1;
+  letter-spacing:-.015em;color:#f5f5fb;margin-bottom:22px;
+}
+.twerkhub-pl-cta-final h2 em{
+  font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.twerkhub-pl-cta-row{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * Paywall banner suppression (rule 3 + rule 1)
+ * The paywall module (.twerkhub-paywall) injects a Spanish
+ * gated-hero banner above the grid. On every twerkhub-pl-clean
+ * page (all Leaks), hide it — the illusion of access requires
+ * no visible paywall hint before action.
+ * ═══════════════════════════════════════════════════════════ */
+body.twerkhub-pl-clean .twk-gated-hero{display:none!important}
+
+/* Theater page only: renderer's Spanish taglines never show
+ * because data-playlist is not set, but if the fallback selector
+ * (.hotrank .rk-list) somehow ran, hide Spanish remnants. */
+body.twerkhub-pl-theater .rk-title .video-tagline{display:none!important}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * More paywall FOMO suppression (rule 3 · rule 1)
+ * Kills the 3-pill "Drops semanales curados · 348 miembros ·
+ * USD 9.99 / mes" Spanish strip injected by paywall.js.
+ * ═══════════════════════════════════════════════════════════ */
+body.twerkhub-pl-clean .twk-fomo-strip{display:none!important}
+body.twerkhub-pl-clean .twk-fomo-pill{display:none!important}
+body.twerkhub-pl-clean .twk-fomo{display:none!important}
+
+/* Hide the legacy .twk-playlist-fomo helper banner for good measure */
+body.twerkhub-pl-clean .twk-playlist-fomo,
+body.twerkhub-pl-clean .twk-fomo-line,
+body.twerkhub-pl-clean .twk-fomo-sub{display:none!important}
+
+
+/* ═══════════════════════════════════════════════════════════
+ * HOME · Bio editorial layout (2026-04-20-p18)
+ * Two-column grid isolated in .twerkhub-bio-home-top:
+ *   left = kicker + H2 · right = paragraph + flag
+ * Section itself stays display:block so .twerkhub-timeline
+ * and .twerkhub-bio-ctas below flow normally (no grid row
+ * miscalculation colliding with the next section).
+ * Collapses to a single column below 900px.
+ * ═══════════════════════════════════════════════════════════ */
+body.twerkhub-home section.twerkhub-bio-home,
+body.twerkhub-home .twerkhub-bio-home{
+  display:block !important;
+  max-width:1220px !important;
+  margin:70px auto !important;
+  padding:0 26px !important;
+  box-sizing:border-box !important;
+}
+body.twerkhub-home .twerkhub-bio-home-top{
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+  column-gap:56px;
+  row-gap:18px;
+  align-items:start;
+}
+body.twerkhub-home .twerkhub-bio-home-head{min-width:0}
+body.twerkhub-home .twerkhub-bio-home-body{min-width:0;align-self:end}
+body.twerkhub-home .twerkhub-bio-home h2,
+body.twerkhub-home section.twerkhub-bio-home h2{
+  font-family:'Playfair Display',Georgia,serif !important;
+  font-size:clamp(32px,4.8vw,64px) !important;
+  font-weight:900 !important;
+  line-height:1.05 !important;
+  letter-spacing:-.015em !important;
+  color:#fff !important;
+  margin:10px 0 0 !important;
+  max-width:none !important;
+  white-space:normal !important;
+  word-break:normal !important;
+  overflow-wrap:break-word !important;
+  text-align:left !important;
+}
+body.twerkhub-home .twerkhub-bio-home h2 em{
+  font-style:italic !important;
+  background:linear-gradient(135deg,#ff2d87,#ffb454) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  color:transparent !important;
+  font-weight:800 !important;
+  display:inline !important;
+}
+body.twerkhub-home .twerkhub-bio-home h2 br{display:none}
+body.twerkhub-home .twerkhub-bio-home-body .twerkhub-bio-home-text{max-width:none}
+body.twerkhub-home .twerkhub-bio-home-body .twerkhub-bio-flag{margin-top:20px}
+@media (max-width:900px){
+  body.twerkhub-home .twerkhub-bio-home-top{
+    grid-template-columns:1fr;
+    row-gap:12px;
+  }
+  body.twerkhub-home .twerkhub-bio-home-body{align-self:start}
+  body.twerkhub-home .twerkhub-bio-home h2,
+  body.twerkhub-home section.twerkhub-bio-home h2{
+    font-size:clamp(28px,8vw,44px) !important;
+  }
+}
+/* Same discipline for Built-by-Anti heading in the legacy .twerkhub-bio
+ * block (different section, same risk). */
+body.twerkhub-home .twerkhub-bio h2,
+body.twerkhub-home .twerkhub-bio-text h2{
+  font-size:clamp(28px,4vw,48px) !important;
+  line-height:1.15 !important;
+  white-space:normal !important;
+  word-break:normal !important;
+  max-width:780px !important;
+}

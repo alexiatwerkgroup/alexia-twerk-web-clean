@@ -1,0 +1,149 @@
+<!-- VARIANTE B: PREMIUM GRID - Grid visual con números, thumbnails medianos -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variante B - Premium Grid</title>
+    <style>
+        .hot-ranking {
+            background: linear-gradient(135deg, #0f0f1f 0%, #1a1a2e 50%, #252840 100%);
+            border-radius: 25px;
+            border: 3px solid #ffb454;
+            padding: 3rem;
+            box-shadow: 0 30px 100px rgba(255, 180, 84, 0.4);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .hot-ranking::before {
+            content: '👑';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+        }
+
+        .hot-ranking h3 {
+            background: linear-gradient(135deg, #ffb454, #ffc470);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2.5rem;
+            font-size: 2rem;
+            font-weight: 900;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .ranking-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .ranking-item {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .ranking-number {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffb454, #ffc470);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.3rem;
+            color: #000;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(255, 180, 84, 0.4);
+        }
+
+        .ranking-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 15px;
+            border: 3px solid rgba(255, 180, 84, 0.3);
+            object-fit: cover;
+            transition: all 0.4s ease;
+            margin-bottom: 1rem;
+        }
+
+        .ranking-item:hover .ranking-thumbnail {
+            border-color: #ffb454;
+            box-shadow: 0 15px 40px rgba(255, 180, 84, 0.3);
+            transform: scale(1.02);
+        }
+
+        .ranking-title {
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffb454, #ffc470);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1rem;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+
+        .ranking-meta {
+            color: #d0a080;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .ranking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body style="background: #0a0a1f; padding: 40px 20px;">
+    <div style="max-width: 900px; margin: 0 auto;">
+        <div class="hot-ranking">
+            <h3>🔥 Hot Ranking This Week</h3>
+            <div class="ranking-grid">
+                <div class="ranking-item">
+                    <div class="ranking-number">1</div>
+                    <img src="https://i.ytimg.com/vi/qoho-dzADrc/maxresdefault.jpg" alt="" class="ranking-thumbnail">
+                    <div class="ranking-title">Premium CosForce03 Sweet Maid Day 2</div>
+                    <div class="ranking-meta">宮城良一・Ryoichi • 4:33</div>
+                </div>
+                <div class="ranking-item">
+                    <div class="ranking-number">2</div>
+                    <img src="https://i.ytimg.com/vi/wLWDZQmzPOY/maxresdefault.jpg" alt="" class="ranking-thumbnail">
+                    <div class="ranking-title">Hottest Busan Cosplay Fancam</div>
+                    <div class="ranking-meta">Bamp VIDEO 8K • 3:30</div>
+                </div>
+                <div class="ranking-item">
+                    <div class="ranking-number">3</div>
+                    <img src="https://i.ytimg.com/vi/XDkH0yaocJ8/maxresdefault.jpg" alt="" class="ranking-thumbnail">
+                    <div class="ranking-title">Exclusive Golaniyule Cosplay</div>
+                    <div class="ranking-meta">阿风而起 • 5:45</div>
+                </div>
+                <div class="ranking-item">
+                    <div class="ranking-number">4</div>
+                    <img src="https://i.ytimg.com/vi/hDFe_Lq-S1U/maxresdefault.jpg" alt="" class="ranking-thumbnail">
+                    <div class="ranking-title">Premium Osaka Auto Messe 2025</div>
+                    <div class="ranking-meta">Cheerleader Channel • 6:52</div>
+                </div>
+                <div class="ranking-item" style="grid-column: 1 / -1;">
+                    <div class="ranking-number">5</div>
+                    <img src="https://i.ytimg.com/vi/cJfDUDYaWYo/maxresdefault.jpg" alt="" class="ranking-thumbnail">
+                    <div class="ranking-title">Hottest Kadorin Hitomi Thailand - NIKKE Cosplay</div>
+                    <div class="ranking-meta">TZWG • 8:25</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
