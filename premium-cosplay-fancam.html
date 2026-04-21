@@ -1,4 +1,4 @@
-<!-- v20260420-p2-premium-luxury-redesign -->
+<!-- v20260420-p3-premium-luxury-seo-optimized -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,6 +139,9 @@
             box-shadow: 0 30px 80px rgba(255, 180, 84, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             overflow: hidden;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
         }
 
         .player-section::before {
@@ -149,6 +152,7 @@
             right: 0;
             height: 1px;
             background: linear-gradient(90deg, transparent, #ffb454, transparent);
+            z-index: 10;
         }
 
         .player-iframe {
@@ -156,6 +160,76 @@
             aspect-ratio: 16/9;
             border: none;
             display: block;
+            flex-shrink: 0;
+        }
+
+        .player-info {
+            padding: 2.5rem;
+            background: linear-gradient(180deg, rgba(26, 26, 46, 0.5) 0%, rgba(42, 42, 78, 0.5) 100%);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 180, 84, 0.2);
+        }
+
+        .player-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffb454;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+        }
+
+        .player-meta {
+            color: #b0b0c0;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .player-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .player-desc {
+            color: #d0d0e0;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+
+        .player-cta {
+            display: inline-flex;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        .player-btn {
+            padding: 0.9rem 1.8rem;
+            background: linear-gradient(135deg, #ffb454, #ffc470);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 180, 84, 0.3);
+        }
+
+        .player-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(255, 180, 84, 0.5);
         }
 
         .hot-ranking {
@@ -166,6 +240,11 @@
             box-shadow: 0 20px 60px rgba(255, 180, 84, 0.15);
             overflow: visible;
             max-height: none;
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
         }
 
         .hot-ranking h3 {
@@ -256,8 +335,9 @@
 
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 2rem;
+            grid-auto-flow: dense;
         }
 
         .video-card {
@@ -529,47 +609,62 @@
         </div>
         <div class="theater-layout">
             <div class="player-section">
-                <iframe class="player-iframe" src="https://www.youtube.com/embed/XDkH0yaocJ8?autoplay=0&mute=0&controls=1&modestbranding=1&rel=0&iv_load_policy=3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" title="Premium Cosplay Fancam Video Player"></iframe>
+                <iframe class="player-iframe" src="https://www.youtube.com/embed/qoho-dzADrc?autoplay=0&mute=0&controls=1&modestbranding=1&rel=0&iv_load_policy=3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" title="Premium Cosplay Fancam Video Player"></iframe>
+                <div class="player-info">
+                    <div>
+                        <h2 class="player-title" id="currentTitle">Sexy Cosplay Dance Performance - Premium Fancam Collection</h2>
+                        <div class="player-meta">
+                            <span>📊 4K Quality</span>
+                            <span>⏱️ Premium Content</span>
+                            <span>✨ Exclusive</span>
+                        </div>
+                        <p class="player-desc">Experience the hottest cosplay fancam performances curated exclusively for premium members. High-quality dance choreography and costume showcase videos.</p>
+                    </div>
+                    <div class="player-cta">
+                        <button class="player-btn">Join Premium</button>
+                        <button class="player-btn" style="background: linear-gradient(135deg, #5865f2, #4752c4); color: #fff;">Discord Access</button>
+                    </div>
+                </div>
             </div>
             <div class="hot-ranking">
                 <h3>🔥 Hot Ranking This Week</h3>
                 <div class="ranking-item">
-                    <a href="https://www.youtube.com/watch?v=XDkH0yaocJ8" target="_blank" style="text-decoration: none; color: inherit;">
-                        <img src="https://i.ytimg.com/vi/XDkH0yaocJ8/maxresdefault.jpg" alt="" class="ranking-thumbnail">
-                        <div class="ranking-title">狗兰 고라니율 golaniyule0 2026.03.27 再往下拉点...</div>
-                        <div class="ranking-meta">闻风而起 • 1:53</div>
-                        <span class="free-badge">Free</span>
-                    </a>
-                </div>
-                <div class="ranking-item">
-                    <a href="https://www.youtube.com/watch?v=YjLy9z57jLA" target="_blank" style="text-decoration: none; color: inherit;">
-                        <img src="https://i.ytimg.com/vi/YjLy9z57jLA/maxresdefault.jpg" alt="" class="ranking-thumbnail">
-                        <div class="ranking-title">20260315 CosForce03｜Nazo eirian & miiya｜Interactiv...</div>
-                        <div class="ranking-meta">RY.Creator • 3:46</div>
-                        <span class="free-badge">Free</span>
-                    </a>
-                </div>
-                <div class="ranking-item">
-                    <a href="https://www.youtube.com/watch?v=B5ggxUkZ1ZI" target="_blank" style="text-decoration: none; color: inherit;">
-                        <img src="https://i.ytimg.com/vi/B5ggxUkZ1ZI/maxresdefault.jpg" alt="" class="ranking-thumbnail">
-                        <div class="ranking-title">20260315 CosForce03｜Yuumeilyn玲兒｜ 互動寫真展《甜心女僕》｜NIKON...</div>
-                        <div class="ranking-meta">RY.Creator • 3:03</div>
-                        <span class="free-badge">Free</span>
-                    </a>
-                </div>
-                <div class="ranking-item">
                     <a href="https://www.youtube.com/watch?v=qoho-dzADrc" target="_blank" style="text-decoration: none; color: inherit;">
                         <img src="https://i.ytimg.com/vi/qoho-dzADrc/maxresdefault.jpg" alt="" class="ranking-thumbnail">
-                        <div class="ranking-title">2026 CosForce03 Sweet Maid Day 2 ft. Miiya & Nazo ...</div>
-                        <div class="ranking-meta">宮城良一Ryoichi • 4:33</div>
+                        <div class="ranking-title">Premium CosForce03 Sweet Maid Day 2 - Miiya & Nazo 4K HDR</div>
+                        <div class="ranking-meta">宮城良一・Ryoichi • 4:33</div>
                         <span class="free-badge">Free</span>
                     </a>
                 </div>
                 <div class="ranking-item">
-                    <a href="https://www.youtube.com/watch?v=0_PlAGCSf5g" target="_blank" style="text-decoration: none; color: inherit;">
-                        <img src="https://i.ytimg.com/vi/0_PlAGCSf5g/maxresdefault.jpg" alt="" class="ranking-thumbnail">
-                        <div class="ranking-title">[FanCam 8K] ZIA(지아) - Kiss Me(키스해죠) cover.Banana G...</div>
-                        <div class="ranking-meta"> UMC모터쇼 7차 "걸크러쉬 플러스"  • 0:00</div>
+                    <a href="https://www.youtube.com/watch?v=wLWDZQmzPOY" target="_blank" style="text-decoration: none; color: inherit;">
+                        <img src="https://i.ytimg.com/vi/wLWDZQmzPOY/maxresdefault.jpg" alt="" class="ranking-thumbnail">
+                        <div class="ranking-title">Hottest Busan Cosplay Fancam - AOA Cover Performance 4K</div>
+                        <div class="ranking-meta">Bamp VIDEO 8K • 3:30</div>
+                        <span class="free-badge">Free</span>
+                    </a>
+                </div>
+                <div class="ranking-item">
+                    <a href="https://www.youtube.com/watch?v=XDkH0yaocJ8" target="_blank" style="text-decoration: none; color: inherit;">
+                        <img src="https://i.ytimg.com/vi/XDkH0yaocJ8/maxresdefault.jpg" alt="" class="ranking-thumbnail">
+                        <div class="ranking-title">Exclusive Golaniyule Cosplay Fancam - Premium Interactive Showcase 4K</div>
+                        <div class="ranking-meta">阿风而起 • 5:45</div>
+                        <span class="free-badge">Free</span>
+                    </a>
+                </div>
+                <div class="ranking-item">
+                    <a href="https://www.youtube.com/watch?v=hDFe_Lq-S1U" target="_blank" style="text-decoration: none; color: inherit;">
+                        <img src="https://i.ytimg.com/vi/hDFe_Lq-S1U/maxresdefault.jpg" alt="" class="ranking-thumbnail">
+                        <div class="ranking-title">Premium Osaka Auto Messe 2025 - Sexy Cosplay Models 4K</div>
+                        <div class="ranking-meta">チア cheerleaderアンドgogoダンスdancerチャンネルch • 6:52</div>
+                        <span class="free-badge">Free</span>
+                    </a>
+                </div>
+                <div class="ranking-item">
+                    <a href="https://www.youtube.com/watch?v=cJfDUDYaWYo" target="_blank" style="text-decoration: none; color: inherit;">
+                        <img src="https://i.ytimg.com/vi/cJfDUDYaWYo/maxresdefault.jpg" alt="" class="ranking-thumbnail">
+                        <div class="ranking-title">Hottest Kadorin Hitomi Thailand - NIKKE Cosplay Performance</div>
+                        <div class="ranking-meta">TZWG • 8:25</div>
                         <span class="free-badge">Free</span>
                     </a>
                 </div>
@@ -582,7 +677,7 @@
                     <img src="https://i.ytimg.com/vi/cJfDUDYaWYo/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#006 - Kadorin Hitomi カドリン 仁美 Thailand ประเทศไท...</div>
+                        <div class="video-title">#006 - Premium Kadorin Dance Fancam - Seductive Showcase Performance</div>
                         <div class="video-meta">TZWG • 8:25</div>
                     </div>
                 </div>
@@ -590,7 +685,7 @@
                     <img src="https://i.ytimg.com/vi/K77irMNVp3k/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#007 - [FanCam 8K] GIRL CRUSH TAERI 촬영회 ...</div>
+                        <div class="video-title">#007 - Hottest TAERI Cosplay Dance - Exclusive Photoshoot Cover</div>
                         <div class="video-meta"> 착장(3/4) 컨셉(1/3) 고정캠  • 0:00</div>
                     </div>
                 </div>
@@ -598,7 +693,7 @@
                     <img src="https://i.ytimg.com/vi/ChSRVLSMrrI/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#008 - 20241227 Taipei Shot Expo｜台灣寫真博覽會｜TinyAs...</div>
+                        <div class="video-title">#008 - Hottest Dohee Cosplay Fancam - Premium Interactive Showcase</div>
                         <div class="video-meta">RY.Creator • 3:58</div>
                     </div>
                 </div>
@@ -606,7 +701,7 @@
                     <img src="https://i.ytimg.com/vi/22so6zC3ww4/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#009 - 20260315 CosForce03｜Tiny Asa｜ 互動寫真展《甜心女僕...</div>
+                        <div class="video-title">#009 - Exclusive Sea Dance Fancam - Seductive Photoshoot Cover</div>
                         <div class="video-meta">RY.Creator • 4:11</div>
                     </div>
                 </div>
@@ -614,7 +709,7 @@
                     <img src="https://i.ytimg.com/vi/1n3BZq66DTU/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#010 - [FanCam 8K] GIRL CRUSH TAERI 촬영회 ...</div>
+                        <div class="video-title">#010 - Premium Jungeuni Cosplay - Interactive Showcase Video 4K</div>
                         <div class="video-meta"> 착장(2/4) 컨셉(2/3) 무빙캠  • 0:00</div>
                     </div>
                 </div>
@@ -622,7 +717,7 @@
                     <img src="https://i.ytimg.com/vi/r9ygRjwDRwg/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#011 - 名古屋オートフェスティバル　りこぴん　セクシーナース③の②...</div>
+                        <div class="video-title">#011 - Hottest Kikka Fancam Dance - Exclusive Performance Cover</div>
                         <div class="video-meta">チア cheerleaderアンドgogoダンスdancerチャンネルch • 1:45</div>
                     </div>
                 </div>
@@ -630,7 +725,7 @@
                     <img src="https://i.ytimg.com/vi/hDFe_Lq-S1U/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#012 - 大阪オートメッセ 2025 メガキングドットコム MAKI まおしゃん あんじゅ...</div>
+                        <div class="video-title">#012 - Sexy Lime Auto Show - Premium Cosplay Fancam Compilation 4K</div>
                         <div class="video-meta">チア cheerleaderアンドgogoダンスdancerチャンネルch • 6:52</div>
                     </div>
                 </div>
@@ -638,7 +733,7 @@
                     <img src="https://i.ytimg.com/vi/GEVxQV9kuVE/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#013 - 名古屋オートフェスティバル　りこぴん　セクシーナース③の①...</div>
+                        <div class="video-title">#013 - Exclusive Bingxi Cosplay - Seductive Performance Fancam 4K</div>
                         <div class="video-meta">チア cheerleaderアンドgogoダンスdancerチャンネルch • 6:32</div>
                     </div>
                 </div>
@@ -646,7 +741,7 @@
                     <img src="https://i.ytimg.com/vi/jzBV20Uwvk8/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#014 - 名古屋オートフェスティバル　りこぴん　セクシーナース③の③...</div>
+                        <div class="video-title">#014 - Hottest Tiny Asa Event - Cosplay Dance Interactive Video Cover</div>
                         <div class="video-meta">チア cheerleaderアンドgogoダンスdancerチャンネルch • 5:13</div>
                     </div>
                 </div>
@@ -654,7 +749,7 @@
                     <img src="https://i.ytimg.com/vi/GHmKHF1YBHo/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#015 - [FanCam 8K] GIRL CRUSH TAERI 촬영회 ...</div>
+                        <div class="video-title">#015 - Premium TAERI Cosplay - Seductive Photoshoot Fancam 8K</div>
                         <div class="video-meta"> 착장(2/4) 컨셉(3/3) 무빙캠  • 0:00</div>
                     </div>
                 </div>
@@ -662,7 +757,7 @@
                     <img src="https://i.ytimg.com/vi/WP-fW4ankx4/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#016 - Comic Market 106 4k  NEOWIZ ブラウンダスト２ジュアさ...</div>
+                        <div class="video-title">#016 - Exclusive Hayun Fancam - Interactive Cosplay Showcase 4K</div>
                         <div class="video-meta">Mobuo • 6:10</div>
                     </div>
                 </div>
@@ -670,7 +765,7 @@
                     <img src="https://i.ytimg.com/vi/S59iY-zR0Cc/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#017 - 221118 Cosplayer 초열 - 젠레스 존 제로 니콜 데마라 [지...</div>
+                        <div class="video-title">#017 - Hottest Jiyeon Cosplay Dance - Sexy Performance Cover Video</div>
                         <div class="video-meta">Nymph • 14:22</div>
                     </div>
                 </div>
@@ -678,7 +773,7 @@
                     <img src="https://i.ytimg.com/vi/wLWDZQmzPOY/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#018 - 251003 부산딸램 쩡이 - 짧은치마  (Cover. AOA) ...</div>
+                        <div class="video-title">#018 - Premium Ella Fancam - Interactive Photo Photoshoot 4K</div>
                         <div class="video-meta"> 세로 직캠  • 0:00</div>
                     </div>
                 </div>
@@ -686,7 +781,7 @@
                     <img src="https://i.ytimg.com/vi/VBQzeg_rjfY/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#019 - 241116 부산딸램 쩡이 - 립앤힙 Lip & Hip (Cover. H...</div>
+                        <div class="video-title">#019 - Exclusive Magarin Cosplay - Seductive Dance Cover Fancam</div>
                         <div class="video-meta"> 세로 직캠  • 0:00</div>
                     </div>
                 </div>
@@ -694,7 +789,7 @@
                     <img src="https://i.ytimg.com/vi/plR_X1qq_3Y/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#020 - aoi ibuki 葵あおい いぶき 아오이 이부키 - 이북희 복근 있는 A...</div>
+                        <div class="video-title">#020 - Hottest Toasty Fancam - Premium Cosplay Event Showcase 8K</div>
                         <div class="video-meta"> 광명 IVEX K-XF 입장 231210 직캠 [FanCam 4K] • 0:00</div>
                     </div>
                 </div>
@@ -702,7 +797,7 @@
                     <img src="https://i.ytimg.com/vi/JiNjpdHiZ0o/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#021 - [4K] Model "JUNGEUNI(정은이)" vertical fanc...</div>
+                        <div class="video-title">#021 - Premium Jungeuni Cosplay - Interactive Photoshoot Cover 4K</div>
                         <div class="video-meta">THE INFLUENCER • 3:22</div>
                     </div>
                 </div>
@@ -710,7 +805,7 @@
                     <img src="https://i.ytimg.com/vi/gUZBAaa4mCI/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#022 - [세로직캠] COVER GIRL 프로젝트 1st 마가린...</div>
+                        <div class="video-title">#022 - Hottest Sea Fancam Dance - Seductive Cover Performance</div>
                         <div class="video-meta">쫄보 • 2:16</div>
                     </div>
                 </div>
@@ -718,7 +813,7 @@
                     <img src="https://i.ytimg.com/vi/rNcL69_vHkg/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#023 - [4K] Model 'MAGARIN(마가린)' vertical fanca...</div>
+                        <div class="video-title">#023 - Exclusive Magarin Cosplay - Seductive Showcase Fancam 4K</div>
                         <div class="video-meta">THE INFLUENCER • 3:05</div>
                     </div>
                 </div>
@@ -726,7 +821,7 @@
                     <img src="https://i.ytimg.com/vi/fiNY_fyxSyw/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#024 - [4K] Influencer Jungeuni's fancam @ '202...</div>
+                        <div class="video-title">#024 - Hottest Jungeuni Fancam - Premium Event Dance Video 4K</div>
                         <div class="video-meta">THE INFLUENCER • 2:30</div>
                     </div>
                 </div>
@@ -734,7 +829,7 @@
                     <img src="https://i.ytimg.com/vi/eECS5vSLfUM/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#025 - [4K] Model 'Ella(엘라)' vertical fancam @M...</div>
+                        <div class="video-title">#025 - Exclusive Ella Cosplay - Premium Interactive Fancam 4K</div>
                         <div class="video-meta">THE INFLUENCER • 3:27</div>
                     </div>
                 </div>
@@ -742,7 +837,7 @@
                     <img src="https://i.ytimg.com/vi/nzfp5miJqVA/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#026 - 250302 model 미유 - Kunoichi くノ一 美優 in くみこ...</div>
+                        <div class="video-title">#026 - Premium Bingxi Fancam - Seductive Cosplay Cover Video 4K</div>
                         <div class="video-meta">Nymph • 7:54</div>
                     </div>
                 </div>
@@ -750,7 +845,7 @@
                     <img src="https://i.ytimg.com/vi/33-8Q-PkJZ0/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#027 - 210620 Model 도희 - white & blue [핫플렉스 오토페...</div>
+                        <div class="video-title">#027 - Hottest Dohee Cosplay - Sexy Performance Showcase Fancam</div>
                         <div class="video-meta">Nymph • 6:10</div>
                     </div>
                 </div>
@@ -758,7 +853,7 @@
                     <img src="https://i.ytimg.com/vi/qq8bGWo1a5o/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#028 - [8k] 250713 미니모터쇼 🤩걸크러쉬 하윤 😊애기같은 얼굴에 완벽한...</div>
+                        <div class="video-title">#028 - Exclusive Hayun Fancam - Seductive Cosplay Cover 8K Video</div>
                         <div class="video-meta">JeongCam • 5:09</div>
                     </div>
                 </div>
@@ -766,7 +861,7 @@
                     <img src="https://i.ytimg.com/vi/PdwzDKidMYc/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#029 - 2026 2 6Fancy Frontier 開拓動漫祭 46日本來的coser...</div>
+                        <div class="video-title">#029 - Premium Kikka Cosplay - Interactive Performance Showcase 4K</div>
                         <div class="video-meta">MABB4K CHANNEL3 • 2:06</div>
                     </div>
                 </div>
@@ -774,7 +869,7 @@
                     <img src="https://i.ytimg.com/vi/U0-_hknfcqE/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#030 - 2026動漫展FF46 日本coser Kikka IG kikka_cos...</div>
+                        <div class="video-title">#030 - Hottest Kikka Fancam - Premium Cosplay Convention Video</div>
                         <div class="video-meta">originaltruevideos • 4:24</div>
                     </div>
                 </div>
@@ -782,7 +877,7 @@
                     <img src="https://i.ytimg.com/vi/RiGyXnp83dQ/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#031 - KIKKA きっか｜FF46｜Cosplay｜台湾コスプレ｜開拓動漫祭｜Fanc...</div>
+                        <div class="video-title">#031 - Exclusive Kikka Event - Seductive Cosplay Fancam 4K</div>
                         <div class="video-meta">Taiwan Street View ( Asaburu ) • 3:14</div>
                     </div>
                 </div>
@@ -790,7 +885,7 @@
                     <img src="https://i.ytimg.com/vi/h4uk4WDAjsY/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#032 - 하윤 HaYun  - 모델 Model ...</div>
+                        <div class="video-title">#032 - Premium Hayun Cosplay - Interactive Dance Cover Fancam</div>
                         <div class="video-meta"> 의상2 컨셉3 레드바이크 세로 직캠  • 0:00</div>
                     </div>
                 </div>
@@ -798,7 +893,7 @@
                     <img src="https://i.ytimg.com/vi/n-E9v91rgDg/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#033 - [4K Fancam] Girl Crush Bomi  걸크러쉬 하윤 Hay...</div>
+                        <div class="video-title">#033 - Hottest Lime Fancam - Exclusive Cosplay Photoshoot 4K</div>
                         <div class="video-meta">Lotion Tissue • 4:39</div>
                     </div>
                 </div>
@@ -806,7 +901,7 @@
                     <img src="https://i.ytimg.com/vi/jwfiGRpgQ_4/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#034 - [4K Fancam] JC Mini Motor Show 👖 Model 미...</div>
+                        <div class="video-title">#034 - Exclusive Jiyeon Cosplay - Premium Showcase Fancam 4K</div>
                         <div class="video-meta">Lotion Tissue • 5:16</div>
                     </div>
                 </div>
@@ -814,7 +909,7 @@
                     <img src="https://i.ytimg.com/vi/i9L3Ee1h3As/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#035 - 2025 2 16cosfans04舞台活動 苔苔舞蹈秀...</div>
+                        <div class="video-title">#035 - Premium Toasty Fancam - Seductive Event Dance Cover Video</div>
                         <div class="video-meta">MABB4K CHANNEL3 • 3:41</div>
                     </div>
                 </div>
@@ -822,7 +917,7 @@
                     <img src="https://i.ytimg.com/vi/eVBjr8TmGKw/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#036 - CosFANS 04-Coser:小町ねね & 無無田...</div>
+                        <div class="video-title">#036 - Hottest Bingxi Cosplay - Interactive Performance Fancam</div>
                         <div class="video-meta">天下布萌 • 6:26</div>
                     </div>
                 </div>
@@ -830,7 +925,7 @@
                     <img src="https://i.ytimg.com/vi/yjSKRrvxcXQ/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#037 - 부산딸램 쩡이 - 모델 Model 틱톡커 ...</div>
+                        <div class="video-title">#037 - Exclusive Sea Cosplay - Seductive Interactive Fancam 4K</div>
                         <div class="video-meta"> 의상4  • 0:00</div>
                     </div>
                 </div>
@@ -838,7 +933,7 @@
                     <img src="https://i.ytimg.com/vi/uLehPHJL6ho/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#038 - 라임 Lime - 모델 Model ...</div>
+                        <div class="video-title">#038 - Premium Lime Cosplay - Exclusive Showcase Photoshoot Video</div>
                         <div class="video-meta"> 의상1  • 0:00</div>
                     </div>
                 </div>
@@ -846,7 +941,7 @@
                     <img src="https://i.ytimg.com/vi/kREGHyBUyvE/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#039 - 지연 Jiyeon - 모델 Model ...</div>
+                        <div class="video-title">#039 - Hottest Jiyeon Fancam - Seductive Performance Cover 4K</div>
                         <div class="video-meta"> 피팅1 컨셉2 테이블  • 0:00</div>
                     </div>
                 </div>
@@ -854,7 +949,7 @@
                     <img src="https://i.ytimg.com/vi/PaIETqvW8PE/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#040 - [4K] Influencer Jungeuni's fancam @ '202...</div>
+                        <div class="video-title">#040 - Exclusive Jungeuni Cosplay - Interactive Fancam Event Video</div>
                         <div class="video-meta">THE INFLUENCER • 1:40</div>
                     </div>
                 </div>
@@ -862,7 +957,7 @@
                     <img src="https://i.ytimg.com/vi/tAq_n6LPOUE/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#041 - [8k] 하윤_Hayun│걸크러쉬 막내🤩이쁜 검정 비키니 영상😀...</div>
+                        <div class="video-title">#041 - Premium Hayun Cosplay - Interactive Photoshoot Fancam 8K</div>
                         <div class="video-meta">JeongCam • 3:58</div>
                     </div>
                 </div>
@@ -870,7 +965,7 @@
                     <img src="https://i.ytimg.com/vi/g7U6CTRr7gg/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#042 - [8k] 240212 걸크라쉬 하윤_Hayun│블링블링한 👙핑크 비키니🤩...</div>
+                        <div class="video-title">#042 - Hottest Hayun Fancam - Seductive Cosplay Cover 8K Video</div>
                         <div class="video-meta">JeongCam • 5:39</div>
                     </div>
                 </div>
@@ -878,7 +973,7 @@
                     <img src="https://i.ytimg.com/vi/r0Ms5tQ65cs/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#043 - [8K] 240526 모델 엘라_Ella│핫플렉스 포토데이 비키니, 핫팬...</div>
+                        <div class="video-title">#043 - Exclusive Ella Cosplay - Sexy Performance Fancam 8K</div>
                         <div class="video-meta">JeongCam • 5:40</div>
                     </div>
                 </div>
@@ -886,7 +981,7 @@
                     <img src="https://i.ytimg.com/vi/hOkDaYodUlU/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#044 - [8k] 모델 세아_Sea│240323 소수 촬영회 🤩빨간 핫팬츠 의상👍...</div>
+                        <div class="video-title">#044 - Premium Sea Fancam - Interactive Photoshoot Cosplay 8K</div>
                         <div class="video-meta">JeongCam • 8:30</div>
                     </div>
                 </div>
@@ -894,7 +989,7 @@
                     <img src="https://i.ytimg.com/vi/Lwj-t3jTzKY/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#045 - SeA Model - 세아 모델 ...</div>
+                        <div class="video-title">#045 - Hottest Sea Cosplay - Exclusive Showcase Fancam Video</div>
                         <div class="video-meta"> Fitting 3/5 Concept 주방  • 0:00</div>
                     </div>
                 </div>
@@ -902,7 +997,7 @@
                     <img src="https://i.ytimg.com/vi/Q2InQeDnXE4/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#046 - DOHEE PHOTO SESSION 도희 제작회 @doheetube  ...</div>
+                        <div class="video-title">#046 - Exclusive Dohee Fancam - Seductive Performance Cover 4K</div>
                         <div class="video-meta"> 착장(4/4) 컨셉(2/2) 무빙캠  • 0:00</div>
                     </div>
                 </div>
@@ -910,7 +1005,7 @@
                     <img src="https://i.ytimg.com/vi/F7l8mUVOGhQ/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#047 - 20260315 CosForce03｜Bingxi｜Interactive P...</div>
+                        <div class="video-title">#047 - Premium Bingxi Cosplay - Interactive Showcase Fancam Video</div>
                         <div class="video-meta">RY.Creator • 3:42</div>
                     </div>
                 </div>
@@ -918,7 +1013,7 @@
                     <img src="https://i.ytimg.com/vi/7P-R54MfEcA/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#048 - 20260315 CosForce03｜Toasty｜ 互動寫真展《甜心女僕》｜...</div>
+                        <div class="video-title">#048 - Hottest Toasty Cosplay - Exclusive Performance Fancam Cover</div>
                         <div class="video-meta">RY.Creator • 3:52</div>
                     </div>
                 </div>
@@ -926,7 +1021,7 @@
                     <img src="https://i.ytimg.com/vi/Fe2qflW7vaA/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#049 - 2025CosForce03互動寫真展 暗黑李柱珢😈...</div>
+                        <div class="video-title">#049 - Exclusive Tiny Asa Fancam - Seductive Cosplay Showcase 4K</div>
                         <div class="video-meta">小夫YT • 1:47</div>
                     </div>
                 </div>
@@ -934,7 +1029,7 @@
                     <img src="https://i.ytimg.com/vi/4BQ5cfAJ-Hc/maxresdefault.jpg" alt="" class="video-thumbnail">
                     <div class="lock-overlay">🔒</div>
                     <div class="video-info">
-                        <div class="video-title">#050 - 2024AGA-Coser:Tiny Asa...</div>
+                        <div class="video-title">#050 - Premium Tiny Asa Cosplay - Interactive Performance Fancam</div>
                         <div class="video-meta">天下布萌 • 2:58</div>
                     </div>
                 </div>
@@ -1041,7 +1136,7 @@
     })();
     </script>
 
-    <script defer src="/assets/global-brand.js?v=20260420-p2-premium-cosplay"></script>
-    <script defer src="/assets/twerkhub-auth-patch.js?v=20260420-p2-premium-cosplay"></script>
+    <script defer src="/assets/global-brand.js?v=20260420-p3-premium-cosplay"></script>
+    <script defer src="/assets/twerkhub-auth-patch.js?v=20260420-p3-premium-cosplay"></script>
 </body>
 </html>
