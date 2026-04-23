@@ -1,0 +1,120 @@
+/**
+ * WhatsApp Share Button Styles
+ * Floating share button for videos
+ */
+
+/* Share Button Base Styles */
+.whatsapp-share-btn {
+  /* Layout */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  
+  /* Position & Size */
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  height: auto;
+  min-width: auto;
+  
+  /* Appearance */
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  
+  /* Interaction */
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  
+  /* Accessibility */
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+/* Hover State */
+.whatsapp-share-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #20BA61 0%, #0E8E77 100%);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Active/Pressed State */
+.whatsapp-share-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.4);
+}
+
+/* Focus State (for keyboard navigation) */
+.whatsapp-share-btn:focus-visible {
+  outline: 2px solid #25D366;
+  outline-offset: 2px;
+}
+
+/* Disabled State */
+.whatsapp-share-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Floating Position Variant */
+.whatsapp-share-btn--floating {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 20;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Show floating button on parent hover */
+.video-container:hover .whatsapp-share-btn--floating,
+.playlist-card:hover .whatsapp-share-btn--floating,
+.video-card:hover .whatsapp-share-btn--floating {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .whatsapp-share-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  .whatsapp-share-btn--floating {
+    bottom: 8px;
+    right: 8px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .whatsapp-share-btn {
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+  }
+  
+  .whatsapp-share-btn:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .whatsapp-share-btn,
+  .whatsapp-share-btn--floating {
+    transition: none;
+  }
+  
+  .whatsapp-share-btn:hover:not(:disabled) {
+    transform: none;
+  }
+}
