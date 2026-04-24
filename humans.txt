@@ -1,0 +1,46 @@
+# ════════════════════════════════════════════════════════════════════
+#  humans.txt · the people behind the platform
+#  Alexia Twerk Group · Twerkhub
+#  https://alexiatwerkgroup.com/
+# ════════════════════════════════════════════════════════════════════
+
+/* TEAM */
+
+Founder & Firestarter: Anti
+Contact:               anti [at] alexiatwerkgroup.com
+Location:              Argentina
+
+Face of the platform:  Alexia Twerk
+Established:           2018
+
+Creator roster:        Private — Discord for details.
+                       https://discord.gg/WWn8ZgQMjn
+
+/* PLATFORM */
+
+Name:           Twerkhub (alexiatwerkgroup.com)
+Type:           Private creator subscription platform
+Content:        Curated 4K twerk / dance / creator archive
+Tiers:          Basic · Medium · Premium · VIP Top
+Token economy:  Earn tokens by exploring, watching, referring.
+                10,000 tokens unlock VIP Top for 30 days.
+Age gate:       18+ · 18 U.S.C. §2257 compliant
+
+/* SITE */
+
+Built with:     Static HTML/CSS/JS · Cloudflare Pages
+Performance:    Service Worker v1.0.4 (stale-while-revalidate)
+Privacy:        Email-only registration · no password · no tracking beyond GA
+Languages:      EN · ES · RU (Google Translate embedded)
+Accessibility:  skip-to-content · focus-visible · prefers-reduced-motion
+
+/* SOCIAL */
+
+X:              https://x.com/alexiatwerkofic
+YouTube:        https://www.youtube.com/@alexiatwerkoficial
+OnlyFans:       https://onlyfans.com/alexiatwerkoficial
+Discord:        https://discord.gg/WWn8ZgQMjn
+
+/* LAST UPDATED */
+
+2026-04-24 · If you know, you know.

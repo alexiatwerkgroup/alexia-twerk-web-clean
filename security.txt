@@ -1,0 +1,8 @@
+# Security contact for Twerkhub / Alexia Twerk Group
+# See https://securitytxt.org/
+Contact: mailto:security@alexiatwerkgroup.com
+Contact: https://discord.gg/WWn8ZgQMjn
+Expires: 2027-04-24T00:00:00Z
+Preferred-Languages: en, es
+Canonical: https://alexiatwerkgroup.com/.well-known/security.txt
+Policy: https://alexiatwerkgroup.com/privacy.html
