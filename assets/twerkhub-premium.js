@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · PREMIUM INTERACTIONS ═══
- * v20260424-p2 · + viewed-video tracker + paywall killswitch on /playlist
+ * v20260424-p5 · + eager-load playlist thumbnails (fixes Ctrl+Shift+R bug)
  *
  * Three responsibilities:
  *   1. Scroll-reveal: fade in `[data-twk-reveal]` + staggered grids as they
@@ -164,6 +164,40 @@
     }, true);
   }
 
+  // ── 6.5 · Eager-load playlist thumbnails ────────────────────────────
+  // The `loading="lazy"` attribute on .vthumb img was causing YouTube thumbs
+  // to render as empty shimmer until the user did a hard refresh — the
+  // browser's lazy-load observer wasn't always triggering after SW cache
+  // rewrites. Force-eager them on first paint so the visible grid populates
+  // instantly. Keeps the shimmer placeholder for the brief fetch window.
+  function initEagerPlaylistThumbs(){
+    if (!/^\/playlist(\/|$)/.test(location.pathname)) return;
+    function promote(){
+      document.querySelectorAll('.vthumb img, .rk-thumb img, .twerkhub-pl-card-thumb img').forEach(function(img){
+        if (img.dataset.twkEager === '1') return;
+        img.dataset.twkEager = '1';
+        // Remove lazy so the browser fetches NOW, and set high priority so
+        // the main playlist grid beats other late assets.
+        try {
+          img.removeAttribute('loading');
+          img.setAttribute('fetchpriority', 'high');
+          img.setAttribute('decoding', 'async');
+          // Re-assign src to kick off the fetch on some browsers that cache
+          // the "lazy pending" state in the image object.
+          var src = img.getAttribute('src');
+          if (src && !img.complete) {
+            img.src = '';
+            img.src = src;
+          }
+        } catch(_){}
+      });
+    }
+    promote();
+    // Catch images added by client-side rendering later.
+    setTimeout(promote, 400);
+    setTimeout(promote, 1500);
+  }
+
   // ── 7 · Paywall killswitch on /playlist ─────────────────────────────
   // The user explicitly wants the listing itself to be free. We remove any
   // TwerkhubPaywall.open invocation and hide the modal if it sneaks in.
@@ -197,6 +231,7 @@
     try { injectSkipLink(); } catch(e){ console.warn('[twerkhub-premium] skipLink failed', e); }
     try { initViewedTracker(); } catch(e){ console.warn('[twerkhub-premium] viewed failed', e); }
     try { initPaywallKillOnPlaylist(); } catch(e){ console.warn('[twerkhub-premium] paywall-kill failed', e); }
+    try { initEagerPlaylistThumbs(); } catch(e){ console.warn('[twerkhub-premium] eager-thumbs failed', e); }
     console.info('[twerkhub-premium] ready');
   }
 

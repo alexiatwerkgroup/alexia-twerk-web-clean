@@ -30,7 +30,11 @@
   var ASSET_BASE = '/assets/';
   var VER = { tokens:'20260424-p11', topbar:'20260424-p7', locale:'20260424-p5',
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p4',
-              page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p3' };
+              page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p3',
+              tokens_css:'20260424-p1' };
+  // premium.js + premium.css share the same 'premium' version key; bumped to
+  // p5 for the eager-thumbs fix.
+  VER.premium = '20260424-p5';
 
   // ── 1 · Remove legacy nav markup ─────────────────────────────────────
   // The platform accumulated three generations of topbars over the years.
@@ -92,6 +96,7 @@
     ensureCss(ASSET_BASE + 'twerkhub-tokens.css?v=' + VER.tokens);
     ensureCss(ASSET_BASE + 'twerkhub-polish.css?v=' + VER.polish);
     ensureCss(ASSET_BASE + 'twerkhub-premium.css?v=' + VER.premium);
+    ensureCss(ASSET_BASE + 'twerkhub-design-tokens.css?v=' + VER.tokens_css);
     // Google Fonts — only if the site didn't already preconnect.
     if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
       var pre1 = document.createElement('link');
