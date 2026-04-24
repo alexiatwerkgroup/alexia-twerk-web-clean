@@ -921,10 +921,14 @@ body.twerkhub-pl-clean .twk-gated:hover .vthumb video{filter:none !important}
 .twerkhub-bio-flag{margin-top:18px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8}
 .twerkhub-timeline{margin-top:46px;padding-top:26px;border-top:1px solid rgba(255,255,255,.08)}
 .twerkhub-timeline-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#9a9aab;margin-bottom:20px}
-.twerkhub-timeline-grid{display:flex;gap:10px;align-items:stretch;overflow-x:auto;padding-bottom:4px}
-.twerkhub-tl-node{flex:1;min-width:220px;padding:18px 20px;border-radius:16px;background:linear-gradient(180deg,rgba(20,20,32,.9),rgba(10,10,20,.9));border:1px solid rgba(255,255,255,.08);position:relative}
+/* Timeline row: equal-sized nodes, always room for the overflowing pill.
+   Extra padding-top reserves space so the "LIVE NOW" badge never gets
+   clipped by the scroll container. align-items:stretch + equal flex basis
+   guarantees all nodes share the same height regardless of their text. */
+.twerkhub-timeline-grid{display:flex;gap:12px;align-items:stretch;overflow-x:auto;padding:22px 2px 8px;}
+.twerkhub-tl-node{flex:1 1 0;min-width:220px;padding:26px 20px 20px;border-radius:16px;background:linear-gradient(180deg,rgba(20,20,32,.9),rgba(10,10,20,.9));border:1px solid rgba(255,255,255,.08);position:relative;display:flex;flex-direction:column;}
 .twerkhub-tl-active{border-color:rgba(255,45,135,.6);box-shadow:0 10px 30px rgba(255,45,135,.18)}
-.twerkhub-tl-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);padding:4px 12px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#9d4edd);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#fff;box-shadow:0 6px 14px rgba(255,45,135,.4)}
+.twerkhub-tl-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);padding:5px 14px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#9d4edd);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#fff;box-shadow:0 6px 14px rgba(255,45,135,.4);white-space:nowrap;z-index:3;}
 .twerkhub-tl-ico{font-size:20px;margin-bottom:6px}
 .twerkhub-tl-year{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:900;line-height:1;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px}
 .twerkhub-tl-label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#ffd69a;margin-bottom:8px}

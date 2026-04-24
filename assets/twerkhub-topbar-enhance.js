@@ -12,7 +12,8 @@
  * mounts inside it; falls back to its old fixed-top-right position only if
  * the slot is missing (e.g. on pages without a navbar).
  *
- * v20260424-p6 · online pill → 2.0 live (300–500 range, animated ticks)
+ * v20260424-p7 · nav is always 1 line (no wrap), clean underline active
+ *                  state instead of solid pink pill, responsive shrink
  */
 (function(){
   'use strict';
@@ -39,11 +40,18 @@
     + '.twerkhub-brand,.twerkhub-pl-tb-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}'
     + '.twerkhub-brand-sub,.twerkhub-pl-tb-brand-sub{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,111,168,.85);line-height:1;white-space:nowrap;}'
     // Nav links · polished pills
-    + '.twerkhub-nav,.snf__l,.site-nav-final__links{display:inline-flex;align-items:center;gap:2px;flex-wrap:wrap;}'
-    + '.twerkhub-nav a,.snf__l a,.site-nav-final__links a{padding:8px 13px;border-radius:999px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(230,230,240,.78);text-decoration:none;border:1px solid transparent;transition:background .22s ease,color .22s ease,border-color .22s ease,transform .2s ease;white-space:nowrap;line-height:1;}'
-    + '.twerkhub-nav a:hover,.snf__l a:hover,.site-nav-final__links a:hover{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.08);transform:translateY(-1px);}'
-    + '.twerkhub-nav a.is-active,.twerkhub-nav a.active,.twerkhub-nav a[aria-current="page"],.snf__l a.is-active,.snf__l a.active,.site-nav-final__links a.is-active,.site-nav-final__links a.active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;border-color:rgba(255,45,135,.4);box-shadow:0 6px 18px rgba(255,45,135,.35);}'
-    + '.twerkhub-nav a.is-active::after,.twerkhub-nav a.active::after,.twerkhub-nav a[aria-current="page"]::after,.snf__l a.is-active::after,.site-nav-final__links a.is-active::after{display:none;}'
+    // Nav row · ALWAYS single line. `flex-wrap: nowrap` guarantees no second
+    // row; min-width:0 on the children + letter-spacing shrink on tight viewports
+    // keeps everything fitting horizontally. If space really runs out below
+    // 880px the hamburger takes over (rule further down).
+    + '.twerkhub-nav,.snf__l,.site-nav-final__links{display:inline-flex;align-items:center;gap:2px;flex-wrap:nowrap;white-space:nowrap;}'
+    // All nav items use the SAME minimal style — subtle, uppercase, ghost-like.
+    // No solid pills on any link. Active state is a thin gradient underline.
+    + '.twerkhub-nav a,.snf__l a,.site-nav-final__links a{position:relative;padding:8px 12px;border-radius:10px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(230,230,240,.78);text-decoration:none;border:1px solid transparent;background:transparent;transition:color .22s ease,background .22s ease,transform .2s ease;white-space:nowrap;line-height:1;}'
+    + '.twerkhub-nav a:hover,.snf__l a:hover,.site-nav-final__links a:hover{background:rgba(255,255,255,.05);color:#fff;transform:translateY(-1px);}'
+    // Active = subtle gradient underline, NOT a solid pink pill. Clean, minimal.
+    + '.twerkhub-nav a.is-active,.twerkhub-nav a.active,.twerkhub-nav a[aria-current="page"],.snf__l a.is-active,.snf__l a.active,.site-nav-final__links a.is-active,.site-nav-final__links a.active{color:#fff;background:transparent;border-color:transparent;box-shadow:none;}'
+    + '.twerkhub-nav a.is-active::after,.twerkhub-nav a.active::after,.twerkhub-nav a[aria-current="page"]::after,.snf__l a.is-active::after,.site-nav-final__links a.is-active::after{content:"";position:absolute;left:14%;right:14%;bottom:2px;height:2px;border-radius:2px;background:linear-gradient(90deg,#ff2d87,#9d4edd);box-shadow:0 0 10px rgba(255,45,135,.55);display:block;}'
     // Layout: brand | nav (centered) | right-cluster
     + '.twerkhub-topbar-inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;}'
     + '.twerkhub-topbar-inner > .twerkhub-brand{justify-self:start;}'
@@ -86,10 +94,24 @@
     // Brand sub-label needs a little extra vertical room so the zoomed logo
     // never crops it even at peak scale.
     + '.twerkhub-brand-sub,.twerkhub-pl-tb-brand-sub{position:relative;z-index:1;}'
-    // Responsive: below 980px the nav wraps; online-pill hides "Online now" label
+    // Responsive: SINGLE LINE ALWAYS. Below 1180px we shrink the nav item
+    // padding/font-size in steps so everything stays in one horizontal row
+    // down to the hamburger breakpoint (880px). Online-pill label hides
+    // progressively too.
+    + '@media (max-width:1180px){'
+    + '  .twerkhub-nav a,.snf__l a,.site-nav-final__links a{padding:7px 9px;font-size:11px;letter-spacing:.07em;}'
+    + '  .twerkhub-topbar-inner,.snf__i,.site-nav-final__inner{gap:12px;}'
+    + '}'
+    + '@media (max-width:1024px){'
+    + '  .twerkhub-nav,.snf__l,.site-nav-final__links{gap:0;}'
+    + '  .twerkhub-nav a,.snf__l a,.site-nav-final__links a{padding:7px 7px;font-size:10.5px;letter-spacing:.05em;}'
+    + '  .twerkhub-online-pill .twerkhub-online-label{display:none;}'
+    + '  .twerkhub-brand-sub{display:none;}'
+    + '}'
     + '@media (max-width:980px){'
     + '  .twerkhub-topbar-inner,.snf__i,.site-nav-final__inner{grid-template-columns:auto 1fr auto;}'
-    + '  .twerkhub-online-pill .twerkhub-online-label{display:none;}'
+    + '  .twerkhub-online-pill{padding:5px 9px;}'
+    + '  .twerkhub-nav a,.snf__l a,.site-nav-final__links a{padding:6px 6px;font-size:10px;}'
     + '}'
     // On real mobile, the hamburger takes over — hide desktop nav + right-cluster label
     + '@media (max-width:880px){'

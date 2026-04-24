@@ -253,16 +253,18 @@ section + section::before{
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
 }
 
-/* ── 21 · Hot Packs nav item · sparkle the money link ────────────────── */
+/* ── 21 · Hot Packs nav item · subtle accent, no solid fill ──────────── */
+/* Matches the minimal nav style: no solid pill, just a flame icon + gold
+   tint. The flame itself carries the character, not a loud background. */
 .twerkhub-nav a.twerkhub-nav-hot,
 .site-nav-final__links a.twerkhub-nav-hot,
 .snf__l a.twerkhub-nav-hot{
   position:relative;
-  background:linear-gradient(135deg,rgba(255,180,84,.18),rgba(255,45,135,.14))!important;
-  border:1px solid rgba(255,180,84,.45)!important;
-  color:#ffd693!important;
-  box-shadow:0 4px 14px rgba(255,180,84,.22);
-  text-shadow:0 0 8px rgba(255,180,84,.35);
+  color:#ffd693 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  text-shadow:0 0 8px rgba(255,180,84,.25);
 }
 .twerkhub-nav a.twerkhub-nav-hot::before,
 .site-nav-final__links a.twerkhub-nav-hot::before,
@@ -281,20 +283,25 @@ section + section::before{
 .twerkhub-nav a.twerkhub-nav-hot:hover,
 .site-nav-final__links a.twerkhub-nav-hot:hover,
 .snf__l a.twerkhub-nav-hot:hover{
-  background:linear-gradient(135deg,rgba(255,180,84,.35),rgba(255,45,135,.28))!important;
-  border-color:rgba(255,180,84,.75)!important;
-  color:#fff!important;
-  box-shadow:0 8px 24px rgba(255,180,84,.45);
+  color:#fff !important;
+  background:rgba(255,180,84,.08) !important;
+  text-shadow:0 0 12px rgba(255,180,84,.55);
 }
 .twerkhub-nav a.twerkhub-nav-hot.is-active,
 .twerkhub-nav a.twerkhub-nav-hot.active,
 .site-nav-final__links a.twerkhub-nav-hot.is-active,
 .snf__l a.twerkhub-nav-hot.is-active{
-  background:linear-gradient(135deg,#ff2d87,#ffb454)!important;
-  color:#0a0a10!important;
-  border-color:rgba(255,215,135,.9)!important;
-  box-shadow:0 8px 26px rgba(255,45,135,.55);
-  text-shadow:none;
+  color:#ffd693 !important;
+  background:transparent !important;
+}
+/* Active underline for Hot Packs = gold gradient (distinguishes from the
+   pink/purple underline the other nav items use). */
+.twerkhub-nav a.twerkhub-nav-hot.is-active::after,
+.twerkhub-nav a.twerkhub-nav-hot[aria-current="page"]::after,
+.site-nav-final__links a.twerkhub-nav-hot.is-active::after,
+.snf__l a.twerkhub-nav-hot.is-active::after{
+  background:linear-gradient(90deg,#ffb454,#ff2d87) !important;
+  box-shadow:0 0 10px rgba(255,180,84,.55) !important;
 }
 
 /* ── 22 · VIEWED overlay on watched videos ────────────────────────────

@@ -28,8 +28,8 @@
   window.__twerkhubUniversalInjectInit = true;
 
   var ASSET_BASE = '/assets/';
-  var VER = { tokens:'20260424-p9', topbar:'20260424-p6', locale:'20260424-p5',
-              mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p2',
+  var VER = { tokens:'20260424-p9', topbar:'20260424-p7', locale:'20260424-p5',
+              mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p3',
               page:'20260420-p15', polish:'20260424-p4' };
 
   // ── 1 · Remove legacy nav markup ─────────────────────────────────────
@@ -166,19 +166,39 @@
 
   function markActive(){
     var path = location.pathname.replace(/\/$/, '') || '/';
-    document.querySelectorAll('.twerkhub-topbar .twerkhub-nav a').forEach(function(a){
+    var hash = location.hash || '';
+    var links = document.querySelectorAll('.twerkhub-topbar .twerkhub-nav a');
+    var exactMatch = null;
+    var pathMatches = [];
+    links.forEach(function(a){
       a.classList.remove('is-active');
       a.removeAttribute('aria-current');
       try {
         var href = new URL(a.getAttribute('href'), location.href);
         var hp = href.pathname.replace(/\/$/, '') || '/';
-        if (hp === path) {
-          a.classList.add('is-active');
-          a.setAttribute('aria-current', 'page');
-        }
+        var hh = href.hash || '';
+        if (hp !== path) return;
+        // Exact match (both pathname AND hash). Highest priority.
+        if (hh === hash) exactMatch = a;
+        // Path-only match with NO hash in the href → the "plain page" anchor
+        // (e.g. Home href="/", path="/"). Lower priority than exact-hash match.
+        else if (!hh) pathMatches.push(a);
       } catch(_){}
     });
+    // Only ONE link wins. Prefer exact-hash match; fall back to the bare-path
+    // link (Home), so Exclusive/Playlists don't light up just because they
+    // live on "/". On the home page with no scroll, Home is active. When the
+    // user scrolls into #private-models, Exclusive takes over.
+    var winner = exactMatch || pathMatches[0];
+    if (winner) {
+      winner.classList.add('is-active');
+      winner.setAttribute('aria-current', 'page');
+    }
   }
+
+  // Re-run markActive when the hash changes (smooth-scroll anchors) so the
+  // underline tracks the current section on single-page navigations.
+  window.addEventListener('hashchange', function(){ try { markActive(); } catch(_){} });
 
   // ── 5 · Go ───────────────────────────────────────────────────────────
   function run(){
