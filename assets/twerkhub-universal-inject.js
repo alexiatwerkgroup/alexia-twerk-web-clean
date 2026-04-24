@@ -30,9 +30,9 @@
   var ASSET_BASE = '/assets/';
   var VER = { tokens:'20260424-p11', topbar:'20260424-p8', locale:'20260424-p5',
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p5',
-              page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p4',
+              page:'20260424-p14', polish:'20260424-p5', auth:'20260424-p4',
               tokens_css:'20260424-p1', a11y:'20260424-p5',
-              elevation:'20260424-p3-LEAN', cursor:'20260424-p2-DISABLED',
+              elevation:'20260424-p4-LEAN', cursor:'20260424-p2-DISABLED',
               share:'20260424-p1', vitals:'20260424-p1' };
   // premium.js + premium.css share the same 'premium' version key; bumped
   // to p6 for the scroll-reveal rootMargin fix (playlist grids no longer

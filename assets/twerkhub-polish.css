@@ -44,7 +44,7 @@ img[loading="lazy"]{opacity:0;animation:twerkhub-img-in .5s ease .05s forwards;}
 .twerkhub-topbar .twerkhub-nav a.active::after,
 .twerkhub-topbar .twerkhub-nav a[aria-current="page"]::after{
   content:"";display:block;height:2px;margin:4px auto 0;width:70%;border-radius:2px;
-  background:linear-gradient(90deg,#ff2d87,#9d4edd);
+  background:#ffb454;
 }
 
 /* ── 8. Card hover: subtle lift on every card type in the site ───────── */

@@ -120,7 +120,7 @@ html {
   position: absolute;
   left: 12px; right: 12px; bottom: 8px;
   height: 2px;
-  background: linear-gradient(90deg, #ff2d87, #ffb454);
+  background: #ffb454;
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 0.3s cubic-bezier(0.22, 0.9, 0.38, 1);
