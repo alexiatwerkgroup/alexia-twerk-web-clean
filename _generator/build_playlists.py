@@ -479,6 +479,139 @@ def build_twerk_hub() -> str:
 
 
 # ---------------------------------------------------------------------------
+# Special: /playlist/index.html (flagship, indexed)
+# ---------------------------------------------------------------------------
+# SEO-sagrada EXCEPT regla SEO — per Anti 2026-04-23: /playlist/ is the
+# original indexed URL (Google indexed it with the old backup's title, descr,
+# canonical). We preserve those metadata strings 1:1 and only swap the *layout*
+# to Twerkhub 2.0. All clicks inside swap the inline player (same UX as the
+# "leaks" playlists).
+#
+# The individual video pages under /playlist/*.html are NOT touched — each one
+# is independently indexed by Google with its own canonical, and we keep them
+# on the filesystem so those indexed URLs stay alive.
+def build_playlist_index(gold: str) -> str:
+    """Rebuild /playlist/index.html from the gold template, preserving the
+    SEO-indexed title/description/canonical of the original /playlist/ URL."""
+    html = gold
+
+    # Metadata preserved from the PWA_BACKUP_VERSION_1_TERMINADA original.
+    title = "Best Twerk Videos on YouTube (2026) | Viral Dance Playlist | Alexia Twerk Group"
+    description = (
+        "Watch the hottest twerk videos on YouTube in one curated playlist. "
+        "Explore viral dance clips, trending performers, and top replay-worthy "
+        "videos inside Alexia Twerk Group."
+    )
+    canonical = "https://alexiatwerkgroup.com/playlist/"
+    og_description = (
+        "Watch the hottest twerk videos on YouTube in one curated playlist. "
+        "Viral dance clips, trending performers, top replay-worthy videos."
+    )
+
+    html = re.sub(r"<title>[^<]*</title>", f"<title>{title}</title>", html, count=1)
+    html = re.sub(
+        r'<meta name="description" content="[^"]*"/>',
+        f'<meta name="description" content="{description}"/>',
+        html, count=1,
+    )
+    html = re.sub(
+        r'<meta name="keywords" content="[^"]*">',
+        '<meta name="keywords" content="twerk videos, viral dance, youtube playlist, '
+        'alexia twerk group, hottest twerk, trending dance, twerkhub">',
+        html, count=1,
+    )
+    html = re.sub(
+        r'<link rel="canonical" href="[^"]*"/>',
+        f'<link rel="canonical" href="{canonical}"/>',
+        html, count=1,
+    )
+    html = re.sub(
+        r'<meta property="og:title" content="[^"]*"/>',
+        f'<meta property="og:title" content="{title}"/>',
+        html, count=1,
+    )
+    html = re.sub(
+        r'<meta property="og:description" content="[^"]*"/>',
+        f'<meta property="og:description" content="{og_description}"/>',
+        html, count=1,
+    )
+    html = re.sub(
+        r'<meta property="og:url" content="[^"]*"/>',
+        f'<meta property="og:url" content="{canonical}"/>',
+        html, count=1,
+    )
+    html = re.sub(
+        r'<meta name="twitter:title" content="[^"]*"/>',
+        '<meta name="twitter:title" content="Best Twerk Videos on YouTube — Viral Dance Playlist"/>',
+        html, count=1,
+    )
+
+    # JSON-LD CollectionPage: update name/url/description.
+    html = re.sub(
+        r'("@type":\s*"CollectionPage",\s*"name":\s*")[^"]*(",\s*"url":\s*")[^"]*(",\s*"description":\s*")[^"]*(")',
+        lambda m: m.group(1) + title
+        + m.group(2) + canonical
+        + m.group(3) + description
+        + m.group(4),
+        html, count=1,
+    )
+
+    # /playlist/index.html loads from a subfolder, so asset URLs relative to the
+    # root ("/assets/...") still work correctly because the browser resolves
+    # the leading slash against the origin, not the current path. Nothing to
+    # rewrite here.
+
+    # Body attribute + log tag so debugging output is clear.
+    html = re.sub(r'data-page="[^"]*"', 'data-page="playlist-index"', html, count=1)
+    html = re.sub(
+        r"console\.info\('\[twerkhub-leaks\] [^']*'\)",
+        "console.info('[twerkhub-playlist] theater boot')",
+        html, count=1,
+    )
+    html = re.sub(
+        r"console\.error\('\[twerkhub-leaks\] [^']*'",
+        "console.error('[twerkhub-playlist] theater init crashed'",
+        html, count=1,
+    )
+
+    # Hero copy: swap the "twerk" adjective out, keep wording consistent with
+    # the indexed metadata ("hottest viral dance").
+    html = re.sub(
+        r"(<header class=\"twerkhub-pl-hero\">\s*<div class=\"twerkhub-pl-kicker\">[^<]*</div>\s*<h1>Hottest <em>)[^<]*(</em>)",
+        lambda m: m.group(1) + "twerk" + m.group(2),
+        html, count=1, flags=re.S,
+    )
+    html = re.sub(
+        r'<p class="twerkhub-pl-intro">[^<]*</p>',
+        '<p class="twerkhub-pl-intro">The original viral dance archive. Curated every week · handpicked by the hub.</p>',
+        html, count=1,
+    )
+
+    # Cache-bust.
+    html = re.sub(
+        r'\?v=20260420-p22([^&"\']*)',
+        lambda m: f"?v={CACHE_BUST}",
+        html,
+    )
+
+    # Inject Token HUD so the coin + toasts work inside /playlist/ too.
+    if "twerkhub-tokens.css" not in html:
+        html = html.replace(
+            "</head>",
+            f'\n<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v={TOKENS_CACHE_BUST}">\n</head>',
+            1,
+        )
+    if "twerkhub-tokens.js" not in html:
+        html = html.replace(
+            "</body>",
+            f'\n<script defer src="/assets/twerkhub-tokens.js?v={TOKENS_CACHE_BUST}"></script>\n</body>',
+            1,
+        )
+
+    return html
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 def main():
@@ -491,10 +624,18 @@ def main():
         out_path.write_text(html, encoding="utf-8", newline="\n")
         written.append(str(out_path))
 
-    # Special: /playlist/
+    # Special 1: /playlist-twerk-hub.html (legacy — redirects via <meta refresh>)
     hub_out = ROOT / "playlist-twerk-hub.html"
     hub_out.write_text(build_twerk_hub(), encoding="utf-8", newline="\n")
     written.append(str(hub_out))
+
+    # Special 2: /playlist/index.html (the indexed flagship — SEO preserved from
+    # the PWA_BACKUP_VERSION_1_TERMINADA original, structure upgraded to 2.0).
+    pl_dir = ROOT / "playlist"
+    if pl_dir.is_dir():
+        pl_index = pl_dir / "index.html"
+        pl_index.write_text(build_playlist_index(gold), encoding="utf-8", newline="\n")
+        written.append(str(pl_index))
 
     print("Wrote:")
     for w in written:

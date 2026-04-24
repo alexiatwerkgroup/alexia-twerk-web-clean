@@ -97,17 +97,13 @@
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
       <div class="twerkhub-hh-media-scrim"></div>
-      <div class="twerkhub-hh-media-pills">
-        <span class="twerkhub-hh-pill twerkhub-hh-pill-pink">BLUE</span>
-        <span class="twerkhub-hh-pill twerkhub-hh-pill-ghost">🕎 ORIENTAL</span>
-      </div>
       <button type="button" class="twerkhub-hh-mute" data-twerkhub-hero-mute aria-pressed="true" aria-label="Tap to unmute">
         <span class="twerkhub-hh-mute-ico" aria-hidden="true">🔈</span>
         <span class="twerkhub-hh-mute-label">Tap to unmute</span>
       </button>
       <div class="twerkhub-hh-media-meta">
         <span class="twerkhub-hh-live">● private · live</span>
-        <h2>Fancam · Oriental</h2>
+        <h2 id="twerkhub-hh-countdown" data-remaining-minutes="420">Private · online — 7h remaining</h2>
       </div>
     </div>
   </aside>
@@ -571,6 +567,58 @@
         if (document.hidden) setMuted(true);
       });
     } catch(e){ console.warn('[twerkhub-hero-video] init failed', e); }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+</script>
+
+<!-- Hero countdown · "Private · online — 7h remaining" ticking down every minute.
+     Data attribute `data-remaining-minutes` is the starting point. The script
+     persists the baseline in localStorage so the number keeps descending across
+     page reloads instead of resetting. -->
+<script>
+(function(){
+  'use strict';
+  if (window.__twerkhubHeroCountdownInit) return;
+  window.__twerkhubHeroCountdownInit = true;
+  var KEY = 'twerkhub_hero_countdown_endstamp';
+  function init(){
+    try {
+      var el = document.getElementById('twerkhub-hh-countdown');
+      if (!el) return;
+      var now = Date.now();
+      var end = Number(localStorage.getItem(KEY) || 0);
+      // If no stored end-time, or it's already expired, set a new 7h window.
+      if (!end || end <= now) {
+        var mins = Number(el.getAttribute('data-remaining-minutes')) || 420;
+        end = now + mins * 60 * 1000;
+        try { localStorage.setItem(KEY, String(end)); } catch(_){}
+      }
+      function fmt(ms){
+        if (ms <= 0) return 'offline';
+        var total = Math.floor(ms / 1000);
+        var h = Math.floor(total / 3600);
+        var m = Math.floor((total % 3600) / 60);
+        if (h >= 1) return h + 'h ' + String(m).padStart(2,'0') + 'm remaining';
+        var s = total % 60;
+        return m + 'm ' + String(s).padStart(2,'0') + 's remaining';
+      }
+      function tick(){
+        var remaining = end - Date.now();
+        if (remaining <= 0) {
+          el.textContent = 'Private · offline — check back soon';
+          return;
+        }
+        el.textContent = 'Private · online — ' + fmt(remaining);
+      }
+      tick();
+      // Refresh every 30s — enough to see minutes tick without burning CPU.
+      setInterval(tick, 30 * 1000);
+    } catch(e){ console.warn('[twerkhub-hero-countdown] init failed', e); }
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init, { once: true });
