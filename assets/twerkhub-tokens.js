@@ -15,7 +15,9 @@
  *   twerkhub_tokens_seen_vids   · JSON array of played video ids
  *
  * Idempotent: safe to include on every page.
- * v20260424-p8 · unified balance — reads AlexiaTokens state so /account and HUD match
+ * v20260424-p11 · refined coin "tink-tink" ping (shorter, gentler, triangle
+ *                   wave) + "TOKENS" label + 4-tier thresholds + direct
+ *                   localStorage fallback for pages without token-system.js
  */
 (function(){
   'use strict';
@@ -52,10 +54,25 @@
   // The local `twerkhub_tokens` key is kept as a fallback for when the
   // AlexiaTokens module hasn't loaded yet (e.g. during the first paint).
   function hasAlexia(){ return !!(window.AlexiaTokens && typeof window.AlexiaTokens.getState === 'function'); }
+  // AlexiaTokens persists the balance at this key — we read it directly as a
+  // second-tier fallback on pages that don't load token-system.js yet, so the
+  // HUD number stays consistent across the whole site (the earlier bug showed
+  // 2100 on pages with token-system.js loaded and 225 on pages without).
+  var ALEXIA_KEY = 'alexia_tokens_v1.balance';
   function getTokens(){
     if (hasAlexia()) {
       try { return Number(window.AlexiaTokens.getState().balance) || 0; } catch(_){}
     }
+    // Direct read from AlexiaTokens' localStorage key — works even when
+    // token-system.js isn't loaded on the current page.
+    try {
+      var raw = localStorage.getItem(ALEXIA_KEY);
+      if (raw != null) {
+        var parsed = JSON.parse(raw);
+        var n = Number(parsed);
+        if (!isNaN(n)) return n;
+      }
+    } catch(_){}
     return Number(lsGet(LS.TOKENS, 0)) || 0;
   }
   function setTokens(n){
@@ -100,6 +117,7 @@
     badge.innerHTML =
       '<span class="twerkhub-tokens-coin" aria-hidden="true"></span>' +
       '<span class="twerkhub-tokens-count">0</span>' +
+      '<span class="twerkhub-tokens-unit">tokens</span>' +
       '<span class="twerkhub-tokens-tier">BASIC</span>';
     badge.addEventListener('click', function(){
       // Click on badge scrolls to the tiers section so users can see what
@@ -145,32 +163,38 @@
     } catch(e){ /* not available */ }
     return _audioCtx;
   }
+  // Short, pleasant "coin drop" — classic 8-bit inspired but refined.
+  // TWO quick rising notes (E6 → A6, 35ms apart), triangle wave for warmth,
+  // super-short decay (~130ms total). Master gain 0.06 so it never competes
+  // with whatever the user is listening to. Designed to register without
+  // becoming annoying on repeat earnings.
   function playTokenPing(){
     try {
       var ctx = ensureAudioCtx();
       if (!ctx) return;
-      // Some browsers need user gesture to unlock — if still "suspended"
-      // after a click (which we've probably had), resume will succeed.
       if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_){} }
       var now = ctx.currentTime;
       var master = ctx.createGain();
+      // Very low overall gain so it's a subtle "tink-tink" in the corner
+      // of attention, not a bell ringing in your ear.
       master.gain.setValueAtTime(0.0001, now);
-      master.gain.exponentialRampToValueAtTime(0.12, now + 0.02);
-      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
+      master.gain.exponentialRampToValueAtTime(0.06, now + 0.006);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
       master.connect(ctx.destination);
-      // Bell-like: two sine tones, upper octave panned slightly right
-      [[988, 0], [1318, 0.08]].forEach(function(pair, i){
+      // Two notes, rising (E6 → A6 = coin-up feel). 35ms between them.
+      // Triangle wave has a warmer, rounder feel than sine — more "coin-y",
+      // less "bell-y". Each note is ~55ms long with quick decay.
+      [[1320, 0], [1760, 0.035]].forEach(function(pair){
         var osc = ctx.createOscillator();
         var g = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = 'triangle';
         osc.frequency.setValueAtTime(pair[0], now + pair[1]);
-        osc.frequency.exponentialRampToValueAtTime(pair[0] * 0.98, now + pair[1] + 0.35);
         g.gain.setValueAtTime(0.0001, now + pair[1]);
-        g.gain.exponentialRampToValueAtTime(i === 0 ? 0.9 : 0.55, now + pair[1] + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, now + pair[1] + 0.38);
+        g.gain.exponentialRampToValueAtTime(0.9, now + pair[1] + 0.004);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + pair[1] + 0.08);
         osc.connect(g).connect(master);
         osc.start(now + pair[1]);
-        osc.stop(now + pair[1] + 0.42);
+        osc.stop(now + pair[1] + 0.09);
       });
     } catch(e){ /* quiet — sound is bonus */ }
   }

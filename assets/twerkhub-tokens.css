@@ -62,10 +62,22 @@
   min-width:1ch;
   transition:color .3s;
 }
+.twerkhub-tokens-badge .twerkhub-tokens-unit{
+  color:#b7f4d6;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  margin-left:-3px;
+  opacity:.88;
+}
 .twerkhub-tokens-badge .twerkhub-tokens-tier{
   font-size:9.5px;
   opacity:.72;
   letter-spacing:.2em;
+  margin-left:4px;
+  padding-left:8px;
+  border-left:1px solid rgba(255,255,255,.12);
 }
 .twerkhub-tokens-badge.is-pulsing .twerkhub-tokens-count{
   animation:twerkhub-tk-pulse 1s ease-out;

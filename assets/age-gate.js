@@ -12,6 +12,22 @@
   var LS_KEY = 'alexia_age_verified_v1';
   var EXPIRY_DAYS = 30;
 
+  // PORTAL-ONLY GATE: the 18+ modal is the entry-door to the platform. It
+  // should only appear on the home/root URL, not on deep pages like
+  // /alexia-video-packs, /profile, /playlist/..., etc. If a user lands on
+  // a deep page directly, they're assumed to have already verified earlier
+  // (or they'll verify when they eventually hit the root). This prevents
+  // the gate from popping up again on every internal navigation.
+  (function(){
+    var path = (location.pathname || '/').toLowerCase();
+    var isPortal = (path === '/' || path === '/index.html' || path === '/index');
+    if (!isPortal) {
+      // Mark mounted so the module is a no-op if included on non-portal pages.
+      return window.__alexiaAgeGateSkippedNonPortal = true;
+    }
+  })();
+  if (window.__alexiaAgeGateSkippedNonPortal) return;
+
   // Already verified? skip
   try {
     var until = Number(localStorage.getItem(LS_KEY) || 0);

@@ -1,0 +1,185 @@
+/*!
+ * TWERKHUB · Accessibility + Polish — 2026-04-24
+ * --------------------------------------------------------------
+ * Global a11y layer applied on every page via universal inject.
+ * Covers:
+ *  1. `prefers-reduced-motion` — respects vestibular disorders,
+ *     kills transforms, animations, parallax on request.
+ *  2. `:focus-visible` — WCAG AA keyboard navigation outline on
+ *     every interactive element (links, buttons, inputs, cards).
+ *  3. Skeleton loaders — .skeleton-card for async grids so users
+ *     never see a blank state mid-fetch.
+ *  4. High-contrast text-shadow on gradient backgrounds — keeps
+ *     AA contrast even when badge gradients drift to light tones.
+ *  5. `::selection` brand color — selection tint matches identity.
+ *  6. `forced-colors` (Windows High Contrast) — falls back cleanly.
+ * --------------------------------------------------------------
+ */
+
+/* ═══ 1. Reduced motion — WCAG 2.3.3 ═══ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Kill transform hover lift — many users get nauseous */
+  .vcard:hover,
+  .twerkhub-fp-card:hover,
+  .twerkhub-club-card:hover,
+  .twerkhub-coming-card:hover,
+  .tier:hover,
+  .rk-item:hover {
+    transform: none !important;
+  }
+  /* Kill the ticker animation */
+  .twerkhub-ticker-track,
+  .twerkhub-hh-live .twerkhub-hh-status-dot {
+    animation: none !important;
+  }
+}
+
+/* ═══ 2. Focus-visible — WCAG 2.4.7 ═══ */
+*:focus {
+  outline: none; /* remove default */
+}
+*:focus-visible {
+  outline: 2px solid var(--twerkhub-gold, #ffb454);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* Cards — thicker outline, pink tint */
+.vcard:focus-visible,
+.twerkhub-fp-card:focus-visible,
+.twerkhub-club-card:focus-visible,
+.tier:focus-visible,
+.rk-item:focus-visible {
+  outline: 3px solid var(--twerkhub-pink, #ff2d87);
+  outline-offset: 3px;
+}
+/* Buttons — already visible, just tweak offset */
+.twerkhub-btn:focus-visible,
+button:focus-visible {
+  outline-offset: 3px;
+}
+
+/* ═══ 3. Skeleton loaders — avoid blank async grids ═══ */
+.skeleton-card {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 22px;
+  aspect-ratio: 16 / 10;
+  animation: twerkhub-skeleton 1.8s ease-in-out infinite;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+@keyframes twerkhub-skeleton {
+  0%,
+  100% {
+    background-position: 200% 0;
+    opacity: 0.6;
+  }
+  50% {
+    background-position: -200% 0;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-card {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* ═══ 4. High-contrast badge text ═══ */
+.twerkhub-fp-badge,
+.rank-badge,
+.twerkhub-chip {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ═══ 5. Brand-tinted selection ═══ */
+::selection {
+  background: rgba(255, 45, 135, 0.35);
+  color: #ffffff;
+  text-shadow: none;
+}
+::-moz-selection {
+  background: rgba(255, 45, 135, 0.35);
+  color: #ffffff;
+  text-shadow: none;
+}
+
+/* ═══ 6. Forced-colors mode (Windows High Contrast) ═══ */
+@media (forced-colors: active) {
+  .vcard,
+  .twerkhub-fp-card,
+  .twerkhub-btn,
+  .tier {
+    border: 1px solid CanvasText !important;
+    forced-color-adjust: none;
+  }
+  .twerkhub-btn-primary {
+    background: Highlight !important;
+    color: HighlightText !important;
+  }
+}
+
+/* ═══ 7. Skip-link — screen reader jump to main ═══ */
+.twerkhub-skip-link {
+  position: absolute;
+  top: -48px;
+  left: 12px;
+  z-index: 100000;
+  padding: 10px 18px;
+  background: var(--twerkhub-pink, #ff2d87);
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: top 0.2s ease;
+}
+.twerkhub-skip-link:focus,
+.twerkhub-skip-link:focus-visible {
+  top: 12px;
+  outline: 2px solid var(--twerkhub-gold, #ffb454);
+  outline-offset: 2px;
+}
+
+/* ═══ 8. ARIA live regions ═══ */
+[aria-live] {
+  position: relative;
+}
+[role="status"] {
+  position: relative;
+}
+
+/* ═══ 9. Visually-hidden (sr-only) helper ═══ */
+.twerkhub-sr-only,
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ═══ 10. Better muted text contrast on dark bg (WCAG AA 4.5:1) ═══ */
+.twerkhub-muted,
+.twerkhub-sub {
+  color: #c7c7d4; /* ~7:1 on #05050a — AAA */
+}

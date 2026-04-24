@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · UNIVERSAL TOPBAR INJECTOR ═══
- * v20260424-p1
+ * v20260424-p2
  *
  * Purpose: ONE script to ensure every page in the platform — regardless of
  * whether someone edited it manually or it was auto-generated months ago —
@@ -31,7 +31,7 @@
   var VER = { tokens:'20260424-p11', topbar:'20260424-p8', locale:'20260424-p5',
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p5',
               page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p4',
-              tokens_css:'20260424-p1' };
+              tokens_css:'20260424-p1', a11y:'20260424-p1' };
   // premium.js + premium.css share the same 'premium' version key; bumped to
   // p5 for the eager-thumbs fix.
   VER.premium = '20260424-p5';
@@ -97,6 +97,7 @@
     ensureCss(ASSET_BASE + 'twerkhub-polish.css?v=' + VER.polish);
     ensureCss(ASSET_BASE + 'twerkhub-premium.css?v=' + VER.premium);
     ensureCss(ASSET_BASE + 'twerkhub-design-tokens.css?v=' + VER.tokens_css);
+    ensureCss(ASSET_BASE + 'twerkhub-a11y.css?v=' + VER.a11y);
     // Google Fonts — only if the site didn't already preconnect.
     if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
       var pre1 = document.createElement('link');

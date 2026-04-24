@@ -49,9 +49,33 @@
   // ──────────────────────────────────────────────────────────────────────────
   // State
   // ──────────────────────────────────────────────────────────────────────────
+  // 4-tier thresholds aligned with the /membership pricing page.
+  // Basic < 500 · Medium 500–1999 · Premium 2000–9999 · VIP 10000+
+  // The returned `tier` reflects the user's CURRENT token-earned tier, which
+  // is what /account and /profile and the HUD all display. Subscription tier
+  // (paid) takes precedence if KEYS.subscription is set to one of the four
+  // values — subscribed users never "downgrade" visually.
+  var TIER_THRESHOLDS = { medium: 500, premium: 2000, vip: 10000 };
+  function tierFromBalance(bal){
+    if (bal >= TIER_THRESHOLDS.vip)     return 'vip';
+    if (bal >= TIER_THRESHOLDS.premium) return 'premium';
+    if (bal >= TIER_THRESHOLDS.medium)  return 'medium';
+    return 'basic';
+  }
   function getState(){
+    var bal = N(KEYS.balance, 0);
+    var subscribedTier = N(KEYS.tier, null);
+    // Treat legacy values so users upgraded in the old 3-tier schema still work.
+    if (subscribedTier === 'free')  subscribedTier = null;
+    if (subscribedTier === 'elite') subscribedTier = 'vip';
+    var computed = tierFromBalance(bal);
+    // Pick the HIGHER of (subscribed, computed) so paid subscribers never
+    // get downgraded if their balance is low.
+    var rank = { basic:0, medium:1, premium:2, vip:3 };
+    var effective = computed;
+    if (subscribedTier && rank[subscribedTier] > rank[computed]) effective = subscribedTier;
     return {
-      balance:    N(KEYS.balance, 0),
+      balance:    bal,
       total:      N(KEYS.total, 0),
       streak:     N(KEYS.streak, 0),
       lastLogin:  N(KEYS.lastLogin, null),
@@ -60,7 +84,11 @@
       videos:     N(KEYS.videos, {}),
       shares:     N(KEYS.shares, 0),
       welcomed:   N(KEYS.welcomed, false),
-      tier:       N(KEYS.tier, 'free')
+      tier:       effective,
+      nextTier:   (effective === 'basic'   ? { key:'medium',  at: TIER_THRESHOLDS.medium  }
+                 : effective === 'medium'  ? { key:'premium', at: TIER_THRESHOLDS.premium }
+                 : effective === 'premium' ? { key:'vip',     at: TIER_THRESHOLDS.vip     }
+                 : null)
     };
   }
 
