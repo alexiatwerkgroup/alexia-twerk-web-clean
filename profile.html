@@ -460,19 +460,17 @@ if ('serviceWorker' in navigator) {
 
 <div class="wrap">
 
-  <!-- ══════ HERO · Anti identity ══════ -->
+  <!-- ══════ HERO · dynamic identity (reads alexia_current_user or falls back to Guest) ══════ -->
   <section class="hero">
-    <!-- TODO: swap with real /anti-avatar.jpg when Anti uploads it -->
     <div class="avatar-ring" id="hero-avatar-ring" aria-label="Your avatar">
-      <div class="avatar-preview" id="avatar-preview">A</div>
+      <div class="avatar-preview" id="avatar-preview">?</div>
     </div>
-    <div class="hero-kicker"><span>// firestarter · system architect</span></div>
-    <h1 id="hero-name">Anti</h1>
-    <div class="role">Founder <span class="sep">·</span> <b>Firestarter</b> <span class="sep">·</span> Visionary</div>
+    <div class="hero-kicker" id="hero-kicker"><span>// member</span></div>
+    <h1 id="hero-name">Guest</h1>
+    <div class="role" id="hero-role">Not signed in</div>
     <div class="hero-pills profile-badges">
-      <span class="hero-pill gold"><span class="dot"></span>Est. 2018</span>
+      <span class="hero-pill gold"><span class="dot"></span>Twerkhub · Est. 2018</span>
       <span class="hero-pill auto-user-badge" data-auto-badge="1">VISITOR</span>
-      <span class="hero-pill live"><span class="dot"></span>Logged In</span>
     </div>
   </section>
 
@@ -763,23 +761,59 @@ if ('serviceWorker' in navigator) {
   function esc(str){ return String(str||'').replace(/[&<>"']/g, function(s){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]);}); }
 
   function mirror(){
+    // PRIORITY 1: the new TwerkhubAuth session (set on registration). If a
+    // user is logged in via the new auth flow, always use their nick/name —
+    // never fall back to "Anti" (the old hardcoded default that kept showing
+    // after logout and was confusing users who never registered).
+    var currentUser = null;
+    try {
+      var raw = localStorage.getItem('alexia_current_user');
+      if (raw) currentUser = JSON.parse(raw);
+    } catch(e){}
+
+    // PRIORITY 2: legacy `alexia_forum_profile_v1` (nick + avatar only).
     var p = {};
     try { p = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}; } catch(e){}
-    var nick = String(p.nickname || '').trim();
-    var displayName = nick || 'Anti';
+
+    var nick = currentUser && currentUser.nick
+      ? String(currentUser.nick).trim()
+      : String(p.nickname || '').trim();
+    var displayName = nick || 'Guest';  // no more silent "Anti" default
     var av = String(p.avatar_url || '').trim();
+    var isGuest = !currentUser && !nick;
 
-    // Hero name — default "Anti" unless user sets a nickname
-    if (heroName) heroName.textContent = displayName;
-
-    // Hero avatar (mirrors the edit form)
-    if (heroPreview) {
-      heroPreview.innerHTML = av ? '<img src="'+esc(av)+'" alt="Avatar">' : (nick ? initials(nick) : 'A');
+    // Hero name — reflects actual session state
+    if (heroName) {
+      heroName.textContent = displayName;
+      heroName.classList.toggle('is-guest', isGuest);
     }
-    // Edit form avatar preview is already handled by profile-page.js which targets #avatar-preview.
-    // We re-sync the separate #edit-avatar-preview used in the edit card:
+    // Show/hide a "Sign up to save progress" prompt when guest
+    var heroPills = document.querySelector('.hero-pills');
+    if (heroPills) {
+      var existingGuestCTA = heroPills.querySelector('.guest-cta');
+      if (isGuest && !existingGuestCTA) {
+        var cta = document.createElement('a');
+        cta.href = '#';
+        cta.className = 'guest-cta hero-pill';
+        cta.style.cssText = 'cursor:pointer;background:linear-gradient(135deg,rgba(255,45,135,.2),rgba(157,78,221,.18));border:1px solid rgba(255,45,135,.5);color:#ff6fa8;font-weight:800;';
+        cta.textContent = 'Sign up to save your progress →';
+        cta.addEventListener('click', function(ev){
+          ev.preventDefault();
+          try { window.TwerkhubAuth && window.TwerkhubAuth.showForm && window.TwerkhubAuth.showForm(); } catch(_){}
+        });
+        heroPills.appendChild(cta);
+      } else if (!isGuest && existingGuestCTA) {
+        existingGuestCTA.remove();
+      }
+    }
+
+    // Hero avatar — use current-user initials if available
+    var initialSource = (currentUser && currentUser.nick) || (currentUser && currentUser.name) || nick;
+    if (heroPreview) {
+      heroPreview.innerHTML = av ? '<img src="'+esc(av)+'" alt="Avatar">' : (initialSource ? initials(initialSource) : '?');
+    }
     if (editPreview) {
-      editPreview.innerHTML = av ? '<img src="'+esc(av)+'" alt="Avatar">' : (nick ? initials(nick) : 'A');
+      editPreview.innerHTML = av ? '<img src="'+esc(av)+'" alt="Avatar">' : (initialSource ? initials(initialSource) : '?');
     }
   }
 

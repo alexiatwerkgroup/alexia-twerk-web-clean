@@ -30,7 +30,7 @@
   var ASSET_BASE = '/assets/';
   var VER = { tokens:'20260424-p11', topbar:'20260424-p7', locale:'20260424-p5',
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p4',
-              page:'20260424-p12', polish:'20260424-p4', auth:'20260424-p3' };
+              page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p3' };
 
   // ── 1 · Remove legacy nav markup ─────────────────────────────────────
   // The platform accumulated three generations of topbars over the years.
@@ -55,7 +55,17 @@
       '.alexia-i18n-switcher:not(.twerkhub-locale-slot *)',
       '#alexia-i18n-root',
       '.alexia-legacy-locale',
-      '.alexia-lang-switch'
+      '.alexia-lang-switch',
+      // BLUR OVERLAYS — any leftover backdrop from older auth/age-gate versions.
+      // If the user is currently NOT on the portal root, no blocking modal
+      // should exist anywhere. Nuke them. This is the emergency blur kill-
+      // switch users have been asking for.
+      '#alexia-age-gate:not([data-user-opened])',
+      '#twk-auth-modal:not([data-user-opened])',
+      '.twk-auth-backdrop:not([data-user-opened])',
+      '.agg-backdrop',
+      '.alexia-paywall-backdrop',
+      '.twerkhub-paywall-backdrop'
     ];
     selectors.forEach(function(sel){
       try {
@@ -211,6 +221,56 @@
   // the first few seconds so nothing slips through.
   [400, 1200, 2500, 5000].forEach(function(ms){
     setTimeout(function(){ try { purgeLegacyNav(); } catch(_){} }, ms);
+  });
+
+  // ── BLUR KILL-SWITCH ────────────────────────────────────────────────
+  // If any stale modal/overlay is covering the viewport with a blur filter
+  // (without being user-opened), kill it. Also release any body/html scroll
+  // lock so the user can always interact with the page.
+  function killBlurOverlays(){
+    try {
+      // Remove explicit blur overlays we know about.
+      ['#alexia-age-gate','#twk-auth-modal','.twk-auth-backdrop','.agg-backdrop',
+       '.alexia-paywall-backdrop','.twerkhub-paywall-backdrop'].forEach(function(sel){
+        document.querySelectorAll(sel).forEach(function(el){
+          // If explicitly marked user-opened, leave it alone.
+          if (el.hasAttribute('data-user-opened')) return;
+          try { el.remove(); } catch(_){}
+        });
+      });
+      // Scan for ANY fixed-position element that covers the whole viewport AND
+      // has a backdrop-filter:blur on it. If we didn't mark it user-opened,
+      // strip its blur so the page is readable even if removal fails.
+      document.querySelectorAll('body > *').forEach(function(el){
+        if (el.hasAttribute('data-user-opened')) return;
+        var cs;
+        try { cs = getComputedStyle(el); } catch(_){ return; }
+        if (!cs) return;
+        var isFixed = cs.position === 'fixed';
+        var inset0 = parseFloat(cs.top) === 0 && parseFloat(cs.left) === 0 &&
+                     (el.offsetWidth >= window.innerWidth * .9) &&
+                     (el.offsetHeight >= window.innerHeight * .9);
+        var hasBlur = /blur\(/.test(cs.backdropFilter || '') ||
+                      /blur\(/.test(cs.webkitBackdropFilter || '') ||
+                      /blur\(/.test(cs.filter || '');
+        if (isFixed && inset0 && hasBlur) {
+          // Only nuke if it looks like an overlay (high z-index AND not part
+          // of our known topbar / tokens HUD).
+          var zi = parseInt(cs.zIndex, 10) || 0;
+          var isKnown = el.matches('.twerkhub-topbar, .twerkhub-tokens-hud, nav, header');
+          if (zi > 1000 && !isKnown) {
+            try { el.remove(); } catch(_){}
+          }
+        }
+      });
+      // Always release scroll locks — the site should never be unscrollable.
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    } catch(e) { console.warn('[twerkhub-inject] blur-kill failed', e); }
+  }
+  killBlurOverlays();
+  [300, 800, 1800].forEach(function(ms){
+    setTimeout(killBlurOverlays, ms);
   });
 
   // ── 5 · Go ───────────────────────────────────────────────────────────

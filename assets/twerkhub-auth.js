@@ -57,9 +57,16 @@
       'alexia_tokens_v1.welcomed','alexia_tokens_v1.tier',
       'twerkhub_tokens','twerkhub_tokens_seen_paths',
       'twerkhub_tokens_seen_vids','twerkhub_online_count_v2',
-      'twerkhub_viewed_vids'
+      'twerkhub_viewed_vids',
+      // Legacy profile identity keys — these were keeping "Anti" alive across
+      // logout/login cycles because profile.html read them as a fallback.
+      'alexia_forum_profile_v1',
+      'alexia_profile_cache_v1',
+      'alexia_profile_cache',
+      'alexia_auth_skipped'
     ];
     keys.forEach(function(k){ try { localStorage.removeItem(k); } catch(_){} });
+    try { sessionStorage.removeItem('alexia_auth_skipped'); } catch(_){}
   }
 
   function logout(){
@@ -182,6 +189,9 @@
     var root = document.createElement('div');
     root.id = 'twk-auth-modal';
     root.className = 'twk-auth-backdrop';
+    // Flag so the universal-inject blur-kill-switch DOESN'T remove this modal
+    // (it's being shown because the user clicked "Sign up", so it's legit).
+    root.setAttribute('data-user-opened', '1');
     root.innerHTML =
       '<form class="twk-auth-sheet" novalidate>' +
         '<button type="button" class="twk-auth-close" aria-label="Close" title="Maybe later">×</button>' +
