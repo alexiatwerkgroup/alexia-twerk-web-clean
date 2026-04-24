@@ -873,18 +873,40 @@ if ('serviceWorker' in navigator) {
   });
 })();
 
-/* ─── Logout ─── */
+/* ─── Logout · delegates to the unified TwerkhubAuth so EVERY session key
+       gets wiped (including alexia_current_user, token balance, tier, legacy
+       profile cache, and the auth-skipped session flag). Without this,
+       clicking Log out here left the new-auth session alive and the user
+       came back "logged in" silently. ─── */
 (function(){
   var btn = document.getElementById('logout-btn');
   if (!btn) return;
   btn.addEventListener('click', async function(){
     if (!confirm('Log out of this browser?')) return;
-    try { localStorage.removeItem('alexia_forum_profile_v1'); } catch(e){}
-    try { localStorage.removeItem('alexia_profile_state_v2'); } catch(e){}
+    // 1 · Supabase sign-out if that module happens to be loaded.
     try {
       if (window.supabase && window.__alexiaProfilePageClient) {
         await window.__alexiaProfilePageClient.auth.signOut();
       }
+    } catch(e){}
+    // 2 · Unified wipe via TwerkhubAuth — handles all keys consistently.
+    if (window.TwerkhubAuth && typeof window.TwerkhubAuth.logout === 'function') {
+      window.TwerkhubAuth.logout();
+      return;
+    }
+    // 3 · Fallback: nuke every known alexia/twerkhub key manually and reload.
+    try {
+      ['alexia_current_user','alexia_registered_users','alexia_forum_profile_v1',
+       'alexia_profile_state_v2','alexia_profile_cache_v1','alexia_profile_cache',
+       'alexia_auth_skipped',
+       'alexia_tokens_v1.balance','alexia_tokens_v1.total','alexia_tokens_v1.streak',
+       'alexia_tokens_v1.lastLogin','alexia_tokens_v1.registered',
+       'alexia_tokens_v1.visited','alexia_tokens_v1.videos','alexia_tokens_v1.shares',
+       'alexia_tokens_v1.welcomed','alexia_tokens_v1.tier',
+       'twerkhub_tokens','twerkhub_tokens_seen_paths','twerkhub_tokens_seen_vids',
+       'twerkhub_online_count_v2','twerkhub_viewed_vids'
+      ].forEach(function(k){ try { localStorage.removeItem(k); } catch(_){} });
+      try { sessionStorage.removeItem('alexia_auth_skipped'); } catch(_){}
     } catch(e){}
     location.href = '/';
   });

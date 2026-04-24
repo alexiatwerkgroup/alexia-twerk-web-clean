@@ -1,7 +1,7 @@
 /* ═══ TWERKHUB · AUTH / REGISTRATION ═══
- * v20260424-p3 · NON-BLOCKING — modal is opt-in only (Sign up chip), never
- *                 auto-shows. Also nukes stale modal overlays left over from
- *                 the old auto-gate version so users self-heal on reload.
+ * v20260424-p4 · BULLETPROOF logout (wipes every session key + hard reload),
+ *                 password-manager hardened form (nick field no longer gets
+ *                 hijacked by saved passwords), strict nick validation.
  *
  * Replaces the old "Anti (firestarter)" hardcoded identity. Now:
  *   1. When no user is logged in, the home portal shows a registration modal
@@ -70,10 +70,37 @@
   }
 
   function logout(){
-    clearCurrent();
-    wipeTokenState();
-    // Back to portal so the registration form shows.
-    location.href = '/';
+    // BULLETPROOF LOGOUT — sequence matters:
+    //   1. Clear the session key FIRST so if anything throws later, at
+    //      least the user is considered logged-out.
+    //   2. Wipe token/profile state.
+    //   3. Also purge any old Supabase session tokens that might be sitting
+    //      in localStorage under sb-* / supabase.auth.token keys.
+    //   4. Hard-navigate to "/" with a cache-busting query param so the
+    //      browser doesn't serve a stale HTML from the Service Worker that
+    //      still has the old user baked in.
+    try { clearCurrent(); } catch(_){}
+    try { wipeTokenState(); } catch(_){}
+    // Supabase-style tokens (if any auth integration ever set them)
+    try {
+      var all = Object.keys(localStorage);
+      all.forEach(function(k){
+        if (/^sb-|^supabase\.auth/i.test(k)) {
+          try { localStorage.removeItem(k); } catch(_){}
+        }
+      });
+    } catch(_){}
+    // Ensure nothing persists in sessionStorage either.
+    try { sessionStorage.clear(); } catch(_){}
+    // Kick the Service Worker so stale cached HTML doesn't re-hydrate the
+    // old session. We don't wait for it — best-effort.
+    try {
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type:'skip-waiting' });
+      }
+    } catch(_){}
+    // Hard navigation with a unique query so SW + browser BOTH revalidate.
+    location.replace('/?logout=' + Date.now());
   }
 
   // ── Registration flow ────────────────────────────────────────────────
@@ -89,6 +116,13 @@
     };
     if (!clean.name || !clean.email || !clean.nick) return { ok:false, error:'Missing required fields' };
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean.email)) return { ok:false, error:'Invalid email' };
+    // Password-manager defense: reject nick that looks like a password got
+    // injected (long + contains characters we'd never ask for). Allowed in
+    // nick: letters, digits, ._- and spaces. Anything else = suspected
+    // auto-filled password → block and ask the user to retype.
+    if (!/^[A-Za-z0-9_.\- ]{2,40}$/.test(clean.nick)) {
+      return { ok:false, error:'Nick can only contain letters, numbers, dots, dashes and underscores (2–40 chars). Your password manager might have auto-filled this field — please retype it manually.' };
+    }
 
     // Save locally.
     saveUser(clean);
@@ -192,21 +226,37 @@
     // Flag so the universal-inject blur-kill-switch DOESN'T remove this modal
     // (it's being shown because the user clicked "Sign up", so it's legit).
     root.setAttribute('data-user-opened', '1');
+    // SECURITY / UX NOTE on form attributes:
+    //   · This form does NOT collect a password — there are 3 fields (name,
+    //     email, nick). BUT browsers/password-managers aggressively treat
+    //     any input with autocomplete="username" as part of a login form
+    //     and will inject a password (or hijack the nick field with a
+    //     saved credential) → that's why users were seeing their password
+    //     leak into "nick".
+    //   · Fix: use `autocomplete="new-password"` is NOT safe (it triggers
+    //     the save-password prompt). Best is autocomplete="off" + the
+    //     Lastpass/1Password ignore hints + a real autocomplete value that
+    //     is NOT "username" (we use "nickname"). Adding data-lpignore +
+    //     data-1p-ignore + data-bwignore covers the big three managers.
+    //   · Also disabling autocapitalize on nick/email (browsers try to
+    //     capitalize nick → awful UX for usernames).
+    //   · autocomplete="off" on the <form> itself kills Chrome's sub-form
+    //     credential assumption.
     root.innerHTML =
-      '<form class="twk-auth-sheet" novalidate>' +
+      '<form class="twk-auth-sheet" novalidate autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-bwignore="true">' +
         '<button type="button" class="twk-auth-close" aria-label="Close" title="Maybe later">×</button>' +
         '<div class="twk-auth-crest">A·T</div>' +
         '<span class="twk-auth-eye">Private archive · Members only</span>' +
         '<h2 class="twk-auth-title">Make your <em>handle</em>.</h2>' +
-        '<p class="twk-auth-lede">Un nombre para saber cómo llamarte. Un email para mandarte los drops. Un nick que te represente adentro. Nada más, nada invasivo.</p>' +
+        '<p class="twk-auth-lede">Un nombre para saber cómo llamarte. Un email para mandarte los drops. Un nick que te represente adentro. No te pedimos contraseña — no hace falta.</p>' +
         '<div class="twk-auth-form">' +
-          '<div><label class="twk-auth-label" for="twk-auth-name">Your name</label><input class="twk-auth-input" id="twk-auth-name" name="name" type="text" required maxlength="80" placeholder="Como querés que te llame" autocomplete="given-name"></div>' +
-          '<div><label class="twk-auth-label" for="twk-auth-email">Email</label><input class="twk-auth-input" id="twk-auth-email" name="email" type="email" required maxlength="160" placeholder="you@domain.com" autocomplete="email" inputmode="email"></div>' +
-          '<div><label class="twk-auth-label" for="twk-auth-nick">Your nick (public)</label><input class="twk-auth-input" id="twk-auth-nick" name="nick" type="text" required maxlength="40" placeholder="ej: solo.collector" autocomplete="username"></div>' +
+          '<div><label class="twk-auth-label" for="twk-auth-name">Your name</label><input class="twk-auth-input" id="twk-auth-name" name="twk_display_name" type="text" required maxlength="80" placeholder="Como querés que te llame" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true"></div>' +
+          '<div><label class="twk-auth-label" for="twk-auth-email">Email</label><input class="twk-auth-input" id="twk-auth-email" name="twk_email" type="email" required maxlength="160" placeholder="you@domain.com" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="email" data-lpignore="true" data-1p-ignore="true" data-bwignore="true"></div>' +
+          '<div><label class="twk-auth-label" for="twk-auth-nick">Your nick (public)</label><input class="twk-auth-input" id="twk-auth-nick" name="twk_nick" type="text" required maxlength="40" minlength="2" pattern="[A-Za-z0-9_.\\- ]+" placeholder="ej: solo.collector" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true"></div>' +
           '<p class="twk-auth-error" id="twk-auth-error"></p>' +
           '<button type="submit" class="twk-auth-submit">Enter the archive · +200 tokens welcome →</button>' +
           '<button type="button" class="twk-auth-skip">Maybe later — let me browse first</button>' +
-          '<p class="twk-auth-tos">By entering, you confirm you are 18+ and accept our <a href="/tos.html" target="_blank" rel="noopener">terms</a> and <a href="/privacy.html" target="_blank" rel="noopener">privacy</a>.</p>' +
+          '<p class="twk-auth-tos">By entering, you confirm you are 18+ and accept our <a href="/tos.html" target="_blank" rel="noopener">terms</a> and <a href="/privacy.html" target="_blank" rel="noopener">privacy</a>. <strong>We never ask for a password.</strong></p>' +
         '</div>' +
         '<p class="twk-auth-legal">© Alexia Twerk Group · 18+ · 18 U.S.C. §2257 compliant</p>' +
       '</form>';
