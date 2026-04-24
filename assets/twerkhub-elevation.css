@@ -525,6 +525,30 @@ body.twerkhub-pl-page footer::before {
   font-feature-settings: "tnum" 1, "ss01" 1;
 }
 
+/* ═══ 26. VIEW TRANSITIONS API (Chrome 111+) ═══
+ * Smooth cross-fade + slide when navigating between pages of the
+ * same-origin site. Browsers without support ignore the @view-
+ * transition block without error.
+ */
+@view-transition { navigation: auto; }
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
+  animation-timing-function: cubic-bezier(0.22, 0.9, 0.38, 1);
+}
+::view-transition-old(root) {
+  animation-name: twk-vt-out;
+}
+::view-transition-new(root) {
+  animation-name: twk-vt-in;
+}
+@keyframes twk-vt-out {
+  to { opacity: 0; transform: translateY(-6px) scale(0.995); filter: blur(2px); }
+}
+@keyframes twk-vt-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.99); filter: blur(2px); }
+}
+
 /* ═══ 25. ENTRANCE ANIMATION FOR PLAYLIST CARDS ═══
  * Subtle stagger on first paint. Keeps it fast (400ms max).
  */

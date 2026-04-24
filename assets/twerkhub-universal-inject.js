@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · UNIVERSAL TOPBAR INJECTOR ═══
- * v20260424-p6
+ * v20260424-p8
  *
  * Purpose: ONE script to ensure every page in the platform — regardless of
  * whether someone edited it manually or it was auto-generated months ago —
@@ -32,7 +32,8 @@
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p5',
               page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p4',
               tokens_css:'20260424-p1', a11y:'20260424-p4',
-              elevation:'20260424-p1' };
+              elevation:'20260424-p2', cursor:'20260424-p1',
+              share:'20260424-p1', vitals:'20260424-p1' };
   // premium.js + premium.css share the same 'premium' version key; bumped
   // to p6 for the scroll-reveal rootMargin fix (playlist grids no longer
   // wait for viewport to unhide). sound bumped to p8 for auto-unmute on
@@ -147,6 +148,13 @@
     ensureJs(ASSET_BASE + 'twerkhub-mobile-nav.js?v=' + VER.mobile);
     ensureJs(ASSET_BASE + 'twerkhub-sound-on-interaction.js?v=' + VER.sound);
     ensureJs(ASSET_BASE + 'twerkhub-premium.js?v=' + VER.premium);
+    // Magnetic cursor — premium micro-interaction. Self-guards on touch
+    // devices and prefers-reduced-motion. Zero cost on mobile.
+    ensureJs(ASSET_BASE + 'twerkhub-cursor.js?v=' + VER.cursor);
+    // Social share widget — auto-mounts on blog + legal + playlist pages.
+    ensureJs(ASSET_BASE + 'twerkhub-share.js?v=' + VER.share);
+    // Core Web Vitals RUM — LCP/CLS/INP/FCP/TTFB beacon.
+    ensureJs(ASSET_BASE + 'twerkhub-vitals.js?v=' + VER.vitals);
     ensureJs(ASSET_BASE + 'twerkhub-auth.js?v=' + VER.auth);
   }
 
