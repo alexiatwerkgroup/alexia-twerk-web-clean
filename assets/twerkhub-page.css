@@ -932,8 +932,11 @@ body.twerkhub-pl-clean .twk-gated:hover .vthumb video{filter:none !important}
 .twerkhub-club-card:hover{transform:translateY(-4px);border-color:rgba(255,45,135,.45)}
 .twerkhub-club-pill{position:absolute;top:12px;left:12px;z-index:3;padding:5px 12px;border-radius:999px;background:linear-gradient(135deg,#ff6fa8,#9d4edd);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#fff;box-shadow:0 4px 10px rgba(255,45,135,.35)}
 .twerkhub-club-pill-new{background:linear-gradient(135deg,#ff2d87,#ff6fa8)}
-.twerkhub-club-thumb{aspect-ratio:3/4;background:#000;overflow:hidden;display:flex;align-items:flex-start;justify-content:center}
+.twerkhub-club-thumb{aspect-ratio:3/4;background:#000;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;position:relative}
 .twerkhub-club-thumb img{width:100%;height:100%;object-fit:contain;object-position:center top;display:block}
+/* Full-body portrait variant — tall 9:16 frame, cover from top so head stays visible */
+.twerkhub-club-thumb.twerkhub-club-thumb-fullbody{aspect-ratio:9/16}
+.twerkhub-club-thumb.twerkhub-club-thumb-fullbody img{object-fit:cover;object-position:center top}
 .twerkhub-club-thumb-empty{background:linear-gradient(135deg,#1a1f4d,#0a0d2a)}
 .twerkhub-club-thumb-green{background:linear-gradient(135deg,#0d3326,#0a1f1a)}
 .twerkhub-club-thumb-empty::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50%;aspect-ratio:1/1.2;border-radius:50% 50% 0 0;background:rgba(255,255,255,.05)}

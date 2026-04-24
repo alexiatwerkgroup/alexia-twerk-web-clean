@@ -32,7 +32,8 @@ import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 GOLD = ROOT / "playlist-twerk-hub-leaks.html"
-CACHE_BUST = "20260423-p3"
+CACHE_BUST = "20260424-p1"
+TOKENS_CACHE_BUST = "20260424-p1"
 
 
 def load_gold() -> str:
@@ -201,6 +202,18 @@ def build_leak(gold: str, cfg: dict) -> str:
         html,
     )
 
+    # --- Inject Token HUD (CSS in <head>, JS before </body>) ---
+    tokens_css_tag = (
+        f'\n<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v={TOKENS_CACHE_BUST}">'
+    )
+    if "twerkhub-tokens.css" not in html:
+        html = html.replace("</head>", tokens_css_tag + "\n</head>", 1)
+    tokens_js_tag = (
+        f'\n<script defer src="/assets/twerkhub-tokens.js?v={TOKENS_CACHE_BUST}"></script>'
+    )
+    if "twerkhub-tokens.js" not in html:
+        html = html.replace("</body>", tokens_js_tag + "\n</body>", 1)
+
     return html
 
 
@@ -342,6 +355,8 @@ def build_twerk_hub() -> str:
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
 
+<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v={TOKENS_CACHE_BUST}">
+
 <script type="application/ld+json">
 {jsonld_str}
 </script>
@@ -456,6 +471,7 @@ def build_twerk_hub() -> str:
 </script>
 
 <script defer src="/assets/global-brand.js?v={CACHE_BUST}-twerk-hub"></script>
+<script defer src="/assets/twerkhub-tokens.js?v={TOKENS_CACHE_BUST}"></script>
 </body>
 </html>
 '''
