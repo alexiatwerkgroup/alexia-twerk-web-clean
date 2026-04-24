@@ -184,6 +184,33 @@ button:focus-visible {
   color: #c7c7d4; /* ~7:1 on #05050a — AAA */
 }
 
+/* ═══ Force native cursor back — magnetic cursor killed 2026-04-24 ═══
+ * If a stale cached JS still adds `twk-cursor-on` to <html>, restore the
+ * native cursor and hide the synthetic dot/ring (if any survived).
+ */
+html.twk-cursor-on,
+html.twk-cursor-on body,
+html.twk-cursor-on a,
+html.twk-cursor-on button,
+html.twk-cursor-on [role="button"],
+html.twk-cursor-on input,
+html.twk-cursor-on textarea,
+html.twk-cursor-on .vcard,
+html.twk-cursor-on .twerkhub-fp-card,
+html.twk-cursor-on .twerkhub-btn,
+html.twk-cursor-on label {
+  cursor: auto !important;
+}
+a, button, [role="button"], .vcard, .twerkhub-fp-card, .twerkhub-btn,
+.twerkhub-fp-cta, .rk-item, [data-hot], [data-magnet] {
+  cursor: pointer !important;
+}
+.twk-cursor-dot,
+.twk-cursor-ring {
+  display: none !important;
+  visibility: hidden !important;
+}
+
 /* ═══ 11. Kill legacy 2023 `alexia-global-nav` — belt-and-suspenders ═══
  * Even if `alexia-unify.js` wins the race against our universal-inject
  * purge, the CSS below guarantees the old botonera cutre stays invisible

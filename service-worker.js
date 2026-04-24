@@ -18,9 +18,9 @@
 // assets so the user sees something fast AND the cache is silently refreshed
 // for next visit.
 // ─────────────────────────────────────────────────────────────────────────
-const CACHE_NAME = 'alexia-pwa-v1.1.3';
-const RUNTIME_CACHE = 'alexia-runtime-v1.1.3';
-const UNIVERSAL_INJECT_URL = '/assets/twerkhub-universal-inject.js?v=20260424-p8';
+const CACHE_NAME = 'alexia-pwa-v1.1.4';
+const RUNTIME_CACHE = 'alexia-runtime-v1.1.4';
+const UNIVERSAL_INJECT_URL = '/assets/twerkhub-universal-inject.js?v=20260424-p9';
 const OFFLINE_URL = '/';
 
 // Files that are part of the app shell and should be pre-cached on install.

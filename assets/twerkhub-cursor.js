@@ -14,6 +14,15 @@
  */
 (function () {
   'use strict';
+  // HARD KILL-SWITCH · 2026-04-24
+  // User reported severe home-page lag caused by the magnetic cursor's
+  // per-mousemove `elementFromPoint` + `getBoundingClientRect` calls.
+  // The module is disabled globally until we rewrite with a throttled
+  // mousemove (16ms rAF budget) + cached element lookup.
+  // To re-enable temporarily: set `window.__twerkhubCursorAllow = true`
+  // BEFORE this script loads.
+  if (!window.__twerkhubCursorAllow) return;
+
   if (window.__twerkhubCursorInit) return;
   window.__twerkhubCursorInit = true;
 
