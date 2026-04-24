@@ -61,9 +61,9 @@
       <a href="/" class="is-active" aria-current="page">Home</a>
       <a href="#private-models">Exclusive</a>
       <a href="#playlists">Playlists</a>
-      <a href="/top-100-twerk-videos.html">Top 100</a>
       <a href="/community.html">Community</a>
-      <a href="/membership.html">Tokens</a>
+      <a href="/membership.html">Membership</a>
+      <a href="/account.html">My Account</a>
       <a href="/profile.html">Profile</a>
     </div>
   </div>
@@ -450,6 +450,12 @@
       background:linear-gradient(135deg,#ffd693,#ffae4b);
       box-shadow:0 2px 8px rgba(255,180,84,.35);
     }
+    .twerkhub-coming-chip-vip{
+      color:#fff;border:1px solid rgba(157,78,221,.7);
+      background:linear-gradient(135deg,#9d4edd,#ff2d87);
+      box-shadow:0 2px 10px rgba(157,78,221,.45);
+      letter-spacing:.18em;
+    }
   </style>
   <div class="twerkhub-coming-grid">
     <!-- 1 · Jenny (1 week, AR 18, autoplay MP4, hover-unmute, poster from own frame) -->
@@ -474,7 +480,7 @@
         <div class="twerkhub-coming-drop" data-drop-days="7"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div>
       </div>
     </div>
-    <!-- 2 · Camila (2 weeks, AR 18, autoplay MP4, hover-unmute) -->
+    <!-- 2 · Camila (2 weeks, AR 18, autoplay MP4, hover-unmute, VIP-only chip) -->
     <div class="twerkhub-coming-card twerkhub-coming-card-c2">
       <div class="twerkhub-coming-pill">VERY SOON</div>
       <video class="twerkhub-coming-arch-video" autoplay muted loop playsinline preload="metadata"
@@ -491,12 +497,34 @@
         <div class="twerkhub-coming-chips">
           <span class="twerkhub-coming-chip twerkhub-coming-chip-gold">Custom</span>
           <span class="twerkhub-coming-chip twerkhub-coming-chip-scarce">Only 10 slots/mo</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-vip">VIPs only</span>
         </div>
         <div class="twerkhub-coming-drop" data-drop-days="14"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div>
       </div>
     </div>
-    <!-- 3 · Isabella (3 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c3"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@BELLA_COL · CO</span><h3>Isabella</h3><div class="twerkhub-coming-tag">COL · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="21"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <!-- 3 · Isabella (3 weeks, BRA 23, autoplay MP4, hover-unmute, try-on custom VIP-only) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c3">
+      <div class="twerkhub-coming-pill">VERY SOON</div>
+      <video class="twerkhub-coming-arch-video" autoplay muted loop playsinline preload="metadata"
+             poster="/assets/models/isabella-poster.jpg"
+             onmouseenter="try{this.muted=false;this.currentTime=0;this.play();}catch(_){}"
+             onmouseleave="try{this.muted=true;this.pause();}catch(_){}"
+             ontouchstart="try{this.muted=!this.muted;this.play();}catch(_){}">
+        <source src="/assets/models/isabella.mp4" type="video/mp4">
+      </video>
+      <div class="twerkhub-coming-meta">
+        <span class="twerkhub-coming-handle">@BELLA_BR · BR</span>
+        <h3>Isabella</h3>
+        <div class="twerkhub-coming-tag">BRA · 23 · OF VIP</div>
+        <div class="twerkhub-coming-chips">
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-gold">Custom</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-pink">Try-on</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-scarce">Only 10 slots/mo</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-vip">VIPs only</span>
+        </div>
+        <div class="twerkhub-coming-drop" data-drop-days="21"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div>
+      </div>
+    </div>
     <!-- 4 · Mariana (4 weeks) -->
     <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@MARI.COL · CO</span><h3>Mariana</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="28"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
     <!-- 5 · Salomé (5 weeks) -->

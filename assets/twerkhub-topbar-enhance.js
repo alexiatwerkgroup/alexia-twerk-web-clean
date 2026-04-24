@@ -32,6 +32,18 @@
   ];
 
   var STYLE = ''
+    // ── Topbar polish · prolijo y consistente cross-browser ──
+    + '.twerkhub-topbar,.snf,.site-nav-final{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);background:linear-gradient(180deg,rgba(5,5,10,.88),rgba(5,5,10,.72));border-bottom:1px solid rgba(255,255,255,.06);}'
+    + '.twerkhub-topbar-inner,.snf__i,.site-nav-final__inner{max-width:1480px;margin:0 auto;padding:12px 22px;}'
+    // Brand · crisp gradient sub-label, mono small
+    + '.twerkhub-brand,.twerkhub-pl-tb-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}'
+    + '.twerkhub-brand-sub,.twerkhub-pl-tb-brand-sub{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,111,168,.85);line-height:1;white-space:nowrap;}'
+    // Nav links · polished pills
+    + '.twerkhub-nav,.snf__l,.site-nav-final__links{display:inline-flex;align-items:center;gap:2px;flex-wrap:wrap;}'
+    + '.twerkhub-nav a,.snf__l a,.site-nav-final__links a{padding:8px 13px;border-radius:999px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(230,230,240,.78);text-decoration:none;border:1px solid transparent;transition:background .22s ease,color .22s ease,border-color .22s ease,transform .2s ease;white-space:nowrap;line-height:1;}'
+    + '.twerkhub-nav a:hover,.snf__l a:hover,.site-nav-final__links a:hover{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.08);transform:translateY(-1px);}'
+    + '.twerkhub-nav a.is-active,.twerkhub-nav a.active,.twerkhub-nav a[aria-current="page"],.snf__l a.is-active,.snf__l a.active,.site-nav-final__links a.is-active,.site-nav-final__links a.active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;border-color:rgba(255,45,135,.4);box-shadow:0 6px 18px rgba(255,45,135,.35);}'
+    + '.twerkhub-nav a.is-active::after,.twerkhub-nav a.active::after,.twerkhub-nav a[aria-current="page"]::after,.snf__l a.is-active::after,.site-nav-final__links a.is-active::after{display:none;}'
     // Layout: brand | nav (centered) | right-cluster
     + '.twerkhub-topbar-inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;}'
     + '.twerkhub-topbar-inner > .twerkhub-brand{justify-self:start;}'
@@ -48,8 +60,8 @@
     + '.twerkhub-online-pill .twerkhub-online-dot{width:7px;height:7px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;animation:twerkhub-online-pulse 1.8s ease-in-out infinite;}'
     + '.twerkhub-online-pill .twerkhub-online-count{color:#1ee08f;letter-spacing:.04em;}'
     + '@keyframes twerkhub-online-pulse{0%,100%{opacity:1}50%{opacity:.35}}'
-    // Kill any legacy online pill / music button so they don't duplicate
-    + '.snf__on,#snf-music-btn,.site-nav-final__online,.site-nav-final__music{display:none!important;}'
+    // Kill any legacy online pill / music button / ONLINE NOW 891 etc.
+    + '.snf__on,#snf-music-btn,.site-nav-final__online,.site-nav-final__music,.site-nav-final__dot,[data-alexia-online-count]{display:none!important;}'
     // Logo hover zoom — applies to EVERY nav shape · only the img scales
     // so the `Est. 2018` sub-label underneath stays in place and never gets
     // covered. transform-origin left keeps the growth to the right.
