@@ -79,15 +79,16 @@
 .goog-te-banner-frame,.skiptranslate,.goog-te-gadget-simple{display:none!important;visibility:hidden!important;}\
 body{top:0!important;}\
 html{margin-top:0!important;}\
-.twerkhub-locale-switch{position:fixed;top:18px;right:22px;z-index:9800;display:inline-flex;gap:2px;padding:4px;border-radius:999px;background:rgba(5,5,10,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);box-shadow:0 6px 20px rgba(0,0,0,.42);font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}\
-.twerkhub-locale-switch button{appearance:none;border:0;background:transparent;color:#c7c7d3;padding:6px 11px;border-radius:999px;font-size:10.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s,transform .2s;line-height:1;}\
+/* Default (integrated inside the nav via .twerkhub-locale-slot) */\
+.twerkhub-locale-switch{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:rgba(5,5,10,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);box-shadow:0 4px 14px rgba(0,0,0,.35);font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}\
+.twerkhub-locale-switch button{appearance:none;border:0;background:transparent;color:#c7c7d3;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s,transform .2s;line-height:1;}\
 .twerkhub-locale-switch button:hover{background:rgba(255,255,255,.06);color:#fff;}\
 .twerkhub-locale-switch button.is-active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;box-shadow:0 3px 10px rgba(255,45,135,.4);}\
 .twerkhub-locale-switch button.is-loading{opacity:.55;pointer-events:none;}\
-/* On narrow viewports the mobile hamburger takes the top-left and pages\
-   shrink — move the switcher down below the nav so it never overlaps. */\
-@media (max-width:880px){.twerkhub-locale-switch{top:auto;bottom:14px;right:12px;box-shadow:0 8px 22px rgba(0,0,0,.55);}}\
-@media (max-width:600px){.twerkhub-locale-switch button{padding:5px 9px;font-size:9.5px;letter-spacing:.14em;}}\
+/* Fallback: if no slot is found in the page, mount fixed top-right. */\
+.twerkhub-locale-switch.is-floating{position:fixed;top:18px;right:22px;z-index:9800;box-shadow:0 6px 20px rgba(0,0,0,.42);}\
+@media (max-width:880px){.twerkhub-locale-switch.is-floating{top:auto;bottom:14px;right:12px;}}\
+@media (max-width:600px){.twerkhub-locale-switch button{padding:4px 8px;font-size:9.5px;letter-spacing:.14em;}}\
 @media print{.twerkhub-locale-switch{display:none!important;}}\
 ';
 
@@ -179,7 +180,31 @@ html{margin-top:0!important;}\
       });
       wrap.appendChild(btn);
     });
-    document.body.appendChild(wrap);
+    // Prefer integration inside the navbar via the dedicated slot.
+    // The slot is created by twerkhub-topbar-enhance.js. If it isn't mounted
+    // yet, retry a couple of times; if it never appears (page without nav),
+    // fall back to the old fixed top-right position.
+    var attempts = 0;
+    function mountIntoSlot(){
+      var slot = document.querySelector('.twerkhub-locale-slot');
+      if (slot) {
+        if (!slot.contains(wrap)) slot.appendChild(wrap);
+        return true;
+      }
+      return false;
+    }
+    if (!mountIntoSlot()) {
+      var iv = setInterval(function(){
+        attempts++;
+        if (mountIntoSlot() || attempts > 12) { // ~3.6s worth of retries
+          clearInterval(iv);
+          if (!wrap.parentNode) {
+            wrap.classList.add('is-floating');
+            document.body.appendChild(wrap);
+          }
+        }
+      }, 300);
+    }
   }
 
   function init(){

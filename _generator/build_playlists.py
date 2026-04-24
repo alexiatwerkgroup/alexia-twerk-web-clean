@@ -226,6 +226,14 @@ def build_leak(gold: str, cfg: dict) -> str:
     if "twerkhub-sound-on-interaction.js" not in html:
         html = html.replace("</body>", sound_js_tag + "\n</body>", 1)
 
+    # topbar-enhance MUST load before the locale switcher so the .twerkhub-locale-slot
+    # exists when the switcher mounts.
+    topbar_enhance_tag = (
+        f'\n<script defer src="/assets/twerkhub-topbar-enhance.js?v={TOKENS_CACHE_BUST}"></script>'
+    )
+    if "twerkhub-topbar-enhance.js" not in html:
+        html = html.replace("</body>", topbar_enhance_tag + "\n</body>", 1)
+
     locale_js_tag = (
         f'\n<script defer src="/assets/twerkhub-locale-switcher.js?v={TOKENS_CACHE_BUST}"></script>'
     )
@@ -398,10 +406,11 @@ def build_twerk_hub() -> str:
     </a>
     <div class="twerkhub-pl-tb-nav">
       <a href="/">Home</a>
-      <a href="#">Exclusive</a>
+      <a href="/#private-models">Exclusive</a>
       <a href="/#playlists" class="is-active" aria-current="page">Playlists</a>
-      <a href="#">Tokens</a>
-      <a href="#">VR</a>
+      <a href="/top-100-twerk-videos.html">Top 100</a>
+      <a href="/community.html">Community</a>
+      <a href="/membership.html">Tokens</a>
       <a href="/profile.html">Profile</a>
     </div>
   </div>
@@ -899,8 +908,9 @@ def render_individual_video_page(yt_id, slug, title, description, canonical, dis
       <a href="/">Home</a>
       <a href="/#private-models">Exclusive</a>
       <a href="/playlist/" class="is-active" aria-current="page">Playlists</a>
+      <a href="/top-100-twerk-videos.html">Top 100</a>
+      <a href="/community.html">Community</a>
       <a href="/membership.html">Tokens</a>
-      <a href="#">VR</a>
       <a href="/profile.html">Profile</a>
     </div>
   </div>
@@ -946,6 +956,7 @@ def render_individual_video_page(yt_id, slug, title, description, canonical, dis
 <script defer src="/assets/global-brand.js?v={CACHE_BUST}"></script>
 <script defer src="/assets/twerkhub-tokens.js?v={TOKENS_CACHE_BUST}"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v={TOKENS_CACHE_BUST}"></script>
+<script defer src="/assets/twerkhub-topbar-enhance.js?v={TOKENS_CACHE_BUST}"></script>
 <script defer src="/assets/twerkhub-locale-switcher.js?v={TOKENS_CACHE_BUST}"></script>
 <script defer src="/assets/twerkhub-mobile-nav.js?v={TOKENS_CACHE_BUST}"></script>
 </body>
