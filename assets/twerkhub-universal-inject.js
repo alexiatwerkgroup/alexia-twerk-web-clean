@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · UNIVERSAL TOPBAR INJECTOR ═══
- * v20260424-p2
+ * v20260424-p3
  *
  * Purpose: ONE script to ensure every page in the platform — regardless of
  * whether someone edited it manually or it was auto-generated months ago —
@@ -31,10 +31,11 @@
   var VER = { tokens:'20260424-p11', topbar:'20260424-p8', locale:'20260424-p5',
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p5',
               page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p4',
-              tokens_css:'20260424-p1', a11y:'20260424-p1' };
-  // premium.js + premium.css share the same 'premium' version key; bumped to
-  // p5 for the eager-thumbs fix.
-  VER.premium = '20260424-p5';
+              tokens_css:'20260424-p1', a11y:'20260424-p2' };
+  // premium.js + premium.css share the same 'premium' version key; bumped
+  // to p6 for the scroll-reveal rootMargin fix (playlist grids no longer
+  // wait for viewport to unhide).
+  VER.premium = '20260424-p6';
 
   // ── 1 · Remove legacy nav markup ─────────────────────────────────────
   // The platform accumulated three generations of topbars over the years.
@@ -45,6 +46,9 @@
       '.snf',                            // 2025 generation full bar
       '.alexia-nav',                    // older catalog-page nav
       '.alexia-top-nav',                // even older catalog nav
+      '.alexia-global-nav',             // alexia-unify.js legacy 2023 nav (Home/Playlist/Community/Top100/…)
+      '.alexia-global-nav__inner',
+      '.alexia-online-pill',
       '#alexia-global-brand',           // global-brand.js injected logo row
       '#alexia-global-counters',        // global-counters.js token pill
       '[data-alexia-online-count]',    // the "891 online" / "ONLINE NOW 1" badge

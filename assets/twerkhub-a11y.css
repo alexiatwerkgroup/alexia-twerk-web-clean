@@ -183,3 +183,20 @@ button:focus-visible {
 .twerkhub-sub {
   color: #c7c7d4; /* ~7:1 on #05050a — AAA */
 }
+
+/* ═══ 11. Kill legacy 2023 `alexia-global-nav` — belt-and-suspenders ═══
+ * Even if `alexia-unify.js` wins the race against our universal-inject
+ * purge, the CSS below guarantees the old botonera cutre stays invisible
+ * everywhere. Same for the lingering `.alexia-online-pill` from that era.
+ */
+.alexia-global-nav,
+.alexia-global-nav__inner,
+.alexia-global-links,
+.alexia-online-pill,
+[data-alexia-online-count]:not(.twerkhub-topbar *) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}

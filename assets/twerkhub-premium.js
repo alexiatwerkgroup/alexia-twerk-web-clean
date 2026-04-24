@@ -33,6 +33,15 @@
       document.querySelectorAll('[data-twk-reveal],[data-twk-reveal-stagger]').forEach(revealEl);
       return;
     }
+    // Anti 2026-04-24 fix: users were reporting that grid thumbs stayed
+    // invisible until they scrolled down. Root cause: `[data-twk-reveal]`
+    // puts sections at `opacity:0` and only unhides them when the section
+    // scrolls into the viewport. On pages with 60+ cards in a single
+    // `<section>`, everything below the fold was blank on load.
+    // Fix: rootMargin expanded from `-12%` to `+1500px` so sections reveal
+    // long BEFORE they enter the viewport — effectively eager for anything
+    // within 1.5 screens of the top. Plus: always pre-reveal the first
+    // visible section so nothing is ever blank on first paint.
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         if (entry.isIntersecting) {
@@ -40,8 +49,16 @@
           io.unobserve(entry.target);
         }
       });
-    }, { rootMargin: '0px 0px -12% 0px', threshold: .08 });
-    document.querySelectorAll('[data-twk-reveal],[data-twk-reveal-stagger]').forEach(function(el){
+    }, { rootMargin: '1500px 0px 1500px 0px', threshold: 0 });
+    var all = document.querySelectorAll('[data-twk-reveal],[data-twk-reveal-stagger]');
+    // Pre-reveal archive/playlist grids so they never stay blank — the
+    // cards are the page's core content, hiding them is UX malpractice.
+    var EAGER_SEL = '.twerkhub-pl-grid-section, .twerkhub-pl-theater-main, .twerkhub-featured-playlists, #video-grid, .grid, .playlist-archive';
+    all.forEach(function(el){
+      if (el.matches && (el.matches(EAGER_SEL) || el.querySelector(EAGER_SEL))) {
+        revealEl(el);
+        return;
+      }
       io.observe(el);
     });
   }
