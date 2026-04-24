@@ -1,0 +1,545 @@
+/*!
+ * TWERKHUB · ELEVATION LAYER — $90M premium polish · 2026-04-24
+ * --------------------------------------------------------------
+ * Visual-only top layer. Stacks on top of twerkhub-page.css +
+ * twerkhub-polish.css + twerkhub-premium.css without touching
+ * any HTML. Adds the 20 moves the audit called out as missing
+ * compared to Linear/Stripe/Vercel/Framer/Figma tier sites.
+ *
+ * Applied globally — the SW universal-inject mounts this last
+ * so it wins the cascade on every page.
+ * --------------------------------------------------------------
+ */
+
+/* ═══ 1. PREMIUM FONT RENDERING ═══
+ * Better sub-pixel antialiasing + kerning + optical sizing on
+ * every page. Tabular numerals inside anything numeric.
+ */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1, "ss01" 1, "ss02" 1;
+  font-optical-sizing: auto;
+}
+[data-twk-count],
+.twerkhub-hh-cd-timer,
+.alexia-online-count,
+.twerkhub-stat-num,
+.token-balance,
+.twk-tokens,
+.rk-num,
+.twerkhub-live-count {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "zero" 1;
+  letter-spacing: -0.01em;
+}
+
+/* ═══ 2. AMBIENT AURORA BACKGROUND ═══
+ * Soft animated blobs behind every page. Lives in body::before
+ * so it doesn't interfere with content stacking. Filter-blurred
+ * orbs that drift slowly — the Vercel / Figma signature look.
+ */
+body.twerkhub-page::before,
+body.twerkhub-pl-page::before {
+  content: "";
+  position: fixed;
+  inset: -20vh -20vw;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60vw 50vh at 15% 10%, rgba(255, 45, 135, 0.18), transparent 60%),
+    radial-gradient(ellipse 55vw 45vh at 85% 85%, rgba(157, 78, 221, 0.14), transparent 60%),
+    radial-gradient(ellipse 50vw 40vh at 50% 50%, rgba(255, 180, 84, 0.08), transparent 65%);
+  filter: blur(60px) saturate(1.3);
+  animation: twk-aurora-drift 42s ease-in-out infinite alternate;
+  will-change: transform, filter;
+}
+@keyframes twk-aurora-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  50%  { transform: translate3d(-3vw, 2vh, 0) scale(1.08) rotate(2deg); }
+  100% { transform: translate3d(4vw, -3vh, 0) scale(1.04) rotate(-1deg); }
+}
+
+/* ═══ 3. NOISE GRAIN OVERLAY ═══
+ * Ultra-subtle SVG grain blended multiply over the whole viewport.
+ * Costs 0.5 KB base64. Prevents the "too-clean vector" look.
+ * 2% opacity so it reads as film grain not as static.
+ */
+body.twerkhub-page::after,
+body.twerkhub-pl-page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ═══ 4. MULTI-LAYER PREMIUM SHADOWS ═══
+ * Replace single-layer shadows with 3-layer stacks on the core
+ * card types. Depth cue matches top-tier products.
+ */
+.vcard,
+.twerkhub-fp-card,
+.twerkhub-club-card,
+.twerkhub-coming-card,
+.tier {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.30),
+    0 16px 40px rgba(0, 0, 0, 0.25);
+  transition:
+    transform 0.45s cubic-bezier(0.22, 0.9, 0.38, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 0.9, 0.38, 1),
+    border-color 0.3s ease,
+    filter 0.3s ease;
+}
+.vcard:hover,
+.twerkhub-fp-card:hover,
+.twerkhub-club-card:hover,
+.twerkhub-coming-card:hover,
+.tier:hover {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 12px 28px rgba(0, 0, 0, 0.32),
+    0 28px 68px rgba(255, 45, 135, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  filter: brightness(1.03) saturate(1.05);
+}
+
+/* ═══ 5. HOVER BLOOM ON CTAs ═══
+ * Every primary/gold button gains a glow halo + inner gleam
+ * on hover, with subtle upward lift. No JS.
+ */
+.twerkhub-btn-primary,
+.twerkhub-btn-gold,
+.twerkhub-fp-cta,
+.twerkhub-upgrade-btn {
+  position: relative;
+  isolation: isolate;
+  transition:
+    transform 0.28s cubic-bezier(0.2, 1.2, 0.3, 1),
+    box-shadow 0.32s ease,
+    filter 0.25s ease;
+}
+.twerkhub-btn-primary::before,
+.twerkhub-btn-gold::before,
+.twerkhub-fp-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(130deg, transparent 30%, rgba(255, 255, 255, 0.18) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.9s cubic-bezier(0.22, 0.9, 0.38, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+.twerkhub-btn-primary:hover,
+.twerkhub-btn-gold:hover,
+.twerkhub-fp-cta:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 6px 18px rgba(255, 45, 135, 0.35),
+    0 18px 44px rgba(255, 45, 135, 0.28),
+    inset 0 0 22px rgba(255, 255, 255, 0.08);
+  filter: brightness(1.08);
+}
+.twerkhub-btn-primary:hover::before,
+.twerkhub-btn-gold:hover::before,
+.twerkhub-fp-cta:hover::before {
+  transform: translateX(120%);
+}
+.twerkhub-btn-primary:active,
+.twerkhub-btn-gold:active,
+.twerkhub-fp-cta:active {
+  transform: translateY(-1px) scale(0.99);
+  filter: brightness(0.95);
+}
+
+/* ═══ 6. GLASSMORPH TOPBAR ═══
+ * The SAGRADA topbar gets proper depth glass: stronger blur,
+ * 1px top highlight, subtle bottom inner glow.
+ */
+.twerkhub-topbar {
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  background: rgba(5, 5, 10, 0.7) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ═══ 7. CUSTOM FOCUS RING GLOW ═══
+ * Concentric glow rings instead of a flat outline. Premium a11y.
+ */
+*:focus-visible {
+  outline: 2px solid var(--twerkhub-gold, #ffb454) !important;
+  outline-offset: 3px !important;
+  box-shadow:
+    0 0 0 6px rgba(255, 180, 84, 0.2),
+    0 0 0 14px rgba(255, 180, 84, 0.08) !important;
+  transition: box-shadow 0.18s ease;
+}
+.vcard:focus-visible,
+.twerkhub-fp-card:focus-visible,
+.twerkhub-btn:focus-visible {
+  box-shadow:
+    0 0 0 6px rgba(255, 45, 135, 0.22),
+    0 0 0 14px rgba(255, 45, 135, 0.09),
+    0 28px 68px rgba(255, 45, 135, 0.35) !important;
+}
+
+/* ═══ 8. ANIMATED GRADIENT BORDER ON HERO CARDS ═══
+ * Live border gradient for the signature featured card. Uses
+ * conic-gradient with @property fallback; slides on hover.
+ */
+.twerkhub-fp-card-featured {
+  position: relative;
+  z-index: 0;
+}
+.twerkhub-fp-card-featured::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(30, 224, 143, 0.9),
+    rgba(255, 45, 135, 0.9),
+    rgba(255, 180, 84, 0.9),
+    rgba(157, 78, 221, 0.9),
+    rgba(30, 224, 143, 0.9)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0.55;
+  animation: twk-rot-border 8s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+.twerkhub-fp-card-featured:hover::after { opacity: 1; animation-duration: 3s; }
+@keyframes twk-rot-border { to { transform: rotate(360deg); } }
+
+/* ═══ 9. COLOR-SHIFT BADGES ON HOVER ═══ */
+.twerkhub-fp-badge,
+.twerkhub-club-pill,
+.rank-badge,
+.twerkhub-hh-live {
+  transition: filter 0.4s ease, transform 0.3s ease;
+}
+.twerkhub-fp-card:hover .twerkhub-fp-badge,
+.twerkhub-club-card:hover .twerkhub-club-pill {
+  filter: hue-rotate(-12deg) brightness(1.08) saturate(1.15);
+  transform: scale(1.04);
+}
+
+/* ═══ 10. IMAGE REVEAL & ZOOM ═══
+ * Thumbs get a cinematic slow zoom on hover + subtle color boost.
+ * Lock aspect via isolation so transforms don't clip.
+ */
+.vthumb,
+.twerkhub-fp-thumb,
+.twerkhub-club-thumb {
+  isolation: isolate;
+  overflow: hidden;
+}
+.vthumb img,
+.twerkhub-fp-thumb img,
+.twerkhub-club-thumb img {
+  transition:
+    transform 1.2s cubic-bezier(0.22, 0.9, 0.38, 1),
+    filter 0.55s ease;
+  transform: scale(1.001); /* prevent 1px AA shimmer at rest */
+  will-change: transform;
+}
+.vcard:hover .vthumb img,
+.twerkhub-fp-card:hover .twerkhub-fp-thumb img,
+.twerkhub-club-card:hover .twerkhub-club-thumb img {
+  transform: scale(1.085);
+  filter: saturate(1.12) brightness(1.05) contrast(1.04);
+}
+/* Reveal a subtle vignette on hover for depth */
+.vthumb::after,
+.twerkhub-fp-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 80%, transparent 50%, rgba(0, 0, 0, 0.35) 100%);
+  opacity: 0;
+  transition: opacity 0.55s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+.vcard:hover .vthumb::after,
+.twerkhub-fp-card:hover .twerkhub-fp-thumb::after { opacity: 1; }
+
+/* ═══ 11. BRAND-TINTED SHIMMER SKELETON ═══
+ * Every shimmer now uses a pink-tinted sweep instead of flat gray.
+ */
+.skeleton-card,
+.vthumb:not(:has(img[src])),
+.twerkhub-shimmer {
+  background:
+    linear-gradient(
+      100deg,
+      rgba(20, 20, 32, 0.6) 30%,
+      rgba(255, 45, 135, 0.14) 50%,
+      rgba(20, 20, 32, 0.6) 70%
+    );
+  background-size: 300% 100%;
+  animation: twk-shimmer-brand 1.5s ease-in-out infinite;
+}
+@keyframes twk-shimmer-brand {
+  0%   { background-position: 300% 0; }
+  100% { background-position: -300% 0; }
+}
+
+/* ═══ 12. SCROLL-DRIVEN PROGRESS BAR ═══
+ * Modern browsers with scroll-timeline show a 2px neon bar that
+ * fills left→right as the user scrolls. Falls back gracefully.
+ */
+@supports (animation-timeline: scroll()) {
+  .twerkhub-topbar::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, #1ee08f, #ff2d87, #ffb454);
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: twk-scroll-progress linear;
+    animation-timeline: scroll();
+    animation-range: 0 100%;
+    z-index: 101;
+    pointer-events: none;
+  }
+  @keyframes twk-scroll-progress {
+    to { transform: scaleX(1); }
+  }
+}
+
+/* ═══ 13. PREMIUM SCROLLBAR ═══ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgba(5, 5, 10, 0.7); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255, 45, 135, 0.65), rgba(157, 78, 221, 0.65));
+  border-radius: 6px;
+  border: 2px solid rgba(5, 5, 10, 0.7);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(255, 45, 135, 1), rgba(157, 78, 221, 1));
+}
+* { scrollbar-width: thin; scrollbar-color: rgba(255, 45, 135, 0.65) rgba(5, 5, 10, 0.7); }
+
+/* ═══ 14. TYPOGRAPHY — display refinements ═══ */
+h1, h2, h3 {
+  text-wrap: balance;
+}
+p, li { text-wrap: pretty; }
+h1[class*="hero"],
+.twerkhub-home-hero h1,
+.twerkhub-pl-hero h1 {
+  letter-spacing: -0.025em;
+  text-shadow: 0 2px 40px rgba(255, 45, 135, 0.18);
+}
+em, .twerkhub-fp-title em, h2 em {
+  font-feature-settings: "ss01" 1;
+}
+
+/* ═══ 15. NAV LINK HOVER ═══
+ * Underline slides from left with gradient. Already on brand.
+ */
+.twerkhub-nav a {
+  position: relative;
+  transition: color 0.25s ease;
+}
+.twerkhub-nav a::after {
+  content: "";
+  position: absolute;
+  left: 12px; right: 12px; bottom: 8px;
+  height: 2px;
+  background: linear-gradient(90deg, #ff2d87, #ffb454);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.22, 0.9, 0.38, 1);
+  border-radius: 2px;
+}
+.twerkhub-nav a:hover::after,
+.twerkhub-nav a.is-active::after { transform: scaleX(1); }
+.twerkhub-nav a:hover { color: #fff; }
+
+/* ═══ 16. CARD TILT (3D pseudo) ═══
+ * CSS-only pseudo tilt via skew + subtle rotation on hover.
+ * Limited vs full 3D but feels alive.
+ */
+.vcard,
+.twerkhub-fp-card,
+.twerkhub-club-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+.vcard:hover,
+.twerkhub-fp-card:hover {
+  transform: translateY(-6px) scale(1.01) rotate(-0.2deg);
+}
+.twerkhub-fp-card-featured:hover {
+  transform: translateY(-8px) scale(1.008);
+}
+
+/* ═══ 17. GLOBAL SELECTION STYLING ═══ */
+::selection {
+  background: rgba(255, 45, 135, 0.5);
+  color: #fff;
+  text-shadow: 0 0 14px rgba(255, 45, 135, 0.6);
+}
+
+/* ═══ 18. ENHANCED LIVE-DOT PULSE ═══ */
+.twerkhub-hh-status-dot,
+.twerkhub-fp-live::before,
+.alexia-online-dot {
+  animation: twk-pulse-premium 2.4s ease-in-out infinite;
+  position: relative;
+}
+.twerkhub-hh-status-dot::before,
+.twerkhub-fp-live::before::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: inherit;
+  animation: twk-pulse-ring 2.4s ease-out infinite;
+  z-index: -1;
+}
+@keyframes twk-pulse-premium {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(30, 224, 143, 0.6); transform: scale(1); }
+  50%      { box-shadow: 0 0 0 6px rgba(30, 224, 143, 0); transform: scale(1.08); }
+}
+@keyframes twk-pulse-ring {
+  0%   { opacity: 0.9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+
+/* ═══ 19. HERO VIDEO CINEMATIC FRAME ═══
+ * Refines the hero media block with vignette + film-edge glow.
+ */
+.twerkhub-hh-media,
+.twerkhub-home-hero-media {
+  position: relative;
+  isolation: isolate;
+}
+.twerkhub-hh-media::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 45, 135, 0.45), rgba(157, 78, 221, 0.3), rgba(255, 180, 84, 0.4));
+  z-index: -1;
+  filter: blur(18px);
+  opacity: 0.65;
+  animation: twk-ember 5s ease-in-out infinite alternate;
+}
+@keyframes twk-ember {
+  0%   { opacity: 0.45; transform: scale(1); }
+  100% { opacity: 0.85; transform: scale(1.04); }
+}
+
+/* ═══ 20. SUBTLE LIFT ON STATS / COUNTERS ═══ */
+[data-twk-count],
+.twerkhub-stat-num,
+.token-balance-value {
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.2, 1.2, 0.3, 1), color 0.3s ease;
+}
+[data-twk-count]:hover,
+.twerkhub-stat-num:hover {
+  transform: translateY(-2px) scale(1.04);
+  color: #ffb454;
+}
+
+/* ═══ 21. REDUCED MOTION OVERRIDES ═══ */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after,
+  .twerkhub-fp-card-featured::after,
+  .twerkhub-hh-media::before {
+    animation: none !important;
+  }
+  .vcard:hover,
+  .twerkhub-fp-card:hover,
+  .twerkhub-club-card:hover {
+    transform: none !important;
+  }
+  .vcard:hover .vthumb img,
+  .twerkhub-fp-card:hover .twerkhub-fp-thumb img {
+    transform: none !important;
+  }
+}
+
+/* ═══ 22. EDGE POLISH — page bottom fade ═══ */
+body.twerkhub-page footer,
+body.twerkhub-pl-page footer,
+.twerkhub-pl-footer {
+  position: relative;
+}
+body.twerkhub-page footer::before,
+body.twerkhub-pl-page footer::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(180deg, transparent, rgba(5, 5, 10, 0.8));
+  pointer-events: none;
+}
+
+/* ═══ 23. CURSOR REFINEMENT ON PRIMARY ACTIONS ═══ */
+.vcard,
+.twerkhub-fp-card,
+.twerkhub-club-card,
+.twerkhub-btn-primary,
+.twerkhub-btn-gold,
+.twerkhub-fp-cta,
+.rk-item,
+[data-vid],
+[data-hot] {
+  cursor: pointer;
+}
+
+/* ═══ 24. KBD / CODE / PILLS get monospace polish ═══ */
+.twerkhub-kicker,
+.twerkhub-fp-kicker,
+.twerkhub-pl-kicker,
+.mono {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "ss01" 1;
+}
+
+/* ═══ 25. ENTRANCE ANIMATION FOR PLAYLIST CARDS ═══
+ * Subtle stagger on first paint. Keeps it fast (400ms max).
+ */
+@keyframes twk-card-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .twerkhub-fp-grid > .twerkhub-fp-card {
+    animation: twk-card-in 0.7s cubic-bezier(0.22, 0.9, 0.38, 1) both;
+  }
+  .twerkhub-fp-grid > .twerkhub-fp-card:nth-child(1) { animation-delay: 0ms; }
+  .twerkhub-fp-grid > .twerkhub-fp-card:nth-child(2) { animation-delay: 60ms; }
+  .twerkhub-fp-grid > .twerkhub-fp-card:nth-child(3) { animation-delay: 120ms; }
+  .twerkhub-fp-grid > .twerkhub-fp-card:nth-child(4) { animation-delay: 180ms; }
+  .twerkhub-fp-grid > .twerkhub-fp-card:nth-child(5) { animation-delay: 240ms; }
+  .twerkhub-fp-grid > .twerkhub-fp-card:nth-child(6) { animation-delay: 300ms; }
+}
