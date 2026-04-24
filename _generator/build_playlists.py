@@ -208,6 +208,12 @@ def build_leak(gold: str, cfg: dict) -> str:
     )
     if "twerkhub-tokens.css" not in html:
         html = html.replace("</head>", tokens_css_tag + "\n</head>", 1)
+
+    polish_css_tag = (
+        f'\n<link rel="stylesheet" href="/assets/twerkhub-polish.css?v={TOKENS_CACHE_BUST}">'
+    )
+    if "twerkhub-polish.css" not in html:
+        html = html.replace("</head>", polish_css_tag + "\n</head>", 1)
     tokens_js_tag = (
         f'\n<script defer src="/assets/twerkhub-tokens.js?v={TOKENS_CACHE_BUST}"></script>'
     )
@@ -374,6 +380,7 @@ def build_twerk_hub() -> str:
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
 
 <link rel="stylesheet" href="/assets/twerkhub-tokens.css?v={TOKENS_CACHE_BUST}">
+<link rel="stylesheet" href="/assets/twerkhub-polish.css?v={TOKENS_CACHE_BUST}">
 
 <script type="application/ld+json">
 {jsonld_str}
@@ -872,6 +879,7 @@ def render_individual_video_page(yt_id, slug, title, description, canonical, dis
 <link rel="stylesheet" href="/assets/twerkhub-page.css?v={CACHE_BUST}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
 <link rel="stylesheet" href="/assets/twerkhub-tokens.css?v={TOKENS_CACHE_BUST}">
+<link rel="stylesheet" href="/assets/twerkhub-polish.css?v={TOKENS_CACHE_BUST}">
 
 <script type="application/ld+json">
 {{"@context":"https://schema.org","@type":"VideoObject","name":"{safe_title}","description":"{safe_descr}","thumbnailUrl":"https://i.ytimg.com/vi/{yt_id}/maxresdefault.jpg","uploadDate":"2026-04-20","contentUrl":"https://www.youtube.com/watch?v={yt_id}","embedUrl":"https://www.youtube.com/embed/{yt_id}","url":"{safe_canon}","inLanguage":"en","isFamilyFriendly":false,"isPartOf":{{"@type":"CollectionPage","name":"Best Twerk Videos on YouTube","url":"https://alexiatwerkgroup.com/playlist/"}}}}

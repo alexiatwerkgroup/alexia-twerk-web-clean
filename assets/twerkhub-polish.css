@@ -1,0 +1,96 @@
+/* ═══ TWERKHUB · Global polish ═══
+ * Platform-wide visual consistency + UX upgrades. Loaded last so it wins
+ * conflicts. Zero new components — only refines what already exists.
+ * v20260424-p4
+ */
+
+/* ── 1. Global scroll + base ─────────────────────────────────────────── */
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;}
+
+/* ── 2. Focus states for keyboard users (a11y + looks sharper) ───────── */
+:focus-visible{outline:2px solid #1ee08f;outline-offset:3px;border-radius:6px;}
+button:focus-visible,a:focus-visible{outline-offset:4px;}
+
+/* ── 3. Selection color matches brand ────────────────────────────────── */
+::selection{background:rgba(255,45,135,.35);color:#fff;}
+::-moz-selection{background:rgba(255,45,135,.35);color:#fff;}
+
+/* ── 4. Custom scrollbar on the main document (Chromium) ─────────────── */
+html::-webkit-scrollbar{width:10px;}
+html::-webkit-scrollbar-track{background:#05050a;}
+html::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ff2d87,#9d4edd);border-radius:999px;border:2px solid #05050a;}
+html::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#ff6fa8,#b572e0);}
+
+/* ── 5. Smooth hover transitions default (if not already defined) ────── */
+a,button,.twerkhub-btn,.vcard,.rk-item,.twerkhub-fp-card,.twerkhub-club-card{
+  transition-property:transform,box-shadow,border-color,background,color,opacity;
+  transition-duration:.28s;
+  transition-timing-function:cubic-bezier(.2,1.1,.3,1);
+}
+
+/* ── 6. Anti-FOUC for lazy images: fade in as they load ──────────────── */
+img[loading="lazy"]{opacity:0;animation:twerkhub-img-in .5s ease .05s forwards;}
+@keyframes twerkhub-img-in{to{opacity:1;}}
+
+/* ── 7. Nav brand hover nudge + active underline ─────────────────────── */
+.twerkhub-topbar .twerkhub-brand{transition:transform .3s ease;}
+.twerkhub-topbar .twerkhub-brand:hover{transform:scale(1.03);}
+.twerkhub-topbar .twerkhub-nav a.is-active::after,
+.twerkhub-topbar .twerkhub-nav a.active::after,
+.twerkhub-topbar .twerkhub-nav a[aria-current="page"]::after{
+  content:"";display:block;height:2px;margin:4px auto 0;width:70%;border-radius:2px;
+  background:linear-gradient(90deg,#ff2d87,#9d4edd);
+}
+
+/* ── 8. Card hover: subtle lift on every card type in the site ───────── */
+.vcard:hover,.twerkhub-fp-card:hover,.twerkhub-club-card:hover,.tier:hover,.twerkhub-coming-card:hover{
+  box-shadow:0 26px 60px rgba(255,45,135,.18),0 2px 8px rgba(0,0,0,.4);
+}
+
+/* ── 9. Global CTA sheen on primary buttons ──────────────────────────── */
+.twerkhub-btn-primary,.tier__cta--vip,.tier__cta--elite,.tier__cta--basic{
+  position:relative;overflow:hidden;
+}
+.twerkhub-btn-primary::before,.tier__cta--vip::before,.tier__cta--elite::before{
+  content:"";position:absolute;top:0;left:-80%;width:60%;height:100%;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);
+  transform:skewX(-20deg);transition:left .6s ease;pointer-events:none;
+}
+.twerkhub-btn-primary:hover::before,.tier__cta--vip:hover::before,.tier__cta--elite:hover::before{
+  left:120%;
+}
+
+/* ── 10. Prevent horizontal overflow regressions ─────────────────────── */
+body{overflow-x:hidden;}
+section,header,main,footer{max-width:100%;}
+
+/* ── 11. Image placeholder while loading (dark brand shimmer) ────────── */
+.vthumb,.twerkhub-fp-thumb,.twerkhub-pl-thumb,.twerkhub-club-thumb,.rk-thumb{
+  background:linear-gradient(90deg,#0a0a14 0%,#14141f 50%,#0a0a14 100%);
+  background-size:200% 100%;
+  animation:twerkhub-shimmer 3.6s linear infinite;
+}
+@keyframes twerkhub-shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* ── 12. Ticker: smoother edge fade ─────────────────────────────────── */
+.twerkhub-ticker{mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);}
+
+/* ── 13. Safe area insets on iOS Safari ──────────────────────────────── */
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);}
+
+/* ── 14. Token HUD: nudge on mobile so it doesn't overlap the switcher ─ */
+@media (max-width:880px){
+  .twerkhub-tokens-hud{bottom:68px;}
+}
+
+/* ── 15. Better "is-active" indicator in mobile drawer ──────────────── */
+.twerkhub-mnav-drawer a.is-active{box-shadow:0 0 0 2px rgba(255,45,135,.15);}
+
+/* ── 16. Kill any legacy .snf__on "ONLINE NOW" pills that might leak ─── */
+.snf__on,#snf-music-btn{display:none!important;}

@@ -10,11 +10,14 @@
 
 <link rel="stylesheet" href="/assets/elite-tokens.css">
 <link rel="stylesheet" href="/assets/elite-components.css">
+<link rel="stylesheet" href="/assets/twerkhub-page.css?v=20260424-p4">
+<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p1">
+<link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
 
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:var(--elite-bg);color:var(--elite-text);font-family:var(--elite-font-sans);min-height:100vh}
-  body{padding-top:90px;overflow-x:hidden}
+  body{overflow-x:hidden}
 
   /* ── HERO ─────────────────────────────────────────────────────────────── */
   .mbh{max-width:1200px;margin:0 auto;padding:64px 32px 40px;text-align:center;position:relative}
@@ -31,8 +34,9 @@
   @keyframes pulse{0%,100%{opacity:.7}50%{opacity:1}}
 
   /* ── TIERS GRID ───────────────────────────────────────────────────────── */
-  .tiers{max-width:1200px;margin:0 auto;padding:32px 32px 64px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-  @media(max-width:960px){.tiers{grid-template-columns:1fr;max-width:480px}}
+  .tiers{max-width:1320px;margin:0 auto;padding:32px 26px 64px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  @media(max-width:1200px){.tiers{grid-template-columns:repeat(2,1fr);max-width:900px}}
+  @media(max-width:680px){.tiers{grid-template-columns:1fr;max-width:480px}}
 
   .tier{position:relative;background:linear-gradient(170deg,var(--elite-bg-soft) 0%,var(--elite-bg-card) 100%);
     border:1px solid var(--elite-line);border-radius:22px;padding:36px 28px 32px;display:flex;flex-direction:column;
@@ -124,23 +128,23 @@
 </head>
 <body>
 
-<!-- GLOBAL NAV — mirrors index.html .snf -->
-<div class="snf"><div class="snf__i">
-  <button type="button" id="snf-music-btn" class="site-nav-final__music"
-    style="appearance:none;display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;border:1px solid rgba(0,255,170,.28);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02));color:#fff;font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;flex-shrink:0;cursor:pointer;font-family:inherit;line-height:1">
-    <span style="width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,.3);display:inline-block"></span>
-    <span id="snf-music-lbl">MUSIC ON</span>
-  </button>
-  <nav class="snf__l" aria-label="Main">
-    <a href="/">Home</a>
-    <a href="/#private-models">Exclusive</a>
-    <a href="/#playlists">Playlists</a>
-    <a href="/membership.html" class="is-active">Tokens</a>
-    <a href="#">VR</a>
-    <a href="/profile.html">Profile</a>
-  </nav>
-  <div class="snf__on"><span class="snf__dot"></span><span>ONLINE NOW</span><span>891</span></div>
-</div></div>
+<!-- GLOBAL NAV — same markup as index.html for visual consistency -->
+<nav class="twerkhub-topbar" aria-label="Primary">
+  <div class="twerkhub-topbar-inner">
+    <a class="twerkhub-brand" href="/" aria-label="Twerkhub · home">
+      <img class="twerkhub-logo" src="/logo-twerkhub.png" alt="Twerkhub" decoding="async" width="44" height="44">
+      <span class="twerkhub-brand-sub">TWERKHUB · Est. 2018</span>
+    </a>
+    <div class="twerkhub-nav">
+      <a href="/">Home</a>
+      <a href="/#private-models">Exclusive</a>
+      <a href="/#playlists">Playlists</a>
+      <a href="/membership.html" class="is-active" aria-current="page">Tokens</a>
+      <a href="#">VR</a>
+      <a href="/profile.html">Profile</a>
+    </div>
+  </div>
+</nav>
 
 <!-- ═══════ HERO ═══════ -->
 <header class="mbh">
@@ -150,67 +154,81 @@
   <div class="mbh__stat"><span class="dot"></span>891 members online · 3 doors below</div>
 </header>
 
-<!-- ═══════ TIERS ═══════ -->
+<!-- ═══════ TIERS · 4 levels, matches the home page ═══════ -->
 <section class="tiers" aria-label="Membership tiers">
 
-  <!-- BASIC -->
+  <!-- TIER 01 · BASIC -->
   <article class="tier tier--basic">
     <span class="tier__badge">Tier 01 · Basic</span>
-    <h2 class="tier__name">The Doorway</h2>
-    <p class="tier__pitch">Free to join. Earn your way deeper with daily tokens and streak bonuses.</p>
+    <h2 class="tier__name">Basic</h2>
+    <p class="tier__pitch">Free to join. Access the public archive and start earning tokens from day one.</p>
     <div class="tier__price">
-      <span class="cur">$</span><span class="amt">0</span><span class="per">/ forever</span>
+      <span class="cur"></span><span class="amt">FREE</span><span class="per">· register</span>
     </div>
-    <p class="tier__alt">+ <strong>200 tokens</strong> instant welcome bonus</p>
+    <p class="tier__alt">or <strong>100 tokens</strong></p>
     <ul class="tier__feats">
-      <li>Free archive access (275 videos)</li>
-      <li>Daily login streak rewards</li>
-      <li><span class="em">+200 tokens</span> on registration</li>
-      <li><span class="em">+50/day</span> login streak</li>
-      <li>Discord general channel</li>
+      <li>590+ free videos</li>
+      <li>4 public playlists</li>
+      <li>Discord general</li>
+      <li>Basic token earning</li>
     </ul>
-    <a class="tier__cta tier__cta--basic" href="/alexia-twerk-leaks.html">Start Free · Claim 200 tokens</a>
+    <a class="tier__cta tier__cta--basic" href="/profile.html">Register free</a>
   </article>
 
-  <!-- VIP · FEATURED -->
+  <!-- TIER 02 · MEDIUM -->
+  <article class="tier tier--basic">
+    <span class="tier__badge">Tier 02 · Medium</span>
+    <h2 class="tier__name">Medium</h2>
+    <p class="tier__pitch">Early drops, priority queue on customs, VIP Discord access — the starter upgrade.</p>
+    <div class="tier__price">
+      <span class="cur">$</span><span class="amt">9.99</span><span class="per">/ month</span>
+    </div>
+    <p class="tier__alt">or <strong>500 tokens</strong></p>
+    <ul class="tier__feats">
+      <li>Early drops (48h head start)</li>
+      <li>1 custom request/year</li>
+      <li>VIP Discord channels</li>
+      <li><span class="em">Token multiplier ×1.5</span></li>
+    </ul>
+    <a class="tier__cta tier__cta--basic" href="#checkout-medium" data-tier="medium" data-price="9.99">Get Medium →</a>
+  </article>
+
+  <!-- TIER 03 · PREMIUM · featured "MOST POPULAR" -->
   <article class="tier tier--vip tier--featured">
-    <span class="tier__badge">Tier 02 · VIP</span>
-    <h2 class="tier__name">The Inner Room</h2>
-    <p class="tier__pitch">Alexia's starter drop, weekly exclusive clips, VIP Discord, and direct DM queue priority.</p>
+    <span class="tier__badge">Tier 03 · Premium</span>
+    <h2 class="tier__name">Premium</h2>
+    <p class="tier__pitch">All private models, 3 customs/year, the 1,500-video 4K vault, token multiplier ×2.</p>
     <div class="tier__price">
-      <span class="cur">$</span><span class="amt">19</span><span class="per">/ month</span>
+      <span class="cur">$</span><span class="amt">29.99</span><span class="per">/ month</span>
     </div>
-    <p class="tier__alt">or <strong>4,000 tokens</strong> one-time unlock</p>
+    <p class="tier__alt">or <strong>2,000 tokens</strong></p>
     <ul class="tier__feats">
-      <li><span class="em">Alexia's Starter Pack</span> (5 exclusive clips)</li>
-      <li>Weekly drop before public release</li>
-      <li>VIP Discord role & #inner-room channel</li>
-      <li>Early access to merch & collabs</li>
-      <li>Priority reply in Alexia's DMs</li>
-      <li>Ad-free, uncompressed playback</li>
+      <li><span class="em">ALL private models</span></li>
+      <li>3 customs/year · priority queue</li>
+      <li>1,500 4K vault (TTL)</li>
+      <li>Private Telegram group</li>
+      <li><span class="em">Token multiplier ×2</span></li>
     </ul>
-    <a class="tier__cta tier__cta--vip" href="#checkout-vip" data-tier="vip" data-price="19">Join VIP · $19/mo</a>
+    <a class="tier__cta tier__cta--vip" href="#checkout-premium" data-tier="premium" data-price="29.99">Unlock Premium →</a>
   </article>
 
-  <!-- ELITE -->
+  <!-- TIER 04 · VIP TOP · gold ribbon "★ TOP TIER" -->
   <article class="tier tier--elite">
-    <span class="tier__badge">Tier 03 · Elite</span>
-    <h2 class="tier__name">The Private Circle</h2>
-    <p class="tier__pitch">Everything in VIP + custom content, direct line to Alexia, and the full roster of creadores verificados (OnlyFans linked).</p>
+    <span class="tier__badge">Tier 04 · VIP Top</span>
+    <h2 class="tier__name">VIP Top</h2>
+    <p class="tier__pitch">Meet &amp; greet, 6 customs/year with instant delivery, personal concierge, VR early access.</p>
     <div class="tier__price">
-      <span class="cur">$</span><span class="amt">49</span><span class="per">/ month</span>
+      <span class="cur">$</span><span class="amt">99.99</span><span class="per">/ month</span>
     </div>
-    <p class="tier__alt">invite priority + custom request quota</p>
+    <p class="tier__alt">or <strong>10,000 tokens</strong></p>
     <ul class="tier__feats">
-      <li><span class="em">Everything in VIP</span></li>
-      <li>Custom clip request (1/month)</li>
-      <li>Full creator roster access · OnlyFans linked</li>
-      <li>Direct DM to Alexia (same-day reply)</li>
-      <li>Elite Discord role & private voice rooms</li>
-      <li>First-drop access on every new pack</li>
-      <li>No queue · No wait · No filter</li>
+      <li>★ 1-day Meet &amp; Greet · any model</li>
+      <li>★ 6 customs/year · instant delivery</li>
+      <li>★ Personal concierge on Discord</li>
+      <li>★ VR videos early access</li>
+      <li><span class="em">★ Token multiplier ×3</span></li>
     </ul>
-    <a class="tier__cta tier__cta--elite" href="#checkout-elite" data-tier="elite" data-price="49">Join Elite · $49/mo</a>
+    <a class="tier__cta tier__cta--elite" href="#checkout-vip-top" data-tier="vip-top" data-price="99.99">Become VIP →</a>
   </article>
 
 </section>
