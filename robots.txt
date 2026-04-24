@@ -14,7 +14,8 @@ Disallow: /test-
 Disallow: /debug-
 Disallow: /_
 
-# Sitemaps (index + video sitemap separately registered)
+# Sitemaps (index + video + image sitemaps separately registered)
 Sitemap: https://alexiatwerkgroup.com/sitemap-index.xml
 Sitemap: https://alexiatwerkgroup.com/sitemap.xml
 Sitemap: https://alexiatwerkgroup.com/sitemap-videos.xml
+Sitemap: https://alexiatwerkgroup.com/sitemap-images.xml

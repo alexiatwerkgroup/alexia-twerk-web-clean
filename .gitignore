@@ -28,3 +28,34 @@ testwrite.txt
 textareas.txt
 olve*
 tatus*
+
+# 🔐 SECRETS · NEVER COMMIT
+# Local credentials reference (each developer has their own copy)
+SECRETS-LOCAL.md
+SECRETS.md
+secrets.md
+.secrets
+
+# Environment variables (local only · production goes in Cloudflare Pages dashboard)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Common credential files that should never reach git
+credentials.json
+credentials.txt
+.credentials
+*.pem
+*.key
+id_rsa
+id_ed25519
+serviceAccount.json
+firebase-key.json
+gcp-credentials.json
+aws-credentials
+
+# IDE secret stores
+.vscode/settings.json.local
+.idea/workspace.xml
