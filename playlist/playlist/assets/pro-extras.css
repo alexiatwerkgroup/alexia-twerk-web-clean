@@ -1,0 +1,73 @@
+
+/* === Alexia Pro Extras v3 === */
+:root{
+  --pro-accent:#d84b71;
+  --pro-accent-2:#7b4dff;
+  --pro-glass:rgba(255,255,255,.05);
+  --pro-line:rgba(255,255,255,.10);
+  --pro-shadow:0 20px 60px rgba(0,0,0,.30);
+}
+body.mood-club{--pro-accent:#ff476f;--pro-accent-2:#9a5cff}
+body.mood-studio{--pro-accent:#4ddcff;--pro-accent-2:#6dd6a1}
+body.mood-archive{--pro-accent:#e4b25b;--pro-accent-2:#9670ff}
+
+.pro-mood-switch{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.pro-mood-btn{appearance:none;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);color:#fff;border-radius:999px;padding:9px 14px;font:inherit;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:.18s}
+.pro-mood-btn:hover,.pro-mood-btn.is-active{background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.05));border-color:rgba(255,255,255,.22);box-shadow:0 0 0 1px rgba(255,255,255,.02) inset,0 10px 30px rgba(0,0,0,.18)}
+
+.pro-portal{position:fixed;inset:0;background:rgba(3,5,8,.84);backdrop-filter:blur(12px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:.25s}
+.pro-portal.is-open{opacity:1;pointer-events:auto}
+.pro-portal-card{width:min(860px,100%);padding:28px;background:linear-gradient(180deg,rgba(13,14,20,.96),rgba(7,8,12,.96));border:1px solid rgba(255,255,255,.08);border-radius:28px;box-shadow:0 32px 120px rgba(0,0,0,.48)}
+.pro-portal-card h2{margin:0 0 10px;font-size:clamp(30px,4vw,50px);line-height:1.02}
+.pro-portal-card p{margin:0;color:rgba(255,255,255,.74);line-height:1.65;max-width:720px}
+.pro-portal-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:24px}
+.pro-portal-link{display:flex;flex-direction:column;gap:10px;padding:18px 18px 20px;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);color:#fff;box-shadow:var(--pro-shadow);transition:.2s;text-decoration:none}
+.pro-portal-link:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.18)}
+.pro-portal-link strong{font-size:18px}
+.pro-close{margin-top:18px;border:1px solid rgba(255,255,255,.10);background:#11151d;color:#fff;border-radius:999px;padding:12px 18px;font:inherit;cursor:pointer}
+
+.pro-editorial{margin:34px 0 0}
+.pro-editorial h3,.pro-because h3{margin:0 0 14px;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+.pro-editorial-grid,.pro-because-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.pro-collection,.pro-because-card{display:block;padding:18px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border:1px solid rgba(255,255,255,.08);box-shadow:var(--pro-shadow);color:#fff;text-decoration:none;transition:.18s}
+.pro-collection:hover,.pro-because-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.18)}
+.pro-collection small,.pro-because-card small{display:block;margin-top:8px;color:rgba(255,255,255,.64);line-height:1.55}
+.pro-chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pro-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#f3f4f6}
+
+.pro-card-enhanced{position:relative;overflow:hidden}
+.pro-card-enhanced .thumb,.pro-card-enhanced .pro-thumb-wrap{position:relative;overflow:hidden}
+.pro-card-enhanced .thumb img,.pro-card-enhanced .pro-alt-thumb{display:block;width:100%;height:auto;transition:transform .35s ease,opacity .35s ease}
+.pro-card-enhanced:hover .thumb img{transform:scale(1.04)}
+.pro-alt-thumb{position:absolute;inset:0;opacity:0;object-fit:cover;pointer-events:none}
+.pro-card-enhanced:hover .pro-alt-thumb{opacity:.98}
+.pro-heatline{position:absolute;left:10px;right:10px;bottom:10px;height:4px;border-radius:999px;background:linear-gradient(90deg,var(--pro-accent),#ffb05a);opacity:.88;box-shadow:0 0 18px rgba(255,81,81,.28)}
+.pro-preview-label{display:none !important;opacity:0 !important;pointer-events:none !important}
+.pro-card-enhanced:hover .pro-preview-label{display:none !important;opacity:0 !important;transform:none !important}
+a.is-watched,.card.is-watched,.mini-card.is-watched{box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
+.pro-watched{position:absolute;left:12px;top:12px;z-index:3;padding:6px 10px;border-radius:999px;background:rgba(5,7,10,.82);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.pro-rank-move{margin-left:auto;padding:5px 8px;border-radius:999px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(255,255,255,.08)}
+.pro-rank-move.up{color:#9ff2bd;background:rgba(28,71,44,.36)}
+.pro-rank-move.same{color:#e8eaed;background:rgba(255,255,255,.06)}
+.pro-rank-move.down{color:#ffb8c4;background:rgba(99,32,48,.36)}
+
+body.cinema-focus .sidepanel,
+body.cinema-focus .related,
+body.cinema-focus .list,
+body.cinema-focus .grid,
+body.cinema-focus header,
+body.cinema-focus nav{opacity:.2;filter:blur(1px);transition:.25s}
+body.cinema-focus iframe,
+body.cinema-focus .player,
+body.cinema-focus .hero{opacity:1!important;filter:none!important}
+.pro-cinema-toggle{margin-top:14px;border:1px solid rgba(255,255,255,.12);background:#10141c;color:#fff;border-radius:999px;padding:10px 14px;font:inherit;cursor:pointer}
+
+.pro-live-pulse{position:absolute;top:12px;right:12px;width:10px;height:10px;border-radius:50%;background:var(--pro-accent);box-shadow:0 0 0 0 rgba(255,65,110,.55);animation:proPulse 1.9s infinite}
+@keyframes proPulse{0%{box-shadow:0 0 0 0 rgba(255,65,110,.6)}70%{box-shadow:0 0 0 16px rgba(255,65,110,0)}100%{box-shadow:0 0 0 0 rgba(255,65,110,0)}}
+
+@media (max-width:1100px){
+  .pro-editorial-grid,.pro-because-grid,.pro-portal-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:720px){
+  .pro-editorial-grid,.pro-because-grid,.pro-portal-actions{grid-template-columns:1fr}
+}

@@ -182,6 +182,160 @@
   </div>
 </section>
 
+<!-- ═══ PLAYLISTS · featured · 6 cards ═══ -->
+<section class="twerkhub-featured-playlists" id="playlists" aria-label="Featured playlists">
+  <style>
+    .twerkhub-featured-playlists{max-width:1320px;margin:70px auto;padding:0 26px}
+    .twerkhub-fp-head{text-align:center;margin-bottom:32px}
+    .twerkhub-fp-head h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,4vw,52px);font-weight:900;line-height:1.05;letter-spacing:-.02em;margin:14px 0 14px}
+    .twerkhub-fp-head h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .twerkhub-fp-head p{color:#c7c7d3;font-size:16px;max-width:640px;margin:0 auto}
+    .twerkhub-fp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:30px}
+    @media (max-width:1100px){.twerkhub-fp-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:680px){.twerkhub-fp-grid{grid-template-columns:1fr}}
+    .twerkhub-fp-card{position:relative;display:block;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.7);transition:transform .4s cubic-bezier(.2,1.2,.3,1),border-color .3s,box-shadow .3s;isolation:isolate;min-height:320px}
+    .twerkhub-fp-card:hover{transform:translateY(-6px);border-color:rgba(255,45,135,.55);box-shadow:0 24px 55px rgba(255,45,135,.22)}
+    .twerkhub-fp-card-featured{grid-column:span 2;min-height:420px;border-color:rgba(30,224,143,.35);background:linear-gradient(135deg,rgba(30,224,143,.06),rgba(255,45,135,.06),rgba(157,78,221,.06))}
+    .twerkhub-fp-card-featured:hover{border-color:rgba(30,224,143,.75);box-shadow:0 26px 60px rgba(30,224,143,.28)}
+    @media (max-width:1100px){.twerkhub-fp-card-featured{grid-column:span 2}}
+    @media (max-width:680px){.twerkhub-fp-card-featured{grid-column:span 1;min-height:360px}}
+    .twerkhub-fp-thumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+    .twerkhub-fp-card-featured .twerkhub-fp-thumb{aspect-ratio:16/8}
+    .twerkhub-fp-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease;will-change:transform}
+    .twerkhub-fp-card:hover .twerkhub-fp-thumb img{transform:scale(1.06)}
+    .twerkhub-fp-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.9) 100%)}
+    .twerkhub-fp-badge{position:absolute;top:14px;left:14px;padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#fff;z-index:3}
+    .twerkhub-fp-badge-signature{background:linear-gradient(135deg,#1ee08f,#ffb454);color:#031a11;box-shadow:0 6px 18px rgba(30,224,143,.4)}
+    .twerkhub-fp-badge-pink{background:linear-gradient(135deg,#ff2d87,#9d4edd);box-shadow:0 4px 12px rgba(255,45,135,.4)}
+    .twerkhub-fp-badge-gold{background:linear-gradient(135deg,#ffb454,#ff9500);color:#2a1400;box-shadow:0 4px 12px rgba(255,180,84,.4)}
+    .twerkhub-fp-badge-purple{background:linear-gradient(135deg,#9d4edd,#ff2d87);box-shadow:0 4px 12px rgba(157,78,221,.4)}
+    .twerkhub-fp-live{position:absolute;top:14px;right:14px;padding:5px 11px;border-radius:999px;background:rgba(5,5,10,.78);backdrop-filter:blur(10px);border:1px solid rgba(30,224,143,.55);color:#1ee08f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;z-index:3;display:inline-flex;align-items:center;gap:6px}
+    .twerkhub-fp-live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#1ee08f;box-shadow:0 0 10px #1ee08f;animation:twerkhub-fp-live-pulse 2s ease-in-out infinite}
+    @keyframes twerkhub-fp-live-pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    .twerkhub-fp-body{padding:20px 22px 22px;position:relative;z-index:2}
+    .twerkhub-fp-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:8px}
+    .twerkhub-fp-card-featured .twerkhub-fp-kicker{color:#1ee08f}
+    .twerkhub-fp-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;line-height:1.15;letter-spacing:-.01em;margin-bottom:8px;color:#fff}
+    .twerkhub-fp-card-featured .twerkhub-fp-title{font-size:clamp(26px,3vw,38px)}
+    .twerkhub-fp-title em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .twerkhub-fp-card-featured .twerkhub-fp-title em{background:linear-gradient(135deg,#1ee08f,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .twerkhub-fp-desc{color:#c7c7d3;font-size:14px;line-height:1.55;margin-bottom:14px}
+    .twerkhub-fp-card-featured .twerkhub-fp-desc{font-size:16px;max-width:620px}
+    .twerkhub-fp-meta{display:flex;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#9a9aab;margin-bottom:14px}
+    .twerkhub-fp-meta span{padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+    .twerkhub-fp-cta{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 8px 22px rgba(255,45,135,.35);transition:transform .25s,box-shadow .25s}
+    .twerkhub-fp-card:hover .twerkhub-fp-cta{transform:translateX(4px);box-shadow:0 10px 28px rgba(255,45,135,.5)}
+    .twerkhub-fp-card-featured .twerkhub-fp-cta{background:linear-gradient(135deg,#1ee08f,#ffb454);color:#031a11;box-shadow:0 10px 28px rgba(30,224,143,.45)}
+    .twerkhub-fp-card-featured:hover .twerkhub-fp-cta{box-shadow:0 14px 36px rgba(30,224,143,.65)}
+  </style>
+
+  <div class="twerkhub-fp-head">
+    <div class="twerkhub-kicker" style="justify-content:center">/ Six playlists · one signature archive</div>
+    <h2>Pick your <em>playlist.</em></h2>
+    <p>Curated weekly. Inline player, free previews, token rewards on every watch.</p>
+  </div>
+
+  <div class="twerkhub-fp-grid">
+
+    <!-- 1 · FEATURED · /playlist/ · signature archive, updated weekly, infinite list -->
+    <a class="twerkhub-fp-card twerkhub-fp-card-featured" href="/playlist/">
+      <div class="twerkhub-fp-thumb">
+        <img src="https://i.ytimg.com/vi/cINCQDEgJvs/maxresdefault.jpg" alt="Hottest twerk videos — the signature archive" loading="lazy" decoding="async" onerror="this.src='https://i.ytimg.com/vi/cINCQDEgJvs/hqdefault.jpg'">
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-signature">✦ Signature</span>
+        <span class="twerkhub-fp-live">● Infinite list</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">/ The main archive · flagship</div>
+        <h3 class="twerkhub-fp-title">Hottest <em>twerk videos</em> on YouTube.</h3>
+        <p class="twerkhub-fp-desc">The signature playlist. Hand-picked by the house — replay favorites, hottest openers, the ones that built the archive. <strong>Updated every week · infinite list.</strong></p>
+        <div class="twerkhub-fp-meta">
+          <span>★ Pick of the week</span>
+          <span>♾ Infinite list</span>
+          <span>⚡ Weekly drops</span>
+        </div>
+        <span class="twerkhub-fp-cta">Enter the archive →</span>
+      </div>
+    </a>
+
+    <!-- 2 · Korean -->
+    <a class="twerkhub-fp-card" href="/playlist-korean.html">
+      <div class="twerkhub-fp-thumb">
+        <img src="https://i.ytimg.com/vi/rJQedlVdCCU/hqdefault.jpg" alt="Hottest Korean twerk videos" loading="lazy" decoding="async" onerror="this.src='https://i.ytimg.com/vi/rJQedlVdCCU/default.jpg'">
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-purple">K-dance</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">/ Korea · K-dance</div>
+        <h3 class="twerkhub-fp-title">Hottest <em>Korean</em> cuts.</h3>
+        <p class="twerkhub-fp-desc">K-pop floors meet twerk. Studio-grade work, stage cuts, fancam energy.</p>
+        <span class="twerkhub-fp-cta">Enter →</span>
+      </div>
+    </a>
+
+    <!-- 3 · Cosplay fancam -->
+    <a class="twerkhub-fp-card" href="/playlist-cosplay-fancam-leaks.html">
+      <div class="twerkhub-fp-thumb">
+        <img src="https://i.ytimg.com/vi/3D71UgdBwI0/hqdefault.jpg" alt="Hottest cosplay fancam videos" loading="lazy" decoding="async" onerror="this.src='https://i.ytimg.com/vi/3D71UgdBwI0/default.jpg'">
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-pink">Cosplay</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">/ Cosplay · fancam</div>
+        <h3 class="twerkhub-fp-title">Hottest <em>cosplay fancam</em> cuts.</h3>
+        <p class="twerkhub-fp-desc">Con fancams, anime cosplay, tight booty floor work.</p>
+        <span class="twerkhub-fp-cta">Enter →</span>
+      </div>
+    </a>
+
+    <!-- 4 · Latina model -->
+    <a class="twerkhub-fp-card" href="/playlist-latina-model-leaks.html">
+      <div class="twerkhub-fp-thumb">
+        <img src="https://i.ytimg.com/vi/EZuwgskBEdQ/hqdefault.jpg" alt="Hottest latina model videos" loading="lazy" decoding="async" onerror="this.src='https://i.ytimg.com/vi/EZuwgskBEdQ/default.jpg'">
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-gold">Latina</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">/ Latina · editorial</div>
+        <h3 class="twerkhub-fp-title">Hottest <em>latina model</em> cuts.</h3>
+        <p class="twerkhub-fp-desc">Reggaeton floors, editorial shoots, tight Latin energy.</p>
+        <span class="twerkhub-fp-cta">Enter →</span>
+      </div>
+    </a>
+
+    <!-- 5 · Try-on haul -->
+    <a class="twerkhub-fp-card" href="/playlist-try-on-haul-leaks.html">
+      <div class="twerkhub-fp-thumb">
+        <img src="https://i.ytimg.com/vi/jXBni3AN52M/hqdefault.jpg" alt="Hottest try-on haul videos" loading="lazy" decoding="async" onerror="this.src='https://i.ytimg.com/vi/jXBni3AN52M/default.jpg'">
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-pink">Try-on</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">/ Try-on · haul</div>
+        <h3 class="twerkhub-fp-title">Hottest <em>try-on haul</em> cuts.</h3>
+        <p class="twerkhub-fp-desc">Mini skirt, lingerie, swim, costume. The fitting room archive.</p>
+        <span class="twerkhub-fp-cta">Enter →</span>
+      </div>
+    </a>
+
+    <!-- 6 · Twerk Hub leaks -->
+    <a class="twerkhub-fp-card" href="/playlist-twerk-hub-leaks.html">
+      <div class="twerkhub-fp-thumb">
+        <img src="https://i.ytimg.com/vi/8yAG7toqnCM/hqdefault.jpg" alt="Twerk Hub leaks archive" loading="lazy" decoding="async" onerror="this.src='https://i.ytimg.com/vi/8yAG7toqnCM/default.jpg'">
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-gold">Leaks</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">/ Twerk Hub · leaks</div>
+        <h3 class="twerkhub-fp-title">Hottest <em>twerk</em> leaks.</h3>
+        <p class="twerkhub-fp-desc">Tight shorts, Russian floors, amateurs going pro. Pick of the week.</p>
+        <span class="twerkhub-fp-cta">Enter →</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
 <!-- ═══ CLUB MEMBERS · sponsored tier 2 ═══ -->
 <section class="twerkhub-club" id="private-models" aria-label="Club members">
   <div class="twerkhub-kicker">/ Sponsored · tier 2</div>
