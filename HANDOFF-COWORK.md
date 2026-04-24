@@ -37,7 +37,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 ## 📊 Current state · what's deployed
 
 ### Content (all live in production)
-- **19 blog posts** (~28,000 words long-form) in `/blog/`
+- **21 blog posts** (~31,500 words long-form) in `/blog/`
 - **13 creator profiles** with Person schema in `/creator/`
 - **5 collection pages** (geo + style): Taipei, Moscow, Colombia, Seoul, heels-choreo, cosplay-fancam, reggaeton-floor
 - **4 legal/corporate**: `/about.html`, `/privacy.html`, `/terms.html`, `/contact.html`
@@ -133,6 +133,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 | 10 | _pending push_ | 1-7 pickup: orphan cleanup + post #20 (founder essay) + 5 creators (VR KINGS, LABARBIE, Patricia Atakora, Sugaarrbbaby, Nika Chilli Odessa) + /es/glossary + /ru/contact + 2 translations (manifesto ES, MDC NRG history RU) + sitemap-videos 5→22 entries + new sitemap-images.xml. SW bumped to v1.1.6 / p11. |
 | 11 | _pending push_ | i18n cluster lockdown: +/ru/glossary.html (close trilingual glossary), +/es/blog/ + /ru/blog/ landing pages (parents for translated posts), +FAQPage schema on /about.html (7 Q&A) and /membership.html (7 Q&A · billing/refunds/tier mechanics), full trilingual hreflang on /glossary, /es/glossary, /blog/index. |
 | 12 | _pending push_ | Search i18n + 2nd ES manifesto translation + Service schema. +/es/search.html (28-entry index translated to ES) + /ru/search.html (28-entry RU). +/es/blog/why-twerkhub-has-no-algorithm-feed.html (companion to founder essay). +Service schema on /about.html (provider/audience/4-tier offers). Hreflang trilingüe en /search. |
+| 13 | _pending push_ | Post #21 + 3rd ES translation. +blog/studios-shaping-2026.html (1.820 words pillar · 6 studios w/ heavy internal linking to creator profiles + collection pages). +/es/blog/perreo-history-caribbean-origin.html (1.740-word ES translation of Caribbean perreo history pillar). Updated blog grids EN+ES, hreflang on perreo EN. |
 
 ---
 
