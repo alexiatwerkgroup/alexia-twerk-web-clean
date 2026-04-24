@@ -106,10 +106,57 @@
     });
   }
 
+  // ── Auto-unmute the HERO (or the single featured player) on first user
+  // gesture. Browsers require a user gesture before we can unmute an
+  // autoplaying iframe. Instead of forcing the user to click the literal
+  // "Tap to unmute" button, we catch ANY first interaction (click, key,
+  // touch, scroll) and unmute the featured player ONCE. Other players stay
+  // muted — exclusive-audio rule still applies.
+  function hookFirstGestureUnmute(){
+    if (window.__twerkhubFirstGestureBound) return;
+    window.__twerkhubFirstGestureBound = true;
+    var done = false;
+    function pickFeatured(){
+      // Priority: hero on home, then the playlist page's featured player.
+      return document.querySelector(
+        '#twerkhub-hh-iframe, .twerkhub-hh-iframe, #twerkhub-pl-player'
+      );
+    }
+    function fire(){
+      if (done) return;
+      var featured = pickFeatured();
+      if (!featured) return;
+      done = true;
+      try { claim(featured); } catch(_){}
+      // Update the "Tap to unmute" button state visually if present.
+      var btn = document.querySelector('[data-twerkhub-hero-mute]');
+      if (btn) {
+        btn.setAttribute('aria-pressed', 'false');
+        var lab = btn.querySelector('.twerkhub-hh-mute-label');
+        if (lab) lab.textContent = 'Sound on';
+        var ico = btn.querySelector('.twerkhub-hh-mute-ico');
+        if (ico) ico.textContent = '🔊';
+        btn.style.opacity = '0.7';
+      }
+      cleanup();
+    }
+    function cleanup(){
+      ['pointerdown','click','keydown','touchstart','scroll','wheel']
+        .forEach(function(ev){
+          document.removeEventListener(ev, fire, true);
+        });
+    }
+    ['pointerdown','click','keydown','touchstart','scroll','wheel']
+      .forEach(function(ev){
+        document.addEventListener(ev, fire, { capture: true, passive: true });
+      });
+  }
+
   function init(){
     hookVideoExclusivity();
     hookVisibility();
-    console.info('[twerkhub-sound] manager ready (no auto-unmute, exclusive audio)');
+    hookFirstGestureUnmute();
+    console.info('[twerkhub-sound] manager ready · auto-unmute-on-first-gesture armed');
   }
 
   if (document.readyState === 'loading') {

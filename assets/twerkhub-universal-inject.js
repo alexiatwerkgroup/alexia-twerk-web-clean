@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · UNIVERSAL TOPBAR INJECTOR ═══
- * v20260424-p3
+ * v20260424-p4
  *
  * Purpose: ONE script to ensure every page in the platform — regardless of
  * whether someone edited it manually or it was auto-generated months ago —
@@ -31,11 +31,13 @@
   var VER = { tokens:'20260424-p11', topbar:'20260424-p8', locale:'20260424-p5',
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p5',
               page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p4',
-              tokens_css:'20260424-p1', a11y:'20260424-p2' };
+              tokens_css:'20260424-p1', a11y:'20260424-p3' };
   // premium.js + premium.css share the same 'premium' version key; bumped
   // to p6 for the scroll-reveal rootMargin fix (playlist grids no longer
-  // wait for viewport to unhide).
+  // wait for viewport to unhide). sound bumped to p8 for auto-unmute on
+  // first gesture. paywall bumped for /playlist/ kill-switch.
   VER.premium = '20260424-p6';
+  VER.sound = '20260424-p8';
 
   // ── 1 · Remove legacy nav markup ─────────────────────────────────────
   // The platform accumulated three generations of topbars over the years.

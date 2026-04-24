@@ -200,3 +200,39 @@ button:focus-visible {
   overflow: hidden !important;
   pointer-events: none !important;
 }
+
+/* ═══ 12. Kill paywall leftovers on /playlist/ pages ═══
+ * Anti rule: no paywall, no blur modal, no ugly FOMO pill row, no
+ * gated hero banner. Twerkhub-paywall.js is already stubbed for these
+ * URLs by the kill-switch at the top of that module, but CSS here
+ * catches any race-condition render before the scrub runs.
+ * Scoped to body with /playlist/ paths via the `twerkhub-pl-page` or
+ * `twerkhub-pl-theater` body classes that every playlist HTML uses.
+ */
+body.twerkhub-pl-page .twk-modal,
+body.twerkhub-pl-page .twk-fomo-strip,
+body.twerkhub-pl-page .twk-fomo-pill,
+body.twerkhub-pl-page .twk-gated-hero,
+body.twerkhub-pl-page .twk-playlist-fomo,
+body.twerkhub-pl-page .twerkhub-paywall-modal,
+body.twerkhub-pl-theater .twk-modal,
+body.twerkhub-pl-theater .twk-fomo-strip,
+body.twerkhub-pl-theater .twk-fomo-pill,
+body.twerkhub-pl-theater .twk-gated-hero,
+body.twerkhub-pl-theater .twk-playlist-fomo {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+/* Undo the gated-thumb darken on playlist pages — every thumb shows sharp. */
+body.twerkhub-pl-page .vcard.twk-gated .vthumb img,
+body.twerkhub-pl-page .twk-gated .vthumb img,
+body.twerkhub-pl-theater .vcard.twk-gated .vthumb img,
+body.twerkhub-pl-theater .twk-gated .vthumb img {
+  filter: none !important;
+}
+body.twerkhub-pl-page .twk-gated::before,
+body.twerkhub-pl-theater .twk-gated::before {
+  display: none !important;
+}

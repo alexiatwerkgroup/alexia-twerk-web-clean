@@ -24,6 +24,47 @@
   'use strict';
   if (window.TwerkhubPaywall) return;
 
+  // ── Anti 2026-04-24: KILL-SWITCH for playlist pages ──────────────────
+  // Rule: on /playlist/ and any /playlist-*.html, the user has been
+  // explicit that there is NO paywall, NO blur modal, NO gated hero
+  // banner, NO FOMO pill strip. Every video plays free. The paywall
+  // module's click-capture was still intercepting clicks on non-top-5
+  // cards and opening the blurred subscribe modal with giant "BLUE"
+  // placeholder behind it. Completely disable the module on these URLs.
+  var __twkPath = (location.pathname || '').toLowerCase();
+  var __twkIsPlaylistPage = /^\/playlist(\/|$|-)/.test(__twkPath);
+  if (__twkIsPlaylistPage){
+    // Stub the public API so anything that calls it becomes a no-op.
+    window.TwerkhubPaywall = {
+      open: function(){}, close: function(){}, applyGates: function(){},
+      installFomoStrip: function(){}, injectGatedHero: function(){}
+    };
+    // Belt-and-suspenders: scrub any leftovers already painted.
+    var scrub = function(){
+      ['.twk-modal', '.twk-fomo-strip', '.twk-gated-hero',
+       '.twk-playlist-fomo', '.twk-fomo-pill', '.twk-gated-overlay',
+       '.twerkhub-paywall-modal'].forEach(function(sel){
+        document.querySelectorAll(sel).forEach(function(el){ el.remove(); });
+      });
+      document.querySelectorAll('.twk-gated').forEach(function(el){
+        el.classList.remove('twk-gated');
+      });
+      document.body && (document.body.style.overflow = '');
+      document.documentElement.style.overflow = '';
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', scrub, { once: true });
+    } else {
+      scrub();
+    }
+    var __twkScrubN = 0;
+    var __twkScrubIv = setInterval(function(){
+      scrub();
+      if (++__twkScrubN > 5) clearInterval(__twkScrubIv);
+    }, 2000);
+    return; // abort the outer IIFE — paywall stays dormant
+  }
+
   var LS_KEY = 'twerkhub_auth';
   var STYLE_ID = 'twerkhub-paywall-style';
   var MODAL_ID = 'twerkhub-paywall-modal';
