@@ -12,9 +12,10 @@
 <link rel="stylesheet" href="/assets/elite-components.css">
 
 <!-- Load the shared topbar / tokens / polish CSS BEFORE any inline styles so the nav never renders un-styled (no FOUC / no deformed flash). -->
-<link rel="stylesheet" href="/assets/twerkhub-page.css?v=20260420-p15">
-<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p1">
+<link rel="stylesheet" href="/assets/twerkhub-page.css?v=20260424-p11">
+<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p10">
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
+<link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p1">
 
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -134,6 +135,7 @@
       <a href="/">Home</a>
       <a href="/#private-models">Exclusive</a>
       <a href="/#playlists">Playlists</a>
+      <a href="/alexia-video-packs.html" class="twerkhub-nav-hot">Hot Packs</a>
       <a href="/community.html">Community</a>
       <a href="/membership.html">Membership</a>
       <a href="/account.html" class="is-active" aria-current="page">My Account</a>
@@ -171,14 +173,14 @@
     </div>
   </div>
 
-  <!-- PROGRESS TO VIP -->
+  <!-- PROGRESS TO NEXT TIER · dynamic (Basic→Medium→Premium→VIP Top) -->
   <div class="progress">
     <div class="progress__head">
-      <div class="progress__title">Progress to VIP Unlock</div>
+      <div class="progress__title">Progress to <span id="ac-next-tier-name">next tier</span></div>
       <div class="progress__meta"><span id="ac-pct">0%</span></div>
     </div>
     <div class="progress__bar"><div class="progress__fill" id="ac-fill" style="width:0%"></div></div>
-    <div class="progress__stats"><span><span id="ac-bar-cur">0</span> tokens</span><span>4,000 needed for VIP unlock</span></div>
+    <div class="progress__stats"><span><span id="ac-bar-cur">0</span> tokens</span><span id="ac-bar-needed">— needed for unlock</span></div>
     <p class="progress__hint" id="ac-hint">Welcome. Start by exploring the archive — +5 tokens per new page.</p>
   </div>
 
@@ -230,7 +232,7 @@
   </div>
 </div>
 
-<script src="/assets/token-system.js" defer></script>
+<script src="/assets/token-system.js?v=20260424-p10" defer></script>
 <script>
 (function(){
   function init(){
@@ -243,9 +245,10 @@
     document.getElementById('ac-total').textContent = (s.total || s.balance).toLocaleString('en-US');
     document.getElementById('ac-streak').textContent = s.streak || 0;
 
-    // Tier
-    var tierLabel = { free: 'Basic', vip: 'VIP', elite: 'Elite' };
-    var tierBadge = { free: 'The Doorway', vip: 'The Inner Room', elite: 'The Private Circle' };
+    // Tier (4-tier schema aligned with /membership: Basic · Medium · Premium · VIP Top).
+    // Legacy values (free/elite) are auto-mapped by token-system.js's getState().
+    var tierLabel = { basic: 'Basic', medium: 'Medium', premium: 'Premium', vip: 'VIP Top', free: 'Basic', elite: 'VIP Top' };
+    var tierBadge = { basic: 'The Doorway', medium: 'The Foyer', premium: 'The Inner Room', vip: 'The Private Circle', free: 'The Doorway', elite: 'The Private Circle' };
     document.getElementById('ac-tier').textContent = tierLabel[s.tier] || 'Basic';
     document.getElementById('ac-tier-badge').textContent = tierBadge[s.tier] || 'The Doorway';
 
@@ -256,19 +259,29 @@
       document.getElementById('ac-member-since').textContent = 'Member since ' + d.toLocaleDateString('en-US', opts);
     }
 
-    // Progress bar
-    var pct = Math.min(100, Math.round((s.balance / threshold) * 100));
+    // Progress bar — dynamic next-tier target.
+    // nextTier is set by token-system.js based on current tier. For VIP, we
+    // cap at 100% since there's nothing above.
+    var nextTierNames = { medium: 'Medium', premium: 'Premium', vip: 'VIP Top' };
+    var nextTier = s.nextTier;
+    var target = nextTier ? nextTier.at : s.balance; // at VIP → show full bar
+    var pct = Math.min(100, Math.round((s.balance / (target || 1)) * 100));
+    if (!nextTier) pct = 100;
     document.getElementById('ac-fill').style.width = pct + '%';
     document.getElementById('ac-pct').textContent = pct + '%';
     document.getElementById('ac-bar-cur').textContent = s.balance.toLocaleString('en-US');
+    document.getElementById('ac-next-tier-name').textContent =
+      nextTier ? (nextTierNames[nextTier.key] || 'next tier') : 'VIP Top · unlocked';
+    document.getElementById('ac-bar-needed').textContent =
+      nextTier ? (target.toLocaleString('en-US') + ' needed for ' + (nextTierNames[nextTier.key] || 'next')) : 'Max tier reached';
 
-    // Hint
+    // Hint — tailored to current tier
     var hint = document.getElementById('ac-hint');
-    if (pct >= 100)       hint.textContent = 'VIP unlocked. Click Membership to activate your 30 days.';
-    else if (pct >= 80)   hint.textContent = 'Almost there. One more binge session and you\'re in.';
-    else if (pct >= 50)   hint.textContent = 'Halfway. Keep the streak going — it multiplies.';
-    else if (pct >= 20)   hint.textContent = 'Good start. The highest yield is finishing clips (+30 each).';
-    else                  hint.textContent = 'Welcome. Start by exploring the archive — +5 tokens per new page.';
+    if (!nextTier)           hint.textContent = 'VIP Top · top tier reached. Discord customs unlocked, private archive open.';
+    else if (pct >= 90)      hint.textContent = 'One more session and you unlock ' + nextTierNames[nextTier.key] + '.';
+    else if (pct >= 60)      hint.textContent = 'More than halfway to ' + nextTierNames[nextTier.key] + '. Streak multiplies tokens — keep it going.';
+    else if (pct >= 25)      hint.textContent = 'The highest-yield action is finishing clips (+30 each).';
+    else                     hint.textContent = 'Welcome. Start exploring — each new page = +5 tokens, watching a clip = +15, finishing it = +30.';
 
     // Earn paths — mark done
     var completed = {
@@ -328,10 +341,11 @@
 <script defer src="/assets/enter-now-widget.js?v=20260417-03"></script>
 
 <!-- Legacy global-brand / global-counters / global-i18n / online-count-global were duplicating topbar widgets (two locales, two counters, two logos). Removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle this now. CSS already in <head> above. -->
-<script defer src="/assets/twerkhub-tokens.js?v=20260424-p8"></script>
+<script defer src="/assets/twerkhub-tokens.js?v=20260424-p11"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p7"></script>
 <script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p6"></script>
 <script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p5"></script>
 <script defer src="/assets/twerkhub-mobile-nav.js?v=20260424-p1"></script>
+<script defer src="/assets/twerkhub-premium.js?v=20260424-p1"></script>
 </body>
 </html>

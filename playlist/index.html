@@ -429,10 +429,28 @@
     var title  = document.getElementById('twerkhub-pl-now-title');
     function swap(vid, number){
       if (!player) return;
+      // Autoplay WITHOUT mute=1 → browsers allow it because a click gesture
+      // preceded the swap (we're inside the click handler). The URL omits
+      // mute so the video plays audible at its native volume. If the browser
+      // still refuses to play audible, we fall back to muted autoplay + an
+      // unMute postMessage (handled below once the iframe loads).
       var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
-                '?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+                '?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
       player.src = url;
-      if (title && number) title.textContent = 'Free preview ' + number;
+      if (title && number) title.textContent = 'Playing ' + number;
+      // Defensive: some browsers (Safari especially) still honor the iframe's
+      // muted state from a previous swap. Post an explicit unMute + volume
+      // set once the iframe has (probably) booted its jsapi handler (~650ms).
+      setTimeout(function(){
+        try {
+          player.contentWindow.postMessage(JSON.stringify({event:'command', func:'unMute',    args:[]}), '*');
+          player.contentWindow.postMessage(JSON.stringify({event:'command', func:'setVolume', args:[70]}), '*');
+          player.contentWindow.postMessage(JSON.stringify({event:'command', func:'playVideo', args:[]}), '*');
+        } catch(_){}
+      }, 650);
+      // Tell the global sound manager this is the audible source so other
+      // MP4/iframe players get muted.
+      try { window.TwerkhubSound && window.TwerkhubSound.claim && window.TwerkhubSound.claim(player); } catch(_){}
       // Scroll player into view so the swap is visible
       try { player.closest('.twerkhub-pl-player-wrap').scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
     }

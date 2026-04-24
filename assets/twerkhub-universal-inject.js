@@ -28,30 +28,34 @@
   window.__twerkhubUniversalInjectInit = true;
 
   var ASSET_BASE = '/assets/';
-  var VER = { tokens:'20260424-p9', topbar:'20260424-p7', locale:'20260424-p5',
+  var VER = { tokens:'20260424-p11', topbar:'20260424-p7', locale:'20260424-p5',
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p3',
-              page:'20260420-p15', polish:'20260424-p4' };
+              page:'20260424-p11', polish:'20260424-p4', auth:'20260424-p1' };
 
   // ── 1 · Remove legacy nav markup ─────────────────────────────────────
   // The platform accumulated three generations of topbars over the years.
   // Anything NOT `.twerkhub-topbar` is history — delete on sight.
   function purgeLegacyNav(){
     var selectors = [
-      '.site-nav-final',                // 2024 generation
-      '.snf',                            // 2025 generation
-      '.alexia-nav',                    // older catalog pages
-      '#alexia-global-brand',           // global-brand.js injection
-      '#alexia-global-counters',
-      '[data-alexia-online-count]',    // the "891 online" stuck counter
+      '.site-nav-final',                // 2024 generation full bar
+      '.snf',                            // 2025 generation full bar
+      '.alexia-nav',                    // older catalog-page nav
+      '.alexia-top-nav',                // even older catalog nav
+      '#alexia-global-brand',           // global-brand.js injected logo row
+      '#alexia-global-counters',        // global-counters.js token pill
+      '[data-alexia-online-count]',    // the "891 online" / "ONLINE NOW 1" badge
       '.snf__on',
       '#snf-music-btn',
       '.site-nav-final__online',
       '.site-nav-final__music',
+      '.atk-widget',                    // token-system.js's own gold "TOKENS" widget
+      '.analytics-profile-nav',         // /analytics-profile.js injected nav
       // Legacy locale switchers (global-i18n.js dropped these before topbar-
       // enhance.js mounted its own slot, causing duplicates on /profile etc.)
       '.alexia-i18n-switcher:not(.twerkhub-locale-slot *)',
       '#alexia-i18n-root',
-      '.alexia-legacy-locale'
+      '.alexia-legacy-locale',
+      '.alexia-lang-switch'
     ];
     selectors.forEach(function(sel){
       try {
@@ -112,6 +116,7 @@
     ensureJs(ASSET_BASE + 'twerkhub-mobile-nav.js?v=' + VER.mobile);
     ensureJs(ASSET_BASE + 'twerkhub-sound-on-interaction.js?v=' + VER.sound);
     ensureJs(ASSET_BASE + 'twerkhub-premium.js?v=' + VER.premium);
+    ensureJs(ASSET_BASE + 'twerkhub-auth.js?v=' + VER.auth);
   }
 
   // ── 4 · Inject the topbar DOM if missing ─────────────────────────────
@@ -199,6 +204,14 @@
   // Re-run markActive when the hash changes (smooth-scroll anchors) so the
   // underline tracks the current section on single-page navigations.
   window.addEventListener('hashchange', function(){ try { markActive(); } catch(_){} });
+
+  // Continuous legacy-nav sweep. Some pages have late-firing scripts (e.g.
+  // /analytics-profile.js or premium-polish-v10.js) that inject the old
+  // .site-nav-final row AFTER DOMContentLoaded. We keep the purge running for
+  // the first few seconds so nothing slips through.
+  [400, 1200, 2500, 5000].forEach(function(ms){
+    setTimeout(function(){ try { purgeLegacyNav(); } catch(_){} }, ms);
+  });
 
   // ── 5 · Go ───────────────────────────────────────────────────────────
   function run(){

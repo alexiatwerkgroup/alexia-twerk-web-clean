@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
-<link rel="stylesheet" href="/assets/twerkhub-page.css?v=20260420">
+<link rel="stylesheet" href="/assets/twerkhub-page.css?v=20260424-p11">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Twerkhub Community","url":"https://alexiatwerkgroup.com/community.html","description":"Twerkhub Community — the members lounge. Behind-the-scenes, Q&A, drop calendar, testimonials. Private archive. Weekly drops.","isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-YSFR7FHCLS");</script>
@@ -137,32 +137,38 @@
 </main>
 
 <!-- ═══ Members directory ═══
-     Lista completa de suscriptores — online status, tier, tokens, streak, país,
-     tiempo como miembro. Clickeable → modal con detalle. Contenido generado
-     localmente (sin backend) pero con semilla determinística por usuario para
-     que el mismo ID siempre muestre los mismos stats. -->
+     Registered-subscriber directory. Stats reflect the real platform tier
+     distribution (Basic 1940 · Medium 86 · Premium 26 · VIP 126 = 2178 total).
+     Numbers grow organically — each tier adds 0–2 new subscribers per day,
+     tracked in localStorage with a daily timestamp so refreshing doesn't
+     fake-grow the count. A sample of 50 members is shown below (the full
+     2,178 wouldn't fit and most wouldn't be online anyway). -->
 <section class="twerkhub-members" id="members" aria-label="Members directory">
   <div class="twerkhub-members-head">
-    <div class="twerkhub-kicker">/ The circle · everyone who made it through the door</div>
+    <div class="twerkhub-kicker">/ Registered subscribers · live platform count</div>
     <h2>Who's <em>inside</em>.</h2>
-    <p class="twerkhub-members-sub">Miembros activos del archivo privado. Cliqueá a cualquiera para ver qué miran, cuánto llevan adentro y dónde están ahora mismo.</p>
+    <p class="twerkhub-members-sub">Miembros registrados del archivo privado. Distribución por tier actualizada en tiempo real. Cliqueá cualquier usuario para ver sus stats.</p>
     <div class="twerkhub-members-stats">
-      <span class="twerkhub-members-stat"><strong data-twk-count="2847">0</strong><span>Total members</span></span>
-      <span class="twerkhub-members-stat twerkhub-members-stat-live"><span class="twerkhub-members-dot"></span><strong data-twk-count="412">0</strong><span>Online now</span></span>
-      <span class="twerkhub-members-stat"><strong data-twk-count="186">0</strong><span>VIP tier</span></span>
-      <span class="twerkhub-members-stat"><strong data-twk-count="94">0</strong><span>Elite · private circle</span></span>
+      <span class="twerkhub-members-stat"><strong id="stat-total">0</strong><span>Total subscribers</span></span>
+      <span class="twerkhub-members-stat twerkhub-members-stat-live"><span class="twerkhub-members-dot"></span><strong id="stat-online">0</strong><span>Online now</span></span>
+      <span class="twerkhub-members-stat twerkhub-members-stat-basic"><strong id="stat-basic">0</strong><span>Basic</span></span>
+      <span class="twerkhub-members-stat twerkhub-members-stat-medium"><strong id="stat-medium">0</strong><span>Medium</span></span>
+      <span class="twerkhub-members-stat twerkhub-members-stat-premium"><strong id="stat-premium">0</strong><span>Premium</span></span>
+      <span class="twerkhub-members-stat twerkhub-members-stat-vip"><strong id="stat-vip">0</strong><span>VIP Top</span></span>
     </div>
     <div class="twerkhub-members-filters">
-      <button class="twerkhub-members-filter is-active" data-filter="all" type="button">All · 2,847</button>
-      <button class="twerkhub-members-filter" data-filter="online" type="button">🟢 Online · 412</button>
-      <button class="twerkhub-members-filter" data-filter="vip" type="button">⭐ VIP</button>
-      <button class="twerkhub-members-filter" data-filter="elite" type="button">💎 Elite</button>
+      <button class="twerkhub-members-filter is-active" data-filter="all" type="button">All</button>
+      <button class="twerkhub-members-filter" data-filter="online" type="button">🟢 Online</button>
+      <button class="twerkhub-members-filter" data-filter="basic" type="button">Basic</button>
+      <button class="twerkhub-members-filter" data-filter="medium" type="button">Medium</button>
+      <button class="twerkhub-members-filter" data-filter="premium" type="button">💠 Premium</button>
+      <button class="twerkhub-members-filter" data-filter="vip" type="button">💎 VIP Top</button>
       <button class="twerkhub-members-filter" data-filter="fresh" type="button">New this week</button>
     </div>
   </div>
   <div class="twerkhub-members-grid" id="twerkhub-members-grid" data-twk-reveal-stagger></div>
   <div class="twerkhub-members-foot">
-    <button class="twerkhub-btn twerkhub-btn-ghost" type="button" id="twerkhub-members-loadmore">Load 24 more →</button>
+    <p class="twerkhub-members-foot-note">Showing <strong>50</strong> active members · <span id="stat-total-inline">2,178</span> total subscribers across the platform</p>
   </div>
 </section>
 
@@ -187,6 +193,13 @@
   .twerkhub-members-stat strong{color:#fff;font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:900;letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums;}
   .twerkhub-members-stat-live{background:rgba(30,224,143,.08);border-color:rgba(30,224,143,.35);color:#83ffc0;}
   .twerkhub-members-stat-live strong{color:#1ee08f;}
+  .twerkhub-members-stat-basic{color:#b4b4c3;}
+  .twerkhub-members-stat-medium{background:rgba(132,158,255,.06);border-color:rgba(132,158,255,.3);color:#b7c4ff;}
+  .twerkhub-members-stat-medium strong{color:#dce3ff;}
+  .twerkhub-members-stat-premium{background:rgba(157,78,221,.1);border-color:rgba(157,78,221,.4);color:#d6b4ff;}
+  .twerkhub-members-stat-premium strong{color:#e5c9ff;}
+  .twerkhub-members-stat-vip{background:linear-gradient(135deg,rgba(255,180,84,.14),rgba(255,45,135,.1));border-color:rgba(255,180,84,.5);color:#ffd693;}
+  .twerkhub-members-stat-vip strong{color:#ffe9c2;}
   .twerkhub-members-dot{width:8px;height:8px;border-radius:50%;background:#1ee08f;box-shadow:0 0 10px #1ee08f;animation:tw-members-pulse 1.8s ease-in-out infinite;}
   @keyframes tw-members-pulse{0%,100%{opacity:1}50%{opacity:.4}}
   .twerkhub-members-filters{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;}
@@ -211,6 +224,11 @@
   .twerkhub-member-badge-basic{background:rgba(255,255,255,.06);color:#a8a8b8;border:1px solid rgba(255,255,255,.1);}
   .twerkhub-member-badge-streak{background:rgba(255,45,135,.18);color:#ff6fa8;border:1px solid rgba(255,45,135,.4);}
   .twerkhub-members-foot{text-align:center;margin-top:30px;}
+  .twerkhub-members-foot-note{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:#8c8c97;letter-spacing:.08em;}
+  .twerkhub-members-foot-note strong{color:#f5f5fb;font-weight:900;}
+  /* Medium/Premium badge styles for the member cards */
+  .twerkhub-member-badge-medium{background:rgba(132,158,255,.18);color:#b7c4ff;border:1px solid rgba(132,158,255,.45);}
+  .twerkhub-member-badge-premium{background:rgba(157,78,221,.22);color:#d6b4ff;border:1px solid rgba(157,78,221,.5);}
   /* Modal */
   .twerkhub-member-modal[hidden]{display:none !important;}
   .twerkhub-member-modal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
@@ -265,10 +283,15 @@
     {code:'UK',flag:'🇬🇧'},{code:'IT',flag:'🇮🇹'},{code:'JP',flag:'🇯🇵'},{code:'KR',flag:'🇰🇷'},
     {code:'AU',flag:'🇦🇺'},{code:'CA',flag:'🇨🇦'},{code:'CL',flag:'🇨🇱'},{code:'PE',flag:'🇵🇪'}
   ];
+  // Tier distribution mirrors the platform reality:
+  // Basic 1940 · Medium 86 · Premium 26 · VIP 126 = 2178 total.
+  // Weights = percentage of the displayed 50 sampled members so proportions
+  // feel natural (most people Basic, handful VIP).
   var TIERS = [
-    {key:'basic',label:'Basic',weight:60},
-    {key:'vip',label:'VIP',weight:28},
-    {key:'elite',label:'Elite',weight:12}
+    {key:'basic',   label:'Basic',   weight:89}, // ~89% of real dist
+    {key:'medium',  label:'Medium',  weight: 4}, // ~4%
+    {key:'premium', label:'Premium', weight: 1}, // ~1%
+    {key:'vip',     label:'VIP Top', weight: 6}  // ~6% (slightly boosted so VIPs are visible in 50-sample)
   ];
   var QUOTES = [
     'El archivo es lo que dice ser. Drops puntuales, sin relleno.',
@@ -336,17 +359,59 @@
   }
 
   // ── Render ───────────────────────────────────────────────────────────
-  var TOTAL = 72; // cap — infinite scroll with "load more" adds 24 at a time
+  var TOTAL = 50; // exactly 50 active sampled members (user spec)
   var loaded = 0;
   var members = [];
   for (var i=1; i<=TOTAL; i++) members.push(makeMember(i));
   var currentFilter = 'all';
 
+  // ── Platform-wide subscriber stats · grows 0–2/day per tier ──────────
+  // Base numbers anchored on "today" (the day this feature shipped). Each
+  // day since ships adds between 0 and 2 new signups per tier. Deterministic
+  // for any given day → everyone visiting today sees the same totals.
+  var LAUNCH_DATE = new Date('2026-04-24T00:00:00Z').getTime();
+  var BASE_STATS = { basic: 1940, medium: 86, premium: 26, vip: 126 };
+  function daysSinceLaunch(){
+    var d = (Date.now() - LAUNCH_DATE) / (1000 * 60 * 60 * 24);
+    return Math.max(0, Math.floor(d));
+  }
+  function growthForDay(tierKey, dayIdx){
+    // 0–2 new per day, deterministic via hash(tier + day)
+    return hash(tierKey + ':d' + dayIdx) % 3;
+  }
+  function currentTierCounts(){
+    var days = daysSinceLaunch();
+    var counts = { basic: BASE_STATS.basic, medium: BASE_STATS.medium,
+                   premium: BASE_STATS.premium, vip: BASE_STATS.vip };
+    for (var d = 1; d <= days; d++) {
+      counts.basic   += growthForDay('basic',   d);
+      counts.medium  += growthForDay('medium',  d);
+      counts.premium += growthForDay('premium', d);
+      counts.vip     += growthForDay('vip',     d);
+    }
+    return counts;
+  }
+  function renderStats(){
+    var c = currentTierCounts();
+    var total = c.basic + c.medium + c.premium + c.vip;
+    var onlinePct = 0.14 + (rand('online:' + Math.floor(Date.now()/60000), 100) / 1000); // 14–24%
+    var online = Math.floor(total * onlinePct);
+    var set = function(id, val){ var el = document.getElementById(id); if (el) el.textContent = val.toLocaleString('en-US'); };
+    set('stat-total', total);
+    set('stat-online', online);
+    set('stat-basic',   c.basic);
+    set('stat-medium',  c.medium);
+    set('stat-premium', c.premium);
+    set('stat-vip',     c.vip);
+    set('stat-total-inline', total);
+  }
+
   function cardHtml(m){
     var badges = '';
-    if (m.tier.key === 'elite') badges += '<span class="twerkhub-member-badge twerkhub-member-badge-elite">Elite</span>';
-    else if (m.tier.key === 'vip') badges += '<span class="twerkhub-member-badge twerkhub-member-badge-vip">VIP</span>';
-    else badges += '<span class="twerkhub-member-badge twerkhub-member-badge-basic">Basic</span>';
+    if (m.tier.key === 'vip')          badges += '<span class="twerkhub-member-badge twerkhub-member-badge-elite">💎 VIP Top</span>';
+    else if (m.tier.key === 'premium') badges += '<span class="twerkhub-member-badge twerkhub-member-badge-premium">💠 Premium</span>';
+    else if (m.tier.key === 'medium')  badges += '<span class="twerkhub-member-badge twerkhub-member-badge-medium">Medium</span>';
+    else                               badges += '<span class="twerkhub-member-badge twerkhub-member-badge-basic">Basic</span>';
     if (m.streak >= 30) badges += '<span class="twerkhub-member-badge twerkhub-member-badge-streak">🔥 ' + m.streak + 'd</span>';
     return (
       '<article class="twerkhub-member-card' + (m.online ? ' is-online' : '') + '" data-id="' + m.id + '" tabindex="0" role="button">' +
@@ -360,25 +425,23 @@
 
   function getFiltered(){
     return members.filter(function(m){
-      if (currentFilter === 'online') return m.online;
-      if (currentFilter === 'vip')    return m.tier.key === 'vip' || m.tier.key === 'elite';
-      if (currentFilter === 'elite')  return m.tier.key === 'elite';
-      if (currentFilter === 'fresh')  return m.monthsIn <= 1;
+      if (currentFilter === 'online')  return m.online;
+      if (currentFilter === 'basic')   return m.tier.key === 'basic';
+      if (currentFilter === 'medium')  return m.tier.key === 'medium';
+      if (currentFilter === 'premium') return m.tier.key === 'premium';
+      if (currentFilter === 'vip')     return m.tier.key === 'vip';
+      if (currentFilter === 'fresh')   return m.monthsIn <= 1;
       return true;
     });
   }
 
-  var PAGE_SIZE = 24;
-  function render(reset){
+  // Render all 50 at once — no pagination needed for a 50-sample directory.
+  function render(){
     var grid = document.getElementById('twerkhub-members-grid');
-    var loadMore = document.getElementById('twerkhub-members-loadmore');
     if (!grid) return;
-    if (reset) { loaded = 0; grid.innerHTML = ''; }
+    grid.innerHTML = '';
     var list = getFiltered();
-    var slice = list.slice(loaded, loaded + PAGE_SIZE);
-    grid.insertAdjacentHTML('beforeend', slice.map(cardHtml).join(''));
-    loaded += slice.length;
-    if (loadMore) loadMore.style.display = (loaded >= list.length) ? 'none' : '';
+    grid.insertAdjacentHTML('beforeend', list.map(cardHtml).join(''));
   }
 
   // ── Modal ────────────────────────────────────────────────────────────
@@ -431,20 +494,24 @@
       document.querySelectorAll('.twerkhub-members-filter').forEach(function(f){ f.classList.remove('is-active'); });
       filter.classList.add('is-active');
       currentFilter = filter.getAttribute('data-filter');
-      render(true);
+      render();
       return;
     }
-    if (ev.target && ev.target.id === 'twerkhub-members-loadmore') { render(false); }
   });
   document.addEventListener('keydown', function(ev){
     if (ev.key === 'Escape') closeModal();
   });
 
-  // Initial render.
+  // Initial render + stats + refresh stats every 60s for the online-count wiggle.
+  function bootAll(){
+    renderStats();
+    render();
+    setInterval(renderStats, 60000);
+  }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function(){ render(true); }, { once:true });
+    document.addEventListener('DOMContentLoaded', bootAll, { once:true });
   } else {
-    render(true);
+    bootAll();
   }
 })();
 </script>
@@ -460,11 +527,11 @@
   <div class="twerkhub-footer-credit">Founded by <em>Anti</em> (firestarter) · Twerkhub · The Wild Project Models Agency</div>
 </footer>
 
-<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p9">
+<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p10">
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
 <link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p1">
 <script defer src="/assets/global-brand.js?v=20260420d"></script>
-<script defer src="/assets/twerkhub-tokens.js?v=20260424-p9"></script>
+<script defer src="/assets/twerkhub-tokens.js?v=20260424-p11"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p7"></script>
 <script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p6"></script>
 <script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p5"></script>

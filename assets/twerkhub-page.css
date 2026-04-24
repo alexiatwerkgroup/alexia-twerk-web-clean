@@ -1,4 +1,16 @@
 /*!
+ * ═══ CRITICAL: topbar nav must NEVER wrap to 2 rows ═══
+ * This rule lives at the very top of the shell CSS so it's applied on the
+ * first paint — before topbar-enhance.js has injected its own rules. Without
+ * this, the nav briefly renders with flex-wrap:wrap default (ugly 2-row
+ * flash) until the JS catches up. Repeated in topbar-enhance for cascade
+ * safety.
+ */
+.twerkhub-topbar-inner,.snf__i,.site-nav-final__inner{display:grid !important;grid-template-columns:auto 1fr auto !important;align-items:center !important;gap:14px !important;}
+.twerkhub-nav,.snf__l,.site-nav-final__links{display:inline-flex !important;align-items:center !important;flex-wrap:nowrap !important;white-space:nowrap !important;gap:2px;justify-self:center;}
+.twerkhub-nav a,.snf__l a,.site-nav-final__links a{white-space:nowrap !important;}
+
+/*!
  * TWERKHUB · Page shell stylesheet (clean-room · 2026-04-20)
  * --------------------------------------------------------------
  * Authored from scratch. Zero CSS inherited from legacy Alexia Twerk

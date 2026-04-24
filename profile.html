@@ -19,9 +19,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
 <!-- Load the shared topbar / tokens / polish CSS BEFORE any inline styles so the nav never renders un-styled (no FOUC / no deformed flash). -->
-<link rel="stylesheet" href="/assets/twerkhub-page.css?v=20260420-p15">
-<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p1">
+<link rel="stylesheet" href="/assets/twerkhub-page.css?v=20260424-p11">
+<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p10">
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
+<link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p1">
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -448,6 +449,7 @@ if ('serviceWorker' in navigator) {
       <a href="/">Home</a>
       <a href="/#private-models">Exclusive</a>
       <a href="/#playlists">Playlists</a>
+      <a href="/alexia-video-packs.html" class="twerkhub-nav-hot">Hot Packs</a>
       <a href="/community.html">Community</a>
       <a href="/membership.html">Membership</a>
       <a href="/account.html">My Account</a>
@@ -741,7 +743,7 @@ if ('serviceWorker' in navigator) {
 <script defer src="/analytics-profile.js?v=merge12"></script>
 <!-- Legacy global-brand / global-i18n / online-count-global were duplicating widgets (two locales, two counters). Removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle this now. -->
 <script defer src="/assets/enter-now-widget.js?v=20260417-02"></script>
-<script src="/assets/token-system.js" defer></script>
+<script src="/assets/token-system.js?v=20260424-p10" defer></script>
 
 <script>
 /* ─── Mirror avatar + nickname from edit form into hero (same source of truth) ─── */
@@ -855,10 +857,11 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 <!-- CSS already loaded in <head> above (avoids FOUC). Only scripts below. -->
-<script defer src="/assets/twerkhub-tokens.js?v=20260424-p8"></script>
+<script defer src="/assets/twerkhub-tokens.js?v=20260424-p11"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p7"></script>
 <script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p6"></script>
 <script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p5"></script>
 <script defer src="/assets/twerkhub-mobile-nav.js?v=20260424-p1"></script>
+<script defer src="/assets/twerkhub-premium.js?v=20260424-p1"></script>
 </body>
 </html>

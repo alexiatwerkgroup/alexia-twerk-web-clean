@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Registered Users · Alexia Twerk Group</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#05050a;color:#f5f5fb;font-family:"Inter",-apple-system,sans-serif;min-height:100vh;}
+  .wrap{max-width:1200px;margin:0 auto;padding:40px 24px 80px;}
+  h1{font-family:"Playfair Display",Georgia,serif;font-size:42px;font-weight:900;letter-spacing:-.015em;margin-bottom:8px;}
+  h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .sub{color:#a8a8b8;font-size:14px;line-height:1.6;margin-bottom:28px;}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px;}
+  .stat{padding:18px 20px;border-radius:14px;background:linear-gradient(165deg,rgba(255,45,135,.08),rgba(255,255,255,.02));border:1px solid rgba(255,45,135,.22);}
+  .stat-label{font:800 10px/1 "JetBrains Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:#ff6fa8;margin-bottom:8px;}
+  .stat-value{font:900 28px/1 "Playfair Display",Georgia,serif;color:#fff;}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;font:800 11px/1 "Inter",sans-serif;letter-spacing:.14em;text-transform:uppercase;border:0;cursor:pointer;transition:.2s;text-decoration:none;}
+  .btn-primary{background:linear-gradient(180deg,#ff2d87,#9d4edd);color:#fff;box-shadow:0 10px 24px rgba(255,45,135,.32);}
+  .btn-primary:hover{transform:translateY(-2px);filter:brightness(1.08);}
+  .btn-ghost{background:rgba(255,255,255,.04);color:#f5f5fb;border:1px solid rgba(255,255,255,.1);}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);}
+  .btn-danger{background:rgba(255,45,135,.12);color:#ff6fa8;border:1px solid rgba(255,45,135,.35);}
+  .btn-danger:hover{background:rgba(255,45,135,.24);color:#fff;}
+  .webhook-box{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px;margin-bottom:24px;}
+  .webhook-box h3{font-family:"Playfair Display",serif;font-size:16px;font-weight:800;margin-bottom:6px;}
+  .webhook-box p{color:#a8a8b8;font-size:12.5px;line-height:1.55;margin-bottom:12px;}
+  .webhook-box input{width:100%;padding:10px 14px;border-radius:8px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);color:#fff;font:600 13px "JetBrains Mono",monospace;}
+  .webhook-box input:focus{outline:none;border-color:rgba(255,45,135,.6);}
+  .webhook-box .row{display:flex;gap:8px;align-items:center;}
+  table{width:100%;border-collapse:collapse;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;}
+  th,td{padding:12px 16px;text-align:left;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);}
+  th{background:rgba(255,45,135,.08);color:#ff6fa8;font:800 10px/1 "JetBrains Mono",monospace;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;}
+  td{color:#d5d5df;}
+  td.email{color:#fff;font-weight:600;font-family:"JetBrains Mono",monospace;font-size:12.5px;}
+  tr:last-child td{border-bottom:0;}
+  tr:hover td{background:rgba(255,255,255,.03);}
+  .empty{padding:60px 20px;text-align:center;color:#a8a8b8;font-style:italic;}
+  .warn{background:rgba(255,180,84,.08);border:1px solid rgba(255,180,84,.3);border-radius:10px;padding:14px 16px;margin-bottom:20px;color:#ffd693;font-size:13px;line-height:1.55;}
+  .warn strong{color:#fff;}
+  .copied{background:#1ee08f !important;color:#031a11 !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Registered <em>users</em></h1>
+<p class="sub">Panel local de registros. Los emails se guardan en <code>localStorage</code> de este browser y, si tenés un webhook configurado abajo, también se envían ahí.</p>
+
+<div class="warn">
+  <strong>Heads up:</strong> localStorage es por-navegador. La lista de abajo muestra sólo los usuarios que se registraron <strong>desde este mismo browser</strong>. Para captura global de emails, configurá el webhook de abajo (Formspree, n8n, Cloudflare Worker, Zapier catch-hook, etc).
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-label">Total locales</div><div class="stat-value" id="stat-total">0</div></div>
+  <div class="stat"><div class="stat-label">Hoy</div><div class="stat-value" id="stat-today">0</div></div>
+  <div class="stat"><div class="stat-label">Últimos 7 días</div><div class="stat-value" id="stat-week">0</div></div>
+  <div class="stat"><div class="stat-label">Dominios únicos</div><div class="stat-value" id="stat-domains">0</div></div>
+</div>
+
+<div class="webhook-box">
+  <h3>Webhook · captura global de emails</h3>
+  <p>Configurá una URL a la que se haga POST cada vez que alguien se registra. Ejemplos: <code>https://formspree.io/f/XXXX</code>, un webhook de Zapier, un endpoint de Cloudflare Worker, etc. Si queda vacío, los registros sólo se guardan en localStorage.</p>
+  <div class="row">
+    <input id="webhook-url" type="url" placeholder="https://formspree.io/f/your-id">
+    <button class="btn btn-primary" id="webhook-save" type="button">Save</button>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="btn btn-primary" id="download-csv" type="button">↓ Download CSV</button>
+  <button class="btn btn-ghost" id="copy-emails" type="button">📋 Copy all emails</button>
+  <button class="btn btn-ghost" id="refresh" type="button">↻ Refresh</button>
+  <button class="btn btn-danger" id="clear" type="button">🗑 Clear local data</button>
+</div>
+
+<table id="users-table">
+  <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Nick</th><th>Registered</th><th>Referrer</th></tr></thead>
+  <tbody></tbody>
+</table>
+<div class="empty" id="empty" hidden>No registrations yet in this browser. Share your site link and they'll start showing up here.</div>
+
+</div>
+<script>
+(function(){
+  var KEY_USERS = 'alexia_registered_users';
+  var KEY_HOOK  = 'alexia_registration_webhook';
+
+  function lsGet(k, d){ try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch(_){ return d; } }
+  function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(_){ } }
+  function escapeHtml(s){ return String(s==null?'':s).replace(/[<>&"']/g, function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function getUsers(){ var v = lsGet(KEY_USERS, []); return Array.isArray(v) ? v : []; }
+
+  function render(){
+    var users = getUsers().slice().sort(function(a,b){ return (b.registeredAt||0) - (a.registeredAt||0); });
+    var tbody = document.querySelector('#users-table tbody');
+    var empty = document.getElementById('empty');
+    if (!users.length) { tbody.innerHTML = ''; empty.hidden = false; document.getElementById('users-table').style.display='none'; }
+    else {
+      empty.hidden = true;
+      document.getElementById('users-table').style.display='';
+      tbody.innerHTML = users.map(function(u, i){
+        var d = u.registeredAt ? new Date(u.registeredAt) : null;
+        return '<tr>' +
+          '<td>' + (i+1) + '</td>' +
+          '<td>' + escapeHtml(u.name) + '</td>' +
+          '<td class="email">' + escapeHtml(u.email) + '</td>' +
+          '<td>' + escapeHtml(u.nick) + '</td>' +
+          '<td>' + (d ? d.toLocaleString() : '—') + '</td>' +
+          '<td>' + escapeHtml((u.ref || '').slice(0, 60)) + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+    // Stats
+    var now = Date.now();
+    var oneDay = 24*60*60*1000;
+    var today = 0, week = 0;
+    var domains = {};
+    users.forEach(function(u){
+      if (u.registeredAt && (now - u.registeredAt) < oneDay) today++;
+      if (u.registeredAt && (now - u.registeredAt) < 7*oneDay) week++;
+      var d = (u.email || '').split('@')[1];
+      if (d) domains[d] = 1;
+    });
+    document.getElementById('stat-total').textContent   = users.length;
+    document.getElementById('stat-today').textContent   = today;
+    document.getElementById('stat-week').textContent    = week;
+    document.getElementById('stat-domains').textContent = Object.keys(domains).length;
+  }
+
+  function csvCell(v){
+    var s = String(v == null ? '' : v);
+    if (/[,"\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+  function downloadCSV(){
+    var users = getUsers();
+    var rows = ['name,email,nick,registered_at_iso,registered_at_ms,referrer,user_agent'];
+    users.forEach(function(u){
+      rows.push([
+        csvCell(u.name),
+        csvCell(u.email),
+        csvCell(u.nick),
+        csvCell(u.registeredAt ? new Date(u.registeredAt).toISOString() : ''),
+        csvCell(u.registeredAt || ''),
+        csvCell(u.ref || ''),
+        csvCell(u.ua || '')
+      ].join(','));
+    });
+    var blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'alexia-users-' + new Date().toISOString().slice(0,10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+  function copyEmails(){
+    var users = getUsers();
+    var emails = users.map(function(u){ return u.email; }).filter(Boolean).join(', ');
+    navigator.clipboard.writeText(emails).then(function(){
+      var b = document.getElementById('copy-emails');
+      var t = b.textContent;
+      b.classList.add('copied');
+      b.textContent = '✓ Copied ' + users.length + ' emails';
+      setTimeout(function(){ b.classList.remove('copied'); b.textContent = t; }, 2000);
+    });
+  }
+  function clearAll(){
+    if (!confirm('Delete ALL registered users from this browser? This cannot be undone. Make sure you downloaded the CSV first.')) return;
+    try { localStorage.removeItem(KEY_USERS); } catch(_){}
+    render();
+  }
+  function loadWebhook(){
+    document.getElementById('webhook-url').value = lsGet(KEY_HOOK, '') || '';
+  }
+  function saveWebhook(){
+    var v = document.getElementById('webhook-url').value.trim();
+    if (v && !/^https?:\/\//.test(v)) { alert('URL must start with https:// or http://'); return; }
+    lsSet(KEY_HOOK, v);
+    var b = document.getElementById('webhook-save');
+    var t = b.textContent;
+    b.classList.add('copied');
+    b.textContent = '✓ Saved';
+    setTimeout(function(){ b.classList.remove('copied'); b.textContent = t; }, 1500);
+  }
+
+  document.getElementById('download-csv').addEventListener('click', downloadCSV);
+  document.getElementById('copy-emails').addEventListener('click', copyEmails);
+  document.getElementById('refresh').addEventListener('click', render);
+  document.getElementById('clear').addEventListener('click', clearAll);
+  document.getElementById('webhook-save').addEventListener('click', saveWebhook);
+
+  loadWebhook();
+  render();
+})();
+</script>
+</body>
+</html>
