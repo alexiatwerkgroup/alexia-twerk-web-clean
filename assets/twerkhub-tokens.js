@@ -114,6 +114,48 @@
     badge.classList.add('is-pulsing');
   }
 
+  // Pleasant "coin ping" generated with Web Audio API — no external file.
+  // Two quick notes with a decay envelope; very small volume so it never
+  // interrupts whatever else the user is listening to.
+  var _audioCtx = null;
+  function ensureAudioCtx(){
+    if (_audioCtx) return _audioCtx;
+    try {
+      var Ctor = window.AudioContext || window.webkitAudioContext;
+      if (Ctor) _audioCtx = new Ctor();
+    } catch(e){ /* not available */ }
+    return _audioCtx;
+  }
+  function playTokenPing(){
+    try {
+      var ctx = ensureAudioCtx();
+      if (!ctx) return;
+      // Some browsers need user gesture to unlock — if still "suspended"
+      // after a click (which we've probably had), resume will succeed.
+      if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_){} }
+      var now = ctx.currentTime;
+      var master = ctx.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.12, now + 0.02);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
+      master.connect(ctx.destination);
+      // Bell-like: two sine tones, upper octave panned slightly right
+      [[988, 0], [1318, 0.08]].forEach(function(pair, i){
+        var osc = ctx.createOscillator();
+        var g = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(pair[0], now + pair[1]);
+        osc.frequency.exponentialRampToValueAtTime(pair[0] * 0.98, now + pair[1] + 0.35);
+        g.gain.setValueAtTime(0.0001, now + pair[1]);
+        g.gain.exponentialRampToValueAtTime(i === 0 ? 0.9 : 0.55, now + pair[1] + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + pair[1] + 0.38);
+        osc.connect(g).connect(master);
+        osc.start(now + pair[1]);
+        osc.stop(now + pair[1] + 0.42);
+      });
+    } catch(e){ /* quiet — sound is bonus */ }
+  }
+
   function showToast(plusN, title, sub){
     if (!toastHost) return;
     var el = document.createElement('div');
@@ -130,6 +172,8 @@
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){ el.classList.add('is-visible'); });
     });
+    // Play the pleasant coin ping alongside the toast.
+    playTokenPing();
     setTimeout(function(){
       el.classList.remove('is-visible');
       setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 400);
