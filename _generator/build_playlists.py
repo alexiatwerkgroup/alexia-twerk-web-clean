@@ -214,6 +214,24 @@ def build_leak(gold: str, cfg: dict) -> str:
     if "twerkhub-tokens.js" not in html:
         html = html.replace("</body>", tokens_js_tag + "\n</body>", 1)
 
+    sound_js_tag = (
+        f'\n<script defer src="/assets/twerkhub-sound-on-interaction.js?v={TOKENS_CACHE_BUST}"></script>'
+    )
+    if "twerkhub-sound-on-interaction.js" not in html:
+        html = html.replace("</body>", sound_js_tag + "\n</body>", 1)
+
+    locale_js_tag = (
+        f'\n<script defer src="/assets/twerkhub-locale-switcher.js?v={TOKENS_CACHE_BUST}"></script>'
+    )
+    if "twerkhub-locale-switcher.js" not in html:
+        html = html.replace("</body>", locale_js_tag + "\n</body>", 1)
+
+    mobile_nav_js_tag = (
+        f'\n<script defer src="/assets/twerkhub-mobile-nav.js?v={TOKENS_CACHE_BUST}"></script>'
+    )
+    if "twerkhub-mobile-nav.js" not in html:
+        html = html.replace("</body>", mobile_nav_js_tag + "\n</body>", 1)
+
     return html
 
 
@@ -594,6 +612,40 @@ def build_playlist_index(gold: str) -> str:
         html,
     )
 
+    # ── Replace the 60-card grid from the gold template with the FULL 275-card
+    #    grid scraped from the existing /playlist/*.html files. This gives us
+    #    (slug, yt_id, title) for every individual video page so we can both
+    #    render every card AND sync the URL bar on click via pushState. ──────
+    entries = scrape_playlist_folder()
+    if entries:
+        grid_html = _build_275_grid(entries)
+        # Replace everything inside <div class="grid" id="video-grid" role="list"> ... </div>
+        html = re.sub(
+            r'(<div class="grid" id="video-grid" role="list">)[\s\S]*?(</div>\s*</section>)',
+            lambda m: m.group(1) + "\n" + grid_html + "\n  " + m.group(2),
+            html,
+            count=1,
+        )
+        # Update the "All 60 cuts in the room." headline.
+        html = re.sub(
+            r'(<h2>All <em>)\d+(</em> cuts in the room\.</h2>)',
+            lambda m: m.group(1) + str(len(entries)) + m.group(2),
+            html,
+            count=1,
+        )
+        # Replace the hard-coded GRID variable inside the inline script with
+        # the full list so the legacy renderer logic won't double up cards.
+        js_grid = "[" + ", ".join(
+            '{{"id": "{vid}", "number": "#{num}", "slug": "{slug}"}}'.format(
+                vid=e["vid"], num=str(i+1).zfill(3), slug=e["slug"]
+            ) for i, e in enumerate(entries)
+        ) + "]"
+        html = re.sub(r'var GRID = \[[^;]*\];', "var GRID = " + js_grid + ";", html, count=1)
+        # Inject the slug-aware swap handler (history.pushState on click).
+        if "twerkhub-playlist-slug-router" not in html:
+            router = PLAYLIST_SLUG_ROUTER_JS.replace("{{TOTAL}}", str(len(entries)))
+            html = html.replace("</body>", router + "\n</body>", 1)
+
     # Inject Token HUD so the coin + toasts work inside /playlist/ too.
     if "twerkhub-tokens.css" not in html:
         html = html.replace(
@@ -607,8 +659,153 @@ def build_playlist_index(gold: str) -> str:
             f'\n<script defer src="/assets/twerkhub-tokens.js?v={TOKENS_CACHE_BUST}"></script>\n</body>',
             1,
         )
+    # Global UX helpers also for /playlist/index.html.
+    if "twerkhub-sound-on-interaction.js" not in html:
+        html = html.replace(
+            "</body>",
+            f'\n<script defer src="/assets/twerkhub-sound-on-interaction.js?v={TOKENS_CACHE_BUST}"></script>\n</body>',
+            1,
+        )
+    if "twerkhub-locale-switcher.js" not in html:
+        html = html.replace(
+            "</body>",
+            f'\n<script defer src="/assets/twerkhub-locale-switcher.js?v={TOKENS_CACHE_BUST}"></script>\n</body>',
+            1,
+        )
+    if "twerkhub-mobile-nav.js" not in html:
+        html = html.replace(
+            "</body>",
+            f'\n<script defer src="/assets/twerkhub-mobile-nav.js?v={TOKENS_CACHE_BUST}"></script>\n</body>',
+            1,
+        )
 
     return html
+
+
+# ---------------------------------------------------------------------------
+# Scrape the ./playlist/ folder for (slug, yt_id, title) tuples
+# ---------------------------------------------------------------------------
+def scrape_playlist_folder():
+    """Iterate over every ./playlist/*.html EXCEPT index.html, extract the
+    first YouTube ID and the <title> so we can build a 275-card grid with
+    links back to each indexed page."""
+    import os
+    pl_dir = ROOT / "playlist"
+    if not pl_dir.is_dir():
+        return []
+    entries = []
+    seen_vids = set()
+    for fname in sorted(os.listdir(pl_dir)):
+        if not fname.endswith(".html") or fname == "index.html":
+            continue
+        fp = pl_dir / fname
+        try:
+            text = fp.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        # Prefer actual iframe embed, fall back to thumbnail URL, then to
+        # any 11-char ID string in a YouTube-looking URL.
+        m = re.search(r'youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{11})', text)
+        if not m:
+            m = re.search(r'i\.ytimg\.com/vi/([A-Za-z0-9_-]{11})/', text)
+        if not m:
+            m = re.search(r'youtube\.com/watch\?v=([A-Za-z0-9_-]{11})', text)
+        if not m:
+            continue
+        vid = m.group(1)
+        if vid in seen_vids:
+            continue
+        seen_vids.add(vid)
+        t = re.search(r'<title>([^<]+)</title>', text)
+        title = (t.group(1) if t else fname.replace(".html", "").replace("-", " ")).strip()
+        # Cap title at 80 chars to keep the grid tidy.
+        if len(title) > 80:
+            title = title[:77] + "…"
+        entries.append({"slug": fname, "vid": vid, "title": title})
+    return entries
+
+
+def _build_275_grid(entries):
+    """Render one <a class='vcard'> per entry. Uses data-hot=1 so the existing
+    swap() handler picks them up. Adds data-slug for the URL bar sync."""
+    out = []
+    for i, e in enumerate(entries, start=1):
+        number = "#" + str(i).zfill(3)
+        slug_attr = e["slug"].replace('"', '&quot;')
+        vid = e["vid"]
+        title = e["title"].replace('"', '&quot;').replace("<", "&lt;").replace(">", "&gt;")
+        out.append(
+            f'    <a class="vcard reveal" data-hot="1" data-vid="{vid}" '
+            f'data-slug="{slug_attr}" data-number="{number}" '
+            f'href="/playlist/{slug_attr}" role="listitem" aria-label="{title}">'
+            f'<div class="vthumb">'
+            f'<img src="https://i.ytimg.com/vi/{vid}/hqdefault.jpg" alt="{number}" '
+            f'decoding="async" loading="lazy" '
+            f'onerror="this.src=\'https://i.ytimg.com/vi/{vid}/default.jpg\'">'
+            f'<div class="vscrim"></div><div class="vplay"></div></div></a>'
+        )
+    return "\n".join(out)
+
+
+# ---------------------------------------------------------------------------
+# Inline JS for the slug-aware click router (only on /playlist/index.html)
+# ---------------------------------------------------------------------------
+PLAYLIST_SLUG_ROUTER_JS = '''
+<!-- /playlist/ slug router: on every vcard/rk-item click, swap the big player
+     iframe AND push the indexed per-video URL (/playlist/<slug>.html) into the
+     address bar. No page navigation, no popup, no youtube.com redirect — the
+     visible URL stays in sync with the playing video so users can share /
+     bookmark / Google can keep crediting each indexed page. -->
+<script>
+(function(){
+  'use strict';
+  if (window.__twerkhubPlaylistSlugRouterInit) return;
+  window.__twerkhubPlaylistSlugRouterInit = true;
+  var TOTAL = {{TOTAL}};
+  function init(){
+    try {
+      console.info('[twerkhub-playlist-slug-router] ready · ' + TOTAL + ' videos');
+      var player = document.getElementById('twerkhub-pl-player');
+      var title  = document.getElementById('twerkhub-pl-now-title');
+      if (!player) return;
+      function swap(vid, slug, number){
+        var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
+                  '?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+        player.src = url;
+        if (title && number) title.textContent = 'Playing ' + number;
+        // URL bar sync: change to the indexed per-video URL without reloading.
+        if (slug) {
+          try {
+            history.pushState({ vid: vid, slug: slug }, '', '/playlist/' + slug);
+          } catch(_) { /* some older browsers reject pushState here */ }
+        }
+        try { player.closest('.twerkhub-pl-player-wrap').scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+      }
+      document.addEventListener('click', function(ev){
+        var hot = ev.target.closest && ev.target.closest('[data-hot="1"]');
+        if (!hot) return;
+        var vid  = hot.getAttribute('data-vid');
+        var slug = hot.getAttribute('data-slug') || '';
+        var num  = hot.getAttribute('data-number') || '';
+        if (!vid) return;
+        // Hold Ctrl/Cmd/middle-click to actually navigate to the indexed page.
+        if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button === 1) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        swap(vid, slug, num);
+      }, true);
+      // Back/forward button support: when the URL goes back, no-op (we don't
+      // restore the video state on pop — too fragile). The browser simply
+      // shows the URL bar moving; the iframe stays on whatever was last.
+    } catch(e){ console.warn('[twerkhub-playlist-slug-router] init crashed', e); }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+</script>'''
 
 
 # ---------------------------------------------------------------------------

@@ -1144,7 +1144,7 @@ body.twerkhub-pl-theater .twerkhub-pl-hero h1{font-size:clamp(40px,5.4vw,72px)}
 .twerkhub-pl-theater-rank{position:sticky;top:88px;align-self:start;padding:18px}
 .twerkhub-pl-theater-rank .rk-list{display:flex;flex-direction:column;gap:8px}
 .twerkhub-pl-theater-rank .rk-item{
-  display:grid;grid-template-columns:40px 100px;gap:10px;
+  display:grid;grid-template-columns:36px 84px minmax(0,1fr);gap:10px;
   padding:8px;border-radius:12px;border:1px solid transparent;
   transition:background .25s,border-color .25s;align-items:center;cursor:pointer;
 }
@@ -1155,6 +1155,18 @@ body.twerkhub-pl-theater .twerkhub-pl-hero h1{font-size:clamp(40px,5.4vw,72px)}
   border:1px solid rgba(255,255,255,.08);
 }
 .twerkhub-pl-theater-rank .rk-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+/* Copy column to the right of the thumb — title + short meta line */
+.twerkhub-pl-theater-rank .rk-copy{min-width:0;display:flex;flex-direction:column;gap:3px}
+.twerkhub-pl-theater-rank .rk-title{
+  font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:13.5px;line-height:1.2;
+  color:#f5f5fb;letter-spacing:-.005em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.twerkhub-pl-theater-rank .rk-meta{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:#9a9aab;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 
 /* Full archive grid · below the split */
 .twerkhub-pl-grid-section{max-width:1320px;margin:50px auto 0;padding:0 26px}

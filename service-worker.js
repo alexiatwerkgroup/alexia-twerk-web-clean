@@ -1,4 +1,4 @@
-// TWERKHUB · Service Worker v1.0.2
+// TWERKHUB · Service Worker v1.0.3
 // ─────────────────────────────────────────────────────────────────────────
 // 2026-04-24: fixed "FOUC on first paint" bug. The previous v1.0.1 used a
 // pure cache-first strategy for every non-HTML asset, so updated CSS/JS
@@ -10,8 +10,8 @@
 // visit. Bumped CACHE_NAME/RUNTIME_CACHE so old v1.0.1 caches are purged on
 // activate.
 // ─────────────────────────────────────────────────────────────────────────
-const CACHE_NAME = 'alexia-pwa-v1.0.2';
-const RUNTIME_CACHE = 'alexia-runtime-v1.0.2';
+const CACHE_NAME = 'alexia-pwa-v1.0.3';
+const RUNTIME_CACHE = 'alexia-runtime-v1.0.3';
 const OFFLINE_URL = '/';
 
 // Files that are part of the app shell and should be pre-cached on install.

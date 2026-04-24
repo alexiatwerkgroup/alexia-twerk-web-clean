@@ -103,7 +103,7 @@
       </button>
       <div class="twerkhub-hh-media-meta">
         <span class="twerkhub-hh-live" id="twerkhub-hh-status"><span class="twerkhub-hh-status-dot" aria-hidden="true"></span><span class="twerkhub-hh-status-label">online</span></span>
-        <h2 id="twerkhub-hh-countdown" data-remaining-minutes="420"><span class="twerkhub-hh-cd-kicker">Private · ends in</span> <span class="twerkhub-hh-cd-timer" id="twerkhub-hh-cd-timer">07:00:00</span></h2>
+        <h2 id="twerkhub-hh-countdown" data-remaining-minutes="75"><span class="twerkhub-hh-cd-kicker">Private · ends in</span> <span class="twerkhub-hh-cd-timer" id="twerkhub-hh-cd-timer">01:15:00</span></h2>
       </div>
     </div>
   </aside>
@@ -236,7 +236,7 @@
     <!-- 1 · FEATURED · /playlist/ · signature archive, updated weekly, infinite list -->
     <a class="twerkhub-fp-card twerkhub-fp-card-featured" href="/playlist/">
       <div class="twerkhub-fp-thumb">
-        <img src="https://i.ytimg.com/vi/cINCQDEgJvs/maxresdefault.jpg" alt="Hottest twerk videos — the signature archive" loading="lazy" decoding="async" onerror="this.src='https://i.ytimg.com/vi/cINCQDEgJvs/hqdefault.jpg'">
+        <img src="https://i.ytimg.com/vi/rJQedlVdCCU/maxresdefault.jpg" alt="Hottest twerk videos — the signature archive" loading="lazy" decoding="async" onerror="this.src='https://i.ytimg.com/vi/rJQedlVdCCU/hqdefault.jpg'">
         <div class="twerkhub-fp-scrim"></div>
         <span class="twerkhub-fp-badge twerkhub-fp-badge-signature">✦ Signature</span>
         <span class="twerkhub-fp-live">● Infinite list</span>
@@ -559,9 +559,15 @@
           if (ico)   ico.textContent   = muted ? '🔈' : '🔊';
         }
       }
-      // Hover unmutes (desktop) · mouseleave silences again
-      aside.addEventListener('mouseenter', function(){ setMuted(false); });
-      aside.addEventListener('mouseleave', function(){ setMuted(true); });
+      // Firefox pauses the iframe when we switch mute state mid-playback even
+      // with an immediate playVideo chaser. Chromium is fine. Skip the hover
+      // behavior entirely on Firefox — users can still unmute via the button.
+      var isFirefox = /\bFirefox\//i.test(navigator.userAgent) && !/Seamonkey/i.test(navigator.userAgent);
+      if (!isFirefox) {
+        // Hover unmutes (desktop Chromium) · mouseleave silences again.
+        aside.addEventListener('mouseenter', function(){ setMuted(false); });
+        aside.addEventListener('mouseleave', function(){ setMuted(true); });
+      }
       // Tap toggles (mobile + click)
       if (btn) btn.addEventListener('click', function(ev){
         ev.preventDefault(); ev.stopPropagation();
@@ -590,7 +596,9 @@
   'use strict';
   if (window.__twerkhubHeroCountdownInit) return;
   window.__twerkhubHeroCountdownInit = true;
-  var KEY = 'twerkhub_hero_countdown_endstamp';
+  // v3 key bump — the window length dropped from 7h to 1h15m, so old saved
+  // endstamps from v2 need to be ignored; new key forces a fresh window.
+  var KEY = 'twerkhub_hero_countdown_endstamp_v3';
   function two(n){ return String(n).padStart(2,'0'); }
   function init(){
     try {
@@ -649,5 +657,8 @@
 <script defer src="/assets/twerkhub-auth-patch.js?v=20260420-p15"></script>
 <script defer src="/assets/whatsapp-share.js?v=20260423"></script>
 <script defer src="/assets/twerkhub-tokens.js?v=20260424-p1"></script>
+<script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p1"></script>
+<script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p1"></script>
+<script defer src="/assets/twerkhub-mobile-nav.js?v=20260424-p1"></script>
 </body>
 </html>
