@@ -113,7 +113,27 @@
       '</div>',
     ].join('');
     document.body.appendChild(back);
-    function shut(){ back.classList.remove('is-open'); setTimeout(function(){ if (back && back.parentNode) back.parentNode.removeChild(back); }, 300); }
+    // Bug fix 2026-04-24 (Anti): paywall.js / playlist-renderer.js had
+    // previously locked body.style.overflow='hidden' to block page scroll
+    // behind the modal. When the user closes the Discord handoff via
+    // "Maybe later" / ESC / backdrop, nobody was unlocking the body → page
+    // stayed frozen. We now unconditionally restore scroll + close any
+    // underlying .twk-modal.open that might still be around.
+    function shut(){
+      back.classList.remove('is-open');
+      setTimeout(function(){
+        if (back && back.parentNode) back.parentNode.removeChild(back);
+      }, 300);
+      try {
+        // Restore page scroll (paywall.js had set this to 'hidden').
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        // Close any paywall/subscribe modal still sitting underneath.
+        document.querySelectorAll('.twk-modal.open').forEach(function(m){
+          m.classList.remove('open');
+        });
+      } catch(_){}
+    }
     back.querySelector('.twerkhub-handoff-close').addEventListener('click', shut);
     back.querySelector('[data-twerkhub-handoff-cancel]').addEventListener('click', shut);
     back.addEventListener('click', function(ev){ if (ev.target === back) shut(); });

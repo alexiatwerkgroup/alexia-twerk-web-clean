@@ -685,6 +685,23 @@ def build_playlist_index(gold: str) -> str:
 # ---------------------------------------------------------------------------
 # Scrape the ./playlist/ folder for (slug, yt_id, title) tuples
 # ---------------------------------------------------------------------------
+def _is_good_slug(fname):
+    """Reject junk slug files that Google hasn't indexed — short numeric
+    patterns like `-twerk-4.html`, `-twerk.html`, `-twerk-10age.html`, etc.
+    Keep only slugs with a real descriptive name (at least 4 hyphen-separated
+    tokens and ≥20 chars)."""
+    base = fname[:-5] if fname.endswith(".html") else fname
+    if len(base) < 20:
+        return False
+    # Reject leading-hyphen patterns like "-twerk-4"
+    if base.startswith("-"):
+        return False
+    parts = base.split("-")
+    if len(parts) < 3:
+        return False
+    return True
+
+
 def scrape_playlist_folder():
     """Iterate over every ./playlist/*.html EXCEPT index.html, extract the
     first YouTube ID and the <title> so we can build a 275-card grid with
@@ -697,6 +714,9 @@ def scrape_playlist_folder():
     seen_vids = set()
     for fname in sorted(os.listdir(pl_dir)):
         if not fname.endswith(".html") or fname == "index.html":
+            continue
+        # Skip junk slugs (e.g. "-twerk-4.html") that aren't Google-indexed.
+        if not _is_good_slug(fname):
             continue
         fp = pl_dir / fname
         try:
@@ -750,6 +770,181 @@ def _build_275_grid(entries):
 # ---------------------------------------------------------------------------
 # Inline JS for the slug-aware click router (only on /playlist/index.html)
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Regenerate every individual /playlist/<slug>.html at the 2.0 layout
+# ---------------------------------------------------------------------------
+def regenerate_individual_video_pages(gold, pl_dir):
+    """For each /playlist/<slug>.html (except index.html and junk slugs),
+    rewrite the page with the Twerkhub 2.0 theater layout, preserving
+    per-page SEO (title, description, canonical, og tags) AND the yt_id.
+
+    Returns the number of files written.
+    """
+    import os, html as htmllib
+    count = 0
+    for fname in sorted(os.listdir(pl_dir)):
+        if not fname.endswith(".html") or fname == "index.html":
+            continue
+        if not _is_good_slug(fname):
+            continue
+        fp = pl_dir / fname
+        try:
+            raw = fp.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        # Extract per-page SEO + yt_id from the original backup file.
+        vid_m = re.search(r'youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{11})', raw)
+        if not vid_m:
+            vid_m = re.search(r'i\.ytimg\.com/vi/([A-Za-z0-9_-]{11})/', raw)
+        if not vid_m:
+            continue
+        vid = vid_m.group(1)
+
+        title_m = re.search(r'<title>([^<]+)</title>', raw)
+        descr_m = re.search(r'<meta name="description" content="([^"]*)"', raw)
+        canon_m = re.search(r'<link rel="canonical" href="([^"]*)"', raw)
+
+        seo_title = (title_m.group(1) if title_m else fname.replace(".html","")).strip()
+        seo_descr = (descr_m.group(1) if descr_m else "").strip() or (
+            "Watch " + seo_title + " inside the Alexia Twerk Group archive."
+        )
+        seo_canon = (canon_m.group(1) if canon_m else "").strip() or (
+            "https://alexiatwerkgroup.com/playlist/" + fname
+        )
+        short_title = seo_title.replace(" | Alexia Twerk Group", "").replace(
+            " | Viral Dance Playlist", ""
+        ).strip()
+
+        new_html = render_individual_video_page(
+            yt_id=vid,
+            slug=fname,
+            title=seo_title,
+            description=seo_descr,
+            canonical=seo_canon,
+            display_title=short_title[:120],
+        )
+        try:
+            fp.write_text(new_html, encoding="utf-8", newline="\n")
+            count += 1
+        except Exception as e:
+            print("  skip", fname, "·", e)
+    return count
+
+
+def render_individual_video_page(yt_id, slug, title, description, canonical, display_title):
+    """Render one /playlist/<slug>.html at the Twerkhub 2.0 layout. The page
+    keeps its Google-indexed metadata but changes the chrome to the modern
+    theater look (nav SAGRADA, hero, inline player, back-to-archive CTA)."""
+    safe_title = title.replace("<","&lt;").replace(">","&gt;").replace('"','&quot;')
+    safe_disp = display_title.replace("<","&lt;").replace(">","&gt;")
+    safe_descr = description.replace('"','&quot;')
+    safe_canon = canonical.replace('"','&quot;')
+
+    return f'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<title>{safe_title}</title>
+<meta name="description" content="{safe_descr}"/>
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"/>
+<link rel="canonical" href="{safe_canon}"/>
+<meta property="og:type" content="video.other"/>
+<meta property="og:site_name" content="Alexia Twerk Group"/>
+<meta property="og:title" content="{safe_title}"/>
+<meta property="og:description" content="{safe_descr}"/>
+<meta property="og:url" content="{safe_canon}"/>
+<meta property="og:image" content="https://i.ytimg.com/vi/{yt_id}/maxresdefault.jpg"/>
+<meta property="og:video" content="https://www.youtube.com/embed/{yt_id}"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="{safe_title}"/>
+<meta name="twitter:image" content="https://i.ytimg.com/vi/{yt_id}/maxresdefault.jpg"/>
+<meta name="rating" content="mature"/>
+<meta name="theme-color" content="#05050a"/>
+<link rel="icon" href="/favicon-32.png" sizes="32x32"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com" crossorigin>
+<link rel="preconnect" href="https://www.youtube.com" crossorigin>
+
+<link rel="stylesheet" href="/assets/twerkhub-page.css?v={CACHE_BUST}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v={TOKENS_CACHE_BUST}">
+
+<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"VideoObject","name":"{safe_title}","description":"{safe_descr}","thumbnailUrl":"https://i.ytimg.com/vi/{yt_id}/maxresdefault.jpg","uploadDate":"2026-04-20","contentUrl":"https://www.youtube.com/watch?v={yt_id}","embedUrl":"https://www.youtube.com/embed/{yt_id}","url":"{safe_canon}","inLanguage":"en","isFamilyFriendly":false,"isPartOf":{{"@type":"CollectionPage","name":"Best Twerk Videos on YouTube","url":"https://alexiatwerkgroup.com/playlist/"}}}}
+</script>
+</head>
+<body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater" data-page="playlist-video">
+
+<a class="twerkhub-pl-skip" href="#twerkhub-pl-main">Skip to main content</a>
+
+<nav class="twerkhub-pl-topbar" aria-label="Primary">
+  <div class="twerkhub-pl-topbar-inner">
+    <a class="twerkhub-pl-tb-brand" href="/" aria-label="Twerkhub · home">
+      <img class="twerkhub-pl-tb-logo" src="/logo-twerkhub.png" alt="Twerkhub" loading="eager" decoding="async" width="34" height="34">
+      <span class="twerkhub-pl-tb-brand-sub">Est. 2018</span>
+    </a>
+    <div class="twerkhub-pl-tb-nav">
+      <a href="/">Home</a>
+      <a href="/#private-models">Exclusive</a>
+      <a href="/playlist/" class="is-active" aria-current="page">Playlists</a>
+      <a href="/membership.html">Tokens</a>
+      <a href="#">VR</a>
+      <a href="/profile.html">Profile</a>
+    </div>
+  </div>
+</nav>
+
+<header class="twerkhub-pl-hero" style="text-align:left;max-width:1320px;margin:28px auto 12px;padding:0 26px">
+  <div class="twerkhub-pl-kicker">/ From the archive</div>
+  <h1 style="font-size:clamp(22px,3vw,38px);line-height:1.15;margin:10px 0 8px">{safe_disp}</h1>
+  <p class="twerkhub-pl-intro" style="max-width:900px"><a href="/playlist/" style="color:#1ee08f;text-decoration:none;font-weight:800">← Back to the full archive</a></p>
+</header>
+
+<main id="twerkhub-pl-main" class="twerkhub-pl-theater-main" style="max-width:1320px;margin:0 auto;padding:0 26px">
+  <div class="twerkhub-pl-player-col">
+    <div class="twerkhub-pl-player-wrap">
+      <iframe id="twerkhub-pl-player"
+              src="https://www.youtube-nocookie.com/embed/{yt_id}?autoplay=1&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1"
+              title="{safe_title}"
+              loading="lazy"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen></iframe>
+    </div>
+    <div class="twerkhub-pl-player-meta">
+      <span class="twerkhub-pl-player-now">▶ Now playing</span>
+      <h2 id="twerkhub-pl-now-title" style="font-size:18px">{safe_disp}</h2>
+    </div>
+  </div>
+</main>
+
+<section class="twerkhub-pl-cta-final" aria-label="Keep going" style="margin-top:40px">
+  <h2>Browse the <em>full archive</em>.</h2>
+  <div class="twerkhub-pl-cta-row">
+    <a class="twerkhub-btn twerkhub-btn-primary" href="/playlist/">Back to playlist →</a>
+    <a class="twerkhub-btn twerkhub-btn-ghost" href="/">Twerkhub Home</a>
+  </div>
+</section>
+
+<footer class="twerkhub-pl-footer" role="contentinfo">
+  <div class="twerkhub-pl-slogan">If you know, you know.</div>
+  <div class="twerkhub-pl-founded">© 2026 Twerkhub · founded by <em>Anti</em> (firestarter)</div>
+</footer>
+
+<script defer src="/assets/global-brand.js?v={CACHE_BUST}"></script>
+<script defer src="/assets/twerkhub-tokens.js?v={TOKENS_CACHE_BUST}"></script>
+<script defer src="/assets/twerkhub-sound-on-interaction.js?v={TOKENS_CACHE_BUST}"></script>
+<script defer src="/assets/twerkhub-locale-switcher.js?v={TOKENS_CACHE_BUST}"></script>
+<script defer src="/assets/twerkhub-mobile-nav.js?v={TOKENS_CACHE_BUST}"></script>
+</body>
+</html>
+'''
+
+
 PLAYLIST_SLUG_ROUTER_JS = '''
 <!-- /playlist/ slug router: on every vcard/rk-item click, swap the big player
      iframe AND push the indexed per-video URL (/playlist/<slug>.html) into the
@@ -833,6 +1028,12 @@ def main():
         pl_index = pl_dir / "index.html"
         pl_index.write_text(build_playlist_index(gold), encoding="utf-8", newline="\n")
         written.append(str(pl_index))
+
+        # Special 3: regenerate every individual /playlist/<slug>.html at the
+        # Twerkhub 2.0 layout, preserving each page's original SEO metadata
+        # (title/description/canonical) while upgrading the visual shell.
+        per_video_count = regenerate_individual_video_pages(gold, pl_dir)
+        print("Regenerated", per_video_count, "individual /playlist/*.html pages")
 
     print("Wrote:")
     for w in written:
