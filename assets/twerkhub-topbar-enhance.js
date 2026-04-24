@@ -12,8 +12,9 @@
  * mounts inside it; falls back to its old fixed-top-right position only if
  * the slot is missing (e.g. on pages without a navbar).
  *
- * v20260424-p7 · nav is always 1 line (no wrap), clean underline active
- *                  state instead of solid pink pill, responsive shrink
+ * v20260424-p8 · LIVE pill guaranteed visible count at every viewport
+ *                  (removed overflow:hidden, min-width:3ch on count,
+ *                  flex-shrink:0 on pill + min-width:max-content)
  */
 (function(){
   'use strict';
@@ -64,13 +65,19 @@
     // Right-cluster wrapper
     + '.twerkhub-topbar-right{display:inline-flex;align-items:center;gap:10px;flex-shrink:0;}'
     // Online-now pill · TWERKHUB 2.0 (live, glassy, breathing)
-    + '.twerkhub-online-pill{position:relative;display:inline-flex;align-items:center;gap:9px;padding:6px 13px 6px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(30,224,143,.06) 60%,rgba(255,45,135,.08));border:1px solid rgba(30,224,143,.45);font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#e8e8ef;line-height:1;white-space:nowrap;box-shadow:0 0 0 0 rgba(30,224,143,.0),0 4px 14px -6px rgba(30,224,143,.35);transition:box-shadow .5s ease,transform .2s ease;overflow:hidden;}'
+    /* LIVE PILL fix (2026-04-24-p8): removed overflow:hidden — it was
+       clipping the count on narrow viewports. The radial ::before is now
+       clipped by border-radius naturally. Added min-width so the pill
+       always reserves room for the dot + count + label + tier, no matter
+       how tight the nav gets. `flex-shrink:0` prevents other grid children
+       from compressing it into oblivion. */
+    + '.twerkhub-online-pill{position:relative;display:inline-flex;align-items:center;gap:8px;padding:6px 13px 6px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(30,224,143,.06) 60%,rgba(255,45,135,.08));border:1px solid rgba(30,224,143,.45);font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#e8e8ef;line-height:1;white-space:nowrap;box-shadow:0 0 0 0 rgba(30,224,143,.0),0 4px 14px -6px rgba(30,224,143,.35);transition:box-shadow .5s ease,transform .2s ease;flex-shrink:0;min-width:max-content;}'
     + '.twerkhub-online-pill::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at 20% 50%,rgba(30,224,143,.22),transparent 60%);opacity:.8;pointer-events:none;}'
     + '.twerkhub-online-pill:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(30,224,143,.25),0 10px 22px -6px rgba(30,224,143,.45);}'
     + '.twerkhub-online-pill .twerkhub-online-dot{position:relative;width:8px;height:8px;border-radius:50%;background:#1ee08f;box-shadow:0 0 10px #1ee08f,0 0 20px rgba(30,224,143,.45);flex-shrink:0;}'
     + '.twerkhub-online-pill .twerkhub-online-dot::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(30,224,143,.5);animation:twerkhub-online-ping 2s cubic-bezier(.2,.7,.3,1) infinite;}'
     + '.twerkhub-online-pill .twerkhub-online-label{opacity:.82;}'
-    + '.twerkhub-online-pill .twerkhub-online-count{color:#1ee08f;letter-spacing:.04em;font-variant-numeric:tabular-nums;min-width:26px;display:inline-block;text-align:right;text-shadow:0 0 10px rgba(30,224,143,.45);transition:color .35s ease,text-shadow .35s ease;}'
+    + '.twerkhub-online-pill .twerkhub-online-count{color:#1ee08f;letter-spacing:.04em;font-variant-numeric:tabular-nums;min-width:3ch;display:inline-block;text-align:right;text-shadow:0 0 10px rgba(30,224,143,.45);transition:color .35s ease,text-shadow .35s ease;flex-shrink:0;font-size:11.5px;font-weight:900;}'
     + '.twerkhub-online-pill .twerkhub-online-count.is-up{color:#83ffc0;text-shadow:0 0 14px rgba(131,255,192,.65);}'
     + '.twerkhub-online-pill .twerkhub-online-count.is-down{color:#ffb454;text-shadow:0 0 14px rgba(255,180,84,.55);}'
     + '@keyframes twerkhub-online-ping{0%{transform:scale(.8);opacity:.9}70%{transform:scale(1.9);opacity:0}100%{transform:scale(1.9);opacity:0}}'
@@ -110,8 +117,19 @@
     + '}'
     + '@media (max-width:980px){'
     + '  .twerkhub-topbar-inner,.snf__i,.site-nav-final__inner{grid-template-columns:auto 1fr auto;}'
-    + '  .twerkhub-online-pill{padding:5px 9px;}'
+    /* Keep enough padding so "412" number is NOT clipped. 8px horizontal
+       minimum so there's breathing room around the count. */
+    + '  .twerkhub-online-pill{padding:5px 10px;gap:6px;}'
+    + '  .twerkhub-online-pill .twerkhub-online-count{min-width:2.5ch;font-size:11px;}'
     + '  .twerkhub-nav a,.snf__l a,.site-nav-final__links a{padding:6px 6px;font-size:10px;}'
+    + '}'
+    /* Below 720px (tight tablets/large phones): the pill stays visible but
+       drops to just dot + count. Guaranteed min-width so the number ALWAYS
+       renders. This was the bug — at tight widths the pill was shrinking
+       smaller than its content. */
+    + '@media (max-width:720px){'
+    + '  .twerkhub-online-pill{padding:4px 10px;gap:6px;min-width:60px;}'
+    + '  .twerkhub-online-pill .twerkhub-online-count{min-width:2.5ch;font-size:10.5px;}'
     + '}'
     // On real mobile, the hamburger takes over — hide desktop nav + right-cluster label
     + '@media (max-width:880px){'
