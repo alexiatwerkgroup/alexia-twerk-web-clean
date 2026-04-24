@@ -226,7 +226,11 @@ body.twerkhub-page a{color:inherit;text-decoration:none}
   isolation:isolate;
 }
 .vcard:hover{transform:translateY(-4px);border-color:var(--twerkhub-pink-soft);box-shadow:0 18px 40px rgba(255,45,135,.2)}
-.vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+.vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,#2a0822 0%,#1a0718 55%,#0a0a14 100%);}
+.vthumb::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,rgba(255,255,255,.03) 8%,rgba(255,45,135,.08) 18%,rgba(255,255,255,.03) 33%);background-size:200% 100%;animation:vthumb-shimmer 2.2s linear infinite;pointer-events:none;z-index:0;}
+.vthumb img{position:relative;z-index:1;}
+.vthumb img.is-loaded ~ ::before,.vthumb:has(img[src]:not([src=""]):not(.is-broken)) ::before{display:none;}
+@keyframes vthumb-shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 .vthumb img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease;will-change:transform}
 .vcard:hover .vthumb img{transform:scale(1.06)}
 .vscrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,transparent 55%,rgba(0,0,0,.78) 100%)}
@@ -577,7 +581,11 @@ body.twerkhub-pl-page a{color:inherit;text-decoration:none}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
 .vcard{position:relative;display:block;border-radius:var(--tw-r);overflow:hidden;border:1px solid var(--tw-line);background:var(--tw-surface);transition:transform .4s var(--tw-ease),border-color .3s,box-shadow .3s;isolation:isolate}
 .vcard:hover{transform:translateY(-5px);border-color:var(--tw-pink-soft);box-shadow:0 22px 50px rgba(255,45,135,.22)}
-.vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+.vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,#2a0822 0%,#1a0718 55%,#0a0a14 100%);}
+.vthumb::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,rgba(255,255,255,.03) 8%,rgba(255,45,135,.08) 18%,rgba(255,255,255,.03) 33%);background-size:200% 100%;animation:vthumb-shimmer 2.2s linear infinite;pointer-events:none;z-index:0;}
+.vthumb img{position:relative;z-index:1;}
+.vthumb img.is-loaded ~ ::before,.vthumb:has(img[src]:not([src=""]):not(.is-broken)) ::before{display:none;}
+@keyframes vthumb-shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 .vthumb img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease;will-change:transform}
 .vcard:hover .vthumb img{transform:scale(1.08)}
 .vscrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,transparent 55%,rgba(0,0,0,.78) 100%)}
@@ -1204,7 +1212,11 @@ body.twerkhub-pl-theater .grid .vcard{
   aspect-ratio:16/10;border-radius:12px;overflow:hidden;position:relative;
   border:1px solid rgba(255,255,255,.06);cursor:pointer;
 }
-body.twerkhub-pl-theater .grid .vcard .vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+body.twerkhub-pl-theater .grid .vcard .vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,#2a0822 0%,#1a0718 55%,#0a0a14 100%);}
+.vthumb::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,rgba(255,255,255,.03) 8%,rgba(255,45,135,.08) 18%,rgba(255,255,255,.03) 33%);background-size:200% 100%;animation:vthumb-shimmer 2.2s linear infinite;pointer-events:none;z-index:0;}
+.vthumb img{position:relative;z-index:1;}
+.vthumb img.is-loaded ~ ::before,.vthumb:has(img[src]:not([src=""]):not(.is-broken)) ::before{display:none;}
+@keyframes vthumb-shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 body.twerkhub-pl-theater .grid .vcard .vthumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 6s ease;will-change:transform}
 body.twerkhub-pl-theater .grid .vcard:hover .vthumb img{transform:scale(1.06)}
 

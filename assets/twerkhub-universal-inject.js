@@ -29,8 +29,8 @@
 
   var ASSET_BASE = '/assets/';
   var VER = { tokens:'20260424-p11', topbar:'20260424-p7', locale:'20260424-p5',
-              mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p3',
-              page:'20260424-p11', polish:'20260424-p4', auth:'20260424-p1' };
+              mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p4',
+              page:'20260424-p12', polish:'20260424-p4', auth:'20260424-p3' };
 
   // ── 1 · Remove legacy nav markup ─────────────────────────────────────
   // The platform accumulated three generations of topbars over the years.

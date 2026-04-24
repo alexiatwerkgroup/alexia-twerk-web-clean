@@ -1,6 +1,6 @@
 /* ═══ TWERKHUB · PREMIUM POLISH LAYER ═══
  * Universal visual upgrade — applies to every page automatically.
- * v20260424-p1
+ * v20260424-p4 · subtle "seen" chip (replaced grotesque VIEWED stamp)
  *
  * Design principles:
  *  - Subtle > flashy. Motion earns attention, doesn't beg for it.
@@ -304,42 +304,57 @@ section + section::before{
   box-shadow:0 0 10px rgba(255,180,84,.55) !important;
 }
 
-/* ── 22 · VIEWED overlay on watched videos ────────────────────────────
-   Added by twerkhub-premium.js when an item's data-vid is found in the
-   `twerkhub_viewed_vids` localStorage list. Clickable items get a soft
-   desaturation + big "VIEWED" stamp centered on the thumbnail. */
+/* ── 22 · "Seen" indicator · subtle ───────────────────────────────────
+   The old version put a huge rotated "VIEWED" stamp in the middle of each
+   thumbnail — too loud, and users reported it blocked interaction. Now: a
+   soft desaturation + a tiny "Seen" chip in the bottom-right corner, and a
+   thin accent on the top edge. Visible enough to communicate state, quiet
+   enough to disappear into the UI. */
 .is-viewed{position:relative;}
 .is-viewed .rk-thumb,
+.is-viewed .vthumb,
 .is-viewed .twerkhub-pl-card-thumb,
 .is-viewed img[src*="ytimg"],
 .is-viewed img[src*="vi/"]{
-  filter:grayscale(.6) brightness(.55);
-  transition:filter .25s ease;
+  filter:grayscale(.25) brightness(.78);
+  transition:filter .28s ease;
 }
 .is-viewed:hover .rk-thumb,
+.is-viewed:hover .vthumb,
 .is-viewed:hover .twerkhub-pl-card-thumb,
 .is-viewed:hover img[src*="ytimg"],
 .is-viewed:hover img[src*="vi/"]{
-  filter:grayscale(.2) brightness(.78);
+  filter:grayscale(0) brightness(1);
 }
+/* Tiny "Seen" chip in the bottom-right corner of viewed cards — only
+   visible when the viewer lands near the card (subtle pink pill). */
 .is-viewed::after{
-  content:"VIEWED";
-  position:absolute;left:50%;top:50%;
-  transform:translate(-50%,-50%) rotate(-8deg);
-  font-family:'Playfair Display',Georgia,serif;
-  font-size:clamp(18px,2.6vw,32px);
-  font-weight:900;letter-spacing:.18em;
-  color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.9);
-  background:linear-gradient(135deg,rgba(255,45,135,.55),rgba(157,78,221,.55));
-  padding:6px 18px;border-radius:6px;
-  border:2px solid rgba(255,255,255,.9);
+  content:"✓ seen";
+  position:absolute;
+  bottom:8px;right:8px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:9.5px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(244,243,247,.85);
+  background:rgba(255,45,135,.3);
+  border:1px solid rgba(255,45,135,.55);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  padding:3px 8px;
+  border-radius:999px;
   pointer-events:none;
-  z-index:5;
-  opacity:.95;
+  z-index:4;
+  line-height:1;
+  box-shadow:0 4px 10px rgba(0,0,0,.4);
 }
-/* Compact stamp for small ranking items */
-.rk-item.is-viewed::after{
-  font-size:11px;padding:3px 10px;border-width:1px;letter-spacing:.16em;
+/* Thin accent bar on the top of viewed items so it's visible in compact lists */
+.is-viewed::before{
+  content:"";
+  position:absolute;top:0;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,45,135,.8),transparent);
+  pointer-events:none;
+  z-index:4;
 }
 
 /* ── 23 · Kill paywall modal on /playlist pages ───────────────────────

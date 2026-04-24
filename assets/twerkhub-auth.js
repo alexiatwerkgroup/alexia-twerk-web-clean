@@ -1,5 +1,7 @@
 /* ═══ TWERKHUB · AUTH / REGISTRATION ═══
- * v20260424-p1
+ * v20260424-p3 · NON-BLOCKING — modal is opt-in only (Sign up chip), never
+ *                 auto-shows. Also nukes stale modal overlays left over from
+ *                 the old auto-gate version so users self-heal on reload.
  *
  * Replaces the old "Anti (firestarter)" hardcoded identity. Now:
  *   1. When no user is logged in, the home portal shows a registration modal
@@ -116,9 +118,18 @@
 
   // ── Modal UI ─────────────────────────────────────────────────────────
   var STYLE = '' +
-    '.twk-auth-backdrop{position:fixed;inset:0;z-index:2147483644;background:rgba(5,5,10,.82);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);display:flex;align-items:center;justify-content:center;padding:20px;animation:twkAuthFade .35s ease-out both;font-family:"Inter",-apple-system,sans-serif;}' +
+    /* Backdrop: scrollable itself so tall modals don't get clipped above/below
+       the viewport. `align-items: flex-start` + `padding-block: auto` keeps
+       the sheet near the top when content overflows, while still centering
+       vertically when there's room. */
+    '.twk-auth-backdrop{position:fixed;inset:0;z-index:2147483644;background:rgba(5,5,10,.82);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);display:flex;align-items:flex-start;justify-content:center;padding:24px 20px 40px;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:twkAuthFade .35s ease-out both;font-family:"Inter",-apple-system,sans-serif;}' +
+    '@media (min-height:780px){.twk-auth-backdrop{align-items:center;}}' +
     '@keyframes twkAuthFade{from{opacity:0}to{opacity:1}}' +
-    '.twk-auth-sheet{position:relative;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;background:linear-gradient(165deg,#11111a 0%,#07070b 100%);border:1px solid rgba(255,45,135,.28);border-radius:22px;padding:38px 34px 30px;box-shadow:0 40px 100px rgba(0,0,0,.65),0 0 0 1px rgba(255,45,135,.1),inset 0 1px 0 rgba(255,255,255,.04);animation:twkAuthRise .55s cubic-bezier(.22,.9,.38,1) .05s both;}' +
+    /* Sheet: no max-height constraint — the backdrop is already scrollable,
+       so the sheet is free to grow. This avoids the "half-cut" bug where
+       the modal is taller than 92vh and part of the form sticks above the
+       fold with no way to reach it. */
+    '.twk-auth-sheet{position:relative;width:100%;max-width:480px;margin:auto 0;background:linear-gradient(165deg,#11111a 0%,#07070b 100%);border:1px solid rgba(255,45,135,.28);border-radius:22px;padding:38px 34px 30px;box-shadow:0 40px 100px rgba(0,0,0,.65),0 0 0 1px rgba(255,45,135,.1),inset 0 1px 0 rgba(255,255,255,.04);animation:twkAuthRise .55s cubic-bezier(.22,.9,.38,1) .05s both;}' +
     '@keyframes twkAuthRise{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}' +
     '.twk-auth-crest{display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;margin:0 auto 18px;border-radius:50%;background:linear-gradient(145deg,#ff2d87,#9d4edd);color:#fff;font:900 17px/1 "Playfair Display",serif;box-shadow:0 12px 30px rgba(255,45,135,.32),0 0 0 4px rgba(255,45,135,.08);letter-spacing:.02em;}' +
     '.twk-auth-eye{display:block;text-align:center;font-size:10px;font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:#ff6fa8;margin-bottom:12px;}' +
@@ -134,12 +145,20 @@
     '.twk-auth-submit{margin-top:14px;width:100%;padding:14px;border-radius:10px;background:linear-gradient(180deg,#ff2d87,#9d4edd);color:#fff;font:800 11px/1 "Inter",sans-serif;letter-spacing:.16em;text-transform:uppercase;border:0;cursor:pointer;transition:transform .18s cubic-bezier(.2,1.1,.3,1),filter .2s;box-shadow:0 14px 30px rgba(255,45,135,.36);}' +
     '.twk-auth-submit:hover{transform:translateY(-2px);filter:brightness(1.08);}' +
     '.twk-auth-submit:active{transform:translateY(0);}' +
+    /* "Maybe later" skip — low-emphasis, still visible so users know they can bypass. */
+    '.twk-auth-skip{margin-top:8px;width:100%;padding:10px;border-radius:10px;background:transparent;color:rgba(244,243,247,.55);font:600 11px/1 "Inter",sans-serif;letter-spacing:.08em;text-transform:none;border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;}' +
+    '.twk-auth-skip:hover{color:#fff;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.04);}' +
+    /* × close button top-right inside the sheet */
+    '.twk-auth-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(244,243,247,.7);font:400 22px/1 "Inter",sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0;}' +
+    '.twk-auth-close:hover{background:rgba(255,45,135,.22);border-color:rgba(255,45,135,.5);color:#fff;transform:rotate(90deg);}' +
     '.twk-auth-tos{font-size:11px;line-height:1.5;color:rgba(244,243,247,.5);text-align:center;margin:14px 0 0;}' +
     '.twk-auth-tos a{color:#ff6fa8;}' +
     '.twk-auth-legal{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,243,247,.35);text-align:center;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}' +
     /* Logout chip that lives in the token HUD area — small, unobtrusive. */
-    '.twk-auth-logout{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(244,243,247,.7);font:800 9px/1 "JetBrains Mono",monospace;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-left:6px;}' +
+    '.twk-auth-logout,.twk-auth-signup{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(244,243,247,.7);font:800 9px/1 "JetBrains Mono",monospace;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-left:6px;}' +
     '.twk-auth-logout:hover{background:rgba(255,45,135,.12);border-color:rgba(255,45,135,.4);color:#fff;}' +
+    '.twk-auth-signup{background:rgba(255,45,135,.14);border-color:rgba(255,45,135,.4);color:#ff6fa8;}' +
+    '.twk-auth-signup:hover{background:rgba(255,45,135,.28);border-color:rgba(255,45,135,.65);color:#fff;box-shadow:0 4px 14px rgba(255,45,135,.3);}' +
     '';
 
   function injectStyle(){
@@ -150,6 +169,13 @@
     document.head.appendChild(s);
   }
 
+  // Session-scoped "I skipped the gate" flag. While this is set the modal
+  // won't re-appear on the portal — the user already said "let me browse".
+  // New tabs / new sessions start clean.
+  var SKIP_KEY = 'alexia_auth_skipped';
+  function markSkipped(){ try { sessionStorage.setItem(SKIP_KEY, '1'); } catch(_){} }
+  function wasSkipped(){ try { return sessionStorage.getItem(SKIP_KEY) === '1'; } catch(_){ return false; } }
+
   function showForm(){
     injectStyle();
     if (document.getElementById('twk-auth-modal')) return;
@@ -158,6 +184,7 @@
     root.className = 'twk-auth-backdrop';
     root.innerHTML =
       '<form class="twk-auth-sheet" novalidate>' +
+        '<button type="button" class="twk-auth-close" aria-label="Close" title="Maybe later">×</button>' +
         '<div class="twk-auth-crest">A·T</div>' +
         '<span class="twk-auth-eye">Private archive · Members only</span>' +
         '<h2 class="twk-auth-title">Make your <em>handle</em>.</h2>' +
@@ -168,11 +195,14 @@
           '<div><label class="twk-auth-label" for="twk-auth-nick">Your nick (public)</label><input class="twk-auth-input" id="twk-auth-nick" name="nick" type="text" required maxlength="40" placeholder="ej: solo.collector" autocomplete="username"></div>' +
           '<p class="twk-auth-error" id="twk-auth-error"></p>' +
           '<button type="submit" class="twk-auth-submit">Enter the archive · +200 tokens welcome →</button>' +
+          '<button type="button" class="twk-auth-skip">Maybe later — let me browse first</button>' +
           '<p class="twk-auth-tos">By entering, you confirm you are 18+ and accept our <a href="/tos.html" target="_blank" rel="noopener">terms</a> and <a href="/privacy.html" target="_blank" rel="noopener">privacy</a>.</p>' +
         '</div>' +
         '<p class="twk-auth-legal">© Alexia Twerk Group · 18+ · 18 U.S.C. §2257 compliant</p>' +
       '</form>';
     document.body.appendChild(root);
+
+    // Submit → register
     root.addEventListener('submit', function(ev){
       ev.preventDefault();
       var name = root.querySelector('#twk-auth-name').value;
@@ -188,7 +218,31 @@
       err.classList.remove('is-visible');
       closeForm();
     });
-    // Prevent scroll on the page behind the modal.
+
+    // Dismissal paths — all mark this session as "skipped" so the gate
+    // doesn't keep re-appearing on every hash change / nav:
+    //   · × button (top-right)
+    //   · "Maybe later" inline button
+    //   · ESC key
+    //   · Click on the backdrop outside the sheet
+    function dismiss(){
+      markSkipped();
+      closeForm();
+    }
+    root.querySelector('.twk-auth-close').addEventListener('click', dismiss);
+    root.querySelector('.twk-auth-skip').addEventListener('click', dismiss);
+    root.addEventListener('click', function(ev){
+      // Only if the click was on the backdrop itself (outside the sheet).
+      if (ev.target === root) dismiss();
+    });
+    document.addEventListener('keydown', function escHandler(ev){
+      if (ev.key === 'Escape' || ev.keyCode === 27) {
+        dismiss();
+        document.removeEventListener('keydown', escHandler);
+      }
+    });
+
+    // Prevent scroll on the page behind the modal while it's open.
     document.documentElement.style.overflow = 'hidden';
   }
 
@@ -198,34 +252,52 @@
     document.documentElement.style.overflow = '';
   }
 
-  // ── Logout chip injector ─────────────────────────────────────────────
-  function ensureLogoutChip(){
-    if (!getCurrent()) return;
-    if (document.querySelector('.twk-auth-logout')) return;
-    var host = document.querySelector('.twerkhub-topbar-right') || document.querySelector('.twerkhub-tokens-hud');
-    if (!host) return;
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'twk-auth-logout';
-    btn.title = 'Log out · clears your session';
-    btn.textContent = 'Log out';
-    btn.addEventListener('click', function(){
-      if (confirm('Log out? Your local token balance will be cleared.')) logout();
-    });
-    host.appendChild(btn);
-  }
+  // (ensureLogoutChip replaced by ensureAuthChip — handles both states.)
 
   // ── Gate ─────────────────────────────────────────────────────────────
-  // Only the portal (/) gates hard. Deep pages assume the user will hit the
-  // portal at least once — if they're not logged in there, they won't have
-  // the welcome bonus or personalized state, but they can still browse.
+  // NON-BLOCKING by default. The registration modal no longer auto-shows on
+  // page load — it was causing every page to appear blurred/unclickable on
+  // first visit. Instead:
+  //   · A small "Sign up" chip appears in the topbar-right if not logged in
+  //   · Clicking it opens the modal (explicit user intent)
+  //   · Once logged in, the chip becomes a "Log out" chip
+  //   · Users can still trigger registration programmatically via
+  //     window.TwerkhubAuth.showForm()
+  //
+  // This guarantees: no matter what stale cache the browser has, the site is
+  // always browsable. Registration is a pull, not a push.
   function gate(){
     injectStyle();
-    ensureLogoutChip();
-    if (getCurrent()) return;
-    var path = (location.pathname || '/').toLowerCase();
-    var isPortal = (path === '/' || path === '/index.html' || path === '/index');
-    if (isPortal) showForm();
+    ensureAuthChip();
+    // Deliberately NOT calling showForm() here.
+  }
+
+  // Small chip in the right cluster: "Sign up" if logged out, "Log out" if in.
+  function ensureAuthChip(){
+    var host = document.querySelector('.twerkhub-topbar-right') || document.querySelector('.twerkhub-tokens-hud');
+    if (!host) return;
+    // Remove any stale chip first so we can re-render with current state.
+    var existing = host.querySelectorAll('.twk-auth-logout, .twk-auth-signup');
+    existing.forEach(function(el){ el.remove(); });
+    if (getCurrent()) {
+      var out = document.createElement('button');
+      out.type = 'button';
+      out.className = 'twk-auth-logout';
+      out.title = 'Log out · clears your session';
+      out.textContent = 'Log out';
+      out.addEventListener('click', function(){
+        if (confirm('Log out? Your local token balance will be cleared.')) logout();
+      });
+      host.appendChild(out);
+    } else {
+      var inBtn = document.createElement('button');
+      inBtn.type = 'button';
+      inBtn.className = 'twk-auth-signup';
+      inBtn.title = 'Register · claim your handle';
+      inBtn.textContent = 'Sign up';
+      inBtn.addEventListener('click', showForm);
+      host.appendChild(inBtn);
+    }
   }
 
   // ── Public API ───────────────────────────────────────────────────────
@@ -245,6 +317,31 @@
     gate();
   }
   // Re-check once the topbar's right-cluster is mounted (it's async).
-  setTimeout(ensureLogoutChip, 1000);
-  setTimeout(ensureLogoutChip, 2500);
+  setTimeout(ensureAuthChip, 1000);
+  setTimeout(ensureAuthChip, 2500);
+
+  // Emergency kill-switch: if the old cached version of this module left a
+  // modal open on the page, nuke any lingering auth-modal AND age-gate DOM
+  // nodes and strip the overflow:hidden lock from <html>. This means users
+  // stuck on the old blur-bug will self-heal on their next page load, even
+  // before the new JS deploys to them.
+  (function nukeStaleOverlays(){
+    try {
+      ['#twk-auth-modal','#alexia-age-gate','.twk-auth-backdrop'].forEach(function(sel){
+        var els = document.querySelectorAll(sel);
+        els.forEach(function(el){
+          // Only remove if the element is overlaying the viewport (fixed + inset 0)
+          // AND this isn't a legit portal-gate path. Safe removal.
+          var path = (location.pathname || '/').toLowerCase();
+          var isPortal = (path === '/' || path === '/index.html' || path === '/index');
+          if (!isPortal) { el.remove(); }
+        });
+      });
+      // Never leave the page scroll-locked.
+      if (!document.querySelector('#twk-auth-modal, #alexia-age-gate')) {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+      }
+    } catch(_){}
+  })();
 })();
