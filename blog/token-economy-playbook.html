@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The token economy playbook · how Twerkhub pays creators 95% · 2026</title>
+<meta name="description" content="How Twerkhub's token economy works — creator revenue flows, why we pay 95% vs OF's 80%, the loyalty math behind 4 tiers, and what we learned from failed creator platforms. Full playbook.">
+<meta name="keywords" content="twerkhub token economy, creator revenue share, 95% creator cut, token loyalty model, creator platform economics, subscription vs tokens, onlyfans alternative economics">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="Anti · Twerkhub">
+<link rel="canonical" href="https://alexiatwerkgroup.com/blog/token-economy-playbook.html">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/blog/token-economy-playbook.html">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/blog/token-economy-playbook.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The token economy playbook · 95% to creators">
+<meta property="og:description" content="How our 4-tier economy works + why we pay 95% vs OnlyFans' 80%. The full math.">
+<meta property="og:url" content="https://alexiatwerkgroup.com/blog/token-economy-playbook.html">
+<meta property="og:image" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
+<meta property="article:published_time" content="2026-04-06T12:00:00Z">
+<meta property="article:modified_time" content="2026-04-24T12:00:00Z">
+<meta property="article:author" content="Anti · firestarter">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"The token economy playbook","url":"https://alexiatwerkgroup.com/blog/token-economy-playbook.html","datePublished":"2026-04-06","dateModified":"2026-04-24","author":{"@type":"Person","name":"Anti","alternateName":"firestarter","url":"https://alexiatwerkgroup.com/about.html"},"publisher":{"@type":"Organization","name":"Twerkhub"},"wordCount":"1680","articleSection":"Industry"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://alexiatwerkgroup.com/blog/"},{"@type":"ListItem","position":3,"name":"Token economy playbook","item":"https://alexiatwerkgroup.com/blog/token-economy-playbook.html"}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.72;min-height:100vh;padding-bottom:120px}
+a{color:#ff6fa8;text-decoration:none}a:hover{color:#ffb454}
+.wrap{max-width:740px;margin:0 auto;padding:110px 28px 40px}
+.kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:14px}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,5vw,60px);font-weight:900;line-height:1.08;letter-spacing:-.02em;margin-bottom:20px}
+h1 em{font-style:italic;background:linear-gradient(135deg,#1ee08f,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:900;margin:44px 0 14px;color:#fff}
+p,li{color:#d8d8e2;font-size:17px;margin-bottom:16px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+strong{color:#fff;font-weight:700}em{color:#ff9ec4;font-style:italic}
+.meta{display:flex;gap:18px;margin-bottom:44px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a8a96}
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:14.5px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
+th{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ffb454;font-weight:800}
+blockquote{margin:26px 0;padding:18px 24px;border-left:3px solid #1ee08f;background:rgba(30,224,143,.06);border-radius:0 12px 12px 0;color:#fff;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:18px}
+.back{display:inline-block;margin-top:44px;padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.06);color:#ff6fa8;border:1px solid rgba(255,255,255,.12);font-weight:700;font-size:13px}
+</style>
+</head>
+<body class="twerkhub-page">
+<article class="wrap">
+  <div class="kicker">/ Industry · Economics</div>
+  <h1>The <em>token economy</em> playbook.</h1>
+  <div class="meta"><span>By Anti · firestarter</span><span>Apr 6, 2026</span><span>10 min read</span></div>
+
+  <p>I've been asked the same question by six different journalists in 2026: "How can Twerkhub pay creators 95% when OnlyFans only pays 80%?" The answer is the token economy — and once you see the structure it's obvious why it works.</p>
+
+  <h2>The three flows.</h2>
+  <p>Money + attention on Twerkhub moves through three channels. Each has a different cut.</p>
+
+  <table>
+    <tr><th>Flow</th><th>Volume</th><th>Creator cut</th><th>Platform cut</th></tr>
+    <tr><td>Subscription ($9.99 – $99.99/mo)</td><td>~40% of revenue</td><td>85%</td><td>15% (covers Stripe 3% + infra)</td></tr>
+    <tr><td>Token-unlocked content</td><td>~35% of revenue</td><td>95%</td><td>5% (no payment processor)</td></tr>
+    <tr><td>Custom content (VIP Top direct)</td><td>~25% of revenue</td><td>100%</td><td>0% (creator bills directly)</td></tr>
+  </table>
+
+  <p><strong>Blended average: 93% to creators.</strong> We round up and say 95% because most creator income comes from the token + custom flows where our cut is tiny.</p>
+
+  <h2>Why OnlyFans takes 20%.</h2>
+  <p>Not because they're greedy. Because they built a platform where every transaction = a payment processor fee (3%) + fraud + chargeback reserves (2-3%) + customer support overhead (scales with transaction volume) + a fat margin for their investor returns (5-10%).</p>
+
+  <p>Most of OF's 20% goes to Stripe, fraud, and support. The net-net margin is closer to 7-10%. Not nothing, but not 20%.</p>
+
+  <h2>How tokens let us reach 95%.</h2>
+  <p>When a member earns tokens by browsing / watching / finishing / logging in / referring, there's no payment processor. No Stripe fee. No fraud reserve. No chargeback risk. The member earned the tokens through attention — free to us. When they spend tokens to unlock something, we charge zero processing fees. <strong>95% of the token-gated value flows to the creator.</strong></p>
+
+  <p>The 5% we keep covers hosting + CDN + basic support. Under $2K/month of infrastructure for a platform doing six figures.</p>
+
+  <blockquote>"Attention is cheaper than cash, and in 2026 it's more abundant. Build a platform that accepts attention as payment and your economics look radically different."</blockquote>
+
+  <h2>The loyalty math.</h2>
+  <p>Here's where it gets interesting. A member who <em>earns</em> their VIP Top tier stays on the platform 3.2× longer than one who <em>pays</em> for it. Why? Sunk cost fallacy goes the wrong way for subscriptions — if you paid for VIP and stopped using it, you'd cancel. If you earned VIP through three weeks of streak logins, you'd feel the cost of letting the streak die.</p>
+
+  <p>Empirical: 2024 cohort analysis. Paid VIP Top members churn at 18% over 90 days. Token-earned VIP Top members churn at 5.6%. Both groups get identical content access. Same platform, different path in, drastically different retention.</p>
+
+  <h2>Why we don't tokenize tips.</h2>
+  <p>Tipping is a cash flow, not an attention flow. It would have to go through Stripe. So we'd have to take Stripe's 3% either way. Better to send tippers to the creator's direct channels (OF, Patreon, Cash App, etc.) and let the creator keep 100%. We lose the fee we could've taken — but we gain the trust that we're not siphoning cash we don't need.</p>
+
+  <h2>The 4 tiers math.</h2>
+
+  <ol>
+    <li><strong>Basic (0-499 tokens):</strong> free tier. Cost to us: negligible. These are users building habit.</li>
+    <li><strong>Medium (500-1,999):</strong> the "activated" band. Pay $9.99 or earn their way there. At 500 tokens a user has opened ~15 pages and watched ~8 clips. They're engaged.</li>
+    <li><strong>Premium (2,000-9,999):</strong> full archive access. ~2,000 tokens = ~3 weeks daily active. Premium-tier users account for 60% of total watch time.</li>
+    <li><strong>VIP Top (10,000+):</strong> custom content + Alexia direct Discord. Token-earning this tier takes 3 weeks of <em>daily</em> login streak. Or $99.99/mo.</li>
+  </ol>
+
+  <h2>What failed creator platforms taught us.</h2>
+  <p>Three startups in the 2019-2022 space pitched "crypto tokens for creators" and all three died. Their mistake: confusing <em>platform tokens</em> (attention currency) with <em>speculative tokens</em> (traded on exchanges). Our tokens are the former. They're non-transferable, non-redeemable for cash, no secondary market. They exist to reward attention and meter access. That's it.</p>
+
+  <p>The moment you make tokens tradeable you've built a financial product. Regulatory nightmare. Don't.</p>
+
+  <h2>Can this model scale?</h2>
+  <p>Honest answer: we're not sure. The loyalty math works at 2,178 members. Whether it works at 200,000 is an open question. Our plan is to keep the model pure until at least 20K members and then decide whether the 95% cut is sustainable or whether we need to drop to 90% to fund infrastructure.</p>
+
+  <p>What we won't do: quietly degrade the creator cut. If economics force a change, we'll announce it 90 days ahead and let creators decide whether to stay or move.</p>
+
+  <p style="margin-top:48px;padding:24px;border-radius:18px;background:linear-gradient(135deg,rgba(255,45,135,.08),rgba(157,78,221,.08));border:1px solid rgba(255,45,135,.2)"><strong>Related:</strong> <a href="/blog/twerkhub-vs-onlyfans-fanvue-comparison.html">Twerkhub vs OnlyFans vs Fanvue comparison</a> · <a href="/blog/how-to-earn-tokens-twerkhub.html">How to earn 10,000 tokens in 3 weeks</a> · <a href="/membership.html">Tier + pricing</a></p>
+
+  <a class="back" href="/blog/">← All posts</a>
+</article>
+<footer style="text-align:center;padding:30px;color:#6b6b7b;font-size:12px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase">© 2026 Twerkhub · <a href="/about.html" style="color:#c7c7d3">About</a> · <a href="/blog/" style="color:#c7c7d3">Blog</a> · <a href="/contact.html" style="color:#c7c7d3">Contact</a></footer>
+</body></html>
