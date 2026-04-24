@@ -193,7 +193,14 @@ button:focus-visible {
 .alexia-global-nav__inner,
 .alexia-global-links,
 .alexia-online-pill,
-[data-alexia-online-count]:not(.twerkhub-topbar *) {
+[data-alexia-online-count]:not(.twerkhub-topbar *),
+/* Legacy static topbar in /playlist/*.html pages — stacks underneath the
+   SAGRADA .twerkhub-topbar. This is the "2da botonera cutre" the user
+   has been pointing at. Belt-and-suspenders kill even if the universal
+   purge loses the race. */
+.twerkhub-pl-topbar,
+.twerkhub-pl-topbar-inner,
+nav.twerkhub-pl-topbar {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;

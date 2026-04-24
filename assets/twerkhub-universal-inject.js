@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · UNIVERSAL TOPBAR INJECTOR ═══
- * v20260424-p4
+ * v20260424-p5
  *
  * Purpose: ONE script to ensure every page in the platform — regardless of
  * whether someone edited it manually or it was auto-generated months ago —
@@ -31,7 +31,7 @@
   var VER = { tokens:'20260424-p11', topbar:'20260424-p8', locale:'20260424-p5',
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p5',
               page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p4',
-              tokens_css:'20260424-p1', a11y:'20260424-p3' };
+              tokens_css:'20260424-p1', a11y:'20260424-p4' };
   // premium.js + premium.css share the same 'premium' version key; bumped
   // to p6 for the scroll-reveal rootMargin fix (playlist grids no longer
   // wait for viewport to unhide). sound bumped to p8 for auto-unmute on
@@ -51,6 +51,10 @@
       '.alexia-global-nav',             // alexia-unify.js legacy 2023 nav (Home/Playlist/Community/Top100/…)
       '.alexia-global-nav__inner',
       '.alexia-online-pill',
+      '.twerkhub-pl-topbar',            // ← legacy static topbar hardcoded in /playlist/*.html pages
+                                        //   (7 links: Home/Exclusive/Playlists/Top100/Community/Tokens/Profile)
+                                        //   stacks underneath the SAGRADA .twerkhub-topbar — the "2da botonera cutre"
+      '.twerkhub-pl-topbar-inner',
       '#alexia-global-brand',           // global-brand.js injected logo row
       '#alexia-global-counters',        // global-counters.js token pill
       '[data-alexia-online-count]',    // the "891 online" / "ONLINE NOW 1" badge
