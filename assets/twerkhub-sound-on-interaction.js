@@ -1,21 +1,30 @@
-/* ═══ TWERKHUB · Sound on first interaction ═══
- * Autoplay with audio is blocked by every major browser (muted autoplay is
- * allowed, audible autoplay is not). To simulate "videos start with sound at
- * 50%" we autoplay everything muted, then on the user's FIRST interaction
- * (click / tap / keydown / scroll / wheel) we post an `unMute` + `setVolume
- * [50]` message to every YouTube iframe on the page.
+/* ═══ TWERKHUB · Sound manager (exclusive audio) ═══
+ * Old behavior was wrong: it auto-unmuted every YouTube iframe on the first
+ * click, which forced the hero to sound even when the user wasn't hovering
+ * over it, and also let multiple videos play audio simultaneously.
  *
- * Idempotent, passive, one-shot · v20260424-p1
+ * New behavior (v20260424-p7):
+ *   - NOTHING is unmuted automatically. Each video stays muted by default.
+ *   - One video at a time can produce sound. When any player becomes the
+ *     audible one (MP4 <video> un-muted, or a YouTube iframe receives
+ *     `unMute` / `playVideo`), every OTHER player on the page is muted.
+ *   - The hero iframe follows the same rule — it sounds only while the mouse
+ *     is over it (driven by its own inline handler in index.html), and if
+ *     another card MP4 becomes audible, the hero is silenced too.
+ *
+ * Public API:
+ *   window.TwerkhubSound.claim(el)   → make this element the sole audio source
+ *   window.TwerkhubSound.muteAll()   → mute every video + iframe on the page
+ *
+ * The manager observes <video>.muted changes and mouseenter on the hero aside
+ * and the coming-soon MP4 cards to keep the audible selection consistent.
  */
 (function(){
   'use strict';
-  if (window.__twerkhubSoundOnInteractionInit) return;
-  window.__twerkhubSoundOnInteractionInit = true;
+  if (window.__twerkhubSoundMgrInit) return;
+  window.__twerkhubSoundMgrInit = true;
 
-  var TARGET_VOLUME = 50;
-  var fired = false;
-
-  function send(iframe, func, args){
+  function sendYt(iframe, func, args){
     if (!iframe || !iframe.contentWindow) return;
     try {
       iframe.contentWindow.postMessage(
@@ -25,39 +34,100 @@
     } catch (e) {}
   }
 
-  function unmuteAll(){
-    if (fired) return;
-    fired = true;
-    try {
-      var iframes = document.querySelectorAll(
-        'iframe[src*="youtube-nocookie.com/embed"], iframe[src*="youtube.com/embed"]'
-      );
-      iframes.forEach(function(frame){
-        // Some iframes don't have enablejsapi=1 — postMessage is a no-op on
-        // those, which is fine. No need to filter.
-        send(frame, 'unMute');
-        send(frame, 'setVolume', [TARGET_VOLUME]);
-        send(frame, 'playVideo');
-      });
-      console.info('[twerkhub-sound] unmuted', iframes.length, 'iframes @ vol', TARGET_VOLUME);
-    } catch (e) {
-      console.warn('[twerkhub-sound] unmute failed', e);
-    }
+  function allYtIframes(){
+    return Array.prototype.slice.call(document.querySelectorAll(
+      'iframe[src*="youtube-nocookie.com/embed"], iframe[src*="youtube.com/embed"]'
+    ));
+  }
+  function allMp4s(){
+    return Array.prototype.slice.call(document.querySelectorAll('video'));
   }
 
-  function bind(){
-    var opts = { once: true, passive: true, capture: true };
-    ['click', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function(ev){
-      document.addEventListener(ev, unmuteAll, opts);
+  var currentAudible = null;
+
+  function muteEveryoneExcept(target){
+    allYtIframes().forEach(function(frame){
+      if (frame !== target) sendYt(frame, 'mute');
+    });
+    allMp4s().forEach(function(v){
+      if (v !== target && !v.muted) {
+        try { v.muted = true; } catch(_){}
+      }
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bind, { once: true });
-  } else {
-    bind();
+  function muteAll(){
+    currentAudible = null;
+    allYtIframes().forEach(function(f){ sendYt(f, 'mute'); });
+    allMp4s().forEach(function(v){ try { v.muted = true; } catch(_){} });
   }
 
-  // Expose for manual triggering if another script wants to force unmute.
-  window.TwerkhubSound = { unmuteAll: unmuteAll };
+  function claim(el){
+    if (!el) return;
+    currentAudible = el;
+    muteEveryoneExcept(el);
+    // If the claim is for a YT iframe, also push an `unMute` — caller may
+    // have already done it, but double-firing is harmless.
+    if (el.tagName === 'IFRAME') {
+      sendYt(el, 'unMute');
+      sendYt(el, 'setVolume', [50]);
+    }
+  }
+
+  // Observe <video> muted attribute changes and enforce exclusivity when a
+  // video becomes un-muted by its own inline handler (hover / tap).
+  function hookVideoExclusivity(){
+    var lastMutedState = new WeakMap();
+    function tick(){
+      allMp4s().forEach(function(v){
+        var prev = lastMutedState.get(v);
+        if (prev === undefined) { lastMutedState.set(v, v.muted); return; }
+        if (prev !== v.muted) {
+          lastMutedState.set(v, v.muted);
+          if (v.muted === false) {
+            // This video just became audible → silence everything else.
+            claim(v);
+          } else if (currentAudible === v) {
+            currentAudible = null;
+          }
+        }
+      });
+    }
+    // Lightweight polling — cheap, catches inline `this.muted=false` set by
+    // the MP4 card onmouseenter handlers.
+    setInterval(tick, 120);
+  }
+
+  // Silence everything when the tab is hidden. The hero script does this for
+  // itself already; we cover the rest.
+  function hookVisibility(){
+    document.addEventListener('visibilitychange', function(){
+      if (document.hidden) muteAll();
+    });
+  }
+
+  function init(){
+    hookVideoExclusivity();
+    hookVisibility();
+    console.info('[twerkhub-sound] manager ready (no auto-unmute, exclusive audio)');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+
+  // Expose for other scripts — hero inline handler can call claim() when it
+  // un-mutes, so the manager knows who's audible without a poll delay.
+  window.TwerkhubSound = {
+    claim: claim,
+    muteAll: muteAll,
+    // Back-compat shim: older code called unmuteAll(). Now a no-op — we never
+    // force-unmute everything. If anything still calls it, log a warning so
+    // we can track the source down.
+    unmuteAll: function(){
+      console.warn('[twerkhub-sound] unmuteAll() is deprecated — exclusive audio is on');
+    }
+  };
 })();
