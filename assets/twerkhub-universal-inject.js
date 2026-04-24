@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · UNIVERSAL TOPBAR INJECTOR ═══
- * v20260424-p9
+ * v20260424-p10
  *
  * Purpose: ONE script to ensure every page in the platform — regardless of
  * whether someone edited it manually or it was auto-generated months ago —
@@ -32,7 +32,7 @@
               mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p5',
               page:'20260424-p13', polish:'20260424-p4', auth:'20260424-p4',
               tokens_css:'20260424-p1', a11y:'20260424-p5',
-              elevation:'20260424-p2', cursor:'20260424-p2-DISABLED',
+              elevation:'20260424-p3-LEAN', cursor:'20260424-p2-DISABLED',
               share:'20260424-p1', vitals:'20260424-p1' };
   // premium.js + premium.css share the same 'premium' version key; bumped
   // to p6 for the scroll-reveal rootMargin fix (playlist grids no longer
