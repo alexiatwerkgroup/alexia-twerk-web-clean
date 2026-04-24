@@ -131,6 +131,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 | 9 (mine) | `13857f6` | +2 posts (creator pitch, fancam pipeline), +/ru/about, +/es/contact |
 | 9 (extra) | `2360798` | +2 posts (Discord playbook, 4-tiers explained), +2 creators (BEFOX, Kato) |
 | 10 | _pending push_ | 1-7 pickup: orphan cleanup + post #20 (founder essay) + 5 creators (VR KINGS, LABARBIE, Patricia Atakora, Sugaarrbbaby, Nika Chilli Odessa) + /es/glossary + /ru/contact + 2 translations (manifesto ES, MDC NRG history RU) + sitemap-videos 5→22 entries + new sitemap-images.xml. SW bumped to v1.1.6 / p11. |
+| 11 | _pending push_ | i18n cluster lockdown: +/ru/glossary.html (close trilingual glossary), +/es/blog/ + /ru/blog/ landing pages (parents for translated posts), +FAQPage schema on /about.html (7 Q&A) and /membership.html (7 Q&A · billing/refunds/tier mechanics), full trilingual hreflang on /glossary, /es/glossary, /blog/index. |
 
 ---
 

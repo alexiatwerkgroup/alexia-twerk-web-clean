@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Блог Twerkhub · RU · культура танца, экономика креаторов, стратегия токенов</title>
+<meta name="description" content="Блог Twerkhub на русском — эссе фундатора Anti, deep dive статьи о культуре танца, экономике платформ для креаторов, стратегии токенов и еженедельной курации fancam.">
+<meta name="keywords" content="twerkhub блог русский, twerk культура, экономика креаторов, токены стратегия, fancam курация, k-dance тренды, манифест фундатора">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://alexiatwerkgroup.com/ru/blog/">
+<link rel="alternate" hreflang="ru" href="https://alexiatwerkgroup.com/ru/blog/">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/blog/">
+<link rel="alternate" hreflang="es" href="https://alexiatwerkgroup.com/es/blog/">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/blog/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Twerkhub">
+<meta property="og:title" content="Блог Twerkhub · RU">
+<meta property="og:description" content="Культура танца + экономика креаторов · эссе фундатора на русском.">
+<meta property="og:url" content="https://alexiatwerkgroup.com/ru/blog/">
+<meta property="og:image" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Blog","name":"Блог Twerkhub · русский","url":"https://alexiatwerkgroup.com/ru/blog/","inLanguage":"ru","description":"Культура танца, экономика креаторов, стратегия токенов — русская версия.","publisher":{"@type":"Organization","name":"Twerkhub","logo":"https://alexiatwerkgroup.com/logo-twerkhub.png"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://alexiatwerkgroup.com/ru/"},{"@type":"ListItem","position":2,"name":"Блог","item":"https://alexiatwerkgroup.com/ru/blog/"}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.65;min-height:100vh;padding-bottom:120px}
+a{color:inherit;text-decoration:none;transition:color .2s}
+.wrap{max-width:1080px;margin:0 auto;padding:120px 28px 40px}
+.kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:14px}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(48px,7vw,84px);font-weight:900;line-height:1.02;letter-spacing:-.025em;margin-bottom:18px}
+h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:19px;color:#c7c7d3;max-width:620px;margin-bottom:30px}
+.locale-bar{display:inline-flex;gap:8px;margin-bottom:30px;padding:6px;border-radius:999px;background:rgba(20,20,32,.7);border:1px solid rgba(255,255,255,.08)}
+.locale-bar a{padding:6px 14px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#9a9aab}
+.locale-bar a.active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff}
+.section-head{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ffb454;margin:48px 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;margin-bottom:60px}
+.post{position:relative;padding:30px;border:1px solid rgba(255,255,255,.08);border-radius:24px;background:linear-gradient(135deg,rgba(20,20,32,.7),rgba(30,15,40,.5));backdrop-filter:blur(14px);transition:transform .5s cubic-bezier(.22,.9,.38,1),border-color .3s,box-shadow .5s}
+.post:hover{transform:translateY(-6px);border-color:rgba(255,45,135,.45);box-shadow:0 28px 64px rgba(255,45,135,.18)}
+.post .tag{display:inline-block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:rgba(255,45,135,.12);color:#ff6fa8;border:1px solid rgba(255,45,135,.25);margin-bottom:14px}
+.post h2{font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:900;line-height:1.2;letter-spacing:-.015em;margin-bottom:10px;color:#fff}
+.post p{color:#c7c7d3;font-size:14.5px;margin-bottom:18px}
+.post .meta{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8a8a96;margin-top:auto}
+.post .read{color:#ffb454;font-weight:800}
+.en-note{padding:24px 28px;border-radius:18px;background:linear-gradient(135deg,rgba(255,45,135,.06),rgba(157,78,221,.06));border:1px solid rgba(255,45,135,.15);max-width:820px}
+.en-note p{color:#d8d8e2;font-size:15.5px;margin-bottom:8px}
+.en-note a{color:#ff6fa8;font-weight:700}
+.back{display:inline-block;margin-top:44px;padding:12px 26px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;font-weight:800;letter-spacing:.04em;text-transform:uppercase;font-size:13px}
+</style>
+</head>
+<body class="twerkhub-page">
+<div class="wrap">
+  <div class="kicker">/ Блог Twerkhub · RU</div>
+  <div class="locale-bar"><a href="/blog/">EN</a><a href="/es/blog/">ES</a><a href="/ru/blog/" class="active">RU</a></div>
+  <h1>Заметки из <em>архива.</em></h1>
+  <p class="lede">Глубокие разборы танца, экономики платформ для креаторов, и того, как мы курируем семь плейлистов каждую неделю. Написано Anti (фундатор) и приглашёнными креаторами. Это русская версия — больше переводов будет.</p>
+
+  <div class="section-head">/ Посты на русском</div>
+  <div class="grid">
+    <a class="post" href="/ru/blog/moscow-dance-centre-nrg-history.html">
+      <span class="tag">● История</span>
+      <h2>Moscow Dance Centre NRG · студия, сформировавшая heels-хореографию</h2>
+      <p>Третий этаж в торговом центре ПЛАНЕТАЛЕТО стал самым влиятельным танцевальным институтом 2010-2025. Основание, методология, преподаватели, влияние на ЕС и Корею.</p>
+      <div class="meta"><span>10 апр 2026 · 9 мин</span><span class="read">Читать →</span></div>
+    </a>
+  </div>
+
+  <div class="section-head">/ Больше постов на английском (пока без перевода)</div>
+  <div class="en-note">
+    <p>У нас 19 других постов на английском, которые покрывают экономику токенов, плейбук Discord, эссе фундатора, 4 тира, этикет fancam, perreo Карибского региона, сцену Буэнос-Айреса, K-dance vs реггетон, и многое другое.</p>
+    <p>→ <a href="/blog/">Полный блог на английском</a></p>
+  </div>
+
+  <a class="back" href="/ru/">← На главную</a>
+</div>
+<footer style="text-align:center;padding:30px;color:#6b6b7b;font-size:12px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase">
+  © 2026 Twerkhub · <a href="/ru/about.html">О нас</a> · <a href="/ru/contact.html">Контакты</a> · <a href="/ru/glossary.html">Глоссарий</a>
+</footer>
+</body>
+</html>
