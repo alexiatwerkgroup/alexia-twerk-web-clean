@@ -394,11 +394,42 @@
     <a class="twerkhub-btn twerkhub-btn-primary" href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram notify me →</a>
   </div>
   <style>
-    /* Video arch shares the same frame as the placeholder arch */
-    .twerkhub-coming-arch-video{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:inherit;background:#000;display:block;cursor:pointer;transition:transform .4s ease}
-    .twerkhub-coming-card:hover .twerkhub-coming-arch-video{transform:scale(1.03)}
-    .twerkhub-coming-card{position:relative;isolation:isolate}
+    /* Video card arch: fills the placeholder frame, then pops big on hover so
+       the viewer can see the clip properly without leaving the grid. */
+    .twerkhub-coming-arch-video{
+      width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:inherit;background:#000;
+      display:block;cursor:pointer;
+      position:relative;z-index:1;
+      transform-origin:center center;
+      transition:transform .45s cubic-bezier(.2,1.2,.3,1),
+                 box-shadow .35s ease,
+                 border-radius .35s ease;
+    }
+    .twerkhub-coming-card{position:relative;isolation:isolate;overflow:visible}
     .twerkhub-coming-card .twerkhub-coming-meta{position:relative;z-index:2}
+    /* The whole card needs overflow:visible so the scaled video isn't clipped. */
+    .twerkhub-coming-card:has(.twerkhub-coming-arch-video){overflow:visible}
+    /* Hover state · video expands ×1.55, float on top of everything, adds ring */
+    .twerkhub-coming-card:hover{z-index:60}
+    .twerkhub-coming-card:hover .twerkhub-coming-arch-video{
+      transform:scale(1.55);
+      z-index:100;
+      border-radius:18px;
+      box-shadow:
+        0 40px 100px rgba(255,45,135,.45),
+        0 20px 60px rgba(0,0,0,.75),
+        0 0 0 2px rgba(255,45,135,.5) inset;
+    }
+    /* Hover ring on the card that persists while the video's floating. */
+    .twerkhub-coming-card:hover::before{
+      content:"";position:absolute;inset:-2px;border-radius:inherit;z-index:0;
+      background:linear-gradient(135deg,rgba(255,45,135,.25),rgba(157,78,221,.15),rgba(30,224,143,.15));
+      pointer-events:none;
+    }
+    /* At viewport < 680px keep the zoom modest so the video doesn't overflow. */
+    @media (max-width:680px){
+      .twerkhub-coming-card:hover .twerkhub-coming-arch-video{transform:scale(1.12);border-radius:14px;}
+    }
     .twerkhub-coming-live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;margin-right:6px;animation:twerkhub-coming-live-pulse 1.6s ease-in-out infinite}
     @keyframes twerkhub-coming-live-pulse{0%,100%{opacity:1}50%{opacity:.4}}
     .twerkhub-coming-drop strong{font-variant-numeric:tabular-nums;color:#1ee08f;letter-spacing:.04em}
