@@ -12,7 +12,7 @@
  * mounts inside it; falls back to its old fixed-top-right position only if
  * the slot is missing (e.g. on pages without a navbar).
  *
- * v20260424-p5
+ * v20260424-p6 · online pill → 2.0 live (300–500 range, animated ticks)
  */
 (function(){
   'use strict';
@@ -55,10 +55,17 @@
     + '.snf__i > .twerkhub-topbar-right,.site-nav-final__inner > .twerkhub-topbar-right{justify-self:end;}'
     // Right-cluster wrapper
     + '.twerkhub-topbar-right{display:inline-flex;align-items:center;gap:10px;flex-shrink:0;}'
-    // Online-now pill
-    + '.twerkhub-online-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:rgba(30,224,143,.14);border:1px solid rgba(30,224,143,.5);font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#e8e8ef;line-height:1;white-space:nowrap;}'
-    + '.twerkhub-online-pill .twerkhub-online-dot{width:7px;height:7px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;animation:twerkhub-online-pulse 1.8s ease-in-out infinite;}'
-    + '.twerkhub-online-pill .twerkhub-online-count{color:#1ee08f;letter-spacing:.04em;}'
+    // Online-now pill · TWERKHUB 2.0 (live, glassy, breathing)
+    + '.twerkhub-online-pill{position:relative;display:inline-flex;align-items:center;gap:9px;padding:6px 13px 6px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(30,224,143,.06) 60%,rgba(255,45,135,.08));border:1px solid rgba(30,224,143,.45);font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#e8e8ef;line-height:1;white-space:nowrap;box-shadow:0 0 0 0 rgba(30,224,143,.0),0 4px 14px -6px rgba(30,224,143,.35);transition:box-shadow .5s ease,transform .2s ease;overflow:hidden;}'
+    + '.twerkhub-online-pill::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at 20% 50%,rgba(30,224,143,.22),transparent 60%);opacity:.8;pointer-events:none;}'
+    + '.twerkhub-online-pill:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(30,224,143,.25),0 10px 22px -6px rgba(30,224,143,.45);}'
+    + '.twerkhub-online-pill .twerkhub-online-dot{position:relative;width:8px;height:8px;border-radius:50%;background:#1ee08f;box-shadow:0 0 10px #1ee08f,0 0 20px rgba(30,224,143,.45);flex-shrink:0;}'
+    + '.twerkhub-online-pill .twerkhub-online-dot::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(30,224,143,.5);animation:twerkhub-online-ping 2s cubic-bezier(.2,.7,.3,1) infinite;}'
+    + '.twerkhub-online-pill .twerkhub-online-label{opacity:.82;}'
+    + '.twerkhub-online-pill .twerkhub-online-count{color:#1ee08f;letter-spacing:.04em;font-variant-numeric:tabular-nums;min-width:26px;display:inline-block;text-align:right;text-shadow:0 0 10px rgba(30,224,143,.45);transition:color .35s ease,text-shadow .35s ease;}'
+    + '.twerkhub-online-pill .twerkhub-online-count.is-up{color:#83ffc0;text-shadow:0 0 14px rgba(131,255,192,.65);}'
+    + '.twerkhub-online-pill .twerkhub-online-count.is-down{color:#ffb454;text-shadow:0 0 14px rgba(255,180,84,.55);}'
+    + '@keyframes twerkhub-online-ping{0%{transform:scale(.8);opacity:.9}70%{transform:scale(1.9);opacity:0}100%{transform:scale(1.9);opacity:0}}'
     + '@keyframes twerkhub-online-pulse{0%,100%{opacity:1}50%{opacity:.35}}'
     // Kill any legacy online pill / music button / ONLINE NOW 891 etc.
     + '.snf__on,#snf-music-btn,.site-nav-final__online,.site-nav-final__music,.site-nav-final__dot,[data-alexia-online-count]{display:none!important;}'
@@ -109,21 +116,74 @@
     return null;
   }
 
-  // Try to pull a live count from a data attribute the server may have set;
-  // otherwise use a stable-random-ish number in 800–1,400 range.
-  function pickCount(){
-    var el = document.querySelector('[data-alexia-online-count]');
-    if (el) {
-      var n = parseInt((el.textContent||'').replace(/[^\d]/g,''), 10);
-      if (!isNaN(n) && n > 0) return n;
-    }
+  // TWERKHUB 2.0 online counter.
+  // Range: 300–500, stable-ish per session (persisted in sessionStorage), and
+  // then live-animated every 3–7s with small deltas (±1 / ±2, occasionally ±4)
+  // so the pill feels alive without being distracting. The "feel" cue:
+  // - green flash on uptick, orange on down-tick (CSS .is-up / .is-down).
+  // - tabular-nums + fixed min-width so the pill doesn't jitter.
+  var ONLINE_MIN = 300;
+  var ONLINE_MAX = 500;
+
+  function clampOnline(n){
+    if (n < ONLINE_MIN) return ONLINE_MIN + Math.floor(Math.random()*4);
+    if (n > ONLINE_MAX) return ONLINE_MAX - Math.floor(Math.random()*4);
+    return n;
+  }
+
+  function pickInitialCount(){
     try {
-      var cached = Number(sessionStorage.getItem('twerkhub_online_count_v1'));
-      if (cached && cached >= 600 && cached <= 1600) return cached;
+      var cached = Number(sessionStorage.getItem('twerkhub_online_count_v2'));
+      if (cached && cached >= ONLINE_MIN && cached <= ONLINE_MAX) return cached;
     } catch(_){}
-    var base = 891 + (Math.floor(Math.random()*180) - 90);
-    try { sessionStorage.setItem('twerkhub_online_count_v1', String(base)); } catch(_){}
+    // Skew slightly towards the middle-upper band so the site reads "busy".
+    var base = 380 + Math.floor(Math.random()*90); // 380–469
+    try { sessionStorage.setItem('twerkhub_online_count_v2', String(base)); } catch(_){}
     return base;
+  }
+
+  // Pick the next step. Most ticks are ±1 / ±2; ~10% are ±3 / ±4 (bigger wobble).
+  function nextStep(){
+    var r = Math.random();
+    var big = r < 0.10;
+    var mag = big ? (3 + Math.floor(Math.random()*2)) : (1 + Math.floor(Math.random()*2));
+    // Slight upward bias so the number tends to drift up (feels "pro, growing").
+    var dir = Math.random() < 0.55 ? 1 : -1;
+    return dir * mag;
+  }
+
+  function startLiveTicker(countEl){
+    if (!countEl || countEl.__twerkhubLiveTicker) return;
+    countEl.__twerkhubLiveTicker = true;
+
+    var current = parseInt(countEl.textContent.replace(/[^\d]/g,''),10) || pickInitialCount();
+
+    function tick(){
+      var delta = nextStep();
+      var target = clampOnline(current + delta);
+      if (target === current) {
+        // Nudge if clamp produced no change.
+        target = clampOnline(current + (Math.random()<0.5 ? 1 : -1));
+      }
+      var up = target > current;
+      current = target;
+      try { sessionStorage.setItem('twerkhub_online_count_v2', String(current)); } catch(_){}
+
+      countEl.textContent = current.toLocaleString('en-US');
+      countEl.classList.remove('is-up','is-down');
+      // Force reflow so class re-adds trigger the CSS transition consistently.
+      void countEl.offsetWidth;
+      countEl.classList.add(up ? 'is-up' : 'is-down');
+      setTimeout(function(){ countEl.classList.remove('is-up','is-down'); }, 700);
+
+      // Next tick between 2.4s and 6s. Random interval keeps it from feeling
+      // metronomic / obviously scripted.
+      var nextMs = 2400 + Math.floor(Math.random()*3600);
+      setTimeout(tick, nextMs);
+    }
+
+    // First tick a bit after mount (user gets to register the initial number).
+    setTimeout(tick, 2200 + Math.floor(Math.random()*1800));
   }
 
   function mount(){
@@ -143,11 +203,12 @@
 
     var online = document.createElement('span');
     online.className = 'twerkhub-online-pill';
-    online.title = 'Members connected right now';
-    var count = pickCount();
+    online.setAttribute('aria-live', 'polite');
+    online.title = 'Members connected right now · live';
+    var count = pickInitialCount();
     online.innerHTML =
       '<span class="twerkhub-online-dot" aria-hidden="true"></span>' +
-      '<span class="twerkhub-online-label">Online now</span>' +
+      '<span class="twerkhub-online-label">Live</span>' +
       '<span class="twerkhub-online-count">' + count.toLocaleString('en-US') + '</span>';
 
     var localeSlot = document.createElement('div');
@@ -156,6 +217,10 @@
     right.appendChild(online);
     right.appendChild(localeSlot);
     navWrap.appendChild(right);
+
+    // Kick off the live ticker — nudges count every 2.4–6s with ±1/±2 moves.
+    var countEl = online.querySelector('.twerkhub-online-count');
+    startLiveTicker(countEl);
   }
 
   if (document.readyState === 'loading') {
