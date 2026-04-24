@@ -13,8 +13,22 @@
         el.style.containIntrinsicSize = el.style.containIntrinsicSize || '1px 900px';
       });
     });
-    document.querySelectorAll('img').forEach(function(img){ if (!img.loading) img.loading = 'lazy'; });
-    document.querySelectorAll('iframe').forEach(function(frame){ if (!frame.loading) frame.loading = 'lazy'; frame.referrerPolicy = frame.referrerPolicy || 'strict-origin-when-cross-origin'; });
+    // ── Anti 2026-04-24 fix: stop clobbering playlist grid thumbs with
+    //    auto lazy-loading. Playlists have ≤ 60 visible thumbs and the
+    //    user expects them all visible without scrolling to trigger
+    //    loading. Only apply lazy to genuinely below-the-fold content
+    //    (community/footer/comments) and explicitly skip playlist grid,
+    //    hot-rank sidebar, home 6-playlist cards, and hero poster.
+    var LAZY_SKIP_SEL = '.vthumb img, .rk-thumb img, .twerkhub-fp-thumb img, .twerkhub-hh-iframe, .twerkhub-home-hero-media img, .twerkhub-club-card img, .twerkhub-coming-card img, [data-no-lazy], [fetchpriority="high"]';
+    document.querySelectorAll('img').forEach(function(img){
+      if (img.matches && img.matches(LAZY_SKIP_SEL)) { img.loading = 'eager'; return; }
+      if (!img.loading) img.loading = 'lazy';
+    });
+    document.querySelectorAll('iframe').forEach(function(frame){
+      if (frame.matches && frame.matches(LAZY_SKIP_SEL)) { frame.loading = 'eager'; return; }
+      if (!frame.loading) frame.loading = 'lazy';
+      frame.referrerPolicy = frame.referrerPolicy || 'strict-origin-when-cross-origin';
+    });
   }
 
 
