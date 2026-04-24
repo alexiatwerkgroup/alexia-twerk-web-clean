@@ -102,8 +102,8 @@
         <span class="twerkhub-hh-mute-label">Tap to unmute</span>
       </button>
       <div class="twerkhub-hh-media-meta">
-        <span class="twerkhub-hh-live">● private · live</span>
-        <h2 id="twerkhub-hh-countdown" data-remaining-minutes="420">Private · online — 7h remaining</h2>
+        <span class="twerkhub-hh-live" id="twerkhub-hh-status"><span class="twerkhub-hh-status-dot" aria-hidden="true"></span><span class="twerkhub-hh-status-label">online</span></span>
+        <h2 id="twerkhub-hh-countdown" data-remaining-minutes="420"><span class="twerkhub-hh-cd-kicker">Private · ends in</span> <span class="twerkhub-hh-cd-timer" id="twerkhub-hh-cd-timer">07:00:00</span></h2>
       </div>
     </div>
   </aside>
@@ -545,6 +545,11 @@
       function setMuted(state){
         muted = !!state;
         send(iframe, muted ? 'mute' : 'unMute');
+        // Firefox bug (2026-04-24): calling `unMute` via postMessage without
+        // a prior user-gesture pauses the video silently. Chromium doesn't.
+        // Fire `playVideo` right after, unconditionally, so playback stays
+        // running on mouseenter regardless of the mute state change.
+        send(iframe, 'playVideo');
         if (btn){
           btn.setAttribute('aria-pressed', muted ? 'true' : 'false');
           btn.classList.toggle('is-muted', muted);
@@ -576,48 +581,60 @@
 })();
 </script>
 
-<!-- Hero countdown · "Private · online — 7h remaining" ticking down every minute.
-     Data attribute `data-remaining-minutes` is the starting point. The script
-     persists the baseline in localStorage so the number keeps descending across
-     page reloads instead of resetting. -->
+<!-- Hero countdown v3 — HH:MM:SS format, ticks every second. When the 7h
+     window expires, the countdown resets itself to a fresh 7h and keeps going.
+     Status stays "online" at all times (the session never ends visually). The
+     end-stamp is persisted in localStorage so refreshing keeps it in sync. -->
 <script>
 (function(){
   'use strict';
   if (window.__twerkhubHeroCountdownInit) return;
   window.__twerkhubHeroCountdownInit = true;
   var KEY = 'twerkhub_hero_countdown_endstamp';
+  function two(n){ return String(n).padStart(2,'0'); }
   function init(){
     try {
-      var el = document.getElementById('twerkhub-hh-countdown');
-      if (!el) return;
-      var now = Date.now();
-      var end = Number(localStorage.getItem(KEY) || 0);
-      // If no stored end-time, or it's already expired, set a new 7h window.
-      if (!end || end <= now) {
-        var mins = Number(el.getAttribute('data-remaining-minutes')) || 420;
-        end = now + mins * 60 * 1000;
-        try { localStorage.setItem(KEY, String(end)); } catch(_){}
+      var wrap = document.getElementById('twerkhub-hh-countdown');
+      var timerEl = document.getElementById('twerkhub-hh-cd-timer');
+      var statusEl = document.getElementById('twerkhub-hh-status');
+      var statusLabel = statusEl && statusEl.querySelector('.twerkhub-hh-status-label');
+      if (!wrap || !timerEl) return;
+      var windowMinutes = Number(wrap.getAttribute('data-remaining-minutes')) || 420;
+      var windowMs = windowMinutes * 60 * 1000;
+
+      function freshEnd(){ return Date.now() + windowMs; }
+      function loadOrResetEnd(){
+        var saved = Number(localStorage.getItem(KEY) || 0);
+        if (!saved || saved <= Date.now()) {
+          saved = freshEnd();
+          try { localStorage.setItem(KEY, String(saved)); } catch(_){}
+        }
+        return saved;
       }
+      var end = loadOrResetEnd();
+
       function fmt(ms){
-        if (ms <= 0) return 'offline';
-        var total = Math.floor(ms / 1000);
+        var total = Math.max(0, Math.floor(ms / 1000));
         var h = Math.floor(total / 3600);
         var m = Math.floor((total % 3600) / 60);
-        if (h >= 1) return h + 'h ' + String(m).padStart(2,'0') + 'm remaining';
         var s = total % 60;
-        return m + 'm ' + String(s).padStart(2,'0') + 's remaining';
+        return two(h) + ':' + two(m) + ':' + two(s);
       }
       function tick(){
         var remaining = end - Date.now();
         if (remaining <= 0) {
-          el.textContent = 'Private · offline — check back soon';
-          return;
+          // Reset: new 7h window, status stays "online". No offline state.
+          end = freshEnd();
+          try { localStorage.setItem(KEY, String(end)); } catch(_){}
+          remaining = end - Date.now();
         }
-        el.textContent = 'Private · online — ' + fmt(remaining);
+        timerEl.textContent = fmt(remaining);
+        if (statusEl) statusEl.classList.remove('is-offline');
+        if (statusLabel) statusLabel.textContent = 'online';
       }
       tick();
-      // Refresh every 30s — enough to see minutes tick without burning CPU.
-      setInterval(tick, 30 * 1000);
+      // Refresh every second so seconds tick visibly — cheap, no CPU impact.
+      setInterval(tick, 1000);
     } catch(e){ console.warn('[twerkhub-hero-countdown] init failed', e); }
   }
   if (document.readyState === 'loading') {
