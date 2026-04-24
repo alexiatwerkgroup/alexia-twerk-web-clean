@@ -1,5 +1,5 @@
 # TWERKHUB · Cowork Handoff Document
-**Last updated:** 2026-04-24 · Round 10 staged (uncommitted) · Last shipped commit `2360798`
+**Last updated:** 2026-04-24 · Round 14 staged (uncommitted) · Rounds 10-13 shipped at commit `edf9e29`
 **Repo:** `https://github.com/alexiatwerkgroup/alexia-twerk-web-clean`
 **Live:** `https://alexiatwerkgroup.com/`
 **Local working dir:** `C:\Users\Claudio\OneDrive\Desktop\proyectos\alexia-twerk-web-clean`
@@ -37,7 +37,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 ## 📊 Current state · what's deployed
 
 ### Content (all live in production)
-- **21 blog posts** (~31,500 words long-form) in `/blog/`
+- **22 blog posts** (~33,200 words long-form) in `/blog/`
 - **13 creator profiles** with Person schema in `/creator/`
 - **5 collection pages** (geo + style): Taipei, Moscow, Colombia, Seoul, heels-choreo, cosplay-fancam, reggaeton-floor
 - **4 legal/corporate**: `/about.html`, `/privacy.html`, `/terms.html`, `/contact.html`
@@ -133,7 +133,8 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 | 10 | _pending push_ | 1-7 pickup: orphan cleanup + post #20 (founder essay) + 5 creators (VR KINGS, LABARBIE, Patricia Atakora, Sugaarrbbaby, Nika Chilli Odessa) + /es/glossary + /ru/contact + 2 translations (manifesto ES, MDC NRG history RU) + sitemap-videos 5→22 entries + new sitemap-images.xml. SW bumped to v1.1.6 / p11. |
 | 11 | _pending push_ | i18n cluster lockdown: +/ru/glossary.html (close trilingual glossary), +/es/blog/ + /ru/blog/ landing pages (parents for translated posts), +FAQPage schema on /about.html (7 Q&A) and /membership.html (7 Q&A · billing/refunds/tier mechanics), full trilingual hreflang on /glossary, /es/glossary, /blog/index. |
 | 12 | _pending push_ | Search i18n + 2nd ES manifesto translation + Service schema. +/es/search.html (28-entry index translated to ES) + /ru/search.html (28-entry RU). +/es/blog/why-twerkhub-has-no-algorithm-feed.html (companion to founder essay). +Service schema on /about.html (provider/audience/4-tier offers). Hreflang trilingüe en /search. |
-| 13 | _pending push_ | Post #21 + 3rd ES translation. +blog/studios-shaping-2026.html (1.820 words pillar · 6 studios w/ heavy internal linking to creator profiles + collection pages). +/es/blog/perreo-history-caribbean-origin.html (1.740-word ES translation of Caribbean perreo history pillar). Updated blog grids EN+ES, hreflang on perreo EN. |
+| 13 | `edf9e29` | Post #21 + 3rd ES translation. +blog/studios-shaping-2026.html (1.820 words pillar · 6 studios w/ heavy internal linking to creator profiles + collection pages). +/es/blog/perreo-history-caribbean-origin.html (1.740-word ES translation of Caribbean perreo history pillar). Updated blog grids EN+ES, hreflang on perreo EN. Pushed in commit `edf9e29` (rounds 10-13 batched). |
+| 14 | _pending push_ | Post #22 + manifesto trilingual + 2 translations + style page ES + nav fix. +blog/afrobeats-twerk-crossover.html (1.690-word pillar · West African crossover · links to Patricia Atakora). +/ru/blog/why-i-built-twerkhub.html (closes trilingual founder essay EN/ES/RU). +/es/blog/k-dance-vs-reggaeton-twerk.html. +/es/style-reggaeton-floor.html (first ES style page). NAV FIX: `.twerkhub-nav a.active` no longer pink-purple gradient — subtle dark fill + gold underline. SW v1.1.6→v1.1.7, universal-inject p11→p12, page p13→p14, polish p4→p5, elevation p3→p4-LEAN. |
 
 ---
 

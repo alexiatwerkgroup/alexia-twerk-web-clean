@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Почему я построил Twerkhub · 8 лет курации, без алгоритма, 2 178 участников</title>
+<meta name="description" content="Эссе фундатора от Anti (firestarter). Почему мы построили Twerkhub в 2018 в Буэнос-Айресе, чему нас научили восемь лет ручной курации, и почему приватный архив на 2 178 участников выигрывает у любой алгоритмической ленты.">
+<meta name="keywords" content="фундатор twerkhub, anti firestarter, alexia twerk фундатор, платформа танцев история, философия ручной курации, платформа без алгоритма, эссе фундатора, буэнос-айрес платформа">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="Anti · Twerkhub">
+<link rel="canonical" href="https://alexiatwerkgroup.com/ru/blog/why-i-built-twerkhub.html">
+<link rel="alternate" hreflang="ru" href="https://alexiatwerkgroup.com/ru/blog/why-i-built-twerkhub.html">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/blog/why-i-built-twerkhub.html">
+<link rel="alternate" hreflang="es" href="https://alexiatwerkgroup.com/es/blog/why-i-built-twerkhub.html">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/blog/why-i-built-twerkhub.html">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Почему я построил Twerkhub · эссе фундатора">
+<meta property="og:description" content="Восемь лет курации, 2 178 участников, без алгоритма. Почему мы построили это в Буэнос-Айресе и почему лента остаётся ручной.">
+<meta property="og:url" content="https://alexiatwerkgroup.com/ru/blog/why-i-built-twerkhub.html">
+<meta property="og:image" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
+<meta property="article:published_time" content="2026-04-24T12:00:00Z">
+<meta property="article:modified_time" content="2026-04-24T12:00:00Z">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Почему я построил Twerkhub · 8 лет курации, без алгоритма, 2 178 участников","alternativeHeadline":"Эссе фундатора от Anti (firestarter)","url":"https://alexiatwerkgroup.com/ru/blog/why-i-built-twerkhub.html","datePublished":"2026-04-24","dateModified":"2026-04-24","inLanguage":"ru","author":{"@type":"Person","name":"Anti","alternateName":"firestarter","jobTitle":"Сооснователь, архитектор платформы","url":"https://alexiatwerkgroup.com/ru/about.html","worksFor":{"@type":"Organization","name":"Twerkhub"}},"publisher":{"@type":"Organization","name":"Twerkhub","logo":{"@type":"ImageObject","url":"https://alexiatwerkgroup.com/logo-twerkhub.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://alexiatwerkgroup.com/ru/blog/why-i-built-twerkhub.html"},"image":"https://alexiatwerkgroup.com/logo-twerkhub.png","wordCount":"1700","articleSection":"Манифест"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://alexiatwerkgroup.com/ru/"},{"@type":"ListItem","position":2,"name":"Блог","item":"https://alexiatwerkgroup.com/ru/blog/"},{"@type":"ListItem","position":3,"name":"Почему я построил Twerkhub","item":"https://alexiatwerkgroup.com/ru/blog/why-i-built-twerkhub.html"}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.74;min-height:100vh;padding-bottom:120px}
+a{color:#ff6fa8;text-decoration:none}a:hover{color:#ffb454}
+.wrap{max-width:740px;margin:0 auto;padding:110px 28px 40px}
+.kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ffb454;margin-bottom:14px}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,5.5vw,64px);font-weight:900;line-height:1.05;letter-spacing:-.022em;margin-bottom:22px}
+h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:900;line-height:1.18;margin:50px 0 14px;color:#fff;letter-spacing:-.012em}
+h3{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:800;margin:30px 0 10px;color:#ffb454}
+p,li{color:#d8d8e2;font-size:17.5px;margin-bottom:18px}
+ul,ol{padding-left:26px;margin-bottom:20px}
+strong{color:#fff;font-weight:700}
+em{color:#ff9ec4;font-style:italic}
+blockquote{margin:28px 0;padding:18px 26px;border-left:3px solid #ff2d87;background:rgba(255,45,135,.06);border-radius:6px;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:19px;color:#fff}
+.locale-bar{display:inline-flex;gap:8px;margin-bottom:24px;padding:6px;border-radius:999px;background:rgba(20,20,32,.7);border:1px solid rgba(255,255,255,.08)}
+.locale-bar a{padding:6px 14px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#9a9aab}
+.locale-bar a.active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff}
+.meta{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:48px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a8a96}
+.pull{margin:36px 0;padding:24px 28px;border-radius:18px;background:linear-gradient(135deg,rgba(255,45,135,.08),rgba(157,78,221,.06));border:1px solid rgba(255,45,135,.18)}
+.pull strong{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#ffb454;margin-bottom:8px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin:32px 0}
+.stat{padding:18px 16px;border-radius:14px;background:rgba(20,20,32,.6);border:1px solid rgba(255,255,255,.08);text-align:center}
+.stat .n{font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:900;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;display:block;line-height:1}
+.stat .l{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#9a9aa8;margin-top:8px}
+.related{margin-top:52px;padding:26px 28px;border-radius:18px;background:linear-gradient(135deg,rgba(255,45,135,.08),rgba(157,78,221,.08));border:1px solid rgba(255,45,135,.2)}
+.related strong{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#ffb454;margin-bottom:10px}
+.back{display:inline-block;margin-top:44px;padding:11px 22px;border-radius:999px;background:rgba(255,255,255,.06);color:#ff6fa8;border:1px solid rgba(255,255,255,.12);font-weight:700;font-size:13px}
+</style>
+</head>
+<body class="twerkhub-page">
+<article class="wrap">
+  <div class="kicker">/ Манифест · Эссе фундатора</div>
+  <div class="locale-bar"><a href="/blog/why-i-built-twerkhub.html">EN</a><a href="/es/blog/why-i-built-twerkhub.html">ES</a><a href="/ru/blog/why-i-built-twerkhub.html" class="active">RU</a></div>
+  <h1>Почему я построил <em>Twerkhub.</em></h1>
+  <div class="meta">
+    <span>Anti · firestarter</span>
+    <span>24 апр 2026</span>
+    <span>10 мин чтения</span>
+    <span>Буэнос-Айрес</span>
+  </div>
+
+  <p>Меня спрашивают это каждую неделю. Иногда участник в Discord. Иногда креатор, к которому мы подходим. Иногда журналист, делающий материал о платформах для креаторов. Короткий ответ — тот, что мы пишем на главной странице — <em>"if you know, you know"</em>. Длинный ответ ниже. Восемь лет, ужатые в тысячу сто слов.</p>
+
+  <div class="stat-grid">
+    <div class="stat"><span class="n">2018</span><span class="l">Основано</span></div>
+    <div class="stat"><span class="n">8</span><span class="l">Лет работы</span></div>
+    <div class="stat"><span class="n">2 178</span><span class="l">Участников</span></div>
+    <div class="stat"><span class="n">38</span><span class="l">Верифицированных креаторов</span></div>
+    <div class="stat"><span class="n">7</span><span class="l">Курированных плейлистов</span></div>
+    <div class="stat"><span class="n">0</span><span class="l">Алгоритмов</span></div>
+  </div>
+
+  <h2>2018 · скука, с которой всё началось.</h2>
+  <p>Алексия и я жили в квартире в Палермо, Буэнос-Айрес. Она только вернулась с резиденции в Тайбэе. Я только уволился с работы фронтендером. Мы тратили по три-четыре часа за вечер, листая YouTube — искали танцовщиц, которые нам были важны. Лучших. Студийные кадры iDance Тайбэй. Heels-работу MDC NRG. Уличные fancam из Каракаса до того, как их погребли под сотней туториалов.</p>
+
+  <p>Проблема была не в нехватке контента. Проблема была в том, что <strong>алгоритм YouTube не мог показать нам то, что мы хотели</strong>. Даже близко. Мы находили один хороший клип, нажимали "ещё с этого канала" и получали пять алгоритмических догадок, которые не были ни на что похожи. Танцовщицы, которых мы любили, постили еженедельно — а мы никогда не могли найти их при втором заходе.</p>
+
+  <p>Так что мы завели приватный плейлист. Только для себя. Два человека, один документ, ручная курация. К марту в нём было 80 видео. К июню — 240. К концу 2018 года мы поделились ссылкой примерно с 30 друзьями, и плейлист содержал 600 видео.</p>
+
+  <blockquote>Платформа существовала до того, как мы поняли, что её строим. Она началась как список, чтобы решить нашу собственную проблему.</blockquote>
+
+  <h2>2019-2021 · годы, когда это была просто папка.</h2>
+  <p>Три года не было никакого бизнеса. Был YouTube-плейлист, Telegram-чат для тех, кто им пользовался, и блокнот, в котором Алексия записывала танцовщиц, которых хотела отслеживать. Мы не пытались монетизировать. Список друзей-друзей вырос примерно до 240. Мы добавили русских танцовщиц (потому что у неё был аккаунт Лады, и началось перекрёстное опыление). Мы добавили корейскую студийную работу. Разделение на 7 плейлистов началось здесь — разные настроения заслуживают разных списков.</p>
+
+  <p>Что эти три года нам дали: <strong>ремесло</strong>. Мы научились распознавать, какие thumbnails означают хороший fancam, какие каналы загружают reuploads вместо оригиналов, как отличить студийный перевод от клубного fancam за первые 4 секунды. Это ремесло сейчас — наш ров. Его нельзя срезать. Либо ты потратил годы, либо нет.</p>
+
+  <h2>2022 · момент, когда это должно было стать чем-то.</h2>
+  <p>В 2022 году произошли две вещи. Первая: YouTube ужесточил community guidelines и начал теневой бан многих танцовщиц, которые нам были важны — работа абсолютно легальная, просто за пределами зоны комфорта алгоритма. Мы начали терять доступ к видео, которые проиндексировали. Вторая: Telegram вырос до 1 400 человек и стал неуправляемым. Люди хотели доступа, мы не могли фильтровать, мы не могли сохранять энергию начальной маленькой группы.</p>
+
+  <p>Мы должны были решить: закрыть лавочку или построить нормально. Мы выбрали построить. Первый платный тир запустился в октябре 2022 — 5 USD/месяц, в основном чтобы отфильтровать тех, кому действительно важно. К декабрю у нас было 380 платных участников.</p>
+
+  <h2>2023 · что мы сделали неправильно сначала.</h2>
+  <p>Первая версия платформы выглядела как любой другой инструмент для креаторов. Алгоритмическая лента. Сайдбар рекомендаций. "Trending now". Уведомления при каждой загрузке. За четыре месяца удержание упало ниже 40% на 90-й день. Платформа учила участников тому же поведению, что и YouTube — листай, листай, дофамин, ушёл.</p>
+
+  <p>Я вырвал это с корнем. Мы провели три недели в начале 2023, удаляя каждую алгоритмическую поверхность. <strong>Без For-You. Без бесконечной прокрутки. Без персонализированных рекомендаций.</strong> Только семь курированных плейлистов, обновляемых еженедельно, вручную. Люди разозлились примерно на две недели. Потом удержание выстрелило. К Q3 2023 мы были на 71% удержания на 90-й день — примерно вдвое больше медианы платформ для креаторов.</p>
+
+  <p>Это урок, к которому я постоянно возвращаюсь: <em>участники не хотят того, что они думают, что хотят.</em> Они хотят того, что заставляет их чувствовать вкус. Алгоритмы заставляют чувствовать себя обработанным. Курация — выбранным.</p>
+
+  <div class="pull">
+    <strong>Центральный инсайт</strong>
+    Алгоритмы оптимизируют под среднего пользователя. Курация оптимизирует под конкретного. Мы выбрали конкретного.
+  </div>
+
+  <h2>2024 · экономика токенов.</h2>
+  <p>К 2024 году у нас было 1 200 участников и проблема. Отток подписки был здоровым, но мы хотели более длинных циклов engagement. Чистая подписка = участники заходят, смотрят новое, выходят. Мы хотели, чтобы они <em>что-то строили</em> на платформе.</p>
+
+  <p>4-тиерная экономика токенов запустилась в марте 2024. Basic, Medium, Premium, VIP Top. Токены зарабатываются через engagement (исследование страниц, полные просмотры клипов, ежедневные логины, стрики). Токены тратятся на разблокировку более глубокого архива. Вся математика — в <a href="/blog/token-economy-playbook.html">плейбуке экономики токенов</a>.</p>
+
+  <p>Два неожиданных результата. (1) Около 40% участников VIP Top пришли через заработанные токены, а не через прямую покупку. Они <em>построили</em> свой доступ. Им важнее. (2) Механика стрика создала случайное сообщество — участники начали чекиниться ежедневно, постить свои счётчики стриков в лаундже, помогать друг другу не сорваться.</p>
+
+  <h2>2025 · масштабирование без поломки философии.</h2>
+  <p>Самый сложный год. Мы выросли с 1 200 до примерно 1 900 участников. Три вещи нас почти сломали:</p>
+  <ul>
+    <li><strong>Перегрузка курации.</strong> Только Алексия и одна ассистентка, смотрящие 40+ часов YouTube в неделю, чтобы курировать 7 плейлистов. Мы добавили двух платных кураторов в середине 2025. Они живут в Тайбэе и Сеуле, дают нам географическую глубину, которой раньше не было.</li>
+    <li><strong>Объём питчей креаторов.</strong> 80+ питчей в месяц. У нас не было системы. Мы её построили — полный процесс в <a href="/blog/how-to-pitch-twerkhub-creator.html">как питчить Twerkhub как креатор</a>.</li>
+    <li><strong>Дискорд-драмы.</strong> Сообщество на 1 500+ генерирует внутреннюю политику. Два крупных инцидента в том году заставили нас переписать философию модерации. Полная структура в <a href="/blog/discord-community-playbook.html">плейбуке Discord</a>.</li>
+  </ul>
+
+  <h2>2026 · где мы сейчас.</h2>
+  <p>2 178 участников. 38 верифицированных креаторов в Тайбэе, Москве, Сеуле, Медельине, Буэнос-Айресе, Бангкоке. 7 плейлистов, 1 500+ архивных видео. Дропы по четвергам в 00:00 ART. Бренд-голос острее. Платформа быстрее, чем за последние три года.</p>
+
+  <p>Я пишу это из той же квартиры в Палермо. Другой стол, то же окно. Алексия на этой неделе в Мехико снимает резиденцию с креатором, к которому мы подходим уже шесть месяцев. Discord гудит, потому что в завтрашнем дропе первый студийный кадр BEFOX, который мы когда-либо проиндексировали.</p>
+
+  <h2>Чему меня научили восемь лет.</h2>
+  <p><strong>Курация — это настоящая работа.</strong> Не в свободном смысле, в котором это слово все используют сейчас. Настоящая курация — это смотреть 10 часов, чтобы вынести 30 минут. Математика не сходится как side project. Мы платим кураторам, потому что любое меньшее ухудшает плейлист.</p>
+
+  <p><strong>Конкретное побеждает общее.</strong> Мы никогда не пытались быть общей танцевальной платформой. Мы выбрали нишу — twerk, fancam, heels choreo, студии за ними — и пошли вглубь. Наши 38 креаторов — не самые знаменитые танцовщицы. Это те, кто нам важен. Участники, которым важны они, остаются.</p>
+
+  <p><strong>Алгоритм делает тебя забываемым.</strong> Каждая алгоритмическая платформа сходится к одному и тому же контенту, потому что применяются одни и те же сигналы engagement. Единственный способ построить сообщество с идентичностью — отказаться от схождения. Это дорого. Это также незаменимо.</p>
+
+  <p><strong>Медленная инфраструктура переживает быстрые тренды.</strong> Мы видели запуски и закрытия четырёх "следующих OnlyFans" с 2022 года. Они оптимизировали под скорость роста. Мы оптимизировали под то, чтобы быть здесь через пять лет. Другая игра.</p>
+
+  <h2>Что я говорю людям, которые хотят построить что-то похожее.</h2>
+  <ol>
+    <li><strong>Начинай со своей собственной скуки.</strong> То, что ты не можешь найти на существующих платформах — твоё нечестное преимущество.</li>
+    <li><strong>Не монетизируй минимум 18 месяцев.</strong> Сначала построй вещь. Найди людей, которые её хотят. Деньги приходят после того, как ответ — да.</li>
+    <li><strong>Выбирай нишу, которую ты бы защищал в драке.</strong> Если бы ты не спорил за свою нишу на ужине, ты бросишь в первый трудный год.</li>
+    <li><strong>Ручное — это фича, а не баг.</strong> Алгоритмы — commodity. Вкус — редкость.</li>
+  </ol>
+
+  <h2>Слоган, на случай, если ты пропустил.</h2>
+  <p>If you know, you know. Мы не продаём тебе. Мы не оптимизируем под среднего. Мы не показываем тебе то, что алгоритм считает, что ты кликнешь. Мы показываем то, что показали бы лучшему другу, если бы он спросил <em>"что есть хорошего на этой неделе?"</em></p>
+
+  <p>Это вся платформа. Это почему я её построил.</p>
+
+  <p>—Anti · firestarter · апрель 2026</p>
+
+  <div class="related">
+    <strong>Связанное чтение</strong>
+    <a href="/blog/why-twerkhub-has-no-algorithm-feed.html">Почему у Twerkhub нет алгоритмической ленты</a> · <a href="/blog/token-economy-playbook.html">Плейбук экономики токенов</a> · <a href="/blog/discord-community-playbook.html">Плейбук Discord</a> · <a href="/ru/blog/moscow-dance-centre-nrg-history.html">История MDC NRG</a> · <a href="/ru/about.html">О фундаторах</a>
+  </div>
+
+  <a class="back" href="/ru/blog/">← Все посты</a>
+</article>
+<footer style="text-align:center;padding:30px;color:#6b6b7b;font-size:12px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase">© 2026 Twerkhub · <a href="/ru/about.html" style="color:#c7c7d3">О нас</a> · <a href="/ru/blog/" style="color:#c7c7d3">Блог</a> · <a href="/ru/contact.html" style="color:#c7c7d3">Контакты</a></footer>
+</body></html>
