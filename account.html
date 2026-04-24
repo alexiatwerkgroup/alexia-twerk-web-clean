@@ -19,7 +19,10 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:var(--elite-bg);color:var(--elite-text);font-family:var(--elite-font-sans);min-height:100vh}
-  body{padding-top:90px;overflow-x:hidden}
+  /* No body padding — topbar is position:sticky;top:0 so it sits naturally
+     at the top of the document flow. The old 90px padding was compensation
+     for a legacy fixed-position nav that no longer exists. */
+  body{padding-top:0;overflow-x:hidden}
 
   .ac{max-width:1120px;margin:0 auto;padding:40px 32px 80px}
   .ac__head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:32px;flex-wrap:wrap}
@@ -325,7 +328,7 @@
 <script defer src="/assets/enter-now-widget.js?v=20260417-03"></script>
 
 <!-- Legacy global-brand / global-counters / global-i18n / online-count-global were duplicating topbar widgets (two locales, two counters, two logos). Removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle this now. CSS already in <head> above. -->
-<script defer src="/assets/twerkhub-tokens.js?v=20260424-p5"></script>
+<script defer src="/assets/twerkhub-tokens.js?v=20260424-p8"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p7"></script>
 <script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p6"></script>
 <script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p5"></script>

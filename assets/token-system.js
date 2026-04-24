@@ -320,12 +320,62 @@
     dailyCheck();
     onPageVisit();
 
-    // Auto-track videos present on page
+    // Auto-track videos present on page — handles three cases:
+    //   1. Native <video> without loop: `ended` event fires normally.
+    //   2. Native <video> WITH loop (coming-soon cards): `ended` never fires
+    //      because playback wraps silently; we watch `timeupdate` and mark
+    //      complete when the playhead crosses ≥90% of duration (first loop).
+    //   3. YouTube <iframe> embeds (playlist pages + hero): DOM `ended` isn't
+    //      exposed; we listen to YT's postMessage API (`playerState === 0`).
     document.querySelectorAll('video').forEach(function(v, i){
-      var id = v.id || v.currentSrc || ('v_' + location.pathname + '_' + i);
+      var id = v.id || v.currentSrc || v.querySelector('source')?.src || ('v_' + location.pathname + '_' + i);
       v.addEventListener('play',  function(){ onVideoStart(id); }, { once: true });
       v.addEventListener('ended', function(){ onVideoComplete(id); }, { once: true });
+      if (v.loop) {
+        var done = false;
+        v.addEventListener('timeupdate', function(){
+          if (done) return;
+          if (v.duration && (v.currentTime / v.duration) >= 0.9) {
+            done = true;
+            onVideoComplete(id);
+          }
+        });
+      }
     });
+
+    // YouTube iframe tracking · listens to postMessage from embeds that have
+    // enablejsapi=1 in their src (hero + playlist pages). playerState 1 = PLAY,
+    // 0 = ENDED. We fire onVideoStart / onVideoComplete exactly once per video.
+    try {
+      var ytSeen = Object.create(null);
+      window.addEventListener('message', function(ev){
+        if (!ev.data || typeof ev.data !== 'string') return;
+        if (ev.data.indexOf('"event"') === -1) return;
+        var data; try { data = JSON.parse(ev.data); } catch(_){ return; }
+        if (!data.info || typeof data.info.playerState !== 'number') return;
+        // Find the iframe that sent this message — contentWindow identity match.
+        var iframes = document.querySelectorAll('iframe[src*="youtube"]');
+        var frame = null;
+        for (var k = 0; k < iframes.length; k++) {
+          if (iframes[k].contentWindow === ev.source) { frame = iframes[k]; break; }
+        }
+        if (!frame) return;
+        var m = (frame.src || '').match(/embed\/([^?&/]+)/);
+        var vid = m ? m[1] : frame.src;
+        var state = data.info.playerState;
+        if (state === 1 && !ytSeen[vid + ':s']) { ytSeen[vid + ':s'] = 1; onVideoStart(vid); }
+        if (state === 0 && !ytSeen[vid + ':c']) { ytSeen[vid + ':c'] = 1; onVideoComplete(vid); }
+      });
+      // Handshake: ask every YT iframe to start sending us state events.
+      // Browsers allow this after the iframe has loaded.
+      setTimeout(function(){
+        document.querySelectorAll('iframe[src*="youtube"]').forEach(function(f){
+          try {
+            f.contentWindow.postMessage(JSON.stringify({event:'listening', id:(f.id || 'yt')}), '*');
+          } catch(_){}
+        });
+      }, 800);
+    } catch(e) { console.warn('[alexia-tokens] yt-tracking init failed', e); }
   }
 
   if (document.readyState === 'loading') {

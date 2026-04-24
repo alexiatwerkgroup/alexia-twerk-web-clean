@@ -15,7 +15,7 @@
  *   twerkhub_tokens_seen_vids   · JSON array of played video ids
  *
  * Idempotent: safe to include on every page.
- * v20260424-p1
+ * v20260424-p8 · unified balance — reads AlexiaTokens state so /account and HUD match
  */
 (function(){
   'use strict';
@@ -42,8 +42,27 @@
     try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){}
   }
 
-  function getTokens(){ return Number(lsGet(LS.TOKENS, 0)) || 0; }
-  function setTokens(n){ lsSet(LS.TOKENS, Number(n) || 0); }
+  // UNIFIED BALANCE (v20260424-p8):
+  // Previously this HUD stored its own balance in `twerkhub_tokens`, but the
+  // /account and /profile pages read their balance from `window.AlexiaTokens`
+  // (token-system.js) — so the two numbers drifted and the user saw 225 in
+  // the HUD while /profile showed 1,300+. From now on there's a single source
+  // of truth: AlexiaTokens. The HUD reads its state and grants any rewards
+  // through AlexiaTokens.grant(), which also fires the standard toasts.
+  // The local `twerkhub_tokens` key is kept as a fallback for when the
+  // AlexiaTokens module hasn't loaded yet (e.g. during the first paint).
+  function hasAlexia(){ return !!(window.AlexiaTokens && typeof window.AlexiaTokens.getState === 'function'); }
+  function getTokens(){
+    if (hasAlexia()) {
+      try { return Number(window.AlexiaTokens.getState().balance) || 0; } catch(_){}
+    }
+    return Number(lsGet(LS.TOKENS, 0)) || 0;
+  }
+  function setTokens(n){
+    // Legacy path — only used when AlexiaTokens isn't available. If it is,
+    // mutations must go through AlexiaTokens.grant() to keep /account in sync.
+    lsSet(LS.TOKENS, Number(n) || 0);
+  }
 
   function getSeenPaths(){
     var v = lsGet(LS.PATHS, []);
@@ -187,21 +206,34 @@
   }
 
   // ── Reward flows ─────────────────────────────────────────────────────────
+  // These route through AlexiaTokens.grant() when available so the /account
+  // dashboard reflects them immediately — otherwise they fall back to the
+  // local counter. The HUD's toast + pulse + ping always fire either way.
+  function grantUnified(amount, title, sub){
+    if (hasAlexia() && typeof window.AlexiaTokens.grant === 'function') {
+      try { window.AlexiaTokens.grant(amount, title); } catch(_){}
+    } else {
+      setTokens(getTokens() + amount);
+    }
+    render();
+    pulse();
+    showToast(amount, title, sub);
+  }
+
   function rewardIfNewPath(){
+    // Skip the legacy per-path reward when AlexiaTokens is the source of truth —
+    // that module already awards +5 per new page via its own onPageVisit().
+    // We just refresh the HUD display; no double-granting.
+    if (hasAlexia()) { render(); return; }
     var key = (location.pathname || '/') + (location.search || '');
     var seen = getSeenPaths();
     if (seen.indexOf(key) !== -1) return;
     seen.push(key);
-    // Cap memory at 400 paths so localStorage never blows up.
     if (seen.length > 400) seen = seen.slice(-400);
     setSeenPaths(seen);
 
-    var t = getTokens() + AWARD_PAGE;
-    setTokens(t);
-    render();
-    pulse();
     var label = document.title.replace(/\s*·\s*Twerkhub.*$/,'').slice(0,42) || 'New page';
-    showToast(AWARD_PAGE, 'New page discovered', label);
+    grantUnified(AWARD_PAGE, 'New page discovered', label);
   }
 
   function rewardIfNewVid(vid){
@@ -211,12 +243,7 @@
     seen.push(vid);
     if (seen.length > 800) seen = seen.slice(-800);
     setSeenVids(seen);
-
-    var t = getTokens() + AWARD_VIDEO;
-    setTokens(t);
-    render();
-    pulse();
-    showToast(AWARD_VIDEO, 'Video unlocked', 'Preview · ' + vid.slice(0,10));
+    grantUnified(AWARD_VIDEO, 'Video unlocked', 'Preview · ' + vid.slice(0,10));
   }
 
   // Bind clicks on any card with data-hot="1" data-vid (playlist swap pattern).
@@ -231,6 +258,17 @@
     }, true);
   }
 
+  // Listen for ANY balance change broadcast by token-system.js (daily login,
+  // video complete, referral, etc.) and re-render the HUD so the two numbers
+  // always match. Safe to bind even if AlexiaTokens loads later.
+  function bindAlexiaSync(){
+    try {
+      window.addEventListener('alexia-tokens-changed', function(){
+        render(); pulse();
+      });
+    } catch(_){}
+  }
+
   // ── Init ─────────────────────────────────────────────────────────────────
   function init(){
     try {
@@ -240,7 +278,14 @@
       // Slight delay so the HUD is mounted and the pulse animation registers.
       setTimeout(rewardIfNewPath, 700);
       bindVideoListeners();
-      console.info('[twerkhub-tokens] ready · balance=', getTokens());
+      bindAlexiaSync();
+      // If AlexiaTokens loads AFTER us, re-render once it shows up so the
+      // balance switches from the local fallback to the unified source.
+      var waitForAlexia = setInterval(function(){
+        if (hasAlexia()) { clearInterval(waitForAlexia); render(); }
+      }, 400);
+      setTimeout(function(){ clearInterval(waitForAlexia); }, 8000);
+      console.info('[twerkhub-tokens] ready · balance=', getTokens(), '· unified:', hasAlexia());
     } catch(e){
       console.warn('[twerkhub-tokens] init failed', e);
     }

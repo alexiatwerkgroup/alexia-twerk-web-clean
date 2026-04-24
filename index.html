@@ -479,6 +479,62 @@
     /* (removed .twerkhub-coming-arch-contain: the card aspect is now 9:16
        matching the source videos, so cover fills the frame edge-to-edge with
        no bars — no letterbox needed.) */
+    /* Placeholder variant for the 9 Coming-Soon cards without an MP4 yet.
+       Same dimensions as the video frame (9:16 + full width) so the row is
+       visually homogeneous. Shows the model's initials in a gradient, plus
+       a subtle glow — reads as "photo loading, drop pending". */
+    .twerkhub-coming-arch-placeholder{
+      width:100%;aspect-ratio:9/16;border-radius:inherit;
+      display:flex;align-items:center;justify-content:center;
+      position:relative;z-index:1;overflow:hidden;
+      transform-origin:center center;
+      transition:transform .45s cubic-bezier(.2,1.2,.3,1),
+                 box-shadow .35s ease, border-radius .35s ease;
+      background:
+        radial-gradient(ellipse at 50% 25%, rgba(255,45,135,.30), transparent 55%),
+        radial-gradient(ellipse at 50% 100%, rgba(157,78,221,.22), transparent 55%),
+        linear-gradient(180deg, #1a0718 0%, #0a0a14 100%);
+      cursor:default;
+    }
+    .twerkhub-coming-card-c2 .twerkhub-coming-arch-placeholder{background:radial-gradient(ellipse at 50% 25%, rgba(255,180,84,.24), transparent 55%),radial-gradient(ellipse at 50% 100%, rgba(255,45,135,.20), transparent 55%),linear-gradient(180deg, #1a1008 0%, #0a0a14 100%);}
+    .twerkhub-coming-card-c3 .twerkhub-coming-arch-placeholder{background:radial-gradient(ellipse at 50% 25%, rgba(157,78,221,.26), transparent 55%),radial-gradient(ellipse at 50% 100%, rgba(30,224,143,.14), transparent 55%),linear-gradient(180deg, #140d1f 0%, #0a0a14 100%);}
+    .twerkhub-coming-card-c4 .twerkhub-coming-arch-placeholder{background:radial-gradient(ellipse at 50% 25%, rgba(30,224,143,.18), transparent 55%),radial-gradient(ellipse at 50% 100%, rgba(157,78,221,.22), transparent 55%),linear-gradient(180deg, #081614 0%, #0a0a14 100%);}
+    .twerkhub-coming-arch-placeholder::before{
+      content:""; position:absolute; inset:14px; border-radius:inherit;
+      border:1px solid rgba(255,255,255,.06); pointer-events:none;
+    }
+    .twerkhub-coming-arch-init{
+      font-family:'Playfair Display',Georgia,serif;
+      font-size:clamp(72px, 11vw, 150px);
+      font-weight:900; line-height:1; letter-spacing:-6px;
+      background:linear-gradient(135deg,#ff6fa8 0%,#ffb454 55%,#ffd693 100%);
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent;
+      filter:drop-shadow(0 6px 22px rgba(255,45,135,.35));
+      position:relative; z-index:2;
+    }
+    /* Optional "PREVIEW PENDING" line under the initials */
+    .twerkhub-coming-arch-pending{
+      position:absolute; bottom:22px; left:0; right:0; text-align:center;
+      font-family:'JetBrains Mono',ui-monospace,monospace;
+      font-size:11px; font-weight:800; letter-spacing:4px;
+      color:rgba(255,111,168,.85); z-index:2;
+    }
+    .twerkhub-coming-arch-pending::before{
+      content:""; display:block; width:42px; height:2px;
+      background:rgba(255,111,168,.45); margin:0 auto 10px; border-radius:2px;
+    }
+    /* Hover zoom mirrors the video variant so the grid feels uniform. */
+    .twerkhub-coming-card:hover .twerkhub-coming-arch-placeholder{
+      transform:scale(1.55); z-index:100; border-radius:18px;
+      box-shadow:
+        0 40px 100px rgba(255,45,135,.45),
+        0 20px 60px rgba(0,0,0,.75),
+        0 0 0 2px rgba(255,45,135,.5) inset;
+    }
+    @media (max-width:680px){
+      .twerkhub-coming-card:hover .twerkhub-coming-arch-placeholder{transform:scale(1.12); border-radius:14px;}
+    }
   </style>
   <div class="twerkhub-coming-grid">
     <!-- 1 · Jenny (AVAILABLE NOW, CO 18, autoplay MP4, hover-unmute). Uses .twerkhub-coming-arch-contain so the full portrait frame is visible (no cover crop). -->
@@ -553,23 +609,23 @@
       </div>
     </div>
     <!-- 4 · Mariana (4 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@MARI.COL · CO</span><h3>Mariana</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="28"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">MA</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@MARI.COL · CO</span><h3>Mariana</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="28"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
     <!-- 5 · Salomé (5 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c1"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@SALMO · CO</span><h3>Salomé</h3><div class="twerkhub-coming-tag">COL · 18 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="35"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <div class="twerkhub-coming-card twerkhub-coming-card-c1"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">SA</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@SALMO · CO</span><h3>Salomé</h3><div class="twerkhub-coming-tag">COL · 18 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="35"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
     <!-- 6 · Antonella (6 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c2"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@ANTU · CO</span><h3>Antonella</h3><div class="twerkhub-coming-tag">COL · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="42"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <div class="twerkhub-coming-card twerkhub-coming-card-c2"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">AN</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@ANTU · CO</span><h3>Antonella</h3><div class="twerkhub-coming-tag">COL · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="42"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
     <!-- 7 · Emilia (7 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c3"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@EMILIAXX · CO</span><h3>Emilia</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="49"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <div class="twerkhub-coming-card twerkhub-coming-card-c3"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">EM</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@EMILIAXX · CO</span><h3>Emilia</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="49"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
     <!-- 8 · Luciana (8 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@LULU_COL · CO</span><h3>Luciana</h3><div class="twerkhub-coming-tag">COL · 18 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="56"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">LU</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@LULU_COL · CO</span><h3>Luciana</h3><div class="twerkhub-coming-tag">COL · 18 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="56"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
     <!-- 9 · Julianna (9 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c1"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@JULI_VIP · CO</span><h3>Julianna</h3><div class="twerkhub-coming-tag">COL · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="63"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <div class="twerkhub-coming-card twerkhub-coming-card-c1"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">JU</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@JULI_VIP · CO</span><h3>Julianna</h3><div class="twerkhub-coming-tag">COL · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="63"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
     <!-- 10 · Gabriela (10 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c2"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@GABYCOL · CO</span><h3>Gabriela</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="70"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <div class="twerkhub-coming-card twerkhub-coming-card-c2"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">GA</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@GABYCOL · CO</span><h3>Gabriela</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="70"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
     <!-- 11 · Martina (11 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c3"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@MARTIX · AR</span><h3>Martina</h3><div class="twerkhub-coming-tag">ARG · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="77"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <div class="twerkhub-coming-card twerkhub-coming-card-c3"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">MT</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@MARTIX · AR</span><h3>Martina</h3><div class="twerkhub-coming-tag">ARG · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="77"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
     <!-- 12 · Sofía (12 weeks) -->
-    <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch"></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@SOFIVIP · AR</span><h3>Sofía</h3><div class="twerkhub-coming-tag">ARG · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="84"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">SO</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@SOFIVIP · AR</span><h3>Sofía</h3><div class="twerkhub-coming-tag">ARG · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="84"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
   </div>
   <div class="twerkhub-coming-foot">· Don't stay here · Move forward ·</div>
 </section>
@@ -829,7 +885,7 @@
 <script defer src="/assets/global-brand.js?v=20260420-p15"></script>
 <script defer src="/assets/twerkhub-auth-patch.js?v=20260420-p15"></script>
 <script defer src="/assets/whatsapp-share.js?v=20260423"></script>
-<script defer src="/assets/twerkhub-tokens.js?v=20260424-p1"></script>
+<script defer src="/assets/twerkhub-tokens.js?v=20260424-p8"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p7"></script>
 <script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p6"></script>
 <script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p5"></script>
