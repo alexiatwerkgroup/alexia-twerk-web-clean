@@ -1,0 +1,347 @@
+/* ═══ TWERKHUB · PREMIUM POLISH LAYER ═══
+ * Universal visual upgrade — applies to every page automatically.
+ * v20260424-p1
+ *
+ * Design principles:
+ *  - Subtle > flashy. Motion earns attention, doesn't beg for it.
+ *  - Every hover, every transition, every shadow has a reason.
+ *  - Respect prefers-reduced-motion: all motion is opt-out.
+ *  - No layout shift. Animations use transform/opacity only.
+ */
+
+/* ── 1 · Root refinements ─────────────────────────────────────────────── */
+html{
+  scroll-behavior:smooth;
+  /* Better font smoothing on macOS / iOS */
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+
+/* Native smooth color-scheme for form inputs, scrollbars, etc. */
+html{color-scheme:dark;}
+
+/* Custom scrollbar — thin, on-brand, never obtrusive. */
+*::-webkit-scrollbar{width:10px;height:10px;}
+*::-webkit-scrollbar-track{background:rgba(10,10,20,.4);}
+*::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(255,45,135,.5),rgba(157,78,221,.5));
+  border-radius:999px;
+  border:2px solid rgba(10,10,20,.4);
+}
+*::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,rgba(255,45,135,.8),rgba(157,78,221,.8));
+}
+*{scrollbar-width:thin;scrollbar-color:rgba(255,45,135,.5) rgba(10,10,20,.4);}
+
+/* ── 2 · Selection color ─────────────────────────────────────────────── */
+::selection{background:rgba(255,45,135,.38);color:#fff;}
+::-moz-selection{background:rgba(255,45,135,.38);color:#fff;}
+
+/* ── 3 · Focus-visible polish ────────────────────────────────────────── */
+:focus{outline:none;}
+:focus-visible{
+  outline:2px solid rgba(255,180,84,.85);
+  outline-offset:3px;
+  border-radius:6px;
+  box-shadow:0 0 0 6px rgba(255,180,84,.18);
+  transition:outline-offset .15s ease,box-shadow .15s ease;
+}
+
+/* ── 4 · Page-load reveal (subtle) ───────────────────────────────────── */
+@keyframes twk-page-fade{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+body{
+  animation:twk-page-fade .55s cubic-bezier(.22,.9,.38,1) both;
+}
+
+/* ── 5 · Scroll-reveal utility ───────────────────────────────────────── */
+/* Added by twerkhub-scroll-reveal.js when an element enters the viewport.
+   Stays invisible until then — no layout jump, no CLS hit. */
+[data-twk-reveal]{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .75s cubic-bezier(.22,.9,.38,1),
+             transform .75s cubic-bezier(.22,.9,.38,1);
+  will-change:transform,opacity;
+}
+[data-twk-reveal].is-revealed{
+  opacity:1;
+  transform:translateY(0);
+}
+/* Staggered children for grids/rows — each child ticks 80ms after the previous. */
+[data-twk-reveal-stagger] > *{
+  opacity:0;
+  transform:translateY(22px) scale(.985);
+  transition:opacity .6s cubic-bezier(.22,.9,.38,1),
+             transform .6s cubic-bezier(.22,.9,.38,1);
+}
+[data-twk-reveal-stagger].is-revealed > *{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+[data-twk-reveal-stagger].is-revealed > *:nth-child(1){transition-delay:0ms;}
+[data-twk-reveal-stagger].is-revealed > *:nth-child(2){transition-delay:80ms;}
+[data-twk-reveal-stagger].is-revealed > *:nth-child(3){transition-delay:160ms;}
+[data-twk-reveal-stagger].is-revealed > *:nth-child(4){transition-delay:240ms;}
+[data-twk-reveal-stagger].is-revealed > *:nth-child(5){transition-delay:320ms;}
+[data-twk-reveal-stagger].is-revealed > *:nth-child(6){transition-delay:400ms;}
+[data-twk-reveal-stagger].is-revealed > *:nth-child(7){transition-delay:480ms;}
+[data-twk-reveal-stagger].is-revealed > *:nth-child(8){transition-delay:560ms;}
+[data-twk-reveal-stagger].is-revealed > *:nth-child(n+9){transition-delay:640ms;}
+
+/* ── 6 · Link hover polish ───────────────────────────────────────────── */
+.twerkhub-page a:not(.twerkhub-btn):not(.twerkhub-brand):not(.twerkhub-nav a){
+  transition:color .2s ease, text-shadow .2s ease;
+}
+.twerkhub-page a:not(.twerkhub-btn):not(.twerkhub-brand):not(.twerkhub-nav a):hover{
+  text-shadow:0 0 14px rgba(255,111,168,.35);
+}
+
+/* ── 7 · Button micro-interactions ───────────────────────────────────── */
+.twerkhub-btn,.twerkhub-btn-primary,.twerkhub-btn-gold{
+  transition:transform .18s cubic-bezier(.2,1.1,.3,1),
+             box-shadow .22s ease,
+             filter .2s ease;
+  position:relative;
+  overflow:hidden;
+}
+.twerkhub-btn:hover,.twerkhub-btn-primary:hover,.twerkhub-btn-gold:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.06);
+}
+.twerkhub-btn:active,.twerkhub-btn-primary:active,.twerkhub-btn-gold:active{
+  transform:translateY(0);
+  filter:brightness(.94);
+}
+/* Shine sweep on hover (premium feel — only on gold CTAs so it's not noisy). */
+.twerkhub-btn-gold::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.32) 50%,transparent 70%);
+  transform:translateX(-120%);
+  transition:transform .7s cubic-bezier(.2,.8,.2,1);
+  pointer-events:none;
+}
+.twerkhub-btn-gold:hover::after{transform:translateX(120%);}
+
+/* ── 8 · Heading display polish ──────────────────────────────────────── */
+.twerkhub-home-hero h1,
+.twerkhub-comm-hero h1,
+.twerkhub-hero h1,
+h1[class*="hero"]{
+  letter-spacing:-.02em;
+  text-wrap:balance;
+}
+h2,h3{text-wrap:balance;}
+
+/* Kicker refinement: add a thin glow on hover so the eye lands there. */
+.twerkhub-kicker{
+  transition:color .25s ease, text-shadow .25s ease;
+}
+.twerkhub-kicker:hover{
+  text-shadow:0 0 10px rgba(255,45,135,.45);
+}
+
+/* ── 9 · Card hover refinement (global card pattern) ─────────────────── */
+[class*="-card"]{
+  transition:transform .35s cubic-bezier(.22,.9,.38,1),
+             box-shadow .35s ease,
+             border-color .25s ease,
+             filter .3s ease;
+}
+
+/* ── 10 · Live dot pulse — reusable ──────────────────────────────────── */
+@keyframes twk-live-ping{
+  0%{box-shadow:0 0 0 0 rgba(30,224,143,.6);}
+  80%{box-shadow:0 0 0 10px rgba(30,224,143,0);}
+  100%{box-shadow:0 0 0 0 rgba(30,224,143,0);}
+}
+.twerkhub-coming-live-dot,
+.twerkhub-online-pill .twerkhub-online-dot{
+  animation:twk-live-ping 2.2s cubic-bezier(.2,.7,.3,1) infinite, twerkhub-coming-live-pulse 1.8s ease-in-out infinite;
+}
+
+/* ── 11 · Image loading shimmer ──────────────────────────────────────── */
+img{
+  transition:opacity .4s ease, filter .4s ease;
+}
+img[loading="lazy"]:not([src*="svg"]){
+  background:linear-gradient(110deg, rgba(255,255,255,.03) 8%, rgba(255,255,255,.08) 18%, rgba(255,255,255,.03) 33%);
+  background-size:200% 100%;
+  animation:twk-shimmer 1.8s linear infinite;
+}
+img[loading="lazy"].is-loaded{animation:none;background:none;}
+@keyframes twk-shimmer{
+  0%{background-position:200% 0;}
+  100%{background-position:-200% 0;}
+}
+
+/* ── 12 · Backdrop blur consistency ──────────────────────────────────── */
+.twerkhub-topbar,
+.twerkhub-paywall,
+[class*="-modal"],
+[class*="-drawer"]{
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  backdrop-filter:blur(18px) saturate(140%);
+}
+
+/* ── 13 · Premium depth on video cards ───────────────────────────────── */
+.twerkhub-coming-card{
+  transition:transform .35s cubic-bezier(.22,.9,.38,1);
+}
+.twerkhub-coming-card:hover{
+  transform:translateY(-2px);
+}
+
+/* ── 14 · Refined countdown typography ───────────────────────────────── */
+[id*="countdown"] strong,
+[id*="cd-timer"],
+.twerkhub-coming-drop strong{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.04em;
+}
+
+/* ── 15 · Subtle animated ambient background (hero only) ─────────────── */
+@keyframes twk-ambient-drift{
+  0%,100%{transform:translate3d(0,0,0) scale(1);opacity:.85;}
+  50%{transform:translate3d(-2%,1%,0) scale(1.04);opacity:1;}
+}
+.twerkhub-home-hero::before{
+  animation:twk-ambient-drift 22s ease-in-out infinite;
+}
+
+/* ── 16 · Skip-to-content link (a11y) ────────────────────────────────── */
+.twk-skip-link{
+  position:absolute;left:-9999px;top:0;padding:10px 18px;
+  background:#0a0a14;color:#fff;text-decoration:none;font-weight:800;
+  border:2px solid #ff2d87;border-radius:0 0 10px 0;z-index:10000;
+  font-family:'Inter',sans-serif;letter-spacing:.08em;text-transform:uppercase;font-size:12px;
+}
+.twk-skip-link:focus{left:0;top:0;}
+
+/* ── 17 · Prefers-reduced-motion fallback ────────────────────────────── */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  body{animation:none;}
+  [data-twk-reveal],[data-twk-reveal-stagger] > *{
+    opacity:1 !important;transform:none !important;
+  }
+}
+
+/* ── 18 · Print sanity ────────────────────────────────────────────────── */
+@media print{
+  .twerkhub-topbar,.twerkhub-tokens-hud,.twerkhub-paywall,[class*="drawer"],[class*="modal"]{display:none !important;}
+  body{background:#fff;color:#000;}
+  a{color:#000;text-decoration:underline;}
+}
+
+/* ── 19 · Number count-up ticker anim (used by JS for stats) ─────────── */
+[data-twk-count]{
+  font-variant-numeric:tabular-nums;
+}
+
+/* ── 20 · Section dividers (hairline gradients) ──────────────────────── */
+section + section::before{
+  content:"";display:block;height:1px;max-width:1240px;margin:0 auto;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
+}
+
+/* ── 21 · Hot Packs nav item · sparkle the money link ────────────────── */
+.twerkhub-nav a.twerkhub-nav-hot,
+.site-nav-final__links a.twerkhub-nav-hot,
+.snf__l a.twerkhub-nav-hot{
+  position:relative;
+  background:linear-gradient(135deg,rgba(255,180,84,.18),rgba(255,45,135,.14))!important;
+  border:1px solid rgba(255,180,84,.45)!important;
+  color:#ffd693!important;
+  box-shadow:0 4px 14px rgba(255,180,84,.22);
+  text-shadow:0 0 8px rgba(255,180,84,.35);
+}
+.twerkhub-nav a.twerkhub-nav-hot::before,
+.site-nav-final__links a.twerkhub-nav-hot::before,
+.snf__l a.twerkhub-nav-hot::before{
+  content:"🔥";
+  font-size:11px;
+  margin-right:5px;
+  filter:saturate(1.35);
+  animation:twk-hot-wiggle 2.4s ease-in-out infinite;
+  display:inline-block;
+}
+@keyframes twk-hot-wiggle{
+  0%,100%{transform:rotate(-6deg) scale(1);}
+  50%{transform:rotate(6deg) scale(1.08);}
+}
+.twerkhub-nav a.twerkhub-nav-hot:hover,
+.site-nav-final__links a.twerkhub-nav-hot:hover,
+.snf__l a.twerkhub-nav-hot:hover{
+  background:linear-gradient(135deg,rgba(255,180,84,.35),rgba(255,45,135,.28))!important;
+  border-color:rgba(255,180,84,.75)!important;
+  color:#fff!important;
+  box-shadow:0 8px 24px rgba(255,180,84,.45);
+}
+.twerkhub-nav a.twerkhub-nav-hot.is-active,
+.twerkhub-nav a.twerkhub-nav-hot.active,
+.site-nav-final__links a.twerkhub-nav-hot.is-active,
+.snf__l a.twerkhub-nav-hot.is-active{
+  background:linear-gradient(135deg,#ff2d87,#ffb454)!important;
+  color:#0a0a10!important;
+  border-color:rgba(255,215,135,.9)!important;
+  box-shadow:0 8px 26px rgba(255,45,135,.55);
+  text-shadow:none;
+}
+
+/* ── 22 · VIEWED overlay on watched videos ────────────────────────────
+   Added by twerkhub-premium.js when an item's data-vid is found in the
+   `twerkhub_viewed_vids` localStorage list. Clickable items get a soft
+   desaturation + big "VIEWED" stamp centered on the thumbnail. */
+.is-viewed{position:relative;}
+.is-viewed .rk-thumb,
+.is-viewed .twerkhub-pl-card-thumb,
+.is-viewed img[src*="ytimg"],
+.is-viewed img[src*="vi/"]{
+  filter:grayscale(.6) brightness(.55);
+  transition:filter .25s ease;
+}
+.is-viewed:hover .rk-thumb,
+.is-viewed:hover .twerkhub-pl-card-thumb,
+.is-viewed:hover img[src*="ytimg"],
+.is-viewed:hover img[src*="vi/"]{
+  filter:grayscale(.2) brightness(.78);
+}
+.is-viewed::after{
+  content:"VIEWED";
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%) rotate(-8deg);
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:clamp(18px,2.6vw,32px);
+  font-weight:900;letter-spacing:.18em;
+  color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.9);
+  background:linear-gradient(135deg,rgba(255,45,135,.55),rgba(157,78,221,.55));
+  padding:6px 18px;border-radius:6px;
+  border:2px solid rgba(255,255,255,.9);
+  pointer-events:none;
+  z-index:5;
+  opacity:.95;
+}
+/* Compact stamp for small ranking items */
+.rk-item.is-viewed::after{
+  font-size:11px;padding:3px 10px;border-width:1px;letter-spacing:.16em;
+}
+
+/* ── 23 · Kill paywall modal on /playlist pages ───────────────────────
+   The user explicitly asked to remove the subscribe gate from the video
+   listing. Any element that the paywall module shows with class
+   `.twerkhub-paywall` or `[data-paywall-open]` is hidden on these paths.
+   The universal-inject script also prevents the paywall from opening. */
+body[data-section="playlist"] .twerkhub-paywall,
+body.playlist-page .twerkhub-paywall,
+html[data-playlist-open="1"] .twerkhub-paywall{
+  display:none !important;
+}

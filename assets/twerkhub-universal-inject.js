@@ -1,0 +1,199 @@
+/* ═══ TWERKHUB · UNIVERSAL TOPBAR INJECTOR ═══
+ * v20260424-p1
+ *
+ * Purpose: ONE script to ensure every page in the platform — regardless of
+ * whether someone edited it manually or it was auto-generated months ago —
+ * renders the unified twerkhub-topbar with:
+ *   - Brand + hover-zoom logo
+ *   - Full nav (8 items including Hot Packs)
+ *   - Live "online now" pill (breathing, 300–500 range)
+ *   - Locale switcher EN · ES · RU
+ *   - Token HUD on the right
+ *
+ * Strategy: self-bootstrap. If this script is loaded on a page that already
+ * has the proper `.twerkhub-topbar` markup, it's a no-op. If the page has
+ * legacy nav shapes (`.site-nav-final`, `.snf`, `[data-alexia-online-count]`,
+ * etc.), they get ripped out first and the new topbar is injected at the top
+ * of <body>. Then all dependent CSS/JS are lazy-loaded in the right order.
+ *
+ * Idempotent. Safe to include twice. Loads ONLY what's missing.
+ *
+ * Typical deploy: the Service Worker rewrites every HTML response so the
+ * very last thing before </body> is a <script src=".../twerkhub-universal-
+ * inject.js"></script>. No need to edit 640+ individual HTML files.
+ */
+(function(){
+  'use strict';
+  if (window.__twerkhubUniversalInjectInit) return;
+  window.__twerkhubUniversalInjectInit = true;
+
+  var ASSET_BASE = '/assets/';
+  var VER = { tokens:'20260424-p9', topbar:'20260424-p6', locale:'20260424-p5',
+              mobile:'20260424-p1', sound:'20260424-p7', premium:'20260424-p2',
+              page:'20260420-p15', polish:'20260424-p4' };
+
+  // ── 1 · Remove legacy nav markup ─────────────────────────────────────
+  // The platform accumulated three generations of topbars over the years.
+  // Anything NOT `.twerkhub-topbar` is history — delete on sight.
+  function purgeLegacyNav(){
+    var selectors = [
+      '.site-nav-final',                // 2024 generation
+      '.snf',                            // 2025 generation
+      '.alexia-nav',                    // older catalog pages
+      '#alexia-global-brand',           // global-brand.js injection
+      '#alexia-global-counters',
+      '[data-alexia-online-count]',    // the "891 online" stuck counter
+      '.snf__on',
+      '#snf-music-btn',
+      '.site-nav-final__online',
+      '.site-nav-final__music',
+      // Legacy locale switchers (global-i18n.js dropped these before topbar-
+      // enhance.js mounted its own slot, causing duplicates on /profile etc.)
+      '.alexia-i18n-switcher:not(.twerkhub-locale-slot *)',
+      '#alexia-i18n-root',
+      '.alexia-legacy-locale'
+    ];
+    selectors.forEach(function(sel){
+      try {
+        document.querySelectorAll(sel).forEach(function(el){
+          // Don't nuke if this element is actually INSIDE our new topbar
+          // (could happen if markup is nested oddly).
+          if (el.closest && el.closest('.twerkhub-topbar')) return;
+          el.remove();
+        });
+      } catch(_){}
+    });
+  }
+
+  // ── 2 · Ensure CSS dependencies are loaded ───────────────────────────
+  function ensureCss(href){
+    if (document.querySelector('link[rel="stylesheet"][href^="'+href+'"]')) return;
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
+  }
+  function loadAllCss(){
+    ensureCss(ASSET_BASE + 'twerkhub-page.css?v=' + VER.page);
+    ensureCss(ASSET_BASE + 'twerkhub-tokens.css?v=' + VER.tokens);
+    ensureCss(ASSET_BASE + 'twerkhub-polish.css?v=' + VER.polish);
+    ensureCss(ASSET_BASE + 'twerkhub-premium.css?v=' + VER.premium);
+    // Google Fonts — only if the site didn't already preconnect.
+    if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
+      var pre1 = document.createElement('link');
+      pre1.rel = 'preconnect'; pre1.href = 'https://fonts.googleapis.com';
+      document.head.appendChild(pre1);
+      var pre2 = document.createElement('link');
+      pre2.rel = 'preconnect'; pre2.href = 'https://fonts.gstatic.com';
+      pre2.crossOrigin = '';
+      document.head.appendChild(pre2);
+      var font = document.createElement('link');
+      font.rel = 'stylesheet';
+      font.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap';
+      document.head.appendChild(font);
+    }
+  }
+
+  // ── 3 · Ensure JS dependencies are loaded ────────────────────────────
+  function ensureJs(src){
+    if (document.querySelector('script[src^="'+src+'"]')) return;
+    var s = document.createElement('script');
+    s.src = src; s.defer = true;
+    document.body.appendChild(s);
+  }
+  function loadAllJs(){
+    // Order matters a bit: tokens module loads FIRST so the HUD can read
+    // AlexiaTokens if present. Topbar-enhance runs second (decorates the
+    // nav). Locale switcher third (mounts inside the right-cluster slot).
+    // Mobile nav + sound manager + premium come last — order doesn't matter.
+    ensureJs(ASSET_BASE + 'twerkhub-tokens.js?v=' + VER.tokens);
+    ensureJs(ASSET_BASE + 'twerkhub-topbar-enhance.js?v=' + VER.topbar);
+    ensureJs(ASSET_BASE + 'twerkhub-locale-switcher.js?v=' + VER.locale);
+    ensureJs(ASSET_BASE + 'twerkhub-mobile-nav.js?v=' + VER.mobile);
+    ensureJs(ASSET_BASE + 'twerkhub-sound-on-interaction.js?v=' + VER.sound);
+    ensureJs(ASSET_BASE + 'twerkhub-premium.js?v=' + VER.premium);
+  }
+
+  // ── 4 · Inject the topbar DOM if missing ─────────────────────────────
+  // The 8-item SAGRADA nav. Hot Packs marked with the dedicated class so
+  // twerkhub-premium.css paints it gold/pink with the flame-wiggle.
+  var NAV_HTML = (
+    '<nav class="twerkhub-topbar" aria-label="Primary">' +
+      '<div class="twerkhub-topbar-inner">' +
+        '<a class="twerkhub-brand" href="/" aria-label="Twerkhub · home">' +
+          '<img class="twerkhub-logo" src="/logo-twerkhub.png" alt="Twerkhub" decoding="async" width="44" height="44">' +
+          '<span class="twerkhub-brand-sub">TWERKHUB · Est. 2018</span>' +
+        '</a>' +
+        '<div class="twerkhub-nav">' +
+          '<a href="/">Home</a>' +
+          '<a href="/#private-models">Exclusive</a>' +
+          '<a href="/#playlists">Playlists</a>' +
+          '<a href="/alexia-video-packs.html" class="twerkhub-nav-hot">Hot Packs</a>' +
+          '<a href="/community.html">Community</a>' +
+          '<a href="/membership.html">Membership</a>' +
+          '<a href="/account.html">My Account</a>' +
+          '<a href="/profile.html">Profile</a>' +
+        '</div>' +
+      '</div>' +
+    '</nav>'
+  );
+
+  function ensureTopbar(){
+    if (document.querySelector('.twerkhub-topbar')) {
+      // Already present — just make sure Hot Packs exists inside it.
+      var nav = document.querySelector('.twerkhub-topbar .twerkhub-nav');
+      if (nav && !nav.querySelector('a[href*="alexia-video-packs"]')) {
+        var hot = document.createElement('a');
+        hot.href = '/alexia-video-packs.html';
+        hot.className = 'twerkhub-nav-hot';
+        hot.textContent = 'Hot Packs';
+        // Insert after the 3rd item (Playlists).
+        var items = nav.querySelectorAll('a');
+        if (items.length >= 3) items[2].insertAdjacentElement('afterend', hot);
+        else nav.appendChild(hot);
+      }
+      // Mark the link matching the current page as active.
+      markActive();
+      return;
+    }
+    // No topbar → inject at the very top of <body>.
+    var host = document.createElement('div');
+    host.innerHTML = NAV_HTML;
+    var nav = host.firstChild;
+    document.body.insertBefore(nav, document.body.firstChild);
+    markActive();
+  }
+
+  function markActive(){
+    var path = location.pathname.replace(/\/$/, '') || '/';
+    document.querySelectorAll('.twerkhub-topbar .twerkhub-nav a').forEach(function(a){
+      a.classList.remove('is-active');
+      a.removeAttribute('aria-current');
+      try {
+        var href = new URL(a.getAttribute('href'), location.href);
+        var hp = href.pathname.replace(/\/$/, '') || '/';
+        if (hp === path) {
+          a.classList.add('is-active');
+          a.setAttribute('aria-current', 'page');
+        }
+      } catch(_){}
+    });
+  }
+
+  // ── 5 · Go ───────────────────────────────────────────────────────────
+  function run(){
+    try { purgeLegacyNav(); }  catch(e){ console.warn('[twerkhub-inject] purge failed', e); }
+    try { loadAllCss(); }      catch(e){ console.warn('[twerkhub-inject] css failed', e); }
+    try { ensureTopbar(); }    catch(e){ console.warn('[twerkhub-inject] topbar failed', e); }
+    try { loadAllJs(); }       catch(e){ console.warn('[twerkhub-inject] js failed', e); }
+    console.info('[twerkhub-inject] universal topbar ready on', location.pathname);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run, { once:true });
+  } else {
+    run();
+  }
+  // Re-run once more after 1.5s in case other scripts inject legacy markup late.
+  setTimeout(function(){ try { purgeLegacyNav(); markActive(); } catch(_){} }, 1500);
+})();

@@ -35,6 +35,7 @@
       <a href="/">Home</a>
       <a href="/#private-models">Exclusive</a>
       <a href="/#playlists">Playlists</a>
+      <a href="/alexia-video-packs.html" class="twerkhub-nav-hot">Hot Packs</a>
       <a href="/community.html" class="active" aria-current="page">Community</a>
       <a href="/membership.html">Membership</a>
       <a href="/account.html">My Account</a>
@@ -135,6 +136,319 @@
       </article>
 </main>
 
+<!-- ═══ Members directory ═══
+     Lista completa de suscriptores — online status, tier, tokens, streak, país,
+     tiempo como miembro. Clickeable → modal con detalle. Contenido generado
+     localmente (sin backend) pero con semilla determinística por usuario para
+     que el mismo ID siempre muestre los mismos stats. -->
+<section class="twerkhub-members" id="members" aria-label="Members directory">
+  <div class="twerkhub-members-head">
+    <div class="twerkhub-kicker">/ The circle · everyone who made it through the door</div>
+    <h2>Who's <em>inside</em>.</h2>
+    <p class="twerkhub-members-sub">Miembros activos del archivo privado. Cliqueá a cualquiera para ver qué miran, cuánto llevan adentro y dónde están ahora mismo.</p>
+    <div class="twerkhub-members-stats">
+      <span class="twerkhub-members-stat"><strong data-twk-count="2847">0</strong><span>Total members</span></span>
+      <span class="twerkhub-members-stat twerkhub-members-stat-live"><span class="twerkhub-members-dot"></span><strong data-twk-count="412">0</strong><span>Online now</span></span>
+      <span class="twerkhub-members-stat"><strong data-twk-count="186">0</strong><span>VIP tier</span></span>
+      <span class="twerkhub-members-stat"><strong data-twk-count="94">0</strong><span>Elite · private circle</span></span>
+    </div>
+    <div class="twerkhub-members-filters">
+      <button class="twerkhub-members-filter is-active" data-filter="all" type="button">All · 2,847</button>
+      <button class="twerkhub-members-filter" data-filter="online" type="button">🟢 Online · 412</button>
+      <button class="twerkhub-members-filter" data-filter="vip" type="button">⭐ VIP</button>
+      <button class="twerkhub-members-filter" data-filter="elite" type="button">💎 Elite</button>
+      <button class="twerkhub-members-filter" data-filter="fresh" type="button">New this week</button>
+    </div>
+  </div>
+  <div class="twerkhub-members-grid" id="twerkhub-members-grid" data-twk-reveal-stagger></div>
+  <div class="twerkhub-members-foot">
+    <button class="twerkhub-btn twerkhub-btn-ghost" type="button" id="twerkhub-members-loadmore">Load 24 more →</button>
+  </div>
+</section>
+
+<!-- Modal con detalle de usuario. Se abre al clickear una card. -->
+<div class="twerkhub-member-modal" id="twerkhub-member-modal" role="dialog" aria-modal="true" aria-labelledby="twerkhub-member-modal-title" hidden>
+  <div class="twerkhub-member-modal-backdrop" data-close-modal></div>
+  <div class="twerkhub-member-modal-panel">
+    <button class="twerkhub-member-modal-close" type="button" data-close-modal aria-label="Close">×</button>
+    <div class="twerkhub-member-modal-body" id="twerkhub-member-modal-body"></div>
+  </div>
+</div>
+
+<style>
+  /* ── Members section ──────────────────────────────────────────────── */
+  .twerkhub-members{max-width:1320px;margin:0 auto;padding:60px 22px 40px;}
+  .twerkhub-members-head{text-align:center;margin-bottom:36px;}
+  .twerkhub-members-head h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,4.2vw,52px);font-weight:900;letter-spacing:-.02em;color:#f5f5fb;margin:8px 0 14px;}
+  .twerkhub-members-head h2 em{font-style:italic;background:linear-gradient(135deg,#ff6fa8,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .twerkhub-members-sub{color:#a8a8b8;font-size:15px;line-height:1.6;max-width:560px;margin:0 auto 22px;}
+  .twerkhub-members-stats{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin:0 auto 26px;max-width:900px;}
+  .twerkhub-members-stat{display:inline-flex;align-items:center;gap:10px;padding:11px 18px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c5c5d0;}
+  .twerkhub-members-stat strong{color:#fff;font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:900;letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums;}
+  .twerkhub-members-stat-live{background:rgba(30,224,143,.08);border-color:rgba(30,224,143,.35);color:#83ffc0;}
+  .twerkhub-members-stat-live strong{color:#1ee08f;}
+  .twerkhub-members-dot{width:8px;height:8px;border-radius:50%;background:#1ee08f;box-shadow:0 0 10px #1ee08f;animation:tw-members-pulse 1.8s ease-in-out infinite;}
+  @keyframes tw-members-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .twerkhub-members-filters{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;}
+  .twerkhub-members-filter{padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#b4b4c3;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .22s ease;}
+  .twerkhub-members-filter:hover{background:rgba(255,255,255,.08);color:#fff;}
+  .twerkhub-members-filter.is-active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;border-color:rgba(255,45,135,.5);box-shadow:0 6px 18px rgba(255,45,135,.3);}
+  /* Cards grid */
+  .twerkhub-members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+  .twerkhub-member-card{background:linear-gradient(165deg,rgba(255,255,255,.04),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px 16px 14px;cursor:pointer;transition:all .28s cubic-bezier(.22,.9,.38,1);position:relative;overflow:hidden;}
+  .twerkhub-member-card:hover{transform:translateY(-3px);border-color:rgba(255,45,135,.35);box-shadow:0 18px 38px rgba(0,0,0,.4),0 0 0 1px rgba(255,45,135,.2) inset;}
+  .twerkhub-member-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,45,135,.5),transparent);opacity:0;transition:opacity .3s;}
+  .twerkhub-member-card:hover::before{opacity:1;}
+  .twerkhub-member-avatar{width:64px;height:64px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:900;color:#fff;position:relative;}
+  .twerkhub-member-avatar::after{content:"";position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:#6b6b7b;border:2px solid #0a0a14;}
+  .twerkhub-member-card.is-online .twerkhub-member-avatar::after{background:#1ee08f;box-shadow:0 0 8px #1ee08f;}
+  .twerkhub-member-card .twerkhub-member-handle{text-align:center;font-family:'Inter',sans-serif;font-size:13px;font-weight:800;color:#f5f5fb;margin-bottom:4px;}
+  .twerkhub-member-card .twerkhub-member-meta{text-align:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#8c8c97;margin-bottom:10px;}
+  .twerkhub-member-card .twerkhub-member-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;}
+  .twerkhub-member-badge{display:inline-flex;padding:3px 8px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;line-height:1;}
+  .twerkhub-member-badge-vip{background:rgba(157,78,221,.2);color:#c084fc;border:1px solid rgba(157,78,221,.4);}
+  .twerkhub-member-badge-elite{background:linear-gradient(135deg,#ffd693,#ffb454);color:#1a1008;border:1px solid rgba(255,180,84,.6);}
+  .twerkhub-member-badge-basic{background:rgba(255,255,255,.06);color:#a8a8b8;border:1px solid rgba(255,255,255,.1);}
+  .twerkhub-member-badge-streak{background:rgba(255,45,135,.18);color:#ff6fa8;border:1px solid rgba(255,45,135,.4);}
+  .twerkhub-members-foot{text-align:center;margin-top:30px;}
+  /* Modal */
+  .twerkhub-member-modal[hidden]{display:none !important;}
+  .twerkhub-member-modal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .twerkhub-member-modal-backdrop{position:absolute;inset:0;background:rgba(5,5,10,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+  .twerkhub-member-modal-panel{position:relative;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;background:linear-gradient(165deg,#13131a,#08080b);border:1px solid rgba(255,45,135,.25);border-radius:22px;padding:38px 32px 32px;box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03) inset;animation:tw-modal-in .35s cubic-bezier(.22,1.1,.3,1) both;}
+  @keyframes tw-modal-in{from{opacity:0;transform:translateY(20px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .twerkhub-member-modal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#f5f5fb;font-size:20px;line-height:1;cursor:pointer;transition:all .2s;}
+  .twerkhub-member-modal-close:hover{background:rgba(255,45,135,.25);border-color:rgba(255,45,135,.5);transform:rotate(90deg);}
+  .twerkhub-member-modal .twerkhub-member-avatar{width:96px;height:96px;font-size:36px;margin:0 auto 16px;}
+  .twerkhub-member-modal h3{text-align:center;font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:900;color:#f5f5fb;margin-bottom:6px;}
+  .twerkhub-member-modal .twerkhub-member-modal-sub{text-align:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a8a8b8;margin-bottom:18px;}
+  .twerkhub-member-modal-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-bottom:22px;}
+  .twerkhub-member-modal-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+  .twerkhub-member-modal-stat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;}
+  .twerkhub-member-modal-stat-label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#8c8c97;margin-bottom:4px;}
+  .twerkhub-member-modal-stat-value{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:900;color:#f5f5fb;line-height:1;}
+  .twerkhub-member-modal-fav{background:rgba(255,45,135,.08);border:1px solid rgba(255,45,135,.25);border-radius:14px;padding:14px 16px;margin-bottom:16px;}
+  .twerkhub-member-modal-fav-label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px;}
+  .twerkhub-member-modal-fav-value{font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:#f5f5fb;line-height:1.4;}
+  .twerkhub-member-modal-quote{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:15px;line-height:1.6;color:#c5c5d0;padding:14px 18px;border-left:3px solid rgba(255,180,84,.6);background:rgba(255,180,84,.04);border-radius:0 10px 10px 0;margin-bottom:18px;}
+  .twerkhub-member-modal-cta{width:100%;padding:13px;border-radius:10px;background:linear-gradient(180deg,#ff2d87,#9d4edd);color:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;border:0;cursor:pointer;transition:transform .2s;}
+  .twerkhub-member-modal-cta:hover{transform:translateY(-2px);filter:brightness(1.08);}
+  @media (max-width:680px){
+    .twerkhub-members-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+    .twerkhub-member-card{padding:14px 12px 10px;}
+    .twerkhub-member-avatar{width:52px;height:52px;font-size:20px;}
+  }
+</style>
+
+<script>
+(function(){
+  'use strict';
+  if (window.__twerkhubMembersInit) return;
+  window.__twerkhubMembersInit = true;
+
+  // ── Deterministic pseudo-random per user ID ──────────────────────────
+  // Same userId → same avatar gradient, stats, quote. So users don't "jump"
+  // when the list re-renders or re-loads.
+  function hash(str){
+    var h = 2166136261;
+    for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = (h * 16777619) >>> 0; }
+    return h;
+  }
+  function rand(seed, max){ return (hash(seed) % max); }
+
+  // ── Member data generator ────────────────────────────────────────────
+  var FIRST = ['silent','anon','vip','hot','koi','zen','lux','rare','solo','dark','fire','hush','raw','wolf','kat','luna','nyx','veer','onyx','siren','rogue','muse','noir','cyber','mono','echo','iris','phase','sable','shade','void','whim','neo','halo','dusk','velvet','ember','opal','aura','phantom'];
+  var LAST  = ['collector','buyer','vip','legacy','insider','lurker','addict','waters','circle','club','closed','private','member','reader','watcher','dropper','fan','believer','patron','confidant','visitor','devoted','keeper','holder','regular','connect','sponsor','backer','initiate','disciple','heir','sovereign','agent','ghost','shadow'];
+  var COUNTRIES = [
+    {code:'US',flag:'🇺🇸'},{code:'AR',flag:'🇦🇷'},{code:'CO',flag:'🇨🇴'},{code:'BR',flag:'🇧🇷'},
+    {code:'MX',flag:'🇲🇽'},{code:'ES',flag:'🇪🇸'},{code:'FR',flag:'🇫🇷'},{code:'DE',flag:'🇩🇪'},
+    {code:'UK',flag:'🇬🇧'},{code:'IT',flag:'🇮🇹'},{code:'JP',flag:'🇯🇵'},{code:'KR',flag:'🇰🇷'},
+    {code:'AU',flag:'🇦🇺'},{code:'CA',flag:'🇨🇦'},{code:'CL',flag:'🇨🇱'},{code:'PE',flag:'🇵🇪'}
+  ];
+  var TIERS = [
+    {key:'basic',label:'Basic',weight:60},
+    {key:'vip',label:'VIP',weight:28},
+    {key:'elite',label:'Elite',weight:12}
+  ];
+  var QUOTES = [
+    'El archivo es lo que dice ser. Drops puntuales, sin relleno.',
+    'Llevo 8 meses y el nivel sube cada semana. No cansa.',
+    'Los 4K de Korean son otra liga. Nada que ver con el resto.',
+    'Entré a probar. Me quedé porque no encontré nada igual.',
+    'La curación pega — nunca veo contenido que no me interese.',
+    'VIP vale cada centavo. Los customs son imposibles de igualar.',
+    'Mejor inversión del año. Los drops semanales se respetan.',
+    'Calidad insana. Cada video se siente trabajado.',
+    'Acceso privado real, no "premium" de marketing.',
+    'Si lo pensás, ya perdiste. Yo entré hace dos meses.',
+    'El Discord cierra todo rápido — sin idas y vueltas.',
+    'Estoy adentro por el archivo, no por el hype.',
+    'Lo mejor que pagué en internet en 3 años.',
+    'No hablo de esto en público. Por algo será.',
+    'Los que saben, lo saben. No hace falta explicar más.'
+  ];
+  var FAV_CATEGORIES = [
+    'Korean · 4K fancam','Cosplay · try-on','Try-on haul','Reggaetón choreo','Premium archive','Custom drops','Legacy tier','Latina sessions','Exclusive customs'
+  ];
+  var GRADIENTS = [
+    'linear-gradient(135deg,#ff2d87,#9d4edd)',
+    'linear-gradient(135deg,#ffb454,#ff2d87)',
+    'linear-gradient(135deg,#9d4edd,#1ee08f)',
+    'linear-gradient(135deg,#ff6fa8,#ffb454)',
+    'linear-gradient(135deg,#ff2d87,#ffb454)',
+    'linear-gradient(135deg,#1ee08f,#9d4edd)',
+    'linear-gradient(135deg,#c084fc,#ff6fa8)',
+    'linear-gradient(135deg,#ffd693,#ff2d87)'
+  ];
+
+  function weightedPick(arr, seed){
+    var total = arr.reduce(function(s,x){ return s + x.weight; }, 0);
+    var r = rand(seed, total);
+    for (var i=0;i<arr.length;i++){
+      r -= arr[i].weight;
+      if (r < 0) return arr[i];
+    }
+    return arr[0];
+  }
+
+  function makeMember(idx){
+    var id = 'u' + idx;
+    var first = FIRST[rand(id+':f', FIRST.length)];
+    var last  = LAST[rand(id+':l', LAST.length)];
+    var handle = '@' + first + '.' + last;
+    var country = COUNTRIES[rand(id+':c', COUNTRIES.length)];
+    var tier = weightedPick(TIERS, id+':t');
+    var online = rand(id+':o', 100) < 30; // ~30% online
+    var tokens = 200 + rand(id+':tk', 18000);
+    var streak = 1 + rand(id+':st', 90);
+    var monthsIn = 1 + rand(id+':m', 36);
+    var quote = QUOTES[rand(id+':q', QUOTES.length)];
+    var fav = FAV_CATEGORIES[rand(id+':fav', FAV_CATEGORIES.length)];
+    var gradient = GRADIENTS[rand(id+':g', GRADIENTS.length)];
+    var videosWatched = 20 + rand(id+':vw', 800);
+    var initials = (first[0] + last[0]).toUpperCase();
+    return {
+      id: id, handle: handle, initials: initials, gradient: gradient,
+      country: country, tier: tier, online: online, tokens: tokens,
+      streak: streak, monthsIn: monthsIn, quote: quote, fav: fav,
+      videosWatched: videosWatched
+    };
+  }
+
+  // ── Render ───────────────────────────────────────────────────────────
+  var TOTAL = 72; // cap — infinite scroll with "load more" adds 24 at a time
+  var loaded = 0;
+  var members = [];
+  for (var i=1; i<=TOTAL; i++) members.push(makeMember(i));
+  var currentFilter = 'all';
+
+  function cardHtml(m){
+    var badges = '';
+    if (m.tier.key === 'elite') badges += '<span class="twerkhub-member-badge twerkhub-member-badge-elite">Elite</span>';
+    else if (m.tier.key === 'vip') badges += '<span class="twerkhub-member-badge twerkhub-member-badge-vip">VIP</span>';
+    else badges += '<span class="twerkhub-member-badge twerkhub-member-badge-basic">Basic</span>';
+    if (m.streak >= 30) badges += '<span class="twerkhub-member-badge twerkhub-member-badge-streak">🔥 ' + m.streak + 'd</span>';
+    return (
+      '<article class="twerkhub-member-card' + (m.online ? ' is-online' : '') + '" data-id="' + m.id + '" tabindex="0" role="button">' +
+        '<div class="twerkhub-member-avatar" style="background:' + m.gradient + '" aria-hidden="true">' + m.initials + '</div>' +
+        '<div class="twerkhub-member-handle">' + m.handle + '</div>' +
+        '<div class="twerkhub-member-meta">' + m.country.flag + ' ' + m.country.code + ' · ' + m.monthsIn + 'mo</div>' +
+        '<div class="twerkhub-member-badges">' + badges + '</div>' +
+      '</article>'
+    );
+  }
+
+  function getFiltered(){
+    return members.filter(function(m){
+      if (currentFilter === 'online') return m.online;
+      if (currentFilter === 'vip')    return m.tier.key === 'vip' || m.tier.key === 'elite';
+      if (currentFilter === 'elite')  return m.tier.key === 'elite';
+      if (currentFilter === 'fresh')  return m.monthsIn <= 1;
+      return true;
+    });
+  }
+
+  var PAGE_SIZE = 24;
+  function render(reset){
+    var grid = document.getElementById('twerkhub-members-grid');
+    var loadMore = document.getElementById('twerkhub-members-loadmore');
+    if (!grid) return;
+    if (reset) { loaded = 0; grid.innerHTML = ''; }
+    var list = getFiltered();
+    var slice = list.slice(loaded, loaded + PAGE_SIZE);
+    grid.insertAdjacentHTML('beforeend', slice.map(cardHtml).join(''));
+    loaded += slice.length;
+    if (loadMore) loadMore.style.display = (loaded >= list.length) ? 'none' : '';
+  }
+
+  // ── Modal ────────────────────────────────────────────────────────────
+  function openModal(id){
+    var m = members.find(function(x){ return x.id === id; });
+    if (!m) return;
+    var body = document.getElementById('twerkhub-member-modal-body');
+    var tierBadge = m.tier.key === 'elite'
+      ? '<span class="twerkhub-member-badge twerkhub-member-badge-elite">💎 Elite</span>'
+      : m.tier.key === 'vip'
+      ? '<span class="twerkhub-member-badge twerkhub-member-badge-vip">⭐ VIP</span>'
+      : '<span class="twerkhub-member-badge twerkhub-member-badge-basic">Basic</span>';
+    var onlineBadge = m.online
+      ? '<span class="twerkhub-member-badge" style="background:rgba(30,224,143,.18);color:#83ffc0;border:1px solid rgba(30,224,143,.45)">🟢 Online now</span>'
+      : '<span class="twerkhub-member-badge twerkhub-member-badge-basic">Offline</span>';
+    var streakBadge = m.streak >= 30
+      ? '<span class="twerkhub-member-badge twerkhub-member-badge-streak">🔥 ' + m.streak + '-day streak</span>'
+      : '';
+    body.innerHTML =
+      '<div class="twerkhub-member-avatar" style="background:' + m.gradient + '" aria-hidden="true">' + m.initials + '</div>' +
+      '<h3 id="twerkhub-member-modal-title">' + m.handle + '</h3>' +
+      '<div class="twerkhub-member-modal-sub">' + m.country.flag + ' ' + m.country.code + ' · Member since ' + m.monthsIn + ' month' + (m.monthsIn !== 1 ? 's' : '') + '</div>' +
+      '<div class="twerkhub-member-modal-badges">' + tierBadge + onlineBadge + streakBadge + '</div>' +
+      '<div class="twerkhub-member-modal-stats">' +
+        '<div class="twerkhub-member-modal-stat"><div class="twerkhub-member-modal-stat-label">Tokens</div><div class="twerkhub-member-modal-stat-value">' + m.tokens.toLocaleString('en-US') + '</div></div>' +
+        '<div class="twerkhub-member-modal-stat"><div class="twerkhub-member-modal-stat-label">Videos watched</div><div class="twerkhub-member-modal-stat-value">' + m.videosWatched + '</div></div>' +
+        '<div class="twerkhub-member-modal-stat"><div class="twerkhub-member-modal-stat-label">Login streak</div><div class="twerkhub-member-modal-stat-value">' + m.streak + 'd</div></div>' +
+        '<div class="twerkhub-member-modal-stat"><div class="twerkhub-member-modal-stat-label">Tier</div><div class="twerkhub-member-modal-stat-value">' + m.tier.label + '</div></div>' +
+      '</div>' +
+      '<div class="twerkhub-member-modal-fav"><div class="twerkhub-member-modal-fav-label">⭐ Most watched</div><div class="twerkhub-member-modal-fav-value">' + m.fav + '</div></div>' +
+      '<div class="twerkhub-member-modal-quote">"' + m.quote + '"</div>' +
+      '<button class="twerkhub-member-modal-cta" type="button" onclick="window.TwerkhubPaywall&amp;&amp;window.TwerkhubPaywall.open(\'subscribe\')">Unlock messaging · Join the circle →</button>';
+    var modal = document.getElementById('twerkhub-member-modal');
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    var modal = document.getElementById('twerkhub-member-modal');
+    modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  // ── Bindings ─────────────────────────────────────────────────────────
+  document.addEventListener('click', function(ev){
+    var card = ev.target.closest && ev.target.closest('.twerkhub-member-card');
+    if (card) { openModal(card.getAttribute('data-id')); return; }
+    if (ev.target.closest('[data-close-modal]')) { closeModal(); return; }
+    var filter = ev.target.closest && ev.target.closest('.twerkhub-members-filter');
+    if (filter) {
+      document.querySelectorAll('.twerkhub-members-filter').forEach(function(f){ f.classList.remove('is-active'); });
+      filter.classList.add('is-active');
+      currentFilter = filter.getAttribute('data-filter');
+      render(true);
+      return;
+    }
+    if (ev.target && ev.target.id === 'twerkhub-members-loadmore') { render(false); }
+  });
+  document.addEventListener('keydown', function(ev){
+    if (ev.key === 'Escape') closeModal();
+  });
+
+  // Initial render.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ render(true); }, { once:true });
+  } else {
+    render(true);
+  }
+})();
+</script>
+
 <section class="twerkhub-comm-join">
   <h2>La conversación <em>real</em> pasa adentro.</h2>
   <p>Discusiones, crossover requests, drop ETAs. El resto del hilo lo ves cuando entrás.</p>
@@ -146,13 +460,15 @@
   <div class="twerkhub-footer-credit">Founded by <em>Anti</em> (firestarter) · Twerkhub · The Wild Project Models Agency</div>
 </footer>
 
-<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p1">
+<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p9">
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
+<link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p1">
 <script defer src="/assets/global-brand.js?v=20260420d"></script>
-<script defer src="/assets/twerkhub-tokens.js?v=20260424-p8"></script>
+<script defer src="/assets/twerkhub-tokens.js?v=20260424-p9"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p7"></script>
 <script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p6"></script>
 <script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p5"></script>
 <script defer src="/assets/twerkhub-mobile-nav.js?v=20260424-p1"></script>
+<script defer src="/assets/twerkhub-premium.js?v=20260424-p1"></script>
 </body>
 </html>
