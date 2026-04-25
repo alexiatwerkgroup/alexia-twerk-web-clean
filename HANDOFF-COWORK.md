@@ -1,5 +1,5 @@
 # TWERKHUB · Cowork Handoff Document
-**Last updated:** 2026-04-25 · Rounds 20-26 staged (uncommitted) · Rounds 10-19 SHIPPED · Last commit `a6ea5ca`
+**Last updated:** 2026-04-25 · Rounds 20-27 staged (uncommitted) · Rounds 10-19 SHIPPED · Last commit `a6ea5ca`
 **Repo:** `https://github.com/alexiatwerkgroup/alexia-twerk-web-clean`
 **Live:** `https://alexiatwerkgroup.com/`
 **Local working dir:** `C:\Users\Claudio\OneDrive\Desktop\proyectos\alexia-twerk-web-clean`
@@ -147,6 +147,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 | 24 | _pending push_ | RU profundización · 3 más. +/ru/blog/why-twerkhub-has-no-algorithm-feed.html (1.480 palabras · cierra manifesto trilingüe). +/ru/blog/k-dance-vs-reggaeton-twerk.html (1.620 palabras · pillar cultural · K-dance super relevante RU). +/ru/blog/best-twerk-creators-2026.html (1.800 palabras · linkea profiles directos). RU blog total: 10 posts. Hreflang trilingüe completo en los 6 traducidos a RU. |
 | 25 | _pending push_ | RU pillars culturales · las 3 escuelas extra. +/ru/blog/afrobeats-twerk-crossover.html (1.690 palabras · West African crossover, Tyla momentum). +/ru/blog/brazilian-funk-twerk-crossover.html (1.740 palabras · 4ta escuela mayor, Anitta inflection). +/ru/blog/perreo-history-caribbean-origin.html (1.740 palabras · Caribbean pillar). RU blog total: 13 posts. Las 4 escuelas mayores + perreo history ahora trilingüe completo EN+ES+RU. |
 | 26 | _pending push_ | RU cierre estratégico · platform + community + onboarding. +/ru/blog/twerkhub-vs-onlyfans-fanvue-comparison.html (1.750 palabras · comparación trilingüe completa). +/ru/blog/discord-community-playbook.html (1.550 palabras · cierra el plays + community + ritual loop en RU). +/ru/blog/how-to-earn-tokens-twerkhub.html (1.520 palabras · onboarding flow trilingüe completo · Basic→VIP path). RU blog total: 16 posts (cubre 67% del catálogo EN). Hreflang `ru` agregado a EN+ES sources de los 3 traducidos. ES coverage: 22/24 · RU coverage: 16/24. |
+| 27 | _pending push_ | RU cluster fancam técnico/histórico + dropd calendar. +/ru/blog/what-is-a-fancam-history.html (1.600 palabras · 25-year fancam history pillar · 5 eras desde K-pop 2000 a cosplay-twerk 2026). +/ru/blog/4k-vs-1080p-vs-vr-fancam.html (1.390 palabras · technical comparison · cierra el cluster fancam técnico EN+ES+RU). +/ru/blog/weekly-drop-calendar-2026.html (1.420 palabras · operacional con timezone tabla incluyendo Moscú · drop times across 9 cities). RU blog total: 19 posts (cubre 79% del catálogo EN). Hreflang `ru` agregado a las 3 fuentes EN+ES. Sólo 5 posts EN sin RU restantes. |
 
 ---
 
