@@ -218,6 +218,3 @@
   var polls=0;var iv=setInterval(function(){ensureAuthChip();mountAccountAuthUI();polls++;if(polls>10)clearInterval(iv);},1000);
   window.addEventListener('storage',function(ev){if(ev.key===KEY_CURRENT){ensureAuthChip();mountAccountAuthUI();}});
 })();
-;mountAccountAuthUI();polls++;if(polls>10)clearInterval(iv);},1000);
-  window.addEventListener('storage',function(ev){if(ev.key===KEY_CURRENT){ensureAuthChip();mountAccountAuthUI();}});
-})();
