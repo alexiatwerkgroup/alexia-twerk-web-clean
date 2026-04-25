@@ -397,7 +397,7 @@ body.twerkhub-page a{color:inherit;text-decoration:none}
 .twerkhub-pl-card.twerkhub-tint-pink:hover{box-shadow:0 26px 60px rgba(255,45,135,.3)}
 .twerkhub-pl-card.twerkhub-tint-purple:hover{box-shadow:0 26px 60px rgba(157,78,221,.3);border-color:#c18bff}
 .twerkhub-pl-card.twerkhub-tint-gold:hover{box-shadow:0 26px 60px rgba(255,180,84,.3);border-color:var(--twerkhub-gold)}
-.twerkhub-pl-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000}
+.twerkhub-pl-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,#1a0a1f 0%,#2a0f3d 50%,#0a0a14 100%)}
 .twerkhub-pl-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease}
 .twerkhub-pl-card:hover .twerkhub-pl-thumb img{transform:scale(1.05)}
 .twerkhub-pl-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,transparent 50%,rgba(0,0,0,.8) 100%)}

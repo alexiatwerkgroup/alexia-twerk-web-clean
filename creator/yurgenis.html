@@ -39,6 +39,57 @@ p{color:#d8d8e2;font-size:16.5px;margin-bottom:14px}strong{color:#fff;font-weigh
 </style>
 </head>
 <body class="twerkhub-page">
+<!-- TWK_NAV_V1 -->
+<style id="twk-nav-v1-css">
+.twk-nav-v1{position:sticky;top:0;z-index:90;background:rgba(5,5,10,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.twk-nav-v1-inner{max-width:1320px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.twk-nav-v1-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.twk-nav-v1-brand img{width:36px;height:36px;border-radius:8px;display:block}
+.twk-nav-v1-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-left:auto}
+.twk-nav-v1-links a{padding:8px 14px;border-radius:999px;color:#cdcdd9;text-decoration:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;letter-spacing:.02em;transition:background .2s,color .2s}
+.twk-nav-v1-links a:hover{background:rgba(255,255,255,.06);color:#fff}
+.twk-nav-v1-links a.is-active{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(157,78,221,.18));color:#fff;border:1px solid rgba(255,45,135,.35)}
+.twk-nav-v1-links a.twk-nav-v1-hot{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;font-weight:900;box-shadow:0 6px 18px rgba(255,45,135,.32)}
+.twk-nav-v1-links a.twk-nav-v1-hot:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(255,45,135,.45)}
+@media(max-width:780px){.twk-nav-v1-inner{padding:10px 14px;gap:10px}.twk-nav-v1-links{gap:2px;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;margin-left:0;padding-bottom:2px}.twk-nav-v1-links a{padding:7px 11px;font-size:12px;white-space:nowrap;flex-shrink:0}.twk-nav-v1-brand{font-size:10px}}
+/* Defensive: never let thumb containers show pure black if YouTube img is loading or 404s */
+.twerkhub-pl-thumb,.vthumb,.rk-thumb,.twerkhub-fp-thumb,.twerkhub-club-thumb{background:linear-gradient(135deg,#1a0a1f 0%,#2a0f3d 50%,#0a0a14 100%)!important}
+.twerkhub-pl-thumb img,.vthumb img,.rk-thumb img,.twerkhub-fp-thumb img,.twerkhub-club-thumb img{background:transparent}
+</style>
+<nav class="twk-nav-v1 twerkhub-topbar" aria-label="Primary">
+  <div class="twk-nav-v1-inner twerkhub-topbar-inner">
+    <a class="twk-nav-v1-brand twerkhub-brand" href="/" aria-label="Twerkhub · home">
+      <img src="/logo-twerkhub.png" alt="Twerkhub" width="36" height="36" decoding="async">
+      <span>TWERKHUB · Est. 2018</span>
+    </a>
+    <div class="twk-nav-v1-links twerkhub-nav">
+      <a href="/" data-nav="home">Home</a>
+      <a href="/#private-models" data-nav="exclusive">Exclusive</a>
+      <a href="/#playlists" data-nav="playlists">Playlists</a>
+      <a href="/creators.html" data-nav="creators">Creators</a>
+      <a href="/alexia-video-packs.html" class="twk-nav-v1-hot twerkhub-nav-hot" data-nav="hotpacks">🔥 Hot Packs</a>
+      <a href="/community.html" data-nav="community">Community</a>
+      <a href="/membership.html" data-nav="membership">Membership</a>
+      <a href="/account.html" data-nav="account">My Account</a>
+      <a href="/profile.html" data-nav="profile">Profile</a>
+    </div>
+  </div>
+</nav>
+<script>
+(function(){
+  // Auto-mark active link based on current path
+  try{
+    var p=location.pathname.replace(/\/index\.html$/,'/');
+    var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};
+    var key=map[p];
+    if(p.indexOf('/playlist')===0)key='playlists';
+    else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';
+    if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}
+  }catch(e){}
+})();
+</script>
+
+
 <div class="wrap">
   <div class="kicker">/ Creator · Venezuela → Medellín · reggaetón</div>
   <h1>Yurgenis</h1>
