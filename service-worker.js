@@ -1,26 +1,21 @@
-// TWERKHUB · Service Worker v1.0.4
+// TWERKHUB · Service Worker v2.0.0
 // ─────────────────────────────────────────────────────────────────────────
-// 2026-04-24: universal topbar injection. Every HTML response (whether it
-// was auto-generated a year ago or edited yesterday) is rewritten on the
-// fly so the last thing before </body> is a script tag loading the
-// universal topbar injector. That script then:
-//   1. Rips out any legacy nav (site-nav-final, snf, alexia-nav, etc.)
-//   2. Injects the unified .twerkhub-topbar if missing (including Hot Packs)
-//   3. Lazy-loads all dependent CSS/JS (tokens HUD, locale switcher, mobile
-//      nav, premium polish, etc.)
-// Zero HTML editing required — the fix is applied across all 640+ playlist
-// pages + every other page the platform serves.
+// 2026-04-25: REMOVED universal topbar injection. The old SW intercepted
+// every HTML response and appended <script src=".../twerkhub-universal-inject.js">
+// which rendered a SECOND legacy navbar at runtime — duplicating the new
+// canonical TWK_NAV_V1 already in the HTML. Result: every page had two
+// navbars stacked.
 //
-// 2026-04-24 (earlier): fixed "FOUC on first paint" bug. The previous v1.0.1
-// used a pure cache-first strategy for every non-HTML asset, so updated
-// CSS/JS files kept returning the stale cached copy on every visit until
-// the user did a hard reload. Now we use stale-while-revalidate for our own
-// assets so the user sees something fast AND the cache is silently refreshed
-// for next visit.
+// This SW now does NOT touch HTML at all. The HTML files contain the single
+// source of truth navbar (TWK_NAV_V1, baked into every page by
+// standardize_navbars.py). No runtime injection. No rewrites. No cache of
+// rewritten HTML.
+//
+// On activation: nukes ALL prior caches (alexia-pwa-v1.*, alexia-runtime-v1.*)
+// to guarantee no stale rewritten HTML survives.
 // ─────────────────────────────────────────────────────────────────────────
-const CACHE_NAME = 'alexia-pwa-v1.1.7';
-const RUNTIME_CACHE = 'alexia-runtime-v1.1.7';
-const UNIVERSAL_INJECT_URL = '/assets/twerkhub-universal-inject.js?v=20260424-p12';
+const CACHE_NAME = 'alexia-pwa-v2.0.0';
+const RUNTIME_CACHE = 'alexia-runtime-v2.0.0';
 const OFFLINE_URL = '/';
 
 // Files that are part of the app shell and should be pre-cached on install.
@@ -42,11 +37,12 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
+  // NUKE ALL prior caches — guarantees no rewritten HTML survives the
+  // universal-inject removal. After SW activates, the runtime cache is
+  // empty and all subsequent HTML fetches hit the network fresh.
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(key => ![CACHE_NAME, RUNTIME_CACHE].includes(key))
-          .map(key => caches.delete(key))
-    )).then(() => self.clients.claim())
+    caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
   );
 });
 
@@ -67,39 +63,22 @@ self.addEventListener('fetch', event => {
   const isPage = request.mode === 'navigate' ||
                  (request.headers.get('accept') || '').includes('text/html');
 
-  // ── HTML pages: network-first with cache fallback + universal inject.
-  // Every HTML response has the universal topbar injector appended before
-  // </body> so any page — no matter how old — renders with the unified nav,
-  // live pill, locale switcher and token HUD. The injector is idempotent.
+  // ── HTML pages: network-first, cache fallback only on offline. NO body
+  //    rewriting. The HTML already contains the canonical TWK_NAV_V1 navbar
+  //    baked in at build time — no runtime injection needed.
   if (isPage) {
     event.respondWith(
       fetch(request)
-        .then(async response => {
-          // Only rewrite successful HTML bodies. Leave redirects, errors,
-          // opaque responses etc. untouched.
-          if (!response || !response.ok) return response;
-          const ct = response.headers.get('content-type') || '';
-          if (!ct.toLowerCase().includes('text/html')) return response;
-          let body = await response.text();
-          // Inject if not already present (idempotent — page may have been
-          // served from a cache that was already rewritten).
-          if (body.indexOf('twerkhub-universal-inject.js') === -1) {
-            const injection = '\n<script defer src="' + UNIVERSAL_INJECT_URL + '"></script>\n';
-            if (body.indexOf('</body>') !== -1) {
-              body = body.replace('</body>', injection + '</body>');
-            } else {
-              body += injection;
+        .then(response => {
+          // Cache successful HTML responses for offline fallback only.
+          if (response && response.ok) {
+            const ct = response.headers.get('content-type') || '';
+            if (ct.toLowerCase().includes('text/html')) {
+              const copy = response.clone();
+              caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy));
             }
           }
-          const rewritten = new Response(body, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: response.headers
-          });
-          // Cache the rewritten copy so offline visits also get the injector.
-          const copy = rewritten.clone();
-          caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy));
-          return rewritten;
+          return response;
         })
         .catch(() => caches.match(request)
           .then(r => r || caches.match('/index.html') || caches.match(OFFLINE_URL)))
