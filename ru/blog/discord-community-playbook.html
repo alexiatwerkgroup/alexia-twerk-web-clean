@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Discord-плейбук Twerkhub · как мы управляем 2 178 участниками · 2026</title>
+<meta name="description" content="Как устроено Discord-сообщество Twerkhub с 2 178 участниками. Структура каналов, правила модерации, tier-gating, недельный ритм, что работает + что сломалось. Плейбук дизайна сообщества.">
+<meta name="keywords" content="twerkhub discord, плейбук сообщества, discord для криэйторов, структура members lounge, модерация discord, дизайн сообщества">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="Anti · Twerkhub">
+<link rel="canonical" href="https://alexiatwerkgroup.com/ru/blog/discord-community-playbook.html">
+<link rel="alternate" hreflang="ru" href="https://alexiatwerkgroup.com/ru/blog/discord-community-playbook.html">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/blog/discord-community-playbook.html">
+<link rel="alternate" hreflang="es" href="https://alexiatwerkgroup.com/es/blog/discord-community-playbook.html">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/blog/discord-community-playbook.html">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Discord-плейбук сообщества Twerkhub">
+<meta property="og:description" content="Структура каналов, tier-gating, модерация, недельный ритм. Как мы держим 2 178 участников вовлечёнными.">
+<meta property="og:url" content="https://alexiatwerkgroup.com/ru/blog/discord-community-playbook.html">
+<meta property="og:image" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
+<meta property="article:published_time" content="2026-03-10T12:00:00Z">
+<meta property="article:modified_time" content="2026-04-25T12:00:00Z">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Discord-плейбук сообщества Twerkhub","url":"https://alexiatwerkgroup.com/ru/blog/discord-community-playbook.html","inLanguage":"ru","datePublished":"2026-03-10","dateModified":"2026-04-25","author":{"@type":"Person","name":"Anti","alternateName":"firestarter","url":"https://alexiatwerkgroup.com/ru/about.html"},"publisher":{"@type":"Organization","name":"Twerkhub"},"wordCount":"1550"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://alexiatwerkgroup.com/ru/"},{"@type":"ListItem","position":2,"name":"Блог","item":"https://alexiatwerkgroup.com/ru/blog/"},{"@type":"ListItem","position":3,"name":"Discord-плейбук","item":"https://alexiatwerkgroup.com/ru/blog/discord-community-playbook.html"}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.72;min-height:100vh;padding-bottom:120px}
+a{color:#ff6fa8;text-decoration:none}a:hover{color:#ffb454}
+.wrap{max-width:740px;margin:0 auto;padding:110px 28px 40px}
+.kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#5865f2;margin-bottom:14px}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,5vw,60px);font-weight:900;line-height:1.08;letter-spacing:-.02em;margin-bottom:20px}
+h1 em{font-style:italic;background:linear-gradient(135deg,#5865f2,#ff2d87);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:900;margin:44px 0 14px;color:#fff}
+h3{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:800;margin:28px 0 10px;color:#ffb454}
+p,li{color:#d8d8e2;font-size:17px;margin-bottom:16px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+strong{color:#fff;font-weight:700}em{color:#ff9ec4;font-style:italic}
+.meta{display:flex;gap:18px;margin-bottom:44px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a8a96}
+.ch{padding:16px 20px;margin:14px 0;border-radius:14px;border-left:3px solid #5865f2;background:rgba(88,101,242,.06)}
+.ch strong{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#7983ff;margin-bottom:4px}
+.discord-btn{display:inline-flex;align-items:center;gap:12px;padding:14px 26px;border-radius:999px;background:linear-gradient(135deg,#5865f2,#7983ff);color:#fff;font-weight:800;letter-spacing:.04em;text-transform:uppercase;font-size:13px;margin:22px 0;box-shadow:0 14px 34px rgba(88,101,242,.35)}
+.back{display:inline-block;margin-top:44px;padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.06);color:#ff6fa8;border:1px solid rgba(255,255,255,.12);font-weight:700;font-size:13px}
+.locale-bar{display:flex;gap:8px;margin-bottom:18px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+.locale-bar a{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.04);color:#8a8a96;border:1px solid rgba(255,255,255,.08)}
+.locale-bar a.active{background:rgba(88,101,242,.18);color:#fff;border-color:rgba(88,101,242,.45)}
+</style>
+</head>
+<body class="twerkhub-page">
+<article class="wrap">
+  <div class="locale-bar">
+    <a href="/blog/discord-community-playbook.html">EN</a>
+    <a href="/es/blog/discord-community-playbook.html">ES</a>
+    <a class="active" href="/ru/blog/discord-community-playbook.html">RU</a>
+  </div>
+  <div class="kicker">/ Сообщество · Discord-плейбук</div>
+  <h1>Discord-<em>плейбук</em> Twerkhub.</h1>
+  <div class="meta"><span>Anti · firestarter</span><span>10 марта 2026</span><span>10 мин чтения</span></div>
+
+  <p>Members lounge мы держим в Discord. 2 178 участников, 4 tier-роли. 15 каналов. 3 модератора. Конкретный недельный ритм. Вот так устроена вся структура — open-source плейбук, если хотите повторить.</p>
+
+  <a class="discord-btn" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">💬 Зайти в lounge →</a>
+
+  <h2>Почему Discord, а не свой форум?</h2>
+  <p>Четыре причины. (1) Наши участники уже сидят в Discord ради 5–6 других сообществ. Просить их заходить ещё и на отдельный форум — это просить мёртвых аккаунтов. (2) Система ролей и прав в каналах у Discord зрелая — нам не нужно с нуля строить tier-gating. (3) Голосовые чаты включаются спонтанно. Для сообщества вокруг танца это огромный плюс. (4) Мобильный UX из коробки нормальный.</p>
+
+  <p>Что мы отдаём: наш форум живёт в чужом саду. Если Discord поменяет TOS, у нас ограниченные опции. Мы принимаем это в обмен на UX и дистрибуцию.</p>
+
+  <h2>Структура каналов.</h2>
+
+  <h3>Публичные (все участники)</h3>
+  <div class="ch"><strong>#rules · #welcome · #announcements</strong>Онбординг, апдейты платформы, четверговые пинги о дропах.</div>
+  <div class="ch"><strong>#general</strong>Дефолтный чат. Off-topic — окей. Модерация лёгкая.</div>
+  <div class="ch"><strong>#drops</strong>Уведомления о четверговых дропах + реакции. Бот постит в 00:00 ART, разговор живёт ~24 ч.</div>
+  <div class="ch"><strong>#requests</strong>Сюда участники пишут «хочу кастом» или «можете курировать криэйтора Х?». Alexia + модераторы читают всё, отвечают примерно на 30%.</div>
+  <div class="ch"><strong>#community-hubs · voice</strong>Голосовые каналы по городам: BsAs, Medellín, Москва, Тайбэй, LA, Сеул. Запускаются спонтанно.</div>
+
+  <h3>Medium+ tier (от 500 токенов)</h3>
+  <div class="ch"><strong>#medium-lounge</strong>Дискуссионный форум для Medium+. Меньше шума, чем в #general. Тематический.</div>
+  <div class="ch"><strong>#creator-spotlight</strong>Еженедельная ветка про одного выбранного криэйтора. Глубокое обсуждение.</div>
+
+  <h3>Premium+ tier (от 2 000 токенов)</h3>
+  <div class="ch"><strong>#premium-early</strong>48 ч раннего доступа к четверговым дропам. Первые разговоры о новинках идут здесь.</div>
+  <div class="ch"><strong>#premium-requests</strong>Приоритетная очередь запросов. Alexia отвечает на ~80%.</div>
+
+  <h3>VIP Top (от 10 000 токенов)</h3>
+  <div class="ch"><strong>#vip-lounge</strong>126 участников. Прямой доступ к Alexia + Anti. Еженедельные голосовые встречи по пятницам в 19:00 ART.</div>
+  <div class="ch"><strong>#vip-customs</strong>Здесь живёт пайплайн кастомного контента. Приватный канал.</div>
+
+  <h2>Философия модерации.</h2>
+  <ol>
+    <li><strong>Три модератора, не больше.</strong> Сейчас Alexia + я + один давний участник (Marco). Больше модераторов = больше внутренней драмы.</li>
+    <li><strong>Правила, которые помещаются на один экран.</strong> Всего 6 правил. Длиннее — никто не читает.</li>
+    <li><strong>One-strike по красным линиям.</strong> Харрасмент, CSAM, слив платного контента наружу → перманентный бан. Без предупреждений, без обсуждений.</li>
+    <li><strong>Three-strike для оценочных кейсов.</strong> Off-topic, лоу-эффорт драма, бесишь окружающих. Предупреждение, мут на 24 ч, бан.</li>
+    <li><strong>Никакой внутренней политики.</strong> Модераторы не постят свою криэйтор-работу в lounge. Зона без conflict-of-interest.</li>
+  </ol>
+
+  <h2>Недельный ритм.</h2>
+  <p>У контента есть темп. Lounge идёт за ним.</p>
+  <ul>
+    <li><strong>Понедельник:</strong> тихо. Низкая активность. Не форсим.</li>
+    <li><strong>Вторник:</strong> mid-week ветка в #general.</li>
+    <li><strong>Среда:</strong> Premium+ ранний превью-дроп в 12:00 ART. Первые реакции в #premium-early.</li>
+    <li><strong>Четверг:</strong> публичный дроп в 00:00 ART. Все тиры. Пик активности в #drops держится 24 ч.</li>
+    <li><strong>Пятница:</strong> VIP voice в 19:00 ART. Alexia + Anti заходят почти каждую неделю.</li>
+    <li><strong>Суббота:</strong> публикация ветки #creator-spotlight. Еженедельный фокус на одном криэйторе из ростера.</li>
+    <li><strong>Воскресенье:</strong> низкая активность. Участники восстанавливаются. Модераторы готовят следующую неделю.</li>
+  </ul>
+
+  <h2>Что мы поняли.</h2>
+
+  <p><strong>Слишком много каналов убивает вовлечённость.</strong> Стартовали с 22 каналов. Люди не понимали, куда писать. Урезали до 15 — активность выросла. Скорее всего, урежем до 12.</p>
+
+  <p><strong>Tier-роли ≠ статусные витрины.</strong> Пробовали показывать tier-бейджи рядом с каждым ником. Появилась странная статусная гонка. Сейчас tier виден только в профиле, не в каждом сообщении. Разговоры стали здоровее.</p>
+
+  <p><strong>Голосовые — магия, если их не форсить.</strong> Городские voice-каналы загораются спонтанно: участник из BsAs приходит домой с класса, заходит, рядом подключается ещё кто-то. Мы это не планируем. Оно просто случается.</p>
+
+  <p><strong>Молчуны имеют значение.</strong> 60% участников Discord никогда не пишут. Они читают. Смотрят дропы. Остаются подписанными. Сообщество = читатели + постеры, а не только постеры.</p>
+
+  <h2>Что ломалось (и как чинили).</h2>
+  <p><strong>Проблема:</strong> в начале 2024 разрешили криэйторам кросс-промо своих OF/Patreon в #general. Превратилось в транзакционку, участники чувствовали себя мишенью. <strong>Фикс:</strong> кросс-промо только в одном выделенном канале #creator-shelf, не чаще раза в месяц на криэйтора.</p>
+  <p><strong>Проблема:</strong> в 2023 у нас была роль «feedback», которую мог взять любой — стала магнитом для драмы. <strong>Фикс:</strong> убрали. Фидбек идёт модераторам в DM. Публичные каналы не арбитражат.</p>
+  <p><strong>Проблема:</strong> в конце 2024 один участник создал альт-аккаунты, чтобы спорить сам с собой и подкидывать дров. <strong>Фикс:</strong> бот проверяет возраст аккаунта и активность. У новичков есть review-окно перед первыми постами.</p>
+
+  <h2>Главное правило.</h2>
+  <p>Не быть забываемыми. Каждое сообщество умирает, когда становится неотличимым от двадцати других. Гомогенность мы лечим конкретным: имена каналов с внутренними шутками, модераторы с разными голосами, еженедельные ритуалы (Friday voice, Saturday spotlight), которые строят идентичность.</p>
+
+  <a class="discord-btn" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">💬 Зайти в Twerkhub Discord →</a>
+
+  <p style="margin-top:48px;padding:24px;border-radius:18px;background:linear-gradient(135deg,rgba(255,45,135,.08),rgba(157,78,221,.08));border:1px solid rgba(255,45,135,.2)"><strong>Связанное:</strong> <a href="/ru/blog/the-4-tiers-explained.html">4 тира — объяснение</a> · <a href="/ru/community.html">Members lounge</a> · <a href="/ru/blog/token-economy-playbook.html">Плейбук токеномики</a></p>
+
+  <a class="back" href="/ru/blog/">← Все посты</a>
+</article>
+<footer style="text-align:center;padding:30px;color:#6b6b7b;font-size:12px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase">© 2026 Twerkhub · <a href="/ru/about.html" style="color:#c7c7d3">О проекте</a> · <a href="/ru/blog/" style="color:#c7c7d3">Блог</a> · <a href="/ru/contact.html" style="color:#c7c7d3">Контакты</a></footer>
+</body></html>

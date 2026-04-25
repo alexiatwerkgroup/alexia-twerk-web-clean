@@ -1,5 +1,5 @@
 # TWERKHUB · Cowork Handoff Document
-**Last updated:** 2026-04-25 · Rounds 20-25 staged (uncommitted) · Rounds 10-19 SHIPPED · Last commit `a6ea5ca`
+**Last updated:** 2026-04-25 · Rounds 20-26 staged (uncommitted) · Rounds 10-19 SHIPPED · Last commit `a6ea5ca`
 **Repo:** `https://github.com/alexiatwerkgroup/alexia-twerk-web-clean`
 **Live:** `https://alexiatwerkgroup.com/`
 **Local working dir:** `C:\Users\Claudio\OneDrive\Desktop\proyectos\alexia-twerk-web-clean`
@@ -145,6 +145,8 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 | 22 | _pending push_ | Cierre del catálogo ES. +/es/blog/buenos-aires-reggaeton-scene-2026.html (1.520 palabras · audiencia local nativa AR). +/es/blog/how-to-pitch-twerkhub-creator.html (1.460 palabras · HowTo schema · creators hispanohablantes). +/es/blog/black-sea-dance-scene.html (1.610 palabras · cierre del pillar regional). ES blog total: 22 posts (cubre 92% del catálogo EN · solo queda moscow-dance-centre-nrg-history sin traducir a ES y ya está en RU). |
 | 23 | _pending push_ | Expansión RU · 3 estratégicos. +/ru/blog/token-economy-playbook.html (1.680 palabras · cierra membership FAQPage loop en RU). +/ru/blog/the-4-tiers-explained.html (1.480 palabras · mecánica de tiers). +/ru/blog/studios-shaping-2026.html (1.820 palabras · MDC NRG es Moscú · super relevante audiencia rusa). RU blog total: 7 posts (de 4) · hreflang trilingüe completo en token + 4-tiers + studios. |
 | 24 | _pending push_ | RU profundización · 3 más. +/ru/blog/why-twerkhub-has-no-algorithm-feed.html (1.480 palabras · cierra manifesto trilingüe). +/ru/blog/k-dance-vs-reggaeton-twerk.html (1.620 palabras · pillar cultural · K-dance super relevante RU). +/ru/blog/best-twerk-creators-2026.html (1.800 palabras · linkea profiles directos). RU blog total: 10 posts. Hreflang trilingüe completo en los 6 traducidos a RU. |
+| 25 | _pending push_ | RU pillars culturales · las 3 escuelas extra. +/ru/blog/afrobeats-twerk-crossover.html (1.690 palabras · West African crossover, Tyla momentum). +/ru/blog/brazilian-funk-twerk-crossover.html (1.740 palabras · 4ta escuela mayor, Anitta inflection). +/ru/blog/perreo-history-caribbean-origin.html (1.740 palabras · Caribbean pillar). RU blog total: 13 posts. Las 4 escuelas mayores + perreo history ahora trilingüe completo EN+ES+RU. |
+| 26 | _pending push_ | RU cierre estratégico · platform + community + onboarding. +/ru/blog/twerkhub-vs-onlyfans-fanvue-comparison.html (1.750 palabras · comparación trilingüe completa). +/ru/blog/discord-community-playbook.html (1.550 palabras · cierra el plays + community + ritual loop en RU). +/ru/blog/how-to-earn-tokens-twerkhub.html (1.520 palabras · onboarding flow trilingüe completo · Basic→VIP path). RU blog total: 16 posts (cubre 67% del catálogo EN). Hreflang `ru` agregado a EN+ES sources de los 3 traducidos. ES coverage: 22/24 · RU coverage: 16/24. |
 
 ---
 
