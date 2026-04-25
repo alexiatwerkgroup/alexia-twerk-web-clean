@@ -1,5 +1,5 @@
 # TWERKHUB · Cowork Handoff Document
-**Last updated:** 2026-04-24 · Rounds 14-17 staged (uncommitted) · Rounds 10-13 shipped at commit `edf9e29`
+**Last updated:** 2026-04-24 · Rounds 14-18 staged (uncommitted) · Rounds 10-13 shipped at commit `edf9e29`
 **Repo:** `https://github.com/alexiatwerkgroup/alexia-twerk-web-clean`
 **Live:** `https://alexiatwerkgroup.com/`
 **Local working dir:** `C:\Users\Claudio\OneDrive\Desktop\proyectos\alexia-twerk-web-clean`
@@ -138,6 +138,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 | 15 | _pending push_ | Membership FAQ loop closure: 3 ES translations of the posts linked from the Service+FAQPage schemas on /membership.html and /about.html. +/es/blog/token-economy-playbook.html (1.680 words · 95% creator cut math). +/es/blog/the-4-tiers-explained.html (1.480 words · tier mechanics + dual paths). +/es/blog/discord-community-playbook.html (1.550 words · community design). All cross-linked from /es/blog/ grid. ES blog total: 8 posts. |
 | 16 | _pending push_ | Onboarding loop closure + Anel Li + share buttons: +/es/blog/how-to-earn-tokens-twerkhub.html (closes onboarding flow ES). +/es/blog/weekly-drop-calendar-2026.html (operacional ARG/CO). +/ru/blog/fancam-etiquette-2026.html (RU ethics). +/creator/anel-li.html (Greece · Greek-Latin reggaetón fusion · referenced from style-reggaeton-floor EN+ES, now linked). +Facebook + Threads share buttons in twerkhub-share.js (5→7 networks + copy = 8 total). share VER p1→p2. Style-reggaeton-floor cards #4 ahora `<a>` con link al profile. ES blog total: 10 posts · creators total: 19. |
 | 17 | _pending push_ | Moscow profile gap closure + ES style cluster: +/creator/kate-knaub.html (Moscow independent · Goody Брокколи). +/creator/dasha-kolesnikova.html (Ufa regional rooftop · Nicki Minaj Yikes). +/creator/street-project-volzhsky.html (Volzhsky studio · Organization schema · Jazz-funk Kids program). +/es/style-heels-choreo.html. +/es/style-cosplay-fancam.html (closes 3-style ES cluster). creators-moscow.html cards #3-5 ahora linkean a profiles canónicos en /creator/ (no más placeholders a /playlist/). Creators total: 22. ES style pages: 3/3 completas. |
+| 18 | _pending push_ | Schema parity ES/RU + 2 ES translations. /es/about.html y /ru/about.html ahora con Service + FAQPage schemas (parity con /about.html EN · 7 Q&A traducidas + 4 Offers por tier). +/es/blog/best-twerk-creators-2026.html (1.800 palabras · 12 creators con linkeo directo a profiles). +/es/blog/fancam-to-choreography-pipeline.html (1.420 palabras · 4-stage industry loop). ES blog total: 12 posts. |
 
 ---
 
