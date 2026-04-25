@@ -138,6 +138,61 @@
       "source": "/premium-try-on-haul.html",
       "destination": "/playlist/",
       "permanent": true
+    },
+    {
+      "source": "/premium-cosplay-fancam-new.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-kpop-dance.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-latina-model.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-packs-4k.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-packs-cosplay.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-packs-haul.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-packs-kdance.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-packs-latina.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-player-20m.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-ttl-4k.html",
+      "destination": "/membership.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-twerk-hub.html",
+      "destination": "/membership.html",
+      "permanent": true
     }
   ]
 }

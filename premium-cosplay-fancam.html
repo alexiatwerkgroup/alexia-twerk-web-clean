@@ -517,17 +517,29 @@
         });
 
         // SEO Optimization - Structured Data
+        // NOTE: Switched from VideoCollection to CollectionPage on 2026-04-25.
+        // The previous VideoCollection schema was being detected by Google as a
+        // 'Merchant listing' (heuristic on 'Premium' / 'Exclusive' wording),
+        // which then required hasMerchantReturnPolicy/shippingDetails fields
+        // that don't apply here. CollectionPage is the correct semantic type:
+        // this page is a curated landing for an existing collection, not a
+        // product offer. Real commercial offers live on /membership.html.
         const schemaData = {
             "@context": "https://schema.org",
-            "@type": "VideoCollection",
-            "name": "Fan Cam Premium Playlist - Alexia Twerk Exclusive",
-            "description": "Exclusive curated collection of premium Alexia Twerk fancam videos with 4K HD exotic dance and choreography content. Original artist covers and premium performances.",
-            "mainEntity": {
-                "@type": "VideoObject",
-                "name": "Fan Cam Premium Collection",
-                "description": "Exclusive fancam videos featuring Alexia Twerk and premium dance artists"
+            "@type": "CollectionPage",
+            "name": "Fan Cam Playlist - Alexia Twerk Exclusive",
+            "description": "Curated landing for the Alexia Twerk fancam collection. 4K HD dance choreography references. Membership and pricing live at /membership.html.",
+            "url": "https://alexiatwerkgroup.com/premium-cosplay-fancam.html",
+            "isPartOf": {
+                "@type": "WebSite",
+                "name": "Twerkhub",
+                "url": "https://alexiatwerkgroup.com/"
             },
-            "keywords": "alexia twerk, fancam, exotic dance, choreography, premium content, 4k videos, cosplay, artist original, twerk dance, premium playlist, hd video"
+            "about": {
+                "@type": "Thing",
+                "name": "Fan cam dance choreography archive"
+            },
+            "keywords": "alexia twerk, fancam, exotic dance, choreography, 4k videos, cosplay, artist original, twerk dance, premium playlist, hd video"
         };
 
         // Inject schema markup
