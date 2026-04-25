@@ -237,6 +237,12 @@
   }
 
   // ── Modals ─────────────────────────────────────────────────────────
+  function closeForm(){
+    var ex = document.getElementById('twk-auth-modal');
+    if (ex) ex.remove();
+    try { document.documentElement.style.overflow = ''; } catch(_){}
+  }
+
   function showForm(mode){
     if (mode !== 'signup' && mode !== 'signin' && mode !== 'recovery') mode = 'signup';
     injectStyle();
