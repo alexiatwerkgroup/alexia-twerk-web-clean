@@ -46,6 +46,19 @@
   var now = function(){ return Date.now(); };
   var today = function(){ return new Date().toDateString(); };
 
+  // GATE: every earn-flow checks isLoggedIn() first. Anonymous users must
+  // see balance=0 and achievements=0 — they only start accumulating after
+  // they Sign In or Sign Up.
+  function isLoggedIn(){
+    try {
+      var ls = localStorage.getItem('alexia_current_user');
+      if (ls && ls !== 'null') return true;
+      var ss = sessionStorage.getItem('alexia_current_user');
+      if (ss && ss !== 'null') return true;
+    } catch(_){}
+    return false;
+  }
+
   // ──────────────────────────────────────────────────────────────────────────
   // State
   // ──────────────────────────────────────────────────────────────────────────
@@ -63,6 +76,16 @@
     return 'basic';
   }
   function getState(){
+    // GATE: if no user is logged in, ALL state is zero. Anonymous users
+    // never see accumulated tokens / streaks / videos / shares.
+    if (!isLoggedIn()) {
+      return {
+        balance: 0, total: 0, streak: 0, lastLogin: null, registered: null,
+        visited: {}, videos: {}, shares: 0, welcomed: false,
+        tier: 'basic',
+        nextTier: { key:'medium', at: TIER_THRESHOLDS.medium }
+      };
+    }
     var bal = N(KEYS.balance, 0);
     var subscribedTier = N(KEYS.tier, null);
     // Treat legacy values so users upgraded in the old 3-tier schema still work.
@@ -99,6 +122,7 @@
 
   function grant(amount, reason){
     if (amount <= 0) return;
+    if (!isLoggedIn()) return;             // gate: anonymous users get nothing
     var bal = N(KEYS.balance, 0) + amount;
     var tot = N(KEYS.total, 0) + amount;
     S(KEYS.balance, bal);
@@ -119,6 +143,7 @@
   // Earn triggers
   // ──────────────────────────────────────────────────────────────────────────
   function welcome(){
+    if (!isLoggedIn()) return;             // gate: only logged-in users get the welcome bonus
     if (N(KEYS.welcomed, false)) return;
     S(KEYS.welcomed, true);
     S(KEYS.registered, now());
@@ -126,6 +151,7 @@
   }
 
   function dailyCheck(){
+    if (!isLoggedIn()) return;             // gate
     var last = N(KEYS.lastLogin, null);
     var t = today();
     if (last === t) return;
@@ -145,6 +171,7 @@
   }
 
   function onPageVisit(){
+    if (!isLoggedIn()) return;             // gate: anonymous users don't accumulate
     var path = location.pathname;
     var visited = N(KEYS.visited, {});
     if (visited[path]) return;
@@ -154,6 +181,7 @@
   }
 
   function onVideoStart(videoId){
+    if (!isLoggedIn()) return;             // gate
     var videos = N(KEYS.videos, {});
     if (videos[videoId] && videos[videoId].started) return;
     videos[videoId] = videos[videoId] || {};
@@ -163,6 +191,7 @@
   }
 
   function onVideoComplete(videoId){
+    if (!isLoggedIn()) return;             // gate
     var videos = N(KEYS.videos, {});
     if (videos[videoId] && videos[videoId].completed) return;
     videos[videoId] = videos[videoId] || {};
@@ -172,6 +201,7 @@
   }
 
   function onShare(){
+    if (!isLoggedIn()) return;             // gate
     var shares = N(KEYS.shares, 0) + 1;
     S(KEYS.shares, shares);
     grant(REWARDS.share, 'Shared with the world 📣');
@@ -397,34 +427,8 @@
       // Handshake: ask every YT iframe to start sending us state events.
       // Browsers allow this after the iframe has loaded.
       setTimeout(function(){
-        document.querySelectorAll('iframe[src*="youtube"]').forEach(function(f){
-          try {
-            f.contentWindow.postMessage(JSON.stringify({event:'listening', id:(f.id || 'yt')}), '*');
-          } catch(_){}
-        });
-      }, 800);
-    } catch(e) { console.warn('[alexia-tokens] yt-tracking init failed', e); }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // Public API
-  // ──────────────────────────────────────────────────────────────────────────
-  window.AlexiaTokens = {
-    getState:     getState,
-    grant:        grant,
-    spend:        spend,
-    setBalance:   setBalance,
-    openModal:    openUnlockModal,
-    onShare:      onShare,
-    toast:        toast,
-    updateWidget: updateWidget,
-    REWARDS:      REWARDS,
-    UNLOCK_THRESHOLD: UNLOCK_THRESHOLD
+            frame.contentWindow.postMessage({cmd:'yt-init'},{origin:'*'});
+      });
+    } catch(_) {}
   };
 })();

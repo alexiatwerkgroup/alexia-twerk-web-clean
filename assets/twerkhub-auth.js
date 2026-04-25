@@ -28,7 +28,9 @@
     if(!/^[A-Za-z0-9_.\-]{2,32}$/.test(u))return{ok:false,error:'Username: 2-32 chars'};
     if(pw.length<4||pw.length>64)return{ok:false,error:'Password must be 4-64 chars'};
     if(em&&!isValidEmail(em))return{ok:false,error:'Email looks invalid'};
-    if(getAllUsers().find(function(x){return x&&x.username&&x.username.toLowerCase()===u.toLowerCase();}))return{ok:false,error:'Username already taken - try Sign In'};
+    var users=getAllUsers();
+    if(users.find(function(x){return x&&x.username&&x.username.toLowerCase()===u.toLowerCase();}))return{ok:false,error:'Username already taken - try Sign In'};
+    if(em&&users.find(function(x){return x&&x.email&&x.email.toLowerCase()===em;}))return{ok:false,error:'Email already registered - try Sign In or use Forgot password'};
     var clean={id:'u_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8),username:u,passwordHash:await hashPassword(pw),email:em||'',nick:u,registeredAt:Date.now()};
     saveUser(clean);setCurrent(clean,!!remember);
     var hook=lsGet(KEY_HOOK,null);
@@ -214,5 +216,8 @@
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',gate,{once:true});else gate();
   var polls=0;var iv=setInterval(function(){ensureAuthChip();mountAccountAuthUI();polls++;if(polls>10)clearInterval(iv);},1000);
+  window.addEventListener('storage',function(ev){if(ev.key===KEY_CURRENT){ensureAuthChip();mountAccountAuthUI();}});
+})();
+;mountAccountAuthUI();polls++;if(polls>10)clearInterval(iv);},1000);
   window.addEventListener('storage',function(ev){if(ev.key===KEY_CURRENT){ensureAuthChip();mountAccountAuthUI();}});
 })();

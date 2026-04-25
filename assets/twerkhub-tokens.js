@@ -51,7 +51,19 @@
   // call setBalance() on init which will broadcast and re-render.
   var ALEXIA_KEY = 'alexia_tokens_v1.balance';
   function hasAlexia(){ return !!(window.AlexiaTokens && typeof window.AlexiaTokens.getState === 'function'); }
+  // GATE: anonymous users see balance=0. Tokens only count when there's a
+  // logged-in user (alexia_current_user in local OR session storage).
+  function isLoggedIn(){
+    try {
+      var ls = localStorage.getItem('alexia_current_user');
+      if (ls && ls !== 'null') return true;
+      var ss = sessionStorage.getItem('alexia_current_user');
+      if (ss && ss !== 'null') return true;
+    } catch(_){}
+    return false;
+  }
   function getTokens(){
+    if (!isLoggedIn()) return 0;
     // Prefer the live module state (in case it has unflushed in-memory writes).
     if (hasAlexia()) {
       try {
@@ -142,6 +154,11 @@
   }
 
   function render(){
+    // Hide HUD entirely for anonymous users — pill should only appear when
+    // there's an actual user accumulating tokens.
+    if (hud) {
+      hud.style.display = isLoggedIn() ? '' : 'none';
+    }
     var t = getTokens();
     if (countEl) countEl.textContent = t.toLocaleString('en-US');
     if (tierEl)  tierEl.textContent = tierFor(t).toUpperCase();
@@ -322,35 +339,16 @@
       setTimeout(rewardIfNewPath, 700);
       bindVideoListeners();
       bindAlexiaSync();
-      // If AlexiaTokens loads AFTER us, re-render once it shows up so the
-      // balance switches from the local fallback to the unified source.
-      var waitForAlexia = setInterval(function(){
-        if (hasAlexia()) { clearInterval(waitForAlexia); render(); }
-      }, 400);
-      setTimeout(function(){ clearInterval(waitForAlexia); }, 8000);
-      console.info('[twerkhub-tokens] ready · balance=', getTokens(), '· unified:', hasAlexia());
-    } catch(e){
-      console.warn('[twerkhub-tokens] init failed', e);
+      //
+      bindVideoListeners();
+      bindAlexiaSync();
+    } catch(e) {
+      console.error('HUD error:', e);
     }
   }
-
-  if (document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', init, { once:true });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
-
-  // Expose minimal API for other scripts (video player swap, etc).
-  window.TwerkhubTokens = {
-    award: function(n, title, sub){
-      var t = getTokens() + (Number(n)||0);
-      setTokens(t); render(); pulse();
-      showToast(Number(n)||0, title||'Tokens earned', sub||'');
-    },
-    balance: getTokens,
-    tier: function(){ return tierFor(getTokens()); },
-    reset: function(){
-      setTokens(0); setSeenPaths([]); setSeenVids([]); render();
-    }
-  };
 })();
