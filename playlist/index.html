@@ -97,6 +97,7 @@
 
 
 
+
 <!-- TWK_NAV_V1 -->
 <style id="twk-nav-v1-css">
 .twk-nav-v1{position:sticky!important;top:0!important;z-index:9999!important;background:rgba(5,5,10,.94)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)!important;margin:0!important;width:100%!important;display:block!important}
@@ -149,7 +150,7 @@
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
   loadOnce('/assets/token-system.js?v=20260425-p2','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260425-p2','twk-loader-twerkhub-tokens');
-  loadOnce('/assets/twerkhub-auth.js?v=20260425-p2','twk-loader-twerkhub-auth');
+  loadOnce('/assets/twerkhub-auth.js?v=20260425-p3','twk-loader-twerkhub-auth');
 })();
 </script>
 
@@ -825,105 +826,4 @@
                 '?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
       player.src = url;
       if (title && number) title.textContent = 'Playing ' + number;
-      // Defensive: some browsers (Safari especially) still honor the iframe's
-      // muted state from a previous swap. Post an explicit unMute + volume
-      // set once the iframe has (probably) booted its jsapi handler (~650ms).
-      setTimeout(function(){
-        try {
-          player.contentWindow.postMessage(JSON.stringify({event:'command', func:'unMute',    args:[]}), '*');
-          player.contentWindow.postMessage(JSON.stringify({event:'command', func:'setVolume', args:[70]}), '*');
-          player.contentWindow.postMessage(JSON.stringify({event:'command', func:'playVideo', args:[]}), '*');
-        } catch(_){}
-      }, 650);
-      // Tell the global sound manager this is the audible source so other
-      // MP4/iframe players get muted.
-      try { window.TwerkhubSound && window.TwerkhubSound.claim && window.TwerkhubSound.claim(player); } catch(_){}
-      // Scroll player into view so the swap is visible
-      try { player.closest('.twerkhub-pl-player-wrap').scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
-    }
-    // Clicks on hot cards (both .rk-item[data-hot="1"] and .vcard[data-hot="1"]) swap player
-    document.addEventListener('click', function(ev){
-      var hot = ev.target.closest && ev.target.closest('[data-hot="1"]');
-      if (!hot) return;
-      var vid = hot.getAttribute('data-vid');
-      var num = hot.getAttribute('data-number') || '';
-      if (!vid) return;
-      ev.preventDefault();
-      ev.stopPropagation();
-      swap(vid, num);
-    });
-    // Gated grid clicks are caught by /assets/twerkhub-auth-patch.js → Discord handoff
-  } catch(e) {
-    console.error('[twerkhub-playlist] theater init crashed', e);
-  }
-})();
-</script>
-
-<script defer src="/assets/global-brand.js?v=20260424-p1"></script>
-<script defer src="/assets/twerkhub-auth-patch.js?v=20260424-p1"></script>
-
-<!-- /playlist/ slug router: on every vcard/rk-item click, swap the big player
-     iframe AND push the indexed per-video URL (/playlist/<slug>.html) into the
-     address bar. No page navigation, no popup, no youtube.com redirect — the
-     visible URL stays in sync with the playing video so users can share /
-     bookmark / Google can keep crediting each indexed page. -->
-<script>
-(function(){
-  'use strict';
-  if (window.__twerkhubPlaylistSlugRouterInit) return;
-  window.__twerkhubPlaylistSlugRouterInit = true;
-  var TOTAL = 267;
-  function init(){
-    try {
-      console.info('[twerkhub-playlist-slug-router] ready · ' + TOTAL + ' videos');
-      var player = document.getElementById('twerkhub-pl-player');
-      var title  = document.getElementById('twerkhub-pl-now-title');
-      if (!player) return;
-      function swap(vid, slug, number){
-        var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
-                  '?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
-        player.src = url;
-        if (title && number) title.textContent = 'Playing ' + number;
-        // URL bar sync: change to the indexed per-video URL without reloading.
-        if (slug) {
-          try {
-            history.pushState({ vid: vid, slug: slug }, '', '/playlist/' + slug);
-          } catch(_) { /* some older browsers reject pushState here */ }
-        }
-        try { player.closest('.twerkhub-pl-player-wrap').scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
-      }
-      document.addEventListener('click', function(ev){
-        var hot = ev.target.closest && ev.target.closest('[data-hot="1"]');
-        if (!hot) return;
-        var vid  = hot.getAttribute('data-vid');
-        var slug = hot.getAttribute('data-slug') || '';
-        var num  = hot.getAttribute('data-number') || '';
-        if (!vid) return;
-        // Hold Ctrl/Cmd/middle-click to actually navigate to the indexed page.
-        if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button === 1) return;
-        ev.preventDefault();
-        ev.stopPropagation();
-        swap(vid, slug, num);
-      }, true);
-      // Back/forward button support: when the URL goes back, no-op (we don't
-      // restore the video state on pop — too fragile). The browser simply
-      // shows the URL bar moving; the iframe stays on whatever was last.
-    } catch(e){ console.warn('[twerkhub-playlist-slug-router] init crashed', e); }
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
-  } else {
-    init();
-  }
-})();
-</script>
-
-<script defer src="/assets/twerkhub-tokens.js?v=20260424-p1"></script>
-
-<script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p1"></script>
-
-<script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p1"></script>
-
-<script defer src="/assets/twerkhub-mobile-nav.js?v=20260424-p1"></script>
-</body>
-</html>
+      // Defensive: som

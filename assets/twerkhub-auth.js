@@ -1,24 +1,8 @@
-/* ═══ TWERKHUB · AUTH / REGISTRATION ═══
- * v20260424-p4 · BULLETPROOF logout (wipes every session key + hard reload),
- *                 password-manager hardened form (nick field no longer gets
- *                 hijacked by saved passwords), strict nick validation.
- *
- * Replaces the old "Anti (firestarter)" hardcoded identity. Now:
- *   1. When no user is logged in, the home portal shows a registration modal
- *      asking for name, email, nickname (minimum legal fields).
- *   2. Registration saves locally AND (if configured) POSTs to a webhook so
- *      you collect emails centrally. Falls back to pure-local if no webhook.
- *   3. Token balance resets to 0 for new users — no more inheriting someone
- *      else's 2,170 tokens on logout/re-entry.
- *   4. Logout clears the session AND the token state.
- *   5. Admin can download all registered emails as CSV at /admin-users.html.
- *
- * Storage (localStorage keys):
- *   alexia_current_user            · JSON of the currently logged-in user
- *   alexia_registered_users        · JSON array of ALL registrations from
- *                                    this browser (CSV export source)
- *   alexia_registration_webhook    · optional POST endpoint for cross-browser
- *                                    email capture (set via admin panel)
+/* ═══ TWERKHUB · AUTH v3 — username+password ═══
+ * v20260425-p3 · Simplified registration: username + password (no name/email/nick).
+ *                Adds Sign In flow. Two chips when logged out: Sign In + Sign Up.
+ *                Bulletproof logout (prefix-scan wipe + SW unregister + cache clear).
+ *                Storage: localStorage. Hashes: SHA-256 via Web Crypto.
  */
 (function(){
   'use strict';
@@ -29,7 +13,6 @@
   var KEY_USERS   = 'alexia_registered_users';
   var KEY_HOOK    = 'alexia_registration_webhook';
 
-  // ── State helpers ────────────────────────────────────────────────────
   function lsGet(k, d){ try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch(_){ return d; } }
   function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(_){ } }
   function getCurrent(){ return lsGet(KEY_CURRENT, null); }
@@ -38,70 +21,37 @@
   function getAllUsers(){ var v = lsGet(KEY_USERS, []); return Array.isArray(v) ? v : []; }
   function saveUser(u){
     var list = getAllUsers();
-    var idx  = list.findIndex(function(x){ return x && x.email && x.email === u.email; });
+    var idx = list.findIndex(function(x){ return x && x.username && u.username && x.username.toLowerCase() === u.username.toLowerCase(); });
     if (idx >= 0) list[idx] = Object.assign({}, list[idx], u);
     else list.push(u);
     lsSet(KEY_USERS, list);
   }
 
-  // ── Session reset on logout ──────────────────────────────────────────
-  // BULLETPROOF: scan every localStorage/sessionStorage key and remove anything
-  // that matches our app's prefix. No more whitelist that misses a key (we
-  // were missing alexia_profile_state_v2, which is why logout left the user's
-  // nick visible on /profile after refresh).
   function wipeTokenState(){
-    var PREFIXES = [
-      'alexia_', 'twerkhub_', 'twerkhub-',
-      'sb-', 'supabase.auth', 'supabase-auth'
-    ];
+    var PREFIXES = ['alexia_', 'twerkhub_', 'twerkhub-', 'sb-', 'supabase.auth', 'supabase-auth'];
     var matches = function(k){
       if (!k) return false;
-      for (var i = 0; i < PREFIXES.length; i++) {
-        if (k.indexOf(PREFIXES[i]) === 0) return true;
-      }
+      for (var i = 0; i < PREFIXES.length; i++) if (k.indexOf(PREFIXES[i]) === 0) return true;
       return false;
     };
     try {
-      // Snapshot keys first — modifying storage while iterating is dangerous.
       var lsKeys = [];
-      for (var i = 0; i < localStorage.length; i++) {
-        var k = localStorage.key(i);
-        if (matches(k)) lsKeys.push(k);
-      }
+      for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (matches(k)) lsKeys.push(k); }
       lsKeys.forEach(function(k){ try { localStorage.removeItem(k); } catch(_){} });
     } catch(_){}
     try {
       var ssKeys = [];
-      for (var j = 0; j < sessionStorage.length; j++) {
-        var k2 = sessionStorage.key(j);
-        if (matches(k2)) ssKeys.push(k2);
-      }
+      for (var j = 0; j < sessionStorage.length; j++) { var k2 = sessionStorage.key(j); if (matches(k2)) ssKeys.push(k2); }
       ssKeys.forEach(function(k){ try { sessionStorage.removeItem(k); } catch(_){} });
     } catch(_){}
   }
 
   function logout(){
-    // BULLETPROOF LOGOUT v2 — fully nukes session + caches + SW.
-    //   1. Wipe localStorage/sessionStorage by prefix scan (catches every key).
-    //   2. Unregister ALL service workers AND clear all caches the SW owns,
-    //      so no stale HTML re-hydrates the old session on the next nav.
-    //   3. Hard reload with a cache-busting query param.
     try { clearCurrent(); } catch(_){}
     try { wipeTokenState(); } catch(_){}
-    // Tell every page on this origin: balance is gone, re-render with 0.
-    try {
-      window.dispatchEvent(new CustomEvent('alexia-tokens-changed', {
-        detail: { balance: 0, tier: 'basic', logout: true }
-      }));
-    } catch(_){}
-    // Best-effort SW + cache nuke. Awaitable but with a hard 800ms cap so
-    // logout never hangs.
+    try { window.dispatchEvent(new CustomEvent('alexia-tokens-changed', { detail: { balance: 0, tier: 'basic', logout: true } })); } catch(_){}
     var done = false;
-    function go(){
-      if (done) return;
-      done = true;
-      location.replace('/?logout=' + Date.now());
-    }
+    function go(){ if (done) return; done = true; location.replace('/?logout=' + Date.now()); }
     setTimeout(go, 800);
     try {
       if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
@@ -113,113 +63,102 @@
         caches.keys().then(function(keys){
           return Promise.all(keys.map(function(k){ return caches.delete(k).catch(function(){}); }));
         }).then(go).catch(go);
-      } else {
-        go();
-      }
+      } else { go(); }
     } catch(_){ go(); }
   }
 
-  // ── Registration flow ────────────────────────────────────────────────
-  function register(name, email, nick){
+  async function hashPassword(pw){
+    try {
+      var enc = new TextEncoder().encode('twk-salt-v1:' + String(pw || ''));
+      var buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+    } catch(_){
+      var h = 0, s = 'twk-salt-v1:' + String(pw || '');
+      for (var i = 0; i < s.length; i++) { h = ((h << 5) - h + s.charCodeAt(i)) | 0; }
+      return 'h' + (h >>> 0).toString(16);
+    }
+  }
+
+  async function register(username, password){
+    var u = String(username || '').trim();
+    var pw = String(password || '');
+    if (!u || !pw) return { ok:false, error:'Username and password required' };
+    if (!/^[A-Za-z0-9_.\-]{2,32}$/.test(u)) return { ok:false, error:'Username: 2-32 chars, letters/digits/dots/dashes/underscores' };
+    if (pw.length < 4 || pw.length > 64) return { ok:false, error:'Password must be 4-64 characters' };
+    var existing = getAllUsers().find(function(x){ return x && x.username && x.username.toLowerCase() === u.toLowerCase(); });
+    if (existing) return { ok:false, error:'Username already taken - try Sign In' };
     var clean = {
       id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8),
-      name: String(name || '').trim().slice(0, 80),
-      email: String(email || '').trim().toLowerCase().slice(0, 160),
-      nick: String(nick || '').trim().slice(0, 40),
+      username: u,
+      passwordHash: await hashPassword(pw),
+      nick: u,
       registeredAt: Date.now(),
-      ua: (navigator.userAgent || '').slice(0, 180),
-      ref: document.referrer || ''
+      ua: (navigator.userAgent || '').slice(0, 180)
     };
-    if (!clean.name || !clean.email || !clean.nick) return { ok:false, error:'Missing required fields' };
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean.email)) return { ok:false, error:'Invalid email' };
-    // Password-manager defense: reject nick that looks like a password got
-    // injected (long + contains characters we'd never ask for). Allowed in
-    // nick: letters, digits, ._- and spaces. Anything else = suspected
-    // auto-filled password → block and ask the user to retype.
-    if (!/^[A-Za-z0-9_.\- ]{2,40}$/.test(clean.nick)) {
-      return { ok:false, error:'Nick can only contain letters, numbers, dots, dashes and underscores (2–40 chars). Your password manager might have auto-filled this field — please retype it manually.' };
-    }
-
-    // Save locally.
     saveUser(clean);
     setCurrent(clean);
-
-    // Mirror to a webhook if one is configured (lets you capture signups
-    // across browsers — Formspree, n8n, Cloudflare Worker, whatever).
     var hook = lsGet(KEY_HOOK, null);
     if (hook && typeof hook === 'string') {
       try {
-        fetch(hook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(clean),
-          keepalive: true,
-          mode: 'no-cors'
-        }).catch(function(){});
+        fetch(hook, { method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ id: clean.id, username: clean.username, registeredAt: clean.registeredAt }) }).catch(function(){});
       } catch(_){}
     }
-
-    // Reset and seed the token state for the NEW user.
-    try {
-      if (window.AlexiaTokens && window.AlexiaTokens.setBalance) {
-        window.AlexiaTokens.setBalance(0);
-      }
-    } catch(_){}
-    // Grant the welcome bonus after the modal closes so the toast is visible.
+    try { if (window.AlexiaTokens && window.AlexiaTokens.setBalance) window.AlexiaTokens.setBalance(0); } catch(_){}
     setTimeout(function(){
-      try { window.AlexiaTokens && window.AlexiaTokens.grant && window.AlexiaTokens.grant(200, 'Welcome, ' + clean.nick + ' 🔥'); } catch(_){}
+      try { window.AlexiaTokens && window.AlexiaTokens.grant && window.AlexiaTokens.grant(200, 'Welcome, ' + clean.username); } catch(_){}
     }, 700);
-
     return { ok:true, user: clean };
   }
 
-  // ── Modal UI ─────────────────────────────────────────────────────────
+  async function signIn(username, password){
+    var u = String(username || '').trim();
+    var pw = String(password || '');
+    if (!u || !pw) return { ok:false, error:'Enter your username and password' };
+    var match = getAllUsers().find(function(x){ return x && x.username && x.username.toLowerCase() === u.toLowerCase(); });
+    if (!match) return { ok:false, error:'No user with that username - try Sign Up' };
+    var hash = await hashPassword(pw);
+    if (!match.passwordHash || match.passwordHash !== hash) return { ok:false, error:'Wrong password' };
+    setCurrent(match);
+    return { ok:true, user: match };
+  }
+
   var STYLE = '' +
-    /* Backdrop: scrollable itself so tall modals don't get clipped above/below
-       the viewport. `align-items: flex-start` + `padding-block: auto` keeps
-       the sheet near the top when content overflows, while still centering
-       vertically when there's room. */
-    '.twk-auth-backdrop{position:fixed;inset:0;z-index:2147483644;background:rgba(5,5,10,.82);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);display:flex;align-items:flex-start;justify-content:center;padding:24px 20px 40px;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:twkAuthFade .35s ease-out both;font-family:"Inter",-apple-system,sans-serif;}' +
+    '.twk-auth-backdrop{position:fixed;inset:0;z-index:2147483644;background:rgba(5,5,10,.82);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);display:flex;align-items:flex-start;justify-content:center;padding:24px 20px 40px;overflow-y:auto;animation:twkAuthFade .35s ease-out both;font-family:"Inter",-apple-system,sans-serif;}' +
     '@media (min-height:780px){.twk-auth-backdrop{align-items:center;}}' +
     '@keyframes twkAuthFade{from{opacity:0}to{opacity:1}}' +
-    /* Sheet: no max-height constraint — the backdrop is already scrollable,
-       so the sheet is free to grow. This avoids the "half-cut" bug where
-       the modal is taller than 92vh and part of the form sticks above the
-       fold with no way to reach it. */
-    '.twk-auth-sheet{position:relative;width:100%;max-width:480px;margin:auto 0;background:linear-gradient(165deg,#11111a 0%,#07070b 100%);border:1px solid rgba(255,45,135,.28);border-radius:22px;padding:38px 34px 30px;box-shadow:0 40px 100px rgba(0,0,0,.65),0 0 0 1px rgba(255,45,135,.1),inset 0 1px 0 rgba(255,255,255,.04);animation:twkAuthRise .55s cubic-bezier(.22,.9,.38,1) .05s both;}' +
+    '.twk-auth-sheet{position:relative;width:100%;max-width:440px;margin:auto 0;background:linear-gradient(165deg,#11111a 0%,#07070b 100%);border:1px solid rgba(255,45,135,.28);border-radius:22px;padding:38px 34px 30px;box-shadow:0 40px 100px rgba(0,0,0,.65);animation:twkAuthRise .55s cubic-bezier(.22,.9,.38,1) .05s both;}' +
     '@keyframes twkAuthRise{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}' +
-    '.twk-auth-crest{display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;margin:0 auto 18px;border-radius:50%;background:linear-gradient(145deg,#ff2d87,#9d4edd);color:#fff;font:900 17px/1 "Playfair Display",serif;box-shadow:0 12px 30px rgba(255,45,135,.32),0 0 0 4px rgba(255,45,135,.08);letter-spacing:.02em;}' +
+    '.twk-auth-crest{display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;margin:0 auto 18px;border-radius:50%;background:linear-gradient(145deg,#ff2d87,#9d4edd);color:#fff;font:900 17px/1 "Playfair Display",serif;box-shadow:0 12px 30px rgba(255,45,135,.32);}' +
     '.twk-auth-eye{display:block;text-align:center;font-size:10px;font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:#ff6fa8;margin-bottom:12px;}' +
-    '.twk-auth-title{font:800 clamp(26px,3.8vw,34px)/1.18 "Playfair Display",Georgia,serif;color:#fff;text-align:center;letter-spacing:-.01em;margin:0 0 8px;}' +
+    '.twk-auth-title{font:800 clamp(24px,3.5vw,32px)/1.18 "Playfair Display",Georgia,serif;color:#fff;text-align:center;letter-spacing:-.01em;margin:0 0 8px;}' +
     '.twk-auth-title em{font-style:italic;background:linear-gradient(135deg,#ff6fa8,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;}' +
-    '.twk-auth-lede{font-size:13.5px;line-height:1.58;color:rgba(244,243,247,.72);text-align:center;margin:0 auto 22px;max-width:38ch;}' +
+    '.twk-auth-lede{font-size:13px;line-height:1.55;color:rgba(244,243,247,.72);text-align:center;margin:0 auto 22px;max-width:36ch;}' +
     '.twk-auth-form{display:flex;flex-direction:column;gap:11px;}' +
     '.twk-auth-label{display:block;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px;}' +
     '.twk-auth-input{width:100%;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#f5f5fb;font:600 14px/1.3 "Inter",sans-serif;transition:border-color .2s,background .2s;box-sizing:border-box;}' +
     '.twk-auth-input:focus{outline:none;border-color:rgba(255,45,135,.6);background:rgba(255,45,135,.04);box-shadow:0 0 0 3px rgba(255,45,135,.1);}' +
     '.twk-auth-error{display:none;color:#ff6fa8;font-size:12px;font-weight:700;text-align:center;margin-top:4px;}' +
     '.twk-auth-error.is-visible{display:block;}' +
-    '.twk-auth-submit{margin-top:14px;width:100%;padding:14px;border-radius:10px;background:linear-gradient(180deg,#ff2d87,#9d4edd);color:#fff;font:800 11px/1 "Inter",sans-serif;letter-spacing:.16em;text-transform:uppercase;border:0;cursor:pointer;transition:transform .18s cubic-bezier(.2,1.1,.3,1),filter .2s;box-shadow:0 14px 30px rgba(255,45,135,.36);}' +
+    '.twk-auth-submit{margin-top:10px;width:100%;padding:14px;border-radius:10px;background:linear-gradient(180deg,#ff2d87,#9d4edd);color:#fff;font:800 11px/1 "Inter",sans-serif;letter-spacing:.16em;text-transform:uppercase;border:0;cursor:pointer;transition:transform .18s,filter .2s;box-shadow:0 14px 30px rgba(255,45,135,.36);}' +
     '.twk-auth-submit:hover{transform:translateY(-2px);filter:brightness(1.08);}' +
-    '.twk-auth-submit:active{transform:translateY(0);}' +
-    /* "Maybe later" skip — low-emphasis, still visible so users know they can bypass. */
-    '.twk-auth-skip{margin-top:8px;width:100%;padding:10px;border-radius:10px;background:transparent;color:rgba(244,243,247,.55);font:600 11px/1 "Inter",sans-serif;letter-spacing:.08em;text-transform:none;border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;}' +
+    '.twk-auth-submit:disabled{opacity:.5;cursor:wait;transform:none;}' +
+    '.twk-auth-toggle{margin-top:6px;width:100%;padding:10px;border-radius:10px;background:transparent;color:#ff7eb0;font:700 11.5px/1 "Inter",sans-serif;letter-spacing:.04em;border:1px solid rgba(255,45,135,.25);cursor:pointer;transition:all .2s;}' +
+    '.twk-auth-toggle:hover{background:rgba(255,45,135,.08);border-color:rgba(255,45,135,.5);color:#fff;}' +
+    '.twk-auth-skip{margin-top:6px;width:100%;padding:10px;border-radius:10px;background:transparent;color:rgba(244,243,247,.55);font:600 11px/1 "Inter",sans-serif;letter-spacing:.06em;border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;}' +
     '.twk-auth-skip:hover{color:#fff;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.04);}' +
-    /* × close button top-right inside the sheet */
     '.twk-auth-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(244,243,247,.7);font:400 22px/1 "Inter",sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0;}' +
     '.twk-auth-close:hover{background:rgba(255,45,135,.22);border-color:rgba(255,45,135,.5);color:#fff;transform:rotate(90deg);}' +
     '.twk-auth-tos{font-size:11px;line-height:1.5;color:rgba(244,243,247,.5);text-align:center;margin:14px 0 0;}' +
     '.twk-auth-tos a{color:#ff6fa8;}' +
     '.twk-auth-legal{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,243,247,.35);text-align:center;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}' +
-    /* Auth chip — mounts inside the canonical TWK_NAV_V1 navbar (.twk-nav-v1-links).
-       Uses a separate class scope (.twk-auth-chip) so it picks up the navbar's
-       layout (UPPERCASE letter-spacing) but not its background gradient. */
     '.twk-nav-v1-links .twk-auth-chip{display:inline-flex !important;align-items:center;gap:6px;padding:8px 12px !important;border-radius:8px;border:1px solid rgba(255,255,255,.18);font-family:"Inter",ui-sans-serif,system-ui,sans-serif !important;font-size:11px !important;font-weight:800 !important;letter-spacing:.12em !important;text-transform:uppercase;cursor:pointer;transition:all .2s ease;line-height:1;white-space:nowrap;margin-left:6px;background:transparent;color:rgba(230,230,240,.78);text-decoration:none;}' +
+    '.twk-nav-v1-links .twk-auth-chip.twk-auth-signin{background:transparent;border-color:rgba(255,255,255,.22);color:rgba(230,230,240,.85);}' +
+    '.twk-nav-v1-links .twk-auth-chip.twk-auth-signin:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.45);color:#fff;transform:translateY(-1px);}' +
     '.twk-nav-v1-links .twk-auth-chip.twk-auth-signup{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(255,180,84,.12));border-color:rgba(255,45,135,.45);color:#ff7eb0;}' +
     '.twk-nav-v1-links .twk-auth-chip.twk-auth-signup:hover{background:linear-gradient(135deg,#ff2d87,#ffb454);border-color:transparent;color:#1a0a14;transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,45,135,.4);}' +
     '.twk-nav-v1-links .twk-auth-chip.twk-auth-logout{background:transparent;border-color:rgba(255,255,255,.18);color:rgba(230,230,240,.78);}' +
     '.twk-nav-v1-links .twk-auth-chip.twk-auth-logout:hover{background:rgba(255,45,135,.1);border-color:rgba(255,45,135,.45);color:#fff;transform:translateY(-1px);}' +
-    /* Mobile/narrow: chip shrinks but stays readable */
     '@media(max-width:1024px){.twk-nav-v1-links .twk-auth-chip{padding:7px 9px !important;font-size:10px !important;letter-spacing:.06em !important;}}' +
     '@media(max-width:880px){.twk-nav-v1-links .twk-auth-chip{padding:6px 8px !important;font-size:9.5px !important;}}' +
     '';
@@ -232,99 +171,79 @@
     document.head.appendChild(s);
   }
 
-  // Session-scoped "I skipped the gate" flag. While this is set the modal
-  // won't re-appear on the portal — the user already said "let me browse".
-  // New tabs / new sessions start clean.
-  var SKIP_KEY = 'alexia_auth_skipped';
-  function markSkipped(){ try { sessionStorage.setItem(SKIP_KEY, '1'); } catch(_){} }
-  function wasSkipped(){ try { return sessionStorage.getItem(SKIP_KEY) === '1'; } catch(_){ return false; } }
-
-  function showForm(){
+  function showForm(mode){
+    mode = mode === 'signin' ? 'signin' : 'signup';
     injectStyle();
     if (document.getElementById('twk-auth-modal')) return;
     var root = document.createElement('div');
     root.id = 'twk-auth-modal';
     root.className = 'twk-auth-backdrop';
-    // Flag so the universal-inject blur-kill-switch DOESN'T remove this modal
-    // (it's being shown because the user clicked "Sign up", so it's legit).
-    root.setAttribute('data-user-opened', '1');
-    // SECURITY / UX NOTE on form attributes:
-    //   · This form does NOT collect a password — there are 3 fields (name,
-    //     email, nick). BUT browsers/password-managers aggressively treat
-    //     any input with autocomplete="username" as part of a login form
-    //     and will inject a password (or hijack the nick field with a
-    //     saved credential) → that's why users were seeing their password
-    //     leak into "nick".
-    //   · Fix: use `autocomplete="new-password"` is NOT safe (it triggers
-    //     the save-password prompt). Best is autocomplete="off" + the
-    //     Lastpass/1Password ignore hints + a real autocomplete value that
-    //     is NOT "username" (we use "nickname"). Adding data-lpignore +
-    //     data-1p-ignore + data-bwignore covers the big three managers.
-    //   · Also disabling autocapitalize on nick/email (browsers try to
-    //     capitalize nick → awful UX for usernames).
-    //   · autocomplete="off" on the <form> itself kills Chrome's sub-form
-    //     credential assumption.
+    root.setAttribute('data-mode', mode);
+    var isSignUp = (mode === 'signup');
+    var titleHtml = isSignUp ? 'Create your <em>handle</em>.' : 'Welcome <em>back</em>.';
+    var lede = isSignUp ? 'Username + password. Pick what you want — only you see it. We never email you.' : 'Enter your username and password to come back in.';
+    var submitText = isSignUp ? 'Create account · +200 tokens' : 'Sign in';
+    var altText = isSignUp ? 'Already a member? · Sign in' : 'Need an account? · Sign up';
+
     root.innerHTML =
-      '<form class="twk-auth-sheet" novalidate autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-bwignore="true">' +
-        '<button type="button" class="twk-auth-close" aria-label="Close" title="Maybe later">×</button>' +
+      '<form class="twk-auth-sheet" novalidate>' +
+        '<button type="button" class="twk-auth-close" aria-label="Close">×</button>' +
         '<div class="twk-auth-crest">A·T</div>' +
-        '<span class="twk-auth-eye">Private archive · Members only</span>' +
-        '<h2 class="twk-auth-title">Make your <em>handle</em>.</h2>' +
-        '<p class="twk-auth-lede">Un nombre para saber cómo llamarte. Un email para mandarte los drops. Un nick que te represente adentro. No te pedimos contraseña — no hace falta.</p>' +
+        '<span class="twk-auth-eye">' + (isSignUp ? 'New member' : 'Members only') + '</span>' +
+        '<h2 class="twk-auth-title">' + titleHtml + '</h2>' +
+        '<p class="twk-auth-lede">' + lede + '</p>' +
         '<div class="twk-auth-form">' +
-          '<div><label class="twk-auth-label" for="twk-auth-name">Your name</label><input class="twk-auth-input" id="twk-auth-name" name="twk_display_name" type="text" required maxlength="80" placeholder="Como querés que te llame" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true"></div>' +
-          '<div><label class="twk-auth-label" for="twk-auth-email">Email</label><input class="twk-auth-input" id="twk-auth-email" name="twk_email" type="email" required maxlength="160" placeholder="you@domain.com" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="email" data-lpignore="true" data-1p-ignore="true" data-bwignore="true"></div>' +
-          '<div><label class="twk-auth-label" for="twk-auth-nick">Your nick (public)</label><input class="twk-auth-input" id="twk-auth-nick" name="twk_nick" type="text" required maxlength="40" minlength="2" pattern="[A-Za-z0-9_.\\- ]+" placeholder="ej: solo.collector" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true"></div>' +
+          '<div><label class="twk-auth-label" for="twk-auth-username">Username</label>' +
+          '<input class="twk-auth-input" id="twk-auth-username" name="username" type="text" required maxlength="32" minlength="2" pattern="[A-Za-z0-9_.\\-]+" placeholder="solo.collector" autocomplete="username" autocorrect="off" autocapitalize="none" spellcheck="false"></div>' +
+          '<div><label class="twk-auth-label" for="twk-auth-password">Password</label>' +
+          '<input class="twk-auth-input" id="twk-auth-password" name="password" type="password" required maxlength="64" minlength="4" placeholder="Your secret" autocomplete="' + (isSignUp ? 'new-password' : 'current-password') + '"></div>' +
           '<p class="twk-auth-error" id="twk-auth-error"></p>' +
-          '<button type="submit" class="twk-auth-submit">Enter the archive · +200 tokens welcome →</button>' +
-          '<button type="button" class="twk-auth-skip">Maybe later — let me browse first</button>' +
-          '<p class="twk-auth-tos">By entering, you confirm you are 18+ and accept our <a href="/tos.html" target="_blank" rel="noopener">terms</a> and <a href="/privacy.html" target="_blank" rel="noopener">privacy</a>. <strong>We never ask for a password.</strong></p>' +
+          '<button type="submit" class="twk-auth-submit">' + submitText + '</button>' +
+          '<button type="button" class="twk-auth-toggle" data-toggle-mode>' + altText + '</button>' +
+          '<button type="button" class="twk-auth-skip">Maybe later</button>' +
+          '<p class="twk-auth-tos">By entering, you confirm you are 18+ and accept our <a href="/tos.html" target="_blank" rel="noopener">terms</a> and <a href="/privacy.html" target="_blank" rel="noopener">privacy</a>.</p>' +
         '</div>' +
-        '<p class="twk-auth-legal">© Alexia Twerk Group · 18+ · 18 U.S.C. §2257 compliant</p>' +
+        '<p class="twk-auth-legal">© Alexia Twerk Group · 18+</p>' +
       '</form>';
     document.body.appendChild(root);
 
-    // Submit → register
+    var errEl = root.querySelector('#twk-auth-error');
+    function showError(msg){ errEl.textContent = msg; errEl.classList.add('is-visible'); }
+    function clearError(){ errEl.classList.remove('is-visible'); errEl.textContent = ''; }
+
     root.addEventListener('submit', function(ev){
       ev.preventDefault();
-      var name = root.querySelector('#twk-auth-name').value;
-      var email = root.querySelector('#twk-auth-email').value;
-      var nick  = root.querySelector('#twk-auth-nick').value;
-      var err   = root.querySelector('#twk-auth-error');
-      var res = register(name, email, nick);
-      if (!res.ok) {
-        err.textContent = res.error;
-        err.classList.add('is-visible');
-        return;
-      }
-      err.classList.remove('is-visible');
-      closeForm();
+      var submitBtn = root.querySelector('.twk-auth-submit');
+      var u = root.querySelector('#twk-auth-username').value;
+      var pw = root.querySelector('#twk-auth-password').value;
+      submitBtn.disabled = true;
+      clearError();
+      var p = isSignUp ? register(u, pw) : signIn(u, pw);
+      Promise.resolve(p).then(function(res){
+        submitBtn.disabled = false;
+        if (!res.ok) { showError(res.error); return; }
+        closeForm();
+        try { ensureAuthChip(); } catch(_){}
+        setTimeout(function(){ location.reload(); }, 250);
+      }).catch(function(err){
+        submitBtn.disabled = false;
+        showError('Something went wrong: ' + (err && err.message ? err.message : 'try again'));
+      });
     });
 
-    // Dismissal paths — all mark this session as "skipped" so the gate
-    // doesn't keep re-appearing on every hash change / nav:
-    //   · × button (top-right)
-    //   · "Maybe later" inline button
-    //   · ESC key
-    //   · Click on the backdrop outside the sheet
-    function dismiss(){
-      markSkipped();
+    root.querySelector('[data-toggle-mode]').addEventListener('click', function(){
       closeForm();
-    }
+      showForm(isSignUp ? 'signin' : 'signup');
+    });
+
+    function dismiss(){ closeForm(); }
     root.querySelector('.twk-auth-close').addEventListener('click', dismiss);
     root.querySelector('.twk-auth-skip').addEventListener('click', dismiss);
-    root.addEventListener('click', function(ev){
-      // Only if the click was on the backdrop itself (outside the sheet).
-      if (ev.target === root) dismiss();
-    });
+    root.addEventListener('click', function(ev){ if (ev.target === root) dismiss(); });
     document.addEventListener('keydown', function escHandler(ev){
-      if (ev.key === 'Escape' || ev.keyCode === 27) {
-        dismiss();
-        document.removeEventListener('keydown', escHandler);
-      }
+      if (ev.key === 'Escape' || ev.keyCode === 27) { dismiss(); document.removeEventListener('keydown', escHandler); }
     });
 
-    // Prevent scroll on the page behind the modal while it's open.
     document.documentElement.style.overflow = 'hidden';
   }
 
@@ -334,62 +253,53 @@
     document.documentElement.style.overflow = '';
   }
 
-  // (ensureLogoutChip replaced by ensureAuthChip — handles both states.)
-
-  // ── Gate ─────────────────────────────────────────────────────────────
-  // NON-BLOCKING by default. The registration modal no longer auto-shows on
-  // page load — it was causing every page to appear blurred/unclickable on
-  // first visit. Instead:
-  //   · A small "Sign up" chip appears in the topbar-right if not logged in
-  //   · Clicking it opens the modal (explicit user intent)
-  //   · Once logged in, the chip becomes a "Log out" chip
-  //   · Users can still trigger registration programmatically via
-  //     window.TwerkhubAuth.showForm()
-  //
-  // This guarantees: no matter what stale cache the browser has, the site is
-  // always browsable. Registration is a pull, not a push.
-  function gate(){
-    injectStyle();
-    ensureAuthChip();
-    // Deliberately NOT calling showForm() here.
-  }
-
-  // Mount the auth chip INSIDE the canonical navbar (.twk-nav-v1-links) so
-  // the user always sees Sign Up / Log Out at the top of every page. Falls
-  // back to the floating token HUD only if the navbar isn't on the page yet.
   function ensureAuthChip(){
     var host = document.querySelector('.twk-nav-v1 .twk-nav-v1-links') ||
                document.querySelector('.twerkhub-tokens-hud');
     if (!host) return;
-    // Remove any stale chip first so the state always reflects current login.
-    var existing = host.querySelectorAll('.twk-auth-chip, .twk-auth-logout, .twk-auth-signup');
+    var existing = host.querySelectorAll('.twk-auth-chip');
     existing.forEach(function(el){ el.remove(); });
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.setAttribute('data-twk-auth-chip', '1');
+
     if (getCurrent()) {
-      btn.className = 'twk-auth-chip twk-auth-logout';
-      btn.title = 'Log out · clears your session';
-      btn.textContent = 'Log Out';
-      btn.addEventListener('click', function(){
+      var out = document.createElement('button');
+      out.type = 'button';
+      out.className = 'twk-auth-chip twk-auth-logout';
+      out.title = 'Log out · clears your session';
+      out.textContent = 'Log Out';
+      out.addEventListener('click', function(){
         if (confirm('Log out? Your local token balance will be cleared.')) logout();
       });
+      host.appendChild(out);
     } else {
-      btn.className = 'twk-auth-chip twk-auth-signup';
-      btn.title = 'Register · claim your handle';
-      btn.textContent = 'Sign Up';
-      btn.addEventListener('click', showForm);
+      var inn = document.createElement('button');
+      inn.type = 'button';
+      inn.className = 'twk-auth-chip twk-auth-signin';
+      inn.title = 'Sign in · username + password';
+      inn.textContent = 'Sign In';
+      inn.addEventListener('click', function(){ showForm('signin'); });
+      host.appendChild(inn);
+
+      var up = document.createElement('button');
+      up.type = 'button';
+      up.className = 'twk-auth-chip twk-auth-signup';
+      up.title = 'Create account · username + password';
+      up.textContent = 'Sign Up';
+      up.addEventListener('click', function(){ showForm('signup'); });
+      host.appendChild(up);
     }
-    host.appendChild(btn);
   }
 
-  // ── Public API ───────────────────────────────────────────────────────
+  function gate(){ injectStyle(); ensureAuthChip(); }
+
   window.TwerkhubAuth = {
     getCurrent: getCurrent,
     getAllUsers: getAllUsers,
     register: register,
+    signIn: signIn,
     logout: logout,
     showForm: showForm,
+    showSignUp: function(){ showForm('signup'); },
+    showSignIn: function(){ showForm('signin'); },
     setWebhook: function(url){ lsSet(KEY_HOOK, String(url || '')); },
     getWebhook: function(){ return lsGet(KEY_HOOK, null); }
   };
@@ -399,45 +309,13 @@
   } else {
     gate();
   }
-  // Re-check periodically — covers cases where the navbar mounts late OR a
-  // SPA-style nav swaps content underneath us. setInterval polls every 1s
-  // for the first 10s of the page, then stops.
+
   var chipPolls = 0;
   var chipInterval = setInterval(function(){
     ensureAuthChip();
     chipPolls++;
     if (chipPolls > 10) clearInterval(chipInterval);
   }, 1000);
-  // Re-render chip if the user logs in/out in another tab (storage event)
-  // or if a token grant happens (welcome bonus often arrives milliseconds
-  // after the chip was first mounted).
-  window.addEventListener('storage', function(ev){
-    if (ev.key === KEY_CURRENT) ensureAuthChip();
-  });
+  window.addEventListener('storage', function(ev){ if (ev.key === KEY_CURRENT) ensureAuthChip(); });
   window.addEventListener('alexia-tokens-changed', ensureAuthChip);
-
-  // Emergency kill-switch: if the old cached version of this module left a
-  // modal open on the page, nuke any lingering auth-modal AND age-gate DOM
-  // nodes and strip the overflow:hidden lock from <html>. This means users
-  // stuck on the old blur-bug will self-heal on their next page load, even
-  // before the new JS deploys to them.
-  (function nukeStaleOverlays(){
-    try {
-      ['#twk-auth-modal','#alexia-age-gate','.twk-auth-backdrop'].forEach(function(sel){
-        var els = document.querySelectorAll(sel);
-        els.forEach(function(el){
-          // Only remove if the element is overlaying the viewport (fixed + inset 0)
-          // AND this isn't a legit portal-gate path. Safe removal.
-          var path = (location.pathname || '/').toLowerCase();
-          var isPortal = (path === '/' || path === '/index.html' || path === '/index');
-          if (!isPortal) { el.remove(); }
-        });
-      });
-      // Never leave the page scroll-locked.
-      if (!document.querySelector('#twk-auth-modal, #alexia-age-gate')) {
-        document.documentElement.style.overflow = '';
-        document.body.style.overflow = '';
-      }
-    } catch(_){}
-  })();
 })();
