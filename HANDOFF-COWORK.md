@@ -1,5 +1,5 @@
 # TWERKHUB · Cowork Handoff Document
-**Last updated:** 2026-04-24 · Round 14 staged (uncommitted) · Rounds 10-13 shipped at commit `edf9e29`
+**Last updated:** 2026-04-24 · Rounds 14-15 staged (uncommitted) · Rounds 10-13 shipped at commit `edf9e29`
 **Repo:** `https://github.com/alexiatwerkgroup/alexia-twerk-web-clean`
 **Live:** `https://alexiatwerkgroup.com/`
 **Local working dir:** `C:\Users\Claudio\OneDrive\Desktop\proyectos\alexia-twerk-web-clean`
@@ -135,6 +135,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 | 12 | _pending push_ | Search i18n + 2nd ES manifesto translation + Service schema. +/es/search.html (28-entry index translated to ES) + /ru/search.html (28-entry RU). +/es/blog/why-twerkhub-has-no-algorithm-feed.html (companion to founder essay). +Service schema on /about.html (provider/audience/4-tier offers). Hreflang trilingüe en /search. |
 | 13 | `edf9e29` | Post #21 + 3rd ES translation. +blog/studios-shaping-2026.html (1.820 words pillar · 6 studios w/ heavy internal linking to creator profiles + collection pages). +/es/blog/perreo-history-caribbean-origin.html (1.740-word ES translation of Caribbean perreo history pillar). Updated blog grids EN+ES, hreflang on perreo EN. Pushed in commit `edf9e29` (rounds 10-13 batched). |
 | 14 | _pending push_ | Post #22 + manifesto trilingual + 2 translations + style page ES + nav fix. +blog/afrobeats-twerk-crossover.html (1.690-word pillar · West African crossover · links to Patricia Atakora). +/ru/blog/why-i-built-twerkhub.html (closes trilingual founder essay EN/ES/RU). +/es/blog/k-dance-vs-reggaeton-twerk.html. +/es/style-reggaeton-floor.html (first ES style page). NAV FIX: `.twerkhub-nav a.active` no longer pink-purple gradient — subtle dark fill + gold underline. SW v1.1.6→v1.1.7, universal-inject p11→p12, page p13→p14, polish p4→p5, elevation p3→p4-LEAN. |
+| 15 | _pending push_ | Membership FAQ loop closure: 3 ES translations of the posts linked from the Service+FAQPage schemas on /membership.html and /about.html. +/es/blog/token-economy-playbook.html (1.680 words · 95% creator cut math). +/es/blog/the-4-tiers-explained.html (1.480 words · tier mechanics + dual paths). +/es/blog/discord-community-playbook.html (1.550 words · community design). All cross-linked from /es/blog/ grid. ES blog total: 8 posts. |
 
 ---
 
