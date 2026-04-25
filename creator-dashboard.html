@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Creator dashboard · Twerkhub · self-serve metrics</title>
+<meta name="description" content="Twerkhub creator dashboard. Per-handle metrics: views, completion rate, token earnings, tier engagement, drop schedule. Open with ?handle=your-handle.">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://alexiatwerkgroup.com/creator-dashboard.html">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.6;min-height:100vh;padding-bottom:80px}
+a{color:#ff6fa8;text-decoration:none}
+a:hover{color:#ffb454}
+.wrap{max-width:1180px;margin:0 auto;padding:90px 24px 40px}
+
+/* HEADER */
+.dash-head{display:flex;align-items:flex-start;gap:24px;margin-bottom:36px;padding:28px 30px;border-radius:24px;background:linear-gradient(135deg,rgba(255,45,135,.06),rgba(157,78,221,.06));border:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
+.avatar{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#ff2d87,#9d4edd);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 12px 32px rgba(255,45,135,.35)}
+.dash-id{flex:1;min-width:260px}
+.dash-id .kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px}
+.dash-id h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,42px);font-weight:900;line-height:1.05;letter-spacing:-.02em;margin-bottom:8px}
+.dash-id .handle{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;color:#c7c7d3;margin-bottom:14px}
+.tier-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;background:rgba(255,180,84,.15);color:#ffb454;border:1px solid rgba(255,180,84,.4)}
+.dash-id-meta{display:flex;flex-wrap:wrap;gap:18px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#8a8a96;margin-top:14px}
+
+.next-drop{padding:18px 22px;border-radius:18px;background:rgba(30,224,143,.06);border:1px solid rgba(30,224,143,.25);min-width:220px}
+.next-drop .label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#1ee08f;margin-bottom:6px}
+.next-drop .when{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:4px}
+.next-drop .sub{font-size:12px;color:#a8d4f0;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.1em}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:32px}
+.kpi{padding:22px;border-radius:18px;background:linear-gradient(135deg,rgba(20,20,32,.7),rgba(30,15,40,.5));border:1px solid rgba(255,255,255,.06);transition:transform .3s cubic-bezier(.22,.9,.38,1),border-color .3s}
+.kpi:hover{transform:translateY(-3px);border-color:rgba(255,180,84,.3)}
+.kpi-label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#8a8a96;margin-bottom:10px}
+.kpi-value{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:900;color:#fff;line-height:1;letter-spacing:-.02em;margin-bottom:6px}
+.kpi-trend{font-size:12px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.06em}
+.kpi-trend.up{color:#1ee08f}
+.kpi-trend.down{color:#ff7a7a}
+.kpi-trend.flat{color:#8a8a96}
+
+/* SECTION */
+.sec{margin-bottom:32px;padding:26px 28px;border-radius:20px;background:linear-gradient(135deg,rgba(20,20,32,.5),rgba(15,10,25,.4));border:1px solid rgba(255,255,255,.06)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+.sec h2{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:-.01em}
+.sec-sub{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#8a8a96}
+
+/* DROPS TABLE */
+.drops{width:100%;border-collapse:collapse;font-size:14px}
+.drops th{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#ffb454;text-align:left;padding:10px 14px;border-bottom:1px solid rgba(255,180,84,.2)}
+.drops td{padding:14px;border-bottom:1px solid rgba(255,255,255,.05);color:#d8d8e2;vertical-align:top}
+.drops tr:last-child td{border-bottom:none}
+.drops .title{color:#fff;font-weight:600;font-size:14.5px}
+.drops .pos{font-family:'JetBrains Mono',ui-monospace,monospace;color:#ff6fa8;font-weight:800}
+.drops .views{font-family:'JetBrains Mono',ui-monospace,monospace;color:#fff;font-weight:700}
+.drops .pct{font-family:'JetBrains Mono',ui-monospace,monospace}
+.drops .pct.good{color:#1ee08f}
+.drops .pct.mid{color:#ffb454}
+.drops .pct.low{color:#ff7a7a}
+.drops .date{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;color:#8a8a96;letter-spacing:.05em}
+.drops .tier-tag{display:inline-block;padding:3px 8px;border-radius:6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.tier-public{background:rgba(255,180,84,.12);color:#ffb454}
+.tier-medium{background:rgba(157,78,221,.12);color:#c896f0}
+.tier-premium{background:rgba(255,45,135,.12);color:#ff6fa8}
+.tier-vip{background:rgba(30,224,143,.12);color:#1ee08f}
+
+/* TIER BREAKDOWN */
+.tier-bars{display:grid;grid-template-columns:1fr;gap:12px}
+.tier-bar{display:grid;grid-template-columns:90px 1fr 60px;gap:14px;align-items:center}
+.tier-bar .name{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.tier-bar .name.b{color:#ffb454}
+.tier-bar .name.m{color:#c896f0}
+.tier-bar .name.p{color:#ff6fa8}
+.tier-bar .name.v{color:#1ee08f}
+.tier-bar .track{height:14px;background:rgba(255,255,255,.04);border-radius:7px;overflow:hidden;position:relative}
+.tier-bar .fill{height:100%;border-radius:7px;transition:width 1s cubic-bezier(.22,.9,.38,1)}
+.tier-bar .fill.b{background:linear-gradient(90deg,#ffb454,#ffc874)}
+.tier-bar .fill.m{background:linear-gradient(90deg,#9d4edd,#c896f0)}
+.tier-bar .fill.p{background:linear-gradient(90deg,#ff2d87,#ff6fa8)}
+.tier-bar .fill.v{background:linear-gradient(90deg,#1ee08f,#5ef0a8)}
+.tier-bar .pct{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:14px;font-weight:800;color:#fff;text-align:right}
+
+/* ACTIONS */
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.action{padding:18px 20px;border-radius:14px;border-left:3px solid #ffb454;background:rgba(255,180,84,.04);position:relative}
+.action.urgent{border-left-color:#ff7a7a;background:rgba(255,76,76,.05)}
+.action.good{border-left-color:#1ee08f;background:rgba(30,224,143,.04)}
+.action .label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#ffb454;margin-bottom:6px}
+.action.urgent .label{color:#ff9c9c}
+.action.good .label{color:#1ee08f}
+.action .text{color:#fff;font-size:14.5px;line-height:1.55}
+
+/* FEED */
+.feed{display:flex;flex-direction:column;gap:10px}
+.event{display:grid;grid-template-columns:18px 1fr auto;gap:14px;align-items:start;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.event:last-child{border-bottom:none}
+.event .dot{width:8px;height:8px;border-radius:50%;background:#ff6fa8;margin-top:7px;box-shadow:0 0 12px rgba(255,111,168,.5)}
+.event .dot.green{background:#1ee08f;box-shadow:0 0 12px rgba(30,224,143,.5)}
+.event .dot.gold{background:#ffb454;box-shadow:0 0 12px rgba(255,180,84,.5)}
+.event .text{color:#d8d8e2;font-size:13.5px;line-height:1.55}
+.event .text strong{color:#fff;font-weight:700}
+.event .when{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.06em;color:#8a8a96;white-space:nowrap}
+
+/* SWITCH */
+.switch{margin-bottom:22px;padding:14px 18px;border-radius:12px;background:rgba(20,20,32,.6);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.switch .label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#8a8a96}
+.switch select{flex:1;min-width:200px;background:rgba(20,20,32,.7);color:#fff;border:1px solid rgba(255,255,255,.12);padding:9px 12px;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;cursor:pointer}
+.switch select:hover{border-color:rgba(255,180,84,.4)}
+.demo-banner{margin-bottom:22px;padding:12px 18px;border-radius:10px;background:rgba(255,180,84,.08);border:1px solid rgba(255,180,84,.25);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.06em;color:#ffb454}
+
+@media (max-width:680px){
+  .dash-head{flex-direction:column;gap:18px}
+  .next-drop{width:100%}
+  .drops{font-size:12.5px}
+  .drops th,.drops td{padding:9px 10px}
+  .tier-bar{grid-template-columns:78px 1fr 50px;gap:10px}
+}
+
+.back{display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:11px 22px;border-radius:999px;background:rgba(255,255,255,.06);color:#ff6fa8;border:1px solid rgba(255,255,255,.12);font-weight:700;font-size:13px;letter-spacing:.04em}
+.back:hover{background:rgba(255,180,84,.12);color:#ffb454;border-color:rgba(255,180,84,.4)}
+</style>
+</head>
+<body class="twerkhub-page">
+<div class="wrap">
+
+  <div class="demo-banner">⚡ Demo · datos simulados · selector de creator abajo · cuando exista Worker real, esta UI consume `/api/creator-stats?handle=X`</div>
+
+  <div class="switch">
+    <span class="label">Creator</span>
+    <select id="creatorSwitch" aria-label="Switch creator">
+      <option value="lada-gozzi">Лада Гоцци · MDC NRG</option>
+      <option value="wangong-lin">WanGong Lin · Taiwan Twerk Family</option>
+      <option value="nika-chill">Nika Chill · Thailand</option>
+      <option value="yurgenis">Yurgenis · YUR AULAR</option>
+      <option value="kadorin-hitomi">Kadorin Hitomi · Thailand cosplay</option>
+    </select>
+  </div>
+
+  <div class="dash-head">
+    <div class="avatar" id="avatar">L</div>
+    <div class="dash-id">
+      <div class="kicker">/ Creator dashboard</div>
+      <h1 id="creatorName">Лада Гоцци</h1>
+      <div class="handle" id="creatorHandle">@lada-gozzi · firestarter roster since 2024</div>
+      <span class="tier-pill" id="creatorTier">⭐ Roster · Heels Choreo Lead</span>
+      <div class="dash-id-meta">
+        <span id="metaCity">📍 Moscow · Russia</span>
+        <span id="metaActive">Active 2024-09-01</span>
+        <span id="metaDrops">42 drops · 18 months</span>
+      </div>
+    </div>
+    <div class="next-drop">
+      <div class="label">Next drop</div>
+      <div class="when">Thu Apr 30 · 00:00 ART</div>
+      <div class="sub">in 5 days · Premium early</div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Lifetime views</div>
+      <div class="kpi-value" id="kpiViews">2.4M</div>
+      <div class="kpi-trend up" id="kpiViewsTrend">▲ 12.3% this month</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg completion</div>
+      <div class="kpi-value" id="kpiCompletion">68%</div>
+      <div class="kpi-trend up" id="kpiCompletionTrend">▲ 4 pts vs Q1</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Tokens earned · Apr</div>
+      <div class="kpi-value" id="kpiTokens">48,200</div>
+      <div class="kpi-trend up" id="kpiTokensTrend">▲ 18% vs Mar</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Active subscribers</div>
+      <div class="kpi-value" id="kpiSubs">312</div>
+      <div class="kpi-trend up" id="kpiSubsTrend">▲ 24 this week</div>
+    </div>
+  </div>
+
+  <!-- RECENT DROPS -->
+  <div class="sec">
+    <div class="sec-head">
+      <h2>Recent drops · last 7</h2>
+      <span class="sec-sub">Most recent first</span>
+    </div>
+    <table class="drops">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Tier</th>
+          <th>Pos.</th>
+          <th>Views</th>
+          <th>Compl.</th>
+        </tr>
+      </thead>
+      <tbody id="dropsBody"></tbody>
+    </table>
+  </div>
+
+  <!-- TIER BREAKDOWN -->
+  <div class="sec">
+    <div class="sec-head">
+      <h2>Tier engagement</h2>
+      <span class="sec-sub">% of viewers by tier · last 30d</span>
+    </div>
+    <div class="tier-bars" id="tierBars"></div>
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="sec">
+    <div class="sec-head">
+      <h2>Action items</h2>
+      <span class="sec-sub">Priority · response window</span>
+    </div>
+    <div class="actions" id="actionList"></div>
+  </div>
+
+  <!-- ACTIVITY FEED -->
+  <div class="sec">
+    <div class="sec-head">
+      <h2>Recent activity</h2>
+      <span class="sec-sub">Last 7 days</span>
+    </div>
+    <div class="feed" id="activityFeed"></div>
+  </div>
+
+  <a class="back" href="/">← Back to home</a>
+
+</div>
+
+<script>
+// ============================================================
+// MOCKED DATA · per creator handle
+// When real Worker exists, replace with: fetch('/api/creator-stats?handle=' + handle)
+// ============================================================
+const DATA = {
+  'lada-gozzi':{
+    name:'Лада Гоцци', initial:'L', handle:'@lada-gozzi · firestarter roster since 2024',
+    tier:'⭐ Roster · Heels Choreo Lead', city:'📍 Moscow · Russia', active:'Active 2024-09-01',
+    drops:'42 drops · 18 months',
+    nextDrop:'Thu Apr 30 · 00:00 ART', nextSub:'in 5 days · Premium early',
+    kpi:{views:'2.4M',viewsTrend:'▲ 12.3% this month',completion:'68%',completionTrend:'▲ 4 pts vs Q1',tokens:'48,200',tokensTrend:'▲ 18% vs Mar',subs:'312',subsTrend:'▲ 24 this week'},
+    recentDrops:[
+      {title:'Pharaoh · Пломбир',date:'Apr 24',tier:'Public',pos:'#002',views:'167K',pct:'72%'},
+      {title:'Cardi B · WAP heels remix',date:'Apr 17',tier:'Premium',pos:'#012',views:'94K',pct:'78%'},
+      {title:'Rosalía · Despechá floor work',date:'Apr 10',tier:'Public',pos:'#031',views:'58K',pct:'64%'},
+      {title:'Tiësto · Jackie Chan studio drill',date:'Apr 3',tier:'Medium',pos:'#054',views:'42K',pct:'69%'},
+      {title:'Скриптонит · Космос heels solo',date:'Mar 27',tier:'Premium',pos:'#078',views:'38K',pct:'71%'},
+      {title:'Major Lazer · Run Up phrase break',date:'Mar 20',tier:'Public',pos:'#102',views:'29K',pct:'66%'},
+      {title:'Nicki Minaj · Anaconda · ensemble',date:'Mar 13',tier:'VIP',pos:'#005',views:'18K',pct:'82%'},
+    ],
+    tiers:{basic:42,medium:31,premium:21,vip:6},
+    actions:[
+      {kind:'good',label:'Token earnings',text:'Your Q2 token earnings projection is 12% above Q1. Keep the Tuesday drill drops — they\'re your best converters.'},
+      {kind:'urgent',label:'Member requests',text:'5 new requests in #premium-requests are waiting on you. Average wait time is 3.2 days.'},
+      {kind:'normal',label:'Next drop',text:'Your Pharaoh "Пломбир" sequel is queued for Apr 30 Thursday drop. Confirm thumbnail by Apr 28.'}
+    ],
+    feed:[
+      {dot:'green',text:'<strong>Marco</strong> upgraded to Premium tier · referenced your Pharaoh drop',when:'2h ago'},
+      {dot:'gold',text:'Your <strong>Pharaoh "Пломбир"</strong> video crossed 200K views',when:'1d ago'},
+      {dot:'pink',text:'<strong>+1,847 tokens</strong> earned from completion bonuses',when:'2d ago'},
+      {dot:'green',text:'<strong>3 new VIP Top members</strong> joined and watched your archive',when:'3d ago'},
+      {dot:'gold',text:'Featured on <strong>creators-moscow</strong> page hot ranking #1',when:'4d ago'},
+      {dot:'pink',text:'<strong>Anti</strong> approved your custom request · Custom #042',when:'5d ago'},
+      {dot:'green',text:'Your tier-engagement breakdown shifted +6% to Premium tier',when:'6d ago'}
+    ]
+  },
+  'wangong-lin':{
+    name:'WanGong Lin', initial:'W', handle:'@wangong-lin · iDance Taipei · curator since 2023',
+    tier:'⭐ Roster · K-Dance Translator', city:'📍 Taipei · Taiwan', active:'Active 2023-04-15',
+    drops:'68 drops · 24 months',
+    nextDrop:'Thu Apr 30 · 11:00 TPE', nextSub:'in 5 days · public drop',
+    kpi:{views:'4.8M',viewsTrend:'▲ 8.7% this month',completion:'74%',completionTrend:'▲ 2 pts vs Q1',tokens:'62,400',tokensTrend:'▲ 9% vs Mar',subs:'487',subsTrend:'▲ 31 this week'},
+    recentDrops:[
+      {title:'DaniLeigh · Tasty · Workshop Vol.5',date:'Apr 24',tier:'Public',pos:'#001',views:'312K',pct:'76%'},
+      {title:'IVE · After LIKE · ensemble cover',date:'Apr 17',tier:'Public',pos:'#008',views:'198K',pct:'72%'},
+      {title:'NewJeans · Hype Boy · drill',date:'Apr 10',tier:'Medium',pos:'#024',views:'141K',pct:'68%'},
+      {title:'aespa · Spicy · 8-count breakdown',date:'Apr 3',tier:'Premium',pos:'#015',views:'89K',pct:'81%'},
+      {title:'Iggy Azalea · Sip It · cinematic',date:'Mar 27',tier:'Public',pos:'#019',views:'76K',pct:'70%'},
+      {title:'BLACKPINK · Pink Venom drill',date:'Mar 20',tier:'Public',pos:'#048',views:'62K',pct:'67%'},
+      {title:'TWICE · MOONLIGHT SUNRISE',date:'Mar 13',tier:'VIP',pos:'#011',views:'34K',pct:'85%'}
+    ],
+    tiers:{basic:38,medium:34,premium:23,vip:5},
+    actions:[
+      {kind:'good',label:'Pipeline health',text:'Your Stage-2 translations are getting cited by 4 secondary studios this quarter. Authority compounding.'},
+      {kind:'normal',label:'Next workshop',text:'Taiwan Twerk Family Vol.6 dropdown date approaching. Confirm tracklist with Kerry by May 5.'},
+      {kind:'good',label:'Audience growth',text:'Your Taipei audience is +18% YoY. Sustained without algorithmic boost.'}
+    ],
+    feed:[
+      {dot:'green',text:'<strong>Tasty Workshop Vol.5</strong> hit #1 hot ranking globally',when:'3h ago'},
+      {dot:'gold',text:'<strong>Kerry Chiu</strong> shared your Apr 24 drop on her TikTok · 89K views',when:'1d ago'},
+      {dot:'pink',text:'<strong>+2,140 tokens</strong> from VIP Top tier engagement',when:'2d ago'},
+      {dot:'green',text:'<strong>BEFOX</strong> referenced your IVE breakdown in their Korean course',when:'3d ago'},
+      {dot:'gold',text:'Featured pillar post · <strong>Brazilian funk × twerk crossover</strong> cited your work',when:'4d ago'},
+      {dot:'pink',text:'2 new <strong>Custom requests</strong> from VIP Top tier · review needed',when:'5d ago'},
+      {dot:'green',text:'Your <strong>completion rate</strong> ticked up to 74% (platform median 61%)',when:'6d ago'}
+    ]
+  },
+  'nika-chill':{
+    name:'Nika Chill', initial:'N', handle:'@nika-chill · Thailand independent · roster since 2024',
+    tier:'⭐ Roster · Thailand Reggaetón', city:'📍 Bangkok · Thailand', active:'Active 2024-02-10',
+    drops:'31 drops · 14 months',
+    nextDrop:'Thu Apr 30 · 04:00 BKK', nextSub:'in 5 days · public drop',
+    kpi:{views:'1.6M',viewsTrend:'▲ 22.4% this month',completion:'71%',completionTrend:'▲ 6 pts vs Q1',tokens:'34,800',tokensTrend:'▲ 28% vs Mar',subs:'218',subsTrend:'▲ 41 this week'},
+    recentDrops:[
+      {title:'Papi Jordan · Tú No Baila Dembow',date:'Apr 24',tier:'Public',pos:'#018',views:'124K',pct:'73%'},
+      {title:'Bad Bunny · Tití Me Preguntó',date:'Apr 17',tier:'Medium',pos:'#029',views:'88K',pct:'69%'},
+      {title:'Karol G · Provenza floor cut',date:'Apr 10',tier:'Public',pos:'#041',views:'71K',pct:'68%'},
+      {title:'Anitta · Envolver remix',date:'Apr 3',tier:'Premium',pos:'#022',views:'56K',pct:'76%'},
+      {title:'Rosalía · Saoko phrasing',date:'Mar 27',tier:'Public',pos:'#067',views:'42K',pct:'64%'},
+      {title:'J Balvin · Mi Gente streetwear',date:'Mar 20',tier:'Medium',pos:'#085',views:'33K',pct:'62%'},
+      {title:'DaniLeigh · Lil Bebe · BKK floor',date:'Mar 13',tier:'VIP',pos:'#008',views:'21K',pct:'80%'}
+    ],
+    tiers:{basic:48,medium:28,premium:19,vip:5},
+    actions:[
+      {kind:'good',label:'Audience growth',text:'Bangkok audience +22% MoM. Strongest growth on the roster this quarter.'},
+      {kind:'normal',label:'Next drop',text:'Bad Bunny "Where She Goes" floor edit ready for Apr 30. Submit to Alexia for review.'},
+      {kind:'urgent',label:'DMCA notice',text:'A reupload of your Mar 13 drop appeared on TikTok without attribution. Already filed takedown.'}
+    ],
+    feed:[
+      {dot:'green',text:'<strong>+41 new Premium subscribers</strong> this week (record high)',when:'4h ago'},
+      {dot:'gold',text:'Your <strong>Papi Jordan dembow drop</strong> trending in Thailand + Vietnam',when:'1d ago'},
+      {dot:'pink',text:'<strong>+1,540 tokens</strong> from referral bonuses',when:'2d ago'},
+      {dot:'green',text:'<strong>Anel Li</strong> proposed cross-coastal collab · pending response',when:'3d ago'},
+      {dot:'gold',text:'Featured in <strong>perreo-history pillar</strong> as DR diaspora reference',when:'4d ago'},
+      {dot:'pink',text:'<strong>3 custom content requests</strong> queued · 2-day response window',when:'5d ago'},
+      {dot:'green',text:'<strong>Completion rate</strong> climbed to 71% (was 65% in Q1)',when:'6d ago'}
+    ]
+  },
+  'yurgenis':{
+    name:'Yurgenis', initial:'Y', handle:'@yurgenis · YUR AULAR · roster since 2023',
+    tier:'⭐ Roster · Reggaetón Floor Lead', city:'📍 Medellín · Venezuela diaspora', active:'Active 2023-08-12',
+    drops:'56 drops · 21 months',
+    nextDrop:'Thu Apr 30 · 22:00 COT', nextSub:'in 5 days · public drop',
+    kpi:{views:'3.7M',viewsTrend:'▲ 14.8% this month',completion:'69%',completionTrend:'▲ 3 pts vs Q1',tokens:'52,900',tokensTrend:'▲ 11% vs Mar',subs:'389',subsTrend:'▲ 28 this week'},
+    recentDrops:[
+      {title:'Ghetto Kids · Baja · class',date:'Apr 24',tier:'Public',pos:'#003',views:'1.2M',pct:'68%'},
+      {title:'Manuel Turizo · La Bachata',date:'Apr 17',tier:'Public',pos:'#019',views:'214K',pct:'66%'},
+      {title:'Sebastián Yatra · Tacones Rojos',date:'Apr 10',tier:'Medium',pos:'#028',views:'118K',pct:'71%'},
+      {title:'Karol G · Bichota floor remix',date:'Apr 3',tier:'Premium',pos:'#013',views:'89K',pct:'77%'},
+      {title:'Anuel AA · La Jeepeta drill',date:'Mar 27',tier:'Public',pos:'#055',views:'72K',pct:'63%'},
+      {title:'Maluma · Hawái phrasing',date:'Mar 20',tier:'Premium',pos:'#021',views:'58K',pct:'74%'},
+      {title:'Rauw Alejandro · Todo de Ti',date:'Mar 13',tier:'VIP',pos:'#007',views:'31K',pct:'83%'}
+    ],
+    tiers:{basic:46,medium:30,premium:18,vip:6},
+    actions:[
+      {kind:'good',label:'Top performer',text:'Your "Baja" drop is the platform\'s most-watched single video. 1.2M views and climbing.'},
+      {kind:'normal',label:'Workshop request',text:'Medellín studio booked you for a 3-hour workshop May 15. Confirm tracklist by May 1.'},
+      {kind:'good',label:'Tier shift',text:'Your audience is shifting toward Premium tier (+8% in 60 days). Strong retention signal.'}
+    ],
+    feed:[
+      {dot:'gold',text:'<strong>"Baja" drop</strong> crossed 1.2M views (lifetime). Platform record.',when:'5h ago'},
+      {dot:'green',text:'<strong>+28 new subscribers</strong> this week · majority from Colombia + Mexico',when:'1d ago'},
+      {dot:'pink',text:'<strong>+2,310 tokens</strong> from completion + first-100 bonuses',when:'2d ago'},
+      {dot:'green',text:'<strong>LABARBIE</strong> proposed Bogotá-Medellín joint workshop',when:'3d ago'},
+      {dot:'gold',text:'Cited in <strong>buenos-aires-reggaeton-scene</strong> pillar as cross-pollinator',when:'4d ago'},
+      {dot:'pink',text:'<strong>5 custom requests</strong> from VIP Top · 2 already approved',when:'5d ago'},
+      {dot:'green',text:'<strong>Audience tier breakdown</strong>: Premium grew from 16% → 24% in 60 days',when:'6d ago'}
+    ]
+  },
+  'kadorin-hitomi':{
+    name:'Kadorin Hitomi', initial:'K', handle:'@kadorin-hitomi · PF40 cosplay roster · since 2025',
+    tier:'⭐ Roster · Cosplay Fancam', city:'📍 Bangkok · Thailand', active:'Active 2025-01-08',
+    drops:'18 drops · 8 months',
+    nextDrop:'Sat May 2 · CosForce04', nextSub:'live con-floor · 4 days',
+    kpi:{views:'820K',viewsTrend:'▲ 31.2% this month',completion:'76%',completionTrend:'▲ 9 pts vs Q1',tokens:'18,400',tokensTrend:'▲ 42% vs Mar',subs:'124',subsTrend:'▲ 19 this week'},
+    recentDrops:[
+      {title:'NIKKE · Commander bow phrase',date:'Apr 24',tier:'Public',pos:'#005',views:'231K',pct:'78%'},
+      {title:'Genshin · Yelan dragon ribbon',date:'Apr 17',tier:'Premium',pos:'#011',views:'118K',pct:'82%'},
+      {title:'PF40 hallway floor cut',date:'Apr 10',tier:'Public',pos:'#022',views:'87K',pct:'71%'},
+      {title:'Honkai Star Rail · Acheron',date:'Apr 3',tier:'Medium',pos:'#031',views:'64K',pct:'74%'},
+      {title:'Persona 5 · Yoshizawa cosplay',date:'Mar 27',tier:'Public',pos:'#049',views:'52K',pct:'69%'},
+      {title:'Spy x Family · Yor short',date:'Mar 20',tier:'Premium',pos:'#018',views:'41K',pct:'80%'},
+      {title:'NIKKE · Modernia walk-by',date:'Mar 13',tier:'VIP',pos:'#003',views:'26K',pct:'88%'}
+    ],
+    tiers:{basic:39,medium:32,premium:24,vip:5},
+    actions:[
+      {kind:'good',label:'Highest grower',text:'You are the platform\'s fastest-growing creator this month (+31% MoM views).'},
+      {kind:'urgent',label:'CosForce04 prep',text:'Convention starts May 2. Confirm 3 cosplay rotations + recording assistant by Apr 28.'},
+      {kind:'good',label:'Tier 88%',text:'Your VIP Top completion rate is 88% — highest on the roster. VIP audience is locked in.'}
+    ],
+    feed:[
+      {dot:'gold',text:'<strong>NIKKE Commander drop</strong> went viral · cited by 4 cosplay TikTokers',when:'2h ago'},
+      {dot:'green',text:'<strong>+19 subscribers</strong> this week, 12 from Japan',when:'1d ago'},
+      {dot:'pink',text:'<strong>+1,820 tokens</strong> · highest single-week earnings yet',when:'2d ago'},
+      {dot:'green',text:'<strong>Sugaarrbbaby</strong> proposed costume-trade collab · pending',when:'3d ago'},
+      {dot:'gold',text:'Featured on <strong>style-cosplay-fancam</strong> page card #3',when:'4d ago'},
+      {dot:'pink',text:'<strong>2 custom requests</strong> from VIP Top · NIKKE-themed',when:'5d ago'},
+      {dot:'green',text:'<strong>Apr completion rate 76%</strong> · best on roster for cosplay-fancam style',when:'6d ago'}
+    ]
+  }
+};
+
+// Render functions
+function tierClass(t){
+  if(t==='Public')return'tier-public';if(t==='Medium')return'tier-medium';
+  if(t==='Premium')return'tier-premium';return'tier-vip';
+}
+function pctClass(p){
+  const n=parseInt(p);if(n>=75)return'good';if(n>=65)return'mid';return'low';
+}
+function dotClass(d){if(d==='green')return'dot green';if(d==='gold')return'dot gold';return'dot';}
+
+function render(handle){
+  const d=DATA[handle]||DATA['lada-gozzi'];
+  document.getElementById('avatar').textContent=d.initial;
+  document.getElementById('creatorName').textContent=d.name;
+  document.getElementById('creatorHandle').textContent=d.handle;
+  document.getElementById('creatorTier').innerHTML=d.tier;
+  document.getElementById('metaCity').textContent=d.city;
+  document.getElementById('metaActive').textContent=d.active;
+  document.getElementById('metaDrops').textContent=d.drops;
+  document.querySelector('.next-drop .when').textContent=d.nextDrop;
+  document.querySelector('.next-drop .sub').textContent=d.nextSub;
+
+  // KPIs
+  document.getElementById('kpiViews').textContent=d.kpi.views;
+  document.getElementById('kpiViewsTrend').textContent=d.kpi.viewsTrend;
+  document.getElementById('kpiCompletion').textContent=d.kpi.completion;
+  document.getElementById('kpiCompletionTrend').textContent=d.kpi.completionTrend;
+  document.getElementById('kpiTokens').textContent=d.kpi.tokens;
+  document.getElementById('kpiTokensTrend').textContent=d.kpi.tokensTrend;
+  document.getElementById('kpiSubs').textContent=d.kpi.subs;
+  document.getElementById('kpiSubsTrend').textContent=d.kpi.subsTrend;
+
+  // Drops table
+  const tbody=document.getElementById('dropsBody');
+  tbody.innerHTML=d.recentDrops.map(r=>
+    `<tr><td class="title">${r.title}</td><td class="date">${r.date}</td><td><span class="tier-tag ${tierClass(r.tier)}">${r.tier}</span></td><td class="pos">${r.pos}</td><td class="views">${r.views}</td><td class="pct ${pctClass(r.pct)}">${r.pct}</td></tr>`
+  ).join('');
+
+  // Tier bars
+  const tb=document.getElementById('tierBars');
+  tb.innerHTML=`
+    <div class="tier-bar"><div class="name b">Basic</div><div class="track"><div class="fill b" style="width:${d.tiers.basic}%"></div></div><div class="pct">${d.tiers.basic}%</div></div>
+    <div class="tier-bar"><div class="name m">Medium</div><div class="track"><div class="fill m" style="width:${d.tiers.medium}%"></div></div><div class="pct">${d.tiers.medium}%</div></div>
+    <div class="tier-bar"><div class="name p">Premium</div><div class="track"><div class="fill p" style="width:${d.tiers.premium}%"></div></div><div class="pct">${d.tiers.premium}%</div></div>
+    <div class="tier-bar"><div class="name v">VIP Top</div><div class="track"><div class="fill v" style="width:${d.tiers.vip}%"></div></div><div class="pct">${d.tiers.vip}%</div></div>
+  `;
+
+  // Actions
+  const al=document.getElementById('actionList');
+  al.innerHTML=d.actions.map(a=>
+    `<div class="action ${a.kind}"><div class="label">${a.label}</div><div class="text">${a.text}</div></div>`
+  ).join('');
+
+  // Feed
+  const fl=document.getElementById('activityFeed');
+  fl.innerHTML=d.feed.map(e=>
+    `<div class="event"><div class="${dotClass(e.dot)}"></div><div class="text">${e.text}</div><div class="when">${e.when}</div></div>`
+  ).join('');
+}
+
+// Init: read handle from URL or localStorage, default to lada-gozzi
+function getHandle(){
+  const params=new URLSearchParams(window.location.search);
+  const h=params.get('handle');
+  if(h&&DATA[h])return h;
+  const stored=localStorage.getItem('twk_dash_handle');
+  if(stored&&DATA[stored])return stored;
+  return 'lada-gozzi';
+}
+const initialHandle=getHandle();
+document.getElementById('creatorSwitch').value=initialHandle;
+render(initialHandle);
+
+// Switch handler
+document.getElementById('creatorSwitch').addEventListener('change',(e)=>{
+  const h=e.target.value;
+  localStorage.setItem('twk_dash_handle',h);
+  // Update URL without reload
+  const url=new URL(window.location);
+  url.searchParams.set('handle',h);
+  window.history.replaceState({},'',url);
+  render(h);
+});
+</script>
+</body>
+</html>
