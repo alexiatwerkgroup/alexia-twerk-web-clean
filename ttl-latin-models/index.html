@@ -88,7 +88,7 @@
 })();
 </script>
 </head>
-<body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater twk-vip-locked" data-page="playlist-index">
+<body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater" data-page="playlist-index">
 
 <a class="twerkhub-pl-skip" href="#twerkhub-pl-main">Skip to main content</a>
 
@@ -155,6 +155,7 @@
   loadOnce('/assets/token-system.js?v=20260425-p8','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260425-p8','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260425-p8','twk-loader-twerkhub-auth');
+  loadOnce('/assets/twerkhub-pl-theater.js?v=20260425-p9','twk-loader-pl-theater');
 })();
 </script>
 
@@ -214,15 +215,6 @@
 </main>
 
 
-<section class="twerkhub-pl-vip-gate" aria-label="VIP archive gate">
-  <div class="twerkhub-pl-vip-inner">
-    <div class="twerkhub-pl-vip-icon" aria-hidden="true">🔒</div>
-    <h2>VIP archive · 1,500+ uncut cuts</h2>
-    <p>The complete TTL Latin model collection in MP4 4K. Members of the VIP tier unlock the full grid below — every clip in original quality, no reuploads, no compression artifacts.</p>
-    <a class="twerkhub-pl-vip-cta" href="/membership.html">Unlock the full archive · Upgrade to VIP →</a>
-    <p class="twerkhub-pl-vip-note">Scattered low-quality reuploads exist on Google; this is the source.</p>
-  </div>
-</section>
 <style>
 .twerkhub-pl-vip-gate{margin:30px auto;max-width:1200px;padding:0 26px}
 .twerkhub-pl-vip-inner{position:relative;border:2px solid rgba(255,180,84,.5);border-radius:24px;padding:42px 32px;text-align:center;background:linear-gradient(135deg,rgba(255,45,135,.08),rgba(255,180,84,.06),rgba(157,78,221,.08));overflow:hidden}
@@ -233,9 +225,6 @@
 .twerkhub-pl-vip-note{font-size:12px!important;color:rgba(255,255,255,.45)!important;font-style:italic;margin-top:18px!important;letter-spacing:.04em}
 .twerkhub-pl-vip-cta{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14!important;font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:13px;box-shadow:0 14px 32px rgba(255,45,135,.4);transition:transform .25s,box-shadow .25s;position:relative}
 .twerkhub-pl-vip-cta:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(255,45,135,.55)}
-.twk-vip-locked .vcard .vthumb img{filter:blur(8px) brightness(.6);transition:filter .35s}
-.twk-vip-locked .vcard{cursor:not-allowed;position:relative}
-.twk-vip-locked .vcard::after{content:"🔒";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px;z-index:5;text-shadow:0 4px 18px rgba(0,0,0,.85);pointer-events:none}
 .twk-vip-locked .vcard:hover .vthumb img{filter:blur(6px) brightness(.7)}
 .twk-vip-locked .vcard:hover::after{transform:translate(-50%,-50%) scale(1.15)}
 </style>
