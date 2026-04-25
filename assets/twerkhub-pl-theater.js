@@ -50,9 +50,11 @@
     return ytApiPromise;
   }
 
-  // ── Modal scaffold (large centered window, NEVER fullscreen) ────
-  function ensureModal(){
-    if (modal) return;
+  // ── Inject ALL theater CSS at script load (NOT inside ensureModal — that
+  // only runs when the modal opens, but we need badge styles immediately on
+  // page load for the viewed marker to render correctly).
+  function injectStyle(){
+    if (document.getElementById('twk-pl-theater-style')) return;
     var st = document.createElement('style');
     st.id = 'twk-pl-theater-style';
     st.textContent = [
@@ -66,15 +68,21 @@
       '#twk-pl-theater-close{position:absolute;top:12px;right:12px;z-index:5;width:42px;height:42px;border-radius:50%;border:none;background:rgba(0,0,0,.7);color:#fff;font-size:24px;cursor:pointer;line-height:1;transition:background .2s}',
       '#twk-pl-theater-close:hover{background:#ff2d87}',
       /* Viewed badge: COMPACT green pill, absolutely positioned over card top-left.
-         !important on position rules so flex/grid parents can't push it to a new row. */
-      '.twk-viewed-badge{position:absolute!important;top:6px;left:6px;background:linear-gradient(145deg,#3ddca0,#28a877);color:#06140e;font:800 9px/1 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;letter-spacing:.16em;padding:4px 8px;border-radius:5px;z-index:9;pointer-events:none;text-transform:uppercase;box-shadow:0 2px 6px rgba(0,0,0,.45);white-space:nowrap;display:inline-block;line-height:1}',
-      '.twk-viewed-badge::before{content:"✓ ";font-weight:900}',
+         !important on position rules so flex/grid parents can\'t push it to a new row. */
+      '.twk-viewed-badge{position:absolute!important;top:6px!important;left:6px!important;right:auto!important;bottom:auto!important;background:linear-gradient(145deg,#3ddca0,#28a877)!important;color:#06140e!important;font:800 9px/1 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto!important;letter-spacing:.16em!important;padding:4px 8px!important;border-radius:5px!important;z-index:9!important;pointer-events:none;text-transform:uppercase!important;box-shadow:0 2px 6px rgba(0,0,0,.45)!important;white-space:nowrap!important;display:inline-block!important;line-height:1!important;width:auto!important;height:auto!important;margin:0!important;border:0!important}',
+      '.twk-viewed-badge::before{content:"\\2713 ";font-weight:900}',
       /* Force parent positioning so the absolute badge anchors correctly */
       '.vcard.twk-viewed,.rk-item.twk-viewed{position:relative!important}',
       /* Subtle dimming of viewed content (the part the user said works fine — keeping intact) */
       '.vcard.twk-viewed .vthumb img,.rk-item.twk-viewed .rk-thumb img,.rk-item.twk-viewed img{opacity:.55!important;filter:grayscale(.45)!important;transition:opacity .25s,filter .25s}'
     ].join('\n');
     document.head.appendChild(st);
+  }
+
+  // ── Modal scaffold (large centered window, NEVER fullscreen) ────
+  function ensureModal(){
+    if (modal) return;
+    injectStyle();
 
     modal = document.createElement('div');
     modal.id = 'twk-pl-theater';
@@ -238,6 +246,7 @@
   }
 
   function init(){
+    injectStyle();  // CRITICAL: badge CSS must exist before applyViewedClasses adds .twk-viewed
     patchInlinePlayer();
     applyViewedClasses();
     document.addEventListener('click', onDocClick, true);
