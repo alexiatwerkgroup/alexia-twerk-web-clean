@@ -289,39 +289,58 @@ def build_schema_set(rel_path, html, page_type):
     og_image = extract_og_image(html)
     vid = extract_video_id(html)
 
+    # Inspect existing schema types so we don't create duplicates.
+    existing = extract_existing_schemas(html)
+    existing_types = set()
+    for s in existing:
+        if isinstance(s, dict):
+            t = s.get('@type')
+            if isinstance(t, list):
+                for tt in t: existing_types.add(tt)
+            elif isinstance(t, str):
+                existing_types.add(t)
+
+    def add_if_missing(schema_obj, *types_to_check):
+        """Append schema only if NONE of the given types already exists on the page."""
+        if any(t in existing_types for t in types_to_check):
+            return
+        schemas.append(schema_obj)
+        # Track it so we don't re-add same type from another branch
+        t = schema_obj.get('@type')
+        if isinstance(t, str): existing_types.add(t)
+
     schemas = []
 
     if page_type == 'home':
-        schemas.append(schema_website())
-        schemas.append(schema_organization())
+        add_if_missing(schema_website(), 'WebSite')
+        add_if_missing(schema_organization(), 'Organization')
     elif page_type == 'playlist-landing':
-        # Page already has a strong CollectionPage + ItemList in static markup.
-        # We only contribute breadcrumb here.
+        # Page already has CollectionPage + ItemList. Just add breadcrumb.
         pass
     elif page_type == 'playlist-video':
-        schemas.append(schema_videoobject(title, desc, canonical, vid, og_image))
+        add_if_missing(schema_videoobject(title, desc, canonical, vid, og_image), 'VideoObject')
     elif page_type == 'themed-playlist':
-        schemas.append(schema_collectionpage(title, desc, canonical))
+        add_if_missing(schema_collectionpage(title, desc, canonical), 'CollectionPage')
     elif page_type in ('creator', 'twerk-dancer'):
-        schemas.append(schema_profilepage(title, desc, canonical))
+        add_if_missing(schema_profilepage(title, desc, canonical), 'ProfilePage', 'Person')
     elif page_type == 'blog':
-        schemas.append(schema_blogposting(title, desc, canonical))
+        add_if_missing(schema_blogposting(title, desc, canonical), 'BlogPosting', 'Article')
     elif page_type == 'country-hub':
-        schemas.append(schema_collectionpage(title, desc, canonical))
+        add_if_missing(schema_collectionpage(title, desc, canonical), 'CollectionPage')
     elif page_type == 'twerk-seo':
-        schemas.append(schema_webpage(title, desc, canonical))
+        add_if_missing(schema_webpage(title, desc, canonical), 'WebPage')
     elif page_type == 'style':
-        schemas.append(schema_webpage(title, desc, canonical))
+        add_if_missing(schema_webpage(title, desc, canonical), 'WebPage')
     elif page_type == 'premium-collection':
-        schemas.append(schema_collectionpage(title, desc, canonical))
+        add_if_missing(schema_collectionpage(title, desc, canonical), 'CollectionPage')
     elif page_type == 'user-page':
-        schemas.append(schema_webpage(title, desc, canonical))
+        add_if_missing(schema_webpage(title, desc, canonical), 'WebPage')
     else:
-        schemas.append(schema_webpage(title, desc, canonical))
+        add_if_missing(schema_webpage(title, desc, canonical), 'WebPage')
 
     # BreadcrumbList — universal, except home
     if page_type != 'home':
-        schemas.append(build_breadcrumb(rel_path, title))
+        add_if_missing(build_breadcrumb(rel_path, title), 'BreadcrumbList')
 
     return schemas
 
