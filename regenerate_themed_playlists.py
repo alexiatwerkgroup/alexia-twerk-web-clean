@@ -192,16 +192,21 @@ def substitute_in_template(template, slug, meta, data):
     # ─── 7. body data-page
     h = re.sub(r'(data-page=")[^"]*(")', r'\g<1>playlist-' + slug + r'\g<2>', h, count=1)
 
-    # ─── 8. Hero h1 (between <h1 ...> and </h1>)
-    # The /playlist/ h1 is something like "Hottest <em>twerk</em> videos on YouTube."
-    # We replace its text content while preserving the same element structure.
-    new_h1_html = h1_short.replace(h1_em, f'<em>{h1_em}</em>') if h1_em in h1_short else f'{h1_short} <em>{h1_em}</em>'
-    h = re.sub(r'(<h1[^>]*>)[^<]*(?:<em[^>]*>[^<]*</em>[^<]*)*([^<]*)(</h1>)',
-               r'\g<1>' + new_h1_html + r'\g<3>', h, count=1)
+    # ─── 8. Hero h1 — replace ENTIRE <h1>...</h1> block (template has complex inner: <em>+<br>+<span>)
+    new_h1_inner = (
+        h1_short.replace(h1_em, f'<em>{h1_em}</em>') if h1_em in h1_short
+        else f'{h1_short} <em>{h1_em}</em>'
+    )
+    new_h1 = (
+        f'<h1>{new_h1_inner}.'
+        f'<br><span style="opacity:.75;font-size:.7em;font-weight:800">{esc_attr(meta["intro"])}</span>'
+        f'</h1>'
+    )
+    h = re.sub(r'<h1[^>]*>.*?</h1>', new_h1, h, count=1, flags=re.DOTALL)
 
-    # ─── 9. Intro <p class="twerkhub-pl-intro">
-    h = re.sub(r'(<p\s+class="twerkhub-pl-intro"[^>]*>)[^<]*(</p>)',
-               r'\g<1>' + esc_attr(meta['intro']) + r'\g<2>', h, count=1)
+    # ─── 9. Intro <p class="twerkhub-pl-intro">…</p> — replace whole element
+    new_intro = f'<p class="twerkhub-pl-intro">{esc_attr(meta["intro"])}</p>'
+    h = re.sub(r'<p\s+class="twerkhub-pl-intro"[^>]*>.*?</p>', new_intro, h, count=1, flags=re.DOTALL)
 
     # ─── 10. Top kicker <div class="twerkhub-pl-kicker">/ ... before h1
     # There may be multiple kicker divs; replace just the one inside the hero header
