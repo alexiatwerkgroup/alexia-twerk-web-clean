@@ -58,9 +58,10 @@ CANONICAL_NAV = """<!-- TWK_NAV_V1 -->
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
-  loadOnce('/assets/token-system.js?v=20260425-p5','twk-loader-token-system');
-  loadOnce('/assets/twerkhub-tokens.js?v=20260425-p5','twk-loader-twerkhub-tokens');
-  loadOnce('/assets/twerkhub-auth.js?v=20260425-p6','twk-loader-twerkhub-auth');
+  loadOnce('/assets/supabase-config.js?v=20260425-p7','twk-loader-supabase-config');
+  loadOnce('/assets/token-system.js?v=20260425-p7','twk-loader-token-system');
+  loadOnce('/assets/twerkhub-tokens.js?v=20260425-p7','twk-loader-twerkhub-tokens');
+  loadOnce('/assets/twerkhub-auth.js?v=20260425-p7','twk-loader-twerkhub-auth');
 })();
 </script>
 """
@@ -153,8 +154,4 @@ def main():
     for k, exs in examples.items():
         if exs and k != 'noop':
             print(f"  examples [{k}]: {exs[:3]}")
-    if args.dry_run:
-        print("\n[DRY RUN] No files written.")
-
-if __name__ == '__main__':
-    main()
+        pass

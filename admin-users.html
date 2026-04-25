@@ -3,257 +3,286 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin · Registered Users · Alexia Twerk Group</title>
+<title>Admin · Leaderboard · Alexia Twerk Group</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:#05050a;color:#f5f5fb;font-family:"Inter",-apple-system,sans-serif;min-height:100vh;}
+  body{background:radial-gradient(900px 600px at 12% 10%,rgba(255,45,135,.10),transparent 60%),radial-gradient(800px 500px at 90% 12%,rgba(157,78,221,.08),transparent 58%),#05050a;}
   .wrap{max-width:1200px;margin:0 auto;padding:40px 24px 80px;}
-  h1{font-family:"Playfair Display",Georgia,serif;font-size:42px;font-weight:900;letter-spacing:-.015em;margin-bottom:8px;}
+  h1{font-family:"Playfair Display",Georgia,serif;font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-.015em;margin-bottom:8px;}
   h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;}
-  .sub{color:#a8a8b8;font-size:14px;line-height:1.6;margin-bottom:28px;}
+  .sub{color:#a8a8b8;font-size:14px;line-height:1.6;margin-bottom:28px;max-width:780px;}
+  .source-toggle{display:inline-flex;border:1px solid rgba(255,255,255,.18);border-radius:10px;overflow:hidden;margin-bottom:20px;}
+  .source-btn{padding:10px 18px;background:transparent;color:rgba(244,243,247,.65);font:800 11px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;border:0;cursor:pointer;transition:.2s;}
+  .source-btn.is-active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;}
+  .source-btn:hover:not(.is-active){background:rgba(255,255,255,.05);color:#fff;}
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px;}
   .stat{padding:18px 20px;border-radius:14px;background:linear-gradient(165deg,rgba(255,45,135,.08),rgba(255,255,255,.02));border:1px solid rgba(255,45,135,.22);}
   .stat-label{font:800 10px/1 "JetBrains Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:#ff6fa8;margin-bottom:8px;}
-  .stat-value{font:900 28px/1 "Playfair Display",Georgia,serif;color:#fff;}
-  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;font:800 11px/1 "Inter",sans-serif;letter-spacing:.14em;text-transform:uppercase;border:0;cursor:pointer;transition:.2s;text-decoration:none;}
-  .btn-primary{background:linear-gradient(180deg,#ff2d87,#9d4edd);color:#fff;box-shadow:0 10px 24px rgba(255,45,135,.32);}
-  .btn-primary:hover{transform:translateY(-2px);filter:brightness(1.08);}
-  .btn-ghost{background:rgba(255,255,255,.04);color:#f5f5fb;border:1px solid rgba(255,255,255,.1);}
-  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);}
-  .btn-danger{background:rgba(255,45,135,.12);color:#ff6fa8;border:1px solid rgba(255,45,135,.35);}
-  .btn-danger:hover{background:rgba(255,45,135,.24);color:#fff;}
-  .webhook-box{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px;margin-bottom:24px;}
-  .webhook-box h3{font-family:"Playfair Display",serif;font-size:16px;font-weight:800;margin-bottom:6px;}
-  .webhook-box p{color:#a8a8b8;font-size:12.5px;line-height:1.55;margin-bottom:12px;}
-  .webhook-box input{width:100%;padding:10px 14px;border-radius:8px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);color:#fff;font:600 13px "JetBrains Mono",monospace;}
-  .webhook-box input:focus{outline:none;border-color:rgba(255,45,135,.6);}
-  .webhook-box .row{display:flex;gap:8px;align-items:center;}
-  table{width:100%;border-collapse:collapse;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;}
-  th,td{padding:12px 16px;text-align:left;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);}
-  th{background:rgba(255,45,135,.08);color:#ff6fa8;font:800 10px/1 "JetBrains Mono",monospace;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;}
-  td{color:#d5d5df;}
-  td.email{color:#fff;font-weight:600;font-family:"JetBrains Mono",monospace;font-size:12.5px;}
-  tr:last-child td{border-bottom:0;}
-  tr:hover td{background:rgba(255,255,255,.03);}
-  .empty{padding:60px 20px;text-align:center;color:#a8a8b8;font-style:italic;}
-  .warn{background:rgba(255,180,84,.08);border:1px solid rgba(255,180,84,.3);border-radius:10px;padding:14px 16px;margin-bottom:20px;color:#ffd693;font-size:13px;line-height:1.55;}
-  .warn strong{color:#fff;}
-  .copied{background:#1ee08f !important;color:#031a11 !important;}
+  .stat-value{font:900 32px/1 "Playfair Display",Georgia,serif;color:#fff;}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;align-items:center;}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:10px;font:800 11px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;border:0;cursor:pointer;transition:.2s;text-decoration:none;}
+  .btn-primary{background:linear-gradient(180deg,#ff2d87,#9d4edd);color:#fff;box-shadow:0 12px 28px rgba(255,45,135,.32);}
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.18);}
+  .btn-ghost:hover{background:rgba(255,255,255,.06);border-color:rgba(255,45,135,.45);}
+  .search{flex:1;min-width:220px;padding:11px 16px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:13px;outline:none;}
+  .search:focus{border-color:rgba(255,45,135,.5);}
+  table{width:100%;border-collapse:collapse;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;font-size:13px;}
+  thead{background:rgba(255,45,135,.08);}
+  th{padding:14px 16px;text-align:left;font:800 10px/1 "JetBrains Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:#ff7eb0;cursor:pointer;user-select:none;border-bottom:1px solid rgba(255,255,255,.08);}
+  th:hover{color:#fff;background:rgba(255,45,135,.14);}
+  th .arrow{opacity:.5;margin-left:4px;}
+  th.active .arrow{opacity:1;color:#fff;}
+  td{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(244,243,247,.92);}
+  tr:nth-child(odd) td{background:rgba(255,255,255,.015);}
+  tr:hover td{background:rgba(255,45,135,.04);}
+  .rank{font:900 18px/1 "Playfair Display",Georgia,serif;color:#ffb454;width:50px;}
+  .rank-1{color:#ffd700;text-shadow:0 0 14px rgba(255,215,0,.5);}
+  .rank-2{color:#c0c0c0;}
+  .rank-3{color:#cd7f32;}
+  .username{font-weight:800;color:#fff;}
+  .tokens{font-weight:900;color:#ff7eb0;font-family:"JetBrains Mono",monospace;font-size:14px;}
+  .tier{display:inline-block;padding:3px 9px;border-radius:999px;font:800 9px/1 Inter,sans-serif;letter-spacing:.15em;text-transform:uppercase;}
+  .tier-basic{background:rgba(168,166,180,.14);color:#bbb;border:1px solid rgba(168,166,180,.3);}
+  .tier-medium{background:rgba(56,217,169,.14);color:#1ee08f;border:1px solid rgba(56,217,169,.4);}
+  .tier-premium{background:rgba(157,78,221,.18);color:#c084fc;border:1px solid rgba(157,78,221,.45);}
+  .tier-vip{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;}
+  .empty{text-align:center;padding:60px 20px;color:#888;font-style:italic;}
+  .loading{text-align:center;padding:60px 20px;color:#888;font:600 13px Inter,sans-serif;letter-spacing:.04em;}
+  .loading::after{content:'…';animation:dots 1.4s infinite;}
+  @keyframes dots{0%,20%{content:'.'}40%{content:'..'}60%,100%{content:'...'}}
+  .err{text-align:center;padding:30px;color:#ff8888;font:600 13px Inter,sans-serif;background:rgba(255,90,90,.06);border:1px solid rgba(255,90,90,.3);border-radius:14px;margin:20px 0;}
+  @media(max-width:760px){
+    th:nth-child(3),td:nth-child(3),th:nth-child(7),td:nth-child(7){display:none;}
+  }
 </style>
 </head>
 <body>
-<!-- TWK_NAV_V1 -->
-<style id="twk-nav-v1-css">
-.twk-nav-v1{position:sticky!important;top:0!important;z-index:9999!important;background:rgba(5,5,10,.94)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)!important;margin:0!important;width:100%!important;display:block!important}
-.twk-nav-v1-inner{max-width:1480px!important;margin:0 auto!important;padding:14px 26px!important;display:flex!important;align-items:center!important;gap:14px!important;flex-wrap:nowrap!important;grid-template-columns:none!important}
-.twk-nav-v1-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;flex-shrink:0}
-.twk-nav-v1-brand img{width:38px;height:38px;border-radius:8px;display:block}
-.twk-nav-v1-links{display:flex;align-items:center;gap:2px;flex-wrap:nowrap;margin-left:auto;white-space:nowrap}
-.twk-nav-v1-links a{position:relative;padding:10px 14px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;line-height:1;transition:color .22s ease,background .22s ease,transform .2s ease;white-space:nowrap}
-.twk-nav-v1-links a:hover{background:rgba(255,255,255,.05);color:#fff;transform:translateY(-1px)}
-.twk-nav-v1-links a.is-active{color:#fff;background:transparent}
-.twk-nav-v1-links a.is-active::after{content:"";position:absolute;left:18%;right:18%;bottom:2px;height:2px;border-radius:2px;background:linear-gradient(90deg,#ff2d87,#ffb454);box-shadow:0 0 10px rgba(255,45,135,.55)}
-.twk-nav-v1-links a.twk-nav-v1-hot{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(255,180,84,.18));color:#ff7eb0;border:1px solid rgba(255,45,135,.45);padding-left:14px}
-.twk-nav-v1-links a.twk-nav-v1-hot:hover{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;border-color:transparent;box-shadow:0 6px 18px rgba(255,45,135,.4)}
-.twk-nav-v1-live{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);color:#1ee08f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;margin-left:6px}
-.twk-nav-v1-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;animation:twkLivePulse 2s ease-in-out infinite}
-@keyframes twkLivePulse{0%,100%{opacity:1}50%{opacity:.4}}
-@media(max-width:1180px){.twk-nav-v1-links a{padding:8px 10px;font-size:10.5px;letter-spacing:.08em}}
-@media(max-width:1024px){.twk-nav-v1-links{gap:0}.twk-nav-v1-links a{padding:8px 8px;font-size:10px;letter-spacing:.06em}.twk-nav-v1-live{font-size:9px;padding:5px 9px}}
-@media(max-width:880px){.twk-nav-v1-inner{padding:10px 14px;gap:8px}.twk-nav-v1-links{gap:1px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:2px}.twk-nav-v1-links a{padding:7px 8px;font-size:10px}.twk-nav-v1-brand span{display:none}.twk-nav-v1-live{display:none}}
-.twerkhub-pl-thumb,.vthumb,.rk-thumb,.twerkhub-fp-thumb,.twerkhub-club-thumb{background:linear-gradient(135deg,#1a0a1f 0%,#2a0f3d 50%,#0a0a14 100%)!important}
-.twerkhub-pl-thumb img,.vthumb img,.rk-thumb img,.twerkhub-fp-thumb img,.twerkhub-club-thumb img{background:transparent}
-</style>
-<nav class="twk-nav-v1" aria-label="Primary" data-twk-nav-v1>
-  <div class="twk-nav-v1-inner">
-    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub · home">
-      <img src="/logo-twerkhub.png" alt="Twerkhub" width="38" height="38" decoding="async">
-      <span>TWERKHUB · EST. 2018</span>
-    </a>
-    <div class="twk-nav-v1-links">
-      <a href="/" data-nav="home">HOME</a>
-      <a href="/#private-models" data-nav="exclusive">EXCLUSIVE</a>
-      <a href="/#playlists" data-nav="playlists">PLAYLISTS</a>
-      <a href="/creators.html" data-nav="creators">CREATORS</a>
-      <a href="/alexia-video-packs.html" class="twk-nav-v1-hot" data-nav="hotpacks">HOT PACKS</a>
-      <a href="/community.html" data-nav="community">COMMUNITY</a>
-      <a href="/membership.html" data-nav="membership">MEMBERSHIP</a>
-      <a href="/account.html" data-nav="account">MY ACCOUNT</a>
-      <a href="/profile.html" data-nav="profile">PROFILE</a>
-    </div>
-    <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
-  </div>
-</nav>
-<script>
-(function(){
-  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
-  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
-  function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
-  setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
-  function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
-  loadOnce('/assets/token-system.js?v=20260425-p5','twk-loader-token-system');
-  loadOnce('/assets/twerkhub-tokens.js?v=20260425-p5','twk-loader-twerkhub-tokens');
-  loadOnce('/assets/twerkhub-auth.js?v=20260425-p6','twk-loader-twerkhub-auth');
-})();
-</script>
-
-
 <div class="wrap">
+  <h1>Twerkhub <em>Leaderboard</em></h1>
+  <p class="sub">
+    Top users ordenados por tokens. <strong>Source: Supabase</strong> (lista global · todos los users registrados en el sitio).
+    Cambiá a <em>Local</em> para ver solo los users registrados en este navegador (para debug).
+  </p>
 
-<h1>Registered <em>users</em></h1>
-<p class="sub">Panel local de registros. Los emails se guardan en <code>localStorage</code> de este browser y, si tenés un webhook configurado abajo, también se envían ahí.</p>
-
-<div class="warn">
-  <strong>Heads up:</strong> localStorage es por-navegador. La lista de abajo muestra sólo los usuarios que se registraron <strong>desde este mismo browser</strong>. Para captura global de emails, configurá el webhook de abajo (Formspree, n8n, Cloudflare Worker, Zapier catch-hook, etc).
-</div>
-
-<div class="stats">
-  <div class="stat"><div class="stat-label">Total locales</div><div class="stat-value" id="stat-total">0</div></div>
-  <div class="stat"><div class="stat-label">Hoy</div><div class="stat-value" id="stat-today">0</div></div>
-  <div class="stat"><div class="stat-label">Últimos 7 días</div><div class="stat-value" id="stat-week">0</div></div>
-  <div class="stat"><div class="stat-label">Dominios únicos</div><div class="stat-value" id="stat-domains">0</div></div>
-</div>
-
-<div class="webhook-box">
-  <h3>Webhook · captura global de emails</h3>
-  <p>Configurá una URL a la que se haga POST cada vez que alguien se registra. Ejemplos: <code>https://formspree.io/f/XXXX</code>, un webhook de Zapier, un endpoint de Cloudflare Worker, etc. Si queda vacío, los registros sólo se guardan en localStorage.</p>
-  <div class="row">
-    <input id="webhook-url" type="url" placeholder="https://formspree.io/f/your-id">
-    <button class="btn btn-primary" id="webhook-save" type="button">Save</button>
+  <div class="source-toggle">
+    <button class="source-btn is-active" id="src-supabase" onclick="setSource('supabase')">🌐 Supabase (global)</button>
+    <button class="source-btn" id="src-local" onclick="setSource('local')">💾 LocalStorage (this browser)</button>
   </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="actions">
+    <input type="search" id="search" class="search" placeholder="Search by username or email…">
+    <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
+    <button class="btn btn-ghost" onclick="exportJSON()">Export JSON</button>
+    <button class="btn btn-ghost" onclick="refresh()">↻ Refresh</button>
+  </div>
+
+  <div id="err-box" class="err" style="display:none"></div>
+
+  <table>
+    <thead>
+      <tr>
+        <th data-sort="rank">#</th>
+        <th data-sort="username">Username <span class="arrow">↕</span></th>
+        <th data-sort="email">Email <span class="arrow">↕</span></th>
+        <th data-sort="tokens" class="active">Tokens <span class="arrow">↓</span></th>
+        <th data-sort="total_earned">Earned <span class="arrow">↕</span></th>
+        <th data-sort="streak">Streak <span class="arrow">↕</span></th>
+        <th data-sort="tier">Tier <span class="arrow">↕</span></th>
+        <th data-sort="registered_at">Registered <span class="arrow">↕</span></th>
+      </tr>
+    </thead>
+    <tbody id="rows">
+      <tr><td colspan="8" class="loading">Loading from Supabase</td></tr>
+    </tbody>
+  </table>
 </div>
 
-<div class="actions">
-  <button class="btn btn-primary" id="download-csv" type="button">↓ Download CSV</button>
-  <button class="btn btn-ghost" id="copy-emails" type="button">📋 Copy all emails</button>
-  <button class="btn btn-ghost" id="refresh" type="button">↻ Refresh</button>
-  <button class="btn btn-danger" id="clear" type="button">🗑 Clear local data</button>
-</div>
-
-<table id="users-table">
-  <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Nick</th><th>Registered</th><th>Referrer</th></tr></thead>
-  <tbody></tbody>
-</table>
-<div class="empty" id="empty" hidden>No registrations yet in this browser. Share your site link and they'll start showing up here.</div>
-
-</div>
+<!-- Supabase config + SDK -->
+<script src="/assets/supabase-config.js"></script>
 <script>
 (function(){
-  var KEY_USERS = 'alexia_registered_users';
-  var KEY_HOOK  = 'alexia_registration_webhook';
+  'use strict';
+  var TIER = { medium:500, premium:2000, vip:10000 };
+  function tierFor(b){ return b>=TIER.vip?'vip':b>=TIER.premium?'premium':b>=TIER.medium?'medium':'basic'; }
+  var state = { source:'supabase', users:[], sortKey:'tokens', sortDir:'desc', search:'', err:null };
 
-  function lsGet(k, d){ try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch(_){ return d; } }
-  function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(_){ } }
-  function escapeHtml(s){ return String(s==null?'':s).replace(/[<>&"']/g, function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];}); }
-  function getUsers(){ var v = lsGet(KEY_USERS, []); return Array.isArray(v) ? v : []; }
-
-  function render(){
-    var users = getUsers().slice().sort(function(a,b){ return (b.registeredAt||0) - (a.registeredAt||0); });
-    var tbody = document.querySelector('#users-table tbody');
-    var empty = document.getElementById('empty');
-    if (!users.length) { tbody.innerHTML = ''; empty.hidden = false; document.getElementById('users-table').style.display='none'; }
-    else {
-      empty.hidden = true;
-      document.getElementById('users-table').style.display='';
-      tbody.innerHTML = users.map(function(u, i){
-        var d = u.registeredAt ? new Date(u.registeredAt) : null;
-        return '<tr>' +
-          '<td>' + (i+1) + '</td>' +
-          '<td>' + escapeHtml(u.name) + '</td>' +
-          '<td class="email">' + escapeHtml(u.email) + '</td>' +
-          '<td>' + escapeHtml(u.nick) + '</td>' +
-          '<td>' + (d ? d.toLocaleString() : '—') + '</td>' +
-          '<td>' + escapeHtml((u.ref || '').slice(0, 60)) + '</td>' +
-        '</tr>';
-      }).join('');
+  async function loadSupabase(){
+    state.err = null;
+    try {
+      var sb = await window.twkGetSupabase();
+      if (!sb) throw new Error('Supabase client unavailable');
+      // Use the `leaderboard` view which already filters tokens > 0 and joins.
+      // For full list including users with 0 tokens, query profiles directly.
+      var resp = await sb.from('profiles').select('id,username,email,tokens,total_earned,streak,tier,registered_at').order('tokens', { ascending:false }).limit(500);
+      if (resp.error) throw resp.error;
+      state.users = (resp.data || []).map(function(p){
+        return {
+          id: p.id, username: p.username || '(no name)', email: p.email || '',
+          tokens: p.tokens||0, total_earned: p.total_earned||0, streak: p.streak||0,
+          tier: p.tier || tierFor(p.tokens||0),
+          registered_at: p.registered_at || null
+        };
+      });
+    } catch(e){
+      console.error('[admin] supabase load failed', e);
+      state.err = 'Could not query Supabase: ' + (e.message || 'unknown error') + '. Run the schema-tokens-v1.sql first if you haven\'t.';
+      state.users = [];
     }
-    // Stats
-    var now = Date.now();
-    var oneDay = 24*60*60*1000;
-    var today = 0, week = 0;
-    var domains = {};
-    users.forEach(function(u){
-      if (u.registeredAt && (now - u.registeredAt) < oneDay) today++;
-      if (u.registeredAt && (now - u.registeredAt) < 7*oneDay) week++;
-      var d = (u.email || '').split('@')[1];
-      if (d) domains[d] = 1;
-    });
-    document.getElementById('stat-total').textContent   = users.length;
-    document.getElementById('stat-today').textContent   = today;
-    document.getElementById('stat-week').textContent    = week;
-    document.getElementById('stat-domains').textContent = Object.keys(domains).length;
   }
 
-  function csvCell(v){
-    var s = String(v == null ? '' : v);
-    if (/[,"\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
-    return s;
+  function loadLocal(){
+    state.err = null;
+    try {
+      var users = JSON.parse(localStorage.getItem('alexia_registered_users') || '[]');
+      if (!Array.isArray(users)) users = [];
+      var liveBal = 0, liveTotal = 0, liveStreak = 0;
+      try {
+        liveBal = JSON.parse(localStorage.getItem('alexia_tokens_v1.balance') || '0') || 0;
+        liveTotal = JSON.parse(localStorage.getItem('alexia_tokens_v1.total_earned') || '0') || 0;
+        liveStreak = JSON.parse(localStorage.getItem('alexia_tokens_v1.streak_days') || '0') || 0;
+      } catch(_){}
+      var currentRaw = localStorage.getItem('alexia_current_user') || sessionStorage.getItem('alexia_current_user');
+      var currentUsername = null;
+      try { var c = JSON.parse(currentRaw||'null'); if (c && c.username) currentUsername = c.username.toLowerCase(); } catch(_){}
+      state.users = users.map(function(u){
+        var isCurrent = currentUsername && u.username && u.username.toLowerCase() === currentUsername;
+        var t = isCurrent ? liveBal : (u.currentTokens||0);
+        return {
+          username: u.username || '(no name)', email: u.email || '',
+          tokens: t, total_earned: isCurrent ? liveTotal : (u.totalEarned||0),
+          streak: isCurrent ? liveStreak : (u.streak||0),
+          tier: tierFor(t),
+          registered_at: u.registeredAt ? new Date(u.registeredAt).toISOString() : null,
+          isCurrent: isCurrent
+        };
+      });
+    } catch(e){ state.err = 'Local load failed: ' + e.message; state.users = []; }
   }
-  function downloadCSV(){
-    var users = getUsers();
-    var rows = ['name,email,nick,registered_at_iso,registered_at_ms,referrer,user_agent'];
-    users.forEach(function(u){
-      rows.push([
-        csvCell(u.name),
-        csvCell(u.email),
-        csvCell(u.nick),
-        csvCell(u.registeredAt ? new Date(u.registeredAt).toISOString() : ''),
-        csvCell(u.registeredAt || ''),
-        csvCell(u.ref || ''),
-        csvCell(u.ua || '')
-      ].join(','));
-    });
-    var blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'alexia-users-' + new Date().toISOString().slice(0,10) + '.csv';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-  }
-  function copyEmails(){
-    var users = getUsers();
-    var emails = users.map(function(u){ return u.email; }).filter(Boolean).join(', ');
-    navigator.clipboard.writeText(emails).then(function(){
-      var b = document.getElementById('copy-emails');
-      var t = b.textContent;
-      b.classList.add('copied');
-      b.textContent = '✓ Copied ' + users.length + ' emails';
-      setTimeout(function(){ b.classList.remove('copied'); b.textContent = t; }, 2000);
-    });
-  }
-  function clearAll(){
-    if (!confirm('Delete ALL registered users from this browser? This cannot be undone. Make sure you downloaded the CSV first.')) return;
-    try { localStorage.removeItem(KEY_USERS); } catch(_){}
+
+  async function load(){
+    document.getElementById('rows').innerHTML = '<tr><td colspan="8" class="loading">Loading</td></tr>';
+    if (state.source === 'supabase') await loadSupabase();
+    else loadLocal();
     render();
   }
-  function loadWebhook(){
-    document.getElementById('webhook-url').value = lsGet(KEY_HOOK, '') || '';
+
+  function applyFilter(users){
+    var q = state.search.trim().toLowerCase();
+    if (!q) return users.slice();
+    return users.filter(function(u){ return (u.username||'').toLowerCase().indexOf(q)>=0 || (u.email||'').toLowerCase().indexOf(q)>=0; });
   }
-  function saveWebhook(){
-    var v = document.getElementById('webhook-url').value.trim();
-    if (v && !/^https?:\/\//.test(v)) { alert('URL must start with https:// or http://'); return; }
-    lsSet(KEY_HOOK, v);
-    var b = document.getElementById('webhook-save');
-    var t = b.textContent;
-    b.classList.add('copied');
-    b.textContent = '✓ Saved';
-    setTimeout(function(){ b.classList.remove('copied'); b.textContent = t; }, 1500);
+  function applySort(users){
+    var k = state.sortKey, dir = state.sortDir==='asc' ? 1 : -1;
+    return users.slice().sort(function(a,b){
+      var va=a[k], vb=b[k];
+      if (typeof va === 'string') va = va.toLowerCase();
+      if (typeof vb === 'string') vb = vb.toLowerCase();
+      if (va==null) return 1; if (vb==null) return -1;
+      if (va<vb) return -1*dir; if (va>vb) return 1*dir;
+      return 0;
+    });
+  }
+  function fmtDate(t){ if (!t) return '—'; try { return new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}); } catch(_){ return '—'; } }
+  function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+  function renderStats(users){
+    var total = users.length;
+    var withEmail = users.filter(function(u){return u.email;}).length;
+    var totalTokens = users.reduce(function(s,u){return s+(u.tokens||0);},0);
+    var topTokens = users.length ? Math.max.apply(null, users.map(function(u){return u.tokens||0;})) : 0;
+    document.getElementById('stats').innerHTML =
+      '<div class="stat"><div class="stat-label">Total users</div><div class="stat-value">' + total + '</div></div>' +
+      '<div class="stat"><div class="stat-label">With email</div><div class="stat-value">' + withEmail + '</div></div>' +
+      '<div class="stat"><div class="stat-label">Total tokens</div><div class="stat-value">' + totalTokens.toLocaleString('en-US') + '</div></div>' +
+      '<div class="stat"><div class="stat-label">Top user</div><div class="stat-value">' + topTokens.toLocaleString('en-US') + '</div></div>';
+  }
+  function renderRows(users){
+    var tbody = document.getElementById('rows');
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="8" class="empty">No users yet. ' + (state.source==='supabase' ? 'Run schema-tokens-v1.sql in Supabase first, then have someone sign up.' : 'No registered users in this browser yet.') + '</td></tr>';
+      return;
+    }
+    tbody.innerHTML = users.map(function(u, i){
+      var rk = i===0?'rank rank-1':i===1?'rank rank-2':i===2?'rank rank-3':'rank';
+      var youBadge = u.isCurrent ? ' <span style="font-size:9px;color:#1ee08f;letter-spacing:.18em;background:rgba(30,224,143,.12);padding:2px 6px;border-radius:4px;margin-left:6px">YOU</span>' : '';
+      return '<tr>' +
+        '<td class="' + rk + '">#' + (i+1) + '</td>' +
+        '<td class="username">@' + escapeHtml(u.username) + youBadge + '</td>' +
+        '<td>' + (u.email ? escapeHtml(u.email) : '<span style="opacity:.4">—</span>') + '</td>' +
+        '<td class="tokens">' + (u.tokens||0).toLocaleString('en-US') + '</td>' +
+        '<td>' + (u.total_earned||0).toLocaleString('en-US') + '</td>' +
+        '<td>' + (u.streak||0) + 'd</td>' +
+        '<td><span class="tier tier-' + u.tier + '">' + u.tier + '</span></td>' +
+        '<td>' + fmtDate(u.registered_at) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+  function renderHeaders(){
+    document.querySelectorAll('th[data-sort]').forEach(function(th){
+      var k = th.getAttribute('data-sort');
+      th.classList.toggle('active', k === state.sortKey);
+      var arrow = th.querySelector('.arrow');
+      if (arrow) {
+        if (k === state.sortKey) arrow.textContent = state.sortDir==='asc' ? '↑' : '↓';
+        else arrow.textContent = '↕';
+      }
+    });
+  }
+  function render(){
+    var box = document.getElementById('err-box');
+    if (state.err) { box.style.display = 'block'; box.textContent = state.err; }
+    else { box.style.display = 'none'; }
+    var users = applySort(applyFilter(state.users));
+    renderStats(users);
+    renderRows(users);
+    renderHeaders();
   }
 
-  document.getElementById('download-csv').addEventListener('click', downloadCSV);
-  document.getElementById('copy-emails').addEventListener('click', copyEmails);
-  document.getElementById('refresh').addEventListener('click', render);
-  document.getElementById('clear').addEventListener('click', clearAll);
-  document.getElementById('webhook-save').addEventListener('click', saveWebhook);
+  document.querySelectorAll('th[data-sort]').forEach(function(th){
+    th.addEventListener('click', function(){
+      var k = th.getAttribute('data-sort');
+      if (k==='rank') return;
+      if (state.sortKey===k) state.sortDir = state.sortDir==='asc'?'desc':'asc';
+      else { state.sortKey = k; state.sortDir = (k==='username'||k==='email') ? 'asc' : 'desc'; }
+      render();
+    });
+  });
+  document.getElementById('search').addEventListener('input', function(ev){ state.search = ev.target.value; render(); });
 
-  loadWebhook();
-  render();
+  window.setSource = function(src){
+    state.source = src;
+    document.getElementById('src-supabase').classList.toggle('is-active', src==='supabase');
+    document.getElementById('src-local').classList.toggle('is-active', src==='local');
+    load();
+  };
+  window.refresh = load;
+
+  window.exportCSV = function(){
+    var users = applySort(state.users);
+    var rows = [['rank','username','email','tokens','total_earned','streak','tier','registered_at']];
+    users.forEach(function(u, i){ rows.push([i+1,u.username,u.email,u.tokens,u.total_earned,u.streak,u.tier,u.registered_at||'']); });
+    var csv = rows.map(function(r){ return r.map(function(c){ var s=String(c==null?'':c); if (s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0) s='"'+s.replace(/"/g,'""')+'"'; return s; }).join(','); }).join('\n');
+    download('twerkhub-leaderboard-' + new Date().toISOString().slice(0,10) + '.csv', csv, 'text/csv');
+  };
+  window.exportJSON = function(){
+    var users = applySort(state.users);
+    download('twerkhub-leaderboard-' + new Date().toISOString().slice(0,10) + '.json', JSON.stringify(users,null,2), 'application/json');
+  };
+  function download(filename, content, mime){
+    var blob = new Blob([content],{type:mime+';charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+  }
+
+  // Initial load
+  load();
 })();
 </script>
 </body>
