@@ -38,7 +38,7 @@
     '/playlist-ttl':            'ttl',
     '/playlist-ttl.html':       'ttl',
     '/playlist-twerk-hub':      'twerk-hub',
-    '/playlist-twerk-hub.html': 'twerk-hub',
+    '/playlist/': 'twerk-hub',
     '/playlist-del-otro-lado':  'del-otro-lado',
     '/playlist-del-otro-lado.html': 'del-otro-lado'
   };

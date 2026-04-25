@@ -88,6 +88,56 @@
       "source": "/playlist-2/:path*",
       "destination": "/playlist/",
       "permanent": true
+    },
+    {
+      "source": "/playlist-korean.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-try-on-haul-leaks.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-latina-model-leaks.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-twerk-hub-leaks.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-twerk-hub.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-cosplay-fancam-leaks.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-ttl-4k-leaks.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/premium-kdance-archive.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/premium-latina-beauties.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/premium-try-on-haul.html",
+      "destination": "/playlist/",
+      "permanent": true
     }
   ]
 }
