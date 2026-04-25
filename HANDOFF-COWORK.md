@@ -1,5 +1,5 @@
 # TWERKHUB · Cowork Handoff Document
-**Last updated:** 2026-04-24 · Rounds 14-16 staged (uncommitted) · Rounds 10-13 shipped at commit `edf9e29`
+**Last updated:** 2026-04-24 · Rounds 14-17 staged (uncommitted) · Rounds 10-13 shipped at commit `edf9e29`
 **Repo:** `https://github.com/alexiatwerkgroup/alexia-twerk-web-clean`
 **Live:** `https://alexiatwerkgroup.com/`
 **Local working dir:** `C:\Users\Claudio\OneDrive\Desktop\proyectos\alexia-twerk-web-clean`
@@ -38,7 +38,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 
 ### Content (all live in production)
 - **22 blog posts** (~33,200 words long-form) in `/blog/`
-- **19 creator profiles** with Person/Organization schema in `/creator/`
+- **22 creator profiles** with Person/Organization schema in `/creator/`
 - **5 collection pages** (geo + style): Taipei, Moscow, Colombia, Seoul, heels-choreo, cosplay-fancam, reggaeton-floor
 - **4 legal/corporate**: `/about.html`, `/privacy.html`, `/terms.html`, `/contact.html`
 - **2 utility**: `/search.html` (with in-memory 25-entry index), `/glossary.html` (30 DefinedTerm entries)
@@ -137,6 +137,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 | 14 | _pending push_ | Post #22 + manifesto trilingual + 2 translations + style page ES + nav fix. +blog/afrobeats-twerk-crossover.html (1.690-word pillar · West African crossover · links to Patricia Atakora). +/ru/blog/why-i-built-twerkhub.html (closes trilingual founder essay EN/ES/RU). +/es/blog/k-dance-vs-reggaeton-twerk.html. +/es/style-reggaeton-floor.html (first ES style page). NAV FIX: `.twerkhub-nav a.active` no longer pink-purple gradient — subtle dark fill + gold underline. SW v1.1.6→v1.1.7, universal-inject p11→p12, page p13→p14, polish p4→p5, elevation p3→p4-LEAN. |
 | 15 | _pending push_ | Membership FAQ loop closure: 3 ES translations of the posts linked from the Service+FAQPage schemas on /membership.html and /about.html. +/es/blog/token-economy-playbook.html (1.680 words · 95% creator cut math). +/es/blog/the-4-tiers-explained.html (1.480 words · tier mechanics + dual paths). +/es/blog/discord-community-playbook.html (1.550 words · community design). All cross-linked from /es/blog/ grid. ES blog total: 8 posts. |
 | 16 | _pending push_ | Onboarding loop closure + Anel Li + share buttons: +/es/blog/how-to-earn-tokens-twerkhub.html (closes onboarding flow ES). +/es/blog/weekly-drop-calendar-2026.html (operacional ARG/CO). +/ru/blog/fancam-etiquette-2026.html (RU ethics). +/creator/anel-li.html (Greece · Greek-Latin reggaetón fusion · referenced from style-reggaeton-floor EN+ES, now linked). +Facebook + Threads share buttons in twerkhub-share.js (5→7 networks + copy = 8 total). share VER p1→p2. Style-reggaeton-floor cards #4 ahora `<a>` con link al profile. ES blog total: 10 posts · creators total: 19. |
+| 17 | _pending push_ | Moscow profile gap closure + ES style cluster: +/creator/kate-knaub.html (Moscow independent · Goody Брокколи). +/creator/dasha-kolesnikova.html (Ufa regional rooftop · Nicki Minaj Yikes). +/creator/street-project-volzhsky.html (Volzhsky studio · Organization schema · Jazz-funk Kids program). +/es/style-heels-choreo.html. +/es/style-cosplay-fancam.html (closes 3-style ES cluster). creators-moscow.html cards #3-5 ahora linkean a profiles canónicos en /creator/ (no más placeholders a /playlist/). Creators total: 22. ES style pages: 3/3 completas. |
 
 ---
 
