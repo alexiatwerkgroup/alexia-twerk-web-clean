@@ -1,11 +1,11 @@
 /*!
- * TWERKHUB · Social Share Widget — 2026-04-24
+ * TWERKHUB · Social Share Widget — 2026-04-24 · p2 (8 networks)
  * --------------------------------------------------------------
  * Auto-mounts a floating share bar on blog posts + playlist pages.
  * Uses the Web Share API where available (mobile), falls back to
- * individual channel links. Pinterest + X + WhatsApp + Telegram +
- * Reddit + copy link. Zero HTML edits — JS looks for known page
- * containers and appends.
+ * individual channel links. X + Pinterest + WhatsApp + Telegram +
+ * Reddit + Facebook + Threads + copy link. Zero HTML edits — JS
+ * looks for known page containers and appends.
  *
  * Silent on pages without a semantic article or main element.
  * --------------------------------------------------------------
@@ -78,7 +78,9 @@
       '.twk-share-btn[data-net="pin"]:hover { background: #e60023; color: #fff; }',
       '.twk-share-btn[data-net="wa"]:hover { background: #25d366; color: #fff; }',
       '.twk-share-btn[data-net="tg"]:hover { background: #229ed9; color: #fff; }',
-      '.twk-share-btn[data-net="rd"]:hover { background: #ff4500; color: #fff; }'
+      '.twk-share-btn[data-net="rd"]:hover { background: #ff4500; color: #fff; }',
+      '.twk-share-btn[data-net="fb"]:hover { background: #1877f2; color: #fff; }',
+      '.twk-share-btn[data-net="th"]:hover { background: #000; color: #fff; }'
     ].join('');
     document.head.appendChild(style);
 
@@ -93,6 +95,8 @@
       '<a class="twk-share-btn" data-net="wa" href="https://wa.me/?text=' + title + '%20' + url + '" target="_blank" rel="noopener nofollow" title="Share on WhatsApp" aria-label="Share on WhatsApp">💬</a>',
       '<a class="twk-share-btn" data-net="tg" href="https://t.me/share/url?url=' + url + '&text=' + title + '" target="_blank" rel="noopener nofollow" title="Share on Telegram" aria-label="Share on Telegram">✈</a>',
       '<a class="twk-share-btn" data-net="rd" href="https://reddit.com/submit?url=' + url + '&title=' + title + '" target="_blank" rel="noopener nofollow" title="Share on Reddit" aria-label="Share on Reddit">🅡</a>',
+      '<a class="twk-share-btn" data-net="fb" href="https://www.facebook.com/sharer/sharer.php?u=' + url + '" target="_blank" rel="noopener nofollow" title="Share on Facebook" aria-label="Share on Facebook">f</a>',
+      '<a class="twk-share-btn" data-net="th" href="https://www.threads.net/intent/post?text=' + title + '%20' + url + '" target="_blank" rel="noopener nofollow" title="Share on Threads" aria-label="Share on Threads">@</a>',
       '<button class="twk-share-btn copy" type="button" title="Copy link" aria-label="Copy link">🔗</button>'
     ].join('');
     document.body.appendChild(bar);
