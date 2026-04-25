@@ -1,462 +1,372 @@
 #!/usr/bin/env python3
 """
-TWERKHUB · Regenerate themed playlists from /playlist/ template
-v2026-04-25-p1
+TWERKHUB · Regenerate themed playlists by CLONING /playlist/index.html EXACTLY.
+v2026-04-25-p2 — byte-for-byte clone, only data substitution.
 
-Builds /try-on-hot-leaks/, /ttl-latin-models/, /hottest-cosplay-fancam/,
-/korean-girls-kpop-twerk/ using the EXACT same structure as /playlist/:
+We take playlist/index.html as the canonical source of truth. Then for each
+themed playlist we:
+  1. Copy the entire file
+  2. Substitute title / description / canonical / og: tags
+  3. Substitute the TOP5 sidebar block
+  4. Substitute the grid block
+  5. Substitute the JSON-LD schemas (preserve structure, replace items)
+  6. Substitute the inline JS TOP5 + GRID arrays
+  7. Substitute the initial iframe src to point to the new top1 video
 
-  - Inline #twerkhub-pl-player iframe in main column (no fullscreen modal)
-  - Hot ranking sidebar (top 5) on the right
-  - Grid of vcards below
-  - swap(vid, number) handler with YT postMessage unmute
-  - Click delegation in capture phase for both .rk-item and .vcard
-  - twerkhub-pl-theater.js loaded for viewed marker
-  - Schema: CollectionPage + ItemList + BreadcrumbList
-
-Data sources:
-  /assets/try-on-videos.json        → /try-on-hot-leaks/index.html
-  /assets/ttl-videos.json           → /ttl-latin-models/index.html
-  /assets/cosplay-videos.json       → /hottest-cosplay-fancam/index.html
-  /assets/corean-videos.json        → /korean-girls-kpop-twerk/index.html
-
-Each JSON has:
-  hot_ranking: [{id, title, channel, duration, rank, badge}, ...] (5 items)
-  grid:        [{_id, _title, channel, duration, number}, ...] (variable)
+Everything else (CSS files, fonts, navbar, scripts, layout, classes) is
+preserved IDENTICALLY so the rendering matches /playlist/ exactly.
 """
 import json
 import re
 import os
-import sys
 import html as html_lib
 from pathlib import Path
 
 ROOT = Path("/sessions/wizardly-fervent-sagan/mnt/alexia-twerk-web-clean")
 SITE = "https://alexiatwerkgroup.com"
+TEMPLATE = ROOT / "playlist" / "index.html"
 
 PLAYLISTS = {
     "try-on-hot-leaks": {
         "data": "assets/try-on-videos.json",
         "title": "Try-On Hot Leaks · Curated Try-On Haul Collection · Twerkhub",
         "description": "Twerkhub Try-On Hot Leaks — curated archive of try-on haul videos. 4K bikinis, lingerie, micro-skirts, athletic wear. Members-only viral cuts.",
-        "h1": "Try-On <em>hot leaks</em> archive.",
+        "h1_short": "Try-on hot leaks",
+        "h1_em": "leaks",
         "intro": "Curated try-on haul collection · 4K · weekly drops · members only.",
-        "keywords": "try-on haul, bikini try-on, lingerie try-on, micro skirt, athletic wear, leaks",
+        "kicker": "/ try-on archive · members only",
+        "h2_count_label": "try-on cuts in the haul.",
     },
     "ttl-latin-models": {
         "data": "assets/ttl-videos.json",
         "title": "TTL · Latin Models · 1,500+ Private Cuts · Twerkhub",
         "description": "Twerkhub TTL · Complete Latin model archive · 4K MP4 cuts. Britney Mazo, Glenda, Jasmin, Daniela Florez and more. Members-only.",
-        "h1": "TTL · <em>Latin Models</em> archive.",
+        "h1_short": "TTL Latin models",
+        "h1_em": "models",
         "intro": "Complete Latin model collection · 4K · weekly drops · members only.",
-        "keywords": "latin model, britney mazo, glenda, jasmin model, daniela florez, ttl, micro bikini",
+        "kicker": "/ TTL archive · members only",
+        "h2_count_label": "Latin model cuts.",
     },
     "hottest-cosplay-fancam": {
         "data": "assets/cosplay-videos.json",
         "title": "Hottest Cosplay Fancam · 4K Anime Cosplay Archive · Twerkhub",
         "description": "Twerkhub Hottest Cosplay Fancam — curated anime/cosplay fancam archive. 4K HD vertical cuts, conventions, photoshoots. Weekly drops.",
-        "h1": "Hottest <em>cosplay fancam</em>.",
+        "h1_short": "Hottest cosplay fancam",
+        "h1_em": "fancam",
         "intro": "4K anime cosplay & fancam collection · weekly drops · members only.",
-        "keywords": "cosplay fancam, anime cosplay, convention cosplay, 4k cosplay, vertical cosplay, hot cosplay",
+        "kicker": "/ cosplay fancam archive",
+        "h2_count_label": "cosplay fancam cuts.",
     },
     "korean-girls-kpop-twerk": {
         "data": "assets/corean-videos.json",
         "title": "Korean Girls · K-Pop Twerk Choreo Archive · Twerkhub",
         "description": "Twerkhub K-Pop Twerk archive — Korean girl groups, choreo cuts, dance practice. 4K HD cuts of the hottest K-pop twerk performances.",
-        "h1": "K-Pop <em>twerk</em> & Korean girls.",
+        "h1_short": "K-pop twerk Korean girls",
+        "h1_em": "twerk",
         "intro": "K-Pop twerk choreo & Korean girl groups · 4K · weekly drops.",
-        "keywords": "kpop twerk, korean twerk, k-pop dance, korean girls dancing, kpop choreo",
+        "kicker": "/ K-pop twerk archive",
+        "h2_count_label": "K-pop twerk cuts.",
     },
 }
 
 
-def esc(s):
-    """HTML-escape, returning empty string for None."""
-    if s is None:
-        return ""
-    return html_lib.escape(str(s), quote=True)
+def esc_attr(s):
+    return html_lib.escape(str(s or ""), quote=True)
 
 
 def thumb(vid, hi=False):
     return f"https://i.ytimg.com/vi/{vid}/{'maxresdefault' if hi else 'hqdefault'}.jpg"
 
 
-def build_top5_html(top5):
-    """Return HTML for the 5 .rk-item entries in the sidebar."""
+# ─── Build replacement HTML blocks ─────────────────────────────────────
+def build_top5_sidebar_html(top5):
+    """Replicate exact /playlist/ rk-list innerHTML format."""
     badges = ['gold', 'purple', 'pink', 'monochrome', 'monochrome']
-    lines = []
+    out = []
     for i, item in enumerate(top5):
         vid = item.get('id') or item.get('_id') or ''
         title = item.get('title') or item.get('_title') or f'Top #{i+1}'
         channel = item.get('channel') or 'Twerkhub'
         rank = '#%02d' % (i + 1)
         badge = item.get('badge') or badges[i]
-        lines.append(
-            f'      <a class="rk-item" data-hot="1" data-vid="{esc(vid)}" data-number="{esc(rank)}" href="#">\n'
-            f'        <div class="rk-num {esc(badge)}">{esc(rank)}</div>\n'
-            f'        <div class="rk-thumb"><img loading="lazy" decoding="async" src="{esc(thumb(vid))}" alt="{esc(title)}" '
-            f'onerror="if(this.dataset.f){{this.onerror=null;this.src=\'/assets/safe-adult-placeholder.svg\';}}else{{this.dataset.f=1;this.src=\'https://i.ytimg.com/vi/{esc(vid)}/default.jpg\';}}"></div>\n'
-            f'        <div class="rk-copy"><div class="rk-title">{esc(title[:60])}</div><div class="rk-meta">{esc(channel[:50])}</div></div>\n'
+        out.append(
+            f'      <a class="rk-item" data-hot="1" data-vid="{esc_attr(vid)}" data-number="{esc_attr(rank)}" href="#">\n'
+            f'        <div class="rk-num {esc_attr(badge)}">{esc_attr(rank)}</div>\n'
+            f'        <div class="rk-thumb"><img loading="lazy" decoding="async" src="{esc_attr(thumb(vid))}" alt="{esc_attr(title[:80])}" decoding="async" '
+            f"onerror=\"if(this.dataset.f){{this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}}else{{this.dataset.f=1;this.src='https://i.ytimg.com/vi/" + esc_attr(vid) + "/default.jpg';}}\""
+            f'></div>\n'
+            f'        <div class="rk-copy"><div class="rk-title">{esc_attr(title[:50])}</div><div class="rk-meta">{esc_attr(channel[:50])}</div></div>\n'
             f'      </a>'
         )
-    return '\n'.join(lines)
+    return '\n'.join(out)
 
 
 def build_grid_html(grid):
-    """Return HTML for the .vcard entries in the grid."""
-    lines = []
+    """Replicate exact /playlist/ vcard format."""
+    out = []
     for i, item in enumerate(grid):
         vid = item.get('_id') or item.get('id') or ''
         title = item.get('_title') or item.get('title') or item.get('number') or f'Video #{i+1}'
         number = item.get('number') or '#%03d' % (i + 6)
-        lines.append(
-            f'    <a class="vcard reveal" data-hot="1" data-vid="{esc(vid)}" data-number="{esc(number)}" href="#" '
-            f'role="listitem" aria-label="{esc(title[:80])}">'
+        out.append(
+            f'    <a class="vcard reveal" data-hot="1" data-vid="{esc_attr(vid)}" data-number="{esc_attr(number)}" href="#" '
+            f'role="listitem" aria-label="{esc_attr(title[:80])}">'
             f'<div class="vthumb">'
-            f'<img src="{esc(thumb(vid, hi=True))}" alt="{esc(number)}" decoding="async" loading="lazy" '
-            f'onerror="if(this.dataset.f){{this.onerror=null;this.src=\'/assets/safe-adult-placeholder.svg\';}}else{{this.dataset.f=1;this.src=\'{esc(thumb(vid))}\';}}">'
+            f'<img src="{esc_attr(thumb(vid, hi=True))}" alt="{esc_attr(number)}" decoding="async" loading="lazy" '
+            f"onerror=\"if(this.dataset.f){{this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}}else{{this.dataset.f=1;this.src='" + esc_attr(thumb(vid)) + "';}}\""
+            f'>'
             f'<div class="vscrim"></div><div class="vplay"></div>'
             f'</div>'
-            f'<div class="card-meta vmeta"><span class="video-number vtitle">{esc(number)}</span></div>'
+            f'<div class="card-meta vmeta"><span class="video-number vtitle">{esc_attr(number)}</span></div>'
             f'</a>'
         )
-    return '\n'.join(lines)
+    return '\n'.join(out)
 
 
-def build_collectionpage_schema(slug, meta, top5, grid):
-    items = []
-    pos = 1
-    for it in top5 + grid[:30]:
-        vid = it.get('id') or it.get('_id') or ''
-        title = it.get('title') or it.get('_title') or f'Video #{pos}'
-        items.append({
-            "@type": "VideoObject",
-            "name": title,
-            "thumbnailUrl": thumb(vid, hi=True),
-            "uploadDate": "2026-04-25T12:00:00Z",
-            "contentUrl": f"https://www.youtube.com/watch?v={vid}",
-            "embedUrl": f"https://www.youtube.com/embed/{vid}",
-            "inLanguage": "en",
-            "isFamilyFriendly": False,
-            "position": pos,
-        })
-        pos += 1
-    return {
-        "@context": "https://schema.org",
-        "@type": "CollectionPage",
-        "name": meta['title'],
-        "url": f"{SITE}/{slug}/",
-        "description": meta['description'],
-        "inLanguage": "en",
-        "isPartOf": {"@type": "WebSite", "name": "Twerkhub", "url": SITE + "/"},
-        "hasPart": items
-    }
-
-
-def build_itemlist_schema(slug, top5, grid, meta):
-    items = []
-    for i, it in enumerate(top5 + grid):
-        vid = it.get('id') or it.get('_id') or ''
-        title = it.get('title') or it.get('_title') or f'Video #{i+1}'
-        items.append({
-            "@type": "ListItem",
-            "position": i + 1,
-            "item": {
-                "@type": "VideoObject",
-                "name": title,
-                "thumbnailUrl": thumb(vid, hi=True),
-                "uploadDate": "2026-04-25T12:00:00Z",
-                "contentUrl": f"https://www.youtube.com/watch?v={vid}",
-                "embedUrl": f"https://www.youtube.com/embed/{vid}",
-                "inLanguage": "en",
-                "isFamilyFriendly": False,
-                "position": i + 1,
-            }
-        })
-    return {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "itemListOrder": "https://schema.org/ItemListOrderAscending",
-        "numberOfItems": len(top5) + len(grid),
-        "itemListElement": items,
-    }
-
-
-def build_breadcrumb_schema(slug, meta):
-    return {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
-            {"@type": "ListItem", "position": 2, "name": meta['title'], "item": f"{SITE}/{slug}/"}
-        ]
-    }
-
-
-def build_imageobject_schema(slug, top5, meta):
-    vid1 = (top5[0].get('id') or top5[0].get('_id') or '') if top5 else ''
-    return {
-        "@context": "https://schema.org",
-        "@type": "ImageObject",
-        "contentUrl": thumb(vid1),
-        "url": thumb(vid1),
-        "width": 480,
-        "height": 360,
-        "caption": meta['title'],
-        "representativeOfPage": True,
-    }
-
-
-def build_top5_js_array(top5):
-    items = []
-    for it in top5:
-        vid = it.get('id') or it.get('_id') or ''
-        items.append({"id": vid})
-    return json.dumps(items, ensure_ascii=False)
-
-
-def build_grid_js_array(grid):
-    items = []
-    for i, it in enumerate(grid):
-        vid = it.get('_id') or it.get('id') or ''
-        number = it.get('number') or '#%03d' % (i + 6)
-        items.append({"id": vid, "number": number})
-    return json.dumps(items, ensure_ascii=False)
-
-
-# ─── Main page builder ─────────────────────────────────────────────────────
-def build_page(slug, meta):
-    data = json.load(open(ROOT / meta['data'], 'r', encoding='utf-8'))
+# ─── Substitute data in template ───────────────────────────────────────
+def substitute_in_template(template, slug, meta, data):
     top5 = data.get('hot_ranking', [])[:5]
     grid = data.get('grid', [])
     if not top5:
-        return None, "No top5 in data"
+        return None, "No top5"
     first_vid = top5[0].get('id') or top5[0].get('_id') or ''
-    initial_iframe_src = (
+    canonical_new = f"{SITE}/{slug}/"
+    title_new = meta['title']
+    desc_new = meta['description']
+    h1_short = meta['h1_short']
+    h1_em = meta['h1_em']
+
+    h = template
+
+    # ─── 1. <title>
+    h = re.sub(r'<title>[^<]*</title>',
+               f'<title>{esc_attr(title_new)}</title>', h, count=1)
+
+    # ─── 2. <meta name="description">
+    h = re.sub(r'(<meta\s+name="description"\s+content=")[^"]*(")',
+               r'\g<1>' + esc_attr(desc_new) + r'\g<2>', h, count=1)
+
+    # ─── 3. canonical + hreflang
+    h = re.sub(r'(<link\s+rel="canonical"\s+href=")[^"]*(")',
+               r'\g<1>' + canonical_new + r'\g<2>', h, count=1)
+    h = re.sub(r'(<link\s+rel="alternate"\s+hreflang="en"\s+href=")[^"]*(")',
+               r'\g<1>' + canonical_new + r'\g<2>', h, count=1)
+    h = re.sub(r'(<link\s+rel="alternate"\s+hreflang="x-default"\s+href=")[^"]*(")',
+               r'\g<1>' + canonical_new + r'\g<2>', h, count=1)
+
+    # ─── 4. og: + twitter: tags
+    h = re.sub(r'(<meta\s+property="og:title"\s+content=")[^"]*(")',
+               r'\g<1>' + esc_attr(title_new) + r'\g<2>', h, count=1)
+    h = re.sub(r'(<meta\s+property="og:description"\s+content=")[^"]*(")',
+               r'\g<1>' + esc_attr(desc_new) + r'\g<2>', h, count=1)
+    h = re.sub(r'(<meta\s+property="og:url"\s+content=")[^"]*(")',
+               r'\g<1>' + canonical_new + r'\g<2>', h, count=1)
+    h = re.sub(r'(<meta\s+property="og:image"\s+content=")[^"]*(")',
+               r'\g<1>' + thumb(first_vid, hi=True) + r'\g<2>', h, count=1)
+    h = re.sub(r'(<meta\s+property="og:image:alt"\s+content=")[^"]*(")',
+               r'\g<1>' + esc_attr(title_new) + r'\g<2>', h, count=1)
+    h = re.sub(r'(<meta\s+name="twitter:title"\s+content=")[^"]*(")',
+               r'\g<1>' + esc_attr(title_new) + r'\g<2>', h, count=1)
+    h = re.sub(r'(<meta\s+name="twitter:description"\s+content=")[^"]*(")',
+               r'\g<1>' + esc_attr(desc_new) + r'\g<2>', h, count=1)
+    h = re.sub(r'(<meta\s+name="twitter:image"\s+content=")[^"]*(")',
+               r'\g<1>' + thumb(first_vid, hi=True) + r'\g<2>', h, count=1)
+    h = re.sub(r'(<meta\s+name="twitter:image:alt"\s+content=")[^"]*(")',
+               r'\g<1>' + esc_attr(title_new) + r'\g<2>', h, count=1)
+
+    # ─── 5. preload thumb + image_src
+    h = re.sub(r'(<link\s+rel="image_src"\s+href=")[^"]*(")',
+               r'\g<1>' + thumb(first_vid) + r'\g<2>', h, count=1)
+    h = re.sub(r'(<link\s+rel="preload"\s+as="image"\s+href=")[^"]*(")',
+               r'\g<1>' + thumb(first_vid) + r'\g<2>', h, count=1)
+
+    # ─── 6. Initial iframe src
+    new_iframe_src = (
         f"https://www.youtube.com/embed/{first_vid}"
-        f"?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
-        f"&widget_referrer={SITE}&origin={SITE}"
+        f"?autoplay=1&amp;mute=1&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1"
+        f"&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;origin=https%3A%2F%2Falexiatwerkgroup.com"
+    )
+    h = re.sub(r'(id="twerkhub-pl-player"\s+src=")[^"]*(")',
+               r'\g<1>' + new_iframe_src + r'\g<2>', h, count=1)
+
+    # ─── 7. body data-page
+    h = re.sub(r'(data-page=")[^"]*(")', r'\g<1>playlist-' + slug + r'\g<2>', h, count=1)
+
+    # ─── 8. Hero h1 (between <h1 ...> and </h1>)
+    # The /playlist/ h1 is something like "Hottest <em>twerk</em> videos on YouTube."
+    # We replace its text content while preserving the same element structure.
+    new_h1_html = h1_short.replace(h1_em, f'<em>{h1_em}</em>') if h1_em in h1_short else f'{h1_short} <em>{h1_em}</em>'
+    h = re.sub(r'(<h1[^>]*>)[^<]*(?:<em[^>]*>[^<]*</em>[^<]*)*([^<]*)(</h1>)',
+               r'\g<1>' + new_h1_html + r'\g<3>', h, count=1)
+
+    # ─── 9. Intro <p class="twerkhub-pl-intro">
+    h = re.sub(r'(<p\s+class="twerkhub-pl-intro"[^>]*>)[^<]*(</p>)',
+               r'\g<1>' + esc_attr(meta['intro']) + r'\g<2>', h, count=1)
+
+    # ─── 10. Top kicker <div class="twerkhub-pl-kicker">/ ... before h1
+    # There may be multiple kicker divs; replace just the one inside the hero header
+    h = re.sub(r'(<header\s+class="twerkhub-pl-hero"[^>]*>\s*<div\s+class="twerkhub-pl-kicker">)[^<]*(</div>)',
+               r'\g<1>' + esc_attr(meta['kicker']) + r'\g<2>', h, count=1, flags=re.DOTALL)
+
+    # ─── 11. TOP5 sidebar (.rk-list innerHTML)
+    new_rk_list = (
+        '<div class="rk-list" id="hotrank-list">\n'
+        + build_top5_sidebar_html(top5)
+        + '\n    </div>'
+    )
+    h = re.sub(r'<div\s+class="rk-list"\s+id="hotrank-list">.*?</div>\s*</aside>',
+               new_rk_list + '\n  </aside>', h, count=1, flags=re.DOTALL)
+
+    # ─── 12. Grid (#video-grid innerHTML)
+    # Note: actual class is "grid" not "twerkhub-pl-grid" in /playlist/
+    new_grid = (
+        '<div class="grid" id="video-grid" role="list">\n'
+        + build_grid_html(grid)
+        + '\n  </div>'
+    )
+    h = re.sub(r'<div\s+class="grid"\s+id="video-grid"[^>]*>.*?</div>\s*</section>',
+               new_grid + '\n</section>', h, count=1, flags=re.DOTALL)
+
+    # ─── 13. Inline JS TOP5/GRID arrays
+    top5_js = json.dumps([{"id": (it.get('id') or it.get('_id') or '')} for it in top5], ensure_ascii=False)
+    grid_js = json.dumps(
+        [{"id": (it.get('_id') or it.get('id') or ''),
+          "number": it.get('number') or '#%03d' % (i + 6)}
+         for i, it in enumerate(grid)],
+        ensure_ascii=False
+    )
+    h = re.sub(r'(var TOP5 = )\[[^\]]*\];', r'\g<1>' + top5_js + ';', h, count=1)
+    h = re.sub(r'(var GRID = )\[[^;]*?\];', r'\g<1>' + grid_js + ';', h, count=1, flags=re.DOTALL)
+
+    # ─── 14. Replace JSON-LD ImageObject thumbnail (1st script[ld+json])
+    # Replace the outer caption + thumbnail of the ImageObject schema
+    h = re.sub(
+        r'(<script\s+type="application/ld\+json">\{"@context":"https://schema\.org","@type":"ImageObject")(.*?)(</script>)',
+        '\g<1>"' + r',"contentUrl":"' + thumb(first_vid) + r'","url":"' + thumb(first_vid) + r'","width":480,"height":360,"caption":"' + esc_attr(title_new) + r'","representativeOfPage":true,"creditText":"Twerkhub","encodingFormat":"image/jpeg"' + '\g<3>',
+        h, count=1, flags=re.DOTALL
     )
 
-    # Schemas
-    schemas = [
-        build_imageobject_schema(slug, top5, meta),
-        build_collectionpage_schema(slug, meta, top5, grid),
-        build_itemlist_schema(slug, top5, grid, meta),
-        build_breadcrumb_schema(slug, meta),
-    ]
-    schema_blocks = '\n'.join(
-        f'<script type="application/ld+json">{json.dumps(s, ensure_ascii=False, separators=(",",":"))}</script>'
-        for s in schemas
+    # ─── 15. Replace JSON-LD CollectionPage url + name + description
+    def _patch_collection(m):
+        block = m.group(0)
+        try:
+            obj = json.loads(re.search(r'<script[^>]*>(.*?)</script>', block, re.DOTALL).group(1))
+            obj['name'] = title_new
+            obj['url'] = canonical_new
+            obj['description'] = desc_new
+            # Replace hasPart with our top5+grid
+            items = []
+            for i, it in enumerate(top5 + grid[:30], 1):
+                vid = it.get('id') or it.get('_id') or ''
+                t = it.get('title') or it.get('_title') or f'Video #{i}'
+                items.append({
+                    "@type": "VideoObject",
+                    "name": t,
+                    "thumbnailUrl": thumb(vid, hi=True),
+                    "uploadDate": "2026-04-25T12:00:00Z",
+                    "contentUrl": f"https://www.youtube.com/watch?v={vid}",
+                    "embedUrl": f"https://www.youtube.com/embed/{vid}",
+                    "inLanguage": "en",
+                    "isFamilyFriendly": False,
+                    "position": i,
+                })
+            obj['hasPart'] = items
+            return f'<script type="application/ld+json">{json.dumps(obj, ensure_ascii=False, separators=(",",":"))}</script>'
+        except Exception:
+            return block
+    h = re.sub(
+        r'<script\s+type="application/ld\+json">\{"@context":"https://schema\.org","@type":"CollectionPage".*?</script>',
+        _patch_collection, h, count=1, flags=re.DOTALL
     )
 
-    # JS data
-    top5_js = build_top5_js_array(top5)
-    grid_js = build_grid_js_array(grid)
+    # ─── 16. Replace JSON-LD ItemList items
+    def _patch_itemlist(m):
+        block = m.group(0)
+        try:
+            obj = json.loads(re.search(r'<script[^>]*>(.*?)</script>', block, re.DOTALL).group(1))
+            items = []
+            for i, it in enumerate(top5 + grid, 1):
+                vid = it.get('id') or it.get('_id') or ''
+                t = it.get('title') or it.get('_title') or f'Video #{i}'
+                items.append({
+                    "@type": "ListItem",
+                    "position": i,
+                    "item": {
+                        "@type": "VideoObject",
+                        "name": t,
+                        "thumbnailUrl": thumb(vid, hi=True),
+                        "uploadDate": "2026-04-25T12:00:00Z",
+                        "contentUrl": f"https://www.youtube.com/watch?v={vid}",
+                        "embedUrl": f"https://www.youtube.com/embed/{vid}",
+                        "inLanguage": "en",
+                        "isFamilyFriendly": False,
+                        "position": i,
+                    }
+                })
+            obj['itemListElement'] = items
+            obj['numberOfItems'] = len(items)
+            return f'<script type="application/ld+json">{json.dumps(obj, ensure_ascii=False, separators=(",",":"))}</script>'
+        except Exception:
+            return block
+    h = re.sub(
+        r'<script\s+type="application/ld\+json">\{"@context":"https://schema\.org","@type":"ItemList".*?</script>',
+        _patch_itemlist, h, count=1, flags=re.DOTALL
+    )
 
-    # Build HTML
-    html = f'''<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>{esc(meta['title'])}</title>
-<meta name="description" content="{esc(meta['description'])}"/>
-<meta name="keywords" content="{esc(meta['keywords'])}"/>
-<meta name="theme-color" content="#08080b"/>
-<link rel="canonical" href="{SITE}/{slug}/">
-<link rel="alternate" hreflang="en" href="{SITE}/{slug}/">
-<link rel="alternate" hreflang="x-default" href="{SITE}/{slug}/">
+    # ─── 17. BreadcrumbList → use new title + new URL
+    def _patch_breadcrumb(m):
+        block = m.group(0)
+        try:
+            obj = json.loads(re.search(r'<script[^>]*>(.*?)</script>', block, re.DOTALL).group(1))
+            obj['itemListElement'] = [
+                {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
+                {"@type": "ListItem", "position": 2, "name": title_new, "item": canonical_new}
+            ]
+            return f'<script type="application/ld+json">{json.dumps(obj, ensure_ascii=False, separators=(",",":"))}</script>'
+        except Exception:
+            return block
+    h = re.sub(
+        r'<script\s+type="application/ld\+json">\{"@context":"https://schema\.org","@type":"BreadcrumbList".*?</script>',
+        _patch_breadcrumb, h, count=1, flags=re.DOTALL
+    )
 
-<meta property="og:type" content="website"/>
-<meta property="og:title" content="{esc(meta['title'])}"/>
-<meta property="og:description" content="{esc(meta['description'])}"/>
-<meta property="og:url" content="{SITE}/{slug}/"/>
-<meta property="og:image" content="{esc(thumb(first_vid, hi=True))}"/>
-<meta property="og:image:alt" content="{esc(meta['title'])}"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="{esc(meta['title'])}"/>
-<meta name="twitter:description" content="{esc(meta['description'])}"/>
-<meta name="twitter:image" content="{esc(thumb(first_vid, hi=True))}"/>
-<meta name="twitter:image:alt" content="{esc(meta['title'])}"/>
+    # ─── 17b. Replace "All <em>NNN</em> cuts in the room." count
+    total = len(top5) + len(grid)
+    h = re.sub(r'(<h2>)All\s+<em>\d+</em>\s+cuts\s+in\s+the\s+room\.(</h2>)',
+               r'\g<1>All <em>' + str(total) + r'</em> ' + esc_attr(meta['h2_count_label']) + r'\g<2>',
+               h, count=1)
 
-<link rel="stylesheet" href="/assets/elite-tokens.css">
-<link rel="stylesheet" href="/assets/elite-components.css">
-<link rel="stylesheet" href="/assets/twerkhub-page.css?v=20260424-p11">
-<link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260424-p10">
-<link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
-<link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p1">
-<link rel="manifest" href="/manifest.json">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
+    # ─── 18. Inject pl-theater loader if missing
+    if 'twerkhub-pl-theater.js' not in h:
+        h = h.replace(
+            "loadOnce('/assets/twerkhub-auth.js?v=20260425-p7','twk-loader-twerkhub-auth');",
+            "loadOnce('/assets/twerkhub-auth.js?v=20260425-p7','twk-loader-twerkhub-auth');\n  loadOnce('/assets/twerkhub-pl-theater.js?v=20260425-p11','twk-loader-pl-theater');",
+            1
+        )
 
-{schema_blocks}
-</head>
-<body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater" data-page="playlist-{slug}">
-
-<nav class="twk-nav-v1" id="twk-nav-v1">
-  <a class="twk-nav-v1-brand" href="/">
-    <img src="/logo-twerkhub.png" alt="Twerkhub" loading="eager">
-    <span class="twk-nav-v1-brand-name">TWERKHUB · EST. 2018</span>
-  </a>
-  <div class="twk-nav-v1-links">
-    <a href="/" data-nav="home">HOME</a>
-    <a href="/playlist/" data-nav="playlists">EXCLUSIVE</a>
-    <a href="/playlist/" data-nav="playlists">PLAYLISTS</a>
-    <a href="/creators.html" data-nav="creators">CREATORS</a>
-    <a href="/alexia-video-packs.html" class="twk-nav-v1-cta" data-nav="hotpacks">HOT PACKS</a>
-    <a href="/community.html" data-nav="community">COMMUNITY</a>
-    <a href="/membership.html" data-nav="membership">MEMBERSHIP</a>
-    <a href="/account.html" data-nav="account">MY ACCOUNT</a>
-    <a href="/profile.html" data-nav="profile">PROFILE</a>
-    <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
-  </div>
-</nav>
-<script>
-(function(){{
-  try{{var p=location.pathname.replace(/\\/index\\.html$/,'/');var map={{'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'}};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){{var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){{a.classList.add('is-active');a.setAttribute('aria-current','page');}}}}}}catch(e){{}}
-  try{{var n=document.getElementById('twk-nav-v1-live-n');if(n){{var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){{var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}}setTimeout(tick,4000);}}}}catch(e){{}}
-  function loadOnce(src,id){{if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}}
-  loadOnce('/assets/supabase-config.js?v=20260425-p11','twk-loader-supabase-config');
-  loadOnce('/assets/token-system.js?v=20260425-p11','twk-loader-token-system');
-  loadOnce('/assets/twerkhub-tokens.js?v=20260425-p11','twk-loader-twerkhub-tokens');
-  loadOnce('/assets/twerkhub-auth.js?v=20260425-p11','twk-loader-twerkhub-auth');
-  loadOnce('/assets/twerkhub-pl-theater.js?v=20260425-p11','twk-loader-pl-theater');
-}})();
-</script>
-
-<header class="twerkhub-pl-hero">
-  <div class="twerkhub-pl-kicker">/ Curated archive · members only</div>
-  <h1>{meta['h1']}</h1>
-  <p class="twerkhub-pl-intro">{esc(meta['intro'])}</p>
-</header>
-
-<main id="twerkhub-pl-main" class="twerkhub-pl-theater-main">
-  <div class="twerkhub-pl-player-col">
-    <div class="twerkhub-pl-player-wrap">
-      <iframe id="twerkhub-pl-player"
-              src="{initial_iframe_src}"
-              title="{esc(meta['title'])} · now playing"
-              loading="eager"
-              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen></iframe>
-    </div>
-    <div class="twerkhub-pl-player-meta">
-      <span class="twerkhub-pl-player-now">▶ Now playing</span>
-      <h2 id="twerkhub-pl-now-title">Free preview #001</h2>
-    </div>
-  </div>
-
-  <aside class="hotrank twerkhub-pl-theater-rank" aria-label="Hot ranking">
-    <h2 class="twerkhub-pl-hotrank-h2">Hot ranking this week</h2>
-    <div class="rk-list" id="hotrank-list">
-{build_top5_html(top5)}
-    </div>
-  </aside>
-</main>
-
-<section class="twerkhub-pl-grid-section" aria-label="Full archive">
-  <div class="twerkhub-pl-grid-head">
-    <div class="twerkhub-pl-kicker">/ The full archive</div>
-    <h2>The <em>full</em> archive.</h2>
-  </div>
-  <div class="twerkhub-pl-grid" id="video-grid" role="list">
-{build_grid_html(grid)}
-  </div>
-</section>
-
-<section class="twerkhub-pl-cta-final" aria-label="Keep going" style="margin-top:40px">
-  <h2>Browse the <em>full archive</em>.</h2>
-  <div class="twerkhub-pl-cta-row">
-    <a class="twerkhub-btn twerkhub-btn-primary" href="/playlist/">All twerk videos →</a>
-    <a class="twerkhub-btn twerkhub-btn-ghost" href="/">Twerkhub Home</a>
-  </div>
-</section>
-
-<footer class="twerkhub-pl-footer" role="contentinfo">
-  <div class="twerkhub-pl-slogan">If you know, you know.</div>
-  <div class="twerkhub-pl-founded">© 2026 Twerkhub · founded by <em>Anti</em> (firestarter)</div>
-</footer>
-
-<script defer src="/assets/twerkhub-tokens.js?v=20260425-p11"></script>
-<script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p1"></script>
-<script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p1"></script>
-<script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p1"></script>
-<script defer src="/assets/twerkhub-mobile-nav.js?v=20260424-p1"></script>
-
-<script>
-(function(){{
-  'use strict';
-  if (window.__twerkhubHubTheaterInit) return;
-  window.__twerkhubHubTheaterInit = true;
-  try {{
-    console.info('[twerkhub-playlist:{slug}] theater boot');
-    var TOP5 = {top5_js};
-    var GRID = {grid_js};
-    var player = document.getElementById('twerkhub-pl-player');
-    var title  = document.getElementById('twerkhub-pl-now-title');
-    function swap(vid, number){{
-      if (!player) return;
-      var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
-                '?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
-      player.src = url;
-      if (title && number) title.textContent = 'Playing ' + number;
-      try {{
-        player.onload = function(){{
-          [200, 800, 1500, 2500].forEach(function(d){{
-            setTimeout(function(){{
-              try {{
-                player.contentWindow.postMessage(JSON.stringify({{event:'command',func:'unMute',args:[]}}), '*');
-                player.contentWindow.postMessage(JSON.stringify({{event:'command',func:'setVolume',args:[100]}}), '*');
-                player.contentWindow.postMessage(JSON.stringify({{event:'command',func:'playVideo',args:[]}}), '*');
-              }} catch(_){{}}
-            }}, d);
-          }});
-        }};
-      }} catch(_){{}}
-      try {{ if (window.TwerkhubPlTheater && window.TwerkhubPlTheater.markViewed) window.TwerkhubPlTheater.markViewed(vid); }} catch(_){{}}
-      try {{ if (window.AlexiaTokens && window.AlexiaTokens.watchClip) window.AlexiaTokens.watchClip(); }} catch(_){{}}
-      try {{ var pc = document.querySelector('.twerkhub-pl-player-col'); if (pc) pc.scrollIntoView({{ behavior: 'smooth', block: 'start' }}); }} catch(_){{}}
-    }}
-    document.addEventListener('click', function(ev){{
-      var a = ev.target.closest && ev.target.closest('a[data-vid]');
-      if (!a) return;
-      if (!a.matches('.rk-item') && !a.matches('.vcard')) return;
-      var vid = a.getAttribute('data-vid');
-      if (!vid) return;
-      ev.preventDefault();
-      ev.stopPropagation();
-      swap(vid, a.getAttribute('data-number') || '');
-    }}, true);
-  }} catch(e){{
-    console.warn('[twerkhub-playlist:{slug}] theater boot failed', e);
-  }}
-}})();
-</script>
-
-</body>
-</html>
-'''
-    return html, None
+    return h, None
 
 
+# ─── Main ──────────────────────────────────────────────────────────────
 def main():
+    template = TEMPLATE.read_text(encoding='utf-8')
+    print(f"Template loaded: {len(template)} chars from {TEMPLATE}")
+
     for slug, meta in PLAYLISTS.items():
+        try:
+            data = json.load(open(ROOT / meta['data'], 'r', encoding='utf-8'))
+        except Exception as e:
+            print(f"  SKIP {slug}: {e}")
+            continue
         out_dir = ROOT / slug
         out_dir.mkdir(exist_ok=True)
         out_path = out_dir / 'index.html'
-        # Backup
-        if out_path.exists():
-            (out_dir / 'index.html.bak').write_text(out_path.read_text(encoding='utf-8'), encoding='utf-8')
-        html, err = build_page(slug, meta)
+        new_html, err = substitute_in_template(template, slug, meta, data)
         if err:
             print(f"  FAIL {slug}: {err}")
             continue
-        out_path.write_text(html, encoding='utf-8')
-        size_kb = len(html) / 1024
-        print(f"  + {slug}/index.html ({size_kb:.1f} KB)")
+        out_path.write_text(new_html, encoding='utf-8')
+        print(f"  + {slug}/index.html ({len(new_html)//1024} KB)")
 
 
 if __name__ == '__main__':
