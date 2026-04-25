@@ -5,9 +5,12 @@ Allow: /
 Disallow: /account.html
 Disallow: /profile.html
 Disallow: /auth-callback.html
-Disallow: /membership.html
-Disallow: /404.html
+Disallow: /admin-users.html
 Disallow: /api/
+
+# Note: /membership.html and /404.html removed from disallow on 2026-04-25.
+# /membership.html is a public commercial page (4-tier subscription pricing)
+# with Product schema — must be indexable for SEO.
 
 # Block test / debug / internal artifacts
 Disallow: /test-
