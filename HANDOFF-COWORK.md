@@ -1,5 +1,5 @@
 # TWERKHUB · Cowork Handoff Document
-**Last updated:** 2026-04-24 · Rounds 14-18 staged (uncommitted) · Rounds 10-13 shipped at commit `edf9e29`
+**Last updated:** 2026-04-24 · Rounds 14-19 staged (uncommitted) · Rounds 10-13 shipped at commit `edf9e29`
 **Repo:** `https://github.com/alexiatwerkgroup/alexia-twerk-web-clean`
 **Live:** `https://alexiatwerkgroup.com/`
 **Local working dir:** `C:\Users\Claudio\OneDrive\Desktop\proyectos\alexia-twerk-web-clean`
@@ -37,7 +37,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 ## 📊 Current state · what's deployed
 
 ### Content (all live in production)
-- **22 blog posts** (~33,200 words long-form) in `/blog/`
+- **24 blog posts** (~36,500 words long-form) in `/blog/`
 - **22 creator profiles** with Person/Organization schema in `/creator/`
 - **5 collection pages** (geo + style): Taipei, Moscow, Colombia, Seoul, heels-choreo, cosplay-fancam, reggaeton-floor
 - **4 legal/corporate**: `/about.html`, `/privacy.html`, `/terms.html`, `/contact.html`
@@ -139,6 +139,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
 | 16 | _pending push_ | Onboarding loop closure + Anel Li + share buttons: +/es/blog/how-to-earn-tokens-twerkhub.html (closes onboarding flow ES). +/es/blog/weekly-drop-calendar-2026.html (operacional ARG/CO). +/ru/blog/fancam-etiquette-2026.html (RU ethics). +/creator/anel-li.html (Greece · Greek-Latin reggaetón fusion · referenced from style-reggaeton-floor EN+ES, now linked). +Facebook + Threads share buttons in twerkhub-share.js (5→7 networks + copy = 8 total). share VER p1→p2. Style-reggaeton-floor cards #4 ahora `<a>` con link al profile. ES blog total: 10 posts · creators total: 19. |
 | 17 | _pending push_ | Moscow profile gap closure + ES style cluster: +/creator/kate-knaub.html (Moscow independent · Goody Брокколи). +/creator/dasha-kolesnikova.html (Ufa regional rooftop · Nicki Minaj Yikes). +/creator/street-project-volzhsky.html (Volzhsky studio · Organization schema · Jazz-funk Kids program). +/es/style-heels-choreo.html. +/es/style-cosplay-fancam.html (closes 3-style ES cluster). creators-moscow.html cards #3-5 ahora linkean a profiles canónicos en /creator/ (no más placeholders a /playlist/). Creators total: 22. ES style pages: 3/3 completas. |
 | 18 | _pending push_ | Schema parity ES/RU + 2 ES translations. /es/about.html y /ru/about.html ahora con Service + FAQPage schemas (parity con /about.html EN · 7 Q&A traducidas + 4 Offers por tier). +/es/blog/best-twerk-creators-2026.html (1.800 palabras · 12 creators con linkeo directo a profiles). +/es/blog/fancam-to-choreography-pipeline.html (1.420 palabras · 4-stage industry loop). ES blog total: 12 posts. |
+| 19 | _pending push_ | 2 nuevos pillars + comparación ES. +blog/brazilian-funk-twerk-crossover.html (post #23 · 1.740 palabras · cierra la 4ta escuela mayor: K-dance + reggaetón + Afrobeats + funk). +blog/black-sea-dance-scene.html (post #24 · 1.610 palabras · primer deep-dive de la escena costera Odessa/Sochi/Constanța · linkea Nika Chilli). +/es/blog/twerkhub-vs-onlyfans-fanvue-comparison.html (1.750 palabras). EN blog total: 24 posts · ES blog total: 13 posts. |
 
 ---
 
