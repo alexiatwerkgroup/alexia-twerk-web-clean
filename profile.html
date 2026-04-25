@@ -456,7 +456,6 @@ if ('serviceWorker' in navigator) {
 @media(max-width:1180px){.twk-nav-v1-links a{padding:8px 10px;font-size:10.5px;letter-spacing:.08em}}
 @media(max-width:1024px){.twk-nav-v1-links{gap:0}.twk-nav-v1-links a{padding:8px 8px;font-size:10px;letter-spacing:.06em}.twk-nav-v1-live{font-size:9px;padding:5px 9px}}
 @media(max-width:880px){.twk-nav-v1-inner{padding:10px 14px;gap:8px}.twk-nav-v1-links{gap:1px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:2px}.twk-nav-v1-links a{padding:7px 8px;font-size:10px}.twk-nav-v1-brand span{display:none}.twk-nav-v1-live{display:none}}
-/* Defensive thumb backgrounds */
 .twerkhub-pl-thumb,.vthumb,.rk-thumb,.twerkhub-fp-thumb,.twerkhub-club-thumb{background:linear-gradient(135deg,#1a0a1f 0%,#2a0f3d 50%,#0a0a14 100%)!important}
 .twerkhub-pl-thumb img,.vthumb img,.rk-thumb img,.twerkhub-fp-thumb img,.twerkhub-club-thumb img{background:transparent}
 </style>
@@ -482,58 +481,15 @@ if ('serviceWorker' in navigator) {
 </nav>
 <script>
 (function(){
-  // 1. Mark active nav link based on current path
-  try{
-    var p=location.pathname.replace(/\/index\.html$/,'/');
-    var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};
-    var key=map[p];
-    if(p.indexOf('/playlist')===0)key='playlists';
-    else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';
-    if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}
-  }catch(e){}
-  // 2. Live online count — random 380-460, breathes every 4-7s
-  try{
-    var n=document.getElementById('twk-nav-v1-live-n');
-    if(n){
-      var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);
-      if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);
-      n.textContent=v;
-      function tick(){
-        var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));
-        n.textContent=v;sessionStorage.setItem('twkLiveN',v);
-        setTimeout(tick,4000+Math.random()*3000);
-      }
-      setTimeout(tick,4000);
-    }
-  }catch(e){}
-  // 3. THUMB FIX: force every YouTube img out of lazy state immediately,
-  //    so they always load — fixes the "black thumbnail" bug where lazy
-  //    loading never triggered for off-screen-but-rendered cards.
-  function eagerizeThumbs(){
-    try{
-      var imgs=document.querySelectorAll('img[loading="lazy"]');
-      imgs.forEach(function(img){
-        if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){
-          img.loading='eager';
-          if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';
-          // Re-trigger load if naturalWidth still 0 after a moment
-          var s=img.src;
-          if(!img.complete||img.naturalWidth===0){
-            img.src='';
-            img.src=s;
-          }
-        }
-      });
-    }catch(e){}
-  }
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',eagerizeThumbs);
-  }else{
-    eagerizeThumbs();
-  }
-  // Run again after 1s + 3s in case more imgs got injected by other scripts
-  setTimeout(eagerizeThumbs,1000);
-  setTimeout(eagerizeThumbs,3000);
+  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
+  function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
+  setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
+  function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
+  loadOnce('/assets/token-system.js?v=20260425-p2','twk-loader-token-system');
+  loadOnce('/assets/twerkhub-tokens.js?v=20260425-p2','twk-loader-twerkhub-tokens');
+  loadOnce('/assets/twerkhub-auth.js?v=20260425-p2','twk-loader-twerkhub-auth');
 })();
 </script>
 
@@ -954,42 +910,41 @@ if ('serviceWorker' in navigator) {
   });
 })();
 
-/* ─── Logout · delegates to the unified TwerkhubAuth so EVERY session key
-       gets wiped (including alexia_current_user, token balance, tier, legacy
-       profile cache, and the auth-skipped session flag). Without this,
-       clicking Log out here left the new-auth session alive and the user
-       came back "logged in" silently. ─── */
+/* ─── Logout · ALWAYS delegates to TwerkhubAuth (now bulletproof: prefix-scan
+       wipe, SW unregister, cache clear, hard reload). If TwerkhubAuth hasn't
+       loaded yet, we wait briefly for it before falling back to a manual
+       prefix-scan wipe — otherwise different keys would leak between flows. ─── */
 (function(){
   var btn = document.getElementById('logout-btn');
   if (!btn) return;
+  function manualWipe(){
+    try {
+      var prefixes = ['alexia_','twerkhub_','twerkhub-','sb-','supabase.auth','supabase-auth'];
+      var keys = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && prefixes.some(function(p){ return k.indexOf(p) === 0; })) keys.push(k);
+      }
+      keys.forEach(function(k){ try { localStorage.removeItem(k); } catch(_){} });
+    } catch(_){}
+    try { sessionStorage.clear(); } catch(_){}
+  }
   btn.addEventListener('click', async function(){
     if (!confirm('Log out of this browser?')) return;
-    // 1 · Supabase sign-out if that module happens to be loaded.
+    // 1 · Supabase sign-out if loaded (best-effort, never blocks logout).
     try {
       if (window.supabase && window.__alexiaProfilePageClient) {
         await window.__alexiaProfilePageClient.auth.signOut();
       }
     } catch(e){}
-    // 2 · Unified wipe via TwerkhubAuth — handles all keys consistently.
+    // 2 · Use the unified TwerkhubAuth.logout — handles wipe + SW + caches.
     if (window.TwerkhubAuth && typeof window.TwerkhubAuth.logout === 'function') {
       window.TwerkhubAuth.logout();
       return;
     }
-    // 3 · Fallback: nuke every known alexia/twerkhub key manually and reload.
-    try {
-      ['alexia_current_user','alexia_registered_users','alexia_forum_profile_v1',
-       'alexia_profile_state_v2','alexia_profile_cache_v1','alexia_profile_cache',
-       'alexia_auth_skipped',
-       'alexia_tokens_v1.balance','alexia_tokens_v1.total','alexia_tokens_v1.streak',
-       'alexia_tokens_v1.lastLogin','alexia_tokens_v1.registered',
-       'alexia_tokens_v1.visited','alexia_tokens_v1.videos','alexia_tokens_v1.shares',
-       'alexia_tokens_v1.welcomed','alexia_tokens_v1.tier',
-       'twerkhub_tokens','twerkhub_tokens_seen_paths','twerkhub_tokens_seen_vids',
-       'twerkhub_online_count_v2','twerkhub_viewed_vids'
-      ].forEach(function(k){ try { localStorage.removeItem(k); } catch(_){} });
-      try { sessionStorage.removeItem('alexia_auth_skipped'); } catch(_){}
-    } catch(e){}
-    location.href = '/';
+    // 3 · TwerkhubAuth not loaded → manual prefix-scan wipe + hard reload.
+    manualWipe();
+    location.replace('/?logout=' + Date.now());
   });
 })();
 </script>
@@ -1002,3 +957,4 @@ if ('serviceWorker' in navigator) {
 <script defer src="/assets/twerkhub-premium.js?v=20260424-p1"></script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                              

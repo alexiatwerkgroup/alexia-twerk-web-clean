@@ -44,41 +44,45 @@
     try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){}
   }
 
-  // UNIFIED BALANCE (v20260424-p8):
-  // Previously this HUD stored its own balance in `twerkhub_tokens`, but the
-  // /account and /profile pages read their balance from `window.AlexiaTokens`
-  // (token-system.js) — so the two numbers drifted and the user saw 225 in
-  // the HUD while /profile showed 1,300+. From now on there's a single source
-  // of truth: AlexiaTokens. The HUD reads its state and grants any rewards
-  // through AlexiaTokens.grant(), which also fires the standard toasts.
-  // The local `twerkhub_tokens` key is kept as a fallback for when the
-  // AlexiaTokens module hasn't loaded yet (e.g. during the first paint).
-  function hasAlexia(){ return !!(window.AlexiaTokens && typeof window.AlexiaTokens.getState === 'function'); }
-  // AlexiaTokens persists the balance at this key — we read it directly as a
-  // second-tier fallback on pages that don't load token-system.js yet, so the
-  // HUD number stays consistent across the whole site (the earlier bug showed
-  // 2100 on pages with token-system.js loaded and 225 on pages without).
+  // SINGLE SOURCE OF TRUTH (v20260425-p1):
+  // The HUD reads ONLY from `alexia_tokens_v1.balance` — same key that
+  // token-system.js, /account, and /profile all use. No legacy `twerkhub_tokens`
+  // fallback. If the key doesn't exist yet, balance is 0. token-system.js will
+  // call setBalance() on init which will broadcast and re-render.
   var ALEXIA_KEY = 'alexia_tokens_v1.balance';
+  function hasAlexia(){ return !!(window.AlexiaTokens && typeof window.AlexiaTokens.getState === 'function'); }
   function getTokens(){
+    // Prefer the live module state (in case it has unflushed in-memory writes).
     if (hasAlexia()) {
-      try { return Number(window.AlexiaTokens.getState().balance) || 0; } catch(_){}
+      try {
+        var s = window.AlexiaTokens.getState();
+        var n = Number(s && s.balance);
+        if (!isNaN(n) && n >= 0) return n;
+      } catch(_){}
     }
-    // Direct read from AlexiaTokens' localStorage key — works even when
-    // token-system.js isn't loaded on the current page.
+    // Direct read of the canonical key — works on every page regardless of
+    // whether token-system.js has finished loading yet.
     try {
       var raw = localStorage.getItem(ALEXIA_KEY);
       if (raw != null) {
         var parsed = JSON.parse(raw);
-        var n = Number(parsed);
-        if (!isNaN(n)) return n;
+        var num = Number(parsed);
+        if (!isNaN(num) && num >= 0) return num;
       }
     } catch(_){}
-    return Number(lsGet(LS.TOKENS, 0)) || 0;
+    return 0;
   }
+  // No more setTokens() — all writes go through AlexiaTokens.grant() exclusively.
   function setTokens(n){
-    // Legacy path — only used when AlexiaTokens isn't available. If it is,
-    // mutations must go through AlexiaTokens.grant() to keep /account in sync.
-    lsSet(LS.TOKENS, Number(n) || 0);
+    if (hasAlexia() && typeof window.AlexiaTokens.setBalance === 'function') {
+      try { window.AlexiaTokens.setBalance(Number(n) || 0); return; } catch(_){}
+    }
+    // Fallback: write directly to the canonical key + dispatch the event so
+    // any listening HUDs/widgets re-render.
+    try {
+      localStorage.setItem(ALEXIA_KEY, JSON.stringify(Number(n) || 0));
+      window.dispatchEvent(new CustomEvent('alexia-tokens-changed'));
+    } catch(_){}
   }
 
   function getSeenPaths(){
@@ -284,11 +288,26 @@
 
   // Listen for ANY balance change broadcast by token-system.js (daily login,
   // video complete, referral, etc.) and re-render the HUD so the two numbers
-  // always match. Safe to bind even if AlexiaTokens loads later.
+  // always match. Also sync across tabs (storage event) and on tab focus.
   function bindAlexiaSync(){
     try {
+      // Same-tab broadcasts from token-system.js / setBalance / grant.
       window.addEventListener('alexia-tokens-changed', function(){
         render(); pulse();
+      });
+      // Cross-tab: another tab earned tokens → update this tab's HUD.
+      // Also covers logout in another tab (key removed → balance=0).
+      window.addEventListener('storage', function(ev){
+        if (!ev.key) return;
+        if (ev.key === ALEXIA_KEY || ev.key === 'alexia_tokens_v1.tier' || ev.key === 'alexia_current_user') {
+          render();
+        }
+      });
+      // Tab refocus — user might have earned tokens elsewhere or storage events
+      // may have been throttled while the tab was backgrounded.
+      window.addEventListener('focus', render);
+      document.addEventListener('visibilitychange', function(){
+        if (document.visibilityState === 'visible') render();
       });
     } catch(_){}
   }

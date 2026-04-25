@@ -45,62 +45,78 @@
   }
 
   // ── Session reset on logout ──────────────────────────────────────────
-  // When logging out we clear the AlexiaTokens state so the next registrant
-  // starts from zero. Stops the "I logged out but I'm still Anti with 2,170
-  // tokens" bug.
+  // BULLETPROOF: scan every localStorage/sessionStorage key and remove anything
+  // that matches our app's prefix. No more whitelist that misses a key (we
+  // were missing alexia_profile_state_v2, which is why logout left the user's
+  // nick visible on /profile after refresh).
   function wipeTokenState(){
-    var keys = [
-      'alexia_tokens_v1.balance','alexia_tokens_v1.total',
-      'alexia_tokens_v1.streak','alexia_tokens_v1.lastLogin',
-      'alexia_tokens_v1.registered','alexia_tokens_v1.visited',
-      'alexia_tokens_v1.videos','alexia_tokens_v1.shares',
-      'alexia_tokens_v1.welcomed','alexia_tokens_v1.tier',
-      'twerkhub_tokens','twerkhub_tokens_seen_paths',
-      'twerkhub_tokens_seen_vids','twerkhub_online_count_v2',
-      'twerkhub_viewed_vids',
-      // Legacy profile identity keys — these were keeping "Anti" alive across
-      // logout/login cycles because profile.html read them as a fallback.
-      'alexia_forum_profile_v1',
-      'alexia_profile_cache_v1',
-      'alexia_profile_cache',
-      'alexia_auth_skipped'
+    var PREFIXES = [
+      'alexia_', 'twerkhub_', 'twerkhub-',
+      'sb-', 'supabase.auth', 'supabase-auth'
     ];
-    keys.forEach(function(k){ try { localStorage.removeItem(k); } catch(_){} });
-    try { sessionStorage.removeItem('alexia_auth_skipped'); } catch(_){}
+    var matches = function(k){
+      if (!k) return false;
+      for (var i = 0; i < PREFIXES.length; i++) {
+        if (k.indexOf(PREFIXES[i]) === 0) return true;
+      }
+      return false;
+    };
+    try {
+      // Snapshot keys first — modifying storage while iterating is dangerous.
+      var lsKeys = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (matches(k)) lsKeys.push(k);
+      }
+      lsKeys.forEach(function(k){ try { localStorage.removeItem(k); } catch(_){} });
+    } catch(_){}
+    try {
+      var ssKeys = [];
+      for (var j = 0; j < sessionStorage.length; j++) {
+        var k2 = sessionStorage.key(j);
+        if (matches(k2)) ssKeys.push(k2);
+      }
+      ssKeys.forEach(function(k){ try { sessionStorage.removeItem(k); } catch(_){} });
+    } catch(_){}
   }
 
   function logout(){
-    // BULLETPROOF LOGOUT — sequence matters:
-    //   1. Clear the session key FIRST so if anything throws later, at
-    //      least the user is considered logged-out.
-    //   2. Wipe token/profile state.
-    //   3. Also purge any old Supabase session tokens that might be sitting
-    //      in localStorage under sb-* / supabase.auth.token keys.
-    //   4. Hard-navigate to "/" with a cache-busting query param so the
-    //      browser doesn't serve a stale HTML from the Service Worker that
-    //      still has the old user baked in.
+    // BULLETPROOF LOGOUT v2 — fully nukes session + caches + SW.
+    //   1. Wipe localStorage/sessionStorage by prefix scan (catches every key).
+    //   2. Unregister ALL service workers AND clear all caches the SW owns,
+    //      so no stale HTML re-hydrates the old session on the next nav.
+    //   3. Hard reload with a cache-busting query param.
     try { clearCurrent(); } catch(_){}
     try { wipeTokenState(); } catch(_){}
-    // Supabase-style tokens (if any auth integration ever set them)
+    // Tell every page on this origin: balance is gone, re-render with 0.
     try {
-      var all = Object.keys(localStorage);
-      all.forEach(function(k){
-        if (/^sb-|^supabase\.auth/i.test(k)) {
-          try { localStorage.removeItem(k); } catch(_){}
-        }
-      });
+      window.dispatchEvent(new CustomEvent('alexia-tokens-changed', {
+        detail: { balance: 0, tier: 'basic', logout: true }
+      }));
     } catch(_){}
-    // Ensure nothing persists in sessionStorage either.
-    try { sessionStorage.clear(); } catch(_){}
-    // Kick the Service Worker so stale cached HTML doesn't re-hydrate the
-    // old session. We don't wait for it — best-effort.
+    // Best-effort SW + cache nuke. Awaitable but with a hard 800ms cap so
+    // logout never hangs.
+    var done = false;
+    function go(){
+      if (done) return;
+      done = true;
+      location.replace('/?logout=' + Date.now());
+    }
+    setTimeout(go, 800);
     try {
-      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({ type:'skip-waiting' });
+      if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+        navigator.serviceWorker.getRegistrations().then(function(regs){
+          regs.forEach(function(r){ try { r.unregister(); } catch(_){} });
+        }).catch(function(){});
       }
-    } catch(_){}
-    // Hard navigation with a unique query so SW + browser BOTH revalidate.
-    location.replace('/?logout=' + Date.now());
+      if (window.caches && caches.keys) {
+        caches.keys().then(function(keys){
+          return Promise.all(keys.map(function(k){ return caches.delete(k).catch(function(){}); }));
+        }).then(go).catch(go);
+      } else {
+        go();
+      }
+    } catch(_){ go(); }
   }
 
   // ── Registration flow ────────────────────────────────────────────────
@@ -195,11 +211,17 @@
     '.twk-auth-tos{font-size:11px;line-height:1.5;color:rgba(244,243,247,.5);text-align:center;margin:14px 0 0;}' +
     '.twk-auth-tos a{color:#ff6fa8;}' +
     '.twk-auth-legal{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,243,247,.35);text-align:center;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}' +
-    /* Logout chip that lives in the token HUD area — small, unobtrusive. */
-    '.twk-auth-logout,.twk-auth-signup{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(244,243,247,.7);font:800 9px/1 "JetBrains Mono",monospace;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-left:6px;}' +
-    '.twk-auth-logout:hover{background:rgba(255,45,135,.12);border-color:rgba(255,45,135,.4);color:#fff;}' +
-    '.twk-auth-signup{background:rgba(255,45,135,.14);border-color:rgba(255,45,135,.4);color:#ff6fa8;}' +
-    '.twk-auth-signup:hover{background:rgba(255,45,135,.28);border-color:rgba(255,45,135,.65);color:#fff;box-shadow:0 4px 14px rgba(255,45,135,.3);}' +
+    /* Auth chip — mounts inside the canonical TWK_NAV_V1 navbar (.twk-nav-v1-links).
+       Uses a separate class scope (.twk-auth-chip) so it picks up the navbar's
+       layout (UPPERCASE letter-spacing) but not its background gradient. */
+    '.twk-nav-v1-links .twk-auth-chip{display:inline-flex !important;align-items:center;gap:6px;padding:8px 12px !important;border-radius:8px;border:1px solid rgba(255,255,255,.18);font-family:"Inter",ui-sans-serif,system-ui,sans-serif !important;font-size:11px !important;font-weight:800 !important;letter-spacing:.12em !important;text-transform:uppercase;cursor:pointer;transition:all .2s ease;line-height:1;white-space:nowrap;margin-left:6px;background:transparent;color:rgba(230,230,240,.78);text-decoration:none;}' +
+    '.twk-nav-v1-links .twk-auth-chip.twk-auth-signup{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(255,180,84,.12));border-color:rgba(255,45,135,.45);color:#ff7eb0;}' +
+    '.twk-nav-v1-links .twk-auth-chip.twk-auth-signup:hover{background:linear-gradient(135deg,#ff2d87,#ffb454);border-color:transparent;color:#1a0a14;transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,45,135,.4);}' +
+    '.twk-nav-v1-links .twk-auth-chip.twk-auth-logout{background:transparent;border-color:rgba(255,255,255,.18);color:rgba(230,230,240,.78);}' +
+    '.twk-nav-v1-links .twk-auth-chip.twk-auth-logout:hover{background:rgba(255,45,135,.1);border-color:rgba(255,45,135,.45);color:#fff;transform:translateY(-1px);}' +
+    /* Mobile/narrow: chip shrinks but stays readable */
+    '@media(max-width:1024px){.twk-nav-v1-links .twk-auth-chip{padding:7px 9px !important;font-size:10px !important;letter-spacing:.06em !important;}}' +
+    '@media(max-width:880px){.twk-nav-v1-links .twk-auth-chip{padding:6px 8px !important;font-size:9.5px !important;}}' +
     '';
 
   function injectStyle(){
@@ -332,32 +354,33 @@
     // Deliberately NOT calling showForm() here.
   }
 
-  // Small chip in the right cluster: "Sign up" if logged out, "Log out" if in.
+  // Mount the auth chip INSIDE the canonical navbar (.twk-nav-v1-links) so
+  // the user always sees Sign Up / Log Out at the top of every page. Falls
+  // back to the floating token HUD only if the navbar isn't on the page yet.
   function ensureAuthChip(){
-    var host = document.querySelector('.twerkhub-topbar-right') || document.querySelector('.twerkhub-tokens-hud');
+    var host = document.querySelector('.twk-nav-v1 .twk-nav-v1-links') ||
+               document.querySelector('.twerkhub-tokens-hud');
     if (!host) return;
-    // Remove any stale chip first so we can re-render with current state.
-    var existing = host.querySelectorAll('.twk-auth-logout, .twk-auth-signup');
+    // Remove any stale chip first so the state always reflects current login.
+    var existing = host.querySelectorAll('.twk-auth-chip, .twk-auth-logout, .twk-auth-signup');
     existing.forEach(function(el){ el.remove(); });
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('data-twk-auth-chip', '1');
     if (getCurrent()) {
-      var out = document.createElement('button');
-      out.type = 'button';
-      out.className = 'twk-auth-logout';
-      out.title = 'Log out · clears your session';
-      out.textContent = 'Log out';
-      out.addEventListener('click', function(){
+      btn.className = 'twk-auth-chip twk-auth-logout';
+      btn.title = 'Log out · clears your session';
+      btn.textContent = 'Log Out';
+      btn.addEventListener('click', function(){
         if (confirm('Log out? Your local token balance will be cleared.')) logout();
       });
-      host.appendChild(out);
     } else {
-      var inBtn = document.createElement('button');
-      inBtn.type = 'button';
-      inBtn.className = 'twk-auth-signup';
-      inBtn.title = 'Register · claim your handle';
-      inBtn.textContent = 'Sign up';
-      inBtn.addEventListener('click', showForm);
-      host.appendChild(inBtn);
+      btn.className = 'twk-auth-chip twk-auth-signup';
+      btn.title = 'Register · claim your handle';
+      btn.textContent = 'Sign Up';
+      btn.addEventListener('click', showForm);
     }
+    host.appendChild(btn);
   }
 
   // ── Public API ───────────────────────────────────────────────────────
@@ -376,9 +399,22 @@
   } else {
     gate();
   }
-  // Re-check once the topbar's right-cluster is mounted (it's async).
-  setTimeout(ensureAuthChip, 1000);
-  setTimeout(ensureAuthChip, 2500);
+  // Re-check periodically — covers cases where the navbar mounts late OR a
+  // SPA-style nav swaps content underneath us. setInterval polls every 1s
+  // for the first 10s of the page, then stops.
+  var chipPolls = 0;
+  var chipInterval = setInterval(function(){
+    ensureAuthChip();
+    chipPolls++;
+    if (chipPolls > 10) clearInterval(chipInterval);
+  }, 1000);
+  // Re-render chip if the user logs in/out in another tab (storage event)
+  // or if a token grant happens (welcome bonus often arrives milliseconds
+  // after the chip was first mounted).
+  window.addEventListener('storage', function(ev){
+    if (ev.key === KEY_CURRENT) ensureAuthChip();
+  });
+  window.addEventListener('alexia-tokens-changed', ensureAuthChip);
 
   // Emergency kill-switch: if the old cached version of this module left a
   // modal open on the page, nuke any lingering auth-modal AND age-gate DOM
