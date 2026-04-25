@@ -155,7 +155,7 @@
   loadOnce('/assets/token-system.js?v=20260425-p8','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260425-p8','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260425-p8','twk-loader-twerkhub-auth');
-  loadOnce('/assets/twerkhub-pl-theater.js?v=20260425-p11','twk-loader-pl-theater');
+  loadOnce('/assets/twerkhub-pl-theater.js?v=20260425-p10','twk-loader-pl-theater');
 })();
 </script>
 
@@ -831,56 +831,4 @@
                 '?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
       player.src = url;
       if (title && number) title.textContent = 'Playing ' + number;
-      // Defensive: some browsers cache muted state — postMessage unMute after iframe loads.
-      try {
-        player.onload = function(){
-          [200, 800, 1500, 2500].forEach(function(d){
-            setTimeout(function(){
-              try {
-                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
-                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
-                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
-              } catch(_){}
-            }, d);
-          });
-        };
-      } catch(_){}
-      // Mark as viewed (delegated to the global pl-theater module if loaded)
-      try {
-        if (window.TwerkhubPlTheater && window.TwerkhubPlTheater.markViewed) {
-          window.TwerkhubPlTheater.markViewed(vid);
-        }
-      } catch(_){}
-      // Token grant
-      try {
-        if (window.AlexiaTokens && window.AlexiaTokens.watchClip) window.AlexiaTokens.watchClip();
-      } catch(_){}
-      // Smooth scroll the player into view (without overshoot)
-      try {
-        var pc = document.querySelector('.twerkhub-pl-player-col');
-        if (pc) pc.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } catch(_){}
-    }
-
-    // Click delegation — intercepts BOTH .rk-item (top 5 sidebar) and .vcard
-    // grid items. Capture phase so we beat any other handler. The page already
-    // has the main player iframe in .twerkhub-pl-player-col, so we just swap
-    // its src instead of opening a separate modal.
-    document.addEventListener('click', function(ev){
-      var a = ev.target.closest && ev.target.closest('a[data-vid]');
-      if (!a) return;
-      if (!a.matches('.rk-item') && !a.matches('.vcard')) return;
-      var vid = a.getAttribute('data-vid');
-      if (!vid) return;
-      ev.preventDefault();
-      ev.stopPropagation();
-      swap(vid, a.getAttribute('data-number') || '');
-    }, true);
-  } catch(e){
-    console.warn('[twerkhub-playlist] theater boot failed', e);
-  }
-})();
-</script>
-
-</body>
-</html>
+      // Defensive: som

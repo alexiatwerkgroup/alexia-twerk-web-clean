@@ -1,19 +1,22 @@
-/* ═══ TWERKHUB · Playlist theater (in-page video modal) ═══
- * v20260425-p10
+/* ═══ TWERKHUB · Playlist theater (large centered window, never fullscreen) ═══
+ * v20260425-p11
  *
- * Fullscreen-style modal that plays the video INLINE (no navigation, no
- * YouTube redirect). Uses the real YouTube IFrame API so we can setVolume
- * and unMute reliably after user interaction.
+ * For themed playlist pages (/try-on-hot-leaks/, /ttl-latin-models/,
+ * /hottest-cosplay-fancam/, /korean-girls-kpop-twerk/) that DON'T have an
+ * inline #twerkhub-pl-player iframe — opens videos in a LARGE CENTERED
+ * window (90vw / 82vh), never fullscreen, never tiny popup.
+ *
+ * For /playlist/index.html — SKIPS its own click handler entirely, because
+ * that page has its own inline iframe + swap() function that uses the
+ * existing main player area.
  *
  * Side effects:
  *  - Marks video as viewed in localStorage (cross-session memory)
- *  - Appends a real <span class="twk-viewed-badge"> to every matching
- *    [data-vid] card (top 5 sidebar AND grid). Pseudo-elements were
- *    blocked by other CSS — real DOM nodes always render.
+ *  - Adds a COMPACT green pill ("✓ VIEWED") absolutely positioned over the
+ *    top-left of each clicked card. Real DOM <span>, not pseudo, so it
+ *    survives any parent CSS conflicts.
  *  - Grants +15 tokens via AlexiaTokens.watchClip() per unique view
- *
- * Compatibility: works on /playlist/, /try-on-hot-leaks/,
- * /hottest-cosplay-fancam/, /korean-girls-kpop-twerk/, /ttl-latin-models/.
+ *  - Uses YouTube IFrame API for reliable unMute + setVolume(100)
  */
 (function(){
   'use strict';
@@ -22,6 +25,9 @@
 
   // ── State ───────────────────────────────────────────────────────
   var modal, frameContainer, ytPlayer, ytApiPromise = null;
+  // If the page has its own inline player (#twerkhub-pl-player), we don't
+  // want to take over click handling — that page handles it.
+  var INLINE_PLAYER_PRESENT = false;
 
   // ── YouTube IFrame API loader (single-shot) ─────────────────────
   function loadYTApi(){
@@ -44,23 +50,29 @@
     return ytApiPromise;
   }
 
-  // ── Modal scaffold ──────────────────────────────────────────────
+  // ── Modal scaffold (large centered window, NEVER fullscreen) ────
   function ensureModal(){
     if (modal) return;
     var st = document.createElement('style');
     st.id = 'twk-pl-theater-style';
     st.textContent = [
-      '#twk-pl-theater{position:fixed;inset:0;background:#000;z-index:99999;display:none;align-items:stretch;justify-content:stretch;padding:0}',
+      /* Modal: large centered window, never fullscreen */
+      '#twk-pl-theater{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(6px)}',
       '#twk-pl-theater.is-open{display:flex}',
-      '#twk-pl-theater .twk-pl-theater-box{position:relative;width:100vw;height:100vh;background:#000}',
+      '#twk-pl-theater .twk-pl-theater-box{position:relative;width:min(90vw,1400px);max-height:82vh;aspect-ratio:16/9;background:#000;border-radius:18px;overflow:hidden;box-shadow:0 28px 80px rgba(0,0,0,.7)}',
+      '@media(max-aspect-ratio:16/9){#twk-pl-theater .twk-pl-theater-box{width:90vw;height:auto}}',
       '#twk-pl-theater .twk-pl-theater-frame-host{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000}',
       '#twk-pl-theater .twk-pl-theater-frame-host iframe{width:100%;height:100%;border:0;background:#000}',
-      '#twk-pl-theater-close{position:absolute;top:14px;right:14px;z-index:5;width:48px;height:48px;border-radius:50%;border:none;background:rgba(0,0,0,.7);color:#fff;font-size:26px;cursor:pointer;line-height:1;transition:background .2s}',
+      '#twk-pl-theater-close{position:absolute;top:12px;right:12px;z-index:5;width:42px;height:42px;border-radius:50%;border:none;background:rgba(0,0,0,.7);color:#fff;font-size:24px;cursor:pointer;line-height:1;transition:background .2s}',
       '#twk-pl-theater-close:hover{background:#ff2d87}',
-      '/* Viewed marker (real DOM badge appended by JS) */',
-      '.twk-viewed-badge{position:absolute;top:8px;left:8px;background:rgba(56,217,169,.95);color:#06140e;font:800 10px/1 ui-sans-serif,system-ui,-apple-system,Segoe UI;letter-spacing:.14em;padding:5px 9px;border-radius:6px;z-index:9;pointer-events:none;text-shadow:none;box-shadow:0 2px 8px rgba(0,0,0,.5);text-transform:uppercase}',
-      '.vcard.twk-viewed,.rk-item.twk-viewed{position:relative}',
-      '.vcard.twk-viewed .vthumb img,.rk-item.twk-viewed .rk-thumb img,.rk-item.twk-viewed img{opacity:.45!important;filter:grayscale(.55)!important}'
+      /* Viewed badge: COMPACT green pill, absolutely positioned over card top-left.
+         !important on position rules so flex/grid parents can't push it to a new row. */
+      '.twk-viewed-badge{position:absolute!important;top:6px;left:6px;background:linear-gradient(145deg,#3ddca0,#28a877);color:#06140e;font:800 9px/1 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;letter-spacing:.16em;padding:4px 8px;border-radius:5px;z-index:9;pointer-events:none;text-transform:uppercase;box-shadow:0 2px 6px rgba(0,0,0,.45);white-space:nowrap;display:inline-block;line-height:1}',
+      '.twk-viewed-badge::before{content:"✓ ";font-weight:900}',
+      /* Force parent positioning so the absolute badge anchors correctly */
+      '.vcard.twk-viewed,.rk-item.twk-viewed{position:relative!important}',
+      /* Subtle dimming of viewed content (the part the user said works fine — keeping intact) */
+      '.vcard.twk-viewed .vthumb img,.rk-item.twk-viewed .rk-thumb img,.rk-item.twk-viewed img{opacity:.55!important;filter:grayscale(.45)!important;transition:opacity .25s,filter .25s}'
     ].join('\n');
     document.head.appendChild(st);
 
@@ -78,6 +90,7 @@
     document.body.appendChild(modal);
     frameContainer = modal.querySelector('#twk-pl-theater-frame-host');
     modal.querySelector('#twk-pl-theater-close').addEventListener('click', close);
+    modal.addEventListener('click', function(ev){ if (ev.target === modal) close(); });
     document.addEventListener('keydown', function(ev){
       if (ev.key === 'Escape' && modal.classList.contains('is-open')) close();
     });
@@ -86,10 +99,7 @@
   function open(vid){
     if (!vid) return;
     ensureModal();
-
-    // Reset frame container — YT.Player will replace this <div> with an iframe.
     frameContainer.innerHTML = '<div id="twk-pl-theater-target"></div>';
-
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
@@ -98,9 +108,7 @@
     markViewed(vid);
     grantViewToken();
 
-    // Use real YouTube IFrame API for reliable volume/unmute control
     loadYTApi().then(function(YT){
-      // Destroy previous instance if any
       if (ytPlayer && typeof ytPlayer.destroy === 'function') {
         try { ytPlayer.destroy(); } catch(_){}
       }
@@ -108,34 +116,20 @@
         videoId: vid,
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
-          autoplay: 1,
-          rel: 0,
-          modestbranding: 1,
-          playsinline: 1,
-          enablejsapi: 1,
-          origin: window.location.origin
+          autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1,
+          enablejsapi: 1, origin: window.location.origin
         },
         events: {
           onReady: function(ev){
-            try {
-              ev.target.unMute();
-              ev.target.setVolume(100);
-              ev.target.playVideo();
-            } catch(_){}
-            // Belt-and-suspenders: re-apply unmute a few times in case
-            // browser autoplay policy delays the first unmute.
+            try { ev.target.unMute(); ev.target.setVolume(100); ev.target.playVideo(); } catch(_){}
             var attempts = 0;
             var iv = setInterval(function(){
               attempts++;
-              try {
-                ev.target.unMute();
-                ev.target.setVolume(100);
-              } catch(_){}
+              try { ev.target.unMute(); ev.target.setVolume(100); } catch(_){}
               if (attempts >= 6) clearInterval(iv);
             }, 500);
           },
           onStateChange: function(ev){
-            // 1 = playing, 5 = video cued
             if (ev.data === 1 || ev.data === 5) {
               try { ev.target.unMute(); ev.target.setVolume(100); } catch(_){}
             }
@@ -158,43 +152,35 @@
     document.body.style.overflow = '';
   }
 
-  // ── Viewed memory ───────────────────────────────────────────────
+  // ── Viewed memory + decoration ──────────────────────────────────
   var KEY = 'twk_viewed_videos';
   function getViewed(){
     try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }
     catch(_){ return {}; }
   }
-  function setViewed(v){
-    try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(_){}
-  }
+  function setViewed(v){ try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(_){} }
+
   function markViewed(vid){
     if (!vid) return;
     var v = getViewed();
     var fresh = !v[vid];
-    if (fresh) {
-      v[vid] = Date.now();
-      setViewed(v);
-    }
+    if (fresh) { v[vid] = Date.now(); setViewed(v); }
     decorateAllForVid(vid);
     return fresh;
   }
   function decorateAllForVid(vid){
     var els = document.querySelectorAll('[data-vid]');
     for (var i = 0; i < els.length; i++) {
-      var el = els[i];
-      if (el.getAttribute('data-vid') !== vid) continue;
-      addViewedDecoration(el);
+      if (els[i].getAttribute('data-vid') === vid) addViewedDecoration(els[i]);
     }
   }
   function addViewedDecoration(el){
     if (!el || el.classList.contains('twk-viewed')) return;
     el.classList.add('twk-viewed');
-    // Append a real <span> badge — pseudo-elements were getting masked by
-    // other CSS rules on .vcard, real DOM nodes always render visibly.
     if (!el.querySelector(':scope > .twk-viewed-badge')) {
       var b = document.createElement('span');
       b.className = 'twk-viewed-badge';
-      b.textContent = '✓ VIEWED';
+      b.textContent = 'Viewed';
       el.appendChild(b);
     }
   }
@@ -220,8 +206,9 @@
     } catch(_){}
   }
 
-  // ── Click delegation ────────────────────────────────────────────
+  // ── Click delegation (only when there's no inline player on the page) ──
   function onDocClick(ev){
+    if (INLINE_PLAYER_PRESENT) return; // /playlist/ handles its own clicks
     var a = ev.target.closest && ev.target.closest('a[data-vid]');
     if (!a) return;
     if (!(a.matches('.rk-item') || a.matches('.vcard'))) return;
@@ -232,7 +219,26 @@
     open(vid);
   }
 
+  // ── Hook into /playlist/ inline player to mark viewed on swap ───
+  function patchInlinePlayer(){
+    // The inline page calls swap(vid) when user clicks. We piggyback by
+    // observing the iframe.src and marking that vid as viewed too.
+    var player = document.getElementById('twerkhub-pl-player');
+    if (!player) return false;
+    INLINE_PLAYER_PRESENT = true;
+    function onLoad(){
+      try {
+        var m = (player.src || '').match(/embed\/([^?&\s]{6,})/);
+        if (m && m[1]) markViewed(m[1]);
+      } catch(_){}
+    }
+    player.addEventListener('load', onLoad);
+    onLoad();
+    return true;
+  }
+
   function init(){
+    patchInlinePlayer();
     applyViewedClasses();
     document.addEventListener('click', onDocClick, true);
     if (typeof MutationObserver !== 'undefined') {
