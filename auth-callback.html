@@ -1,171 +1,164 @@
 <!doctype html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-YSFR7FHCLS');
-</script>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Account confirmation | Alexia Twerk Group</title>
-<style>
-  :root{--bg:#07070c;--bg2:#111118;--line:rgba(255,255,255,.08);--txt:#f4f4f8;--mut:rgba(255,255,255,.68);--acc:rgba(0,255,170,.25);}
-  *{box-sizing:border-box}
-  body{margin: 4px 6px;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(900px 600px at 15% 10%, rgba(255,46,99,.12), transparent 55%),radial-gradient(900px 600px at 85% 20%, rgba(0,255,170,.10), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2));color:var(--txt);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
-  .card{width:min(100%,560px);border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.03);padding:28px;box-shadow:0 35px 90px rgba(0,0,0,.45);}
-  .kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:10px;}
-  h1{margin: 4px 6px;font-size:38px;line-height:1.02;}
-  p{margin: 4px 6px;color:var(--mut);line-height:1.6;}
-  .status{margin-top:16px;padding:14px 16px;border-radius:16px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);}
-  .status.ok{border-color:rgba(0,255,170,.28);background:rgba(0,255,170,.08);}
-  .status.err{border-color:rgba(255,120,120,.25);background:rgba(255,120,120,.08);}
-  .btn{display:inline-flex;align-items:center;justify-content:center;margin-top:14px;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(145deg,rgba(0,255,170,.18),rgba(0,255,170,.06));color:#fff;text-decoration:none;font-weight:800;}
-</style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<meta name="description" content="Account confirmation inside Alexia Twerk Group with a darker, cleaner layout and a more refined archive flow.">
-<meta property="og:title" content="Account confirmation | Alexia Twerk Group">
-<meta property="og:description" content="Account confirmation inside Alexia Twerk Group with a darker, cleaner layout and a more refined archive flow.">
-<meta property="og:url" content="https://alexiatwerkgroup.com/auth-callback.html">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex,nofollow">
 <link rel="canonical" href="https://alexiatwerkgroup.com/auth-callback.html">
-<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/auth-callback.html">
-<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/auth-callback.html">>
-
-<link rel="stylesheet" href="/assets/alexia-visual-polish.css">
-
-<link rel="stylesheet" href="/assets/premium-polish-v10.css?v=merge12"/>
-
-<link rel="stylesheet" href="/assets/v9-fixes.css">
-<link rel="stylesheet" href="/assets/final-10.css?v=merge12">
-<script defer src="/assets/final-10.js?v=merge12"></script>
-<link rel="stylesheet" href="/premium.css">
-<link rel="manifest" href="/manifest.json">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alexia">
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('/service-worker.js').catch(function(){});
-  });
-}
-</script>
-<meta name="theme-color" content="#0b0b12">
-  <link rel="stylesheet" href="/assets/elite-tokens.css">
-  <link rel="stylesheet" href="/assets/elite-components.css">
-<script src="/assets/age-gate.js"></script>
-</head>
-<body class="has-final-nav">
-<!-- TWK_NAV_V1 -->
-<style id="twk-nav-v1-css">
-.twk-nav-v1{position:sticky!important;top:0!important;z-index:9999!important;background:rgba(5,5,10,.94)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)!important;margin:0!important;width:100%!important;display:block!important}
-.twk-nav-v1-inner{max-width:1480px!important;margin:0 auto!important;padding:14px 26px!important;display:flex!important;align-items:center!important;gap:14px!important;flex-wrap:nowrap!important;grid-template-columns:none!important}
-.twk-nav-v1-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;flex-shrink:0}
-.twk-nav-v1-brand img{width:38px;height:38px;border-radius:8px;display:block}
-.twk-nav-v1-links{display:flex;align-items:center;gap:2px;flex-wrap:nowrap;margin-left:auto;white-space:nowrap}
-.twk-nav-v1-links a{position:relative;padding:10px 14px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;line-height:1;transition:color .22s ease,background .22s ease,transform .2s ease;white-space:nowrap}
-.twk-nav-v1-links a:hover{background:rgba(255,255,255,.05);color:#fff;transform:translateY(-1px)}
-.twk-nav-v1-links a.is-active{color:#fff;background:transparent}
-.twk-nav-v1-links a.is-active::after{content:"";position:absolute;left:18%;right:18%;bottom:2px;height:2px;border-radius:2px;background:linear-gradient(90deg,#ff2d87,#ffb454);box-shadow:0 0 10px rgba(255,45,135,.55)}
-.twk-nav-v1-links a.twk-nav-v1-hot{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(255,180,84,.18));color:#ff7eb0;border:1px solid rgba(255,45,135,.45);padding-left:14px}
-.twk-nav-v1-links a.twk-nav-v1-hot:hover{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;border-color:transparent;box-shadow:0 6px 18px rgba(255,45,135,.4)}
-.twk-nav-v1-live{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);color:#1ee08f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;margin-left:6px}
-.twk-nav-v1-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;animation:twkLivePulse 2s ease-in-out infinite}
-@keyframes twkLivePulse{0%,100%{opacity:1}50%{opacity:.4}}
-@media(max-width:1180px){.twk-nav-v1-links a{padding:8px 10px;font-size:10.5px;letter-spacing:.08em}}
-@media(max-width:1024px){.twk-nav-v1-links{gap:0}.twk-nav-v1-links a{padding:8px 8px;font-size:10px;letter-spacing:.06em}.twk-nav-v1-live{font-size:9px;padding:5px 9px}}
-@media(max-width:880px){.twk-nav-v1-inner{padding:10px 14px;gap:8px}.twk-nav-v1-links{gap:1px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:2px}.twk-nav-v1-links a{padding:7px 8px;font-size:10px}.twk-nav-v1-brand span{display:none}.twk-nav-v1-live{display:none}}
-.twerkhub-pl-thumb,.vthumb,.rk-thumb,.twerkhub-fp-thumb,.twerkhub-club-thumb{background:linear-gradient(135deg,#1a0a1f 0%,#2a0f3d 50%,#0a0a14 100%)!important}
-.twerkhub-pl-thumb img,.vthumb img,.rk-thumb img,.twerkhub-fp-thumb img,.twerkhub-club-thumb img{background:transparent}
+<style>
+  :root{--bg:#07070c;--bg2:#111118;--line:rgba(255,255,255,.08);--txt:#f4f4f8;--mut:rgba(255,255,255,.68);--gold:#e8c880;--pink:#ff2d87;--ok:#38d9a9;--err:#ff7878;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(900px 600px at 15% 10%,rgba(255,46,99,.12),transparent 55%),radial-gradient(900px 600px at 85% 20%,rgba(0,255,170,.10),transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2));color:var(--txt);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
+  .card{width:min(100%,520px);border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.03);padding:32px 28px;box-shadow:0 35px 90px rgba(0,0,0,.45);}
+  .crest{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ff5fa3,#a32f6e);color:#fff;font:800 13px/1 ui-sans-serif;letter-spacing:.06em;margin-bottom:14px;}
+  .kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:8px;}
+  h1{font-size:30px;line-height:1.1;margin-bottom:10px;letter-spacing:-.01em;}
+  h1 em{color:var(--gold);font-style:italic;}
+  p{color:var(--mut);line-height:1.55;font-size:14px;}
+  .status{margin-top:18px;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);font-size:14px;}
+  .status.ok{border-color:rgba(0,255,170,.28);background:rgba(0,255,170,.08);color:#b8f5d6;}
+  .status.err{border-color:rgba(255,120,120,.25);background:rgba(255,120,120,.08);color:#ffc4c4;}
+  .form{margin-top:18px;display:none;}
+  .form.is-active{display:block;}
+  label{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;margin-top:12px;}
+  input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);color:var(--txt);font:400 15px/1.4 ui-sans-serif;}
+  input:focus{outline:none;border-color:rgba(255,45,135,.45);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;width:100%;margin-top:16px;padding:13px 16px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(145deg,var(--pink),#a32f6e);color:#fff;font:700 14px/1 ui-sans-serif;letter-spacing:.04em;}
+  .btn[disabled]{opacity:.5;cursor:wait;}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.18);color:var(--mut);font-weight:500;letter-spacing:.06em;}
+  .err{color:var(--err);font-size:13px;margin-top:8px;display:none;}
+  .err.is-visible{display:block;}
 </style>
-<nav class="twk-nav-v1" aria-label="Primary" data-twk-nav-v1>
-  <div class="twk-nav-v1-inner">
-    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub · home">
-      <img src="/logo-twerkhub.png" alt="Twerkhub" width="38" height="38" decoding="async">
-      <span>TWERKHUB · EST. 2018</span>
-    </a>
-    <div class="twk-nav-v1-links">
-      <a href="/" data-nav="home">HOME</a>
-      <a href="/#private-models" data-nav="exclusive">EXCLUSIVE</a>
-      <a href="/#playlists" data-nav="playlists">PLAYLISTS</a>
-      <a href="/creators.html" data-nav="creators">CREATORS</a>
-      <a href="/alexia-video-packs.html" class="twk-nav-v1-hot" data-nav="hotpacks">HOT PACKS</a>
-      <a href="/community.html" data-nav="community">COMMUNITY</a>
-      <a href="/membership.html" data-nav="membership">MEMBERSHIP</a>
-      <a href="/account.html" data-nav="account">MY ACCOUNT</a>
-      <a href="/profile.html" data-nav="profile">PROFILE</a>
-    </div>
-    <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
-  </div>
-</nav>
-<script>
-(function(){
-  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
-  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
-  function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
-  setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
-  function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
-  loadOnce('/assets/supabase-config.js?v=20260425-p8','twk-loader-supabase-config');
-  loadOnce('/assets/token-system.js?v=20260425-p8','twk-loader-token-system');
-  loadOnce('/assets/twerkhub-tokens.js?v=20260425-p8','twk-loader-twerkhub-tokens');
-  loadOnce('/assets/twerkhub-auth.js?v=20260425-p8','twk-loader-twerkhub-auth');
-})();
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
+</head>
+<body>
 
 <div class="card">
-    <div class="kicker">Alexia Twerk Group</div>
-    <h1>Confirming your account</h1>
-    <p>We are finishing your sign-in and sending you back to the same video so your comment flow can continue cleanly.</p>
-    <div id="status" class="status">Working…</div>
-    <a id="fallback" class="btn" href="/">Go to home</a>
-  </div>
+  <div class="crest">A·T</div>
+  <div class="kicker" id="kicker">Alexia Twerk Group</div>
+  <h1 id="title">Confirming…</h1>
+  <p id="subtitle">Hold on while we finish setting things up.</p>
+
+  <div id="status" class="status">Working…</div>
+
+  <!-- Recovery: new password form -->
+  <form id="recovery-form" class="form" novalidate>
+    <label for="np">New password</label>
+    <input id="np" type="password" autocomplete="new-password" minlength="6" maxlength="120" required placeholder="At least 6 characters">
+    <label for="np2">Confirm new password</label>
+    <input id="np2" type="password" autocomplete="new-password" minlength="6" maxlength="120" required placeholder="Repeat the password">
+    <p class="err" id="rec-err"></p>
+    <button type="submit" class="btn" id="rec-btn">Update password</button>
+  </form>
+
+  <a id="goback" class="btn ghost" href="/account.html" style="text-decoration:none;margin-top:12px;display:none;">Go to my account</a>
+</div>
+
 <script>
 (function(){
+  'use strict';
   const SUPABASE_URL = 'https://vieqniahusdrfkpcuqsn.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpZXFuaWFodXNkcmZrcGN1cXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MTk2NjksImV4cCI6MjA4ODk5NTY2OX0.Ox8gUp0g-aYRvI2Zj6PWxx5unO3m3sEtal0OKLvPSkQ';
-  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: 'alexia-comments-auth-v2' }
+
+  // CRITICAL: must match the storageKey used by /assets/supabase-config.js
+  // ('alexia-auth-v3'). Otherwise the session set here won't be visible to
+  // the rest of the site and the user will appear logged out.
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: 'alexia-auth-v3', flowType: 'pkce' }
   });
-  const status = document.getElementById('status');
-  const fallback = document.getElementById('fallback');
-  const params = new URLSearchParams(location.search);
-  const returnTo = params.get('returnTo') || '/';
-  fallback.href = returnTo;
-  function setStatus(msg, kind){ status.textContent = msg; status.className = 'status ' + (kind || ''); }
-  async function finish(){
-    try {
-      await new Promise(r => setTimeout(r, 150));
-      const { data } = await client.auth.getSession();
-      if (data && data.session) {
-        setStatus('Account confirmed. Redirecting you back to your video…', 'ok');
-        setTimeout(function(){ location.replace(returnTo); }, 900);
-        return;
-      }
-      setStatus('Your session is almost ready. If you are not redirected automatically, use the button below.', 'ok');
-      setTimeout(function(){ location.replace(returnTo); }, 1400);
-    } catch (e) {
-      console.error('auth callback error', e);
-      setStatus('We could not finish the confirmation automatically. Use the button below to return to the site.', 'err');
-    }
+
+  const $ = (id) => document.getElementById(id);
+  const status = $('status');
+  const title = $('title');
+  const subtitle = $('subtitle');
+  const kicker = $('kicker');
+  const recForm = $('recovery-form');
+  const goback = $('goback');
+  const recErr = $('rec-err');
+
+  function setStatus(msg, kind){
+    status.innerHTML = msg;
+    status.className = 'status ' + (kind || '');
   }
-  finish();
+  function showError(m){ recErr.textContent = m; recErr.classList.add('is-visible'); }
+
+  const params = new URLSearchParams(location.search);
+  const isRecovery = params.get('recovery') === '1' || params.get('type') === 'recovery';
+  const returnTo = params.get('returnTo') || '/account.html';
+
+  async function handleRecovery(){
+    kicker.textContent = 'Password recovery';
+    title.innerHTML = 'Set a <em>new password</em>.';
+    subtitle.textContent = 'Choose a new password for your account. You will be signed in automatically.';
+
+    // Wait for Supabase to detect the session-from-URL fragment.
+    await new Promise(r => setTimeout(r, 400));
+    const { data: sessData } = await sb.auth.getSession();
+    if (!sessData || !sessData.session) {
+      setStatus('Reset link expired or already used. Request a new recovery email from /account.html.', 'err');
+      goback.style.display = 'inline-flex';
+      return;
+    }
+
+    setStatus('Reset link verified. Pick a new password below.', 'ok');
+    recForm.classList.add('is-active');
+
+    recForm.addEventListener('submit', async function(ev){
+      ev.preventDefault();
+      recErr.classList.remove('is-visible');
+      const np = $('np').value;
+      const np2 = $('np2').value;
+      if (np.length < 6) return showError('Password must be at least 6 characters.');
+      if (np !== np2) return showError('Passwords do not match.');
+
+      const btn = $('rec-btn');
+      btn.disabled = true; btn.textContent = 'Updating…';
+      try {
+        const { error } = await sb.auth.updateUser({ password: np });
+        if (error) {
+          btn.disabled = false; btn.textContent = 'Update password';
+          return showError(error.message || 'Could not update password.');
+        }
+        setStatus('Password updated. Sending you to your account…', 'ok');
+        recForm.style.display = 'none';
+        setTimeout(function(){ location.replace('/account.html'); }, 1200);
+      } catch(e){
+        btn.disabled = false; btn.textContent = 'Update password';
+        showError('Error: ' + (e && e.message || 'unknown'));
+      }
+    });
+  }
+
+  async function handleConfirmation(){
+    kicker.textContent = 'Account confirmation';
+    title.innerHTML = 'Confirming your <em>account</em>.';
+    subtitle.textContent = 'Almost done. Sending you to your dashboard.';
+
+    // Give the SDK a beat to consume the URL fragment.
+    await new Promise(r => setTimeout(r, 350));
+    const { data } = await sb.auth.getSession();
+    if (data && data.session) {
+      setStatus('Email confirmed. Welcome.', 'ok');
+      setTimeout(function(){ location.replace(returnTo); }, 900);
+      return;
+    }
+    setStatus('Confirmation processed. Redirecting you to your account…', 'ok');
+    setTimeout(function(){ location.replace(returnTo); }, 1200);
+  }
+
+  if (isRecovery) handleRecovery().catch(function(e){
+    console.error('recovery flow', e);
+    setStatus('Recovery flow failed. Open /account.html and request a new reset link.', 'err');
+    goback.style.display = 'inline-flex';
+  });
+  else handleConfirmation().catch(function(e){
+    console.error('confirmation flow', e);
+    setStatus('Confirmation flow failed. Open /account.html to sign in manually.', 'err');
+    goback.style.display = 'inline-flex';
+  });
 })();
 </script>
 
-
-
-<script defer src="/assets/premium-polish-v10.js"></script>
-<script defer src="/assets/global-i18n.js?v=20260417-01"></script>
-  <script defer src="/assets/enter-now-widget.js?v=20260417-02"></script>
-<script src="/assets/token-system.js" defer></script>
 </body>
 </html>
