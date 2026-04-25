@@ -44,7 +44,6 @@
       {href:/^\/(\?|$|index\.html$)/,   key:'nav.home'},
       {href:/alexia-twerk-leaks/,        key:'nav.alexia'},
       {href:/^\/playlist\/?(\?|$)/,      key:'nav.playlist'},
-      {href:/^\/playlist-2\/?(\?|$)/,    key:'nav.otherside'},
       {href:/community\.html/,           key:'nav.community'},
       {href:/top-100/,                   key:'nav.top100'},
       {href:/best-twerk-dancers/,        key:'nav.bestdancers'},

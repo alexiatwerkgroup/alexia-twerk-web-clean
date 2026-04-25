@@ -73,6 +73,21 @@
       "source": "/playlist-del-otro-lado.html",
       "destination": "/",
       "statusCode": 410
+    },
+    {
+      "source": "/playlist-2",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-2/",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-2/:path*",
+      "destination": "/playlist/",
+      "permanent": true
     }
   ]
 }

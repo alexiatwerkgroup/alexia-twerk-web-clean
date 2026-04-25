@@ -3,7 +3,7 @@
  * Master Directive nro 1 · Puntos 3, 7 del punch list.
  *
  * Exponer:
- *   window.ALEXIA_TOTAL_VIDEOS    — suma REAL de /playlist/ + /playlist-2/
+ *   window.ALEXIA_TOTAL_VIDEOS    — total real de videos en /playlist/
  *   window.alexiaAlreadyWatched() — formula (300-400 random por dia) x dias x 2
  *
  * Side-effects:
@@ -13,25 +13,25 @@
  *   - Actualiza todo elemento marcado con:
  *       [data-stat-already-watched], .alexia-already-watched, #alexia-already-watched
  *     con el counter que crece cada 10 min + tween de color.
- *   - Si existe #stat-videos o #stat-views (playlist-2 legacy) tambien los pisa.
+ *   - Si existe #stat-videos o #stat-views (legacy) tambien los pisa.
  */
 (function(){
   'use strict';
   if (window.__alexiaCountersMountedV1) return;
   window.__alexiaCountersMountedV1 = true;
 
-  // ── Totals (snapshot 2026-04-18) ─────────────────────────────
-  // /playlist/ = 315 HTML pages, /playlist-2/ data.js = 275 videos
-  // Total real = 590. Cuando cambie el numero de videos, solo editar aqui.
-  var TOTAL_PLAYLIST = 315;
-  var TOTAL_PLAYLIST_2 = 275;
-  var TOTAL_VIDEOS = TOTAL_PLAYLIST + TOTAL_PLAYLIST_2; // 590
+  // ── Totals (snapshot 2026-04-25) ─────────────────────────────
+  // /playlist/ = N HTML pages indexables; cada una es un video unico.
+  // /playlist-2/ fue eliminada — su data.js vive ahora en /assets/playlist-data.js
+  // y todos sus videos tienen ya HTML individual en /playlist/.
+  // Cuando cambie el numero, editar TOTAL_VIDEOS aqui.
+  var TOTAL_VIDEOS = 577;
   window.ALEXIA_TOTAL_VIDEOS = TOTAL_VIDEOS;
 
   // ── Already Watched formula ──────────────────────────────────
   // Launch real del portal: 10 de marzo de 2026.
   // Formula: por cada dia desde launch, entre 300 y 400 personas vieron.
-  // Cada persona mira ~2 videos (playlist + playlist-2) = multiplicador 2.
+  // Cada persona mira ~2 videos = multiplicador 2.
   var LAUNCH = new Date('2026-03-10T00:00:00');
   var MULTIPLIER = 2;
 
@@ -108,7 +108,7 @@
 
   function run(){
     applyTotals();
-    // Re-aplica cada 10 minutos (match con playlist-2 cadence)
+    // Re-aplica cada 10 minutos
     setInterval(applyTotals, 10 * 60 * 1000);
   }
 
