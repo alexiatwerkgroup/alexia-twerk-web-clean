@@ -323,6 +323,25 @@
     root.querySelectorAll('[data-toggle-mode]').forEach(function(b){ b.addEventListener('click', function(){ var nm = b.getAttribute('data-toggle-mode'); closeForm(); showForm(nm); }); });
   }
 
+  function bindRecovery(root){
+    var errEl = root.querySelector('#twk-auth-error');
+    var okEl = root.querySelector('#twk-auth-success');
+    function showError(m){ errEl.textContent = m; errEl.classList.add('is-visible'); if (okEl) okEl.classList.remove('is-visible'); }
+    function showOk(m){ if (!okEl) return; okEl.innerHTML = m; okEl.classList.add('is-visible'); errEl.classList.remove('is-visible'); }
+    root.addEventListener('submit', async function(ev){
+      ev.preventDefault();
+      var btn = root.querySelector('.twk-auth-submit');
+      var em = (root.querySelector('#twk-rec-email')||{}).value;
+      btn.disabled = true; errEl.classList.remove('is-visible');
+      try {
+        var res = await resetPassword(em);
+        btn.disabled = false;
+        if (!res.ok) { showError(res.error || 'Could not send reset link'); return; }
+        showOk('Reset link sent to <strong>' + escapeHtml(em) + '</strong>. Check your inbox (and spam).');
+      } catch(err){ btn.disabled = false; showError('Error: ' + (err && err.message || 'Unknown error')); }
+    });
+  }
+
   function bindAuth(root, isSignUp){
     var errEl = root.querySelector('#twk-auth-error');
     var okEl = root.querySelector('#twk-auth-success');
@@ -348,5 +367,99 @@
         closeForm();
       } catch(err){ btn.disabled = false; showError('Error: ' + (err && err.message || 'Unknown error')); }
     });
+  }
+
+  // ── Inline mount for /account.html (#twk-account-auth host) ──────────
+  // Renders sign-up/sign-in INSIDE the host element, no modal. Toggles
+  // swap content within the same host. If logged in, shows a small
+  // "logged in as X" panel with logout button.
+  async function mountAccountAuthUI(initialMode){
+    var host = document.getElementById('twk-account-auth');
+    if (!host) return;
+    injectStyle();
+
+    // Determine state: logged in?
+    var snap = null;
+    try { snap = await refreshSession(); } catch(_){}
+    var loggedIn = snap && snap.user && snap.profile;
+
+    if (loggedIn) {
+      host.innerHTML =
+        '<div class="twk-auth-sheet" style="position:static;transform:none;border-radius:22px;text-align:center;max-width:560px;margin:0 auto">' +
+          '<div class="twk-auth-crest">A·T</div>' +
+          '<span class="twk-auth-eye">Signed in</span>' +
+          '<h2 class="twk-auth-title">Welcome back, <em>' + escapeHtml(snap.profile.username || 'member') + '</em>.</h2>' +
+          '<p class="twk-auth-lede">Your dashboard, balance and streak are below. Token actions are tracked globally — sign in from any device.</p>' +
+          '<div class="twk-auth-form" style="text-align:left">' +
+            '<button type="button" id="twk-acc-logout" class="twk-auth-submit" style="background:transparent;color:rgba(244,243,247,.85);border:1px solid rgba(255,255,255,.18)">Sign out</button>' +
+          '</div>' +
+        '</div>';
+      var lo = host.querySelector('#twk-acc-logout');
+      if (lo) lo.addEventListener('click', function(){ logout(); });
+      return;
+    }
+
+    // Not logged in → render auth form inline
+    var mode = (initialMode === 'signin' || initialMode === 'recovery') ? initialMode : 'signup';
+    if (location.hash === '#signin') mode = 'signin';
+    else if (location.hash === '#recovery' || location.hash === '#forgot') mode = 'recovery';
+
+    function render(){
+      var html =
+        mode === 'recovery' ? renderRecovery() :
+        mode === 'signin'   ? renderSignIn()   :
+                              renderSignUp();
+      // Strip the modal close button (×) — it's pointless inline
+      html = html.replace('<button type="button" class="twk-auth-close">×</button>', '');
+      // Inline-friendly sheet styling: no fixed positioning, no oversized vh
+      html = html.replace(
+        '<form class="twk-auth-sheet"',
+        '<form class="twk-auth-sheet" style="position:static;transform:none;border-radius:22px;max-width:560px;margin:0 auto;width:auto"'
+      );
+      host.innerHTML = html;
+
+      var root = host.querySelector('form.twk-auth-sheet');
+      if (!root) return;
+
+      // Wire toggle buttons (signup ↔ signin ↔ recovery) to re-render inline
+      root.querySelectorAll('[data-toggle-mode]').forEach(function(b){
+        b.addEventListener('click', function(){
+          mode = b.getAttribute('data-toggle-mode');
+          render();
+        });
+      });
+
+      // Wire submit / form behaviour
+      if (mode === 'recovery') bindRecovery(root);
+      else bindAuth(root, mode === 'signup');
+    }
+
+    render();
+  }
+
+  // ── Public API + auto-mount ──────────────────────────────────────────
+  window.TwerkhubAuth = {
+    showForm: showForm,
+    closeForm: closeForm,
+    mount: mountAccountAuthUI,
+    logout: logout,
+    getCurrent: getCurrent,
+    syncFromServer: refreshSession,
+    refreshSession: refreshSession,
+    register: register,
+    signIn: signIn,
+    resetPassword: resetPassword,
+    isLoggedIn: function(){ return !!getCachedUser(); }
+  };
+
+  function tryMount(){
+    if (document.getElementById('twk-account-auth')) {
+      mountAccountAuthUI();
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryMount);
+  } else {
+    tryMount();
   }
 })();
