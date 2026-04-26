@@ -170,6 +170,7 @@ def build_group_page(title: str, desc: str, matches: list) -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p1" async></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{html.escape(title)} | Alexia Twerk Group</title>

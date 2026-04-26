@@ -97,6 +97,7 @@ def is_placeholder(title):
 PAGE_TEMPLATE = """<!doctype html>
 <html lang="en">
 <head>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p1" async></script>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="referrer" content="strict-origin-when-cross-origin"/>
@@ -521,8 +522,4 @@ def main():
     print(f"\n=== RESUMEN ===")
     print(f"Nuevos HTML: {written}")
     print(f"GRID: {len(grid)} -> {len(new_grid)}")
-    print(f"Placeholders ignorados: {len(placeholders)}")
-
-
-if __name__ == '__main__':
-    main()
+    pr

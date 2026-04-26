@@ -62,6 +62,7 @@ CANONICAL_NAV = """<!-- TWK_NAV_V1 -->
   loadOnce('/assets/token-system.js?v=20260425-p8','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260425-p8','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260425-p8','twk-loader-twerkhub-auth');
+  loadOnce('/assets/twerkhub-sw-killer.js?v=20260425-p1','twk-loader-sw-killer');
 })();
 </script>
 """
@@ -93,6 +94,21 @@ def should_skip(path: Path) -> bool:
         pass
     return False
 
+SW_KILLER_TAG = '<script src="/assets/twerkhub-sw-killer.js?v=20260425-p1" async></script>'
+
+def ensure_sw_killer(text: str) -> str:
+    """Inject SW killer as the FIRST <script> in <head> if not already present.
+    Idempotent — safe to call multiple times.
+    """
+    if 'twerkhub-sw-killer.js' in text:
+        return text
+    # Insert immediately after <head>
+    if '<head>' in text:
+        return text.replace('<head>', '<head>\n' + SW_KILLER_TAG, 1)
+    # Fallback: <head with attrs>
+    new_text, n = re.subn(r'(<head[^>]*>)', r'\1\n' + SW_KILLER_TAG, text, count=1)
+    return new_text if n else text
+
 def standardize(path: Path, dry_run: bool = False) -> str:
     try:
         text = path.read_text(encoding='utf-8', errors='replace')
@@ -109,6 +125,8 @@ def standardize(path: Path, dry_run: bool = False) -> str:
         if n:
             nav_removed += n
             text = new_text
+    # Always ensure SW killer is in <head> — runs early to unregister stale SWs
+    text = ensure_sw_killer(text)
     m = BODY_OPEN.search(text)
     if not m:
         return 'no-body'
