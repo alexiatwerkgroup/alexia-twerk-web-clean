@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · +18 Age Gate (auto-detects YouTube embed-blocked videos) ═══
- * v20260425-p1
+ * v20260426-p4
  *
  * Distinct from the LEGACY twerkhub-paywall.js (which is killed on /playlist/).
  * This module handles a different problem: when YouTube refuses to embed a
@@ -79,10 +79,16 @@
       '.twk-age-gate-btn svg{width:20px;height:20px;}',
       '.twk-age-gate-foot{font-size:11px;color:rgba(255,255,255,.45);margin-top:4px;}',
       // Card decorations (cards with vid that are blocked)
+      // Pill goes top-RIGHT to avoid overlap with the VIEWED badge (top-left)
       '.twk-blocked{position:relative;}',
-      '.twk-blocked-badge{position:absolute;top:8px;left:8px;display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:999px;background:rgba(0,0,0,.78);color:#ffd166;font:700 10px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;z-index:5;backdrop-filter:blur(6px);border:1px solid rgba(255,209,102,.35);pointer-events:none;}',
-      '.twk-blocked img,.twk-blocked .vcard-thumb,.twk-blocked picture{filter:brightness(.55) saturate(.7);}',
-      '.twk-blocked:hover img,.twk-blocked:hover .vcard-thumb,.twk-blocked:hover picture{filter:brightness(.7) saturate(.85);}'
+      '.twk-blocked-badge{position:absolute;top:6px;right:6px;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#ff5f5f);color:#fff;font:800 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;z-index:6;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);pointer-events:none;box-shadow:0 4px 14px rgba(255,45,135,.4);}',
+      // Big center lock overlay so the card READS as locked from a distance
+      '.twk-blocked-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:42px;color:rgba(255,255,255,.92);text-shadow:0 4px 20px rgba(0,0,0,.7),0 0 30px rgba(255,45,135,.5);pointer-events:none;z-index:5;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));}',
+      // Strong filter on the thumbnail so users SEE the difference instantly
+      '.twk-blocked img,.twk-blocked .vcard-thumb,.twk-blocked picture{filter:brightness(.4) saturate(.5) contrast(1.05);}',
+      '.twk-blocked:hover img,.twk-blocked:hover .vcard-thumb,.twk-blocked:hover picture{filter:brightness(.5) saturate(.6);}',
+      // Hide the play button on blocked cards — clicking opens the paywall, not the player
+      '.twk-blocked .vplay,.twk-blocked .vscrim{opacity:.3 !important;}'
     ].join('\n');
     document.head.appendChild(s);
   }
@@ -93,14 +99,14 @@
       + '<div class="twk-age-gate" role="dialog" aria-modal="true" aria-label="Adult content gate">'
       +   '<div class="twk-age-gate-card">'
       +     '<div class="twk-age-gate-lock" aria-hidden="true">🔒</div>'
-      +     '<div class="twk-age-gate-kicker">+18 · Members only</div>'
-      +     '<h2 class="twk-age-gate-title">This clip is <em>locked</em>.</h2>'
-      +     '<p class="twk-age-gate-body">YouTube blocks this video from playing on third-party sites because it is age-restricted. Get the uncensored version directly from Alexia on Discord.</p>'
+      +     '<div class="twk-age-gate-kicker">+18 · Locked content</div>'
+      +     '<h2 class="twk-age-gate-title">This video is <em>locked</em>.</h2>'
+      +     '<p class="twk-age-gate-body"><strong>Contact Alexia on Discord to unlock.</strong> YouTube blocks this video from playing outside their platform because it is age-restricted. The uncensored version comes from Alexia directly, in private.</p>'
       +     '<a class="twk-age-gate-btn" href="' + DISCORD_URL + '" target="_blank" rel="noopener nofollow ugc">'
       +       '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.27 5.33A18.34 18.34 0 0 0 14.94 4l-.2.4a16.8 16.8 0 0 1 4.05 1.4 16.4 16.4 0 0 0-12.6 0A16.8 16.8 0 0 1 10.24 4.4L10.04 4a18.34 18.34 0 0 0-4.32 1.33C2.95 9.5 2.2 13.55 2.6 17.55a18.6 18.6 0 0 0 5.65 2.85l.45-.62a12.2 12.2 0 0 1-2-.97c.17-.12.34-.25.5-.38a13.16 13.16 0 0 0 11.6 0c.16.13.33.26.5.38-.62.37-1.3.7-2 .97l.45.62a18.6 18.6 0 0 0 5.65-2.85c.5-4.6-.77-8.6-3.13-12.22zM9.5 15.4c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13zm5 0c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13z"/></svg>'
-      +       '<span>Únete a Alexia en Discord</span>'
+      +       '<span>Contact Alexia on Discord</span>'
       +     '</a>'
-      +     '<div class="twk-age-gate-foot">Free invite · Adult content · 18+ only</div>'
+      +     '<div class="twk-age-gate-foot">Free invite · 18+ only · Private</div>'
       +   '</div>'
       + '</div>';
   }
@@ -165,6 +171,14 @@
       b.className = 'twk-blocked-badge';
       b.textContent = '🔒 +18';
       el.appendChild(b);
+    }
+    // Big center lock — overlays the thumbnail so users see it from a distance
+    if (!el.querySelector(':scope > .twk-blocked-lock')) {
+      var lock = document.createElement('span');
+      lock.className = 'twk-blocked-lock';
+      lock.setAttribute('aria-hidden', 'true');
+      lock.textContent = '🔒';
+      el.appendChild(lock);
     }
   }
   function decorateAll(){
