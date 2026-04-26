@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · /profile.html data binding ═══
- * v20260425-p13
+ * v20260425-p15
  *
  * Connects /profile.html to the real Supabase 'profiles' table via the same
  * client + storageKey ('alexia-auth-v3') used by /assets/supabase-config.js
@@ -58,24 +58,45 @@
     }
   }
 
+  // Cache the last successful profile so transient null fetches don't
+  // downgrade the UI to "Guest" + initials. This is the source of the
+  // "avatar appears then disappears" flicker reported in v13.
+  var _lastProfile = null;
+  var _lastAvatarUrl = null;
+
   function renderHero(profile){
     if (profile) {
+      _lastProfile = profile;
       setText('hero-name', profile.username || 'Member');
       setText('hero-role', 'Signed in');
       var tb = $('tokens-balance');
       if (tb) tb.innerHTML = fmt(profile.tokens || 0) + ' <small>TWK</small>';
       var av = $('avatar-preview');
       if (av) {
-        if (profile.avatar_url) av.innerHTML = '<img src="' + esc(profile.avatar_url) + '" alt="Avatar">';
-        else av.textContent = initials(profile.username);
+        // Only re-render the avatar if the URL actually changed.
+        // Otherwise the <img> swap causes a visible flash.
+        var newUrl = profile.avatar_url || '';
+        if (newUrl !== _lastAvatarUrl) {
+          if (newUrl) av.innerHTML = '<img src="' + esc(newUrl) + '" alt="Avatar">';
+          else av.textContent = initials(profile.username);
+          _lastAvatarUrl = newUrl;
+        }
       }
       var nick = $('nickname'); if (nick && !nick.value) nick.value = profile.username || '';
       var bio = $('bio'); if (bio && !bio.value) bio.value = profile.bio || '';
+    } else if (_lastProfile) {
+      // We previously had a profile but this fetch came back empty.
+      // Almost certainly a race (token refresh, focus event mid-fetch).
+      // Don't downgrade — keep what we already painted, just refresh stats.
+      profile = _lastProfile;
     } else {
       setText('hero-name', 'Guest');
       setText('hero-role', 'Not signed in');
       var tb2 = $('tokens-balance'); if (tb2) tb2.innerHTML = '0 <small>TWK</small>';
-      var av2 = $('avatar-preview'); if (av2) av2.textContent = 'P';
+      var av2 = $('avatar-preview'); if (av2 && _lastAvatarUrl !== '__guest__') {
+        av2.textContent = 'P';
+        _lastAvatarUrl = '__guest__';
+      }
     }
     // Activity stats — read from real localStorage keys populated by theater + theater module
     var viewedCount = countLS('twk_viewed_videos');
