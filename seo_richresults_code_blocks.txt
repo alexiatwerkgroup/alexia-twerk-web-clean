@@ -1,0 +1,112 @@
+# TWERKHUB · Rich Results CODE blocks (paste each section into the "Code" tab)
+
+
+========== /usa-twerk.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"USA Twerk · American Scene","description":"USA twerk archive — American dancers, NYC + LA + Miami choreographers, viral fancams, weekly drops. Curated US twerk scene on Twerkhub.","url":"https://alexiatwerkgroup.com/usa-twerk.html","inLanguage":"en","about":{"@type":"Country","name":"United States"},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"USA Twerk","item":"https://alexiatwerkgroup.com/usa-twerk.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
+
+========== /new-york-twerk.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"New York Twerk · NYC Scene","description":"New York twerk — NYC studio circuit, Bushwick choreographers, Broadway crossover dancers, fancam cuts. Find twerk classes near me NYC on Twerkhub.","url":"https://alexiatwerkgroup.com/new-york-twerk.html","inLanguage":"en","about":{"@type":"City","name":"New York","containedInPlace":{"@type":"Country","name":"United States"}},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"New York Twerk","item":"https://alexiatwerkgroup.com/new-york-twerk.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
+
+========== /california-twerk.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"California Twerk · West Coast Scene","description":"California twerk archive — LA fancam exports, SF dance studios, San Diego beach scene. Find California twerk dancers and choreographers on Twerkhub.","url":"https://alexiatwerkgroup.com/california-twerk.html","inLanguage":"en","about":{"@type":"AdministrativeArea","name":"California","containedInPlace":{"@type":"Country","name":"United States"}},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"California Twerk","item":"https://alexiatwerkgroup.com/california-twerk.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
+
+========== /los-angeles-twerk.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Los Angeles Twerk · LA Fancam Capital","description":"Los Angeles twerk — LA fancam exports, K-pop and Latin choreographers, Hollywood dance studios. Find LA twerk classes near me on Twerkhub.","url":"https://alexiatwerkgroup.com/los-angeles-twerk.html","inLanguage":"en","about":{"@type":"City","name":"Los Angeles","containedInPlace":{"@type":"AdministrativeArea","name":"California"}},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Los Angeles Twerk","item":"https://alexiatwerkgroup.com/los-angeles-twerk.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
+
+========== /miami-twerk.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Miami Twerk · Reggaetón Floor","description":"Miami twerk — reggaetón floor-work, Cuban funk, dembow, Spanish-speaking creators bridging USA and LATAM scenes. Curated Miami twerk on Twerkhub.","url":"https://alexiatwerkgroup.com/miami-twerk.html","inLanguage":"en","about":{"@type":"City","name":"Miami","containedInPlace":{"@type":"AdministrativeArea","name":"Florida"}},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Miami Twerk","item":"https://alexiatwerkgroup.com/miami-twerk.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
+
+========== /atlanta-twerk.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Atlanta Twerk · Strip-Dance Heritage","description":"Atlanta twerk — strip-dance heritage, ATL hip-hop floor, southern bounce. Curated Atlanta twerk dancers and choreographers on Twerkhub.","url":"https://alexiatwerkgroup.com/atlanta-twerk.html","inLanguage":"en","about":{"@type":"City","name":"Atlanta","containedInPlace":{"@type":"AdministrativeArea","name":"Georgia"}},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Atlanta Twerk","item":"https://alexiatwerkgroup.com/atlanta-twerk.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
+
+========== /japan-cosplay-fancam.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Japan Cosplay Fancam · Anime Capital","description":"Japan cosplay fancam — Tokyo, Osaka, Akihabara cosplay scene. Curated 4K anime cosplay fancams from Japanese conventions and photoshoots on Twerkhub.","url":"https://alexiatwerkgroup.com/japan-cosplay-fancam.html","inLanguage":"en","about":{"@type":"Country","name":"Japan"},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Japan Cosplay Fancam","item":"https://alexiatwerkgroup.com/japan-cosplay-fancam.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
+
+========== /tokyo-cosplay-fancam.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Tokyo Cosplay Fancam · Convention Floor","description":"Tokyo cosplay fancam archive — Comiket, Tokyo Game Show, Wonder Festival convention floor cuts. Curated 4K Tokyo anime cosplay fancams on Twerkhub.","url":"https://alexiatwerkgroup.com/tokyo-cosplay-fancam.html","inLanguage":"en","about":{"@type":"City","name":"Tokyo","containedInPlace":{"@type":"Country","name":"Japan"}},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Tokyo Cosplay Fancam","item":"https://alexiatwerkgroup.com/tokyo-cosplay-fancam.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
+
+========== /osaka-cosplay-fancam.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Osaka Cosplay Fancam · Kansai Scene","description":"Osaka cosplay fancam — Den-Den Town otaku district, Kansai dance studios, regional anime conventions. Curated Osaka cosplay archive on Twerkhub.","url":"https://alexiatwerkgroup.com/osaka-cosplay-fancam.html","inLanguage":"en","about":{"@type":"City","name":"Osaka","containedInPlace":{"@type":"Country","name":"Japan"}},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Osaka Cosplay Fancam","item":"https://alexiatwerkgroup.com/osaka-cosplay-fancam.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
+
+========== /akihabara-cosplay-fancam.html ==========
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Akihabara Cosplay · Otaku District","description":"Akihabara cosplay fancam — the otaku district inside Tokyo. Maid cafés, idol scene, manga + anime cosplay. Curated Akihabara fancam on Twerkhub.","url":"https://alexiatwerkgroup.com/akihabara-cosplay-fancam.html","inLanguage":"en","about":{"@type":"Place","name":"Akihabara","containedInPlace":{"@type":"City","name":"Tokyo"}},"isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Akihabara Cosplay","item":"https://alexiatwerkgroup.com/akihabara-cosplay-fancam.html"}]}</script>
+</head>
+<body><h1>Rich Results test</h1></body>
+</html>
