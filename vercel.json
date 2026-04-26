@@ -6,213 +6,37 @@
     {
       "source": "/manifest.json",
       "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/manifest+json"
-        }
+        { "key": "Content-Type", "value": "application/manifest+json" }
       ]
     },
     {
       "source": "/service-worker.js",
       "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/javascript"
-        },
-        {
-          "key": "Service-Worker-Allowed",
-          "value": "/"
-        }
+        { "key": "Content-Type", "value": "application/javascript" },
+        { "key": "Service-Worker-Allowed", "value": "/" }
       ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
       ]
     }
   ],
   "redirects": [
-    {
-      "source": "/home",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/home.html",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/models-catalog.html",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/variety-catalog.html",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-del-otro-lado",
-      "destination": "/",
-      "statusCode": 410
-    },
-    {
-      "source": "/playlist-del-otro-lado.html",
-      "destination": "/",
-      "statusCode": 410
-    },
-    {
-      "source": "/playlist-2",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-2/",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-2/:path*",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-korean.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-try-on-haul-leaks.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-latina-model-leaks.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-twerk-hub-leaks.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-twerk-hub.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-cosplay-fancam-leaks.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/playlist-ttl-4k-leaks.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/premium-kdance-archive.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/premium-latina-beauties.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/premium-try-on-haul.html",
-      "destination": "/playlist/",
-      "permanent": true
-    },
-    {
-      "source": "/premium-cosplay-fancam-new.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {
-      "source": "/premium-kpop-dance.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {
-      "source": "/premium-latina-model.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {
-      "source": "/premium-packs-4k.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {
-      "source": "/premium-packs-cosplay.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {
-      "source": "/premium-packs-haul.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {
-      "source": "/premium-packs-kdance.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {
-      "source": "/premium-packs-latina.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {
-      "source": "/premium-player-20m.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {
-      "source": "/premium-ttl-4k.html",
-      "destination": "/membership.html",
-      "permanent": true
-    },
-    {"source": "/VARIANTE-A-MINIMAL-LUXE.html", "destination": "/membership.html", "permanent": true},
-    {"source": "/VARIANTE-B-PREMIUM-GRID.html", "destination": "/membership.html", "permanent": true},
-    {"source": "/video1.html", "destination": "/playlist/", "permanent": true},
-    {"source": "/video2.html", "destination": "/playlist/", "permanent": true},
-    {"source": "/video3.html", "destination": "/playlist/", "permanent": true},
-    {"source": "/savage-twerk-video.html", "destination": "/playlist/", "permanent": true},
-    {"source": "/playlist-model-1-dark-premium.html", "destination": "/playlist/", "permanent": true},
-    {"source": "/twerk-video-playlist.html", "destination": "/playlist/", "permanent": true},
-    {"source": "/seo-pages-index.html", "destination": "/", "permanent": true},
-    {"source": "/oriental-final.html", "destination": "/", "permanent": true},
-    {"source": "/group-kato-dance-studio.html", "destination": "/creator/kato-dance-studio.html", "permanent": true},
-    {"source": "/group-shoshina-katherina.html", "destination": "/twerk-dancer/katerina-shoshina.html", "permanent": true},
-    {"source": "/group-velvet-young.html", "destination": "/twerk-dancer/velvet-young-dance-centre.html", "permanent": true},
-    {"source": "/group-yurgenis.html", "destination": "/creator/yurgenis.html", "permanent": true},
-    {"source": "/group-sugaarrbbaby.html", "destination": "/creator/sugaarrbbaby.html", "permanent": true},
-    {"source": "/group-nastya-nass.html", "destination": "/twerk-dancer/index.html", "permanent": true},
-    {"source": "/twerk-dancer/anel-li.html", "destination": "/creator/anel-li.html", "permanent": true},
-    {"source": "/twerk-dancer/emiliano-ferrari-villalobo.html", "destination": "/creator/emiliano-ferrari-villalobo.html", "permanent": true},
-    {"source": "/twerk-dancer/foxyen.html", "destination": "/creator/foxyen.html", "permanent": true},
-    {"source": "/twerk-dancer/nika-chill.html", "destination": "/creator/nika-chill.html", "permanent": true},
-    {
-      "source": "/premium-twerk-hub.html",
-      "destination": "/membership.html",
-      "permanent": true
-    }
+    { "source": "/home", "destination": "/", "permanent": true },
+    { "source": "/home.html", "destination": "/", "permanent": true },
+    { "source": "/models-catalog.html", "destination": "/", "permanent": true },
+    { "source": "/variety-catalog.html", "destination": "/", "permanent": true },
+    { "source": "/playlist-del-otro-lado", "destination": "/", "statusCode": 410 },
+    { "source": "/playlist-del-otro-lado.html", "destination": "/", "statusCode": 410 },
+    { "source": "/playlist-try-on-hot-leaks", "destination": "/try-on-hot-leaks/", "permanent": true },
+    { "source": "/playlist-try-on-hot-leaks/(.*)", "destination": "/try-on-hot-leaks/$1", "permanent": true },
+    { "source": "/playlist-hottest-cosplay-fancam", "destination": "/hottest-cosplay-fancam/", "permanent": true },
+    { "source": "/playlist-hottest-cosplay-fancam/(.*)", "destination": "/hottest-cosplay-fancam/$1", "permanent": true },
+    { "source": "/playlist-korean-girls-kpop-twerk", "destination": "/korean-girls-kpop-twerk/", "permanent": true },
+    { "source": "/playlist-korean-girls-kpop-twerk/(.*)", "destination": "/korean-girls-kpop-twerk/$1", "permanent": true }
   ]
 }
