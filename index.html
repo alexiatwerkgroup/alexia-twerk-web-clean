@@ -1060,6 +1060,11 @@
       }
       tick();
       // Refresh every second so seconds tick visibly — cheap, no CPU impact.
+      setInterval(tick, 1000);
+    } catch(e){}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
 })();</script>
 
 
@@ -1067,5 +1072,105 @@
 
 <script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
 <script defer src="/assets/twk-lang-switcher.js?v=20260426-p1"></script>
+
+<script>
+/* Twerkhub · countdowns driver v1 (2026-04-26)
+ * - Farm tokens: 30-day window, auto-resets on zero
+ * - New models: per-model 'Drop in X days' windows from data-drop-days, auto-reset
+ */
+(function(){
+  'use strict';
+  if (window.__twerkhubCountdownsV1Init) return;
+  window.__twerkhubCountdownsV1Init = true;
+
+  function two(n){ return String(n).padStart(2,'0'); }
+
+  function startFarmCountdown(){
+    var wrap = document.getElementById('twerkhub-farm-countdown');
+    if (!wrap) return;
+    var dEl = document.getElementById('farm-cd-d');
+    var hEl = document.getElementById('farm-cd-h');
+    var mEl = document.getElementById('farm-cd-m');
+    var sEl = document.getElementById('farm-cd-s');
+    if (!dEl || !hEl || !mEl || !sEl) return;
+    var days = Number(wrap.getAttribute('data-initial-days')) || 30;
+    var KEY = 'twerkhub_farm_countdown_endstamp_v1';
+    function freshEnd(){ return Date.now() + days * 86400 * 1000; }
+    function loadOrReset(){
+      var saved = Number(localStorage.getItem(KEY) || 0);
+      if (!saved || saved <= Date.now()){
+        saved = freshEnd();
+        try { localStorage.setItem(KEY, String(saved)); } catch(_){}
+      }
+      return saved;
+    }
+    var end = loadOrReset();
+    function tick(){
+      var rem = end - Date.now();
+      if (rem <= 0){
+        end = freshEnd();
+        try { localStorage.setItem(KEY, String(end)); } catch(_){}
+        rem = end - Date.now();
+      }
+      var total = Math.floor(rem / 1000);
+      var d = Math.floor(total / 86400);
+      var h = Math.floor((total % 86400) / 3600);
+      var m = Math.floor((total % 3600) / 60);
+      var s = total % 60;
+      dEl.textContent = two(d);
+      hEl.textContent = two(h);
+      mEl.textContent = two(m);
+      sEl.textContent = two(s);
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  function startNewModelsCountdowns(){
+    var els = document.querySelectorAll('[data-drop-days]');
+    if (!els.length) return;
+    els.forEach(function(el, i){
+      var days = Number(el.getAttribute('data-drop-days')) || 7;
+      var KEY = 'twerkhub_drop_endstamp_v1_' + i + '_' + days;
+      function freshEnd(){ return Date.now() + days * 86400 * 1000; }
+      function load(){
+        var saved = Number(localStorage.getItem(KEY) || 0);
+        if (!saved || saved <= Date.now()){
+          saved = freshEnd();
+          try { localStorage.setItem(KEY, String(saved)); } catch(_){}
+        }
+        return saved;
+      }
+      var end = load();
+      var strongEl = el.querySelector('strong');
+      if (!strongEl) return;
+      function tick(){
+        var rem = end - Date.now();
+        if (rem <= 0){
+          end = freshEnd();
+          try { localStorage.setItem(KEY, String(end)); } catch(_){}
+          rem = end - Date.now();
+        }
+        var total = Math.floor(rem / 1000);
+        var d = Math.floor(total / 86400);
+        var h = Math.floor((total % 86400) / 3600);
+        var m = Math.floor((total % 3600) / 60);
+        if (d > 0)      strongEl.textContent = d + ' days · ' + h + 'h';
+        else if (h > 0) strongEl.textContent = h + 'h · ' + m + 'm';
+        else            strongEl.textContent = m + 'm · ' + (total % 60) + 's';
+      }
+      tick();
+      setInterval(tick, 30000); // every 30s — days/hours don't need 1s precision
+    });
+  }
+
+  function start(){
+    try { startFarmCountdown(); } catch(e){}
+    try { startNewModelsCountdowns(); } catch(e){}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
+})();
+</script>
 </body>
 </html>

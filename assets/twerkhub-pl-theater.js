@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · Playlist theater (large centered window, never fullscreen) ═══
- * v20260426-p2
+ * v20260426-p3
  *
  * 2026-04-26 fix p1: rolled back the inline-player YT.Player wrap because
  * `new YT.Player(existingIframe)` was REMOVING the iframe from the DOM,
@@ -281,11 +281,14 @@
   }
 
   // ── Click delegation (only when there's no inline player on the page) ──
+  // 2026-04-26 fix: open ANY a[data-vid] click in the modal theater (not just
+  // .rk-item / .vcard). This was blocking creator/dancer profile pages where
+  // converted YouTube links are plain <a href="#" data-vid="..."> without
+  // those marker classes, so they did nothing on click and looked broken.
   function onDocClick(ev){
     if (INLINE_PLAYER_PRESENT) return; // /playlist/ handles its own clicks
     var a = ev.target.closest && ev.target.closest('a[data-vid]');
     if (!a) return;
-    if (!(a.matches('.rk-item') || a.matches('.vcard'))) return;
     var vid = a.getAttribute('data-vid');
     if (!vid) return;
     ev.preventDefault();
