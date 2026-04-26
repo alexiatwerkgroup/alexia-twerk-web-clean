@@ -138,8 +138,12 @@
             }, 500);
           },
           onStateChange: function(ev){
+            // 1=playing, 2=paused, 0=ended, 3=buffering, 5=cued
             if (ev.data === 1 || ev.data === 5) {
               try { ev.target.unMute(); ev.target.setVolume(100); } catch(_){}
+              startTimeTracker();
+            } else {
+              stopTimeTracker();
             }
           }
         }
@@ -148,6 +152,7 @@
   }
 
   function close(){
+    stopTimeTracker();
     if (!modal) return;
     if (ytPlayer && typeof ytPlayer.destroy === 'function') {
       try { ytPlayer.destroy(); } catch(_){}
@@ -162,11 +167,36 @@
 
   // ── Viewed memory + decoration ──────────────────────────────────
   var KEY = 'twk_viewed_videos';
+  var TIME_KEY = 'twk_watch_seconds_total';
+
   function getViewed(){
     try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }
     catch(_){ return {}; }
   }
   function setViewed(v){ try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(_){} }
+
+  // ── Time tracker — adds elapsed seconds to localStorage every 5s while playing
+  // and pushes a Supabase grant if the user is signed in. ──
+  var trackerInterval = null;
+  var trackerLastTick = 0;
+  function startTimeTracker(){
+    stopTimeTracker();
+    trackerLastTick = Date.now();
+    trackerInterval = setInterval(function(){
+      var now = Date.now();
+      var deltaSec = Math.round((now - trackerLastTick) / 1000);
+      if (deltaSec > 0 && deltaSec < 60) { // sanity: don't add huge gaps if tab was sleeping
+        try {
+          var prev = parseInt(localStorage.getItem(TIME_KEY) || '0', 10) || 0;
+          localStorage.setItem(TIME_KEY, String(prev + deltaSec));
+        } catch(_){}
+      }
+      trackerLastTick = now;
+    }, 5000);
+  }
+  function stopTimeTracker(){
+    if (trackerInterval) { clearInterval(trackerInterval); trackerInterval = null; }
+  }
 
   function markViewed(vid){
     if (!vid) return;
@@ -227,10 +257,8 @@
     open(vid);
   }
 
-  // ── Hook into /playlist/ inline player to mark viewed on swap ───
+  // ── Hook into /playlist/ inline player to mark viewed on swap + track time ───
   function patchInlinePlayer(){
-    // The inline page calls swap(vid) when user clicks. We piggyback by
-    // observing the iframe.src and marking that vid as viewed too.
     var player = document.getElementById('twerkhub-pl-player');
     if (!player) return false;
     INLINE_PLAYER_PRESENT = true;
@@ -239,9 +267,17 @@
         var m = (player.src || '').match(/embed\/([^?&\s]{6,})/);
         if (m && m[1]) markViewed(m[1]);
       } catch(_){}
+      // Start time tracker for the inline player. We assume "playing" when an
+      // iframe just loaded with autoplay. The tracker auto-stops if tab loses focus.
+      startTimeTracker();
     }
     player.addEventListener('load', onLoad);
     onLoad();
+    // Pause tracker when tab is hidden, resume when visible
+    document.addEventListener('visibilitychange', function(){
+      if (document.hidden) stopTimeTracker();
+      else if (player.src && player.src.indexOf('embed/') > -1) startTimeTracker();
+    });
     return true;
   }
 

@@ -77,9 +77,26 @@
       var tb2 = $('tokens-balance'); if (tb2) tb2.innerHTML = '0 <small>TWK</small>';
       var av2 = $('avatar-preview'); if (av2) av2.textContent = 'P';
     }
+    // Activity stats — read from real localStorage keys populated by theater + theater module
+    var viewedCount = countLS('twk_viewed_videos');
+    var totalSeconds = readNum('twk_watch_seconds_total');
+    var activityScore = computeActivityScore(viewedCount, totalSeconds, profile && profile.tokens || 0);
+
+    setText('stat-videos-watched', viewedCount);
+    setText('stat-total-time', formatTime(totalSeconds));
+    setText('stat-activity-score', fmt(activityScore));
     setText('stat-favorites', countLS('twk_favorites'));
     setText('stat-models', countLS('twk_models_followed'));
     setText('stat-playlists', countLS('twk_playlists_subscribed'));
+
+    // Member-since: from profile.registered_at if present, else fallback
+    if (profile && profile.registered_at) {
+      var d = new Date(profile.registered_at);
+      var year = d.getFullYear();
+      var dayOne = (Date.now() - d.getTime()) / 86400000 < 7 ? 'DAY 1 · OG' : ('DAY ' + Math.floor((Date.now() - d.getTime()) / 86400000));
+      setText('stat-member-year', String(year));
+      setText('stat-member-day', dayOne);
+    }
   }
 
   function countLS(key){
@@ -87,6 +104,27 @@
       var v = JSON.parse(localStorage.getItem(key) || '[]');
       return Array.isArray(v) ? v.length : (typeof v === 'object' && v ? Object.keys(v).length : 0);
     } catch(_){ return 0; }
+  }
+
+  function readNum(key){
+    try {
+      var v = parseInt(localStorage.getItem(key) || '0', 10);
+      return isNaN(v) ? 0 : v;
+    } catch(_){ return 0; }
+  }
+
+  function formatTime(sec){
+    sec = Math.max(0, parseInt(sec, 10) || 0);
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    if (h > 0) return h + 'h ' + m + 'm';
+    if (m > 0) return m + 'm';
+    return '0m';
+  }
+
+  function computeActivityScore(views, seconds, tokens){
+    // Score = 50 per unique video viewed + 1 per minute watched + 0.5 per token earned
+    return (views * 50) + Math.floor(seconds / 60) + Math.floor((tokens || 0) * 0.5);
   }
 
   function wireLogout(){
@@ -203,11 +241,28 @@
     });
   }
 
+  async function refresh(){
+    var profile = await fetchProfile();
+    renderHero(profile);
+  }
+
   async function init(){
     wireLogout();
     wireForm();
-    var profile = await fetchProfile();
-    renderHero(profile);
+    await refresh();
+
+    // Live updates: re-fetch tokens + stats when…
+    //   1) Tab regains focus (user came back from watching elsewhere)
+    //   2) Window storage event (other tab updated localStorage)
+    //   3) Custom 'alexia-tokens-changed' event (broadcasted by token-system.js after grant)
+    document.addEventListener('visibilitychange', function(){
+      if (!document.hidden) refresh();
+    });
+    window.addEventListener('focus', refresh);
+    window.addEventListener('storage', function(ev){
+      if (ev.key && (ev.key.indexOf('twk_') === 0 || ev.key.indexOf('alexia_') === 0)) refresh();
+    });
+    window.addEventListener('alexia-tokens-changed', refresh);
   }
 
   if (document.readyState === 'loading') {
