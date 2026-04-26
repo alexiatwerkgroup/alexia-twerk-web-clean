@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · AUTH v5 — Supabase ═══
- * v20260425-p7
+ * v20260426-p8
  *  - Email + password via Supabase Auth (real DB, real email verification)
  *  - Username-based login: looks up email from username via RPC
  *  - Auth UI inside /account.html (chips out of navbar)
@@ -162,7 +162,39 @@
       return { ok:false, error: m };
     }
 
-    await refreshSession();
+    var snap = await refreshSession();
+    // Sync DB → localStorage so the topbar + profile + tier badge match the
+    // server-side balance. Without this, a user who got tokens granted via
+    // RPC or admin SQL still sees their stale local balance after login.
+    try {
+      if (snap && snap.profile) {
+        var dbTokens = Number(snap.profile.tokens || 0);
+        var dbTotal  = Number(snap.profile.total_earned || 0);
+        var dbTier   = String(snap.profile.tier || '').toLowerCase();
+        var KEY_BAL = 'alexia_tokens_v1.balance';
+        var KEY_TOT = 'alexia_tokens_v1.total';
+        var KEY_TIER= 'alexia_tokens_v1.tier';
+        var localBal = parseInt(localStorage.getItem(KEY_BAL) || '0', 10) || 0;
+        var localTot = parseInt(localStorage.getItem(KEY_TOT) || '0', 10) || 0;
+        // Only INCREASE — never overwrite a higher local balance with a lower DB one.
+        if (dbTokens > localBal) localStorage.setItem(KEY_BAL, JSON.stringify(dbTokens));
+        if (dbTotal  > localTot) localStorage.setItem(KEY_TOT, JSON.stringify(dbTotal));
+        // Tier: founder/vip/premium/medium → trust DB if it grants more access
+        var rank = { basic:0, medium:1, premium:2, vip:3, founder:4 };
+        var localTier = String(localStorage.getItem(KEY_TIER) || '').replace(/"/g, '').toLowerCase();
+        if (dbTier && (rank[dbTier] || 0) > (rank[localTier] || 0)) {
+          // Map 'founder' to 'vip' for the topbar (highest existing visual tier)
+          // but persist the real value under a separate key for badges.
+          var visualTier = (dbTier === 'founder') ? 'vip' : dbTier;
+          localStorage.setItem(KEY_TIER, JSON.stringify(visualTier));
+          if (dbTier === 'founder') {
+            localStorage.setItem('alexia_role', JSON.stringify('founder'));
+          }
+        }
+        // Fire change event so topbar widget redraws with the new value
+        try { window.dispatchEvent(new CustomEvent('alexia-tokens-changed', { detail: { balance: Math.max(dbTokens, localBal) } })); } catch(_){}
+      }
+    } catch(e){ console.warn('[twk-auth] DB→local sync failed', e); }
     return { ok:true, user: resp.data.user };
   }
 

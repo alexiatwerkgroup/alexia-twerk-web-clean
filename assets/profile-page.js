@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · /profile.html data binding ═══
- * v20260426-p2
+ * v20260426-p3
  * Tokens source: prefer window.AlexiaTokens.getState().balance (the
  * authoritative localStorage-backed value used by the global topbar) over
  * the raw profiles.tokens column, which can be 0 if the user accumulated
@@ -82,11 +82,68 @@
     return Number((profile && profile.tokens) || 0);
   }
 
+  // Detect founder status from profile.tier OR localStorage alexia_role.
+  // localStorage takes precedence because the auth.js DB→local sync writes
+  // it on login (so the badge survives across pages without re-fetching DB).
+  function isFounder(profile){
+    try {
+      var role = localStorage.getItem('alexia_role') || '';
+      role = String(role).replace(/"/g, '').toLowerCase();
+      if (role === 'founder') return true;
+    } catch(_){}
+    var tier = String((profile && profile.tier) || '').toLowerCase();
+    return tier === 'founder';
+  }
+
+  // Inject the founder badge once. Idempotent — safe to call on every render.
+  function ensureFounderBadge(){
+    if (document.getElementById('twk-founder-badge')) return;
+    var heroName = document.getElementById('hero-name');
+    if (!heroName) return;
+    // Inject CSS once
+    if (!document.getElementById('twk-founder-badge-css')){
+      var st = document.createElement('style');
+      st.id = 'twk-founder-badge-css';
+      st.textContent =
+        '#twk-founder-badge{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:#1a0010;background:linear-gradient(135deg,#ffd34d 0%,#ff7ab8 50%,#ff2d87 100%);box-shadow:0 4px 18px rgba(255,45,135,.45),inset 0 0 0 1px rgba(255,255,255,.4);text-shadow:0 1px 0 rgba(255,255,255,.35);animation:twkFounderShine 3.6s ease-in-out infinite;}'
+      + '#twk-founder-badge::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff;}'
+      + '#twk-founder-tag{display:block;margin-top:4px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ff7ab8;opacity:.92;}'
+      + '@keyframes twkFounderShine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}';
+      document.head.appendChild(st);
+    }
+    var b = document.createElement('div');
+    b.id = 'twk-founder-badge';
+    b.title = 'Founder of Twerkhub · Visionario · Creador · CEO';
+    b.innerHTML = '<span>FOUNDER · VISIONARIO · CREADOR · CEO</span>';
+    // Insert right after the hero-name node
+    if (heroName.parentNode){
+      heroName.parentNode.insertBefore(b, heroName.nextSibling);
+    }
+    // Replace generic "Signed in" with founder tagline
+    var role = document.getElementById('hero-role');
+    if (role){
+      role.id = 'hero-role';
+      role.innerHTML = 'Following from day one · <strong style="color:#ff7ab8">Founder of Twerkhub</strong>';
+    }
+  }
+
+  function removeFounderBadge(){
+    var b = document.getElementById('twk-founder-badge');
+    if (b && b.parentNode) b.parentNode.removeChild(b);
+  }
+
   function renderHero(profile){
     if (profile) {
       _lastProfile = profile;
       setText('hero-name', profile.username || 'Member');
       setText('hero-role', 'Signed in');
+      // Founder recognition — must run AFTER setText('hero-role') because that
+      // overwrites the inline tagline.
+      if (isFounder(profile)) {
+        ensureFounderBadge();
+      } else {
+        removeFounderBadge();
+      }
       var tb = $('tokens-balance');
       if (tb) tb.innerHTML = fmt(authoritativeBalance(profile)) + ' <small>TWK</small>';
       var av = $('avatar-preview');
