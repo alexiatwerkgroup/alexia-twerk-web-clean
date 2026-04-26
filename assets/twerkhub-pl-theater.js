@@ -1,5 +1,17 @@
 /* ═══ TWERKHUB · Playlist theater (large centered window, never fullscreen) ═══
- * v20260426-p7
+ * v20260426-p8
+ *
+ * 2026-04-26 fix p8 — SAGRADA RULE #9: Top-5 hot ranking videos are
+ * IMMUNE to the +18 paywall, no matter what YouTube returns. Heartbeat,
+ * MutationObserver, postMessage onError, and onLoad short-circuit all
+ * check `TwkAgeGate.isProtected(vid)` and bail out before paywalling.
+ *
+ * Also p8 — fixed the "blink-to-black" bug verified live in Chrome MCP:
+ * heartbeat fired showInlinePaywall, which set player.src='about:blank'.
+ * The blank load triggered onLoad, which couldn't extract a vid from
+ * the blank URL → fell into the `else` branch → called hideInlinePaywall,
+ * REMOVING the overlay we'd just placed. Now onLoad bails immediately
+ * when src is empty or about:blank, leaving the paywall intact.
  *
  * 2026-04-26 fix p7 — themed-playlist black-screen really fixed this time:
  *   1. MutationObserver on #twerkhub-pl-player.src — fires SYNCHRONOUSLY when
@@ -151,9 +163,11 @@
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
+    // SAGRADA #9 — top-5 hot ranking videos never get the paywall
+    var modalIsProt = window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid);
     // ── +18 short-circuit: if this video already errored 101/150 in the past,
     // show the paywall directly without trying to load the iframe again. ──
-    if (window.TwkAgeGate && window.TwkAgeGate.isBlocked(vid)) {
+    if (!modalIsProt && window.TwkAgeGate && window.TwkAgeGate.isBlocked(vid)) {
       window.TwkAgeGate.show(frameContainer, vid);
       return;
     }
@@ -173,6 +187,7 @@
       function killHeartbeat(){ if (blockHeartbeat) { clearTimeout(blockHeartbeat); blockHeartbeat = null; } }
       function triggerSilentBlock(){
         if (playbackStarted) return;
+        if (modalIsProt) return; // SAGRADA #9 — top-5 never paywalled
         try {
           // Destroy player FIRST while iframe is still in DOM, THEN inject
           // paywall — otherwise YT.destroy() touches the detached iframe and
@@ -229,6 +244,7 @@
           },
           onError: function(ev){
             killHeartbeat();
+            if (modalIsProt) return; // SAGRADA #9 — top-5 never paywalled
             // 101/150 = embed disabled / age-restricted → swap to paywall.
             // Destroy player FIRST so YT.destroy() doesn't repaint over the
             // paywall HTML (this caused the ~0.5s flash bug pre-p5).
@@ -411,6 +427,11 @@
           var m = src.match(/embed\/([^?&\s]{6,})/);
           var vid = m && m[1];
           if (!vid || !window.TwkAgeGate) return;
+          // SAGRADA #9 — top-5 ranking videos are immune to the paywall
+          if (window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) {
+            hideInlinePaywall(player, wrap);
+            return;
+          }
           if (window.TwkAgeGate.isBlocked(vid)) {
             // Cancel pending heartbeat — we're going straight to paywall
             if (window.__twkInlineHeartbeat) {
@@ -428,12 +449,26 @@
     }
 
     function onLoad(){
+      var src = player.src || '';
+      // CRITICAL: about:blank load fires when WE just set src=blank to show
+      // the paywall. Don't run vid extraction or hideInlinePaywall on it —
+      // doing so removes the overlay we just placed (the "blink to black" bug).
+      if (!src || src === 'about:blank') return;
+
       var vid = null;
       try {
-        var m = (player.src || '').match(/embed\/([^?&\s]{6,})/);
+        var m = src.match(/embed\/([^?&\s]{6,})/);
         if (m && m[1]) { vid = m[1]; markViewed(vid); }
       } catch(_){}
 
+      // SAGRADA #9 — top-5 ranking videos must always play, never paywall
+      var isProt = vid && window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid);
+      if (isProt) {
+        hideInlinePaywall(player, wrap);
+        // Skip heartbeat entirely for protected vids — they get to play freely
+        if (window.__twkInlineHeartbeat) { clearTimeout(window.__twkInlineHeartbeat); window.__twkInlineHeartbeat = null; }
+        return;
+      }
       // ── +18 short-circuit: if this vid is already known-blocked, hide
       // iframe + show the Discord/Telegram paywall as overlay.
       if (vid && window.TwkAgeGate && window.TwkAgeGate.isBlocked(vid)) {
@@ -521,6 +556,9 @@
       var m = (ifr.src || '').match(/embed\/([^?&\s]{6,})/);
       var vid = m && m[1];
       if (!vid || !window.TwkAgeGate) return;
+      // SAGRADA #9 — top-5 ranking videos must NEVER show the paywall, even if
+      // YouTube returns onError 101/150 (rare but happens on geo-restrictions etc).
+      if (window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) return;
       var wrap = ifr.closest('.twerkhub-pl-player-wrap') || ifr.parentNode;
       if (window.__twkInlineHeartbeat) { clearTimeout(window.__twkInlineHeartbeat); window.__twkInlineHeartbeat = null; }
       // Use the unified showInlinePaywall helper so iframe gets hidden too

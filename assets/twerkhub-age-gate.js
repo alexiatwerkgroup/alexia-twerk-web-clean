@@ -1,5 +1,12 @@
 /* ═══ TWERKHUB · +18 Age Gate (auto-detects YouTube embed-blocked videos) ═══
- * v20260426-p7
+ * v20260426-p8
+ *
+ * 2026-04-26 fix p8: SAGRADA RULE #9 enforcement — Top-5 ranking videos
+ * (`.rk-item` items in the hotrank sidebar) are PROTECTED. They never get
+ * the lock badge, never get marked as blocked, and isBlocked() always
+ * returns false for them. On init, any protected vid that was previously
+ * memoized in twk_blocked_videos gets PURGED from localStorage so old
+ * sessions don't leak into the new behaviour.
  *
  * 2026-04-26 fix p7: showOverlay z-index bumped 50 → 999 so YouTube's
  * "video unavailable" black UI inside the iframe cannot bleed through.
@@ -58,13 +65,49 @@
   function writeBlocked(obj){
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); } catch(_){}
   }
+
+  // ── Top-5 ranking protection (SAGRADA RULE #9) ─────────────────────
+  // Videos in the `.rk-item` (hot ranking) list are FREE and must never be
+  // paywalled, no matter what YouTube returns. We collect their vids on
+  // page-load and treat them as immune to all gating.
+  var _protectedVids = null;
+  function getProtectedVids(){
+    if (_protectedVids) return _protectedVids;
+    _protectedVids = Object.create(null);
+    try {
+      var els = document.querySelectorAll('.rk-item[data-vid]');
+      for (var i = 0; i < els.length; i++) {
+        var v = els[i].getAttribute('data-vid');
+        if (v) _protectedVids[v] = true;
+      }
+    } catch(_){}
+    return _protectedVids;
+  }
+  function isProtected(vid){
+    if (!vid) return false;
+    return !!getProtectedVids()[vid];
+  }
+  // Purge any protected vid that was previously memoized as blocked from
+  // earlier sessions. One-shot cleanup on init.
+  function purgeProtectedFromBlocked(){
+    var b = readBlocked();
+    var protectedSet = getProtectedVids();
+    var changed = false;
+    for (var k in protectedSet) {
+      if (b[k]) { delete b[k]; changed = true; }
+    }
+    if (changed) writeBlocked(b);
+  }
+
   function isBlocked(vid){
     if (!vid) return false;
+    if (isProtected(vid)) return false; // SAGRADA #9 — top 5 never blocked
     var b = readBlocked();
     return !!b[vid];
   }
   function markBlocked(vid){
     if (!vid) return;
+    if (isProtected(vid)) return; // SAGRADA #9 — never persist a top-5 vid
     var b = readBlocked();
     if (!b[vid]) {
       b[vid] = Date.now();
@@ -180,14 +223,20 @@
   // —————————————— Card decoration ——————————————
   function decorateAllForVid(vid){
     if (!vid) return;
+    if (isProtected(vid)) return; // SAGRADA #9 — top 5 never get the lock
     injectStyle();
     var els = document.querySelectorAll('[data-vid]');
     for (var i = 0; i < els.length; i++) {
-      if (els[i].getAttribute('data-vid') === vid) addBlockedDecoration(els[i]);
+      if (els[i].getAttribute('data-vid') === vid) {
+        // Skip top-5 ranking cards even if a sibling card has the same vid
+        if (els[i].matches && els[i].matches('.rk-item')) continue;
+        addBlockedDecoration(els[i]);
+      }
     }
   }
   function addBlockedDecoration(el){
     if (!el || el.classList.contains('twk-blocked')) return;
+    if (el.matches && el.matches('.rk-item')) return; // SAGRADA #9 belt+suspenders
     el.classList.add('twk-blocked');
     if (!el.querySelector(':scope > .twk-blocked-badge')) {
       var b = document.createElement('span');
@@ -212,12 +261,16 @@
     var els = document.querySelectorAll('[data-vid]');
     for (var i = 0; i < els.length; i++) {
       var vid = els[i].getAttribute('data-vid');
-      if (vid && b[vid]) addBlockedDecoration(els[i]);
+      if (!vid || !b[vid]) continue;
+      if (isProtected(vid)) continue;             // SAGRADA #9
+      if (els[i].matches && els[i].matches('.rk-item')) continue; // SAGRADA #9
+      addBlockedDecoration(els[i]);
     }
   }
 
   // Auto-decorate on load + on DOM mutations (filters re-render cards)
   function init(){
+    purgeProtectedFromBlocked();   // SAGRADA #9: clean legacy stale entries
     decorateAll();
     if (typeof MutationObserver !== 'undefined') {
       new MutationObserver(function(muts){
@@ -235,6 +288,7 @@
 
   window.TwkAgeGate = {
     isBlocked: isBlocked,
+    isProtected: isProtected,
     markBlocked: markBlocked,
     show: show,
     showOverlay: showOverlay,
@@ -242,6 +296,7 @@
     handleYTError: handleYTError,
     decorateAll: decorateAll,
     DISCORD_URL: DISCORD_URL,
+    TELEGRAM_URL: TELEGRAM_URL,
     BLOCK_CODES: BLOCK_CODES
   };
 })();
