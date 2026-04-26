@@ -197,7 +197,7 @@ def substitute_in_template(template, slug, meta, data):
     # 11. Grid block (#video-grid)
     new_grid_html = build_grid_html(grid)
     h = re.sub(
-        r'(<div\s+id="video-grid"[^>]*>)(.*?)(</div>\s*<!--\s*end-grid)',
+        r'(<div\s+(?:class="[^"]*"\s+)?id="video-grid"[^>]*>)(.*?)(</div>\s*</section>)',
         lambda m: m.group(1) + '\n' + new_grid_html + '\n  ' + m.group(3),
         h, count=1, flags=re.DOTALL,
     )
@@ -378,6 +378,7 @@ def main():
             continue
         out_path.write_text(new_html, encoding='utf-8')
         print("  +", slug + "/index.html (" + str(len(new_html)//1024) + " KB) — JSON-LD valid")
+
 
 
 if __name__ == '__main__':
