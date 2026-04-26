@@ -231,12 +231,40 @@ def schema_collectionpage(title, desc, url):
         "isPartOf": {"@type": "WebSite", "name": ORG_NAME, "url": SITE + "/"}
     }
 
-def schema_videoobject(title, desc, url, vid_id, thumb):
+PAGE_TYPE_TO_CATEGORY = {
+    'playlist-video': 'twerk',
+    'themed-playlist': 'curated',
+    'creator': 'creator',
+    'twerk-dancer': 'twerk dancer',
+    'country-hub': 'twerk',
+    'premium-collection': 'premium',
+    'twerk-seo': 'twerk tutorial',
+    'blog': 'twerk',
+    'style': 'style',
+    'home': 'twerk',
+    'other': 'twerk',
+}
+
+
+def mk_video_desc(title, category):
+    """Canonical description fallback per Anti's 2026-04-26 GSC fix spec.
+    Used wherever a VideoObject is generated and a real description is unavailable.
+    Always plain text, never empty.
+    """
+    t = (str(title or "")).strip() or "this clip"
+    c = (str(category or "")).strip() or "twerk"
+    return ("Watch " + t + " on TWERKHUB, a premium curated collection of "
+            + c + " videos and exclusive model content.")
+
+
+def schema_videoobject(title, desc, url, vid_id, thumb, page_type=None):
+    category = PAGE_TYPE_TO_CATEGORY.get(page_type or '', 'twerk')
+    safe_desc = (desc or '').strip() or mk_video_desc(title, category)
     return {
         "@context": "https://schema.org",
         "@type": "VideoObject",
         "name": title or "Twerk video",
-        "description": desc or (title or ''),
+        "description": safe_desc,
         "thumbnailUrl": thumb or (f"https://i.ytimg.com/vi/{vid_id}/maxresdefault.jpg" if vid_id else ORG_LOGO),
         "uploadDate": DEFAULT_PUBDATE,
         "contentUrl": f"https://www.youtube.com/watch?v={vid_id}" if vid_id else url,
@@ -318,7 +346,7 @@ def build_schema_set(rel_path, html, page_type):
         # Page already has CollectionPage + ItemList. Just add breadcrumb.
         pass
     elif page_type == 'playlist-video':
-        add_if_missing(schema_videoobject(title, desc, canonical, vid, og_image), 'VideoObject')
+        add_if_missing(schema_videoobject(title, desc, canonical, vid, og_image, page_type), 'VideoObject')
     elif page_type == 'themed-playlist':
         add_if_missing(schema_collectionpage(title, desc, canonical), 'CollectionPage')
     elif page_type in ('creator', 'twerk-dancer'):
@@ -346,13 +374,15 @@ def build_schema_set(rel_path, html, page_type):
 
 
 # ─── Repair existing schemas ────────────────────────────────────────────────
-def repair_existing_schemas(html):
+def repair_existing_schemas(html, page_meta_desc=None, page_type=None):
     """Walk all existing JSON-LD blocks. Repairs:
       - Normalize uploadDate timezone in any VideoObject
+      - Inject description into any VideoObject missing it (GSC fix 2026-04-26)
       - Strip Offer with missing hasMerchantReturnPolicy/shippingDetails
       - De-duplicate FAQPage (keep first, remove others)
     Returns (new_html, num_changes).
     """
+    page_category = PAGE_TYPE_TO_CATEGORY.get(page_type or '', 'twerk')
     changes = 0
     seen_faqpage = False
     new_blocks = []
@@ -383,9 +413,25 @@ def repair_existing_schemas(html):
                 if norm != ud:
                     node['uploadDate'] = norm
                     changes += 1
-            if t == 'Offer':
-                # Strip Offer entirely — we don't sell physical goods
+                # GSC 2026-04-26: every VideoObject must have a non-empty description
+                cur_desc = (node.get('description') or '').strip() if isinstance(node.get('description'), str) else ''
+                if not cur_desc:
+                    nm = node.get('name') or ''
+                    node['description'] = (page_meta_desc or '').strip() or mk_video_desc(nm, page_category)
+                    changes += 1
+            # GSC fix 2026-04-26: TWERKHUB is not an e-commerce site.
+            # Strip every schema that implies physical-goods commerce so Google
+            # stops flagging missing addressCountry / shippingDetails / etc.
+            if t in ('Offer', 'AggregateOffer', 'Product', 'ProductGroup',
+                     'OfferShippingDetails', 'MerchantReturnPolicy',
+                     'ShippingDeliveryTime', 'DeliveryChargeSpecification'):
                 return None
+            # Standalone keys that sometimes appear outside an Offer wrapper:
+            for kbad in ('shippingDetails', 'hasMerchantReturnPolicy',
+                         'offers', 'aggregateOffer', 'shippingDestination'):
+                if kbad in node:
+                    del node[kbad]
+                    changes += 1
             # Recurse into nested dicts/lists
             for k, v in list(node.items()):
                 if isinstance(v, dict):
@@ -484,9 +530,11 @@ def process_file(path: Path, dry_run=False):
         return {'path': rel, 'error': f'read: {e}'}
 
     page_type = detect_page_type(rel, html)
+    page_desc = extract_description(html)
 
-    # 1. Repair existing schemas (uploadDate, dedup FAQPage, strip Offer)
-    repaired, repair_changes = repair_existing_schemas(html)
+    # 1. Repair existing schemas (uploadDate, dedup FAQPage, strip Offer,
+    #    inject missing VideoObject description — GSC fix 2026-04-26)
+    repaired, repair_changes = repair_existing_schemas(html, page_desc, page_type)
 
     # 2. Compute desired schema set for this page type
     desired = build_schema_set(rel, repaired, page_type)
