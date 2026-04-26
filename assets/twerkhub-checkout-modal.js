@@ -77,7 +77,11 @@
       '  <div class="twk-checkout-foot">Direct line &middot; minutes &middot; no third party</div>',
       '</div>'
     ].join('');
-    document.body.appendChild(div);
+    // CRITICAL: append to documentElement (not body) — the body has a CSS
+    // transform on it which breaks position:fixed containing block resolution
+    // (modal would expand to body size instead of viewport size). Appending
+    // to <html> escapes the transformed ancestor.
+    document.documentElement.appendChild(div);
     // Wire close handlers
     div.querySelector('.twk-checkout-close').addEventListener('click', close);
     div.addEventListener('click', function(ev){ if (ev.target === div) close(); });

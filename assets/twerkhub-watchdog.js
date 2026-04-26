@@ -208,7 +208,7 @@
     if (document.querySelector('script[src*="twerkhub-checkout-modal"]')) return;
     window.__twkCheckoutModalLoaderRan = true;
     var s = document.createElement('script');
-    s.src = '/assets/twerkhub-checkout-modal.js?v=20260426-p1';
+    s.src = '/assets/twerkhub-checkout-modal.js?v=20260426-p2';
     s.defer = true;
     document.head.appendChild(s);
     log('auto-loaded checkout modal module');
