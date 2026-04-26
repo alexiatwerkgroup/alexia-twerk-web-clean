@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · Playlist theater (large centered window, never fullscreen) ═══
- * v20260425-p11
+ * v20260425-p15
  *
  * For themed playlist pages (/try-on-hot-leaks/, /ttl-latin-models/,
  * /hottest-cosplay-fancam/, /korean-girls-kpop-twerk/) that DON'T have an
@@ -107,12 +107,19 @@
   function open(vid){
     if (!vid) return;
     ensureModal();
-    frameContainer.innerHTML = '<div id="twk-pl-theater-target"></div>';
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
+    // ── +18 short-circuit: if this video already errored 101/150 in the past,
+    // show the paywall directly without trying to load the iframe again. ──
+    if (window.TwkAgeGate && window.TwkAgeGate.isBlocked(vid)) {
+      window.TwkAgeGate.show(frameContainer, vid);
+      return;
+    }
+
+    frameContainer.innerHTML = '<div id="twk-pl-theater-target"></div>';
     markViewed(vid);
     grantViewToken();
 
@@ -136,6 +143,12 @@
               try { ev.target.unMute(); ev.target.setVolume(100); } catch(_){}
               if (attempts >= 6) clearInterval(iv);
             }, 500);
+            // Hook heatmap: track watched buckets while this video plays
+            try {
+              if (window.TwkHeatmap) {
+                window.TwkHeatmap.attach(vid, frameContainer, function(){ return ytPlayer; });
+              }
+            } catch(_){}
           },
           onStateChange: function(ev){
             // 1=playing, 2=paused, 0=ended, 3=buffering, 5=cued
@@ -145,6 +158,18 @@
             } else {
               stopTimeTracker();
             }
+          },
+          onError: function(ev){
+            // 101/150 = embed disabled / age-restricted → swap to Discord paywall
+            try {
+              if (window.TwkAgeGate && window.TwkAgeGate.handleYTError(ev.data, vid, frameContainer)) {
+                stopTimeTracker();
+                if (ytPlayer && typeof ytPlayer.destroy === 'function') {
+                  try { ytPlayer.destroy(); } catch(_){}
+                  ytPlayer = null;
+                }
+              }
+            } catch(_){}
           }
         }
       });
@@ -153,6 +178,7 @@
 
   function close(){
     stopTimeTracker();
+    try { if (window.TwkHeatmap) window.TwkHeatmap.flush(); } catch(_){}
     if (!modal) return;
     if (ytPlayer && typeof ytPlayer.destroy === 'function') {
       try { ytPlayer.destroy(); } catch(_){}
@@ -262,14 +288,63 @@
     var player = document.getElementById('twerkhub-pl-player');
     if (!player) return false;
     INLINE_PLAYER_PRESENT = true;
+    var inlineYt = null;
+    var wrap = player.closest('.twerkhub-pl-player-wrap') || player.parentNode;
+
     function onLoad(){
+      var vid = null;
       try {
         var m = (player.src || '').match(/embed\/([^?&\s]{6,})/);
-        if (m && m[1]) markViewed(m[1]);
+        if (m && m[1]) { vid = m[1]; markViewed(vid); }
       } catch(_){}
+
+      // ── +18 short-circuit: if this video is already known-blocked, stop the
+      // iframe from loading anything and show the Discord paywall as overlay.
+      // The iframe stays in the DOM so the next swap() call can reuse it.
+      if (vid && window.TwkAgeGate && window.TwkAgeGate.isBlocked(vid)) {
+        try { player.src = 'about:blank'; } catch(_){}
+        window.TwkAgeGate.showOverlay(wrap, vid);
+        stopTimeTracker();
+        return;
+      } else if (window.TwkAgeGate) {
+        // Not blocked: clear any leftover overlay from a previous video
+        window.TwkAgeGate.hideOverlay(wrap);
+      }
+
       // Start time tracker for the inline player. We assume "playing" when an
       // iframe just loaded with autoplay. The tracker auto-stops if tab loses focus.
       startTimeTracker();
+
+      // Hook heatmap + age-gate: wrap the existing iframe with YT.Player so we
+      // can read currentTime/duration/state AND listen to onError 101/150.
+      // The iframe already has enablejsapi=1 + origin, so wrapping does NOT
+      // cause a reload.
+      if (vid) {
+        loadYTApi().then(function(YT){
+          try {
+            if (inlineYt && typeof inlineYt.destroy === 'function') {
+              try { inlineYt.destroy(); } catch(_){}
+            }
+            inlineYt = new YT.Player(player, {
+              events: {
+                onError: function(ev){
+                  // 101/150 = age-restricted / embed disabled → swap to paywall
+                  try {
+                    if (window.TwkAgeGate && window.TwkAgeGate.BLOCK_CODES[ev.data]) {
+                      window.TwkAgeGate.showOverlay(wrap, vid);
+                      try { player.src = 'about:blank'; } catch(_){}
+                      stopTimeTracker();
+                    }
+                  } catch(_){}
+                }
+              }
+            });
+            if (window.TwkHeatmap) {
+              window.TwkHeatmap.attach(vid, player, function(){ return inlineYt; });
+            }
+          } catch(e){ console.warn('[theater] inline wrap failed', e); }
+        });
+      }
     }
     player.addEventListener('load', onLoad);
     onLoad();
