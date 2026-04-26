@@ -61,7 +61,12 @@ p{color:#d8d8e2;font-size:16px;margin-bottom:16px;max-width:780px}
 .twk-nav-v1-links a.twk-nav-v1-hot:hover{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;border-color:transparent;box-shadow:0 6px 18px rgba(255,45,135,.4)}
 .twk-nav-v1-live{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);color:#1ee08f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;margin-left:6px}
 .twk-nav-v1-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;animation:twkLivePulse 2s ease-in-out infinite}
-@keyframes twkLivePulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes twkLivePulse{0%,100%{opacity:1}
+.twk-nav-v1-lang{display:inline-flex;align-items:center;gap:1px;margin-left:6px;padding:3px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.twk-nav-v1-lang a{padding:5px 8px;border-radius:5px;color:rgba(230,230,240,.62);text-decoration:none;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.08em;line-height:1;transition:color .15s,background .15s}
+.twk-nav-v1-lang a:hover{color:#fff;background:rgba(255,255,255,.05)}
+.twk-nav-v1-lang a.is-active{color:#fff;background:rgba(255,46,135,.18);border:1px solid rgba(255,46,135,.35)}
+@media(max-width:880px){.twk-nav-v1-lang{display:none}}50%{opacity:.4}}
 @media(max-width:1180px){.twk-nav-v1-links a{padding:8px 10px;font-size:10.5px;letter-spacing:.08em}}
 @media(max-width:1024px){.twk-nav-v1-links{gap:0}.twk-nav-v1-links a{padding:8px 8px;font-size:10px;letter-spacing:.06em}.twk-nav-v1-live{font-size:9px;padding:5px 9px}}
 @media(max-width:880px){.twk-nav-v1-inner{padding:10px 14px;gap:8px}.twk-nav-v1-links{gap:1px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:2px}.twk-nav-v1-links a{padding:7px 8px;font-size:10px}.twk-nav-v1-brand span{display:none}.twk-nav-v1-live{display:none}}
@@ -84,6 +89,11 @@ p{color:#d8d8e2;font-size:16px;margin-bottom:16px;max-width:780px}
       <a href="/membership.html" data-nav="membership">MEMBERSHIP</a>
       <a href="/account.html" data-nav="account">MY ACCOUNT</a>
       <a href="/profile.html" data-nav="profile">PROFILE</a>
+    </div>
+    <div class="twk-nav-v1-lang" role="group" aria-label="Language">
+      <a href="#" data-lang="en" class="is-active" title="English">EN</a>
+      <a href="#" data-lang="es" title="Español">ES</a>
+      <a href="#" data-lang="ru" title="Русский">RU</a>
     </div>
     <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
   </div>
@@ -111,13 +121,13 @@ p{color:#d8d8e2;font-size:16px;margin-bottom:16px;max-width:780px}
 
   <div class="grid">
     <div class="c">
-      <a href="https://www.youtube.com/watch?v=GSeYEJ3qIxU" target="_blank" rel="noopener" style="display:block;text-decoration:none"><img src="https://i.ytimg.com/vi/GSeYEJ3qIxU/hqdefault.jpg" alt="Yurgenis" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/GSeYEJ3qIxU/default.jpg';}"></a>
+      <a href="#" data-vid="GSeYEJ3qIxU" data-hot="1" style="display:block;text-decoration:none"><img src="https://i.ytimg.com/vi/GSeYEJ3qIxU/hqdefault.jpg" alt="Yurgenis" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/GSeYEJ3qIxU/default.jpg';}"></a>
       <span class="tag">#1 · Caracas → Medellín</span>
       <h3>Yurgenis · YUR AULAR</h3>
       <p>Reggaetón dance king. Ghetto Kids "Baja" choreo hit 1.2M views and 22K likes. Originally Venezuelan — the Medellín scene adopted him.</p>
     </div>
     <div class="c">
-      <a href="https://www.youtube.com/watch?v=k68KXBiflR8" target="_blank" rel="noopener" style="display:block;text-decoration:none"><img src="https://i.ytimg.com/vi/k68KXBiflR8/hqdefault.jpg" alt="Debii Abreu" loading="lazy" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/k68KXBiflR8/default.jpg';}"></a>
+      <a href="#" data-vid="k68KXBiflR8" data-hot="1" style="display:block;text-decoration:none"><img src="https://i.ytimg.com/vi/k68KXBiflR8/hqdefault.jpg" alt="Debii Abreu" loading="lazy" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/k68KXBiflR8/default.jpg';}"></a>
       <span class="tag">#2 · DR × Colombia</span>
       <h3>Debii Abreu</h3>
       <p>Dominican with monthly Medellín + Cartagena workshops. Reyanna Maria "So Pretty" is her calling card. Latin flavor meets technique.</p>
@@ -135,7 +145,7 @@ p{color:#d8d8e2;font-size:16px;margin-bottom:16px;max-width:780px}
       <p>Ghanaian-British dancer. Afrobeats × twerk crossover. "Find Your ConfiDance" project runs in Medellín + London. Lagos-trained.</p>
     </a>
     <div class="c">
-      <a href="https://www.youtube.com/watch?v=Ye-jOmIomn4" target="_blank" rel="noopener" style="display:block;text-decoration:none"><img src="https://i.ytimg.com/vi/Ye-jOmIomn4/hqdefault.jpg" alt="Emiliano Ferrari Villalobo" loading="lazy" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/Ye-jOmIomn4/default.jpg';}"></a>
+      <a href="#" data-vid="Ye-jOmIomn4" data-hot="1" style="display:block;text-decoration:none"><img src="https://i.ytimg.com/vi/Ye-jOmIomn4/hqdefault.jpg" alt="Emiliano Ferrari Villalobo" loading="lazy" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/Ye-jOmIomn4/default.jpg';}"></a>
       <span class="tag">#5 · Buenos Aires → Bogotá</span>
       <h3>Emiliano Ferrari Villalobo</h3>
       <p>Argentine reggaetón instructor working the Bogotá + Zárate circuit. "Me Gusta El Reggaeton" bonus cut · 2.8M views.</p>
@@ -174,5 +184,8 @@ p{color:#d8d8e2;font-size:16px;margin-bottom:16px;max-width:780px}
 </footer>
 
 
+<script defer src="/assets/twerkhub-pl-theater.js?v=20260426-p2"></script>
+<script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
+<script defer src="/assets/twk-lang-switcher.js?v=20260426-p1"></script>
 </body>
 </html>
