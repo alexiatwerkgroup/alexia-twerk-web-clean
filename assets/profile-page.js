@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · /profile.html data binding ═══
- * v20260426-p1
+ * v20260426-p2
  * Tokens source: prefer window.AlexiaTokens.getState().balance (the
  * authoritative localStorage-backed value used by the global topbar) over
  * the raw profiles.tokens column, which can be 0 if the user accumulated
@@ -268,6 +268,12 @@
           setStatus('Could not save: ' + res.error.message, 'err');
         } else {
           setStatus('Profile saved.', 'ok');
+          // CRITICAL: force a full re-render with the saved data so the avatar
+          // appears without needing a page reload. Reset _lastAvatarUrl first
+          // so renderHero treats this as a real change.
+          _lastAvatarUrl = null;
+          avatarData = ''; // clear staged upload so future saves don't re-upload
+          await refresh();
         }
       } catch(e){
         console.warn('[profile-page] save failed', e);
@@ -280,6 +286,14 @@
   async function refresh(){
     var profile = await fetchProfile();
     renderHero(profile);
+    // If first attempt came back null (e.g. Supabase SDK still loading),
+    // retry shortly so the user doesn't sit on a blank "Guest" hero.
+    if (!profile && !_lastProfile) {
+      setTimeout(async function(){
+        var p2 = await fetchProfile();
+        if (p2) renderHero(p2);
+      }, 1500);
+    }
   }
 
   async function init(){
