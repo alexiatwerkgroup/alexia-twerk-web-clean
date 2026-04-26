@@ -149,7 +149,6 @@
 
 <script>
 (function(){
-  // Hot-moment timestamp jump: si la URL tiene ?t=85 o &t=85, arranca el iframe en ese segundo
   var params = new URLSearchParams(location.search);
   var t = params.get('t');
   if (!t) return;
@@ -157,6 +156,14 @@
   if (!seconds || seconds < 0) return;
   var iframe = document.getElementById('twerkhub-pl-player');
   if (!iframe) return;
-  // Modificar src para iniciar en el timestamp
   try {
-    var u 
+    var url = new URL(iframe.src);
+    url.searchParams.set('start', String(seconds));
+    iframe.src = url.toString();
+  } catch(e){}
+})();
+</script>
+
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+</body>
+</html>
