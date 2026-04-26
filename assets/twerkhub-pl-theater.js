@@ -1,5 +1,12 @@
 /* ═══ TWERKHUB · Playlist theater (large centered window, never fullscreen) ═══
- * v20260425-p15
+ * v20260426-p1
+ *
+ * 2026-04-26 fix: rolled back the inline-player YT.Player wrap because
+ * `new YT.Player(existingIframe)` was REMOVING the iframe from the DOM,
+ * which broke /playlist/ swap() (it does getElementById and finds nothing).
+ * Inline heatmap now uses a passive heuristic, age-gate inline only does
+ * the pre-check (isBlocked). The modal theater is unaffected — it creates
+ * YT.Player from scratch, which is the safe pattern.
  *
  * For themed playlist pages (/try-on-hot-leaks/, /ttl-latin-models/,
  * /hottest-cosplay-fancam/, /korean-girls-kpop-twerk/) that DON'T have an
@@ -284,12 +291,23 @@
   }
 
   // ── Hook into /playlist/ inline player to mark viewed on swap + track time ───
+  // CRITICAL: do NOT wrap the existing iframe with `new YT.Player(player)`.
+  // YouTube's IFrame API has a quirk where wrapping an already-loaded iframe
+  // can REMOVE it from the DOM without inserting a replacement, which breaks
+  // the playlist's swap() (it does `getElementById('twerkhub-pl-player')` and
+  // finds nothing). Heatmap on inline therefore uses a passive heuristic:
+  // assume the video is playing while the tab is visible, and bucket time
+  // since iframe load, capped to 600s. Age-gate on inline only does the
+  // pre-check (isBlocked) — onError detection requires YT.Player wrap, which
+  // we deliberately avoid here. Blocked videos can still be detected through
+  // the modal theater (where YT.Player is created from scratch — safe).
   function patchInlinePlayer(){
     var player = document.getElementById('twerkhub-pl-player');
     if (!player) return false;
     INLINE_PLAYER_PRESENT = true;
-    var inlineYt = null;
     var wrap = player.closest('.twerkhub-pl-player-wrap') || player.parentNode;
+    var inlineLoadStart = 0;
+    var inlineLoadVid = null;
 
     function onLoad(){
       var vid = null;
@@ -298,52 +316,33 @@
         if (m && m[1]) { vid = m[1]; markViewed(vid); }
       } catch(_){}
 
-      // ── +18 short-circuit: if this video is already known-blocked, stop the
-      // iframe from loading anything and show the Discord paywall as overlay.
-      // The iframe stays in the DOM so the next swap() call can reuse it.
+      // ── +18 short-circuit: if this vid is already known-blocked, swap the
+      // iframe to about:blank and show the Discord paywall as overlay.
       if (vid && window.TwkAgeGate && window.TwkAgeGate.isBlocked(vid)) {
         try { player.src = 'about:blank'; } catch(_){}
         window.TwkAgeGate.showOverlay(wrap, vid);
         stopTimeTracker();
         return;
       } else if (window.TwkAgeGate) {
-        // Not blocked: clear any leftover overlay from a previous video
+        // Not blocked → clear any leftover overlay from a previous video
         window.TwkAgeGate.hideOverlay(wrap);
       }
 
-      // Start time tracker for the inline player. We assume "playing" when an
-      // iframe just loaded with autoplay. The tracker auto-stops if tab loses focus.
       startTimeTracker();
+      inlineLoadStart = Date.now();
+      inlineLoadVid   = vid;
 
-      // Hook heatmap + age-gate: wrap the existing iframe with YT.Player so we
-      // can read currentTime/duration/state AND listen to onError 101/150.
-      // The iframe already has enablejsapi=1 + origin, so wrapping does NOT
-      // cause a reload.
-      if (vid) {
-        loadYTApi().then(function(YT){
-          try {
-            if (inlineYt && typeof inlineYt.destroy === 'function') {
-              try { inlineYt.destroy(); } catch(_){}
-            }
-            inlineYt = new YT.Player(player, {
-              events: {
-                onError: function(ev){
-                  // 101/150 = age-restricted / embed disabled → swap to paywall
-                  try {
-                    if (window.TwkAgeGate && window.TwkAgeGate.BLOCK_CODES[ev.data]) {
-                      window.TwkAgeGate.showOverlay(wrap, vid);
-                      try { player.src = 'about:blank'; } catch(_){}
-                      stopTimeTracker();
-                    }
-                  } catch(_){}
-                }
-              }
-            });
-            if (window.TwkHeatmap) {
-              window.TwkHeatmap.attach(vid, player, function(){ return inlineYt; });
-            }
-          } catch(e){ console.warn('[theater] inline wrap failed', e); }
-        });
+      // Passive heatmap tracker: while the tab is visible, every 2s mark the
+      // bucket corresponding to (elapsed seconds since load) under an assumed
+      // duration of 60s. If the real video is shorter/longer, the heatmap is
+      // approximate but still useful and SAFE — does not touch the iframe.
+      if (vid && window.TwkHeatmap && window.TwkHeatmap.attach) {
+        var fakePlayer = {
+          getDuration: function(){ return 60; }, // approximation
+          getCurrentTime: function(){ return inlineLoadVid === vid ? Math.min(60, (Date.now() - inlineLoadStart) / 1000) : 0; },
+          getPlayerState: function(){ return document.hidden ? 2 : 1; } // 1=playing, 2=paused
+        };
+        try { window.TwkHeatmap.attach(vid, player, function(){ return fakePlayer; }); } catch(_){}
       }
     }
     player.addEventListener('load', onLoad);
