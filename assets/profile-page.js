@@ -1,5 +1,9 @@
 /* ═══ TWERKHUB · /profile.html data binding ═══
- * v20260425-p15
+ * v20260426-p1
+ * Tokens source: prefer window.AlexiaTokens.getState().balance (the
+ * authoritative localStorage-backed value used by the global topbar) over
+ * the raw profiles.tokens column, which can be 0 if the user accumulated
+ * tokens before the Supabase migration. Avatar always comes from DB.
  *
  * Connects /profile.html to the real Supabase 'profiles' table via the same
  * client + storageKey ('alexia-auth-v3') used by /assets/supabase-config.js
@@ -64,19 +68,34 @@
   var _lastProfile = null;
   var _lastAvatarUrl = null;
 
+  // Read the authoritative balance from window.AlexiaTokens if available, else
+  // fall back to the DB column. The localStorage-backed AlexiaTokens.getState()
+  // is what the global topbar uses, so this keeps profile + topbar in sync.
+  function authoritativeBalance(profile){
+    try {
+      if (window.AlexiaTokens && typeof window.AlexiaTokens.getState === 'function') {
+        var st = window.AlexiaTokens.getState();
+        var b = Number(st && st.balance);
+        if (Number.isFinite(b) && b >= 0) return b;
+      }
+    } catch(_){}
+    return Number((profile && profile.tokens) || 0);
+  }
+
   function renderHero(profile){
     if (profile) {
       _lastProfile = profile;
       setText('hero-name', profile.username || 'Member');
       setText('hero-role', 'Signed in');
       var tb = $('tokens-balance');
-      if (tb) tb.innerHTML = fmt(profile.tokens || 0) + ' <small>TWK</small>';
+      if (tb) tb.innerHTML = fmt(authoritativeBalance(profile)) + ' <small>TWK</small>';
       var av = $('avatar-preview');
       if (av) {
-        // Only re-render the avatar if the URL actually changed.
-        // Otherwise the <img> swap causes a visible flash.
         var newUrl = profile.avatar_url || '';
-        if (newUrl !== _lastAvatarUrl) {
+        // Re-render whenever URL differs from cached, OR the slot currently has
+        // no <img> tag (covers the case where prior renders showed initials).
+        var hasImg = !!av.querySelector('img');
+        if (newUrl !== _lastAvatarUrl || (newUrl && !hasImg)) {
           if (newUrl) av.innerHTML = '<img src="' + esc(newUrl) + '" alt="Avatar">';
           else av.textContent = initials(profile.username);
           _lastAvatarUrl = newUrl;
@@ -85,23 +104,19 @@
       var nick = $('nickname'); if (nick && !nick.value) nick.value = profile.username || '';
       var bio = $('bio'); if (bio && !bio.value) bio.value = profile.bio || '';
     } else if (_lastProfile) {
-      // We previously had a profile but this fetch came back empty.
-      // Almost certainly a race (token refresh, focus event mid-fetch).
-      // Don't downgrade — keep what we already painted, just refresh stats.
       profile = _lastProfile;
     } else {
       setText('hero-name', 'Guest');
       setText('hero-role', 'Not signed in');
-      var tb2 = $('tokens-balance'); if (tb2) tb2.innerHTML = '0 <small>TWK</small>';
+      var tb2 = $('tokens-balance'); if (tb2) tb2.innerHTML = fmt(authoritativeBalance(null)) + ' <small>TWK</small>';
       var av2 = $('avatar-preview'); if (av2 && _lastAvatarUrl !== '__guest__') {
         av2.textContent = 'P';
         _lastAvatarUrl = '__guest__';
       }
     }
-    // Activity stats — read from real localStorage keys populated by theater + theater module
     var viewedCount = countLS('twk_viewed_videos');
     var totalSeconds = readNum('twk_watch_seconds_total');
-    var activityScore = computeActivityScore(viewedCount, totalSeconds, profile && profile.tokens || 0);
+    var activityScore = computeActivityScore(viewedCount, totalSeconds, authoritativeBalance(profile));
 
     setText('stat-videos-watched', viewedCount);
     setText('stat-total-time', formatTime(totalSeconds));

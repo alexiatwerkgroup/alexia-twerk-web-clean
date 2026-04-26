@@ -1144,6 +1144,7 @@
       var end = load();
       var strongEl = el.querySelector('strong');
       if (!strongEl) return;
+      function two(n){ return String(n).padStart(2,'0'); }
       function tick(){
         var rem = end - Date.now();
         if (rem <= 0){
@@ -1155,12 +1156,13 @@
         var d = Math.floor(total / 86400);
         var h = Math.floor((total % 86400) / 3600);
         var m = Math.floor((total % 3600) / 60);
-        if (d > 0)      strongEl.textContent = d + ' days · ' + h + 'h';
-        else if (h > 0) strongEl.textContent = h + 'h · ' + m + 'm';
-        else            strongEl.textContent = m + 'm · ' + (total % 60) + 's';
+        var s = total % 60;
+        // Always show seconds so the countdown looks alive
+        if (d > 0) strongEl.textContent = d + 'd · ' + two(h) + ':' + two(m) + ':' + two(s);
+        else       strongEl.textContent = two(h) + ':' + two(m) + ':' + two(s);
       }
       tick();
-      setInterval(tick, 30000); // every 30s — days/hours don't need 1s precision
+      setInterval(tick, 1000);
     });
   }
 
