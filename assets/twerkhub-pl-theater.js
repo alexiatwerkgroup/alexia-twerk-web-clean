@@ -498,7 +498,7 @@
         if (!vid || !window.TwkAgeGate) return;
         showInlinePaywall(player, wrap, vid);
         stopTimeTracker();
-      }, 700);
+      }, 1500);
 
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
@@ -547,7 +547,7 @@
         }
         return;
       }
-      if (data.event !== 'onError') return;
+      if (data.event === 'infoDelivery' || data.event === 'initialDelivery' || data.event === 'apiInfoDelivery') { window.__twkInlinePlaybackStarted = true; if (window.__twkInlineHeartbeat) { clearTimeout(window.__twkInlineHeartbeat); window.__twkInlineHeartbeat = null; } return; } if (data.event !== 'onError') return;
       var code = data.info;
       if (code !== 101 && code !== 150) return;
       // Resolve which iframe sent it
