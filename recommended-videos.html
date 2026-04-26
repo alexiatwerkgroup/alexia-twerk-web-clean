@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Top Suggested Videos · Twerkhub</title>
-<meta name="description" content="Top Suggested Videos on Twerkhub — curated dance &amp; fancam content. Curated twerk collection. Weekly drops &amp; members-only cuts.">
+<title>Top Suggested Videos Â· Twerkhub</title>
+<meta name="description" content="Top Suggested Videos on Twerkhub â€” curated dance &amp; fancam content. Curated twerk collection. Weekly drops &amp; members-only cuts.">
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
@@ -49,9 +49,9 @@
 </style>
 <nav class="twk-nav-v1" aria-label="Primary" data-twk-nav-v1>
   <div class="twk-nav-v1-inner">
-    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub · home">
+    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub Â· home">
       <img src="/logo-twerkhub.png" alt="Twerkhub" width="120" height="34" decoding="async">
-      <span>TWERKHUB · EST. 2018</span>
+      <span>TWERKHUB Â· EST. 2018</span>
     </a>
     <div class="twk-nav-v1-links">
       <a href="/" data-nav="home">HOME</a>
@@ -66,8 +66,8 @@
     </div>
     <div class="twk-nav-v1-lang" role="group" aria-label="Language">
       <a href="#" data-lang="en" class="is-active" title="English">EN</a>
-      <a href="#" data-lang="es" title="Español">ES</a>
-      <a href="#" data-lang="ru" title="Русский">RU</a>
+      <a href="#" data-lang="es" title="EspaÃ±ol">ES</a>
+      <a href="#" data-lang="ru" title="Ð ÑƒÑÑÐºÐ¸Ð¹">RU</a>
     </div>
     <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
   </div>
@@ -141,7 +141,7 @@ async function loadRecommendations(){
   const list=[...counts.entries()].map(([video,count])=>({video,count})).sort((a,b)=>b.count-a.count||a.video.localeCompare(b.video));
   if(!list.length){state.className='empty';state.textContent='No recommendations yet. Once visitors start submitting suggestions, they will appear here.';stats.textContent='0 recommendations visible.';return;}
   state.hidden=true;grid.hidden=false;
-  stats.textContent=`${list.length} unique recommendations • ${list.reduce((s,x)=>s+x.count,0)} total submissions`;
+  stats.textContent=`${list.length} unique recommendations â€¢ ${list.reduce((s,x)=>s+x.count,0)} total submissions`;
   grid.innerHTML=list.map((item,index)=>`<article class="card"><div class="rank">#${index+1}</div><h2 class="title">${escapeHtml(item.video)}</h2><div class="meta"><span class="pill">${item.count} vote${item.count===1?'':'s'}</span></div>${renderVideo(item)}<div class="card-actions"><a class="mini-rec-btn" href="/recommend.html?video=${encodeURIComponent(item.video)}">Recommend this too</a></div></article>`).join('');
 }
 loadRecommendations();
@@ -199,7 +199,7 @@ loadRecommendations();
       <img src="/logo-twerkhub.png" alt="Twerkhub" width="44" height="44" decoding="async">
       <div class="twerkhub-footer-brand-name">TWERKHUB</div>
       <p>The platform for private custom videos, verified models and the premium archive you can't find anywhere else. Founded by Anti (firestarter) in 2018.</p>
-      <div class="twerkhub-footer-flag">· If you know, you know ·</div>
+      <div class="twerkhub-footer-flag">Â· If you know, you know Â·</div>
     </div>
     <div class="twerkhub-footer-col">
       <div class="twerkhub-kicker">/ Platform</div>
@@ -207,7 +207,7 @@ loadRecommendations();
     </div>
     <div class="twerkhub-footer-col">
       <div class="twerkhub-kicker">/ Account</div>
-      <ul><li><a href="/profile.html">Profile · Tokens</a></li><li><a href="#tokens">How Tokens Work</a></li><li><a href="#tokens">Premium</a></li><li><a href="#tokens">Membership</a></li><li><a href="/community.html">Community</a></li></ul>
+      <ul><li><a href="/profile.html">Profile Â· Tokens</a></li><li><a href="#tokens">How Tokens Work</a></li><li><a href="#tokens">Premium</a></li><li><a href="#tokens">Membership</a></li><li><a href="/community.html">Community</a></li></ul>
     </div>
     <div class="twerkhub-footer-col">
       <div class="twerkhub-kicker">/ Connect</div>
@@ -215,15 +215,15 @@ loadRecommendations();
     </div>
   </div>
   <div class="twerkhub-footer-legal" style="padding:14px 0;text-align:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8a8a96">
-    <a href="/about.html" style="color:#c7c7d3;margin:0 8px">About</a> ·
-    <a href="/blog/" style="color:#c7c7d3;margin:0 8px">Blog</a> ·
-    <a href="/glossary.html" style="color:#c7c7d3;margin:0 8px">Glossary</a> ·
-    <a href="/search.html" style="color:#c7c7d3;margin:0 8px">Search</a> ·
-    <a href="/contact.html" style="color:#c7c7d3;margin:0 8px">Contact</a> ·
-    <a href="/privacy.html" style="color:#c7c7d3;margin:0 8px">Privacy</a> ·
+    <a href="/about.html" style="color:#c7c7d3;margin:0 8px">About</a> Â·
+    <a href="/blog/" style="color:#c7c7d3;margin:0 8px">Blog</a> Â·
+    <a href="/glossary.html" style="color:#c7c7d3;margin:0 8px">Glossary</a> Â·
+    <a href="/search.html" style="color:#c7c7d3;margin:0 8px">Search</a> Â·
+    <a href="/contact.html" style="color:#c7c7d3;margin:0 8px">Contact</a> Â·
+    <a href="/privacy.html" style="color:#c7c7d3;margin:0 8px">Privacy</a> Â·
     <a href="/terms.html" style="color:#c7c7d3;margin:0 8px">Terms</a>
   </div>
-  <div class="twerkhub-footer-bottom">© 2026 Twerkhub · founded by <em>Anti</em> (firestarter) · The Wild Project Models Agency</div>
+  <div class="twerkhub-footer-bottom">Â© 2026 Twerkhub Â· founded by <em>Anti</em> (firestarter) Â· The Wild Project Models Agency</div>
 </footer>
 <script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
 <script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>

@@ -1,10 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin · Leaderboard · Alexia Twerk Group</title>
+<title>Admin Â· Leaderboard Â· Alexia Twerk Group</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -52,7 +52,7 @@
   .tier-vip{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;}
   .empty{text-align:center;padding:60px 20px;color:#888;font-style:italic;}
   .loading{text-align:center;padding:60px 20px;color:#888;font:600 13px Inter,sans-serif;letter-spacing:.04em;}
-  .loading::after{content:'…';animation:dots 1.4s infinite;}
+  .loading::after{content:'â€¦';animation:dots 1.4s infinite;}
   @keyframes dots{0%,20%{content:'.'}40%{content:'..'}60%,100%{content:'...'}}
   .err{text-align:center;padding:30px;color:#ff8888;font:600 13px Inter,sans-serif;background:rgba(255,90,90,.06);border:1px solid rgba(255,90,90,.3);border-radius:14px;margin:20px 0;}
   @media(max-width:760px){
@@ -60,29 +60,29 @@
   }
 </style>
 <!-- twk-schema-v2 -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Admin · Leaderboard · Alexia Twerk Group","description":"","url":"https://alexiatwerkgroup.com/admin-users.html","isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Admin · Leaderboard · Alexia Twerk Group","item":"https://alexiatwerkgroup.com/admin-users.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Admin Â· Leaderboard Â· Alexia Twerk Group","description":"","url":"https://alexiatwerkgroup.com/admin-users.html","isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Admin Â· Leaderboard Â· Alexia Twerk Group","item":"https://alexiatwerkgroup.com/admin-users.html"}]}</script>
 </head>
 <body>
 <div class="wrap">
   <h1>Twerkhub <em>Leaderboard</em></h1>
   <p class="sub">
-    Top users ordenados por tokens. <strong>Source: Supabase</strong> (lista global · todos los users registrados en el sitio).
-    Cambiá a <em>Local</em> para ver solo los users registrados en este navegador (para debug).
+    Top users ordenados por tokens. <strong>Source: Supabase</strong> (lista global Â· todos los users registrados en el sitio).
+    CambiÃ¡ a <em>Local</em> para ver solo los users registrados en este navegador (para debug).
   </p>
 
   <div class="source-toggle">
-    <button class="source-btn is-active" id="src-supabase" onclick="setSource('supabase')">🌐 Supabase (global)</button>
-    <button class="source-btn" id="src-local" onclick="setSource('local')">💾 LocalStorage (this browser)</button>
+    <button class="source-btn is-active" id="src-supabase" onclick="setSource('supabase')">ðŸŒ Supabase (global)</button>
+    <button class="source-btn" id="src-local" onclick="setSource('local')">ðŸ’¾ LocalStorage (this browser)</button>
   </div>
 
   <div class="stats" id="stats"></div>
 
   <div class="actions">
-    <input type="search" id="search" class="search" placeholder="Search by username or email…">
+    <input type="search" id="search" class="search" placeholder="Search by username or emailâ€¦">
     <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
     <button class="btn btn-ghost" onclick="exportJSON()">Export JSON</button>
-    <button class="btn btn-ghost" onclick="refresh()">↻ Refresh</button>
+    <button class="btn btn-ghost" onclick="refresh()">â†» Refresh</button>
   </div>
 
   <div id="err-box" class="err" style="display:none"></div>
@@ -91,13 +91,13 @@
     <thead>
       <tr>
         <th data-sort="rank">#</th>
-        <th data-sort="username">Username <span class="arrow">↕</span></th>
-        <th data-sort="email">Email <span class="arrow">↕</span></th>
-        <th data-sort="tokens" class="active">Tokens <span class="arrow">↓</span></th>
-        <th data-sort="total_earned">Earned <span class="arrow">↕</span></th>
-        <th data-sort="streak">Streak <span class="arrow">↕</span></th>
-        <th data-sort="tier">Tier <span class="arrow">↕</span></th>
-        <th data-sort="registered_at">Registered <span class="arrow">↕</span></th>
+        <th data-sort="username">Username <span class="arrow">â†•</span></th>
+        <th data-sort="email">Email <span class="arrow">â†•</span></th>
+        <th data-sort="tokens" class="active">Tokens <span class="arrow">â†“</span></th>
+        <th data-sort="total_earned">Earned <span class="arrow">â†•</span></th>
+        <th data-sort="streak">Streak <span class="arrow">â†•</span></th>
+        <th data-sort="tier">Tier <span class="arrow">â†•</span></th>
+        <th data-sort="registered_at">Registered <span class="arrow">â†•</span></th>
       </tr>
     </thead>
     <tbody id="rows">
@@ -191,7 +191,7 @@
       return 0;
     });
   }
-  function fmtDate(t){ if (!t) return '—'; try { return new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}); } catch(_){ return '—'; } }
+  function fmtDate(t){ if (!t) return 'â€”'; try { return new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}); } catch(_){ return 'â€”'; } }
   function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
   function renderStats(users){
@@ -217,7 +217,7 @@
       return '<tr>' +
         '<td class="' + rk + '">#' + (i+1) + '</td>' +
         '<td class="username">@' + escapeHtml(u.username) + youBadge + '</td>' +
-        '<td>' + (u.email ? escapeHtml(u.email) : '<span style="opacity:.4">—</span>') + '</td>' +
+        '<td>' + (u.email ? escapeHtml(u.email) : '<span style="opacity:.4">â€”</span>') + '</td>' +
         '<td class="tokens">' + (u.tokens||0).toLocaleString('en-US') + '</td>' +
         '<td>' + (u.total_earned||0).toLocaleString('en-US') + '</td>' +
         '<td>' + (u.streak||0) + 'd</td>' +
@@ -232,8 +232,8 @@
       th.classList.toggle('active', k === state.sortKey);
       var arrow = th.querySelector('.arrow');
       if (arrow) {
-        if (k === state.sortKey) arrow.textContent = state.sortDir==='asc' ? '↑' : '↓';
-        else arrow.textContent = '↕';
+        if (k === state.sortKey) arrow.textContent = state.sortDir==='asc' ? 'â†‘' : 'â†“';
+        else arrow.textContent = 'â†•';
       }
     });
   }

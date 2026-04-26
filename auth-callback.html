@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
@@ -39,12 +39,12 @@
 <body>
 
 <div class="card">
-  <div class="crest">A·T</div>
+  <div class="crest">AÂ·T</div>
   <div class="kicker" id="kicker">Alexia Twerk Group</div>
-  <h1 id="title">Confirming…</h1>
+  <h1 id="title">Confirmingâ€¦</h1>
   <p id="subtitle">Hold on while we finish setting things up.</p>
 
-  <div id="status" class="status">Working…</div>
+  <div id="status" class="status">Workingâ€¦</div>
 
   <!-- Recovery: new password form -->
   <form id="recovery-form" class="form" novalidate>
@@ -117,14 +117,14 @@
       if (np !== np2) return showError('Passwords do not match.');
 
       const btn = $('rec-btn');
-      btn.disabled = true; btn.textContent = 'Updating…';
+      btn.disabled = true; btn.textContent = 'Updatingâ€¦';
       try {
         const { error } = await sb.auth.updateUser({ password: np });
         if (error) {
           btn.disabled = false; btn.textContent = 'Update password';
           return showError(error.message || 'Could not update password.');
         }
-        setStatus('Password updated. Sending you to your account…', 'ok');
+        setStatus('Password updated. Sending you to your accountâ€¦', 'ok');
         recForm.style.display = 'none';
         setTimeout(function(){ location.replace('/account.html'); }, 1200);
       } catch(e){
@@ -147,7 +147,7 @@
       setTimeout(function(){ location.replace(returnTo); }, 900);
       return;
     }
-    setStatus('Confirmation processed. Redirecting you to your account…', 'ok');
+    setStatus('Confirmation processed. Redirecting you to your accountâ€¦', 'ok');
     setTimeout(function(){ location.replace(returnTo); }, 1200);
   }
 

@@ -1,0 +1,48 @@
+═══════════════════════════════════════════════════════════════════
+  TWERKHUB v1.0 · COMPLETE PLATFORM BACKUP
+  Snapshot date: 2026-04-26
+  Backup includes: all source files + assets + scripts (no .git history)
+═══════════════════════════════════════════════════════════════════
+
+PROJECT STATS
+- Total files: 1,022
+- HTML pages: 808
+- JS modules: 59
+- CSS files: 21
+- Uncompressed size: 75 MB
+
+KEY MODULES (latest versions at backup time)
+- assets/twerkhub-watchdog.js          v1 · runtime self-healing for 6 failure modes
+- assets/twerkhub-checkout-modal.js    v2 · aggressive Discord+Telegram modal
+- assets/twerkhub-countdowns.js        v2 · isolated farm/hero/model countdowns
+- assets/twerkhub-age-gate.js          v20260426-p8 · +18 paywall + SAGRADA #9
+- assets/twerkhub-pl-theater.js        v20260426-p8 · inline player + heartbeat
+- assets/twk-lang-switcher.js          v20260426-p2 · EN/ES/RU + Google Translate fallback
+- assets/profile-page.js               v20260426-p6 · founder by email + tier badges
+- assets/twerkhub-auth.js              v20260426-p8 · DB→localStorage sync
+- assets/token-system.js               v20260426-p9 · 6-month VIP economy + level-up sounds
+- assets/twerkhub-tokens.js            v20260426-p12 · token HUD with casino sounds
+
+TOOLS BUNDLED
+- scripts/repair-pages.js     · auto-fixes NULL bytes + truncations + injects watchdog
+- scripts/validate-pages.js   · pre-commit syntax + structure validator
+
+SAGRADAS (canon)
+- SAGRADAS_PLAYLIST.md · 21 inmutable rules
+- HANDOFF-COWORK.md    · session context + history
+
+BRAND CONFIG
+- Production URL: https://alexiatwerkgroup.com/
+- Repo: https://github.com/alexiatwerkgroup/alexia-twerk-web-clean
+- Tier economy: Basic 0-299 / Medium 300-2,999 / Premium 3,000-19,999 / VIP Top 50,000+
+- Discord: https://discord.gg/WWn8ZgQMjn
+- Telegram: https://t.me/+0xNr69raiIlmYWRh
+
+RESTORE INSTRUCTIONS
+1. Unzip to a new folder
+2. cd into that folder
+3. git init . (if you want git history) or just open as-is
+4. Run `node scripts/validate-pages.js` to confirm 808 pages valid
+5. Connect to Cloudflare Pages or Vercel pointing at index.html
+
+═══════════════════════════════════════════════════════════════════
