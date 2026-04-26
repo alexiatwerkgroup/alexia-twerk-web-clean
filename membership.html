@@ -261,7 +261,7 @@
       <li>VIP Discord channels</li>
       <li><span class="em">Token multiplier ×1.5</span></li>
     </ul>
-    <a class="tier__cta tier__cta--basic" href="#checkout-medium" data-tier="medium" data-price="9.99">Get Medium →</a>
+    <a class="tier__cta tier__cta--basic" href="https://discord.gg/WWn8ZgQMjn" data-tier="medium" data-price="9.99" target="_blank" rel="noopener nofollow ugc">Get Medium →</a>
   </article>
 
   <!-- TIER 03 · PREMIUM · featured "MOST POPULAR" -->
@@ -280,7 +280,7 @@
       <li>Private Telegram group</li>
       <li><span class="em">Token multiplier ×2</span></li>
     </ul>
-    <a class="tier__cta tier__cta--vip" href="#checkout-premium" data-tier="premium" data-price="29.99">Unlock Premium →</a>
+    <a class="tier__cta tier__cta--vip" href="https://discord.gg/WWn8ZgQMjn" data-tier="premium" data-price="29.99" target="_blank" rel="noopener nofollow ugc">Unlock Premium →</a>
   </article>
 
   <!-- TIER 04 · VIP TOP · gold ribbon "★ TOP TIER" -->
@@ -299,102 +299,129 @@
       <li>★ VR videos early access</li>
       <li><span class="em">★ Token multiplier ×3</span></li>
     </ul>
-    <a class="tier__cta tier__cta--elite" href="#checkout-vip-top" data-tier="vip-top" data-price="99.99">Become VIP →</a>
+    <a class="tier__cta tier__cta--elite" href="https://discord.gg/WWn8ZgQMjn" data-tier="vip-top" data-price="99.99" target="_blank" rel="noopener nofollow ugc">Become VIP →</a>
   </article>
 
 </section>
 
-<!-- Token progress panel removed 2026-04-24 per Anti — the block on the right
-     was cluttering the tiers comparison. The 3 tier cards above are the full
-     subscription system; tokens are surfaced on the home page instead. -->
-
-<!-- ═══════ FAQ ═══════ -->
-<section class="faq">
-  <h2 class="faq__h">Frequently Asked</h2>
-
-  <details class="faq__item">
-    <summary>How does payment work?</summary>
-    <div class="ans">All subscriptions are processed via Stripe. One-time checkout, cancel any time from your account page. No hidden renewals.</div>
-  </details>
-
-  <details class="faq__item">
-    <summary>Can I use tokens instead of paying?</summary>
-    <div class="ans">Yes. 4,000 tokens unlocks VIP for 30 days without a subscription. You earn tokens by exploring the archive, watching clips, building login streaks and referring friends.</div>
-  </details>
-
-  <details class="faq__item">
-    <summary>What's in the Alexia's Starter Pack?</summary>
-    <div class="ans">5 exclusive clips hand-picked by Alexia, delivered instantly on VIP/Elite activation. Contents rotate monthly.</div>
-  </details>
-
-  <details class="faq__item">
-    <summary>How does the creator roster work?</summary>
-    <div class="ans">The roster on Elite shows creadores verificados, each linking directly to their own OnlyFans for content and booking. Alexia Twerk Group is a discovery platform — each creator manages their own tier and access.</div>
-  </details>
-
-  <details class="faq__item">
-    <summary>Can I cancel anytime?</summary>
-    <div class="ans">Yes. One click. No loss of already-downloaded packs.</div>
-  </details>
-
-  <details class="faq__item">
-    <summary>Is this 18+?</summary>
-    <div class="ans">Yes. All members, creators and content are 18+. ID verification handled by the respective content platforms.</div>
-  </details>
-</section>
-
-<!-- ═══════ FOOT CTA ═══════ -->
-<section class="foot">
-  <h2 class="foot__h">891 inside. Room for a few more.</h2>
-  <p class="foot__p">Pick a tier above or start free with 200 tokens. See you in there.</p>
-</section>
-
-<!-- scripts -->
-<script src="/assets/token-system.js" defer></script>
+<!-- ═══════ CHECKOUT MODAL · Discord + Telegram dual-channel ═══════ -->
+<style id="twk-checkout-modal-css">
+.twk-checkout-modal{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);padding:24px;font-family:'Inter',ui-sans-serif,system-ui,sans-serif}
+.twk-checkout-modal.is-open{display:flex}
+.twk-checkout-card{position:relative;max-width:480px;width:100%;background:linear-gradient(180deg,#13131c,#0a0a10);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:32px 28px;text-align:center;color:#f4f4f8;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.twk-checkout-close{position:absolute;top:10px;right:14px;width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer;line-height:1}
+.twk-checkout-close:hover{background:rgba(255,255,255,.08)}
+.twk-checkout-kicker{font:800 11px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase;color:#e8c880;margin-bottom:10px}
+.twk-checkout-title{font:800 24px/1.2 'Playfair Display',serif;margin:0 0 6px;letter-spacing:-.01em}
+.twk-checkout-title em{color:#ff5fa3;font-style:italic}
+.twk-checkout-price{font:800 36px/1 'Playfair Display',serif;color:#fff;margin:14px 0 6px}
+.twk-checkout-price small{font-size:14px;color:rgba(255,255,255,.55);font-weight:400}
+.twk-checkout-body{font-size:14px;line-height:1.55;color:rgba(255,255,255,.72);margin:14px 0 20px}
+.twk-checkout-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.twk-checkout-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 22px;border-radius:14px;border:0;color:#fff;font:800 14px/1 'Inter',sans-serif;letter-spacing:.04em;text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.twk-checkout-btn--discord{background:linear-gradient(145deg,#5865F2,#3a44b8);box-shadow:0 12px 32px rgba(88,101,242,.35)}
+.twk-checkout-btn--discord:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(88,101,242,.45)}
+.twk-checkout-btn--telegram{background:linear-gradient(145deg,#2AABEE,#229ED9);box-shadow:0 12px 32px rgba(42,171,238,.35)}
+.twk-checkout-btn--telegram:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(42,171,238,.45)}
+.twk-checkout-foot{font-size:11px;color:rgba(255,255,255,.45);margin-top:14px;letter-spacing:.04em}
+</style>
+<div class="twk-checkout-modal" id="twk-checkout-modal" role="dialog" aria-modal="true" aria-label="Checkout">
+  <div class="twk-checkout-card">
+    <button class="twk-checkout-close" type="button" aria-label="Close">&times;</button>
+    <div class="twk-checkout-kicker" id="twk-checkout-tier-label">TIER</div>
+    <h2 class="twk-checkout-title">Activate <em id="twk-checkout-tier-name">Tier</em>.</h2>
+    <div class="twk-checkout-price"><span id="twk-checkout-price">$0</span><small>/ month</small></div>
+    <p class="twk-checkout-body">Pick your channel. Alexia activates your tier within minutes — direct line, no third party.</p>
+    <div class="twk-checkout-btns">
+      <a class="twk-checkout-btn twk-checkout-btn--discord" id="twk-checkout-discord" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener nofollow ugc">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.27 5.33A18.34 18.34 0 0 0 14.94 4l-.2.4a16.8 16.8 0 0 1 4.05 1.4 16.4 16.4 0 0 0-12.6 0A16.8 16.8 0 0 1 10.24 4.4L10.04 4a18.34 18.34 0 0 0-4.32 1.33C2.95 9.5 2.2 13.55 2.6 17.55a18.6 18.6 0 0 0 5.65 2.85l.45-.62a12.2 12.2 0 0 1-2-.97c.17-.12.34-.25.5-.38a13.16 13.16 0 0 0 11.6 0c.16.13.33.26.5.38-.62.37-1.3.7-2 .97l.45.62a18.6 18.6 0 0 0 5.65-2.85c.5-4.6-.77-8.6-3.13-12.22zM9.5 15.4c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13zm5 0c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13z"/></svg>
+        <span>Activate via Discord</span>
+      </a>
+      <a class="twk-checkout-btn twk-checkout-btn--telegram" id="twk-checkout-telegram" href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener nofollow ugc">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+        <span>Activate via Telegram</span>
+      </a>
+    </div>
+    <div class="twk-checkout-foot">Auto-renews monthly · cancel anytime · 100% private</div>
+  </div>
+</div>
 <script>
+/* TWERKHUB · Tier checkout interceptor + bulletproof.
+ * - Wraps the 3 paid tier CTAs (medium, premium, vip-top) so click opens a
+ *   modal with Discord + Telegram options pre-filled with tier + price.
+ * - The static <a href="https://discord.gg/..."> stays as a no-JS fallback.
+ * - Re-runs on DOM mutations so any future re-render still gets handled. */
 (function(){
-  function refreshProgress(){
-    if (!window.AlexiaTokens) return;
-    var s = window.AlexiaTokens.getState();
-    var threshold = window.AlexiaTokens.UNLOCK_THRESHOLD || 4000;
-    var pct = Math.min(100, Math.round((s.balance / threshold) * 100));
-    var fill = document.getElementById('earn-fill');
-    var cur  = document.getElementById('earn-cur');
-    var p    = document.getElementById('earn-pct');
-    if (fill) fill.style.width = pct + '%';
-    if (cur)  cur.textContent = s.balance.toLocaleString('en-US');
-    if (p)    p.textContent = pct + '%';
+  'use strict';
+  if (window.__twkCheckoutInit) return;
+  window.__twkCheckoutInit = true;
+  var TIER_NAMES = { medium:'Medium', premium:'Premium', 'vip-top':'VIP Top', vip:'VIP Top' };
+  var DISCORD = 'https://discord.gg/WWn8ZgQMjn';
+  var TELEGRAM = 'https://t.me/+0xNr69raiIlmYWRh';
+  function $(id){ return document.getElementById(id); }
+  var modal, dBtn, tBtn, labelEl, nameEl, priceEl, closeBtn;
+  function ensure(){
+    modal = $('twk-checkout-modal');
+    dBtn  = $('twk-checkout-discord');
+    tBtn  = $('twk-checkout-telegram');
+    labelEl = $('twk-checkout-tier-label');
+    nameEl  = $('twk-checkout-tier-name');
+    priceEl = $('twk-checkout-price');
+    closeBtn = modal && modal.querySelector('.twk-checkout-close');
+    if (modal && closeBtn && !closeBtn.__bound){
+      closeBtn.addEventListener('click', close);
+      modal.addEventListener('click', function(ev){ if (ev.target === modal) close(); });
+      document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && modal.classList.contains('is-open')) close(); });
+      closeBtn.__bound = true;
+    }
   }
-  window.addEventListener('alexia-tokens-changed', refreshProgress);
-  setTimeout(refreshProgress, 300);
-  setTimeout(refreshProgress, 1200);
-
-  // Stripe-ready stubs — replace with real Stripe.js checkout URLs
-  document.querySelectorAll('[data-tier]').forEach(function(btn){
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      var tier = btn.getAttribute('data-tier');
-      var price = btn.getAttribute('data-price');
-      // TODO: swap for Stripe Checkout redirect
-      // window.location.href = 'https://buy.stripe.com/<your-tier-link>';
-      alert('Stripe checkout for ' + tier.toUpperCase() + ' ($' + price + '/mo) — coming online next. Ask Alexia on Discord for early access.');
-    });
-  });
+  function open(tier, price){
+    ensure();
+    if (!modal) return;
+    var name = TIER_NAMES[tier] || (tier ? tier.toUpperCase() : 'Tier');
+    if (labelEl) labelEl.textContent = 'TIER · ' + name;
+    if (nameEl)  nameEl.textContent  = name;
+    if (priceEl) priceEl.textContent = price ? ('$' + price) : 'Custom';
+    // Add tier+price as hash on Discord/Telegram (the platforms ignore it but
+    // it shows in browser history and lets Alexia see what tier they came from
+    // via URL referrer when chatting in support tools).
+    var qs = '?tier=' + encodeURIComponent(tier || '') + (price ? '&price=' + encodeURIComponent(price) : '');
+    if (dBtn) dBtn.setAttribute('href', DISCORD + qs);
+    if (tBtn) tBtn.setAttribute('href', TELEGRAM + qs);
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+  }
+  function close(){
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+  }
+  function bind(el){
+    if (!el || el.__twkCheckoutBound) return;
+    var tier = el.getAttribute('data-tier');
+    var price = el.getAttribute('data-price');
+    if (!tier) return;
+    el.addEventListener('click', function(ev){ ev.preventDefault(); open(tier, price); });
+    el.__twkCheckoutBound = true;
+  }
+  function scan(){
+    var ctas = document.querySelectorAll('.tier__cta[data-tier]');
+    for (var i = 0; i < ctas.length; i++) bind(ctas[i]);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan, { once: true });
+  else scan();
+  if (typeof MutationObserver !== 'undefined') {
+    new MutationObserver(function(muts){
+      var any = false;
+      muts.forEach(function(m){ if (m.addedNodes && m.addedNodes.length) any = true; });
+      if (any) scan();
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+  window.TwkCheckout = { open: open, close: close };
 })();
 </script>
 
-<script defer src="/assets/enter-now-widget.js?v=20260417-03"></script>
-
-<!-- Alexia Twerk global scripts (Master Directive nro 1 · Bloque B) -->
-<script defer src="/assets/global-counters.js?v=2026-04-19"></script>
-<script defer src="/assets/global-i18n.js?v=2026-04-19"></script>
-<script defer src="/assets/twerkhub-tokens.js?v=20260425-p8"></script>
-<script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p7"></script>
-<script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p6"></script>
-<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
-<script defer src="/assets/twerkhub-mobile-nav.js?v=20260424-p1"></script>
-<script defer src="/assets/twerkhub-premium.js?v=20260424-p1"></script>
-<script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
-<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
 </body>
 </html>

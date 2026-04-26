@@ -1073,15 +1073,15 @@
 <script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
 <script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
 
+<!-- Countdowns moved to /assets/twerkhub-countdowns.js (was inline, got truncated). -->
+<script defer src="/assets/twerkhub-countdowns.js?v=20260426-p1"></script>
 <script>
-/* Twerkhub · countdowns driver v1 (2026-04-26)
- * - Farm tokens: 30-day window, auto-resets on zero
- * - New models: per-model 'Drop in X days' windows from data-drop-days, auto-reset
- */
+/* Legacy inline countdowns driver — DISABLED. The dedicated file above handles it now. */
 (function(){
   'use strict';
   if (window.__twerkhubCountdownsV1Init) return;
   window.__twerkhubCountdownsV1Init = true;
+  if (true) return; // ← short-circuited; logic preserved below for reference only
 
   function two(n){ return String(n).padStart(2,'0'); }
 
@@ -1171,4 +1171,50 @@
     try { startNewModelsCountdowns(); } catch(e){}
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
-  els
+  else start();
+})();
+</script>
+
+<!-- TWERKHUB · CTA bulletproofing — guarantees membership tier buttons always work, even if a future edit truncates a script above. -->
+<script>
+(function(){
+  'use strict';
+  if (window.__twkCtaBulletproofInit) return;
+  window.__twkCtaBulletproofInit = true;
+  var DISCORD = 'https://discord.gg/WWn8ZgQMjn';
+  var TELEGRAM = 'https://t.me/+0xNr69raiIlmYWRh';
+  function fixCta(el){
+    if (!el || el.__twkCtaFixed) return;
+    var tier = el.getAttribute('data-tier') || '';
+    var href = el.getAttribute('href') || '';
+    // Dead anchors that point to non-existent #checkout-X anchors → redirect to Discord with tier query
+    if (href.indexOf('#checkout-') === 0) {
+      el.setAttribute('href', DISCORD + '?utm_source=twerkhub&utm_medium=tier-cta&utm_content=' + encodeURIComponent(tier || 'tier'));
+      el.setAttribute('target', '_blank');
+      el.setAttribute('rel', 'noopener nofollow ugc');
+    }
+    // Register Free → ensure /profile.html (already correct on home, defensive elsewhere)
+    if (/register/i.test(el.textContent) && (!href || href === '#')) {
+      el.setAttribute('href', '/profile.html');
+    }
+    el.__twkCtaFixed = true;
+  }
+  function scan(){
+    var ctas = document.querySelectorAll('.tier__cta, [data-tier][href^="#checkout"], a[href^="#checkout"]');
+    for (var i = 0; i < ctas.length; i++) fixCta(ctas[i]);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan, { once: true });
+  else scan();
+  // Re-scan on DOM mutations for any late-injected CTAs
+  if (typeof MutationObserver !== 'undefined') {
+    new MutationObserver(function(muts){
+      var any = false;
+      muts.forEach(function(m){ if (m.addedNodes && m.addedNodes.length) any = true; });
+      if (any) scan();
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+})();
+</script>
+
+</body>
+</html>
