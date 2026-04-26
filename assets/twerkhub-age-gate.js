@@ -1,5 +1,13 @@
 /* ═══ TWERKHUB · +18 Age Gate (auto-detects YouTube embed-blocked videos) ═══
- * v20260426-p5
+ * v20260426-p6
+ *
+ * 2026-04-26 fix p6: paywall flashed for ~0.5s then went black. Two root causes:
+ *   (a) CSS used `aspect-ratio:16/9` inside a flex parent (modal's frame-host),
+ *       which collapsed the child's height to 0 after the first reflow → only
+ *       the modal's #000 background remained visible.
+ *   (b) z-index missing → any leftover detached iframe could paint on top.
+ * Fix: switched to height:100% + min-height:280px + z-index:60 so the paywall
+ *      always fills its parent and stays above any sibling.
  *
  * Distinct from the LEGACY twerkhub-paywall.js (which is killed on /playlist/).
  * This module handles a different problem: when YouTube refuses to embed a
@@ -67,7 +75,7 @@
     var s = document.createElement('style');
     s.id = 'twk-age-gate-css';
     s.textContent = [
-      '.twk-age-gate{position:relative;width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;background:radial-gradient(900px 600px at 20% 10%,rgba(255,46,99,.18),transparent 55%),radial-gradient(900px 600px at 80% 90%,rgba(232,200,128,.10),transparent 55%),linear-gradient(180deg,#0a0a10,#13131c);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#f4f4f8;text-align:center;padding:24px;}',
+      '.twk-age-gate{position:relative;width:100%;height:100%;min-height:280px;display:flex;align-items:center;justify-content:center;background:radial-gradient(900px 600px at 20% 10%,rgba(255,46,99,.18),transparent 55%),radial-gradient(900px 600px at 80% 90%,rgba(232,200,128,.10),transparent 55%),linear-gradient(180deg,#0a0a10,#13131c);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#f4f4f8;text-align:center;padding:24px;z-index:60;}',
       '.twk-age-gate::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 8px,transparent 8px,transparent 16px);pointer-events:none;}',
       '.twk-age-gate-card{position:relative;max-width:540px;width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;}',
       '.twk-age-gate-lock{font-size:54px;line-height:1;filter:drop-shadow(0 6px 20px rgba(255,46,99,.35));}',

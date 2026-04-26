@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · Playlist theater (large centered window, never fullscreen) ═══
- * v20260426-p4
+ * v20260426-p5
  *
  * 2026-04-26 fix p4: BLACK SCREEN FIX. YouTube doesn't always fire onError
  * 101/150 for age-restricted videos — sometimes the iframe just sits black
@@ -7,6 +7,13 @@
  * onReady, if the player never enters PLAYING (1) or BUFFERING (3) within
  * 2s, assume the video is blocked → show the Discord+Telegram paywall and
  * mark the video as blocked for future short-circuit.
+ *
+ * 2026-04-26 fix p5: paywall flashed for ~0.5s then went black. Cause was
+ * `show()` replacing innerHTML BEFORE `ytPlayer.destroy()` ran, so the YT
+ * API's destroy logic touched the now-detached iframe and the paywall got
+ * clipped/replaced briefly. Reordered both paths (heartbeat + onError) to
+ * destroy the player FIRST while iframe is still in DOM, THEN inject the
+ * paywall HTML. Pairs with age-gate p6 which fixes CSS aspect-ratio collapse.
  *
  * Same heartbeat added to the inline player path (subscribeInlineToEvents).
  *
@@ -154,13 +161,16 @@
       function triggerSilentBlock(){
         if (playbackStarted) return;
         try {
+          // Destroy player FIRST while iframe is still in DOM, THEN inject
+          // paywall — otherwise YT.destroy() touches the detached iframe and
+          // briefly repaints over our paywall (the ~0.5s flash bug).
+          stopTimeTracker();
+          if (ytPlayer && typeof ytPlayer.destroy === 'function') {
+            try { ytPlayer.destroy(); } catch(_){}
+            ytPlayer = null;
+          }
           if (window.TwkAgeGate) {
             window.TwkAgeGate.show(frameContainer, vid);
-            stopTimeTracker();
-            if (ytPlayer && typeof ytPlayer.destroy === 'function') {
-              try { ytPlayer.destroy(); } catch(_){}
-              ytPlayer = null;
-            }
           }
         } catch(_){}
       }
@@ -206,14 +216,19 @@
           },
           onError: function(ev){
             killHeartbeat();
-            // 101/150 = embed disabled / age-restricted → swap to Discord paywall
+            // 101/150 = embed disabled / age-restricted → swap to paywall.
+            // Destroy player FIRST so YT.destroy() doesn't repaint over the
+            // paywall HTML (this caused the ~0.5s flash bug pre-p5).
             try {
-              if (window.TwkAgeGate && window.TwkAgeGate.handleYTError(ev.data, vid, frameContainer)) {
-                stopTimeTracker();
-                if (ytPlayer && typeof ytPlayer.destroy === 'function') {
-                  try { ytPlayer.destroy(); } catch(_){}
-                  ytPlayer = null;
-                }
+              var code = ev && ev.data;
+              if (code !== 101 && code !== 150) return;
+              stopTimeTracker();
+              if (ytPlayer && typeof ytPlayer.destroy === 'function') {
+                try { ytPlayer.destroy(); } catch(_){}
+                ytPlayer = null;
+              }
+              if (window.TwkAgeGate) {
+                window.TwkAgeGate.show(frameContainer, vid);
               }
             } catch(_){}
           }

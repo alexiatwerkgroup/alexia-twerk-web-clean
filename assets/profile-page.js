@@ -1,5 +1,12 @@
 /* ═══ TWERKHUB · /profile.html data binding ═══
- * v20260426-p3
+ * v20260426-p4
+ *
+ * 2026-04-26 fix p4: the static `<span class="auto-user-badge">VISITOR</span>`
+ * pill in profile.html was never being updated by JS, so even logged-in
+ * founders saw "VISITOR". Added updateAutoBadge() that reads profile.tier
+ * (and falls back to localStorage.alexia_role for founder detection) and
+ * rewrites the badge label + applies founder styling inline. Called from
+ * both the signed-in and guest branches of renderHero().
  * Tokens source: prefer window.AlexiaTokens.getState().balance (the
  * authoritative localStorage-backed value used by the global topbar) over
  * the raw profiles.tokens column, which can be 0 if the user accumulated
@@ -132,6 +139,41 @@
     if (b && b.parentNode) b.parentNode.removeChild(b);
   }
 
+  // Map a profile tier to the auto-user-badge label. Founder beats everything.
+  function tierLabel(profile){
+    if (isFounder(profile)) return 'FOUNDER';
+    var t = String((profile && profile.tier) || '').toLowerCase();
+    if (t === 'vip' || t === 'vip_top' || t === 'viptop') return 'VIP TOP';
+    if (t === 'premium') return 'PREMIUM';
+    if (t === 'medium')  return 'MEDIUM';
+    if (t === 'basic')   return 'MEMBER';
+    return profile ? 'MEMBER' : 'VISITOR';
+  }
+  function updateAutoBadge(profile){
+    var badges = document.querySelectorAll('.auto-user-badge,[data-auto-badge="1"]');
+    var label = tierLabel(profile);
+    for (var i = 0; i < badges.length; i++) {
+      var el = badges[i];
+      if (el.textContent.trim() === label) continue;
+      el.textContent = label;
+      // Recolor for the founder so it doesn't read like a generic chip
+      if (label === 'FOUNDER') {
+        el.style.background = 'linear-gradient(135deg,#ffd34d 0%,#ff7ab8 50%,#ff2d87 100%)';
+        el.style.color = '#1a0010';
+        el.style.fontWeight = '900';
+        el.style.letterSpacing = '1.4px';
+        el.style.boxShadow = '0 4px 18px rgba(255,45,135,.45),inset 0 0 0 1px rgba(255,255,255,.4)';
+      } else {
+        // Restore default styling (clear inline overrides)
+        el.style.background = '';
+        el.style.color = '';
+        el.style.fontWeight = '';
+        el.style.letterSpacing = '';
+        el.style.boxShadow = '';
+      }
+    }
+  }
+
   function renderHero(profile){
     if (profile) {
       _lastProfile = profile;
@@ -144,6 +186,9 @@
       } else {
         removeFounderBadge();
       }
+      // Update the static .auto-user-badge so it stops saying "VISITOR" when
+      // the user is actually signed in. Reflects current tier.
+      updateAutoBadge(profile);
       var tb = $('tokens-balance');
       if (tb) tb.innerHTML = fmt(authoritativeBalance(profile)) + ' <small>TWK</small>';
       var av = $('avatar-preview');
@@ -170,6 +215,8 @@
         av2.textContent = 'P';
         _lastAvatarUrl = '__guest__';
       }
+      removeFounderBadge();
+      updateAutoBadge(null); // Reset to 'VISITOR' if signed out
     }
     var viewedCount = countLS('twk_viewed_videos');
     var totalSeconds = readNum('twk_watch_seconds_total');
