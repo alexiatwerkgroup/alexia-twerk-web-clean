@@ -196,10 +196,29 @@
     });
   }
 
+  // ── Heal #7: auto-load checkout modal module on pages that need it ──
+  function ensureCheckoutModalLoaded(){
+    if (window.__twkCheckoutModalLoaderRan) return;
+    var hasTierCta = document.querySelector('.tier__cta[data-tier]');
+    if (!hasTierCta) return;
+    if (window.TwkCheckout && typeof window.TwkCheckout.open === 'function') {
+      window.__twkCheckoutModalLoaderRan = true;
+      return;
+    }
+    if (document.querySelector('script[src*="twerkhub-checkout-modal"]')) return;
+    window.__twkCheckoutModalLoaderRan = true;
+    var s = document.createElement('script');
+    s.src = '/assets/twerkhub-checkout-modal.js?v=20260426-p1';
+    s.defer = true;
+    document.head.appendChild(s);
+    log('auto-loaded checkout modal module');
+  }
+
   function runOnce(){
     healCtas();
     purgeProtectedFromBlocked();
     checkPageStructure();
+    ensureCheckoutModalLoaded();
   }
 
   function start(){
