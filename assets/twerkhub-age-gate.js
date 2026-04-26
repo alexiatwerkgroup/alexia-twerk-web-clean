@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · +18 Age Gate (auto-detects YouTube embed-blocked videos) ═══
- * v20260426-p4
+ * v20260426-p5
  *
  * Distinct from the LEGACY twerkhub-paywall.js (which is killed on /playlist/).
  * This module handles a different problem: when YouTube refuses to embed a
@@ -27,8 +27,9 @@
   if (window.TwkAgeGate) return;
 
   // —————————————— Configuration ——————————————
-  var DISCORD_URL = 'https://discord.gg/WWn8ZgQMjn';
-  var STORAGE_KEY = 'twk_blocked_videos';
+  var DISCORD_URL  = 'https://discord.gg/WWn8ZgQMjn';
+  var TELEGRAM_URL = 'https://t.me/+0xNr69raiIlmYWRh';
+  var STORAGE_KEY  = 'twk_blocked_videos';
   // YouTube embed-error codes that mean "this video is +18 / not embeddable here"
   // 100 = video not found  → NOT a paywall case (real 404)
   // 101 = embed disabled by uploader / age-restricted
@@ -74,9 +75,13 @@
       '.twk-age-gate-title{font-size:26px;line-height:1.1;font-weight:800;letter-spacing:-.01em;margin:0;}',
       '.twk-age-gate-title em{color:#ff5fa3;font-style:italic;}',
       '.twk-age-gate-body{font-size:14px;line-height:1.55;color:rgba(255,255,255,.72);margin:0;max-width:460px;}',
-      '.twk-age-gate-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;padding:13px 26px;border-radius:14px;border:none;background:linear-gradient(145deg,#5865F2,#3a44b8);color:#fff;font:800 14px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.04em;text-decoration:none;cursor:pointer;box-shadow:0 12px 32px rgba(88,101,242,.35);transition:transform .15s,box-shadow .15s;}',
-      '.twk-age-gate-btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(88,101,242,.45);}',
-      '.twk-age-gate-btn svg{width:20px;height:20px;}',
+      '.twk-age-gate-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px;}',
+      '.twk-age-gate-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 22px;border-radius:14px;border:none;color:#fff;font:800 13px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.04em;text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .15s;}',
+      '.twk-age-gate-btn--discord{background:linear-gradient(145deg,#5865F2,#3a44b8);box-shadow:0 12px 32px rgba(88,101,242,.35);}',
+      '.twk-age-gate-btn--discord:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(88,101,242,.45);}',
+      '.twk-age-gate-btn--telegram{background:linear-gradient(145deg,#2AABEE,#229ED9);box-shadow:0 12px 32px rgba(42,171,238,.35);}',
+      '.twk-age-gate-btn--telegram:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(42,171,238,.45);}',
+      '.twk-age-gate-btn svg{width:18px;height:18px;}',
       '.twk-age-gate-foot{font-size:11px;color:rgba(255,255,255,.45);margin-top:4px;}',
       // Card decorations (cards with vid that are blocked)
       // Pill goes top-RIGHT to avoid overlap with the VIEWED badge (top-left)
@@ -101,11 +106,17 @@
       +     '<div class="twk-age-gate-lock" aria-hidden="true">🔒</div>'
       +     '<div class="twk-age-gate-kicker">+18 · Locked content</div>'
       +     '<h2 class="twk-age-gate-title">This video is <em>locked</em>.</h2>'
-      +     '<p class="twk-age-gate-body"><strong>Contact Alexia on Discord to unlock.</strong> YouTube blocks this video from playing outside their platform because it is age-restricted. The uncensored version comes from Alexia directly, in private.</p>'
-      +     '<a class="twk-age-gate-btn" href="' + DISCORD_URL + '" target="_blank" rel="noopener nofollow ugc">'
-      +       '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.27 5.33A18.34 18.34 0 0 0 14.94 4l-.2.4a16.8 16.8 0 0 1 4.05 1.4 16.4 16.4 0 0 0-12.6 0A16.8 16.8 0 0 1 10.24 4.4L10.04 4a18.34 18.34 0 0 0-4.32 1.33C2.95 9.5 2.2 13.55 2.6 17.55a18.6 18.6 0 0 0 5.65 2.85l.45-.62a12.2 12.2 0 0 1-2-.97c.17-.12.34-.25.5-.38a13.16 13.16 0 0 0 11.6 0c.16.13.33.26.5.38-.62.37-1.3.7-2 .97l.45.62a18.6 18.6 0 0 0 5.65-2.85c.5-4.6-.77-8.6-3.13-12.22zM9.5 15.4c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13zm5 0c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13z"/></svg>'
-      +       '<span>Contact Alexia on Discord</span>'
-      +     '</a>'
+      +     '<p class="twk-age-gate-body"><strong>To unlock, contact Alexia on Discord or Telegram.</strong> YouTube blocks this video from playing outside their platform because it is age-restricted. The uncensored version comes from Alexia directly, in private.</p>'
+      +     '<div class="twk-age-gate-btns">'
+      +       '<a class="twk-age-gate-btn twk-age-gate-btn--discord" href="' + DISCORD_URL + '" target="_blank" rel="noopener nofollow ugc">'
+      +         '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.27 5.33A18.34 18.34 0 0 0 14.94 4l-.2.4a16.8 16.8 0 0 1 4.05 1.4 16.4 16.4 0 0 0-12.6 0A16.8 16.8 0 0 1 10.24 4.4L10.04 4a18.34 18.34 0 0 0-4.32 1.33C2.95 9.5 2.2 13.55 2.6 17.55a18.6 18.6 0 0 0 5.65 2.85l.45-.62a12.2 12.2 0 0 1-2-.97c.17-.12.34-.25.5-.38a13.16 13.16 0 0 0 11.6 0c.16.13.33.26.5.38-.62.37-1.3.7-2 .97l.45.62a18.6 18.6 0 0 0 5.65-2.85c.5-4.6-.77-8.6-3.13-12.22zM9.5 15.4c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13zm5 0c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13z"/></svg>'
+      +         '<span>Contact on Discord</span>'
+      +       '</a>'
+      +       '<a class="twk-age-gate-btn twk-age-gate-btn--telegram" href="' + TELEGRAM_URL + '" target="_blank" rel="noopener nofollow ugc">'
+      +         '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>'
+      +         '<span>Contact on Telegram</span>'
+      +       '</a>'
+      +     '</div>'
       +     '<div class="twk-age-gate-foot">Free invite · 18+ only · Private</div>'
       +   '</div>'
       + '</div>';

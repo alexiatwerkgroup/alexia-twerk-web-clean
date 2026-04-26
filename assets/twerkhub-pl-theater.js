@@ -1,5 +1,14 @@
 /* ═══ TWERKHUB · Playlist theater (large centered window, never fullscreen) ═══
- * v20260426-p3
+ * v20260426-p4
+ *
+ * 2026-04-26 fix p4: BLACK SCREEN FIX. YouTube doesn't always fire onError
+ * 101/150 for age-restricted videos — sometimes the iframe just sits black
+ * forever with no error event. Added a 2-second playback heartbeat: after
+ * onReady, if the player never enters PLAYING (1) or BUFFERING (3) within
+ * 2s, assume the video is blocked → show the Discord+Telegram paywall and
+ * mark the video as blocked for future short-circuit.
+ *
+ * Same heartbeat added to the inline player path (subscribeInlineToEvents).
  *
  * 2026-04-26 fix p1: rolled back the inline-player YT.Player wrap because
  * `new YT.Player(existingIframe)` was REMOVING the iframe from the DOM,
@@ -137,6 +146,24 @@
       if (ytPlayer && typeof ytPlayer.destroy === 'function') {
         try { ytPlayer.destroy(); } catch(_){}
       }
+      // ── Black-screen heartbeat: if the player never enters PLAYING/BUFFERING
+      // within 2 seconds after onReady, assume +18 silent block → show paywall.
+      var playbackStarted = false;
+      var blockHeartbeat  = null;
+      function killHeartbeat(){ if (blockHeartbeat) { clearTimeout(blockHeartbeat); blockHeartbeat = null; } }
+      function triggerSilentBlock(){
+        if (playbackStarted) return;
+        try {
+          if (window.TwkAgeGate) {
+            window.TwkAgeGate.show(frameContainer, vid);
+            stopTimeTracker();
+            if (ytPlayer && typeof ytPlayer.destroy === 'function') {
+              try { ytPlayer.destroy(); } catch(_){}
+              ytPlayer = null;
+            }
+          }
+        } catch(_){}
+      }
       ytPlayer = new YT.Player('twk-pl-theater-target', {
         videoId: vid,
         host: 'https://www.youtube-nocookie.com',
@@ -153,6 +180,9 @@
               try { ev.target.unMute(); ev.target.setVolume(100); } catch(_){}
               if (attempts >= 6) clearInterval(iv);
             }, 500);
+            // Start the 6s silent-block heartbeat
+            killHeartbeat();
+            blockHeartbeat = setTimeout(triggerSilentBlock, 2000);
             // Hook heatmap: track watched buckets while this video plays
             try {
               if (window.TwkHeatmap) {
@@ -161,7 +191,12 @@
             } catch(_){}
           },
           onStateChange: function(ev){
-            // 1=playing, 2=paused, 0=ended, 3=buffering, 5=cued
+            // -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+            if (ev.data === 1 || ev.data === 3) {
+              // Real playback or buffering started → cancel silent-block timer
+              playbackStarted = true;
+              killHeartbeat();
+            }
             if (ev.data === 1 || ev.data === 5) {
               try { ev.target.unMute(); ev.target.setVolume(100); } catch(_){}
               startTimeTracker();
@@ -170,6 +205,7 @@
             }
           },
           onError: function(ev){
+            killHeartbeat();
             // 101/150 = embed disabled / age-restricted → swap to Discord paywall
             try {
               if (window.TwkAgeGate && window.TwkAgeGate.handleYTError(ev.data, vid, frameContainer)) {
@@ -337,10 +373,22 @@
       startTimeTracker();
       inlineLoadStart = Date.now();
       inlineLoadVid   = vid;
+      window.__twkInlinePlaybackStarted = false;
 
       // Subscribe to YT IFrame API events so onError 101/150 reaches us via
       // postMessage (no wrapper, no iframe destruction).
       setTimeout(subscribeInlineToEvents, 600);
+
+      // ── Black-screen heartbeat: if the player never enters PLAYING/BUFFERING
+      // within 2 seconds of subscribing, assume +18 silent block → show paywall.
+      if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
+      window.__twkInlineHeartbeat = setTimeout(function(){
+        if (window.__twkInlinePlaybackStarted) return;
+        if (!vid || !window.TwkAgeGate) return;
+        try { player.src = 'about:blank'; } catch(_){}
+        window.TwkAgeGate.showOverlay(wrap, vid);
+        stopTimeTracker();
+      }, 2000);
 
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
@@ -376,7 +424,20 @@
       if (ev.origin !== 'https://www.youtube.com' && ev.origin !== 'https://www.youtube-nocookie.com') return;
       var data;
       try { data = (typeof ev.data === 'string') ? JSON.parse(ev.data) : ev.data; } catch(_){ return; }
-      if (!data || data.event !== 'onError') return;
+      if (!data) return;
+      // ── State change: cancel heartbeat if real playback or buffering started
+      if (data.event === 'onStateChange') {
+        // 1=playing, 3=buffering, 5=cued
+        if (data.info === 1 || data.info === 3) {
+          window.__twkInlinePlaybackStarted = true;
+          if (window.__twkInlineHeartbeat) {
+            clearTimeout(window.__twkInlineHeartbeat);
+            window.__twkInlineHeartbeat = null;
+          }
+        }
+        return;
+      }
+      if (data.event !== 'onError') return;
       var code = data.info;
       if (code !== 101 && code !== 150) return;
       // Resolve which iframe sent it
@@ -386,6 +447,7 @@
       var vid = m && m[1];
       if (!vid || !window.TwkAgeGate) return;
       var wrap = ifr.closest('.twerkhub-pl-player-wrap') || ifr.parentNode;
+      if (window.__twkInlineHeartbeat) { clearTimeout(window.__twkInlineHeartbeat); window.__twkInlineHeartbeat = null; }
       try { ifr.src = 'about:blank'; } catch(_){}
       window.TwkAgeGate.showOverlay(wrap, vid);
       stopTimeTracker();
@@ -399,6 +461,7 @@
     try { ifr.contentWindow.postMessage(JSON.stringify({event:'listening', id: 1, channel: 'twk_inline'}), '*'); } catch(_){}
     setTimeout(function(){
       try { ifr.contentWindow.postMessage(JSON.stringify({event:'command', func:'addEventListener', args:['onError']}), '*'); } catch(_){}
+      try { ifr.contentWindow.postMessage(JSON.stringify({event:'command', func:'addEventListener', args:['onStateChange']}), '*'); } catch(_){}
     }, 250);
   }
 
