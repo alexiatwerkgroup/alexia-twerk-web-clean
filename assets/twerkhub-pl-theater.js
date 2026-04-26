@@ -1,12 +1,15 @@
 /* ═══ TWERKHUB · Playlist theater (large centered window, never fullscreen) ═══
- * v20260426-p1
+ * v20260426-p2
  *
- * 2026-04-26 fix: rolled back the inline-player YT.Player wrap because
+ * 2026-04-26 fix p1: rolled back the inline-player YT.Player wrap because
  * `new YT.Player(existingIframe)` was REMOVING the iframe from the DOM,
  * which broke /playlist/ swap() (it does getElementById and finds nothing).
- * Inline heatmap now uses a passive heuristic, age-gate inline only does
- * the pre-check (isBlocked). The modal theater is unaffected — it creates
- * YT.Player from scratch, which is the safe pattern.
+ *
+ * 2026-04-26 fix p2: replaced the wrap with a PASSIVE postMessage listener
+ * on the window that captures YouTube's onError 101/150 events without
+ * touching the iframe. After each iframe load we send the YT IFrame API
+ * "listening" + addEventListener('onError') commands so YT pushes events
+ * to us. When 101 or 150 arrives → show Discord paywall + memoize blocked.
  *
  * For themed playlist pages (/try-on-hot-leaks/, /ttl-latin-models/,
  * /hottest-cosplay-fancam/, /korean-girls-kpop-twerk/) that DON'T have an
@@ -332,6 +335,10 @@
       inlineLoadStart = Date.now();
       inlineLoadVid   = vid;
 
+      // Subscribe to YT IFrame API events so onError 101/150 reaches us via
+      // postMessage (no wrapper, no iframe destruction).
+      setTimeout(subscribeInlineToEvents, 600);
+
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
       // duration of 60s. If the real video is shorter/longer, the heatmap is
@@ -355,8 +362,46 @@
     return true;
   }
 
+  // ── Passive YT IFrame error listener for the inline player ─────────
+  // YouTube embeds with enablejsapi=1 will postMessage onError 101/150 to the
+  // parent window when the video can't be embedded (age-restricted, blocked).
+  // We listen globally and resolve the offending iframe via ev.source.
+  function installInlineErrorListener(){
+    if (window.__twkInlineErrListener) return;
+    window.__twkInlineErrListener = true;
+    window.addEventListener('message', function(ev){
+      if (ev.origin !== 'https://www.youtube.com' && ev.origin !== 'https://www.youtube-nocookie.com') return;
+      var data;
+      try { data = (typeof ev.data === 'string') ? JSON.parse(ev.data) : ev.data; } catch(_){ return; }
+      if (!data || data.event !== 'onError') return;
+      var code = data.info;
+      if (code !== 101 && code !== 150) return;
+      // Resolve which iframe sent it
+      var ifr = document.getElementById('twerkhub-pl-player');
+      if (!ifr || ifr.contentWindow !== ev.source) return;
+      var m = (ifr.src || '').match(/embed\/([^?&\s]{6,})/);
+      var vid = m && m[1];
+      if (!vid || !window.TwkAgeGate) return;
+      var wrap = ifr.closest('.twerkhub-pl-player-wrap') || ifr.parentNode;
+      try { ifr.src = 'about:blank'; } catch(_){}
+      window.TwkAgeGate.showOverlay(wrap, vid);
+      stopTimeTracker();
+    });
+  }
+
+  // Tell the iframe to start pushing events to us (must be called after load)
+  function subscribeInlineToEvents(){
+    var ifr = document.getElementById('twerkhub-pl-player');
+    if (!ifr || !ifr.contentWindow) return;
+    try { ifr.contentWindow.postMessage(JSON.stringify({event:'listening', id: 1, channel: 'twk_inline'}), '*'); } catch(_){}
+    setTimeout(function(){
+      try { ifr.contentWindow.postMessage(JSON.stringify({event:'command', func:'addEventListener', args:['onError']}), '*'); } catch(_){}
+    }, 250);
+  }
+
   function init(){
     injectStyle();  // CRITICAL: badge CSS must exist before applyViewedClasses adds .twk-viewed
+    installInlineErrorListener();
     patchInlinePlayer();
     applyViewedClasses();
     document.addEventListener('click', onDocClick, true);
