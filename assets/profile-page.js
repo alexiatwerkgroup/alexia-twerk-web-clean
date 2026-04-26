@@ -1,5 +1,10 @@
 /* ═══ TWERKHUB · /profile.html data binding ═══
- * v20260426-p5
+ * v20260426-p6
+ *
+ * 2026-04-26 fix p6: founder badge text was mixed Spanish/English
+ * ("FOUNDER · VISIONARIO · CREADOR · CEO"). Aligned with sagrada rule #1
+ * (English only) → "FOUNDER · VISIONARY · CREATOR · CEO". Title attr too.
+ * Bio in DB needs a separate UPDATE (provided to user).
  *
  * 2026-04-26 fix p5: founder still showed "VIP TOP" + 330 TWK because:
  *   (a) DB tier was 'vip' (CHECK constraint blocked 'founder'), so isFounder
@@ -192,8 +197,8 @@
     }
     var b = document.createElement('div');
     b.id = 'twk-founder-badge';
-    b.title = 'Founder of Twerkhub · Visionario · Creador · CEO';
-    b.innerHTML = '<span>FOUNDER · VISIONARIO · CREADOR · CEO</span>';
+    b.title = 'Founder of Twerkhub · Visionary · Creator · CEO';
+    b.innerHTML = '<span>FOUNDER · VISIONARY · CREATOR · CEO</span>';
     // Insert right after the hero-name node
     if (heroName.parentNode){
       heroName.parentNode.insertBefore(b, heroName.nextSibling);
