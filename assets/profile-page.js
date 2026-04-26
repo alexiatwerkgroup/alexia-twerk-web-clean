@@ -1,5 +1,16 @@
 /* ═══ TWERKHUB · /profile.html data binding ═══
- * v20260426-p4
+ * v20260426-p5
+ *
+ * 2026-04-26 fix p5: founder still showed "VIP TOP" + 330 TWK because:
+ *   (a) DB tier was 'vip' (CHECK constraint blocked 'founder'), so isFounder
+ *       returned false — no gold pill, badge label "VIP TOP".
+ *   (b) authoritativeBalance() always preferred AlexiaTokens.getState() over
+ *       DB tokens, so even after `tokens=999999` in DB, the 330 local stayed.
+ * Fix: hardcoded FOUNDER_EMAILS map (alexiatwerkoficial@gmail.com → founder)
+ *      so identity is determined by email, not tier. authoritativeBalance now
+ *      returns max(local, DB, FOUNDER_MIN_TOKENS) for founders, max(local, DB)
+ *      for everyone else. persistFounderRole() also writes alexia_role + bumps
+ *      local token balance on first profile render so the topbar updates too.
  *
  * 2026-04-26 fix p4: the static `<span class="auto-user-badge">VISITOR</span>`
  * pill in profile.html was never being updated by JS, so even logged-in
@@ -78,21 +89,21 @@
   // Read the authoritative balance from window.AlexiaTokens if available, else
   // fall back to the DB column. The localStorage-backed AlexiaTokens.getState()
   // is what the global topbar uses, so this keeps profile + topbar in sync.
-  function authoritativeBalance(profile){
-    try {
-      if (window.AlexiaTokens && typeof window.AlexiaTokens.getState === 'function') {
-        var st = window.AlexiaTokens.getState();
-        var b = Number(st && st.balance);
-        if (Number.isFinite(b) && b >= 0) return b;
-      }
-    } catch(_){}
-    return Number((profile && profile.tokens) || 0);
-  }
+  // ── Founder identity (hardcoded emails — no DB tier dependency) ──
+  // The DB `tier` column may have a CHECK constraint that rejects 'founder',
+  // and the alexia_role localStorage key only writes if tier comes back as
+  // 'founder' from DB. So we ALSO match on canonical founder emails as the
+  // ground truth. Add new founder emails here.
+  var FOUNDER_EMAILS = {
+    'alexiatwerkoficial@gmail.com': true
+  };
+  var FOUNDER_MIN_TOKENS = 999999;
 
-  // Detect founder status from profile.tier OR localStorage alexia_role.
-  // localStorage takes precedence because the auth.js DB→local sync writes
-  // it on login (so the badge survives across pages without re-fetching DB).
   function isFounder(profile){
+    try {
+      var email = String((profile && profile.email) || '').toLowerCase().trim();
+      if (email && FOUNDER_EMAILS[email]) return true;
+    } catch(_){}
     try {
       var role = localStorage.getItem('alexia_role') || '';
       role = String(role).replace(/"/g, '').toLowerCase();
@@ -100,6 +111,67 @@
     } catch(_){}
     var tier = String((profile && profile.tier) || '').toLowerCase();
     return tier === 'founder';
+  }
+
+  // Persist founder role to localStorage the first time we detect it via email,
+  // so other pages (topbar, etc.) treat the user as founder without needing
+  // their own DB call.
+  function persistFounderRole(profile){
+    if (!isFounder(profile)) return;
+    try {
+      var cur = localStorage.getItem('alexia_role') || '';
+      if (cur.indexOf('founder') === -1) {
+        localStorage.setItem('alexia_role', JSON.stringify('founder'));
+      }
+    } catch(_){}
+    // Also force the local token balance up to the founder minimum so the
+    // displayed balance matches the badge — without waiting for DB→sync that
+    // can be blocked if the DB row has tokens=0 due to legacy state.
+    try {
+      var KEY_BAL = 'alexia_tokens_v1.balance';
+      var KEY_TOT = 'alexia_tokens_v1.total';
+      var KEY_TIER= 'alexia_tokens_v1.tier';
+      var localBal = Number(localStorage.getItem(KEY_BAL) || 0);
+      if (localBal < FOUNDER_MIN_TOKENS) {
+        localStorage.setItem(KEY_BAL, String(FOUNDER_MIN_TOKENS));
+      }
+      var localTot = Number(localStorage.getItem(KEY_TOT) || 0);
+      if (localTot < FOUNDER_MIN_TOKENS) {
+        localStorage.setItem(KEY_TOT, String(FOUNDER_MIN_TOKENS));
+      }
+      // 'vip' is the highest tier the topbar visual stack recognises
+      var curTier = String(localStorage.getItem(KEY_TIER) || '').toLowerCase();
+      if (curTier !== 'vip' && curTier !== 'founder') {
+        localStorage.setItem(KEY_TIER, 'vip');
+      }
+      // Notify any listeners (topbar, AlexiaTokens) to refresh from storage
+      window.dispatchEvent(new CustomEvent('alexia-tokens-changed', { detail:{ balance: FOUNDER_MIN_TOKENS, tier:'vip', founder:true } }));
+    } catch(_){}
+  }
+
+  function authoritativeBalance(profile){
+    // Founder always sees at least FOUNDER_MIN_TOKENS, regardless of DB/local.
+    if (isFounder(profile)) {
+      var dbF = Number((profile && profile.tokens) || 0);
+      var locF = 0;
+      try {
+        if (window.AlexiaTokens && typeof window.AlexiaTokens.getState === 'function') {
+          locF = Number(window.AlexiaTokens.getState().balance || 0);
+        }
+      } catch(_){}
+      return Math.max(FOUNDER_MIN_TOKENS, dbF, locF);
+    }
+    // Non-founder: take the MAX of local and DB so DB grants always show.
+    var local = NaN;
+    try {
+      if (window.AlexiaTokens && typeof window.AlexiaTokens.getState === 'function') {
+        var st = window.AlexiaTokens.getState();
+        local = Number(st && st.balance);
+      }
+    } catch(_){}
+    var db = Number((profile && profile.tokens) || 0);
+    if (!Number.isFinite(local) || local < 0) local = 0;
+    return Math.max(local, db);
   }
 
   // Inject the founder badge once. Idempotent — safe to call on every render.
@@ -177,6 +249,9 @@
   function renderHero(profile){
     if (profile) {
       _lastProfile = profile;
+      // Persist founder role + force min token balance BEFORE setText so the
+      // dispatched 'alexia-tokens-changed' event reaches a fresh DOM render.
+      persistFounderRole(profile);
       setText('hero-name', profile.username || 'Member');
       setText('hero-role', 'Signed in');
       // Founder recognition — must run AFTER setText('hero-role') because that
