@@ -6,35 +6,35 @@
   "notes": "Top 5 hot-ranking are free previews with real id/title. Grid is paywall-gated + anti-piracy: hidden_id is base64+sha256 tag, real fields prefixed with \"_\" are only rendered after subscription.",
   "hot_ranking": [
     {
-      "id": "XDkH0yaocJ8",
-      "title": "狗兰 고라니율 golaniyule0 2026.03.27 再往下拉点",
-      "channel": "闻风而起",
-      "duration": "1:53",
+      "id": "qoho-dzADrc",
+      "title": "2026 CosForce03 Sweet Maid Day 2 ft. Miiya & Nazo 4K HDR",
+      "channel": "宮城良一Ryoichi",
+      "duration": "4:33",
       "rank": 1,
       "free": true,
       "badge": "gold"
     },
     {
-      "id": "YjLy9z57jLA",
-      "title": "20260315 CosForce03｜Nazo eirian & miiya｜Interactive Photo Exhibition \"Sweet Maid\"｜NIKON Z8 24 70 ...",
-      "channel": "RY.Creator",
-      "duration": "3:46",
+      "id": "wLWDZQmzPOY",
+      "title": "251003 부산딸램 쩡이 - 짧은치마 (Cover. AOA)",
+      "channel": "Bamp VIDEO 8K",
+      "duration": "2:56",
       "rank": 2,
       "free": true,
       "badge": "purple"
     },
     {
-      "id": "B5ggxUkZ1ZI",
-      "title": "20260315 CosForce03｜Yuumeilyn玲兒｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8",
-      "channel": "RY.Creator",
-      "duration": "3:03",
+      "id": "U0-_hknfcqE",
+      "title": "2026動漫展FF46 日本coser Kikka IG kikka_cos",
+      "channel": "originaltruevideos",
+      "duration": "4:24",
       "rank": 3,
       "free": true,
       "badge": "pink"
     },
     {
       "id": "cJfDUDYaWYo",
-      "title": "Kadorin Hitomi カドリン 仁美 Thailand ประเทศไทย 🇹🇭 / 승리의 여신: 니케 NIKKE 勝利女神 妮姬 伊萊格 / PF40 ｜ @kadorin.hitomi",
+      "title": "Kadorin Hitomi カドリン 仁美 Thailand",
       "channel": "TZWG",
       "duration": "8:25",
       "rank": 4,
@@ -42,10 +42,10 @@
       "badge": "monochrome"
     },
     {
-      "id": "qoho-dzADrc",
-      "title": "2026 CosForce03 Sweet Maid Day 2 ft. Miiya & Nazo 4K HDR High Definition (2160P)",
-      "channel": "宮城良一Ryoichi",
-      "duration": "4:33",
+      "id": "0_PlAGCSf5g",
+      "title": "[FanCam 8K] ZIA(지아) - Kiss Me(키스해죠) cover.Banana",
+      "channel": "Bamp VIDEO 8K",
+      "duration": "3:06",
       "rank": 5,
       "free": true,
       "badge": "monochrome"
@@ -125,16 +125,8 @@
       "_title": "[FanCam 8K] GIRL CRUSH TAERI 촬영회"
     },
     {
-      "hidden_id": "MF9QbEFHQ1NmNWc.61234fa0",
-      "number": "#015",
-      "channel": "UMC모터쇼 7차 \"걸크러쉬 플러스\"",
-      "duration": "63:58:45",
-      "_id": "0_PlAGCSf5g",
-      "_title": "[FanCam 8K] ZIA(지아) - Kiss Me(키스해죠) cover.Banana Girl"
-    },
-    {
       "hidden_id": "V1AtZlc0YW5reDQ.e8600b94",
-      "number": "#016",
+      "number": "#015",
       "channel": "Mobuo",
       "duration": "6:10",
       "_id": "WP-fW4ankx4",
@@ -142,23 +134,15 @@
     },
     {
       "hidden_id": "UzU5aVktelIwQ2M.b98d9f4f",
-      "number": "#017",
+      "number": "#016",
       "channel": "Nymph",
       "duration": "14:22",
       "_id": "S59iY-zR0Cc",
       "_title": "221118 Cosplayer 초열 - 젠레스 존 제로 니콜 데마라 [지스타 2022 G-STAR GAME SHOW] 직캠"
     },
     {
-      "hidden_id": "d0xXRFpRbXpQT1k.4408914d",
-      "number": "#018",
-      "channel": "세로 직캠",
-      "duration": "0:00",
-      "_id": "wLWDZQmzPOY",
-      "_title": "251003 부산딸램 쩡이 - 짧은치마  (Cover. AOA)"
-    },
-    {
       "hidden_id": "VkJRemVnX3JqZlk.ecea376d",
-      "number": "#019",
+      "number": "#017",
       "channel": "세로 직캠",
       "duration": "0:00",
       "_id": "VBQzeg_rjfY",
@@ -166,7 +150,7 @@
     },
     {
       "hidden_id": "cGxSX1gxcXFfM1k.3c74faaf",
-      "number": "#020",
+      "number": "#018",
       "channel": "광명 IVEX K-XF 입장 231210 직캠 [FanCam 4K]",
       "duration": "0:00",
       "_id": "plR_X1qq_3Y",
@@ -174,7 +158,7 @@
     },
     {
       "hidden_id": "SmlOanBkSGlaMG8.ed24732c",
-      "number": "#021",
+      "number": "#019",
       "channel": "THE INFLUENCER",
       "duration": "3:22",
       "_id": "JiNjpdHiZ0o",
@@ -182,7 +166,7 @@
     },
     {
       "hidden_id": "Z1VaQkFhYTRtQ0k.c2562a30",
-      "number": "#022",
+      "number": "#020",
       "channel": "쫄보",
       "duration": "2:16",
       "_id": "gUZBAaa4mCI",
@@ -190,7 +174,7 @@
     },
     {
       "hidden_id": "ck5jTDY5X3ZIa2c.be841c05",
-      "number": "#023",
+      "number": "#021",
       "channel": "THE INFLUENCER",
       "duration": "3:05",
       "_id": "rNcL69_vHkg",
@@ -198,7 +182,7 @@
     },
     {
       "hidden_id": "ZmlOWV9meXhTeXc.bae7abce",
-      "number": "#024",
+      "number": "#022",
       "channel": "THE INFLUENCER",
       "duration": "2:30",
       "_id": "fiNY_fyxSyw",
@@ -206,7 +190,7 @@
     },
     {
       "hidden_id": "ZUVDUzV2U0xmVU0.060948c5",
-      "number": "#025",
+      "number": "#023",
       "channel": "THE INFLUENCER",
       "duration": "3:27",
       "_id": "eECS5vSLfUM",
@@ -214,7 +198,7 @@
     },
     {
       "hidden_id": "bnpmcDVtaUpxVkE.df4a1392",
-      "number": "#026",
+      "number": "#024",
       "channel": "Nymph",
       "duration": "7:54",
       "_id": "nzfp5miJqVA",
@@ -222,7 +206,7 @@
     },
     {
       "hidden_id": "MzMtOFEtUGtKWjA.0fa685dc",
-      "number": "#027",
+      "number": "#025",
       "channel": "Nymph",
       "duration": "6:10",
       "_id": "33-8Q-PkJZ0",
@@ -230,7 +214,7 @@
     },
     {
       "hidden_id": "cXE4YkdXbzFhNW8.a86ebb19",
-      "number": "#028",
+      "number": "#026",
       "channel": "JeongCam",
       "duration": "5:09",
       "_id": "qq8bGWo1a5o",
@@ -238,23 +222,15 @@
     },
     {
       "hidden_id": "UGR3ekRLaWRNWWM.515dc76c",
-      "number": "#029",
+      "number": "#027",
       "channel": "MABB4K CHANNEL3",
       "duration": "2:06",
       "_id": "PdwzDKidMYc",
       "_title": "2026 2 6Fancy Frontier 開拓動漫祭 46日本來的coser"
     },
     {
-      "hidden_id": "VTAtX2hrbmZjcUU.21f9b2c1",
-      "number": "#030",
-      "channel": "originaltruevideos",
-      "duration": "4:24",
-      "_id": "U0-_hknfcqE",
-      "_title": "2026動漫展FF46 日本coser Kikka IG kikka_cos"
-    },
-    {
       "hidden_id": "UmlHeVhucDgzZFE.ccb58da8",
-      "number": "#031",
+      "number": "#028",
       "channel": "Taiwan Street View ( Asaburu )",
       "duration": "3:14",
       "_id": "RiGyXnp83dQ",
@@ -262,7 +238,7 @@
     },
     {
       "hidden_id": "aDR1azRXREFqc1k.3c31f16b",
-      "number": "#032",
+      "number": "#029",
       "channel": "의상2 컨셉3 레드바이크 세로 직캠",
       "duration": "0:00",
       "_id": "h4uk4WDAjsY",
@@ -270,7 +246,7 @@
     },
     {
       "hidden_id": "bi1FOXY5MXJnRGc.67e9f56b",
-      "number": "#033",
+      "number": "#030",
       "channel": "Lotion Tissue",
       "duration": "4:39",
       "_id": "n-E9v91rgDg",
@@ -278,7 +254,7 @@
     },
     {
       "hidden_id": "andmaUdScGdRXzQ.a87f5681",
-      "number": "#034",
+      "number": "#031",
       "channel": "Lotion Tissue",
       "duration": "5:16",
       "_id": "jwfiGRpgQ_4",
@@ -286,7 +262,7 @@
     },
     {
       "hidden_id": "aTlMM0VlMWgzQXM.1cc23e81",
-      "number": "#035",
+      "number": "#032",
       "channel": "MABB4K CHANNEL3",
       "duration": "3:41",
       "_id": "i9L3Ee1h3As",
@@ -294,7 +270,7 @@
     },
     {
       "hidden_id": "ZVZCanI4VG1HS3c.637214ec",
-      "number": "#036",
+      "number": "#033",
       "channel": "天下布萌",
       "duration": "6:26",
       "_id": "eVBjr8TmGKw",
@@ -302,7 +278,7 @@
     },
     {
       "hidden_id": "eWpTS1JydnhjWFE.489bce0b",
-      "number": "#037",
+      "number": "#034",
       "channel": "의상4",
       "duration": "0:00",
       "_id": "yjSKRrvxcXQ",
@@ -310,7 +286,7 @@
     },
     {
       "hidden_id": "dUxlaFBISkw2aG8.2d31f580",
-      "number": "#038",
+      "number": "#035",
       "channel": "의상1",
       "duration": "0:00",
       "_id": "uLehPHJL6ho",
@@ -318,7 +294,7 @@
     },
     {
       "hidden_id": "a1JFR0h5QlV5dkU.51899e3c",
-      "number": "#039",
+      "number": "#036",
       "channel": "피팅1 컨셉2 테이블",
       "duration": "0:00",
       "_id": "kREGHyBUyvE",
@@ -326,7 +302,7 @@
     },
     {
       "hidden_id": "UGFJRVRxdlc4UEU.a4b25319",
-      "number": "#040",
+      "number": "#037",
       "channel": "THE INFLUENCER",
       "duration": "1:40",
       "_id": "PaIETqvW8PE",
@@ -334,7 +310,7 @@
     },
     {
       "hidden_id": "dEFxX242TFBPVUU.23e6d1c1",
-      "number": "#041",
+      "number": "#038",
       "channel": "JeongCam",
       "duration": "3:58",
       "_id": "tAq_n6LPOUE",
@@ -342,7 +318,7 @@
     },
     {
       "hidden_id": "ZzdVNkNUUnI3Z2c.9fbf2db8",
-      "number": "#042",
+      "number": "#039",
       "channel": "JeongCam",
       "duration": "5:39",
       "_id": "g7U6CTRr7gg",
@@ -350,7 +326,7 @@
     },
     {
       "hidden_id": "cjBNczV0UTY1Y3M.d8c4e70f",
-      "number": "#043",
+      "number": "#040",
       "channel": "JeongCam",
       "duration": "5:40",
       "_id": "r0Ms5tQ65cs",
@@ -358,7 +334,7 @@
     },
     {
       "hidden_id": "aE9rRGFZb2RVbFU.15437124",
-      "number": "#044",
+      "number": "#041",
       "channel": "JeongCam",
       "duration": "8:30",
       "_id": "hOkDaYodUlU",
@@ -366,7 +342,7 @@
     },
     {
       "hidden_id": "THdqLXQzalR6S1k.c2ef9047",
-      "number": "#045",
+      "number": "#042",
       "channel": "Fitting 3/5 Concept 주방",
       "duration": "0:00",
       "_id": "Lwj-t3jTzKY",
@@ -374,7 +350,7 @@
     },
     {
       "hidden_id": "UTJJblFlRG5YRTQ.c6acf84f",
-      "number": "#046",
+      "number": "#043",
       "channel": "착장(4/4) 컨셉(2/2) 무빙캠",
       "duration": "0:00",
       "_id": "Q2InQeDnXE4",
@@ -382,7 +358,7 @@
     },
     {
       "hidden_id": "RjdsOG1VVk9HaFE.993e89cb",
-      "number": "#047",
+      "number": "#044",
       "channel": "RY.Creator",
       "duration": "3:42",
       "_id": "F7l8mUVOGhQ",
@@ -390,7 +366,7 @@
     },
     {
       "hidden_id": "N1AtUjU0TWZFY0E.75029600",
-      "number": "#048",
+      "number": "#045",
       "channel": "RY.Creator",
       "duration": "3:52",
       "_id": "7P-R54MfEcA",
@@ -398,7 +374,7 @@
     },
     {
       "hidden_id": "RmUycWZsVzd2YUE.91385e50",
-      "number": "#049",
+      "number": "#046",
       "channel": "小夫YT",
       "duration": "1:47",
       "_id": "Fe2qflW7vaA",
@@ -406,7 +382,7 @@
     },
     {
       "hidden_id": "NEJRNWNmQUotSGM.82d2e405",
-      "number": "#050",
+      "number": "#047",
       "channel": "天下布萌",
       "duration": "2:58",
       "_id": "4BQ5cfAJ-Hc",
@@ -414,7 +390,7 @@
     },
     {
       "hidden_id": "U2VGeHRsamFaNjA.48ce674b",
-      "number": "#051",
+      "number": "#048",
       "channel": "宮城良一",
       "duration": "5:35",
       "_id": "SeFxtljaZ60",
@@ -422,7 +398,7 @@
     },
     {
       "hidden_id": "Y25uT2twZWdWV1U.2e9f3593",
-      "number": "#052",
+      "number": "#049",
       "channel": "맥심엄 / Maximum8K",
       "duration": "9:55",
       "_id": "cnnOkpegVWU",
@@ -430,7 +406,7 @@
     },
     {
       "hidden_id": "UnN0OEJsSmtubE0.ceecdd27",
-      "number": "#053",
+      "number": "#050",
       "channel": "FCam",
       "duration": "2:26",
       "_id": "Rst8BlJknlM",
@@ -438,7 +414,7 @@
     },
     {
       "hidden_id": "OWZ0UFlCbl9sS28.2f508745",
-      "number": "#054",
+      "number": "#051",
       "channel": "Nymph",
       "duration": "5:54",
       "_id": "9ftPYBn_lKo",
@@ -446,7 +422,7 @@
     },
     {
       "hidden_id": "S2wyN3RtUFh6Tzg.39799cdf",
-      "number": "#055",
+      "number": "#052",
       "channel": "CandyRed",
       "duration": "3:00",
       "_id": "Kl27tmPXzO8",
@@ -454,7 +430,7 @@
     },
     {
       "hidden_id": "SVVKcmItMU10Zlk.2a0d5fdc",
-      "number": "#056",
+      "number": "#053",
       "channel": "FCam",
       "duration": "3:26",
       "_id": "IUJrb-1MtfY",
@@ -462,7 +438,7 @@
     },
     {
       "hidden_id": "c2wwb2NfRFdZSmM.1e5f8c79",
-      "number": "#057",
+      "number": "#054",
       "channel": "THE INFLUENCER",
       "duration": "1:14",
       "_id": "sl0oc_DWYJc",
@@ -470,7 +446,7 @@
     },
     {
       "hidden_id": "bFlrRnRseEZucjQ.46e3d5f3",
-      "number": "#058",
+      "number": "#055",
       "channel": "THE INFLUENCER",
       "duration": "1:42",
       "_id": "lYkFtlxFnr4",
@@ -478,7 +454,7 @@
     },
     {
       "hidden_id": "TExkaXZoeWR3Rlk.9bc873a4",
-      "number": "#059",
+      "number": "#056",
       "channel": "Model Myua",
       "duration": "0:00",
       "_id": "LLdivhydwFY",
@@ -486,11 +462,35 @@
     },
     {
       "hidden_id": "NkV0TXJuSG16RGs.e4cbf943",
-      "number": "#060",
+      "number": "#057",
       "channel": "THE INFLUENCER",
       "duration": "1:50",
       "_id": "6EtMrnHmzDk",
       "_title": "[4K] Model MYUA(뮤아) Web photo shoot vertical fancam"
+    },
+    {
+      "_id": "XDkH0yaocJ8",
+      "_title": "狗兰 고라니율 golaniyule0 2026.03.27 再往下拉点",
+      "channel": "闻风而起",
+      "duration": "1:53",
+      "hidden_id": "",
+      "number": "#058"
+    },
+    {
+      "_id": "YjLy9z57jLA",
+      "_title": "20260315 CosForce03｜Nazo eirian & miiya｜Interactive Photo Exhibition \"Sweet Maid\"｜NIKON Z8 24 70 ...",
+      "channel": "RY.Creator",
+      "duration": "3:46",
+      "hidden_id": "",
+      "number": "#059"
+    },
+    {
+      "_id": "B5ggxUkZ1ZI",
+      "_title": "20260315 CosForce03｜Yuumeilyn玲兒｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8",
+      "channel": "RY.Creator",
+      "duration": "3:03",
+      "hidden_id": "",
+      "number": "#060"
     }
   ]
 }
