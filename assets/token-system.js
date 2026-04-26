@@ -1,6 +1,13 @@
 /* ═══ TWERKHUB · Token system v2 ═══
- * v20260425-p7 · Auth-gated. Anonymous users see balance=0.
+ * v20260426-p9 · Auth-gated. Anonymous users see balance=0.
  * Logged-in users earn locally and sync to Supabase via grant_tokens RPC.
+ *
+ * 2026-04-26 fix p9: tightened economy so VIP Top requires ~6 months of
+ * hardcore grinding. Per-action rewards lowered + DAILY CAPS added (so a
+ * user can't burn through all unique pages/videos in week 1). New tier
+ * thresholds: Basic 0–499 · Medium 500–9,999 · Premium 10,000–44,999 ·
+ * VIP Top 45,000+. Hardcore daily max ≈ 280 tokens incl. streaks → ~6
+ * months minimum to reach VIP Top.
  */
 (function(){
   'use strict';
@@ -18,22 +25,43 @@
     videos: NS + '.videos_watched',
     shares: NS + '.shares',
     welcomed: NS + '.welcomed',
-    tier: NS + '.tier'
+    tier: NS + '.tier',
+    // Daily counters (reset every calendar day)
+    dailyDate:    NS + '.daily_date',
+    dailyPages:   NS + '.daily_pages',
+    dailyWatches: NS + '.daily_watches',
+    dailyFinishes:NS + '.daily_finishes',
+    dailyShares:  NS + '.daily_shares'
   };
 
+  // Token rewards (re-balanced 2026-04-26-p10):
+  //   - Welcome 200 keeps you in Basic until you watch ~10 videos
+  //   - 10 videos × 10 = +100 → 200 + 100 = 300 = Medium (entry hook)
+  //   - hardcore daily ≈ 230 (+25 streak avg) = ~255/day average
+  //   - VIP Top at 50,000 → (50,000 - 200) / 255 ≈ 195 days = ~6.5 months
   var REWARDS = {
-    welcomeBonus: 200,
-    dailyLogin: 50,
-    streakBonus: 25,
-    streakCap: 7,
-    pageVisit: 5,
-    videoWatch: 15,
-    videoComplete: 30,
-    share: 100,
-    referral: 300
+    welcomeBonus:200,    // unchanged — matches "+200 tokens" promised on UI
+    dailyLogin:   30,    // was 50
+    streakBonus:  15,    // was 25 (per streak-day, capped)
+    streakCap:     7,
+    pageVisit:     5,
+    videoWatch:   10,    // was 15 → 10 vids = 100, with welcome 200 = Medium
+    videoComplete:10,    // was 30 (bonus on top of watch when ≥80% played)
+    share:        50,    // was 100
+    referral:    200     // was 300
   };
 
-  var TIER_THRESHOLDS = { medium: 500, premium: 2000, vip: 10000 };
+  // Daily caps — strict ceiling on number of grant events per category
+  var DAILY_CAPS = {
+    pages:    10,  // +50/day max from pageVisit
+    watches:  10,  // +100/day max from videoWatch
+    finishes:  5,  // +50/day max from videoComplete
+    shares:    3   // +150/day max from share
+  };
+
+  // Tier thresholds: welcome 200 alone leaves you in Basic. After ~10 videos
+  // you cross into Medium. VIP Top requires ~6.5 months of grinding.
+  var TIER_THRESHOLDS = { medium: 300, premium: 3000, vip: 50000 };
 
   function N(k, dflt){ try { var v = localStorage.getItem(k); return v == null ? dflt : JSON.parse(v); } catch(_){ return dflt; } }
   function S(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(_){} }
@@ -135,15 +163,27 @@
   function grant(amount, reason){
     if (amount <= 0) return;
     if (!isLoggedIn()) return;
-    var bal = N(KEYS.balance, 0) + amount;
+    var prevBal = N(KEYS.balance, 0);
+    var prevTier = tierFromBalance(prevBal);
+    var bal = prevBal + amount;
     var tot = N(KEYS.total, 0) + amount;
+    var newTier = tierFromBalance(bal);
     S(KEYS.balance, bal);
     S(KEYS.total, tot);
-    S(KEYS.tier, tierFromBalance(bal));
+    S(KEYS.tier, newTier);
     syncUserSnapshot();
     syncToSupabase(amount, reason);
     toast('+' + amount, reason);
     broadcast();
+    // ── Level-up detection: dispatch a separate event so the HUD can play
+    // its special chime and the user sees the celebration.
+    if (newTier !== prevTier) {
+      try {
+        window.dispatchEvent(new CustomEvent('alexia-level-up', {
+          detail: { from: prevTier, to: newTier, balance: bal }
+        }));
+      } catch(_){}
+    }
   }
 
   function spend(amount){
@@ -181,6 +221,25 @@
     grant(REWARDS.dailyLogin + bonus, 'Daily login · streak ' + streak);
   }
 
+  // ── Daily cap helper: rolls counters at midnight (local) ───────────
+  function dailyCounterRoll(){
+    var t = today();
+    if (N(KEYS.dailyDate, null) !== t) {
+      S(KEYS.dailyDate,    t);
+      S(KEYS.dailyPages,   0);
+      S(KEYS.dailyWatches, 0);
+      S(KEYS.dailyFinishes,0);
+      S(KEYS.dailyShares,  0);
+    }
+  }
+  function dailyConsume(counterKey, cap){
+    dailyCounterRoll();
+    var n = N(counterKey, 0);
+    if (n >= cap) return false;
+    S(counterKey, n + 1);
+    return true;
+  }
+
   function onPageVisit(){
     if (!isLoggedIn()) return;
     var path = location.pathname;
@@ -188,6 +247,7 @@
     if (visited[path]) return;
     visited[path] = now();
     S(KEYS.visited, visited);
+    if (!dailyConsume(KEYS.dailyPages, DAILY_CAPS.pages)) return;
     grant(REWARDS.pageVisit, 'New page explored');
   }
 
@@ -198,6 +258,7 @@
     videos[videoId] = videos[videoId] || {};
     videos[videoId].started = now();
     S(KEYS.videos, videos);
+    if (!dailyConsume(KEYS.dailyWatches, DAILY_CAPS.watches)) return;
     grant(REWARDS.videoWatch, 'Video watched');
   }
 
@@ -208,6 +269,7 @@
     videos[videoId] = videos[videoId] || {};
     videos[videoId].completed = now();
     S(KEYS.videos, videos);
+    if (!dailyConsume(KEYS.dailyFinishes, DAILY_CAPS.finishes)) return;
     grant(REWARDS.videoComplete, 'Video finished');
   }
 
@@ -215,6 +277,7 @@
     if (!isLoggedIn()) return;
     var shares = N(KEYS.shares, 0) + 1;
     S(KEYS.shares, shares);
+    if (!dailyConsume(KEYS.dailyShares, DAILY_CAPS.shares)) return;
     grant(REWARDS.share, 'Shared');
   }
 

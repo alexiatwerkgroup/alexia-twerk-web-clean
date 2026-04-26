@@ -1,9 +1,9 @@
 /* ═══ TWERKHUB · Token HUD engine ═══
  * Front-end only · localStorage-backed · non-invasive.
  *
- * Rewards (SAGRADA-aligned):
- *   +10 TKN · first time a user lands on a page (path + search)
- *   +5  TKN · first time a user plays a specific video (data-vid)
+ * Rewards (SAGRADA-aligned with token-system.js v9, 2026-04-26 economy):
+ *   +5 TKN · first time a user lands on a page (path + search) · cap 10/day
+ *   +3 TKN · first time a user plays a specific video (data-vid) · cap 30/day
  *
  * UI:
  *   A persistent badge (coin + count + tier) floats at top-right.
@@ -15,9 +15,8 @@
  *   twerkhub_tokens_seen_vids   · JSON array of played video ids
  *
  * Idempotent: safe to include on every page.
- * v20260424-p11 · refined coin "tink-tink" ping (shorter, gentler, triangle
- *                   wave) + "TOKENS" label + 4-tier thresholds + direct
- *                   localStorage fallback for pages without token-system.js
+ * v20260426-p12 · aligned with the tightened economy (page +5, video +3) so
+ *                   HUD toasts match what token-system.js actually credits.
  */
 (function(){
   'use strict';
@@ -29,8 +28,8 @@
     PATHS:  'twerkhub_tokens_seen_paths',
     VIDS:   'twerkhub_tokens_seen_vids'
   };
-  var AWARD_PAGE = 10;
-  var AWARD_VIDEO = 5;
+  var AWARD_PAGE = 5;
+  var AWARD_VIDEO = 3;
   var TOAST_TTL = 3500;
 
   function lsGet(key, fallback){
@@ -184,11 +183,10 @@
     } catch(e){ /* not available */ }
     return _audioCtx;
   }
-  // Short, pleasant "coin drop" — classic 8-bit inspired but refined.
-  // TWO quick rising notes (E6 → A6, 35ms apart), triangle wave for warmth,
-  // super-short decay (~130ms total). Master gain 0.06 so it never competes
-  // with whatever the user is listening to. Designed to register without
-  // becoming annoying on repeat earnings.
+  // ── "Casino coin cascade" — fuller, more rewarding than a single tink.
+  // Stacks 4 metallic notes in a quick descending+rising arpeggio (~220ms
+  // total) so it reads as "coins falling into the pile". Triangle wave for
+  // warmth, low master gain (0.07) so it never competes with playing video.
   function playTokenPing(){
     try {
       var ctx = ensureAudioCtx();
@@ -196,29 +194,89 @@
       if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_){} }
       var now = ctx.currentTime;
       var master = ctx.createGain();
-      // Very low overall gain so it's a subtle "tink-tink" in the corner
-      // of attention, not a bell ringing in your ear.
       master.gain.setValueAtTime(0.0001, now);
-      master.gain.exponentialRampToValueAtTime(0.06, now + 0.006);
-      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+      master.gain.exponentialRampToValueAtTime(0.07, now + 0.006);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
       master.connect(ctx.destination);
-      // Two notes, rising (E6 → A6 = coin-up feel). 35ms between them.
-      // Triangle wave has a warmer, rounder feel than sine — more "coin-y",
-      // less "bell-y". Each note is ~55ms long with quick decay.
-      [[1320, 0], [1760, 0.035]].forEach(function(pair){
+      // 4 notes: A6 → C7 → E7 → G7 (rising arpeggio, casino coin shower vibe).
+      // Stagger by 50ms so they overlap into a "cascade" texture.
+      [[1760,0],[2093,0.05],[2637,0.10],[3136,0.15]].forEach(function(pair){
         var osc = ctx.createOscillator();
         var g = ctx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(pair[0], now + pair[1]);
         g.gain.setValueAtTime(0.0001, now + pair[1]);
-        g.gain.exponentialRampToValueAtTime(0.9, now + pair[1] + 0.004);
-        g.gain.exponentialRampToValueAtTime(0.0001, now + pair[1] + 0.08);
+        g.gain.exponentialRampToValueAtTime(0.85, now + pair[1] + 0.004);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + pair[1] + 0.10);
         osc.connect(g).connect(master);
         osc.start(now + pair[1]);
-        osc.stop(now + pair[1] + 0.09);
+        osc.stop(now + pair[1] + 0.11);
       });
     } catch(e){ /* quiet — sound is bonus */ }
   }
+
+  // ── Level-up chime: 3 ascending notes + a fifth-above ringer for sparkle.
+  // Bigger, longer, more triumphant than the coin ping. Plays once when the
+  // user crosses a tier boundary (event 'alexia-level-up' from token-system.js).
+  function playLevelUp(){
+    try {
+      var ctx = ensureAudioCtx();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_){} }
+      var now = ctx.currentTime;
+      var master = ctx.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.14, now + 0.008);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
+      master.connect(ctx.destination);
+      // Major triad arpeggio: C5 → E5 → G5 → C6 (ascending) + final C6+E6 chord
+      // Square wave on chord for video-game "achievement unlocked" vibe.
+      [[523.25,0,'triangle',0.18],
+       [659.25,0.10,'triangle',0.18],
+       [783.99,0.20,'triangle',0.20],
+       [1046.50,0.30,'triangle',0.40],   // Sustained C6
+       [1318.51,0.30,'square',0.35]      // E6 rings on top for sparkle
+      ].forEach(function(p){
+        var osc = ctx.createOscillator();
+        var g = ctx.createGain();
+        osc.type = p[2];
+        osc.frequency.setValueAtTime(p[0], now + p[1]);
+        g.gain.setValueAtTime(0.0001, now + p[1]);
+        g.gain.exponentialRampToValueAtTime(0.7, now + p[1] + 0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + p[1] + p[3]);
+        osc.connect(g).connect(master);
+        osc.start(now + p[1]);
+        osc.stop(now + p[1] + p[3] + 0.02);
+      });
+    } catch(e){ /* quiet — sound is bonus */ }
+  }
+
+  // Listen for tier change → play the level-up chime once.
+  window.addEventListener('alexia-level-up', function(ev){
+    var d = (ev && ev.detail) || {};
+    playLevelUp();
+    // Also surface a celebratory toast that lasts longer than a normal earn
+    if (toastHost) {
+      var el = document.createElement('div');
+      el.className = 'twerkhub-tokens-toast twerkhub-tokens-toast--levelup';
+      el.setAttribute('role', 'status');
+      var label = String(d.to || '').toUpperCase();
+      el.innerHTML =
+        '<span class="twerkhub-tokens-toast-plus">★</span>' +
+        '<span class="twerkhub-tokens-toast-body">' +
+          '<span class="twerkhub-tokens-toast-title">LEVEL UP · ' + escapeHtml(label) + '</span>' +
+          '<span class="twerkhub-tokens-toast-sub">New tier unlocked</span>' +
+        '</span>';
+      toastHost.appendChild(el);
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){ el.classList.add('is-visible'); });
+      });
+      setTimeout(function(){
+        el.classList.remove('is-visible');
+        setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 400);
+      }, 5200);
+    }
+  });
 
   function showToast(plusN, title, sub){
     if (!toastHost) return;
