@@ -30,6 +30,25 @@
   // ── Heal #1 + #2: tier CTAs ─────────────────────────────────────
   function healCtas(){
     try {
+      // ALSO heal any <button> with TwerkhubAuthPatch onclick (legacy dead handler)
+      var deadButtons = document.querySelectorAll('button[onclick*="TwerkhubAuthPatch"]');
+      for (var j = 0; j < deadButtons.length; j++) {
+        var b = deadButtons[j];
+        if (b.__twkWatchdogHealed) continue;
+        b.removeAttribute('onclick');
+        // Detect tier from button text for proper data-tier
+        var t = (b.textContent || '').toLowerCase();
+        var detectedTier = t.indexOf('medium') >= 0 ? 'medium'
+                         : t.indexOf('premium') >= 0 ? 'premium'
+                         : t.indexOf('vip') >= 0 ? 'vip-top'
+                         : '';
+        b.addEventListener('click', function(ev){
+          ev.preventDefault();
+          window.open(DISCORD, '_blank', 'noopener');
+        });
+        b.__twkWatchdogHealed = true;
+        log('healed dead TwerkhubAuthPatch button (tier=' + (detectedTier||'?') + ')');
+      }
       var ctas = document.querySelectorAll('.tier__cta, a[href^="#checkout-"], [data-tier][href^="#checkout-"]');
       for (var i = 0; i < ctas.length; i++) {
         var el = ctas[i];
@@ -169,14 +188,11 @@
     } catch(e){ log('checkPageStructure failed: ' + e.message); }
   }
 
-  // ── Heal #6: capture global errors ──────────────────────────────
   function installGlobalErrorTrap(){
     if (window.__twkErrTrapInstalled) return;
     window.__twkErrTrapInstalled = true;
     window.addEventListener('error', function(ev){
-      try {
-        log('global error: ' + (ev.message || '?') + ' @ ' + (ev.filename || '?') + ':' + (ev.lineno || '?'));
-      } catch(_){}
+      try { log('global error: ' + (ev.message || '?') + ' @ ' + (ev.filename || '?') + ':' + (ev.lineno || '?')); } catch(_){}
     });
   }
 
@@ -189,7 +205,6 @@
   function start(){
     installGlobalErrorTrap();
     runOnce();
-    // Re-run on DOM changes for late-injected content
     if (typeof MutationObserver !== 'undefined') {
       new MutationObserver(function(muts){
         var any = false;
@@ -197,11 +212,7 @@
         if (any) runOnce();
       }).observe(document.body, { childList: true, subtree: true });
     }
-    // Periodic poll: countdowns check + re-scan CTAs in case new ones appeared
-    setInterval(function(){
-      runOnce();
-      checkCountdowns();
-    }, 2000);
+    setInterval(function(){ runOnce(); checkCountdowns(); }, 2000);
   }
 
   if (document.readyState === 'loading') {
@@ -210,6 +221,5 @@
     start();
   }
 
-  // Public API for manual re-trigger (debugging)
   window.TwkWatchdog = { run: runOnce, healCtas: healCtas, purgeProtected: purgeProtectedFromBlocked, restartCountdowns: tryRestartCountdowns };
 })();
