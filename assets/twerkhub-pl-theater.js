@@ -1,6 +1,19 @@
 /* ═══ TWERKHUB · Playlist theater (large centered window, never fullscreen) ═══
- * v20260426-p5
+ * v20260426-p7
  *
+ * 2026-04-26 fix p7 — themed-playlist black-screen really fixed this time:
+ *   1. MutationObserver on #twerkhub-pl-player.src — fires SYNCHRONOUSLY when
+ *      the page's inline swap() sets player.src, so we can short-circuit
+ *      KNOWN-blocked videos before YouTube even loads. Previously we only
+ *      reacted on iframe `load`, by which time YouTube may have already
+ *      painted its "video unavailable" black screen behind our overlay.
+ *   2. The 2-second heartbeat now ALSO hides the iframe (display:none) when
+ *      it shows the paywall, and uses z-index:99 (was 50) so YouTube's
+ *      black-screen error UI cannot bleed through.
+ *   3. Heartbeat extended to 2.5s so YouTube has a fair shot to start
+ *      buffering on slow connections before we declare it blocked.
+ *
+ * 2026-04-26 fix p5: paywall flashed for ~0.5s then went black. Cause was
  * 2026-04-26 fix p4: BLACK SCREEN FIX. YouTube doesn't always fire onError
  * 101/150 for age-restricted videos — sometimes the iframe just sits black
  * forever with no error event. Added a 2-second playback heartbeat: after
@@ -358,6 +371,26 @@
   // pre-check (isBlocked) — onError detection requires YT.Player wrap, which
   // we deliberately avoid here. Blocked videos can still be detected through
   // the modal theater (where YT.Player is created from scratch — safe).
+  // Helper — hide iframe + show overlay together (so YouTube's "unavailable"
+  // black UI cannot bleed through behind a transparent gap).
+  function showInlinePaywall(player, wrap, vid){
+    try {
+      player.style.visibility = 'hidden';
+      player.style.opacity    = '0';
+      player.style.pointerEvents = 'none';
+      player.src = 'about:blank';
+    } catch(_){}
+    if (window.TwkAgeGate) window.TwkAgeGate.showOverlay(wrap, vid);
+  }
+  function hideInlinePaywall(player, wrap){
+    try {
+      player.style.visibility = '';
+      player.style.opacity    = '';
+      player.style.pointerEvents = '';
+    } catch(_){}
+    if (window.TwkAgeGate) window.TwkAgeGate.hideOverlay(wrap);
+  }
+
   function patchInlinePlayer(){
     var player = document.getElementById('twerkhub-pl-player');
     if (!player) return false;
@@ -366,6 +399,34 @@
     var inlineLoadStart = 0;
     var inlineLoadVid = null;
 
+    // ── MutationObserver: fires SYNCHRONOUSLY when the page's inline swap()
+    // sets player.src=newUrl. Lets us short-circuit known-blocked vids BEFORE
+    // YouTube even tries to load the iframe (avoids the black "video
+    // unavailable" frame painting briefly behind our overlay).
+    if (typeof MutationObserver !== 'undefined') {
+      new MutationObserver(function(){
+        try {
+          var src = player.src || '';
+          if (!src || src === 'about:blank') return;
+          var m = src.match(/embed\/([^?&\s]{6,})/);
+          var vid = m && m[1];
+          if (!vid || !window.TwkAgeGate) return;
+          if (window.TwkAgeGate.isBlocked(vid)) {
+            // Cancel pending heartbeat — we're going straight to paywall
+            if (window.__twkInlineHeartbeat) {
+              clearTimeout(window.__twkInlineHeartbeat);
+              window.__twkInlineHeartbeat = null;
+            }
+            showInlinePaywall(player, wrap, vid);
+            stopTimeTracker();
+          } else {
+            // Fresh src on a non-blocked vid — make sure iframe is visible again
+            hideInlinePaywall(player, wrap);
+          }
+        } catch(_){}
+      }).observe(player, { attributes: true, attributeFilter: ['src'] });
+    }
+
     function onLoad(){
       var vid = null;
       try {
@@ -373,16 +434,15 @@
         if (m && m[1]) { vid = m[1]; markViewed(vid); }
       } catch(_){}
 
-      // ── +18 short-circuit: if this vid is already known-blocked, swap the
-      // iframe to about:blank and show the Discord paywall as overlay.
+      // ── +18 short-circuit: if this vid is already known-blocked, hide
+      // iframe + show the Discord/Telegram paywall as overlay.
       if (vid && window.TwkAgeGate && window.TwkAgeGate.isBlocked(vid)) {
-        try { player.src = 'about:blank'; } catch(_){}
-        window.TwkAgeGate.showOverlay(wrap, vid);
+        showInlinePaywall(player, wrap, vid);
         stopTimeTracker();
         return;
-      } else if (window.TwkAgeGate) {
+      } else {
         // Not blocked → clear any leftover overlay from a previous video
-        window.TwkAgeGate.hideOverlay(wrap);
+        hideInlinePaywall(player, wrap);
       }
 
       startTimeTracker();
@@ -394,16 +454,16 @@
       // postMessage (no wrapper, no iframe destruction).
       setTimeout(subscribeInlineToEvents, 600);
 
-      // ── Black-screen heartbeat: if the player never enters PLAYING/BUFFERING
-      // within 2 seconds of subscribing, assume +18 silent block → show paywall.
+      // ── Black-screen heartbeat: 2.5s after load, if no PLAYING (1) or
+      // BUFFERING (3) state has been reported, assume +18 silent block →
+      // show paywall. 2.5s gives slow connections a fair shot at buffering.
       if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
       window.__twkInlineHeartbeat = setTimeout(function(){
         if (window.__twkInlinePlaybackStarted) return;
         if (!vid || !window.TwkAgeGate) return;
-        try { player.src = 'about:blank'; } catch(_){}
-        window.TwkAgeGate.showOverlay(wrap, vid);
+        showInlinePaywall(player, wrap, vid);
         stopTimeTracker();
-      }, 2000);
+      }, 2500);
 
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
@@ -463,8 +523,9 @@
       if (!vid || !window.TwkAgeGate) return;
       var wrap = ifr.closest('.twerkhub-pl-player-wrap') || ifr.parentNode;
       if (window.__twkInlineHeartbeat) { clearTimeout(window.__twkInlineHeartbeat); window.__twkInlineHeartbeat = null; }
-      try { ifr.src = 'about:blank'; } catch(_){}
-      window.TwkAgeGate.showOverlay(wrap, vid);
+      // Use the unified showInlinePaywall helper so iframe gets hidden too
+      // (avoids YouTube's "video unavailable" UI bleeding behind the overlay).
+      showInlinePaywall(ifr, wrap, vid);
       stopTimeTracker();
     });
   }

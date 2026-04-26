@@ -1,5 +1,9 @@
 /* ═══ TWERKHUB · +18 Age Gate (auto-detects YouTube embed-blocked videos) ═══
- * v20260426-p6
+ * v20260426-p7
+ *
+ * 2026-04-26 fix p7: showOverlay z-index bumped 50 → 999 so YouTube's
+ * "video unavailable" black UI inside the iframe cannot bleed through.
+ * Pairs with theater p7 which now also hides the iframe via inline style.
  *
  * 2026-04-26 fix p6: paywall flashed for ~0.5s then went black. Two root causes:
  *   (a) CSS used `aspect-ratio:16/9` inside a flex parent (modal's frame-host),
@@ -155,7 +159,7 @@
     if (cs.position === 'static') wrap.style.position = 'relative';
     var div = document.createElement('div');
     div.className = 'twk-age-gate-overlay';
-    div.style.cssText = 'position:absolute;inset:0;z-index:50;';
+    div.style.cssText = 'position:absolute;inset:0;z-index:999;background:#0a0a10;';
     div.innerHTML = buildHTML();
     wrap.appendChild(div);
     if (vid) markBlocked(vid);
