@@ -487,7 +487,7 @@
 
       // Subscribe to YT IFrame API events so onError 101/150 reaches us via
       // postMessage (no wrapper, no iframe destruction).
-      setTimeout(subscribeInlineToEvents, 600);
+      setTimeout(subscribeInlineToEvents, 50);
 
       // â”€â”€ Black-screen heartbeat: 2.5s after load, if no PLAYING (1) or
       // BUFFERING (3) state has been reported, assume +18 silent block â†’
@@ -576,8 +576,7 @@
     setTimeout(function(){
       try { ifr.contentWindow.postMessage(JSON.stringify({event:'command', func:'addEventListener', args:['onError']}), '*'); } catch(_){}
       try { ifr.contentWindow.postMessage(JSON.stringify({event:'command', func:'addEventListener', args:['onStateChange']}), '*'); } catch(_){}
-    }, 250);
-  }
+    }, 50); }
 
   function init(){
     injectStyle();  // CRITICAL: badge CSS must exist before applyViewedClasses adds .twk-viewed
