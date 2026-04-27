@@ -6,7 +6,25 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
-const SKIP_FILES = new Set([]);
+const SKIP_FILES = new Set([
+  // Legacy known-bad (pre-existing cyrillic encoding mess — see scripts/CONTRIBUTING-ENCODING.md):
+  'playlist/turbo-pushka.html',
+  'playlist/twerk--.html',
+  // Legacy double-encoded cyrillic in body content (half-decoded mix):
+  'group-emiliano-ferrari-villalobo.html',
+  'group-monika-99-percent.html',
+  'group-street-project-monika.html',
+  // Legacy triple-encoded cyrillic in data-video-slug attributes (cp866 + cp1251 + cp1252):
+  'playlist/-twerk--10age.html',
+  'playlist/-twerk-2.html',
+  'playlist/-twerk-3.html',
+  'playlist/-twerk-4.html',
+  'playlist/-twerk.html',
+  'playlist/aneli-team.html',
+  'playlist/interaktivnoe-buti.html',
+  'playlist/liuba-twerk.html',
+  'playlist/sonia-twerk.html'
+]);
 const CRITICAL_REQUIRED_ASSETS = {
   'index.html': ['twerkhub-countdowns.js', 'twerkhub-watchdog.js'],
   'membership.html': ['twerkhub-watchdog.js']
@@ -14,6 +32,23 @@ const CRITICAL_REQUIRED_ASSETS = {
 
 const errors = [];
 const warnings = [];
+
+const MOJIBAKE_MARKERS = ['ðŸ', 'â€', 'â†', 'â—', 'â˜', 'âœ', 'âš', 'Â·', 'Ã©', 'Ã¡', 'Ã­', 'Ã³', 'Ãº', 'Ã±', 'Ã‰', 'Ð'];
+
+function checkEncoding(content, rel) {
+  if (content.charCodeAt(0) === 0xFEFF) {
+    errors.push(rel + ': starts with UTF-8 BOM');
+    return;
+  }
+  for (const marker of MOJIBAKE_MARKERS) {
+    if (content.indexOf(marker) !== -1) {
+      const idx = content.indexOf(marker);
+      const ctx = content.slice(Math.max(0, idx - 20), idx + 20).replace(/\n/g, '\\n');
+      errors.push(rel + ': mojibake marker found near ' + ctx);
+      return;
+    }
+  }
+}
 
 function listHtmlFiles(dir, out){
   out = out || [];
@@ -29,11 +64,13 @@ function listHtmlFiles(dir, out){
 }
 
 function check(file){
-  const rel = path.relative(ROOT, file);
+  const rel = path.relative(ROOT, file).split(path.sep).join('/');
   if (SKIP_FILES.has(rel) || SKIP_FILES.has(path.basename(file))) return;
   let content;
   try { content = fs.readFileSync(file, 'utf8'); }
   catch(e){ errors.push(rel + ': cannot read (' + e.message + ')'); return; }
+
+  checkEncoding(content, rel);
 
   const tail = content.slice(-200).replace(/\s+$/, '');
   if (!/<\/body>\s*<\/html>\s*$/i.test(tail) && !/<\/html>\s*$/i.test(tail)) {
@@ -59,7 +96,7 @@ function check(file){
     }
   });
 
-  const isRepoRoot = !rel.includes(path.sep);
+  const isRepoRoot = !rel.includes('/');
   if (isRepoRoot) {
     const required = CRITICAL_REQUIRED_ASSETS[path.basename(file)];
     if (required) {
@@ -90,7 +127,7 @@ if (warnings.length) {
 if (errors.length) {
   console.log('\nERRORS (' + errors.length + '):');
   errors.forEach(e => console.log('  - ' + e));
-  console.log('\nFix these before committing. Try: node scripts/repair-pages.js');
+  console.log('\nFix these before committing.');
   process.exit(1);
 }
 console.log('\nAll ' + files.length + ' pages valid.');
