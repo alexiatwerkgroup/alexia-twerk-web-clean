@@ -153,6 +153,86 @@ body::before{
 .hero-pill.live .dot{width:6px;height:6px;border-radius:50%;background:#10f99d;box-shadow:0 0 10px rgba(16,249,157,.7);position:relative}
 .hero-pill.live .dot::before{content:"";position:absolute;inset:-3px;border-radius:50%;background:#10f99d;opacity:.5;animation:liveDot 1.6s ease-out infinite}
 
+/* GUEST CTA - prominent sign-up button (with juice) */
+.guest-cta-block{
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  margin-top:18px;padding:8px 0;
+  animation:guestCtaIn .6s cubic-bezier(.22,.61,.36,1) both;
+}
+.guest-cta-hint{
+  font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);
+  animation:guestHintBob 2.4s ease-in-out infinite;
+}
+.guest-cta-hint::before{
+  content:"\2193  ";color:#ff6fa8;font-weight:800;
+  display:inline-block;
+  animation:guestArrowBounce 1.2s ease-in-out infinite;
+}
+.guest-cta-sparkles{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center}
+.guest-cta-spark{position:absolute;width:8px;height:8px;border-radius:50%;pointer-events:none;will-change:transform,opacity}
+.guest-cta-spark.s1{background:#ff2d87;box-shadow:0 0 12px #ff2d87;animation:sparkOrbit1 3.2s ease-in-out infinite}
+.guest-cta-spark.s2{background:#9d4edd;box-shadow:0 0 12px #9d4edd;animation:sparkOrbit2 4.1s ease-in-out infinite -.7s}
+.guest-cta-spark.s3{background:#ffb454;box-shadow:0 0 10px #ffb454;animation:sparkOrbit3 3.6s ease-in-out infinite -1.4s}
+.guest-cta-spark.s4{background:#1ee08f;box-shadow:0 0 10px #1ee08f;animation:sparkOrbit4 4.6s ease-in-out infinite -2.1s;width:6px;height:6px}
+.guest-cta-spark.s5{background:#ff6fa8;box-shadow:0 0 8px #ff6fa8;animation:sparkOrbit5 3.9s ease-in-out infinite -.4s;width:5px;height:5px}
+.guest-cta-spark.s6{background:#fff;box-shadow:0 0 12px #fff;animation:sparkOrbit6 4.3s ease-in-out infinite -1.8s;width:4px;height:4px}
+.guest-cta-button{
+  position:relative;z-index:2;
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 34px;border-radius:999px;
+  background:linear-gradient(110deg,#ff2d87 0%,#9d4edd 35%,#ff2d87 65%,#ffb454 100%);
+  background-size:300% 100%;
+  color:#fff;text-decoration:none;
+  font-size:14px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  text-shadow:0 1px 2px rgba(0,0,0,.3);
+  box-shadow:0 0 0 0 rgba(255,45,135,.6),0 8px 32px rgba(255,45,135,.55),0 2px 12px rgba(157,78,221,.4),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -2px 6px rgba(0,0,0,.2);
+  border:1px solid rgba(255,255,255,.25);
+  cursor:pointer;overflow:hidden;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease;
+  animation:guestCtaPulse 2.4s ease-in-out infinite,guestCtaColorShift 5s linear infinite;
+}
+.guest-cta-button::before{
+  content:"";position:absolute;top:0;bottom:0;left:-30%;width:30%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.45) 50%,transparent 100%);
+  transform:skewX(-20deg);pointer-events:none;
+  animation:guestCtaShimmer 3.2s linear infinite;
+}
+.guest-cta-button:hover{
+  transform:translateY(-3px) scale(1.04);
+  box-shadow:0 0 0 6px rgba(255,45,135,.18),0 16px 48px rgba(255,45,135,.8),0 6px 16px rgba(157,78,221,.5),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -2px 6px rgba(0,0,0,.2);
+  animation-duration:1.4s,2s;
+}
+.guest-cta-button:active{transform:translateY(-1px) scale(1.01)}
+.guest-cta-button .arrow{font-size:18px;transition:transform .25s cubic-bezier(.34,1.56,.64,1);animation:guestArrowNudge 1.8s ease-in-out infinite}
+.guest-cta-button:hover .arrow{transform:translateX(6px) scale(1.15);animation:none}
+.guest-cta-meta{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:2px}
+.guest-cta-meta b{color:#ff6fa8;font-weight:800}
+@keyframes guestCtaPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,45,135,.6),0 8px 32px rgba(255,45,135,.55),0 2px 12px rgba(157,78,221,.4),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -2px 6px rgba(0,0,0,.2)}
+  50%{box-shadow:0 0 0 8px rgba(255,45,135,.0),0 12px 44px rgba(255,45,135,.85),0 4px 16px rgba(157,78,221,.6),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -2px 6px rgba(0,0,0,.2)}
+}
+@keyframes guestCtaColorShift{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@keyframes guestCtaShimmer{0%{left:-30%}60%{left:-30%}100%{left:130%}}
+@keyframes guestCtaIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes guestHintBob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-2px);opacity:.85}}
+@keyframes guestArrowBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+@keyframes guestArrowNudge{0%,80%,100%{transform:translateX(0)}90%{transform:translateX(3px)}}
+@keyframes sparkOrbit1{0%,100%{transform:translate(-90px,-12px) scale(.4);opacity:0}20%{opacity:1}50%{transform:translate(90px,-18px) scale(1);opacity:.95}80%{opacity:.6}}
+@keyframes sparkOrbit2{0%,100%{transform:translate(80px,16px) scale(.5);opacity:0}25%{opacity:.9}50%{transform:translate(-100px,20px) scale(1.1);opacity:1}80%{opacity:.5}}
+@keyframes sparkOrbit3{0%,100%{transform:translate(-70px,18px) scale(.6);opacity:0}30%{opacity:1}50%{transform:translate(70px,-22px) scale(1);opacity:.9}75%{opacity:.4}}
+@keyframes sparkOrbit4{0%,100%{transform:translate(60px,-22px) scale(.4);opacity:0}20%{opacity:.8}50%{transform:translate(-60px,22px) scale(1.2);opacity:1}80%{opacity:.4}}
+@keyframes sparkOrbit5{0%,100%{transform:translate(-50px,-26px) scale(.5);opacity:0}35%{opacity:1}50%{transform:translate(60px,26px) scale(1.1);opacity:.85}80%{opacity:.3}}
+@keyframes sparkOrbit6{0%,100%{transform:translate(110px,4px) scale(.3);opacity:0}30%{opacity:1}50%{transform:translate(-110px,-4px) scale(.9);opacity:.9}75%{opacity:.5}}
+@media (prefers-reduced-motion: reduce){
+  .guest-cta-button,.guest-cta-button::before,.guest-cta-hint,.guest-cta-hint::before,.guest-cta-button .arrow,.guest-cta-spark{animation:none !important}
+  .guest-cta-spark{display:none}
+}
+.hero-pills.is-guest-mode .hero-pill{opacity:.55;font-size:10px;padding:6px 12px}
+.hero-pills.is-guest-mode .hero-pill.gold{opacity:.7}
+
+
 /* ═══════ LAYOUT · sidebar + main ═══════ */
 .grid-layout{
   display:grid;
@@ -832,23 +912,38 @@ body::before{
       heroName.textContent = displayName;
       heroName.classList.toggle('is-guest', isGuest);
     }
-    // Show/hide a "Sign up to save progress" prompt when guest
+    // Show/hide a prominent guest sign-up CTA block (separate from metadata pills)
     var heroPills = document.querySelector('.hero-pills');
-    if (heroPills) {
-      var existingGuestCTA = heroPills.querySelector('.guest-cta');
-      if (isGuest && !existingGuestCTA) {
-        var cta = document.createElement('a');
-        cta.href = '#';
-        cta.className = 'guest-cta hero-pill';
-        cta.style.cssText = 'cursor:pointer;background:linear-gradient(135deg,rgba(255,45,135,.2),rgba(157,78,221,.18));border:1px solid rgba(255,45,135,.5);color:#ff6fa8;font-weight:800;';
-        cta.textContent = 'Sign up to save your progress →';
-        cta.addEventListener('click', function(ev){
+    var heroSection = heroPills ? heroPills.parentNode : null;
+    if (heroPills && heroSection) {
+      var existingGuestBlock = heroSection.querySelector('.guest-cta-block');
+      if (isGuest && !existingGuestBlock) {
+        heroPills.classList.add('is-guest-mode');
+        var block = document.createElement('div');
+        block.className = 'guest-cta-block';
+        block.innerHTML =
+          '<div class="guest-cta-hint">Pick a name to start tracking</div>' +
+          '<div class="guest-cta-sparkles" aria-hidden="true">' +
+            '<span class="guest-cta-spark s1"></span>' +
+            '<span class="guest-cta-spark s2"></span>' +
+            '<span class="guest-cta-spark s3"></span>' +
+            '<span class="guest-cta-spark s4"></span>' +
+            '<span class="guest-cta-spark s5"></span>' +
+            '<span class="guest-cta-spark s6"></span>' +
+          '</div>' +
+          '<a href="#" class="guest-cta-button" id="guest-signup-btn">' +
+            'Create your handle' +
+            '<span class="arrow">→</span>' +
+          '</a>' +
+          '<div class="guest-cta-meta"><b>Free</b> · Save tokens · Unlock drops</div>';
+        heroSection.appendChild(block);
+        block.querySelector('#guest-signup-btn').addEventListener('click', function(ev){
           ev.preventDefault();
           try { window.TwerkhubAuth && window.TwerkhubAuth.showForm && window.TwerkhubAuth.showForm(); } catch(_){}
         });
-        heroPills.appendChild(cta);
-      } else if (!isGuest && existingGuestCTA) {
-        existingGuestCTA.remove();
+      } else if (!isGuest && existingGuestBlock) {
+        existingGuestBlock.remove();
+        heroPills.classList.remove('is-guest-mode');
       }
     }
 
