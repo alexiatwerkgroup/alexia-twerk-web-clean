@@ -28,6 +28,7 @@ const TEXT_EXTENSIONS = new Set(['.html', '.css', '.js', '.mjs', '.json', '.xml'
 const SKIP_FILES = new Set([
   'scripts/check-encoding.js',
   'scripts/CONTRIBUTING-ENCODING.md',
+  'scripts/CONTRIBUTING-GA4.md',
   'HANDOFF-COWORK.md',
   'scripts/validate-pages.js',
   'scripts/fix-mojibake.py',

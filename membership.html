@@ -146,6 +146,14 @@
 <script src="/assets/age-gate.js"></script>
 <!-- twk-schema-v2 -->
 
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YSFR7FHCLS', { send_page_view: true });
+</script>
 </head>
 <body>
 <!-- TWK_NAV_V1 -->
@@ -436,5 +444,7 @@
 </script>
 
 <script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
+<script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
 </body>
 </html>

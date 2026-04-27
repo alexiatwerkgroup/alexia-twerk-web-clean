@@ -17,6 +17,35 @@ const CRITICAL_REQUIRED_ASSETS = {
 const errors = [];
 const warnings = [];
 
+
+const GA4_ID = 'G-YSFR7FHCLS';
+const UTILITY_PATTERNS = [
+  /^admin/i, /^auth-/i, /^callback/i, /^login/i,
+  /admin-/i, /callback/i, /auth-callback/i,
+  /^paid-content/i, /^variants?-/i, /^oriental-final/i,
+  /^playlist-model-1-dark-premium/i, /^premium-/i, /^savage-twerk-video/i,
+  /^VARIANTE-/i, /^test-/i
+];
+
+function isUtilityPage(rel) {
+  const name = path.basename(rel);
+  return UTILITY_PATTERNS.some(p => p.test(name));
+}
+
+function checkGA4(content, rel) {
+  if (isUtilityPage(rel)) return;
+  const loaderRe = new RegExp('<script[^>]*src="https://www\\.googletagmanager\\.com/gtag/js\\?id=' + GA4_ID + '"', 'g');
+  const loaders = (content.match(loaderRe) || []).length;
+  const configs = (content.match(new RegExp("gtag\\(['\"]config['\"]\\s*,\\s*['\"]" + GA4_ID + "['\"]", 'g')) || []).length;
+  if (loaders === 0) {
+    errors.push(rel + ': missing GA4 snippet (id=' + GA4_ID + '). Add it before </head> or mark page as utility.');
+  } else if (loaders > 1) {
+    errors.push(rel + ': duplicate GA4 loader script (' + loaders + ' instances)');
+  } else if (configs > 1) {
+    errors.push(rel + ': duplicate GA4 config call (' + configs + ' instances)');
+  }
+}
+
 const MOJIBAKE_MARKERS = ['ðŸ', 'â€', 'â†', 'â—', 'â˜', 'âœ', 'âš', 'Â·', 'Ã©', 'Ã¡', 'Ã­', 'Ã³', 'Ãº', 'Ã±', 'Ã‰', 'Ð'];
 
 function checkEncoding(content, rel) {
@@ -55,6 +84,7 @@ function check(file){
   catch(e){ errors.push(rel + ': cannot read (' + e.message + ')'); return; }
 
   checkEncoding(content, rel);
+  checkGA4(content, rel);
 
   const tail = content.slice(-200).replace(/\s+$/, '');
   if (!/<\/body>\s*<\/html>\s*$/i.test(tail) && !/<\/html>\s*$/i.test(tail)) {
