@@ -1,15 +1,15 @@
-/* ═══ TWERKHUB · Runtime Watchdog v1 (2026-04-26) ═══
+﻿/* â•â•â• TWERKHUB Â· Runtime Watchdog v1 (2026-04-26) â•â•â•
  *
  * Self-healing safety net for the most common failure modes that have
  * recurred on this site. Loaded on EVERY page early. Idempotent + non-blocking.
  *
  * What it heals automatically (no human intervention needed):
- *   1. Dead tier CTA buttons (.tier__cta with href="#checkout-*") → redirect to Discord
- *   2. Unbound .tier__cta[data-tier] → opens TwkCheckout modal if available, else navigates to Discord
- *   3. Stuck countdowns (text not changing for 6s) → re-init via TwerkhubCountdownsV2.start() if available
- *   4. Stale top-5 ranking vids in twk_blocked_videos → purges them (SAGRADA #9)
- *   5. Missing </body> or </html> → logs warning (can't auto-fix HTML, but flags it)
- *   6. Global uncaught errors → logs to console with [twk-watchdog] prefix for triage
+ *   1. Dead tier CTA buttons (.tier__cta with href="#checkout-*") â†’ redirect to Discord
+ *   2. Unbound .tier__cta[data-tier] â†’ opens TwkCheckout modal if available, else navigates to Discord
+ *   3. Stuck countdowns (text not changing for 6s) â†’ re-init via TwerkhubCountdownsV2.start() if available
+ *   4. Stale top-5 ranking vids in twk_blocked_videos â†’ purges them (SAGRADA #9)
+ *   5. Missing </body> or </html> â†’ logs warning (can't auto-fix HTML, but flags it)
+ *   6. Global uncaught errors â†’ logs to console with [twk-watchdog] prefix for triage
  *
  * Polls every 10 seconds to catch late-injected content. Total cost: <1ms/poll.
  *
@@ -27,7 +27,7 @@
 
   function log(msg){ try { console.warn('[twk-watchdog]', msg); } catch(_){} }
 
-  // ── Heal #1 + #2: tier CTAs ─────────────────────────────────────
+  // â”€â”€ Heal #1 + #2: tier CTAs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function healCtas(){
     try {
       // ALSO heal any <button> with TwerkhubAuthPatch onclick (legacy dead handler)
@@ -56,7 +56,7 @@
         var href = el.getAttribute('href') || '';
         var tier = el.getAttribute('data-tier') || '';
 
-        // Dead anchor → Discord
+        // Dead anchor â†’ Discord
         if (href.indexOf('#checkout-') === 0) {
           el.setAttribute('href', DISCORD);
           el.setAttribute('target', '_blank');
@@ -76,7 +76,7 @@
           el.__twkCheckoutBound = true;
         }
 
-        // Register Free → ensure /profile.html
+        // Register Free â†’ ensure /profile.html
         if (/register/i.test(el.textContent || '') && (!href || href === '#')) {
           el.setAttribute('href', '/profile.html');
         }
@@ -86,7 +86,7 @@
     } catch(e){ log('healCtas failed: ' + e.message); }
   }
 
-  // ── Heal #3: stuck countdowns ───────────────────────────────────
+  // â”€â”€ Heal #3: stuck countdowns â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Watches the seconds field of the farm countdown + the hero timer. If the
   // displayed text doesn't change for 6 seconds, attempts to re-init.
   var _lastFarmText = null;
@@ -103,7 +103,7 @@
         if (t === _lastFarmText) {
           if (!_farmStuckSince) _farmStuckSince = now;
           if (now - _farmStuckSince > 6000) {
-            log('farm countdown stuck — re-initing');
+            log('farm countdown stuck â€” re-initing');
             tryRestartCountdowns();
             _farmStuckSince = 0;
           }
@@ -119,7 +119,7 @@
         if (ht === _lastHeroText) {
           if (!_heroStuckSince) _heroStuckSince = now;
           if (now - _heroStuckSince > 6000) {
-            log('hero countdown stuck — re-initing');
+            log('hero countdown stuck â€” re-initing');
             tryRestartCountdowns();
             _heroStuckSince = 0;
           }
@@ -151,7 +151,7 @@
     } catch(e){ log('tryRestartCountdowns failed: ' + e.message); }
   }
 
-  // ── Heal #4: SAGRADA #9 — purge top-5 vids from blocked list ───
+  // â”€â”€ Heal #4: SAGRADA #9 â€” purge top-5 vids from blocked list â”€â”€â”€
   function purgeProtectedFromBlocked(){
     try {
       var rkVids = document.querySelectorAll('.rk-item[data-vid]');
@@ -175,7 +175,7 @@
     } catch(e){ log('purgeProtected failed: ' + e.message); }
   }
 
-  // ── Heal #5: HTML structural integrity check ────────────────────
+  // â”€â”€ Heal #5: HTML structural integrity check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Can't auto-fix missing </body></html> at runtime (the parser already gave up),
   // but we can detect it and log a clear signal.
   function checkPageStructure(){
@@ -196,7 +196,7 @@
     });
   }
 
-  // ── Heal #7: auto-load checkout modal module on pages that need it ──
+  // â”€â”€ Heal #7: auto-load checkout modal module on pages that need it â”€â”€
   function ensureCheckoutModalLoaded(){
     if (window.__twkCheckoutModalLoaderRan) return;
     var hasTierCta = document.querySelector('.tier__cta[data-tier]');
@@ -214,7 +214,59 @@
     log('auto-loaded checkout modal module');
   }
 
+  // ── Heal #8: fresh state on user change ─────────────────────────
+  // When a NEW user logs in (different from the last seen user),
+  // wipe per-user UI state so they start with 0 viewed videos.
+  // Also wipes blocked videos cache so old +18 detections don't carry over.
+  function freshOnUserChange(){
+    try {
+      var raw = localStorage.getItem('alexia_current_user') || sessionStorage.getItem('alexia_current_user');
+      var currentId = '';
+      if (raw && raw !== 'null') {
+        try { var u = JSON.parse(raw); currentId = (u && (u.id || u.email || u.username)) || ''; } catch(_){}
+      }
+      var lastId = localStorage.getItem('__twk_last_user_id') || '';
+      if (currentId !== lastId) {
+        // User changed (login, logout, or different account). Wipe per-user UI state.
+        var wipeKeys = [
+          'twk_viewed_videos',
+          'twk_blocked_videos',
+          'twk_watch_seconds_total',
+          'twk_favorites',
+          'twk_models_followed',
+          'twk_heatmap',
+          'twk_drop_endstamp_v1',
+          'twerkhub_tokens_seen_paths',
+          'twerkhub_tokens_seen_vids'
+        ];
+        for (var i = 0; i < wipeKeys.length; i++) {
+          try { localStorage.removeItem(wipeKeys[i]); } catch(_){}
+        }
+        // Wipe any keys with these prefixes too
+        try {
+          var toDel = [];
+          for (var k = 0; k < localStorage.length; k++) {
+            var key = localStorage.key(k);
+            if (key && (key.indexOf('twk_drop_endstamp_v1_') === 0 || key.indexOf('twk_view_') === 0)) toDel.push(key);
+          }
+          for (var d = 0; d < toDel.length; d++) localStorage.removeItem(toDel[d]);
+        } catch(_){}
+        localStorage.setItem('__twk_last_user_id', currentId);
+        log('user changed (' + (lastId || 'guest') + ' -> ' + (currentId || 'guest') + '): wiped per-user UI state');
+        // Force-remove any .twk-viewed / .twk-blocked classes already on the page
+        try {
+          var els = document.querySelectorAll('.twk-viewed, .twk-blocked');
+          for (var e = 0; e < els.length; e++) {
+            els[e].classList.remove('twk-viewed', 'twk-blocked');
+            var bdg = els[e].querySelector(':scope > .twk-viewed-badge, :scope > .twk-blocked-badge, :scope > .twk-blocked-lock');
+            while (bdg) { bdg.remove(); bdg = els[e].querySelector(':scope > .twk-viewed-badge, :scope > .twk-blocked-badge, :scope > .twk-blocked-lock'); }
+          }
+        } catch(_){}
+      }
+    } catch(e){ log('freshOnUserChange failed: ' + e.message); }
+  }
   function runOnce(){
+    freshOnUserChange();
     healCtas();
     purgeProtectedFromBlocked();
     checkPageStructure();
