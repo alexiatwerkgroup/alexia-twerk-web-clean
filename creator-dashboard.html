@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
@@ -180,7 +180,7 @@ a:hover{color:#ffb454}
     <div class="twk-nav-v1-lang" role="group" aria-label="Language">
       <a href="#" data-lang="en" class="is-active" title="English">EN</a>
       <a href="#" data-lang="es" title="Español">ES</a>
-      <a href="#" data-lang="ru" title="Ð ÑƒÑÑÐºÐ¸Ð¹">RU</a>
+      <a href="#" data-lang="ru" title="Русский">RU</a>
     </div>
     <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
   </div>
@@ -208,7 +208,7 @@ a:hover{color:#ffb454}
   <div class="switch">
     <span class="label">Creator</span>
     <select id="creatorSwitch" aria-label="Switch creator">
-      <option value="lada-gozzi">Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸ · MDC NRG</option>
+      <option value="lada-gozzi">Лада Гоцци · MDC NRG</option>
       <option value="wangong-lin">WanGong Lin · Taiwan Twerk Family</option>
       <option value="nika-chill">Nika Chill · Thailand</option>
       <option value="yurgenis">Yurgenis · YUR AULAR</option>
@@ -220,11 +220,11 @@ a:hover{color:#ffb454}
     <div class="avatar" id="avatar">L</div>
     <div class="dash-id">
       <div class="kicker">/ Creator dashboard</div>
-      <h1 id="creatorName">Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸</h1>
+      <h1 id="creatorName">Лада Гоцци</h1>
       <div class="handle" id="creatorHandle">@lada-gozzi · firestarter roster since 2024</div>
-      <span class="tier-pill" id="creatorTier">â­ Roster · Heels Choreo Lead</span>
+      <span class="tier-pill" id="creatorTier">⭐ Roster · Heels Choreo Lead</span>
       <div class="dash-id-meta">
-        <span id="metaCity">ðŸ“ Moscow · Russia</span>
+        <span id="metaCity">📍 Moscow · Russia</span>
         <span id="metaActive">Active 2024-09-01</span>
         <span id="metaDrops">42 drops · 18 months</span>
       </div>
@@ -241,22 +241,22 @@ a:hover{color:#ffb454}
     <div class="kpi">
       <div class="kpi-label">Lifetime views</div>
       <div class="kpi-value" id="kpiViews">2.4M</div>
-      <div class="kpi-trend up" id="kpiViewsTrend">â–² 12.3% this month</div>
+      <div class="kpi-trend up" id="kpiViewsTrend">▲ 12.3% this month</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Avg completion</div>
       <div class="kpi-value" id="kpiCompletion">68%</div>
-      <div class="kpi-trend up" id="kpiCompletionTrend">â–² 4 pts vs Q1</div>
+      <div class="kpi-trend up" id="kpiCompletionTrend">▲ 4 pts vs Q1</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Tokens earned · Apr</div>
       <div class="kpi-value" id="kpiTokens">48,200</div>
-      <div class="kpi-trend up" id="kpiTokensTrend">â–² 18% vs Mar</div>
+      <div class="kpi-trend up" id="kpiTokensTrend">▲ 18% vs Mar</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Active subscribers</div>
       <div class="kpi-value" id="kpiSubs">312</div>
-      <div class="kpi-trend up" id="kpiSubsTrend">â–² 24 this week</div>
+      <div class="kpi-trend up" id="kpiSubsTrend">▲ 24 this week</div>
     </div>
   </div>
 
@@ -308,7 +308,7 @@ a:hover{color:#ffb454}
     <div class="feed" id="activityFeed"></div>
   </div>
 
-  <a class="back" href="/">â† Back to home</a>
+  <a class="back" href="/">← Back to home</a>
 
 </div>
 
@@ -319,17 +319,17 @@ a:hover{color:#ffb454}
 // ============================================================
 const DATA = {
   'lada-gozzi':{
-    name:'Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸', initial:'L', handle:'@lada-gozzi · firestarter roster since 2024',
-    tier:'â­ Roster · Heels Choreo Lead', city:'ðŸ“ Moscow · Russia', active:'Active 2024-09-01',
+    name:'Лада Гоцци', initial:'L', handle:'@lada-gozzi · firestarter roster since 2024',
+    tier:'⭐ Roster · Heels Choreo Lead', city:'📍 Moscow · Russia', active:'Active 2024-09-01',
     drops:'42 drops · 18 months',
     nextDrop:'Thu Apr 30 · 00:00 ART', nextSub:'in 5 days · Premium early',
-    kpi:{views:'2.4M',viewsTrend:'â–² 12.3% this month',completion:'68%',completionTrend:'â–² 4 pts vs Q1',tokens:'48,200',tokensTrend:'â–² 18% vs Mar',subs:'312',subsTrend:'â–² 24 this week'},
+    kpi:{views:'2.4M',viewsTrend:'▲ 12.3% this month',completion:'68%',completionTrend:'▲ 4 pts vs Q1',tokens:'48,200',tokensTrend:'▲ 18% vs Mar',subs:'312',subsTrend:'▲ 24 this week'},
     recentDrops:[
-      {title:'Pharaoh · ÐŸÐ»Ð¾Ð¼Ð±Ð¸Ñ€',date:'Apr 24',tier:'Public',pos:'#002',views:'167K',pct:'72%'},
+      {title:'Pharaoh · Пломбир',date:'Apr 24',tier:'Public',pos:'#002',views:'167K',pct:'72%'},
       {title:'Cardi B · WAP heels remix',date:'Apr 17',tier:'Premium',pos:'#012',views:'94K',pct:'78%'},
       {title:'Rosalía · Despechá floor work',date:'Apr 10',tier:'Public',pos:'#031',views:'58K',pct:'64%'},
-      {title:'TiÃ«sto · Jackie Chan studio drill',date:'Apr 3',tier:'Medium',pos:'#054',views:'42K',pct:'69%'},
-      {title:'Ð¡ÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ð½Ð¸Ñ‚ · ÐšÐ¾ÑÐ¼Ð¾Ñ heels solo',date:'Mar 27',tier:'Premium',pos:'#078',views:'38K',pct:'71%'},
+      {title:'Tiësto · Jackie Chan studio drill',date:'Apr 3',tier:'Medium',pos:'#054',views:'42K',pct:'69%'},
+      {title:'Скриптонит · Космос heels solo',date:'Mar 27',tier:'Premium',pos:'#078',views:'38K',pct:'71%'},
       {title:'Major Lazer · Run Up phrase break',date:'Mar 20',tier:'Public',pos:'#102',views:'29K',pct:'66%'},
       {title:'Nicki Minaj · Anaconda · ensemble',date:'Mar 13',tier:'VIP',pos:'#005',views:'18K',pct:'82%'},
     ],
@@ -337,11 +337,11 @@ const DATA = {
     actions:[
       {kind:'good',label:'Token earnings',text:'Your Q2 token earnings projection is 12% above Q1. Keep the Tuesday drill drops — they\'re your best converters.'},
       {kind:'urgent',label:'Member requests',text:'5 new requests in #premium-requests are waiting on you. Average wait time is 3.2 days.'},
-      {kind:'normal',label:'Next drop',text:'Your Pharaoh "ÐŸÐ»Ð¾Ð¼Ð±Ð¸Ñ€" sequel is queued for Apr 30 Thursday drop. Confirm thumbnail by Apr 28.'}
+      {kind:'normal',label:'Next drop',text:'Your Pharaoh "Пломбир" sequel is queued for Apr 30 Thursday drop. Confirm thumbnail by Apr 28.'}
     ],
     feed:[
       {dot:'green',text:'<strong>Marco</strong> upgraded to Premium tier · referenced your Pharaoh drop',when:'2h ago'},
-      {dot:'gold',text:'Your <strong>Pharaoh "ÐŸÐ»Ð¾Ð¼Ð±Ð¸Ñ€"</strong> video crossed 200K views',when:'1d ago'},
+      {dot:'gold',text:'Your <strong>Pharaoh "Пломбир"</strong> video crossed 200K views',when:'1d ago'},
       {dot:'pink',text:'<strong>+1,847 tokens</strong> earned from completion bonuses',when:'2d ago'},
       {dot:'green',text:'<strong>3 new VIP Top members</strong> joined and watched your archive',when:'3d ago'},
       {dot:'gold',text:'Featured on <strong>creators-moscow</strong> page hot ranking #1',when:'4d ago'},
@@ -351,10 +351,10 @@ const DATA = {
   },
   'wangong-lin':{
     name:'WanGong Lin', initial:'W', handle:'@wangong-lin · iDance Taipei · curator since 2023',
-    tier:'â­ Roster · K-Dance Translator', city:'ðŸ“ Taipei · Taiwan', active:'Active 2023-04-15',
+    tier:'⭐ Roster · K-Dance Translator', city:'📍 Taipei · Taiwan', active:'Active 2023-04-15',
     drops:'68 drops · 24 months',
     nextDrop:'Thu Apr 30 · 11:00 TPE', nextSub:'in 5 days · public drop',
-    kpi:{views:'4.8M',viewsTrend:'â–² 8.7% this month',completion:'74%',completionTrend:'â–² 2 pts vs Q1',tokens:'62,400',tokensTrend:'â–² 9% vs Mar',subs:'487',subsTrend:'â–² 31 this week'},
+    kpi:{views:'4.8M',viewsTrend:'▲ 8.7% this month',completion:'74%',completionTrend:'▲ 2 pts vs Q1',tokens:'62,400',tokensTrend:'▲ 9% vs Mar',subs:'487',subsTrend:'▲ 31 this week'},
     recentDrops:[
       {title:'DaniLeigh · Tasty · Workshop Vol.5',date:'Apr 24',tier:'Public',pos:'#001',views:'312K',pct:'76%'},
       {title:'IVE · After LIKE · ensemble cover',date:'Apr 17',tier:'Public',pos:'#008',views:'198K',pct:'72%'},
@@ -375,17 +375,17 @@ const DATA = {
       {dot:'gold',text:'<strong>Kerry Chiu</strong> shared your Apr 24 drop on her TikTok · 89K views',when:'1d ago'},
       {dot:'pink',text:'<strong>+2,140 tokens</strong> from VIP Top tier engagement',when:'2d ago'},
       {dot:'green',text:'<strong>BEFOX</strong> referenced your IVE breakdown in their Korean course',when:'3d ago'},
-      {dot:'gold',text:'Featured pillar post · <strong>Brazilian funk Ã— twerk crossover</strong> cited your work',when:'4d ago'},
+      {dot:'gold',text:'Featured pillar post · <strong>Brazilian funk × twerk crossover</strong> cited your work',when:'4d ago'},
       {dot:'pink',text:'2 new <strong>Custom requests</strong> from VIP Top tier · review needed',when:'5d ago'},
       {dot:'green',text:'Your <strong>completion rate</strong> ticked up to 74% (platform median 61%)',when:'6d ago'}
     ]
   },
   'nika-chill':{
     name:'Nika Chill', initial:'N', handle:'@nika-chill · Thailand independent · roster since 2024',
-    tier:'â­ Roster · Thailand Reggaetón', city:'ðŸ“ Bangkok · Thailand', active:'Active 2024-02-10',
+    tier:'⭐ Roster · Thailand Reggaetón', city:'📍 Bangkok · Thailand', active:'Active 2024-02-10',
     drops:'31 drops · 14 months',
     nextDrop:'Thu Apr 30 · 04:00 BKK', nextSub:'in 5 days · public drop',
-    kpi:{views:'1.6M',viewsTrend:'â–² 22.4% this month',completion:'71%',completionTrend:'â–² 6 pts vs Q1',tokens:'34,800',tokensTrend:'â–² 28% vs Mar',subs:'218',subsTrend:'â–² 41 this week'},
+    kpi:{views:'1.6M',viewsTrend:'▲ 22.4% this month',completion:'71%',completionTrend:'▲ 6 pts vs Q1',tokens:'34,800',tokensTrend:'▲ 28% vs Mar',subs:'218',subsTrend:'▲ 41 this week'},
     recentDrops:[
       {title:'Papi Jordan · Tú No Baila Dembow',date:'Apr 24',tier:'Public',pos:'#018',views:'124K',pct:'73%'},
       {title:'Bad Bunny · Tití Me Preguntó',date:'Apr 17',tier:'Medium',pos:'#029',views:'88K',pct:'69%'},
@@ -413,10 +413,10 @@ const DATA = {
   },
   'yurgenis':{
     name:'Yurgenis', initial:'Y', handle:'@yurgenis · YUR AULAR · roster since 2023',
-    tier:'â­ Roster · Reggaetón Floor Lead', city:'ðŸ“ Medellín · Venezuela diaspora', active:'Active 2023-08-12',
+    tier:'⭐ Roster · Reggaetón Floor Lead', city:'📍 Medellín · Venezuela diaspora', active:'Active 2023-08-12',
     drops:'56 drops · 21 months',
     nextDrop:'Thu Apr 30 · 22:00 COT', nextSub:'in 5 days · public drop',
-    kpi:{views:'3.7M',viewsTrend:'â–² 14.8% this month',completion:'69%',completionTrend:'â–² 3 pts vs Q1',tokens:'52,900',tokensTrend:'â–² 11% vs Mar',subs:'389',subsTrend:'â–² 28 this week'},
+    kpi:{views:'3.7M',viewsTrend:'▲ 14.8% this month',completion:'69%',completionTrend:'▲ 3 pts vs Q1',tokens:'52,900',tokensTrend:'▲ 11% vs Mar',subs:'389',subsTrend:'▲ 28 this week'},
     recentDrops:[
       {title:'Ghetto Kids · Baja · class',date:'Apr 24',tier:'Public',pos:'#003',views:'1.2M',pct:'68%'},
       {title:'Manuel Turizo · La Bachata',date:'Apr 17',tier:'Public',pos:'#019',views:'214K',pct:'66%'},
@@ -439,15 +439,15 @@ const DATA = {
       {dot:'green',text:'<strong>LABARBIE</strong> proposed Bogotá-Medellín joint workshop',when:'3d ago'},
       {dot:'gold',text:'Cited in <strong>buenos-aires-reggaeton-scene</strong> pillar as cross-pollinator',when:'4d ago'},
       {dot:'pink',text:'<strong>5 custom requests</strong> from VIP Top · 2 already approved',when:'5d ago'},
-      {dot:'green',text:'<strong>Audience tier breakdown</strong>: Premium grew from 16% â†’ 24% in 60 days',when:'6d ago'}
+      {dot:'green',text:'<strong>Audience tier breakdown</strong>: Premium grew from 16% → 24% in 60 days',when:'6d ago'}
     ]
   },
   'kadorin-hitomi':{
     name:'Kadorin Hitomi', initial:'K', handle:'@kadorin-hitomi · PF40 cosplay roster · since 2025',
-    tier:'â­ Roster · Cosplay Fancam', city:'ðŸ“ Bangkok · Thailand', active:'Active 2025-01-08',
+    tier:'⭐ Roster · Cosplay Fancam', city:'📍 Bangkok · Thailand', active:'Active 2025-01-08',
     drops:'18 drops · 8 months',
     nextDrop:'Sat May 2 · CosForce04', nextSub:'live con-floor · 4 days',
-    kpi:{views:'820K',viewsTrend:'â–² 31.2% this month',completion:'76%',completionTrend:'â–² 9 pts vs Q1',tokens:'18,400',tokensTrend:'â–² 42% vs Mar',subs:'124',subsTrend:'â–² 19 this week'},
+    kpi:{views:'820K',viewsTrend:'▲ 31.2% this month',completion:'76%',completionTrend:'▲ 9 pts vs Q1',tokens:'18,400',tokensTrend:'▲ 42% vs Mar',subs:'124',subsTrend:'▲ 19 this week'},
     recentDrops:[
       {title:'NIKKE · Commander bow phrase',date:'Apr 24',tier:'Public',pos:'#005',views:'231K',pct:'78%'},
       {title:'Genshin · Yelan dragon ribbon',date:'Apr 17',tier:'Premium',pos:'#011',views:'118K',pct:'82%'},

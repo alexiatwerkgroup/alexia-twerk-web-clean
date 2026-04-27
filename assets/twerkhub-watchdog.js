@@ -4,12 +4,12 @@
  * recurred on this site. Loaded on EVERY page early. Idempotent + non-blocking.
  *
  * What it heals automatically (no human intervention needed):
- *   1. Dead tier CTA buttons (.tier__cta with href="#checkout-*") â†’ redirect to Discord
- *   2. Unbound .tier__cta[data-tier] â†’ opens TwkCheckout modal if available, else navigates to Discord
- *   3. Stuck countdowns (text not changing for 6s) â†’ re-init via TwerkhubCountdownsV2.start() if available
- *   4. Stale top-5 ranking vids in twk_blocked_videos â†’ purges them (SAGRADA #9)
- *   5. Missing </body> or </html> â†’ logs warning (can't auto-fix HTML, but flags it)
- *   6. Global uncaught errors â†’ logs to console with [twk-watchdog] prefix for triage
+ *   1. Dead tier CTA buttons (.tier__cta with href="#checkout-*") → redirect to Discord
+ *   2. Unbound .tier__cta[data-tier] → opens TwkCheckout modal if available, else navigates to Discord
+ *   3. Stuck countdowns (text not changing for 6s) → re-init via TwerkhubCountdownsV2.start() if available
+ *   4. Stale top-5 ranking vids in twk_blocked_videos → purges them (SAGRADA #9)
+ *   5. Missing </body> or </html> → logs warning (can't auto-fix HTML, but flags it)
+ *   6. Global uncaught errors → logs to console with [twk-watchdog] prefix for triage
  *
  * Polls every 10 seconds to catch late-injected content. Total cost: <1ms/poll.
  *
@@ -56,7 +56,7 @@
         var href = el.getAttribute('href') || '';
         var tier = el.getAttribute('data-tier') || '';
 
-        // Dead anchor â†’ Discord
+        // Dead anchor → Discord
         if (href.indexOf('#checkout-') === 0) {
           el.setAttribute('href', DISCORD);
           el.setAttribute('target', '_blank');
@@ -76,7 +76,7 @@
           el.__twkCheckoutBound = true;
         }
 
-        // Register Free â†’ ensure /profile.html
+        // Register Free → ensure /profile.html
         if (/register/i.test(el.textContent || '') && (!href || href === '#')) {
           el.setAttribute('href', '/profile.html');
         }

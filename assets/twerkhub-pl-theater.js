@@ -9,7 +9,7 @@
  * Also p8 — fixed the "blink-to-black" bug verified live in Chrome MCP:
  * heartbeat fired showInlinePaywall, which set player.src='about:blank'.
  * The blank load triggered onLoad, which couldn't extract a vid from
- * the blank URL â†’ fell into the `else` branch â†’ called hideInlinePaywall,
+ * the blank URL → fell into the `else` branch → called hideInlinePaywall,
  * REMOVING the overlay we'd just placed. Now onLoad bails immediately
  * when src is empty or about:blank, leaving the paywall intact.
  *
@@ -30,7 +30,7 @@
  * 101/150 for age-restricted videos — sometimes the iframe just sits black
  * forever with no error event. Added a 2-second playback heartbeat: after
  * onReady, if the player never enters PLAYING (1) or BUFFERING (3) within
- * 2s, assume the video is blocked â†’ show the Discord+Telegram paywall and
+ * 2s, assume the video is blocked → show the Discord+Telegram paywall and
  * mark the video as blocked for future short-circuit.
  *
  * 2026-04-26 fix p5: paywall flashed for ~0.5s then went black. Cause was
@@ -50,7 +50,7 @@
  * on the window that captures YouTube's onError 101/150 events without
  * touching the iframe. After each iframe load we send the YT IFrame API
  * "listening" + addEventListener('onError') commands so YT pushes events
- * to us. When 101 or 150 arrives â†’ show Discord paywall + memoize blocked.
+ * to us. When 101 or 150 arrives → show Discord paywall + memoize blocked.
  *
  * For themed playlist pages (/try-on-hot-leaks/, /ttl-latin-models/,
  * /hottest-cosplay-fancam/, /korean-girls-kpop-twerk/) that DON'T have an
@@ -63,7 +63,7 @@
  *
  * Side effects:
  *  - Marks video as viewed in localStorage (cross-session memory)
- *  - Adds a COMPACT green pill ("âœ“ VIEWED") absolutely positioned over the
+ *  - Adds a COMPACT green pill ("✓ VIEWED") absolutely positioned over the
  *    top-left of each clicked card. Real DOM <span>, not pseudo, so it
  *    survives any parent CSS conflicts.
  *  - Grants +15 tokens via AlexiaTokens.watchClip() per unique view
@@ -142,7 +142,7 @@
     modal.setAttribute('aria-modal', 'true');
     modal.innerHTML = [
       '<div class="twk-pl-theater-box">',
-      '  <button id="twk-pl-theater-close" type="button" aria-label="Close">Ã—</button>',
+      '  <button id="twk-pl-theater-close" type="button" aria-label="Close">×</button>',
       '  <div class="twk-pl-theater-frame-host" id="twk-pl-theater-frame-host"></div>',
       '</div>'
     ].join('');
@@ -181,7 +181,7 @@
         try { ytPlayer.destroy(); } catch(_){}
       }
       // â”€â”€ Black-screen heartbeat: if the player never enters PLAYING/BUFFERING
-      // within 2 seconds after onReady, assume +18 silent block â†’ show paywall.
+      // within 2 seconds after onReady, assume +18 silent block → show paywall.
       var playbackStarted = false;
       var blockHeartbeat  = null;
       function killHeartbeat(){ if (blockHeartbeat) { clearTimeout(blockHeartbeat); blockHeartbeat = null; } }
@@ -231,7 +231,7 @@
           onStateChange: function(ev){
             // -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
             if (ev.data === 1 || ev.data === 3) {
-              // Real playback or buffering started â†’ cancel silent-block timer
+              // Real playback or buffering started → cancel silent-block timer
               playbackStarted = true;
               killHeartbeat();
             }
@@ -245,7 +245,7 @@
           onError: function(ev){
             killHeartbeat();
             if (modalIsProt) return; // SAGRADA #9 — top-5 never paywalled
-            // 101/150 = embed disabled / age-restricted â†’ swap to paywall.
+            // 101/150 = embed disabled / age-restricted → swap to paywall.
             // Destroy player FIRST so YT.destroy() doesn't repaint over the
             // paywall HTML (this caused the ~0.5s flash bug pre-p5).
             try {
@@ -476,7 +476,7 @@
         stopTimeTracker();
         return;
       } else {
-        // Not blocked â†’ clear any leftover overlay from a previous video
+        // Not blocked → clear any leftover overlay from a previous video
         hideInlinePaywall(player, wrap);
       }
 
@@ -490,7 +490,7 @@
       setTimeout(subscribeInlineToEvents, 50);
 
       // â”€â”€ Black-screen heartbeat: 2.5s after load, if no PLAYING (1) or
-      // BUFFERING (3) state has been reported, assume +18 silent block â†’
+      // BUFFERING (3) state has been reported, assume +18 silent block →
       // show paywall. 2.5s gives slow connections a fair shot at buffering.
       if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
       window.__twkInlineHeartbeat = setTimeout(function(){

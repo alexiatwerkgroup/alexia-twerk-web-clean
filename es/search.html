@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
@@ -41,7 +41,7 @@ h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webk
 .sf{position:relative;margin-bottom:28px}
 .sf input{width:100%;padding:22px 24px 22px 56px;border-radius:999px;border:2px solid rgba(255,255,255,.1);background:rgba(20,20,32,.6);backdrop-filter:blur(14px);color:#fff;font-size:17px;font-weight:500;font-family:inherit;outline:none;transition:border-color .25s,box-shadow .25s}
 .sf input:focus{border-color:#ff2d87;box-shadow:0 0 0 4px rgba(255,45,135,.18)}
-.sf::before{content:"ðŸ”";position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:18px}
+.sf::before{content:"🔍";position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:18px}
 .chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:40px}
 .chip{padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#c7c7d3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .25s}
 .chip:hover,.chip.on{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;border-color:transparent;transform:translateY(-2px)}
@@ -108,7 +108,7 @@ mark{background:rgba(255,45,135,.3);color:#fff;padding:1px 3px;border-radius:3px
     <div class="twk-nav-v1-lang" role="group" aria-label="Language">
       <a href="#" data-lang="en" title="English">EN</a>
       <a href="#" data-lang="es" class="is-active" title="Español">ES</a>
-      <a href="#" data-lang="ru" title="Ð ÑƒÑÑÐºÐ¸Ð¹">RU</a>
+      <a href="#" data-lang="ru" title="Русский">RU</a>
     </div>
     <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
   </div>
@@ -136,7 +136,7 @@ mark{background:rgba(255,45,135,.3);color:#fff;padding:1px 3px;border-radius:3px
   <p class="lede">Creadores, playlists, posts de blog, cuts. Tipeá un nombre, una canción, un país, un estudio, un movimiento.</p>
 
   <form class="sf" role="search" onsubmit="event.preventDefault(); runSearch();">
-    <input id="q" type="search" placeholder="Probá: Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸, WanGong Lin, heels, Moscú, K-dance..." autocomplete="off" autofocus>
+    <input id="q" type="search" placeholder="Probá: Лада Гоцци, WanGong Lin, heels, Moscú, K-dance..." autocomplete="off" autofocus>
   </form>
 
   <div class="chips">
@@ -149,28 +149,28 @@ mark{background:rgba(255,45,135,.3);color:#fff;padding:1px 3px;border-radius:3px
 
   <div id="results" class="results"></div>
 
-  <a class="back" href="/es/">â† Volver al inicio</a>
+  <a class="back" href="/es/">← Volver al inicio</a>
 </div>
 
 <script>
 var INDEX = [
-  {type:"creator",title:"Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸ · High-Heels",country:"Rusia · Moscú",desc:"Moscow Dance Centre NRG · instructora de heels choreo · 167K vistas en Pharaoh ÐŸÐ»Ð¾Ð¼Ð±Ð¸Ñ€",href:"/creator/lada-gozzi.html",thumb:"https://i.ytimg.com/vi/X-lPzSuvf3k/default.jpg"},
-  {type:"creator",title:"WanGong Lin æž—ç¢—å…¬",country:"Taiwán · Taipei",desc:"iDance Studio Taipei · Taiwan Twerk Family Workshop · K-dance tier 1",href:"/creator/wangong-lin.html",thumb:"https://i.ytimg.com/vi/Ba8udR5zP3g/default.jpg"},
+  {type:"creator",title:"Лада Гоцци · High-Heels",country:"Rusia · Moscú",desc:"Moscow Dance Centre NRG · instructora de heels choreo · 167K vistas en Pharaoh Пломбир",href:"/creator/lada-gozzi.html",thumb:"https://i.ytimg.com/vi/X-lPzSuvf3k/default.jpg"},
+  {type:"creator",title:"WanGong Lin 林碗公",country:"Taiwán · Taipei",desc:"iDance Studio Taipei · Taiwan Twerk Family Workshop · K-dance tier 1",href:"/creator/wangong-lin.html",thumb:"https://i.ytimg.com/vi/Ba8udR5zP3g/default.jpg"},
   {type:"creator",title:"Nika Chill",country:"USA · LA",desc:"Currículum Chill Cheeks · LA-based · 10 lecciones gratis para principiantes",href:"/creator/nika-chill.html",thumb:"https://i.ytimg.com/vi/HxThOzMTdmg/default.jpg"},
   {type:"creator",title:"Abasheva Yana · TWERKIT Studio",country:"Rusia",desc:"Coreografía Rihanna Needed Me · 904K vistas · fundadora de TWERKIT Studio",href:"/creator/abasheva-yana.html",thumb:"https://i.ytimg.com/vi/rJQedlVdCCU/default.jpg"},
   {type:"creator",title:"Kato Dance Studio · Ciri",country:"Alemania",desc:"Coreografía Nicki Minaj Barbie World · trabajo de escenario pulido",href:"/creator/kato-dance-studio.html",thumb:"https://i.ytimg.com/vi/3D71UgdBwI0/default.jpg"},
   {type:"creator",title:"Lena Indica",country:"Rusia",desc:"Indica team · especialista en heels · Pop Smoke Dior · 303K vistas",href:"/creator/lena-indica.html",thumb:"https://i.ytimg.com/vi/nIkHv5p6bAU/default.jpg"},
   {type:"creator",title:"Debii Abreu",country:"República Dominicana",desc:"Sabor latino más técnica · Reyanna Maria So Pretty · workshops Medellín + Cartagena",href:"/creator/debii-abreu.html",thumb:"https://i.ytimg.com/vi/k68KXBiflR8/default.jpg"},
-  {type:"creator",title:"Yurgenis · YUR AULAR",country:"Venezuela â†’ Medellín",desc:"Rey del baile reggaetón · Ghetto Kids Baja · 22K likes",href:"/creator/yurgenis.html",thumb:"https://i.ytimg.com/vi/GSeYEJ3qIxU/default.jpg"},
+  {type:"creator",title:"Yurgenis · YUR AULAR",country:"Venezuela → Medellín",desc:"Rey del baile reggaetón · Ghetto Kids Baja · 22K likes",href:"/creator/yurgenis.html",thumb:"https://i.ytimg.com/vi/GSeYEJ3qIxU/default.jpg"},
   {type:"creator",title:"Angela · iDance Studio",country:"Taiwán · Taipei",desc:"Cámara cinemática filosa · Iggy Azalea Sip It",href:"/creator/angela-idance.html",thumb:"https://i.ytimg.com/vi/EX8pMpkLDYI/default.jpg"},
-  {type:"creator",title:"FOXYEN · iDance",country:"Taiwán · Taipei",desc:"ChlÃ¶e Have Mercy · coreografía de manual",href:"/creator/foxyen.html",thumb:"https://i.ytimg.com/vi/6aoJbhxfOn4/default.jpg"},
-  {type:"creator",title:"BEFOX Dance Studio",country:"Corea · Seúl",desc:"Cruce K-pop Ã— stripdance · Sam Smith Unholy",href:"/creator/befox-dance-studio.html",thumb:"https://i.ytimg.com/vi/Kj9T74htwrA/default.jpg"},
+  {type:"creator",title:"FOXYEN · iDance",country:"Taiwán · Taipei",desc:"Chlöe Have Mercy · coreografía de manual",href:"/creator/foxyen.html",thumb:"https://i.ytimg.com/vi/6aoJbhxfOn4/default.jpg"},
+  {type:"creator",title:"BEFOX Dance Studio",country:"Corea · Seúl",desc:"Cruce K-pop × stripdance · Sam Smith Unholy",href:"/creator/befox-dance-studio.html",thumb:"https://i.ytimg.com/vi/Kj9T74htwrA/default.jpg"},
   {type:"creator",title:"Emiliano Ferrari Villalobo",country:"Argentina · Zárate",desc:"Instructor de reggaetón · 2.8M vistas Me Gusta El Reggaetón",href:"/creator/emiliano-ferrari-villalobo.html",thumb:"https://i.ytimg.com/vi/Ye-jOmIomn4/default.jpg"},
   {type:"creator",title:"Sugaarrbbaby",country:"Rusia · Moscú",desc:"Solo creator · estética bedroom-frame · MDC NRG-adjacent",href:"/creator/sugaarrbbaby.html",thumb:"https://i.ytimg.com/vi/vpF6oGPZf1s/default.jpg"},
   {type:"creator",title:"Kadorin Hitomi",country:"Tailandia · Bangkok",desc:"Cosplayer thai en circuito Seúl + Taipei · NIKKE + PF40",href:"/creator/kadorin-hitomi.html",thumb:"https://i.ytimg.com/vi/cJfDUDYaWYo/default.jpg"},
-  {type:"creator",title:"VR KINGS",country:"Corea · Seúl",desc:"Equipo de fancam VR 180Â° · captura 8K stereoscópica · referencia VR de la escena K-dance",href:"/creator/vr-kings.html"},
+  {type:"creator",title:"VR KINGS",country:"Corea · Seúl",desc:"Equipo de fancam VR 180° · captura 8K stereoscópica · referencia VR de la escena K-dance",href:"/creator/vr-kings.html"},
   {type:"creator",title:"LABARBIE",country:"Colombia · Medellín",desc:"Bailarina solo · floor work reggaetón · entrenada en Bogotá",href:"/creator/labarbie.html"},
-  {type:"creator",title:"Patricia Atakora",country:"Reino Unido · Londres",desc:"Ghanesa-británica · cruce afrobeats Ã— twerk · entrenada en Lagos",href:"/creator/patricia-atakora.html"},
+  {type:"creator",title:"Patricia Atakora",country:"Reino Unido · Londres",desc:"Ghanesa-británica · cruce afrobeats × twerk · entrenada en Lagos",href:"/creator/patricia-atakora.html"},
   {type:"creator",title:"Nika Chilli (Odessa)",country:"Ucrania · Odessa",desc:"Solo dancer ucraniana · escena costera del Mar Negro · distinta de Nika Chill (LA)",href:"/creator/nika-chilli-odessa.html"},
   {type:"playlist",title:"El archivo principal · 264 videos",country:"Flagship",desc:"Playlist firma · seleccionada a mano por la casa · drops semanales",href:"/playlist/",thumb:"https://i.ytimg.com/vi/X-lPzSuvf3k/default.jpg"},
   {type:"post",title:"Por qué construí Twerkhub · 8 años, sin algoritmo",country:"Blog · Manifiesto",desc:"Ensayo del fundador por Anti · Palermo 2018 · 2.178 miembros · 38 creators",href:"/es/blog/why-i-built-twerkhub.html"},
@@ -205,7 +205,7 @@ function runSearch(){
     return;
   }
   el.innerHTML = filtered.map(function(r){
-    var thumb = r.thumb ? '<img src="'+r.thumb+'" alt="'+r.title+'" loading="lazy" decoding="async">' : '<div style="width:110px;height:70px;border-radius:10px;background:linear-gradient(135deg,rgba(255,45,135,.15),rgba(157,78,221,.15));display:flex;align-items:center;justify-content:center;font-size:24px">ðŸ“„</div>';
+    var thumb = r.thumb ? '<img src="'+r.thumb+'" alt="'+r.title+'" loading="lazy" decoding="async">' : '<div style="width:110px;height:70px;border-radius:10px;background:linear-gradient(135deg,rgba(255,45,135,.15),rgba(157,78,221,.15));display:flex;align-items:center;justify-content:center;font-size:24px">📄</div>';
     return '<a class="r" href="'+r.href+'">' + thumb +
       '<div><div class="src">'+(r.country||r.type)+'</div><h3>'+highlight(r.title,q)+'</h3><p>'+highlight(r.desc,q)+'</p></div></a>';
   }).join('');
@@ -236,7 +236,7 @@ runSearch();
 </section>
 
 <footer style="text-align:center;padding:30px;color:#6b6b7b;font-size:12px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase">
-  Â© 2026 Twerkhub · <a href="/es/about.html" style="color:#c7c7d3">Sobre</a> · <a href="/es/blog/" style="color:#c7c7d3">Blog</a> · <a href="/es/contact.html" style="color:#c7c7d3">Contacto</a>
+  © 2026 Twerkhub · <a href="/es/about.html" style="color:#c7c7d3">Sobre</a> · <a href="/es/blog/" style="color:#c7c7d3">Blog</a> · <a href="/es/contact.html" style="color:#c7c7d3">Contacto</a>
 </footer>
 
 <script defer src="/assets/online-count-global.js?v=20260426-p1"></script>

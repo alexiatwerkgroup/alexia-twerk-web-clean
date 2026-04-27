@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
@@ -42,7 +42,7 @@
   .ac__status .dot{width:8px;height:8px;border-radius:50%;background:var(--elite-ok);animation:pulse 2s infinite}
   @keyframes pulse{0%,100%{opacity:.7}50%{opacity:1}}
 
-  /* â”€â”€ Top cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Top cards ─────────────────────────────────────────────────────── */
   .stats{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px;margin-bottom:24px}
   @media(max-width:760px){.stats{grid-template-columns:1fr}}
 
@@ -62,7 +62,7 @@
   .card--tier .badge{display:inline-block;padding:4px 10px;border-radius:999px;font:800 10px/1 var(--elite-font-sans);
     letter-spacing:.18em;text-transform:uppercase;background:rgba(168,166,180,.14);color:var(--elite-text-dim);border:1px solid var(--elite-line-strong);margin-top:10px}
 
-  /* â”€â”€ Progress â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Progress ──────────────────────────────────────────────────────── */
   .progress{background:linear-gradient(170deg,var(--elite-bg-soft),var(--elite-bg-card));
     border:1px solid var(--elite-line);border-radius:22px;padding:28px;margin-bottom:24px}
   .progress__head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;flex-wrap:wrap;gap:8px}
@@ -74,7 +74,7 @@
   .progress__stats{display:flex;justify-content:space-between;font:500 12px/1 var(--elite-font-sans);color:var(--elite-text-dim)}
   .progress__hint{font:italic 400 13px/1.5 var(--elite-font-serif);color:var(--elite-gold);margin-top:14px}
 
-  /* â”€â”€ Two-col layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Two-col layout ─────────────────────────────────────────────────── */
   .grid{display:grid;grid-template-columns:1.1fr 1fr;gap:24px}
   @media(max-width:820px){.grid{grid-template-columns:1fr}}
 
@@ -90,7 +90,7 @@
   .path__label{display:flex;align-items:center;gap:10px;font:600 13px/1.3 var(--elite-font-sans);color:var(--elite-text);flex:1;min-width:0}
   .path__check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--elite-line-strong);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px}
   .path.done .path__check{background:var(--elite-ok);border-color:var(--elite-ok);color:#0a0a0d}
-  .path.done .path__check::before{content:"âœ“";font-weight:800}
+  .path.done .path__check::before{content:"✓";font-weight:800}
   .path__val{font:800 11px/1 var(--elite-font-sans);padding:4px 10px;border-radius:999px;
     background:rgba(232,200,128,.1);color:var(--elite-gold);border:1px solid rgba(232,200,128,.28);
     letter-spacing:.06em;white-space:nowrap}
@@ -130,6 +130,7 @@
 <!-- twk-schema-v2 -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Your Dashboard · Alexia Twerk Group","description":"Your token balance, login streak, referral code and path to Alexia Elite.","url":"https://alexiatwerkgroup.com/account.html","isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Your Dashboard · Alexia Twerk Group","item":"https://alexiatwerkgroup.com/account.html"}]}</script>
+<meta name="robots" content="noindex,nofollow">
 </head>
 <body>
 <!-- TWK_NAV_V1 -->
@@ -179,7 +180,7 @@
     <div class="twk-nav-v1-lang" role="group" aria-label="Language">
       <a href="#" data-lang="en" class="is-active" title="English">EN</a>
       <a href="#" data-lang="es" title="Español">ES</a>
-      <a href="#" data-lang="ru" title="Ð ÑƒÑÑÐºÐ¸Ð¹">RU</a>
+      <a href="#" data-lang="ru" title="Русский">RU</a>
     </div>
     <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
   </div>
@@ -202,12 +203,12 @@
 
 <!-- NAV — unified with index.html -->
 
-<!-- â•â•â•â•â•â•â• AUTH PANEL · rendered by twerkhub-auth.js â•â•â•â•â•â•â• -->
+<!-- ═══════ AUTH PANEL · rendered by twerkhub-auth.js ═══════ -->
 <!-- When logged out: shows Sign In + Sign Up buttons (modals open username+password forms with Forgot password? + Remember me) -->
 <!-- When logged in: shows greeting + Log Out button -->
 <div id="twk-account-auth" style="max-width:560px;margin:50px auto 30px;padding:0 22px"></div>
 
-<!-- â•â•â•â•â•â•â• DASHBOARD â•â•â•â•â•â•â• -->
+<!-- ═══════ DASHBOARD ═══════ -->
 <div class="ac">
   <div class="ac__head">
     <div>
@@ -236,7 +237,7 @@
     </div>
   </div>
 
-  <!-- PROGRESS TO NEXT TIER · dynamic (Basicâ†’Mediumâ†’Premiumâ†’VIP Top) -->
+  <!-- PROGRESS TO NEXT TIER · dynamic (Basic→Medium→Premium→VIP Top) -->
   <div class="progress">
     <div class="progress__head">
       <div class="progress__title">Progress to <span id="ac-next-tier-name">next tier</span></div>
@@ -280,7 +281,7 @@
         <div><div class="n" id="ref-joined">0</div><div class="l">Joined</div></div>
         <div><div class="n" id="ref-earned">0</div><div class="l">Tokens from refs</div></div>
       </div>
-      <button class="btn" id="ref-share-btn" type="button">Share your link â†’</button>
+      <button class="btn" id="ref-share-btn" type="button">Share your link →</button>
     </div>
   </div>
 
@@ -289,8 +290,8 @@
     <h3>Skip the farming?</h3>
     <p>Tiered membership. $19 gets you into the Inner Room today. Cancel anytime.</p>
     <div class="row">
-      <a class="primary" href="/membership.html">See Tiers â†’</a>
-      <a class="ghost" href="/alexia-twerk-leaks.html">Keep exploring â†’</a>
+      <a class="primary" href="/membership.html">See Tiers →</a>
+      <a class="ghost" href="/alexia-twerk-leaks.html">Keep exploring →</a>
     </div>
   </div>
 </div>
@@ -327,7 +328,7 @@
     // cap at 100% since there's nothing above.
     var nextTierNames = { medium: 'Medium', premium: 'Premium', vip: 'VIP Top' };
     var nextTier = s.nextTier;
-    var target = nextTier ? nextTier.at : s.balance; // at VIP â†’ show full bar
+    var target = nextTier ? nextTier.at : s.balance; // at VIP → show full bar
     var pct = Math.min(100, Math.round((s.balance / (target || 1)) * 100));
     if (!nextTier) pct = 100;
     document.getElementById('ac-fill').style.width = pct + '%';
@@ -376,7 +377,7 @@
       navigator.clipboard.writeText(link).then(function(){
         var b = document.getElementById('ref-copy-btn');
         var t = b.textContent;
-        b.textContent = 'Copied âœ“';
+        b.textContent = 'Copied ✓';
         setTimeout(function(){ b.textContent = t; }, 1500);
       });
     });
@@ -390,7 +391,7 @@
         navigator.clipboard.writeText(text);
         var b = document.getElementById('ref-share-btn');
         var t = b.textContent;
-        b.textContent = 'Link copied âœ“';
+        b.textContent = 'Link copied ✓';
         setTimeout(function(){ b.textContent = t; }, 1500);
       }
       if (window.AlexiaTokens && window.AlexiaTokens.onShare) window.AlexiaTokens.onShare();

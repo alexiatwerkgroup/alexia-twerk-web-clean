@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
@@ -72,8 +72,8 @@
   </p>
 
   <div class="source-toggle">
-    <button class="source-btn is-active" id="src-supabase" onclick="setSource('supabase')">ðŸŒ Supabase (global)</button>
-    <button class="source-btn" id="src-local" onclick="setSource('local')">ðŸ’¾ LocalStorage (this browser)</button>
+    <button class="source-btn is-active" id="src-supabase" onclick="setSource('supabase')">🌐 Supabase (global)</button>
+    <button class="source-btn" id="src-local" onclick="setSource('local')">💾 LocalStorage (this browser)</button>
   </div>
 
   <div class="stats" id="stats"></div>
@@ -82,7 +82,7 @@
     <input type="search" id="search" class="search" placeholder="Search by username or email…">
     <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
     <button class="btn btn-ghost" onclick="exportJSON()">Export JSON</button>
-    <button class="btn btn-ghost" onclick="refresh()">â†» Refresh</button>
+    <button class="btn btn-ghost" onclick="refresh()">↻ Refresh</button>
   </div>
 
   <div id="err-box" class="err" style="display:none"></div>
@@ -91,13 +91,13 @@
     <thead>
       <tr>
         <th data-sort="rank">#</th>
-        <th data-sort="username">Username <span class="arrow">â†•</span></th>
-        <th data-sort="email">Email <span class="arrow">â†•</span></th>
-        <th data-sort="tokens" class="active">Tokens <span class="arrow">â†“</span></th>
-        <th data-sort="total_earned">Earned <span class="arrow">â†•</span></th>
-        <th data-sort="streak">Streak <span class="arrow">â†•</span></th>
-        <th data-sort="tier">Tier <span class="arrow">â†•</span></th>
-        <th data-sort="registered_at">Registered <span class="arrow">â†•</span></th>
+        <th data-sort="username">Username <span class="arrow">↕</span></th>
+        <th data-sort="email">Email <span class="arrow">↕</span></th>
+        <th data-sort="tokens" class="active">Tokens <span class="arrow">↓</span></th>
+        <th data-sort="total_earned">Earned <span class="arrow">↕</span></th>
+        <th data-sort="streak">Streak <span class="arrow">↕</span></th>
+        <th data-sort="tier">Tier <span class="arrow">↕</span></th>
+        <th data-sort="registered_at">Registered <span class="arrow">↕</span></th>
       </tr>
     </thead>
     <tbody id="rows">
@@ -232,8 +232,8 @@
       th.classList.toggle('active', k === state.sortKey);
       var arrow = th.querySelector('.arrow');
       if (arrow) {
-        if (k === state.sortKey) arrow.textContent = state.sortDir==='asc' ? 'â†‘' : 'â†“';
-        else arrow.textContent = 'â†•';
+        if (k === state.sortKey) arrow.textContent = state.sortDir==='asc' ? '↑' : '↓';
+        else arrow.textContent = '↕';
       }
     });
   }

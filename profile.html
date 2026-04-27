@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p1" async></script>
@@ -53,11 +53,11 @@ body::before{
 
 /* Topbar styles come from /assets/twerkhub-page.css + twerkhub-topbar-enhance.js (loaded in <head>). Nothing inline. */
 
-/* â•â•â•â•â•â•â• PAGE WRAP â•â•â•â•â•â•â• */
+/* ═══════ PAGE WRAP ═══════ */
 .wrap{max-width:1240px;margin:0 auto;padding:40px 28px 100px}
 @media (max-width:620px){.wrap{padding:24px 16px 80px}}
 
-/* â•â•â•â•â•â•â• HERO · glass card + avatar â•â•â•â•â•â•â• */
+/* ═══════ HERO · glass card + avatar ═══════ */
 .hero{
   position:relative;
   border:1px solid var(--border);
@@ -153,7 +153,7 @@ body::before{
 .hero-pill.live .dot{width:6px;height:6px;border-radius:50%;background:#10f99d;box-shadow:0 0 10px rgba(16,249,157,.7);position:relative}
 .hero-pill.live .dot::before{content:"";position:absolute;inset:-3px;border-radius:50%;background:#10f99d;opacity:.5;animation:liveDot 1.6s ease-out infinite}
 
-/* â•â•â•â•â•â•â• LAYOUT · sidebar + main â•â•â•â•â•â•â• */
+/* ═══════ LAYOUT · sidebar + main ═══════ */
 .grid-layout{
   display:grid;
   grid-template-columns:300px minmax(0,1fr);
@@ -162,7 +162,7 @@ body::before{
 }
 @media (max-width:960px){.grid-layout{grid-template-columns:1fr}}
 
-/* â•â•â•â•â•â•â• SIDEBAR · stats â•â•â•â•â•â•â• */
+/* ═══════ SIDEBAR · stats ═══════ */
 .sidebar{display:flex;flex-direction:column;gap:16px;position:sticky;top:94px;align-self:start}
 @media (max-width:960px){.sidebar{position:static}}
 
@@ -185,7 +185,7 @@ body::before{
   font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
   color:var(--text-dim);
 }
-.panel-head h3::before{content:"â–¸ ";color:var(--pink)}
+.panel-head h3::before{content:"▸ ";color:var(--pink)}
 .panel-body{padding:18px 20px}
 
 .stat-list{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -235,7 +235,7 @@ body::before{
 .tokens-sub{font-size:11px;color:var(--text-soft);margin-top:8px;position:relative}
 .tokens-sub a{color:var(--pink-soft);font-weight:700;text-decoration:underline;text-decoration-color:rgba(255,111,168,.3);text-underline-offset:3px}
 
-/* â•â•â•â•â•â•â• MAIN · tabs + sections â•â•â•â•â•â•â• */
+/* ═══════ MAIN · tabs + sections ═══════ */
 .main{min-width:0}
 .tabs{
   display:flex;gap:6px;flex-wrap:wrap;
@@ -321,7 +321,7 @@ body::before{
 .empty .cta{display:inline-block;padding:11px 22px;border-radius:999px;background:linear-gradient(90deg, var(--pink), var(--purple));font-size:12px;font-weight:800;letter-spacing:.06em;color:#fff;box-shadow:0 8px 22px rgba(255,45,135,.4);transition:transform .2s, box-shadow .2s}
 .empty .cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,45,135,.55)}
 
-/* â•â•â•â•â•â•â• EDIT PROFILE PANEL â•â•â•â•â•â•â• */
+/* ═══════ EDIT PROFILE PANEL ═══════ */
 .edit-panel{margin-top:28px}
 .edit-panel .panel-head h3{color:var(--gold-soft)}
 .edit-panel .panel-head h3::before{color:var(--gold)}
@@ -372,7 +372,7 @@ body::before{
 .ghost-btn:hover{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.18)}
 .status{min-height:16px;font-family:var(--font-mono);font-size:11px;color:var(--text-soft);letter-spacing:.05em}
 
-/* â•â•â•â•â•â•â• LOGOUT · bottom-right pill â•â•â•â•â•â•â• */
+/* ═══════ LOGOUT · bottom-right pill ═══════ */
 .logout-row{display:flex;justify-content:flex-end;margin-top:32px}
 .logout-btn{
   display:inline-flex;align-items:center;gap:10px;
@@ -386,7 +386,7 @@ body::before{
 .logout-btn:hover{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.55);color:#ffb3b3;transform:translateY(-1px);box-shadow:0 10px 28px rgba(239,68,68,.25)}
 .logout-btn .ic{font-size:14px}
 
-/* â•â•â•â•â•â•â• FOOTER â•â•â•â•â•â•â• */
+/* ═══════ FOOTER ═══════ */
 .site-footer{
   margin-top:56px;padding:34px 28px 22px;
   border-top:1px solid var(--border);
@@ -403,7 +403,7 @@ body::before{
 .footer-sub{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--text-dim)}
 .footer-sub .dot{color:var(--gold);margin:0 8px}
 
-/* â•â•â•â•â•â•â• MUSIC TOGGLE · floating bottom-left â•â•â•â•â•â•â• */
+/* ═══════ MUSIC TOGGLE · floating bottom-left ═══════ */
 .music-toggle{
   position:fixed;left:22px;bottom:22px;z-index:90;
   width:52px;height:52px;border-radius:50%;
@@ -482,7 +482,7 @@ body::before{
     <div class="twk-nav-v1-lang" role="group" aria-label="Language">
       <a href="#" data-lang="en" class="is-active" title="English">EN</a>
       <a href="#" data-lang="es" title="Español">ES</a>
-      <a href="#" data-lang="ru" title="Ð ÑƒÑÑÐºÐ¸Ð¹">RU</a>
+      <a href="#" data-lang="ru" title="Русский">RU</a>
     </div>
     <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
   </div>
@@ -506,7 +506,7 @@ body::before{
 <!-- TOPBAR · unified with home (twerkhub-topbar 2.0). Live pill + locale slot are injected by twerkhub-topbar-enhance.js -->
 <div class="wrap">
 
-  <!-- â•â•â•â•â•â• HERO · dynamic identity (reads alexia_current_user or falls back to Guest) â•â•â•â•â•â• -->
+  <!-- ══════ HERO · dynamic identity (reads alexia_current_user or falls back to Guest) ══════ -->
   <section class="hero">
     <div class="avatar-ring" id="hero-avatar-ring" aria-label="Your avatar">
       <div class="avatar-preview" id="avatar-preview">?</div>
@@ -520,16 +520,16 @@ body::before{
     </div>
   </section>
 
-  <!-- â•â•â•â•â•â• LAYOUT â•â•â•â•â•â• -->
+  <!-- ══════ LAYOUT ══════ -->
   <div class="grid-layout">
 
-    <!-- â”€â”€â”€ SIDEBAR · stats â”€â”€â”€ -->
+    <!-- ─── SIDEBAR · stats ─── -->
     <aside class="sidebar">
 
       <div class="tokens-card">
         <div class="tokens-label">Token Balance</div>
         <div class="tokens-value" id="tokens-balance">1,240 <small>TWK</small></div>
-        <div class="tokens-sub"><a href="/membership.html">Top up â†’</a> or <a href="/alexia-video-packs.html">spend on packs</a></div>
+        <div class="tokens-sub"><a href="/membership.html">Top up →</a> or <a href="/alexia-video-packs.html">spend on packs</a></div>
       </div>
 
       <div class="panel">
@@ -574,7 +574,7 @@ body::before{
 
     </aside>
 
-    <!-- â”€â”€â”€ MAIN · tabs + sections â”€â”€â”€ -->
+    <!-- ─── MAIN · tabs + sections ─── -->
     <main class="main">
 
       <div class="tabs" role="tablist">
@@ -594,7 +594,7 @@ body::before{
           <div class="empty-icon">🎬</div>
           <h4>No history yet</h4>
           <p>Videos you watch across Twerkhub will show up here — synced to your account and encrypted end-to-end.</p>
-          <a href="/playlist/" class="cta">Start watching â†’</a>
+          <a href="/playlist/" class="cta">Start watching →</a>
         </div>
       </section>
 
@@ -607,7 +607,7 @@ body::before{
         <div class="card-grid">
           <article class="card">
             <div class="card-thumb">
-              <div class="placeholder">👍</div>
+              <div class="placeholder">💎</div>
               <span class="card-tag gold">Premium</span>
               <span class="card-dur">4:12</span>
             </div>
@@ -618,7 +618,7 @@ body::before{
           </article>
           <article class="card">
             <div class="card-thumb">
-              <div class="placeholder">ðŸ”¥</div>
+              <div class="placeholder">🔥</div>
               <span class="card-tag">Hot</span>
               <span class="card-dur">3:45</span>
             </div>
@@ -629,7 +629,7 @@ body::before{
           </article>
           <article class="card">
             <div class="card-thumb">
-              <div class="placeholder">â­</div>
+              <div class="placeholder">⭐</div>
               <span class="card-tag">New</span>
               <span class="card-dur">5:02</span>
             </div>
@@ -640,7 +640,7 @@ body::before{
           </article>
           <article class="card">
             <div class="card-thumb">
-              <div class="placeholder">ðŸ’«</div>
+              <div class="placeholder">💫</div>
               <span class="card-tag">Saved</span>
               <span class="card-dur">2:58</span>
             </div>
@@ -661,7 +661,7 @@ body::before{
         <div class="card-grid">
           <article class="card">
             <div class="card-thumb">
-              <div class="placeholder" style="font-size:42px">ðŸŽ¯</div>
+              <div class="placeholder" style="font-size:42px">🎯</div>
               <span class="card-tag gold">42 videos</span>
             </div>
             <div class="card-body">
@@ -671,7 +671,7 @@ body::before{
           </article>
           <article class="card">
             <div class="card-thumb">
-              <div class="placeholder" style="font-size:42px">ðŸ‘‘</div>
+              <div class="placeholder" style="font-size:42px">👑</div>
               <span class="card-tag">18 videos</span>
             </div>
             <div class="card-body">
@@ -681,7 +681,7 @@ body::before{
           </article>
           <article class="card">
             <div class="card-thumb">
-              <div class="placeholder" style="font-size:42px">ðŸŒ™</div>
+              <div class="placeholder" style="font-size:42px">🌙</div>
               <span class="card-tag">9 videos</span>
             </div>
             <div class="card-body">
@@ -732,7 +732,7 @@ body::before{
         </div>
       </section>
 
-      <!-- â”€â”€â”€ EDIT PROFILE â”€â”€â”€ -->
+      <!-- ─── EDIT PROFILE ─── -->
       <section class="panel edit-panel">
         <div class="panel-head"><h3>Edit forum identity</h3></div>
         <div class="edit-grid">
@@ -761,24 +761,24 @@ body::before{
         </div>
       </section>
 
-      <!-- â”€â”€â”€ LOGOUT â”€â”€â”€ -->
+      <!-- ─── LOGOUT ─── -->
       <div class="logout-row">
-        <button class="logout-btn" id="logout-btn" type="button"><span class="ic">â»</span><span>Log out</span></button>
+        <button class="logout-btn" id="logout-btn" type="button"><span class="ic">⏻</span><span>Log out</span></button>
       </div>
 
     </main>
   </div>
 </div>
 
-<!-- â”€â”€â”€ FOOTER â”€â”€â”€ -->
+<!-- ─── FOOTER ─── -->
 <footer class="site-footer">
   <div class="footer-slogan">Watch and regret later.</div>
   <div class="footer-sub">Twerkhub <span class="dot">·</span> Founded by Anti (firestarter) <span class="dot">·</span> Est. 2018</div>
 </footer>
 
-<!-- â”€â”€â”€ FLOATING MUSIC TOGGLE â”€â”€â”€ -->
+<!-- ─── FLOATING MUSIC TOGGLE ─── -->
 <button class="music-toggle" id="music-toggle" type="button" aria-label="Toggle music">
-  <span class="ic" id="music-icon">â™ª</span>
+  <span class="ic" id="music-icon">♪</span>
 </button>
 
 <!-- Existing functional scripts — profile-page.js hooks into the IDs/classes above -->
@@ -789,7 +789,7 @@ body::before{
 <script src="/assets/token-system.js?v=20260425-p8" defer></script>
 
 <script>
-/* â”€â”€â”€ Mirror avatar + nickname from edit form into hero (same source of truth) â”€â”€â”€ */
+/* ─── Mirror avatar + nickname from edit form into hero (same source of truth) ─── */
 (function(){
   'use strict';
   var STORAGE_KEY = 'alexia_forum_profile_v1';
@@ -841,7 +841,7 @@ body::before{
         cta.href = '#';
         cta.className = 'guest-cta hero-pill';
         cta.style.cssText = 'cursor:pointer;background:linear-gradient(135deg,rgba(255,45,135,.2),rgba(157,78,221,.18));border:1px solid rgba(255,45,135,.5);color:#ff6fa8;font-weight:800;';
-        cta.textContent = 'Sign up to save your progress â†’';
+        cta.textContent = 'Sign up to save your progress →';
         cta.addEventListener('click', function(ev){
           ev.preventDefault();
           try { window.TwerkhubAuth && window.TwerkhubAuth.showForm && window.TwerkhubAuth.showForm(); } catch(_){}
@@ -883,7 +883,7 @@ body::before{
   if (rmBtn) rmBtn.addEventListener('click', function(){ setTimeout(mirror, 150); });
 })();
 
-/* â”€â”€â”€ Tabs â”€â”€â”€ */
+/* ─── Tabs ─── */
 (function(){
   var tabs = document.querySelectorAll('.tab');
   var sections = document.querySelectorAll('.section');
@@ -896,7 +896,7 @@ body::before{
   });
 })();
 
-/* â”€â”€â”€ Floating music toggle · postMessage to parent frame (parity with rest of site) â”€â”€â”€ */
+/* ─── Floating music toggle · postMessage to parent frame (parity with rest of site) ─── */
 (function(){
   var btn = document.getElementById('music-toggle');
   var icon = document.getElementById('music-icon');
@@ -905,7 +905,7 @@ body::before{
   btn.addEventListener('click', function(){
     playing = !playing;
     btn.classList.toggle('playing', playing);
-    icon.textContent = playing ? 'â™«' : 'â™ª';
+    icon.textContent = playing ? '♫' : '♪';
     try {
       window.parent.postMessage(playing ? 'alexia-play-music' : 'alexia-stop-music', '*');
     } catch(e){}
@@ -918,10 +918,10 @@ body::before{
   });
 })();
 
-/* â”€â”€â”€ Logout · ALWAYS delegates to TwerkhubAuth (now bulletproof: prefix-scan
+/* ─── Logout · ALWAYS delegates to TwerkhubAuth (now bulletproof: prefix-scan
        wipe, SW unregister, cache clear, hard reload). If TwerkhubAuth hasn't
        loaded yet, we wait briefly for it before falling back to a manual
-       prefix-scan wipe — otherwise different keys would leak between flows. â”€â”€â”€ */
+       prefix-scan wipe — otherwise different keys would leak between flows. ─── */
 (function(){
   var btn = document.getElementById('logout-btn');
   if (!btn) return;
@@ -950,7 +950,7 @@ body::before{
       window.TwerkhubAuth.logout();
       return;
     }
-    // 3 · TwerkhubAuth not loaded â†’ manual prefix-scan wipe + hard reload.
+    // 3 · TwerkhubAuth not loaded → manual prefix-scan wipe + hard reload.
     manualWipe();
     location.replace('/?logout=' + Date.now());
   });

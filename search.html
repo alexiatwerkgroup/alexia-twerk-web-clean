@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
@@ -38,7 +38,7 @@ h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webk
 .sf{position:relative;margin-bottom:28px}
 .sf input{width:100%;padding:22px 24px 22px 56px;border-radius:999px;border:2px solid rgba(255,255,255,.1);background:rgba(20,20,32,.6);backdrop-filter:blur(14px);color:#fff;font-size:17px;font-weight:500;font-family:inherit;outline:none;transition:border-color .25s,box-shadow .25s}
 .sf input:focus{border-color:#ff2d87;box-shadow:0 0 0 4px rgba(255,45,135,.18)}
-.sf::before{content:"ðŸ”";position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:18px}
+.sf::before{content:"🔍";position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:18px}
 .chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:40px}
 .chip{padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#c7c7d3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .25s}
 .chip:hover,.chip.on{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;border-color:transparent;transform:translateY(-2px)}
@@ -105,7 +105,7 @@ mark{background:rgba(255,45,135,.3);color:#fff;padding:1px 3px;border-radius:3px
     <div class="twk-nav-v1-lang" role="group" aria-label="Language">
       <a href="#" data-lang="en" class="is-active" title="English">EN</a>
       <a href="#" data-lang="es" title="Español">ES</a>
-      <a href="#" data-lang="ru" title="Ð ÑƒÑÑÐºÐ¸Ð¹">RU</a>
+      <a href="#" data-lang="ru" title="Русский">RU</a>
     </div>
     <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
   </div>
@@ -132,7 +132,7 @@ mark{background:rgba(255,45,135,.3);color:#fff;padding:1px 3px;border-radius:3px
   <p class="lede">Creators, playlists, blog posts, cuts. Type a name, a song, a country, a studio, a move.</p>
 
   <form class="sf" role="search" onsubmit="event.preventDefault(); runSearch();">
-    <input id="q" type="search" placeholder="Try: Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸, WanGong Lin, high-heels, Moscow, K-dance..." autocomplete="off" autofocus>
+    <input id="q" type="search" placeholder="Try: Лада Гоцци, WanGong Lin, high-heels, Moscow, K-dance..." autocomplete="off" autofocus>
   </form>
 
   <div class="chips">
@@ -145,14 +145,14 @@ mark{background:rgba(255,45,135,.3);color:#fff;padding:1px 3px;border-radius:3px
 
   <div id="results" class="results"></div>
 
-  <a class="back" href="/">â† Back to home</a>
+  <a class="back" href="/">← Back to home</a>
 </div>
 
 <script>
 // Tiny in-memory index. Expandable; seeded with top entries.
 var INDEX = [
-  {type:"creator",title:"Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸ · High-Heels",country:"Russia · Moscow",desc:"Moscow Dance Centre NRG · heels choreo instructor · 167K views on Pharaoh ÐŸÐ»Ð¾Ð¼Ð±Ð¸Ñ€",href:"/playlist/",thumb:"https://i.ytimg.com/vi/X-lPzSuvf3k/default.jpg"},
-  {type:"creator",title:"WanGong Lin æž—ç¢—å…¬",country:"Taiwan · Taipei",desc:"iDance Studio Taipei · Taiwan Twerk Family Workshop · K-dance tier 1",href:"/playlist/",thumb:"https://i.ytimg.com/vi/Ba8udR5zP3g/default.jpg"},
+  {type:"creator",title:"Лада Гоцци · High-Heels",country:"Russia · Moscow",desc:"Moscow Dance Centre NRG · heels choreo instructor · 167K views on Pharaoh Пломбир",href:"/playlist/",thumb:"https://i.ytimg.com/vi/X-lPzSuvf3k/default.jpg"},
+  {type:"creator",title:"WanGong Lin 林碗公",country:"Taiwan · Taipei",desc:"iDance Studio Taipei · Taiwan Twerk Family Workshop · K-dance tier 1",href:"/playlist/",thumb:"https://i.ytimg.com/vi/Ba8udR5zP3g/default.jpg"},
   {type:"creator",title:"Nika Chill",country:"USA · LA",desc:"Chill Cheeks curriculum · LA based · 10 free beginner lessons",href:"/playlist/",thumb:"https://i.ytimg.com/vi/HxThOzMTdmg/default.jpg"},
   {type:"creator",title:"Abasheva Yana · TWERKIT Studio",country:"Russia",desc:"Rihanna Needed Me choreo · 904K views · Twerkit Studio founder",href:"/playlist/",thumb:"https://i.ytimg.com/vi/rJQedlVdCCU/default.jpg"},
   {type:"creator",title:"Kato Dance Studio · Ciri",country:"Germany",desc:"Nicki Minaj Barbie World choreo · polished stage work",href:"/playlist/",thumb:"https://i.ytimg.com/vi/3D71UgdBwI0/default.jpg"},
@@ -160,13 +160,13 @@ var INDEX = [
   {type:"creator",title:"Debii Abreu",country:"Dominican Republic",desc:"Latin flavor meets technique · Reyanna Maria So Pretty",href:"/playlist/",thumb:"https://i.ytimg.com/vi/k68KXBiflR8/default.jpg"},
   {type:"creator",title:"Yurgenis · YUR AULAR",country:"Venezuela",desc:"Reggaetón dance king · Ghetto Kids Baja · 22K likes",href:"/playlist/",thumb:"https://i.ytimg.com/vi/GSeYEJ3qIxU/default.jpg"},
   {type:"creator",title:"Angela · iDance Studio",country:"Taiwan · Taipei",desc:"Sharp cinematic camera work · Iggy Azalea Sip It",href:"/playlist/",thumb:"https://i.ytimg.com/vi/EX8pMpkLDYI/default.jpg"},
-  {type:"creator",title:"FOXYEN · iDance",country:"Taiwan · Taipei",desc:"ChlÃ¶e Have Mercy · textbook choreography",href:"/playlist/",thumb:"https://i.ytimg.com/vi/6aoJbhxfOn4/default.jpg"},
+  {type:"creator",title:"FOXYEN · iDance",country:"Taiwan · Taipei",desc:"Chlöe Have Mercy · textbook choreography",href:"/playlist/",thumb:"https://i.ytimg.com/vi/6aoJbhxfOn4/default.jpg"},
   {type:"creator",title:"BEFOX Dance Studio",country:"Korea",desc:"K-pop stripdance crossover · Sam Smith Unholy",href:"/playlist/",thumb:"https://i.ytimg.com/vi/Kj9T74htwrA/default.jpg"},
   {type:"creator",title:"Emiliano Ferrari Villalobo",country:"Argentina",desc:"Reggaetón instructor · 2.8M views Me Gusta El Reggaetón",href:"/playlist/",thumb:"https://i.ytimg.com/vi/Ye-jOmIomn4/default.jpg"},
   {type:"creator",title:"Sugaarrbbaby",country:"Latin America",desc:"Playboy Bunny Girl track · costume try-on aesthetic",href:"/playlist/",thumb:"https://i.ytimg.com/vi/vpF6oGPZf1s/default.jpg"},
   {type:"playlist",title:"The main archive · 264 videos",country:"Flagship",desc:"Signature playlist · hand-picked by the house · infinite list · weekly drops",href:"/playlist/",thumb:"https://i.ytimg.com/vi/X-lPzSuvf3k/default.jpg"},
   {type:"post",title:"How to earn 10,000 tokens in 3 weeks",country:"Blog · Strategy",desc:"The exact path to VIP Top without paying · daily streaks · watch bonuses · referrals",href:"/blog/how-to-earn-tokens-twerkhub.html"},
-  {type:"post",title:"The 12 best twerk creators on YouTube in 2026",country:"Blog · Creators",desc:"Weekly curation source list · WanGong Lin, Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸, iDance roster, Nika Chill",href:"/blog/best-twerk-creators-2026.html"},
+  {type:"post",title:"The 12 best twerk creators on YouTube in 2026",country:"Blog · Creators",desc:"Weekly curation source list · WanGong Lin, Лада Гоцци, iDance roster, Nika Chill",href:"/blog/best-twerk-creators-2026.html"},
   {type:"post",title:"K-dance vs reggaetón twerk: two schools, one floor",country:"Blog · Culture",desc:"Korean studio choreo vs Colombian floor work · history, technique, crossover tracks",href:"/blog/k-dance-vs-reggaeton-twerk.html"},
   {type:"page",title:"Community lounge · 2,178 members",country:"Members · Discord",desc:"Drop discussions · weekly ETAs · crossover requests · tier 4 VIP chat",href:"/community.html"},
   {type:"page",title:"Membership + tokens",country:"Tiers",desc:"4-tier economy: Basic · Medium · Premium · VIP Top · earn or subscribe",href:"/membership.html"},
@@ -201,7 +201,7 @@ function runSearch(){
     return;
   }
   el.innerHTML = filtered.map(function(r){
-    var thumb = r.thumb ? '<img src="'+r.thumb+'" alt="'+r.title+'" loading="lazy" decoding="async">' : '<div style="width:110px;height:70px;border-radius:10px;background:linear-gradient(135deg,rgba(255,45,135,.15),rgba(157,78,221,.15));display:flex;align-items:center;justify-content:center;font-size:24px">ðŸ“„</div>';
+    var thumb = r.thumb ? '<img src="'+r.thumb+'" alt="'+r.title+'" loading="lazy" decoding="async">' : '<div style="width:110px;height:70px;border-radius:10px;background:linear-gradient(135deg,rgba(255,45,135,.15),rgba(157,78,221,.15));display:flex;align-items:center;justify-content:center;font-size:24px">📄</div>';
     return '<a class="r" href="'+r.href+'">' + thumb +
       '<div><div class="src">'+(r.country||r.type)+'</div><h3>'+highlight(r.title,q)+'</h3><p>'+highlight(r.desc,q)+'</p></div></a>';
   }).join('');
@@ -233,7 +233,7 @@ runSearch();
 </section>
 
 <footer style="text-align:center;padding:30px;color:#6b6b7b;font-size:12px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase">
-  Â© 2026 Twerkhub · <a href="/about.html" style="color:#c7c7d3">About</a> · <a href="/blog/" style="color:#c7c7d3">Blog</a> · <a href="/contact.html" style="color:#c7c7d3">Contact</a> · <a href="/privacy.html" style="color:#c7c7d3">Privacy</a> · <a href="/terms.html" style="color:#c7c7d3">Terms</a>
+  © 2026 Twerkhub · <a href="/about.html" style="color:#c7c7d3">About</a> · <a href="/blog/" style="color:#c7c7d3">Blog</a> · <a href="/contact.html" style="color:#c7c7d3">Contact</a> · <a href="/privacy.html" style="color:#c7c7d3">Privacy</a> · <a href="/terms.html" style="color:#c7c7d3">Terms</a>
 </footer>
 
 
