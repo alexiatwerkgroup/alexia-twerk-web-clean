@@ -7,23 +7,7 @@ const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
 const SKIP_FILES = new Set([
-  // Legacy known-bad (pre-existing cyrillic encoding mess — see scripts/CONTRIBUTING-ENCODING.md):
-  'playlist/turbo-pushka.html',
-  'playlist/twerk--.html',
-  // Legacy double-encoded cyrillic in body content (half-decoded mix):
-  'group-emiliano-ferrari-villalobo.html',
-  'group-monika-99-percent.html',
-  'group-street-project-monika.html',
-  // Legacy triple-encoded cyrillic in data-video-slug attributes (cp866 + cp1251 + cp1252):
-  'playlist/-twerk--10age.html',
-  'playlist/-twerk-2.html',
-  'playlist/-twerk-3.html',
-  'playlist/-twerk-4.html',
-  'playlist/-twerk.html',
-  'playlist/aneli-team.html',
-  'playlist/interaktivnoe-buti.html',
-  'playlist/liuba-twerk.html',
-  'playlist/sonia-twerk.html'
+  'HANDOFF-COWORK.md',
 ]);
 const CRITICAL_REQUIRED_ASSETS = {
   'index.html': ['twerkhub-countdowns.js', 'twerkhub-watchdog.js'],

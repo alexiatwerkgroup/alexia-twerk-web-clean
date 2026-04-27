@@ -28,27 +28,11 @@ const TEXT_EXTENSIONS = new Set(['.html', '.css', '.js', '.mjs', '.json', '.xml'
 const SKIP_FILES = new Set([
   'scripts/check-encoding.js',
   'scripts/CONTRIBUTING-ENCODING.md',
+  'HANDOFF-COWORK.md',
   'scripts/validate-pages.js',
   'scripts/fix-mojibake.py',
   'scripts/fix-encoding-v3.py',
-  'scripts/fix-emojis.py',
-  // Legacy known-bad (pre-existing, not from recent corruption — see scripts/CONTRIBUTING-ENCODING.md):
-  'playlist/turbo-pushka.html',
-  'playlist/twerk--.html',
-  // Legacy double-encoded cyrillic in body content (half-decoded mix):
-  'group-emiliano-ferrari-villalobo.html',
-  'group-monika-99-percent.html',
-  'group-street-project-monika.html',
-  // Legacy triple-encoded cyrillic in data-video-slug attributes (cp866 + cp1251 + cp1252):
-  'playlist/-twerk--10age.html',
-  'playlist/-twerk-2.html',
-  'playlist/-twerk-3.html',
-  'playlist/-twerk-4.html',
-  'playlist/-twerk.html',
-  'playlist/aneli-team.html',
-  'playlist/interaktivnoe-buti.html',
-  'playlist/liuba-twerk.html',
-  'playlist/sonia-twerk.html'
+  'scripts/fix-emojis.py'
 ]);
 
 function isSkipped(absPath) {
