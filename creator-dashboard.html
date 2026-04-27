@@ -4,7 +4,7 @@
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Creator dashboard Â· Twerkhub Â· self-serve metrics</title>
+<title>Creator dashboard · Twerkhub · self-serve metrics</title>
 <meta name="description" content="Twerkhub creator dashboard. Per-handle metrics: views, completion rate, token earnings, tier engagement, drop schedule. Open with ?handle=your-handle.">
 <meta name="robots" content="noindex,follow">
 <link rel="canonical" href="https://alexiatwerkgroup.com/creator-dashboard.html">
@@ -129,8 +129,8 @@ a:hover{color:#ffb454}
 .back:hover{background:rgba(255,180,84,.12);color:#ffb454;border-color:rgba(255,180,84,.4)}
 </style>
 <!-- twk-schema-v2 -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Creator dashboard Â· Twerkhub Â· self-serve metrics","description":"Twerkhub creator dashboard. Per-handle metrics: views, completion rate, token earnings, tier engagement, drop schedule. Open with ?handle=your-handle.","url":"https://alexiatwerkgroup.com/creator-dashboard.html","isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Creator dashboard Â· Twerkhub Â· self-serve metrics","item":"https://alexiatwerkgroup.com/creator-dashboard.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Creator dashboard · Twerkhub · self-serve metrics","description":"Twerkhub creator dashboard. Per-handle metrics: views, completion rate, token earnings, tier engagement, drop schedule. Open with ?handle=your-handle.","url":"https://alexiatwerkgroup.com/creator-dashboard.html","isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Creator dashboard · Twerkhub · self-serve metrics","item":"https://alexiatwerkgroup.com/creator-dashboard.html"}]}</script>
 </head>
 <body class="twerkhub-page">
 <!-- TWK_NAV_V1 -->
@@ -162,9 +162,9 @@ a:hover{color:#ffb454}
 </style>
 <nav class="twk-nav-v1" aria-label="Primary" data-twk-nav-v1>
   <div class="twk-nav-v1-inner">
-    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub Â· home">
+    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub · home">
       <img src="/logo-twerkhub.png" alt="Twerkhub" width="120" height="34" decoding="async">
-      <span>TWERKHUB Â· EST. 2018</span>
+      <span>TWERKHUB · EST. 2018</span>
     </a>
     <div class="twk-nav-v1-links">
       <a href="/" data-nav="home">HOME</a>
@@ -179,7 +179,7 @@ a:hover{color:#ffb454}
     </div>
     <div class="twk-nav-v1-lang" role="group" aria-label="Language">
       <a href="#" data-lang="en" class="is-active" title="English">EN</a>
-      <a href="#" data-lang="es" title="EspaÃ±ol">ES</a>
+      <a href="#" data-lang="es" title="Español">ES</a>
       <a href="#" data-lang="ru" title="Ð ÑƒÑÑÐºÐ¸Ð¹">RU</a>
     </div>
     <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
@@ -203,16 +203,16 @@ a:hover{color:#ffb454}
 
 <div class="wrap">
 
-  <div class="demo-banner">âš¡ Demo Â· datos simulados Â· selector de creator abajo Â· cuando exista Worker real, esta UI consume `/api/creator-stats?handle=X`</div>
+  <div class="demo-banner">âš¡ Demo · datos simulados · selector de creator abajo · cuando exista Worker real, esta UI consume `/api/creator-stats?handle=X`</div>
 
   <div class="switch">
     <span class="label">Creator</span>
     <select id="creatorSwitch" aria-label="Switch creator">
-      <option value="lada-gozzi">Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸ Â· MDC NRG</option>
-      <option value="wangong-lin">WanGong Lin Â· Taiwan Twerk Family</option>
-      <option value="nika-chill">Nika Chill Â· Thailand</option>
-      <option value="yurgenis">Yurgenis Â· YUR AULAR</option>
-      <option value="kadorin-hitomi">Kadorin Hitomi Â· Thailand cosplay</option>
+      <option value="lada-gozzi">Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸ · MDC NRG</option>
+      <option value="wangong-lin">WanGong Lin · Taiwan Twerk Family</option>
+      <option value="nika-chill">Nika Chill · Thailand</option>
+      <option value="yurgenis">Yurgenis · YUR AULAR</option>
+      <option value="kadorin-hitomi">Kadorin Hitomi · Thailand cosplay</option>
     </select>
   </div>
 
@@ -221,18 +221,18 @@ a:hover{color:#ffb454}
     <div class="dash-id">
       <div class="kicker">/ Creator dashboard</div>
       <h1 id="creatorName">Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸</h1>
-      <div class="handle" id="creatorHandle">@lada-gozzi Â· firestarter roster since 2024</div>
-      <span class="tier-pill" id="creatorTier">â­ Roster Â· Heels Choreo Lead</span>
+      <div class="handle" id="creatorHandle">@lada-gozzi · firestarter roster since 2024</div>
+      <span class="tier-pill" id="creatorTier">â­ Roster · Heels Choreo Lead</span>
       <div class="dash-id-meta">
-        <span id="metaCity">ðŸ“ Moscow Â· Russia</span>
+        <span id="metaCity">ðŸ“ Moscow · Russia</span>
         <span id="metaActive">Active 2024-09-01</span>
-        <span id="metaDrops">42 drops Â· 18 months</span>
+        <span id="metaDrops">42 drops · 18 months</span>
       </div>
     </div>
     <div class="next-drop">
       <div class="label">Next drop</div>
-      <div class="when">Thu Apr 30 Â· 00:00 ART</div>
-      <div class="sub">in 5 days Â· Premium early</div>
+      <div class="when">Thu Apr 30 · 00:00 ART</div>
+      <div class="sub">in 5 days · Premium early</div>
     </div>
   </div>
 
@@ -249,7 +249,7 @@ a:hover{color:#ffb454}
       <div class="kpi-trend up" id="kpiCompletionTrend">â–² 4 pts vs Q1</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Tokens earned Â· Apr</div>
+      <div class="kpi-label">Tokens earned · Apr</div>
       <div class="kpi-value" id="kpiTokens">48,200</div>
       <div class="kpi-trend up" id="kpiTokensTrend">â–² 18% vs Mar</div>
     </div>
@@ -263,7 +263,7 @@ a:hover{color:#ffb454}
   <!-- RECENT DROPS -->
   <div class="sec">
     <div class="sec-head">
-      <h2>Recent drops Â· last 7</h2>
+      <h2>Recent drops · last 7</h2>
       <span class="sec-sub">Most recent first</span>
     </div>
     <table class="drops">
@@ -285,7 +285,7 @@ a:hover{color:#ffb454}
   <div class="sec">
     <div class="sec-head">
       <h2>Tier engagement</h2>
-      <span class="sec-sub">% of viewers by tier Â· last 30d</span>
+      <span class="sec-sub">% of viewers by tier · last 30d</span>
     </div>
     <div class="tier-bars" id="tierBars"></div>
   </div>
@@ -294,7 +294,7 @@ a:hover{color:#ffb454}
   <div class="sec">
     <div class="sec-head">
       <h2>Action items</h2>
-      <span class="sec-sub">Priority Â· response window</span>
+      <span class="sec-sub">Priority · response window</span>
     </div>
     <div class="actions" id="actionList"></div>
   </div>
@@ -314,24 +314,24 @@ a:hover{color:#ffb454}
 
 <script>
 // ============================================================
-// MOCKED DATA Â· per creator handle
+// MOCKED DATA · per creator handle
 // When real Worker exists, replace with: fetch('/api/creator-stats?handle=' + handle)
 // ============================================================
 const DATA = {
   'lada-gozzi':{
-    name:'Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸', initial:'L', handle:'@lada-gozzi Â· firestarter roster since 2024',
-    tier:'â­ Roster Â· Heels Choreo Lead', city:'ðŸ“ Moscow Â· Russia', active:'Active 2024-09-01',
-    drops:'42 drops Â· 18 months',
-    nextDrop:'Thu Apr 30 Â· 00:00 ART', nextSub:'in 5 days Â· Premium early',
+    name:'Ð›Ð°Ð´Ð° Ð“Ð¾Ñ†Ñ†Ð¸', initial:'L', handle:'@lada-gozzi · firestarter roster since 2024',
+    tier:'â­ Roster · Heels Choreo Lead', city:'ðŸ“ Moscow · Russia', active:'Active 2024-09-01',
+    drops:'42 drops · 18 months',
+    nextDrop:'Thu Apr 30 · 00:00 ART', nextSub:'in 5 days · Premium early',
     kpi:{views:'2.4M',viewsTrend:'â–² 12.3% this month',completion:'68%',completionTrend:'â–² 4 pts vs Q1',tokens:'48,200',tokensTrend:'â–² 18% vs Mar',subs:'312',subsTrend:'â–² 24 this week'},
     recentDrops:[
-      {title:'Pharaoh Â· ÐŸÐ»Ð¾Ð¼Ð±Ð¸Ñ€',date:'Apr 24',tier:'Public',pos:'#002',views:'167K',pct:'72%'},
-      {title:'Cardi B Â· WAP heels remix',date:'Apr 17',tier:'Premium',pos:'#012',views:'94K',pct:'78%'},
-      {title:'RosalÃ­a Â· DespechÃ¡ floor work',date:'Apr 10',tier:'Public',pos:'#031',views:'58K',pct:'64%'},
-      {title:'TiÃ«sto Â· Jackie Chan studio drill',date:'Apr 3',tier:'Medium',pos:'#054',views:'42K',pct:'69%'},
-      {title:'Ð¡ÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ð½Ð¸Ñ‚ Â· ÐšÐ¾ÑÐ¼Ð¾Ñ heels solo',date:'Mar 27',tier:'Premium',pos:'#078',views:'38K',pct:'71%'},
-      {title:'Major Lazer Â· Run Up phrase break',date:'Mar 20',tier:'Public',pos:'#102',views:'29K',pct:'66%'},
-      {title:'Nicki Minaj Â· Anaconda Â· ensemble',date:'Mar 13',tier:'VIP',pos:'#005',views:'18K',pct:'82%'},
+      {title:'Pharaoh · ÐŸÐ»Ð¾Ð¼Ð±Ð¸Ñ€',date:'Apr 24',tier:'Public',pos:'#002',views:'167K',pct:'72%'},
+      {title:'Cardi B · WAP heels remix',date:'Apr 17',tier:'Premium',pos:'#012',views:'94K',pct:'78%'},
+      {title:'Rosalía · Despechá floor work',date:'Apr 10',tier:'Public',pos:'#031',views:'58K',pct:'64%'},
+      {title:'TiÃ«sto · Jackie Chan studio drill',date:'Apr 3',tier:'Medium',pos:'#054',views:'42K',pct:'69%'},
+      {title:'Ð¡ÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ð½Ð¸Ñ‚ · ÐšÐ¾ÑÐ¼Ð¾Ñ heels solo',date:'Mar 27',tier:'Premium',pos:'#078',views:'38K',pct:'71%'},
+      {title:'Major Lazer · Run Up phrase break',date:'Mar 20',tier:'Public',pos:'#102',views:'29K',pct:'66%'},
+      {title:'Nicki Minaj · Anaconda · ensemble',date:'Mar 13',tier:'VIP',pos:'#005',views:'18K',pct:'82%'},
     ],
     tiers:{basic:42,medium:31,premium:21,vip:6},
     actions:[
@@ -340,29 +340,29 @@ const DATA = {
       {kind:'normal',label:'Next drop',text:'Your Pharaoh "ÐŸÐ»Ð¾Ð¼Ð±Ð¸Ñ€" sequel is queued for Apr 30 Thursday drop. Confirm thumbnail by Apr 28.'}
     ],
     feed:[
-      {dot:'green',text:'<strong>Marco</strong> upgraded to Premium tier Â· referenced your Pharaoh drop',when:'2h ago'},
+      {dot:'green',text:'<strong>Marco</strong> upgraded to Premium tier · referenced your Pharaoh drop',when:'2h ago'},
       {dot:'gold',text:'Your <strong>Pharaoh "ÐŸÐ»Ð¾Ð¼Ð±Ð¸Ñ€"</strong> video crossed 200K views',when:'1d ago'},
       {dot:'pink',text:'<strong>+1,847 tokens</strong> earned from completion bonuses',when:'2d ago'},
       {dot:'green',text:'<strong>3 new VIP Top members</strong> joined and watched your archive',when:'3d ago'},
       {dot:'gold',text:'Featured on <strong>creators-moscow</strong> page hot ranking #1',when:'4d ago'},
-      {dot:'pink',text:'<strong>Anti</strong> approved your custom request Â· Custom #042',when:'5d ago'},
+      {dot:'pink',text:'<strong>Anti</strong> approved your custom request · Custom #042',when:'5d ago'},
       {dot:'green',text:'Your tier-engagement breakdown shifted +6% to Premium tier',when:'6d ago'}
     ]
   },
   'wangong-lin':{
-    name:'WanGong Lin', initial:'W', handle:'@wangong-lin Â· iDance Taipei Â· curator since 2023',
-    tier:'â­ Roster Â· K-Dance Translator', city:'ðŸ“ Taipei Â· Taiwan', active:'Active 2023-04-15',
-    drops:'68 drops Â· 24 months',
-    nextDrop:'Thu Apr 30 Â· 11:00 TPE', nextSub:'in 5 days Â· public drop',
+    name:'WanGong Lin', initial:'W', handle:'@wangong-lin · iDance Taipei · curator since 2023',
+    tier:'â­ Roster · K-Dance Translator', city:'ðŸ“ Taipei · Taiwan', active:'Active 2023-04-15',
+    drops:'68 drops · 24 months',
+    nextDrop:'Thu Apr 30 · 11:00 TPE', nextSub:'in 5 days · public drop',
     kpi:{views:'4.8M',viewsTrend:'â–² 8.7% this month',completion:'74%',completionTrend:'â–² 2 pts vs Q1',tokens:'62,400',tokensTrend:'â–² 9% vs Mar',subs:'487',subsTrend:'â–² 31 this week'},
     recentDrops:[
-      {title:'DaniLeigh Â· Tasty Â· Workshop Vol.5',date:'Apr 24',tier:'Public',pos:'#001',views:'312K',pct:'76%'},
-      {title:'IVE Â· After LIKE Â· ensemble cover',date:'Apr 17',tier:'Public',pos:'#008',views:'198K',pct:'72%'},
-      {title:'NewJeans Â· Hype Boy Â· drill',date:'Apr 10',tier:'Medium',pos:'#024',views:'141K',pct:'68%'},
-      {title:'aespa Â· Spicy Â· 8-count breakdown',date:'Apr 3',tier:'Premium',pos:'#015',views:'89K',pct:'81%'},
-      {title:'Iggy Azalea Â· Sip It Â· cinematic',date:'Mar 27',tier:'Public',pos:'#019',views:'76K',pct:'70%'},
-      {title:'BLACKPINK Â· Pink Venom drill',date:'Mar 20',tier:'Public',pos:'#048',views:'62K',pct:'67%'},
-      {title:'TWICE Â· MOONLIGHT SUNRISE',date:'Mar 13',tier:'VIP',pos:'#011',views:'34K',pct:'85%'}
+      {title:'DaniLeigh · Tasty · Workshop Vol.5',date:'Apr 24',tier:'Public',pos:'#001',views:'312K',pct:'76%'},
+      {title:'IVE · After LIKE · ensemble cover',date:'Apr 17',tier:'Public',pos:'#008',views:'198K',pct:'72%'},
+      {title:'NewJeans · Hype Boy · drill',date:'Apr 10',tier:'Medium',pos:'#024',views:'141K',pct:'68%'},
+      {title:'aespa · Spicy · 8-count breakdown',date:'Apr 3',tier:'Premium',pos:'#015',views:'89K',pct:'81%'},
+      {title:'Iggy Azalea · Sip It · cinematic',date:'Mar 27',tier:'Public',pos:'#019',views:'76K',pct:'70%'},
+      {title:'BLACKPINK · Pink Venom drill',date:'Mar 20',tier:'Public',pos:'#048',views:'62K',pct:'67%'},
+      {title:'TWICE · MOONLIGHT SUNRISE',date:'Mar 13',tier:'VIP',pos:'#011',views:'34K',pct:'85%'}
     ],
     tiers:{basic:38,medium:34,premium:23,vip:5},
     actions:[
@@ -372,28 +372,28 @@ const DATA = {
     ],
     feed:[
       {dot:'green',text:'<strong>Tasty Workshop Vol.5</strong> hit #1 hot ranking globally',when:'3h ago'},
-      {dot:'gold',text:'<strong>Kerry Chiu</strong> shared your Apr 24 drop on her TikTok Â· 89K views',when:'1d ago'},
+      {dot:'gold',text:'<strong>Kerry Chiu</strong> shared your Apr 24 drop on her TikTok · 89K views',when:'1d ago'},
       {dot:'pink',text:'<strong>+2,140 tokens</strong> from VIP Top tier engagement',when:'2d ago'},
       {dot:'green',text:'<strong>BEFOX</strong> referenced your IVE breakdown in their Korean course',when:'3d ago'},
-      {dot:'gold',text:'Featured pillar post Â· <strong>Brazilian funk Ã— twerk crossover</strong> cited your work',when:'4d ago'},
-      {dot:'pink',text:'2 new <strong>Custom requests</strong> from VIP Top tier Â· review needed',when:'5d ago'},
+      {dot:'gold',text:'Featured pillar post · <strong>Brazilian funk Ã— twerk crossover</strong> cited your work',when:'4d ago'},
+      {dot:'pink',text:'2 new <strong>Custom requests</strong> from VIP Top tier · review needed',when:'5d ago'},
       {dot:'green',text:'Your <strong>completion rate</strong> ticked up to 74% (platform median 61%)',when:'6d ago'}
     ]
   },
   'nika-chill':{
-    name:'Nika Chill', initial:'N', handle:'@nika-chill Â· Thailand independent Â· roster since 2024',
-    tier:'â­ Roster Â· Thailand ReggaetÃ³n', city:'ðŸ“ Bangkok Â· Thailand', active:'Active 2024-02-10',
-    drops:'31 drops Â· 14 months',
-    nextDrop:'Thu Apr 30 Â· 04:00 BKK', nextSub:'in 5 days Â· public drop',
+    name:'Nika Chill', initial:'N', handle:'@nika-chill · Thailand independent · roster since 2024',
+    tier:'â­ Roster · Thailand Reggaetón', city:'ðŸ“ Bangkok · Thailand', active:'Active 2024-02-10',
+    drops:'31 drops · 14 months',
+    nextDrop:'Thu Apr 30 · 04:00 BKK', nextSub:'in 5 days · public drop',
     kpi:{views:'1.6M',viewsTrend:'â–² 22.4% this month',completion:'71%',completionTrend:'â–² 6 pts vs Q1',tokens:'34,800',tokensTrend:'â–² 28% vs Mar',subs:'218',subsTrend:'â–² 41 this week'},
     recentDrops:[
-      {title:'Papi Jordan Â· TÃº No Baila Dembow',date:'Apr 24',tier:'Public',pos:'#018',views:'124K',pct:'73%'},
-      {title:'Bad Bunny Â· TitÃ­ Me PreguntÃ³',date:'Apr 17',tier:'Medium',pos:'#029',views:'88K',pct:'69%'},
-      {title:'Karol G Â· Provenza floor cut',date:'Apr 10',tier:'Public',pos:'#041',views:'71K',pct:'68%'},
-      {title:'Anitta Â· Envolver remix',date:'Apr 3',tier:'Premium',pos:'#022',views:'56K',pct:'76%'},
-      {title:'RosalÃ­a Â· Saoko phrasing',date:'Mar 27',tier:'Public',pos:'#067',views:'42K',pct:'64%'},
-      {title:'J Balvin Â· Mi Gente streetwear',date:'Mar 20',tier:'Medium',pos:'#085',views:'33K',pct:'62%'},
-      {title:'DaniLeigh Â· Lil Bebe Â· BKK floor',date:'Mar 13',tier:'VIP',pos:'#008',views:'21K',pct:'80%'}
+      {title:'Papi Jordan · Tú No Baila Dembow',date:'Apr 24',tier:'Public',pos:'#018',views:'124K',pct:'73%'},
+      {title:'Bad Bunny · Tití Me Preguntó',date:'Apr 17',tier:'Medium',pos:'#029',views:'88K',pct:'69%'},
+      {title:'Karol G · Provenza floor cut',date:'Apr 10',tier:'Public',pos:'#041',views:'71K',pct:'68%'},
+      {title:'Anitta · Envolver remix',date:'Apr 3',tier:'Premium',pos:'#022',views:'56K',pct:'76%'},
+      {title:'Rosalía · Saoko phrasing',date:'Mar 27',tier:'Public',pos:'#067',views:'42K',pct:'64%'},
+      {title:'J Balvin · Mi Gente streetwear',date:'Mar 20',tier:'Medium',pos:'#085',views:'33K',pct:'62%'},
+      {title:'DaniLeigh · Lil Bebe · BKK floor',date:'Mar 13',tier:'VIP',pos:'#008',views:'21K',pct:'80%'}
     ],
     tiers:{basic:48,medium:28,premium:19,vip:5},
     actions:[
@@ -405,57 +405,57 @@ const DATA = {
       {dot:'green',text:'<strong>+41 new Premium subscribers</strong> this week (record high)',when:'4h ago'},
       {dot:'gold',text:'Your <strong>Papi Jordan dembow drop</strong> trending in Thailand + Vietnam',when:'1d ago'},
       {dot:'pink',text:'<strong>+1,540 tokens</strong> from referral bonuses',when:'2d ago'},
-      {dot:'green',text:'<strong>Anel Li</strong> proposed cross-coastal collab Â· pending response',when:'3d ago'},
+      {dot:'green',text:'<strong>Anel Li</strong> proposed cross-coastal collab · pending response',when:'3d ago'},
       {dot:'gold',text:'Featured in <strong>perreo-history pillar</strong> as DR diaspora reference',when:'4d ago'},
-      {dot:'pink',text:'<strong>3 custom content requests</strong> queued Â· 2-day response window',when:'5d ago'},
+      {dot:'pink',text:'<strong>3 custom content requests</strong> queued · 2-day response window',when:'5d ago'},
       {dot:'green',text:'<strong>Completion rate</strong> climbed to 71% (was 65% in Q1)',when:'6d ago'}
     ]
   },
   'yurgenis':{
-    name:'Yurgenis', initial:'Y', handle:'@yurgenis Â· YUR AULAR Â· roster since 2023',
-    tier:'â­ Roster Â· ReggaetÃ³n Floor Lead', city:'ðŸ“ MedellÃ­n Â· Venezuela diaspora', active:'Active 2023-08-12',
-    drops:'56 drops Â· 21 months',
-    nextDrop:'Thu Apr 30 Â· 22:00 COT', nextSub:'in 5 days Â· public drop',
+    name:'Yurgenis', initial:'Y', handle:'@yurgenis · YUR AULAR · roster since 2023',
+    tier:'â­ Roster · Reggaetón Floor Lead', city:'ðŸ“ Medellín · Venezuela diaspora', active:'Active 2023-08-12',
+    drops:'56 drops · 21 months',
+    nextDrop:'Thu Apr 30 · 22:00 COT', nextSub:'in 5 days · public drop',
     kpi:{views:'3.7M',viewsTrend:'â–² 14.8% this month',completion:'69%',completionTrend:'â–² 3 pts vs Q1',tokens:'52,900',tokensTrend:'â–² 11% vs Mar',subs:'389',subsTrend:'â–² 28 this week'},
     recentDrops:[
-      {title:'Ghetto Kids Â· Baja Â· class',date:'Apr 24',tier:'Public',pos:'#003',views:'1.2M',pct:'68%'},
-      {title:'Manuel Turizo Â· La Bachata',date:'Apr 17',tier:'Public',pos:'#019',views:'214K',pct:'66%'},
-      {title:'SebastiÃ¡n Yatra Â· Tacones Rojos',date:'Apr 10',tier:'Medium',pos:'#028',views:'118K',pct:'71%'},
-      {title:'Karol G Â· Bichota floor remix',date:'Apr 3',tier:'Premium',pos:'#013',views:'89K',pct:'77%'},
-      {title:'Anuel AA Â· La Jeepeta drill',date:'Mar 27',tier:'Public',pos:'#055',views:'72K',pct:'63%'},
-      {title:'Maluma Â· HawÃ¡i phrasing',date:'Mar 20',tier:'Premium',pos:'#021',views:'58K',pct:'74%'},
-      {title:'Rauw Alejandro Â· Todo de Ti',date:'Mar 13',tier:'VIP',pos:'#007',views:'31K',pct:'83%'}
+      {title:'Ghetto Kids · Baja · class',date:'Apr 24',tier:'Public',pos:'#003',views:'1.2M',pct:'68%'},
+      {title:'Manuel Turizo · La Bachata',date:'Apr 17',tier:'Public',pos:'#019',views:'214K',pct:'66%'},
+      {title:'Sebastián Yatra · Tacones Rojos',date:'Apr 10',tier:'Medium',pos:'#028',views:'118K',pct:'71%'},
+      {title:'Karol G · Bichota floor remix',date:'Apr 3',tier:'Premium',pos:'#013',views:'89K',pct:'77%'},
+      {title:'Anuel AA · La Jeepeta drill',date:'Mar 27',tier:'Public',pos:'#055',views:'72K',pct:'63%'},
+      {title:'Maluma · Hawái phrasing',date:'Mar 20',tier:'Premium',pos:'#021',views:'58K',pct:'74%'},
+      {title:'Rauw Alejandro · Todo de Ti',date:'Mar 13',tier:'VIP',pos:'#007',views:'31K',pct:'83%'}
     ],
     tiers:{basic:46,medium:30,premium:18,vip:6},
     actions:[
       {kind:'good',label:'Top performer',text:'Your "Baja" drop is the platform\'s most-watched single video. 1.2M views and climbing.'},
-      {kind:'normal',label:'Workshop request',text:'MedellÃ­n studio booked you for a 3-hour workshop May 15. Confirm tracklist by May 1.'},
+      {kind:'normal',label:'Workshop request',text:'Medellín studio booked you for a 3-hour workshop May 15. Confirm tracklist by May 1.'},
       {kind:'good',label:'Tier shift',text:'Your audience is shifting toward Premium tier (+8% in 60 days). Strong retention signal.'}
     ],
     feed:[
       {dot:'gold',text:'<strong>"Baja" drop</strong> crossed 1.2M views (lifetime). Platform record.',when:'5h ago'},
-      {dot:'green',text:'<strong>+28 new subscribers</strong> this week Â· majority from Colombia + Mexico',when:'1d ago'},
+      {dot:'green',text:'<strong>+28 new subscribers</strong> this week · majority from Colombia + Mexico',when:'1d ago'},
       {dot:'pink',text:'<strong>+2,310 tokens</strong> from completion + first-100 bonuses',when:'2d ago'},
-      {dot:'green',text:'<strong>LABARBIE</strong> proposed BogotÃ¡-MedellÃ­n joint workshop',when:'3d ago'},
+      {dot:'green',text:'<strong>LABARBIE</strong> proposed Bogotá-Medellín joint workshop',when:'3d ago'},
       {dot:'gold',text:'Cited in <strong>buenos-aires-reggaeton-scene</strong> pillar as cross-pollinator',when:'4d ago'},
-      {dot:'pink',text:'<strong>5 custom requests</strong> from VIP Top Â· 2 already approved',when:'5d ago'},
+      {dot:'pink',text:'<strong>5 custom requests</strong> from VIP Top · 2 already approved',when:'5d ago'},
       {dot:'green',text:'<strong>Audience tier breakdown</strong>: Premium grew from 16% â†’ 24% in 60 days',when:'6d ago'}
     ]
   },
   'kadorin-hitomi':{
-    name:'Kadorin Hitomi', initial:'K', handle:'@kadorin-hitomi Â· PF40 cosplay roster Â· since 2025',
-    tier:'â­ Roster Â· Cosplay Fancam', city:'ðŸ“ Bangkok Â· Thailand', active:'Active 2025-01-08',
-    drops:'18 drops Â· 8 months',
-    nextDrop:'Sat May 2 Â· CosForce04', nextSub:'live con-floor Â· 4 days',
+    name:'Kadorin Hitomi', initial:'K', handle:'@kadorin-hitomi · PF40 cosplay roster · since 2025',
+    tier:'â­ Roster · Cosplay Fancam', city:'ðŸ“ Bangkok · Thailand', active:'Active 2025-01-08',
+    drops:'18 drops · 8 months',
+    nextDrop:'Sat May 2 · CosForce04', nextSub:'live con-floor · 4 days',
     kpi:{views:'820K',viewsTrend:'â–² 31.2% this month',completion:'76%',completionTrend:'â–² 9 pts vs Q1',tokens:'18,400',tokensTrend:'â–² 42% vs Mar',subs:'124',subsTrend:'â–² 19 this week'},
     recentDrops:[
-      {title:'NIKKE Â· Commander bow phrase',date:'Apr 24',tier:'Public',pos:'#005',views:'231K',pct:'78%'},
-      {title:'Genshin Â· Yelan dragon ribbon',date:'Apr 17',tier:'Premium',pos:'#011',views:'118K',pct:'82%'},
+      {title:'NIKKE · Commander bow phrase',date:'Apr 24',tier:'Public',pos:'#005',views:'231K',pct:'78%'},
+      {title:'Genshin · Yelan dragon ribbon',date:'Apr 17',tier:'Premium',pos:'#011',views:'118K',pct:'82%'},
       {title:'PF40 hallway floor cut',date:'Apr 10',tier:'Public',pos:'#022',views:'87K',pct:'71%'},
-      {title:'Honkai Star Rail Â· Acheron',date:'Apr 3',tier:'Medium',pos:'#031',views:'64K',pct:'74%'},
-      {title:'Persona 5 Â· Yoshizawa cosplay',date:'Mar 27',tier:'Public',pos:'#049',views:'52K',pct:'69%'},
-      {title:'Spy x Family Â· Yor short',date:'Mar 20',tier:'Premium',pos:'#018',views:'41K',pct:'80%'},
-      {title:'NIKKE Â· Modernia walk-by',date:'Mar 13',tier:'VIP',pos:'#003',views:'26K',pct:'88%'}
+      {title:'Honkai Star Rail · Acheron',date:'Apr 3',tier:'Medium',pos:'#031',views:'64K',pct:'74%'},
+      {title:'Persona 5 · Yoshizawa cosplay',date:'Mar 27',tier:'Public',pos:'#049',views:'52K',pct:'69%'},
+      {title:'Spy x Family · Yor short',date:'Mar 20',tier:'Premium',pos:'#018',views:'41K',pct:'80%'},
+      {title:'NIKKE · Modernia walk-by',date:'Mar 13',tier:'VIP',pos:'#003',views:'26K',pct:'88%'}
     ],
     tiers:{basic:39,medium:32,premium:24,vip:5},
     actions:[
@@ -464,13 +464,13 @@ const DATA = {
       {kind:'good',label:'Tier 88%',text:'Your VIP Top completion rate is 88% â€” highest on the roster. VIP audience is locked in.'}
     ],
     feed:[
-      {dot:'gold',text:'<strong>NIKKE Commander drop</strong> went viral Â· cited by 4 cosplay TikTokers',when:'2h ago'},
+      {dot:'gold',text:'<strong>NIKKE Commander drop</strong> went viral · cited by 4 cosplay TikTokers',when:'2h ago'},
       {dot:'green',text:'<strong>+19 subscribers</strong> this week, 12 from Japan',when:'1d ago'},
-      {dot:'pink',text:'<strong>+1,820 tokens</strong> Â· highest single-week earnings yet',when:'2d ago'},
-      {dot:'green',text:'<strong>Sugaarrbbaby</strong> proposed costume-trade collab Â· pending',when:'3d ago'},
+      {dot:'pink',text:'<strong>+1,820 tokens</strong> · highest single-week earnings yet',when:'2d ago'},
+      {dot:'green',text:'<strong>Sugaarrbbaby</strong> proposed costume-trade collab · pending',when:'3d ago'},
       {dot:'gold',text:'Featured on <strong>style-cosplay-fancam</strong> page card #3',when:'4d ago'},
-      {dot:'pink',text:'<strong>2 custom requests</strong> from VIP Top Â· NIKKE-themed',when:'5d ago'},
-      {dot:'green',text:'<strong>Apr completion rate 76%</strong> Â· best on roster for cosplay-fancam style',when:'6d ago'}
+      {dot:'pink',text:'<strong>2 custom requests</strong> from VIP Top · NIKKE-themed',when:'5d ago'},
+      {dot:'green',text:'<strong>Apr completion rate 76%</strong> · best on roster for cosplay-fancam style',when:'6d ago'}
     ]
   }
 };

@@ -1,4 +1,4 @@
-﻿/* â•â•â• TWERKHUB Â· Runtime Watchdog v1 (2026-04-26) â•â•â•
+﻿/* â•â•â• TWERKHUB · Runtime Watchdog v1 (2026-04-26) â•â•â•
  *
  * Self-healing safety net for the most common failure modes that have
  * recurred on this site. Loaded on EVERY page early. Idempotent + non-blocking.

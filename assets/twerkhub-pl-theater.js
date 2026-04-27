@@ -1,4 +1,4 @@
-﻿/* â•â•â• TWERKHUB Â· Playlist theater (large centered window, never fullscreen) â•â•â•
+﻿/* â•â•â• TWERKHUB · Playlist theater (large centered window, never fullscreen) â•â•â•
  * v20260426-p8
  *
  * 2026-04-26 fix p8 â€” SAGRADA RULE #9: Top-5 hot ranking videos are
