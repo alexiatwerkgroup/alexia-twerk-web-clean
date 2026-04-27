@@ -52,7 +52,7 @@
   .tier-vip{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;}
   .empty{text-align:center;padding:60px 20px;color:#888;font-style:italic;}
   .loading{text-align:center;padding:60px 20px;color:#888;font:600 13px Inter,sans-serif;letter-spacing:.04em;}
-  .loading::after{content:'â€¦';animation:dots 1.4s infinite;}
+  .loading::after{content:'…';animation:dots 1.4s infinite;}
   @keyframes dots{0%,20%{content:'.'}40%{content:'..'}60%,100%{content:'...'}}
   .err{text-align:center;padding:30px;color:#ff8888;font:600 13px Inter,sans-serif;background:rgba(255,90,90,.06);border:1px solid rgba(255,90,90,.3);border-radius:14px;margin:20px 0;}
   @media(max-width:760px){
@@ -79,7 +79,7 @@
   <div class="stats" id="stats"></div>
 
   <div class="actions">
-    <input type="search" id="search" class="search" placeholder="Search by username or emailâ€¦">
+    <input type="search" id="search" class="search" placeholder="Search by username or email…">
     <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
     <button class="btn btn-ghost" onclick="exportJSON()">Export JSON</button>
     <button class="btn btn-ghost" onclick="refresh()">â†» Refresh</button>
@@ -191,7 +191,7 @@
       return 0;
     });
   }
-  function fmtDate(t){ if (!t) return 'â€”'; try { return new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}); } catch(_){ return 'â€”'; } }
+  function fmtDate(t){ if (!t) return '—'; try { return new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}); } catch(_){ return '—'; } }
   function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
   function renderStats(users){
@@ -217,7 +217,7 @@
       return '<tr>' +
         '<td class="' + rk + '">#' + (i+1) + '</td>' +
         '<td class="username">@' + escapeHtml(u.username) + youBadge + '</td>' +
-        '<td>' + (u.email ? escapeHtml(u.email) : '<span style="opacity:.4">â€”</span>') + '</td>' +
+        '<td>' + (u.email ? escapeHtml(u.email) : '<span style="opacity:.4">—</span>') + '</td>' +
         '<td class="tokens">' + (u.tokens||0).toLocaleString('en-US') + '</td>' +
         '<td>' + (u.total_earned||0).toLocaleString('en-US') + '</td>' +
         '<td>' + (u.streak||0) + 'd</td>' +

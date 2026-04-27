@@ -26,7 +26,7 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:var(--elite-bg);color:var(--elite-text);font-family:var(--elite-font-sans);min-height:100vh}
-  /* No body padding â€” topbar is position:sticky;top:0 so it sits naturally
+  /* No body padding — topbar is position:sticky;top:0 so it sits naturally
      at the top of the document flow. The old 90px padding was compensation
      for a legacy fixed-position nav that no longer exists. */
   body{padding-top:0;overflow-x:hidden}
@@ -200,7 +200,7 @@
 </script>
 
 
-<!-- NAV â€” unified with index.html -->
+<!-- NAV — unified with index.html -->
 
 <!-- â•â•â•â•â•â•â• AUTH PANEL · rendered by twerkhub-auth.js â•â•â•â•â•â•â• -->
 <!-- When logged out: shows Sign In + Sign Up buttons (modals open username+password forms with Forgot password? + Remember me) -->
@@ -214,7 +214,7 @@
       <h1 class="ac__h">Your <em>Dashboard</em></h1>
       <p class="ac__sub">Earn, unlock, invite. Everything you've done since joining the Circle.</p>
     </div>
-    <div class="ac__status"><span class="dot"></span><span id="ac-member-since">Member · â€”</span></div>
+    <div class="ac__status"><span class="dot"></span><span id="ac-member-since">Member · —</span></div>
   </div>
 
   <!-- TOP STATS -->
@@ -243,8 +243,8 @@
       <div class="progress__meta"><span id="ac-pct">0%</span></div>
     </div>
     <div class="progress__bar"><div class="progress__fill" id="ac-fill" style="width:0%"></div></div>
-    <div class="progress__stats"><span><span id="ac-bar-cur">0</span> tokens</span><span id="ac-bar-needed">â€” needed for unlock</span></div>
-    <p class="progress__hint" id="ac-hint">Welcome. Start by exploring the archive â€” +5 tokens per new page.</p>
+    <div class="progress__stats"><span><span id="ac-bar-cur">0</span> tokens</span><span id="ac-bar-needed">— needed for unlock</span></div>
+    <p class="progress__hint" id="ac-hint">Welcome. Start by exploring the archive — +5 tokens per new page.</p>
   </div>
 
   <!-- TWO-COL: Earn paths + Referral -->
@@ -272,7 +272,7 @@
         <p class="box__p">Every friend who joins with your code gives you <strong style="color:var(--elite-primary)">+300 tokens</strong>. They get <strong style="color:var(--elite-gold)">+200</strong>. Everyone wins.</p>
       </div>
       <div class="ref-code">
-        <code id="ref-code">â€”â€”â€”â€”â€”â€”</code>
+        <code id="ref-code">——————</code>
         <button class="ref-copy" id="ref-copy-btn" type="button">Copy</button>
       </div>
       <div class="ref-stat">
@@ -322,7 +322,7 @@
       document.getElementById('ac-member-since').textContent = 'Member since ' + d.toLocaleDateString('en-US', opts);
     }
 
-    // Progress bar â€” dynamic next-tier target.
+    // Progress bar — dynamic next-tier target.
     // nextTier is set by token-system.js based on current tier. For VIP, we
     // cap at 100% since there's nothing above.
     var nextTierNames = { medium: 'Medium', premium: 'Premium', vip: 'VIP Top' };
@@ -338,15 +338,15 @@
     document.getElementById('ac-bar-needed').textContent =
       nextTier ? (target.toLocaleString('en-US') + ' needed for ' + (nextTierNames[nextTier.key] || 'next')) : 'Max tier reached';
 
-    // Hint â€” tailored to current tier
+    // Hint — tailored to current tier
     var hint = document.getElementById('ac-hint');
     if (!nextTier)           hint.textContent = 'VIP Top · top tier reached. Discord customs unlocked, private archive open.';
     else if (pct >= 90)      hint.textContent = 'One more session and you unlock ' + nextTierNames[nextTier.key] + '.';
-    else if (pct >= 60)      hint.textContent = 'More than halfway to ' + nextTierNames[nextTier.key] + '. Streak multiplies tokens â€” keep it going.';
+    else if (pct >= 60)      hint.textContent = 'More than halfway to ' + nextTierNames[nextTier.key] + '. Streak multiplies tokens — keep it going.';
     else if (pct >= 25)      hint.textContent = 'The highest-yield action is finishing clips (+30 each).';
-    else                     hint.textContent = 'Welcome. Start exploring â€” each new page = +5 tokens, watching a clip = +15, finishing it = +30.';
+    else                     hint.textContent = 'Welcome. Start exploring — each new page = +5 tokens, watching a clip = +15, finishing it = +30.';
 
-    // Earn paths â€” mark done
+    // Earn paths — mark done
     var completed = {
       register: s.welcomed,
       daily:    !!s.lastLogin,
@@ -362,7 +362,7 @@
       if (el && completed[k]) el.classList.add('done');
     });
 
-    // Referral code â€” generate deterministic from registered timestamp
+    // Referral code — generate deterministic from registered timestamp
     var code = 'ALEX-';
     if (s.registered){
       code += (s.registered % 100000).toString(36).toUpperCase().padStart(4,'0');
@@ -383,7 +383,7 @@
 
     document.getElementById('ref-share-btn').addEventListener('click', function(){
       var link = location.origin + '/?ref=' + code;
-      var text = 'Join me on Alexia Twerk Group â€” use my code for +200 welcome tokens: ' + link;
+      var text = 'Join me on Alexia Twerk Group — use my code for +200 welcome tokens: ' + link;
       if (navigator.share){
         navigator.share({ title: 'Alexia Twerk Group', text: text, url: link });
       } else {

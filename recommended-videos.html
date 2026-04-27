@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <title>Top Suggested Videos · Twerkhub</title>
-<meta name="description" content="Top Suggested Videos on Twerkhub â€” curated dance &amp; fancam content. Curated twerk collection. Weekly drops &amp; members-only cuts.">
+<meta name="description" content="Top Suggested Videos on Twerkhub — curated dance &amp; fancam content. Curated twerk collection. Weekly drops &amp; members-only cuts.">
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
@@ -141,7 +141,7 @@ async function loadRecommendations(){
   const list=[...counts.entries()].map(([video,count])=>({video,count})).sort((a,b)=>b.count-a.count||a.video.localeCompare(b.video));
   if(!list.length){state.className='empty';state.textContent='No recommendations yet. Once visitors start submitting suggestions, they will appear here.';stats.textContent='0 recommendations visible.';return;}
   state.hidden=true;grid.hidden=false;
-  stats.textContent=`${list.length} unique recommendations â€¢ ${list.reduce((s,x)=>s+x.count,0)} total submissions`;
+  stats.textContent=`${list.length} unique recommendations • ${list.reduce((s,x)=>s+x.count,0)} total submissions`;
   grid.innerHTML=list.map((item,index)=>`<article class="card"><div class="rank">#${index+1}</div><h2 class="title">${escapeHtml(item.video)}</h2><div class="meta"><span class="pill">${item.count} vote${item.count===1?'':'s'}</span></div>${renderVideo(item)}<div class="card-actions"><a class="mini-rec-btn" href="/recommend.html?video=${encodeURIComponent(item.video)}">Recommend this too</a></div></article>`).join('');
 }
 loadRecommendations();

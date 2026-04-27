@@ -103,7 +103,7 @@
         if (t === _lastFarmText) {
           if (!_farmStuckSince) _farmStuckSince = now;
           if (now - _farmStuckSince > 6000) {
-            log('farm countdown stuck â€” re-initing');
+            log('farm countdown stuck — re-initing');
             tryRestartCountdowns();
             _farmStuckSince = 0;
           }
@@ -119,7 +119,7 @@
         if (ht === _lastHeroText) {
           if (!_heroStuckSince) _heroStuckSince = now;
           if (now - _heroStuckSince > 6000) {
-            log('hero countdown stuck â€” re-initing');
+            log('hero countdown stuck — re-initing');
             tryRestartCountdowns();
             _heroStuckSince = 0;
           }
@@ -151,7 +151,7 @@
     } catch(e){ log('tryRestartCountdowns failed: ' + e.message); }
   }
 
-  // â”€â”€ Heal #4: SAGRADA #9 â€” purge top-5 vids from blocked list â”€â”€â”€
+  // â”€â”€ Heal #4: SAGRADA #9 — purge top-5 vids from blocked list â”€â”€â”€
   function purgeProtectedFromBlocked(){
     try {
       var rkVids = document.querySelectorAll('.rk-item[data-vid]');

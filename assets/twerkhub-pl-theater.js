@@ -1,20 +1,20 @@
 ﻿/* â•â•â• TWERKHUB · Playlist theater (large centered window, never fullscreen) â•â•â•
  * v20260426-p8
  *
- * 2026-04-26 fix p8 â€” SAGRADA RULE #9: Top-5 hot ranking videos are
+ * 2026-04-26 fix p8 — SAGRADA RULE #9: Top-5 hot ranking videos are
  * IMMUNE to the +18 paywall, no matter what YouTube returns. Heartbeat,
  * MutationObserver, postMessage onError, and onLoad short-circuit all
  * check `TwkAgeGate.isProtected(vid)` and bail out before paywalling.
  *
- * Also p8 â€” fixed the "blink-to-black" bug verified live in Chrome MCP:
+ * Also p8 — fixed the "blink-to-black" bug verified live in Chrome MCP:
  * heartbeat fired showInlinePaywall, which set player.src='about:blank'.
  * The blank load triggered onLoad, which couldn't extract a vid from
  * the blank URL â†’ fell into the `else` branch â†’ called hideInlinePaywall,
  * REMOVING the overlay we'd just placed. Now onLoad bails immediately
  * when src is empty or about:blank, leaving the paywall intact.
  *
- * 2026-04-26 fix p7 â€” themed-playlist black-screen really fixed this time:
- *   1. MutationObserver on #twerkhub-pl-player.src â€” fires SYNCHRONOUSLY when
+ * 2026-04-26 fix p7 — themed-playlist black-screen really fixed this time:
+ *   1. MutationObserver on #twerkhub-pl-player.src — fires SYNCHRONOUSLY when
  *      the page's inline swap() sets player.src, so we can short-circuit
  *      KNOWN-blocked videos before YouTube even loads. Previously we only
  *      reacted on iframe `load`, by which time YouTube may have already
@@ -27,7 +27,7 @@
  *
  * 2026-04-26 fix p5: paywall flashed for ~0.5s then went black. Cause was
  * 2026-04-26 fix p4: BLACK SCREEN FIX. YouTube doesn't always fire onError
- * 101/150 for age-restricted videos â€” sometimes the iframe just sits black
+ * 101/150 for age-restricted videos — sometimes the iframe just sits black
  * forever with no error event. Added a 2-second playback heartbeat: after
  * onReady, if the player never enters PLAYING (1) or BUFFERING (3) within
  * 2s, assume the video is blocked â†’ show the Discord+Telegram paywall and
@@ -54,10 +54,10 @@
  *
  * For themed playlist pages (/try-on-hot-leaks/, /ttl-latin-models/,
  * /hottest-cosplay-fancam/, /korean-girls-kpop-twerk/) that DON'T have an
- * inline #twerkhub-pl-player iframe â€” opens videos in a LARGE CENTERED
+ * inline #twerkhub-pl-player iframe — opens videos in a LARGE CENTERED
  * window (90vw / 82vh), never fullscreen, never tiny popup.
  *
- * For /playlist/index.html â€” SKIPS its own click handler entirely, because
+ * For /playlist/index.html — SKIPS its own click handler entirely, because
  * that page has its own inline iframe + swap() function that uses the
  * existing main player area.
  *
@@ -77,7 +77,7 @@
   // â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var modal, frameContainer, ytPlayer, ytApiPromise = null;
   // If the page has its own inline player (#twerkhub-pl-player), we don't
-  // want to take over click handling â€” that page handles it.
+  // want to take over click handling — that page handles it.
   var INLINE_PLAYER_PRESENT = false;
 
   // â”€â”€ YouTube IFrame API loader (single-shot) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -101,7 +101,7 @@
     return ytApiPromise;
   }
 
-  // â”€â”€ Inject ALL theater CSS at script load (NOT inside ensureModal â€” that
+  // â”€â”€ Inject ALL theater CSS at script load (NOT inside ensureModal — that
   // only runs when the modal opens, but we need badge styles immediately on
   // page load for the viewed marker to render correctly).
   function injectStyle(){
@@ -124,7 +124,7 @@
       '.twk-viewed-badge::before{content:"\\2713 ";font-weight:900}',
       /* Force parent positioning so the absolute badge anchors correctly */
       '.vcard.twk-viewed,.rk-item.twk-viewed{position:relative!important}',
-      /* Subtle dimming of viewed content (the part the user said works fine â€” keeping intact) */
+      /* Subtle dimming of viewed content (the part the user said works fine — keeping intact) */
       '.vcard.twk-viewed .vthumb img,.rk-item.twk-viewed .rk-thumb img,.rk-item.twk-viewed img{opacity:.55!important;filter:grayscale(.45)!important;transition:opacity .25s,filter .25s}'
     ].join('\n');
     document.head.appendChild(st);
@@ -163,7 +163,7 @@
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
-    // SAGRADA #9 â€” top-5 hot ranking videos never get the paywall
+    // SAGRADA #9 — top-5 hot ranking videos never get the paywall
     var modalIsProt = window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid);
     // â”€â”€ +18 short-circuit: if this video already errored 101/150 in the past,
     // show the paywall directly without trying to load the iframe again. â”€â”€
@@ -187,10 +187,10 @@
       function killHeartbeat(){ if (blockHeartbeat) { clearTimeout(blockHeartbeat); blockHeartbeat = null; } }
       function triggerSilentBlock(){
         if (playbackStarted) return;
-        if (modalIsProt) return; // SAGRADA #9 â€” top-5 never paywalled
+        if (modalIsProt) return; // SAGRADA #9 — top-5 never paywalled
         try {
           // Destroy player FIRST while iframe is still in DOM, THEN inject
-          // paywall â€” otherwise YT.destroy() touches the detached iframe and
+          // paywall — otherwise YT.destroy() touches the detached iframe and
           // briefly repaints over our paywall (the ~0.5s flash bug).
           stopTimeTracker();
           if (ytPlayer && typeof ytPlayer.destroy === 'function') {
@@ -244,7 +244,7 @@
           },
           onError: function(ev){
             killHeartbeat();
-            if (modalIsProt) return; // SAGRADA #9 â€” top-5 never paywalled
+            if (modalIsProt) return; // SAGRADA #9 — top-5 never paywalled
             // 101/150 = embed disabled / age-restricted â†’ swap to paywall.
             // Destroy player FIRST so YT.destroy() doesn't repaint over the
             // paywall HTML (this caused the ~0.5s flash bug pre-p5).
@@ -291,7 +291,7 @@
   }
   function setViewed(v){ try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(_){} }
 
-  // â”€â”€ Time tracker â€” adds elapsed seconds to localStorage every 5s while playing
+  // â”€â”€ Time tracker — adds elapsed seconds to localStorage every 5s while playing
   // and pushes a Supabase grant if the user is signed in. â”€â”€
   var trackerInterval = null;
   var trackerLastTick = 0;
@@ -384,10 +384,10 @@
   // finds nothing). Heatmap on inline therefore uses a passive heuristic:
   // assume the video is playing while the tab is visible, and bucket time
   // since iframe load, capped to 600s. Age-gate on inline only does the
-  // pre-check (isBlocked) â€” onError detection requires YT.Player wrap, which
+  // pre-check (isBlocked) — onError detection requires YT.Player wrap, which
   // we deliberately avoid here. Blocked videos can still be detected through
-  // the modal theater (where YT.Player is created from scratch â€” safe).
-  // Helper â€” hide iframe + show overlay together (so YouTube's "unavailable"
+  // the modal theater (where YT.Player is created from scratch — safe).
+  // Helper — hide iframe + show overlay together (so YouTube's "unavailable"
   // black UI cannot bleed through behind a transparent gap).
   function showInlinePaywall(player, wrap, vid){
     try {
@@ -427,13 +427,13 @@
           var m = src.match(/embed\/([^?&\s]{6,})/);
           var vid = m && m[1];
           if (!vid || !window.TwkAgeGate) return;
-          // SAGRADA #9 â€” top-5 ranking videos are immune to the paywall
+          // SAGRADA #9 — top-5 ranking videos are immune to the paywall
           if (window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) {
             hideInlinePaywall(player, wrap);
             return;
           }
           if (window.TwkAgeGate.isBlocked(vid)) {
-            // Cancel pending heartbeat â€” we're going straight to paywall
+            // Cancel pending heartbeat — we're going straight to paywall
             if (window.__twkInlineHeartbeat) {
               clearTimeout(window.__twkInlineHeartbeat);
               window.__twkInlineHeartbeat = null;
@@ -441,7 +441,7 @@
             showInlinePaywall(player, wrap, vid);
             stopTimeTracker();
           } else {
-            // Fresh src on a non-blocked vid â€” make sure iframe is visible again
+            // Fresh src on a non-blocked vid — make sure iframe is visible again
             hideInlinePaywall(player, wrap);
           }
         } catch(_){}
@@ -451,7 +451,7 @@
     function onLoad(){
       var src = player.src || '';
       // CRITICAL: about:blank load fires when WE just set src=blank to show
-      // the paywall. Don't run vid extraction or hideInlinePaywall on it â€”
+      // the paywall. Don't run vid extraction or hideInlinePaywall on it —
       // doing so removes the overlay we just placed (the "blink to black" bug).
       if (!src || src === 'about:blank') return;
 
@@ -461,11 +461,11 @@
         if (m && m[1]) { vid = m[1]; markViewed(vid); }
       } catch(_){}
 
-      // SAGRADA #9 â€” top-5 ranking videos must always play, never paywall
+      // SAGRADA #9 — top-5 ranking videos must always play, never paywall
       var isProt = vid && window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid);
       if (isProt) {
         hideInlinePaywall(player, wrap);
-        // Skip heartbeat entirely for protected vids â€” they get to play freely
+        // Skip heartbeat entirely for protected vids — they get to play freely
         if (window.__twkInlineHeartbeat) { clearTimeout(window.__twkInlineHeartbeat); window.__twkInlineHeartbeat = null; }
         return;
       }
@@ -503,7 +503,7 @@
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
       // duration of 60s. If the real video is shorter/longer, the heatmap is
-      // approximate but still useful and SAFE â€” does not touch the iframe.
+      // approximate but still useful and SAFE — does not touch the iframe.
       if (vid && window.TwkHeatmap && window.TwkHeatmap.attach) {
         var fakePlayer = {
           getDuration: function(){ return 60; }, // approximation
@@ -556,7 +556,7 @@
       var m = (ifr.src || '').match(/embed\/([^?&\s]{6,})/);
       var vid = m && m[1];
       if (!vid || !window.TwkAgeGate) return;
-      // SAGRADA #9 â€” top-5 ranking videos must NEVER show the paywall, even if
+      // SAGRADA #9 — top-5 ranking videos must NEVER show the paywall, even if
       // YouTube returns onError 101/150 (rare but happens on geo-restrictions etc).
       if (window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) return;
       var wrap = ifr.closest('.twerkhub-pl-player-wrap') || ifr.parentNode;

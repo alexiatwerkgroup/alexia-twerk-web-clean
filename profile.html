@@ -591,9 +591,9 @@ body::before{
           <span class="muted">Last 30 days</span>
         </div>
         <div class="empty">
-          <div class="empty-icon">ðŸŽ¬</div>
+          <div class="empty-icon">🎬</div>
           <h4>No history yet</h4>
-          <p>Videos you watch across Twerkhub will show up here â€” synced to your account and encrypted end-to-end.</p>
+          <p>Videos you watch across Twerkhub will show up here — synced to your account and encrypted end-to-end.</p>
           <a href="/playlist/" class="cta">Start watching â†’</a>
         </div>
       </section>
@@ -607,7 +607,7 @@ body::before{
         <div class="card-grid">
           <article class="card">
             <div class="card-thumb">
-              <div class="placeholder">ðŸ’Ž</div>
+              <div class="placeholder">👍</div>
               <span class="card-tag gold">Premium</span>
               <span class="card-dur">4:12</span>
             </div>
@@ -781,7 +781,7 @@ body::before{
   <span class="ic" id="music-icon">â™ª</span>
 </button>
 
-<!-- Existing functional scripts â€” profile-page.js hooks into the IDs/classes above -->
+<!-- Existing functional scripts — profile-page.js hooks into the IDs/classes above -->
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script defer src="/assets/profile-page.js?v=20260426-p6"></script>
 <!-- Legacy global-brand / global-i18n / online-count-global were duplicating widgets (two locales, two counters). Removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle this now. -->
@@ -807,7 +807,7 @@ body::before{
 
   function mirror(){
     // PRIORITY 1: the new TwerkhubAuth session (set on registration). If a
-    // user is logged in via the new auth flow, always use their nick/name â€”
+    // user is logged in via the new auth flow, always use their nick/name —
     // never fall back to "Anti" (the old hardcoded default that kept showing
     // after logout and was confusing users who never registered).
     var currentUser = null;
@@ -827,7 +827,7 @@ body::before{
     var av = String(p.avatar_url || '').trim();
     var isGuest = !currentUser && !nick;
 
-    // Hero name â€” reflects actual session state
+    // Hero name — reflects actual session state
     if (heroName) {
       heroName.textContent = displayName;
       heroName.classList.toggle('is-guest', isGuest);
@@ -852,7 +852,7 @@ body::before{
       }
     }
 
-    // Hero avatar â€” use current-user initials if available
+    // Hero avatar — use current-user initials if available
     var initialSource = (currentUser && currentUser.nick) || (currentUser && currentUser.name) || nick;
     if (heroPreview) {
       heroPreview.innerHTML = av ? '<img src="'+esc(av)+'" alt="Avatar">' : (initialSource ? initials(initialSource) : '?');
@@ -921,7 +921,7 @@ body::before{
 /* â”€â”€â”€ Logout · ALWAYS delegates to TwerkhubAuth (now bulletproof: prefix-scan
        wipe, SW unregister, cache clear, hard reload). If TwerkhubAuth hasn't
        loaded yet, we wait briefly for it before falling back to a manual
-       prefix-scan wipe â€” otherwise different keys would leak between flows. â”€â”€â”€ */
+       prefix-scan wipe — otherwise different keys would leak between flows. â”€â”€â”€ */
 (function(){
   var btn = document.getElementById('logout-btn');
   if (!btn) return;
@@ -945,7 +945,7 @@ body::before{
         await window.__alexiaProfilePageClient.auth.signOut();
       }
     } catch(e){}
-    // 2 · Use the unified TwerkhubAuth.logout â€” handles wipe + SW + caches.
+    // 2 · Use the unified TwerkhubAuth.logout — handles wipe + SW + caches.
     if (window.TwerkhubAuth && typeof window.TwerkhubAuth.logout === 'function') {
       window.TwerkhubAuth.logout();
       return;
