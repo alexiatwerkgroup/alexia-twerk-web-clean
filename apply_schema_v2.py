@@ -265,7 +265,7 @@ def schema_videoobject(title, desc, url, vid_id, thumb, page_type=None):
         "@type": "VideoObject",
         "name": title or "Twerk video",
         "description": safe_desc,
-        "thumbnailUrl": thumb or (f"https://i.ytimg.com/vi/{vid_id}/maxresdefault.jpg" if vid_id else ORG_LOGO),
+        "thumbnailUrl": thumb or (f"https://i.ytimg.com/vi/{vid_id}/hqdefault.jpg" if vid_id else ORG_LOGO),
         "uploadDate": DEFAULT_PUBDATE,
         "contentUrl": f"https://www.youtube.com/watch?v={vid_id}" if vid_id else url,
         "embedUrl": f"https://www.youtube.com/embed/{vid_id}" if vid_id else url,

@@ -186,7 +186,7 @@ def build_collectionpage_haspart(videos: list[dict], lang: str = "en", accessibl
         item = {
             "@type": "VideoObject",
             "name": v["title"],
-            "thumbnailUrl": f"https://i.ytimg.com/vi/{vid}/maxresdefault.jpg",
+            "thumbnailUrl": f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg",
             "uploadDate": "2026-04-25T12:00:00Z",
             "contentUrl": f"https://www.youtube.com/watch?v={vid}",
             "embedUrl": f"https://www.youtube.com/embed/{vid}",
@@ -208,7 +208,7 @@ def build_itemlist(videos: list[dict], lang: str = "en", accessible: bool = True
         vid_obj = {
             "@type": "VideoObject",
             "name": v["title"],
-            "thumbnailUrl": f"https://i.ytimg.com/vi/{vid}/maxresdefault.jpg",
+            "thumbnailUrl": f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg",
             "contentUrl": f"https://www.youtube.com/watch?v={vid}",
             "embedUrl": f"https://www.youtube.com/embed/{vid}",
             "inLanguage": lang,

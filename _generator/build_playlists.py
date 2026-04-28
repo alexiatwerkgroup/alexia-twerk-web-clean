@@ -307,7 +307,7 @@ def build_twerk_hub() -> str:
             "@type": "VideoObject",
             "name": v["title"],
             "description": f'{v["title"]} · Twerkhub · {v["tag"]}',
-            "thumbnailUrl": f'https://i.ytimg.com/vi/{v["id"]}/maxresdefault.jpg',
+            "thumbnailUrl": f'https://i.ytimg.com/vi/{v["id"]}/hqdefault.jpg',
             "uploadDate": "2026-04-20",
             "contentUrl": f'https://www.youtube.com/watch?v={v["id"]}',
             "embedUrl": f'https://www.youtube.com/embed/{v["id"]}',
@@ -871,11 +871,11 @@ def render_individual_video_page(yt_id, slug, title, description, canonical, dis
 <meta property="og:title" content="{safe_title}"/>
 <meta property="og:description" content="{safe_descr}"/>
 <meta property="og:url" content="{safe_canon}"/>
-<meta property="og:image" content="https://i.ytimg.com/vi/{yt_id}/maxresdefault.jpg"/>
+<meta property="og:image" content="https://i.ytimg.com/vi/{yt_id}/hqdefault.jpg"/>
 <meta property="og:video" content="https://www.youtube.com/embed/{yt_id}"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="{safe_title}"/>
-<meta name="twitter:image" content="https://i.ytimg.com/vi/{yt_id}/maxresdefault.jpg"/>
+<meta name="twitter:image" content="https://i.ytimg.com/vi/{yt_id}/hqdefault.jpg"/>
 <meta name="rating" content="mature"/>
 <meta name="theme-color" content="#05050a"/>
 <link rel="icon" href="/favicon-32.png" sizes="32x32"/>
@@ -891,7 +891,7 @@ def render_individual_video_page(yt_id, slug, title, description, canonical, dis
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v={TOKENS_CACHE_BUST}">
 
 <script type="application/ld+json">
-{{"@context":"https://schema.org","@type":"VideoObject","name":"{safe_title}","description":"{safe_descr}","thumbnailUrl":"https://i.ytimg.com/vi/{yt_id}/maxresdefault.jpg","uploadDate":"2026-04-20","contentUrl":"https://www.youtube.com/watch?v={yt_id}","embedUrl":"https://www.youtube.com/embed/{yt_id}","url":"{safe_canon}","inLanguage":"en","isFamilyFriendly":false,"isPartOf":{{"@type":"CollectionPage","name":"Best Twerk Videos on YouTube","url":"https://alexiatwerkgroup.com/playlist/"}}}}
+{{"@context":"https://schema.org","@type":"VideoObject","name":"{safe_title}","description":"{safe_descr}","thumbnailUrl":"https://i.ytimg.com/vi/{yt_id}/hqdefault.jpg","uploadDate":"2026-04-20","contentUrl":"https://www.youtube.com/watch?v={yt_id}","embedUrl":"https://www.youtube.com/embed/{yt_id}","url":"{safe_canon}","inLanguage":"en","isFamilyFriendly":false,"isPartOf":{{"@type":"CollectionPage","name":"Best Twerk Videos on YouTube","url":"https://alexiatwerkgroup.com/playlist/"}}}}
 </script>
 </head>
 <body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater" data-page="playlist-video">

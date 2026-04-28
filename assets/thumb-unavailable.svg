@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" preserveAspectRatio="xMidYMid slice">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1a0a14"/><stop offset="1" stop-color="#0a0508"/></linearGradient></defs>
+  <rect width="480" height="270" fill="url(#g)"/>
+  <g fill="none" stroke="#ff3a8c" stroke-width="3" opacity="0.85"><circle cx="240" cy="120" r="36"/><path d="M222 100 L258 140 M258 100 L222 140" stroke-linecap="round"/></g>
+  <text x="240" y="195" text-anchor="middle" fill="#ff3a8c" font-family="system-ui,sans-serif" font-size="14" font-weight="600" letter-spacing="2">VIDEO UNAVAILABLE</text>
+  <text x="240" y="218" text-anchor="middle" fill="#ff3a8c80" font-family="system-ui,sans-serif" font-size="10" letter-spacing="1.5">REMOVED FROM SOURCE</text>
+</svg>

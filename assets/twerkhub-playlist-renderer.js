@@ -99,7 +99,7 @@
     var tag = esc(taglineFor(item.id || number));
     a.innerHTML = [
       '<div class="vthumb">',
-      '  <img src="https://i.ytimg.com/vi/', esc(item.id), '/maxresdefault.jpg" alt="', esc(number), '" loading="lazy" onerror="this.src=\'https://i.ytimg.com/vi/', esc(item.id), '/hqdefault.jpg\'">',
+      '  <img src="https://i.ytimg.com/vi/', esc(item.id), '/hqdefault.jpg" alt="', esc(number), '" loading="lazy" onerror="this.src=\'https://i.ytimg.com/vi/', esc(item.id), '/hqdefault.jpg\'">',
       '  <div class="vscrim"></div>',
       '  <div class="', badgeCls, '">', rankText, '</div>',
       '  <div class="fomo-pill">💎 private · not on YouTube</div>',

@@ -111,8 +111,8 @@ PAGE_TEMPLATE = """<!doctype html>
 <meta property="og:title" content="{title_html} \xb7 Twerk Choreography"/>
 <meta property="og:description" content="{description_html}"/>
 <meta property="og:url" content="{canonical}"/>
-<meta property="og:image" content="https://i.ytimg.com/vi/{vid}/maxresdefault.jpg"/>
-<meta property="og:image:secure_url" content="https://i.ytimg.com/vi/{vid}/maxresdefault.jpg"/>
+<meta property="og:image" content="https://i.ytimg.com/vi/{vid}/hqdefault.jpg"/>
+<meta property="og:image:secure_url" content="https://i.ytimg.com/vi/{vid}/hqdefault.jpg"/>
 <meta property="og:image:width" content="1280"/>
 <meta property="og:image:height" content="720"/>
 <meta property="og:video" content="https://www.youtube.com/embed/{vid}"/>
@@ -128,7 +128,7 @@ PAGE_TEMPLATE = """<!doctype html>
 <meta name="twitter:site" content="@alexiatwerkofic"/>
 <meta name="twitter:title" content="{title_html} \xb7 Twerk Choreography"/>
 <meta name="twitter:description" content="{description_html}"/>
-<meta name="twitter:image" content="https://i.ytimg.com/vi/{vid}/maxresdefault.jpg"/>
+<meta name="twitter:image" content="https://i.ytimg.com/vi/{vid}/hqdefault.jpg"/>
 <meta name="twitter:player" content="https://www.youtube.com/embed/{vid}"/>
 <meta name="twitter:player:width" content="1280"/>
 <meta name="twitter:player:height" content="720"/>
@@ -239,7 +239,7 @@ def build_video_jsonld(item, slug, position):
         "name": item['title'],
         "description": item['description'],
         "thumbnailUrl": [
-            f"https://i.ytimg.com/vi/{item['id']}/maxresdefault.jpg",
+            f"https://i.ytimg.com/vi/{item['id']}/hqdefault.jpg",
             f"https://i.ytimg.com/vi/{item['id']}/hqdefault.jpg",
         ],
         "uploadDate": TODAY,
@@ -406,7 +406,7 @@ def main():
             'loc': canonical,
             'title': item['title'],
             'desc': short_desc,
-            'thumb': f"https://i.ytimg.com/vi/{vid}/maxresdefault.jpg",
+            'thumb': f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg",
             'embed': f"https://www.youtube.com/embed/{vid}",
             'duration': int(item.get('dur') or 60),
         })
