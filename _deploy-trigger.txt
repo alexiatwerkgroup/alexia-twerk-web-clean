@@ -1,0 +1,7 @@
+deploy-trigger: 2026-04-28T12:05Z
+purpose: force Cloudflare Pages to rebuild and include /ko/ + /ja/ directories
+expected files in deployment:
+  - ko/hottest-cosplay-fancam/index.html
+  - ko/korean-girls-kpop-twerk/index.html
+  - ja/hottest-cosplay-fancam/index.html
+  - ja/korean-girls-kpop-twerk/index.html
