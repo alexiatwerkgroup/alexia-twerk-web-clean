@@ -67,7 +67,7 @@ body{background:#0a0a0f;color:#f5f5fb;font-family:'Inter',-apple-system,sans-ser
 <div class="vd-kicker">// Try-On Hot Leaks · Video 3</div>
 <h1 class="vd-title">MINI SKIRT TRY ON HAUL</h1>
 <div class="vd-meta"><span><b>Creator:</b> VICTORIA XAVIER</span><span class="sep">·</span><span><b>Duration:</b> 6:05</span><span class="sep">·</span><span><b>Playlist:</b> Try-On Hot Leaks</span></div>
-<div class="vd-player">
+<div class="vd-player" data-vid="cimL6f-9e3Q" data-protected="1">
 <iframe src="https://www.youtube.com/embed/cimL6f-9e3Q?autoplay=0&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;origin=https%3A%2F%2Falexiatwerkgroup.com" title="MINI SKIRT TRY ON HAUL · VICTORIA XAVIER" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
 </div>
 <div class="vd-cta">
@@ -76,9 +76,48 @@ body{background:#0a0a0f;color:#f5f5fb;font-family:'Inter',-apple-system,sans-ser
 </div>
 <div class="vd-context">Part of the <b>Try-On Hot Leaks</b> Twerkhub playlist — 16 hand-curated try-on cuts featuring VICTORIA XAVIER and other creators. New drops every Friday at 00:00 ART. <a href="/membership.html" style="color:#ff6fa8;font-weight:700">Become a member</a> to unlock the full archive.</div>
 </main>
+<script src="/assets/twerkhub-auth.js?v=20260426-p8" defer></script>
+<script src="/assets/twerkhub-paywall.js?v=20260426-p8" defer></script>
+<script src="/assets/twerkhub-age-gate.js?v=20260426-p8" defer></script>
 <script defer src="/assets/twerkhub-tokens.js?v=20260425-p8"></script>
 <script defer src="/assets/token-system.js?v=20260425-p8"></script>
 <script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
+<script>
+(function(){
+  // Bridge: connect this detail page's iframe to TwkAgeGate (same module
+  // that powers /ttl-latin-models/ + /hottest-cosplay-fancam/).
+  // 1) If videoId is already blocked → swap iframe for the +18 modal
+  // 2) Listen for YouTube embed errors via postMessage and notify age-gate
+  function init(){
+    var player = document.querySelector('.vd-player[data-vid]');
+    if (!player) return;
+    var vid = player.getAttribute('data-vid');
+    var protectedFlag = player.hasAttribute('data-protected');
+    if (!vid) return;
+    var ag = window.TwkAgeGate;
+    if (ag && ag.isBlocked && ag.isBlocked(vid) && !protectedFlag) {
+      try { ag.show(player, vid); return; } catch(_){}
+    }
+    // Listen for YouTube IFrame API error events via postMessage
+    window.addEventListener('message', function(ev){
+      if (!ev.data || typeof ev.data !== 'string') return;
+      try {
+        var d = JSON.parse(ev.data);
+        if (d && d.event === 'onError' && (d.info === 101 || d.info === 150)) {
+          if (!protectedFlag && window.TwkAgeGate && window.TwkAgeGate.handleYTError) {
+            window.TwkAgeGate.handleYTError(d.info, vid, player);
+          }
+        }
+      } catch(_){}
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(init, 600); }, { once: true });
+  } else {
+    setTimeout(init, 600);
+  }
+})();
+</script>
 </body>
 </html>

@@ -46,6 +46,8 @@ function checkGA4(content, rel) {
   }
 }
 
+
+
 const MOJIBAKE_MARKERS = ['ðŸ', 'â€', 'â†', 'â—', 'â˜', 'âœ', 'âš', 'Â·', 'Ã©', 'Ã¡', 'Ã­', 'Ã³', 'Ãº', 'Ã±', 'Ã‰', 'Ð'];
 
 function checkEncoding(content, rel) {
