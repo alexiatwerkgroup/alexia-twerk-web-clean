@@ -1,7 +1,11 @@
-deploy-trigger: 2026-04-28T12:05Z
-purpose: force Cloudflare Pages to rebuild and include /ko/ + /ja/ directories
-expected files in deployment:
-  - ko/hottest-cosplay-fancam/index.html
-  - ko/korean-girls-kpop-twerk/index.html
-  - ja/hottest-cosplay-fancam/index.html
-  - ja/korean-girls-kpop-twerk/index.html
+deploy-trigger: 2026-04-28T13:00Z
+purpose: SEO indexing system rollout
+expected:
+  - sitemap.xml regenerated (970+ URLs, was 696)
+  - sitemap-videos.xml regenerated (749 video entries, was 456)
+  - sitemap-index.xml regenerated
+  - 751 detail pages with related-content block (8 same-playlist + 4 cross)
+  - /recent.html (200 newest cuts)
+  - /trending.html (full archive)
+  - homepage footer linked to /recent + /trending
+  - scripts/CONTRIBUTING-SEO-INDEXING.md (source-of-truth playbook)
