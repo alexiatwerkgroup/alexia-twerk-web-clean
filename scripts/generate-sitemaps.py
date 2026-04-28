@@ -217,8 +217,11 @@ def write_sitemap_videos(pages, out_path):
         if not meta.get('thumb') or not (meta.get('embedUrl') or meta.get('contentUrl')):
             continue
         url = url_for(p['rel'])
-        title = xml_escape(meta['title'])[:100]
-        desc = xml_escape(meta['description'])[:2048]
+        # Truncate BEFORE escaping so we don't split XML entities like &amp;
+        raw_title = (meta['title'] or '')[:100]
+        raw_desc = (meta['description'] or '')[:2048]
+        title = xml_escape(raw_title)
+        desc = xml_escape(raw_desc)
         thumb = xml_escape(meta['thumb'])
         embed = xml_escape(meta.get('embedUrl') or '')
         content = xml_escape(meta.get('contentUrl') or '')
