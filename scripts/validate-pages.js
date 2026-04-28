@@ -32,6 +32,14 @@ function isUtilityPage(rel) {
   return UTILITY_PATTERNS.some(p => p.test(name));
 }
 
+
+function checkImageSeo(content, rel) {
+  if (isUtilityPage(rel)) return;
+  if (content.indexOf('image-seo-engine.js') === -1) {
+    errors.push(rel + ': missing Image SEO Engine script tag. Add <script src="/assets/js/image-seo-engine.js" defer></script> before </body>.');
+  }
+}
+
 function checkGA4(content, rel) {
   if (isUtilityPage(rel)) return;
   const loaderRe = new RegExp('<script[^>]*src="https://www\\.googletagmanager\\.com/gtag/js\\?id=' + GA4_ID + '"', 'g');
@@ -87,6 +95,7 @@ function check(file){
 
   checkEncoding(content, rel);
   checkGA4(content, rel);
+  checkImageSeo(content, rel);
 
   const tail = content.slice(-200).replace(/\s+$/, '');
   if (!/<\/body>\s*<\/html>\s*$/i.test(tail) && !/<\/html>\s*$/i.test(tail)) {
