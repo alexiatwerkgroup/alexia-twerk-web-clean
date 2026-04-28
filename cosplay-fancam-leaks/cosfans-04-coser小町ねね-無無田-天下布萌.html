@@ -60,6 +60,23 @@ body{background:#0a0a0f;color:#f5f5fb;font-family:'Inter',-apple-system,sans-ser
 .vd-cta .pri:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 12px 36px rgba(255,45,135,.6)}
 .vd-cta .ghost{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#c7c7d4}
 .vd-cta .ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff}
+
+.vd-locked{display:flex;align-items:center;justify-content:center;min-height:480px;background:linear-gradient(135deg,#2a0a14 0%,#1a0a14 50%,#0a0a14 100%);position:relative}
+.vd-locked::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 24px,rgba(255,255,255,.015) 24px 25px);pointer-events:none}
+.vd-lock-modal{position:relative;z-index:2;text-align:center;padding:32px 28px;max-width:620px}
+.vd-lock-padlock{margin-bottom:6px;display:flex;justify-content:center}
+.vd-lock-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#ffd78a;margin-bottom:14px}
+.vd-lock-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,4vw,42px);font-weight:900;color:#fff;margin-bottom:14px;letter-spacing:-.01em}
+.vd-lock-title em{color:#ff6fa8;font-style:italic}
+.vd-lock-body{font-size:14px;line-height:1.7;color:#c7c7d4;margin-bottom:22px;max-width:520px;margin-left:auto;margin-right:auto}
+.vd-lock-body strong{color:#fff;font-weight:700}
+.vd-lock-cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:14px}
+.vd-lock-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:14px;color:#fff;text-decoration:none;font-size:13px;font-weight:800;letter-spacing:.06em;transition:all .2s ease;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.vd-lock-btn.discord{background:linear-gradient(135deg,#5865f2 0%,#7289da 100%)}
+.vd-lock-btn.discord:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(88,101,242,.5)}
+.vd-lock-btn.telegram{background:linear-gradient(135deg,#0088cc 0%,#5fbcff 100%)}
+.vd-lock-btn.telegram:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,136,204,.5)}
+.vd-lock-footer{font-size:11px;color:#a8a8b8;letter-spacing:.08em}
 </style>
 </head>
 <body>
@@ -69,8 +86,31 @@ body{background:#0a0a0f;color:#f5f5fb;font-family:'Inter',-apple-system,sans-ser
 <h1 class="vd-title">CosFANS 04-Coser:小町ねね & 無無田</h1>
 <p class="vd-intro">Watch CosFANS 04-Coser:小町ねね & 無無田 — 天下布萌's tightly-edited 6:26 contribution to the Cosplay Fancam Leaks archive.</p>
 <div class="vd-meta"><span><b>Creator:</b> 天下布萌</span><span class="sep">·</span><span><b>Duration:</b> 6:26</span><span class="sep">·</span><span><b>Playlist:</b> Cosplay Fancam Leaks</span></div>
-<div class="vd-player" data-vid="eVBjr8TmGKw">
-<iframe src="https://www.youtube.com/embed/eVBjr8TmGKw?autoplay=0&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;origin=https%3A%2F%2Falexiatwerkgroup.com" title="CosFANS 04-Coser:小町ねね & 無無田 · 天下布萌" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+<div class="vd-player vd-locked" data-vid="eVBjr8TmGKw">
+  <div class="vd-lock-modal">
+    <div class="vd-lock-padlock" aria-hidden="true">
+      <svg viewBox="0 0 64 64" width="80" height="80" fill="none">
+        <rect x="14" y="28" width="36" height="28" rx="6" fill="#ffb454" stroke="#a06624" stroke-width="2"/>
+        <path d="M22 28 V20 a10 10 0 0 1 20 0 V28" stroke="#9d9d9d" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="32" cy="42" r="3" fill="#1a0f00"/>
+        <rect x="31" y="42" width="2" height="6" fill="#1a0f00"/>
+      </svg>
+    </div>
+    <div class="vd-lock-kicker">+18 · Locked content</div>
+    <h2 class="vd-lock-title">This video is <em>locked</em>.</h2>
+    <p class="vd-lock-body"><strong>To unlock, contact Alexia on Discord or Telegram.</strong> YouTube blocks this video from playing outside their platform because it is age-restricted. The uncensored version comes from Alexia directly, in private.</p>
+    <div class="vd-lock-cta">
+      <a class="vd-lock-btn discord" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.27 5.33A18.27 18.27 0 0 0 14.95 4l-.21.42a16.4 16.4 0 0 1 4 1.27 14.4 14.4 0 0 0-13.5 0A16.4 16.4 0 0 1 9.26 4.42L9.05 4a18.27 18.27 0 0 0-4.32 1.33C2.07 9.32 1.34 13.21 1.71 17.04a18.4 18.4 0 0 0 5.65 2.87l1.13-1.6a11.7 11.7 0 0 1-1.8-.86l.44-.32a13 13 0 0 0 11.74 0l.44.32a11.7 11.7 0 0 1-1.81.87l1.13 1.59a18.4 18.4 0 0 0 5.66-2.87c.45-4.45-.71-8.31-3-11.71zM8.52 14.66c-1.1 0-2-1-2-2.27s.88-2.27 2-2.27 2 1.02 2 2.27-.89 2.27-2 2.27zm6.96 0c-1.1 0-2-1-2-2.27s.88-2.27 2-2.27 2 1.02 2 2.27-.88 2.27-2 2.27z"/></svg>
+        Contact on Discord
+      </a>
+      <a class="vd-lock-btn telegram" href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22.05 1.58 1.32 9.5c-1.42.55-1.41 1.31-.26 1.66l5.32 1.66 12.31-7.77c.58-.35 1.11-.16.68.23L9.4 14.27l-.38 5.46c.55 0 .79-.25 1.1-.55l2.65-2.57 5.5 4.06c1.01.56 1.74.27 2-.94L22.5 3.18c.36-1.5-.58-2.18-1.69-1.6z"/></svg>
+        Contact on Telegram
+      </a>
+    </div>
+    <div class="vd-lock-footer">Free invite · 18+ only · Private</div>
+  </div>
 </div>
 <section class="vd-section"><h2>Why this cut earned a spot</h2><p>Why it's here: it embodies the Cosplay Fancam Leaks curation rule — if you can mute it and still feel the rhythm, it ships.</p></section>
 <section class="vd-section"><h2>What's next in Cosplay Fancam Leaks</h2><p>Like the framing? The Cosplay Fancam Leaks archive runs a tight selection — every video held to the same bar as this one.</p></section>
