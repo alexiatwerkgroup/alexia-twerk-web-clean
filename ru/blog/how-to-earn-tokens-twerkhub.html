@@ -254,86 +254,7 @@ code{font-family:'JetBrains Mono',ui-monospace,monospace;background:rgba(255,255
 }
 .twk-mf *{box-sizing:border-box}
 .twk-mf-wrap{max-width:1480px;margin:0 auto;padding:0 32px}
-.twk-mf-subs{
-  background:
-    radial-gradient(ellipse at 0% 0%,rgba(255,45,135,.18),transparent 55%),
-    radial-gradient(ellipse at 100% 100%,rgba(255,180,84,.12),transparent 55%),
-    linear-gradient(180deg,rgba(20,16,30,.85),rgba(10,10,18,.85));
-  border:1px solid rgba(255,180,84,.35);border-radius:22px;padding:38px 36px;margin-bottom:54px;
-  box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 50px rgba(255,45,135,.08) inset;
-}
-.twk-mf-subs-head{
-  display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:18px;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.08);
-}
-.twk-mf-subs-head h3{
-  font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-weight:900;
-  font-size:38px;line-height:1;color:#fff;letter-spacing:-.015em;
-}
-.twk-mf-subs-head h3 em{
-  font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.twk-mf-subs-head p{
-  font-size:13px;color:#c7c7d3;max-width:380px;margin-top:6px;
-}
-.twk-mf-cta-pill{
-  display:inline-flex;align-items:center;gap:10px;padding:13px 24px;
-  background:linear-gradient(135deg,#ff2d87,#9d4edd);
-  color:#fff !important;text-decoration:none;
-  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;border-radius:999px;
-  box-shadow:0 14px 40px rgba(255,45,135,.4);transition:transform .25s,box-shadow .25s;white-space:nowrap;
-}
-.twk-mf-cta-pill:hover{transform:translateY(-2px);box-shadow:0 22px 60px rgba(255,45,135,.55)}
-.twk-mf-subs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.twk-mf-plan{
-  position:relative;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:14px;
-  padding:26px 24px;text-decoration:none;color:#c7c7d3;display:block;
-  transition:transform .3s,border-color .3s,background .3s;
-}
-.twk-mf-plan:hover{transform:translateY(-4px);border-color:#ffb454;background:rgba(255,180,84,.04)}
-.twk-mf-plan--pro{
-  background:
-    radial-gradient(ellipse at 30% 0%,rgba(255,45,135,.15),transparent 55%),
-    rgba(255,255,255,.04);
-  border-color:rgba(255,45,135,.5);
-}
-.twk-mf-plan--pro::before{
-  content:"MOST WANTED";position:absolute;top:-10px;left:50%;transform:translateX(-50%);
-  background:linear-gradient(135deg,#ff2d87,#ffb454);color:#fff;
-  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.22em;
-  padding:5px 12px;border-radius:999px;
-}
-.twk-mf-plan-tag{
-  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ffd78a;margin-bottom:8px;
-}
-.twk-mf-plan-name{
-  font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:900;font-size:24px;line-height:1;letter-spacing:-.005em;color:#fff;margin-bottom:14px;
-}
-.twk-mf-plan-price{
-  font-family:'Playfair Display',serif;font-weight:900;font-size:46px;line-height:1;color:#fff;
-  background:linear-gradient(180deg,#fff,#ff6fa8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.02em;
-}
-.twk-mf-plan-price small{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;font-weight:600;letter-spacing:.12em;color:#8a8a99;margin-left:4px;vertical-align:super;-webkit-text-fill-color:#8a8a99;background:none}
-.twk-mf-plan-period{
-  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#8a8a99;margin:8px 0 16px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.06);
-}
-.twk-mf-plan ul{list-style:none;padding:0;margin:0 0 18px}
-.twk-mf-plan ul li{font-size:12.5px;color:#c7c7d3;padding:5px 0;display:flex;gap:8px;align-items:baseline;line-height:1.4}
-.twk-mf-plan ul li::before{content:"+";color:#ffd78a;font-weight:900;flex-shrink:0}
-.twk-mf-plan-go{
-  display:block;text-align:center;padding:11px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:999px;text-decoration:none;
-  transition:all .25s;
-}
-.twk-mf-plan:hover .twk-mf-plan-go{background:#fff;color:#0a0a14;border-color:#fff}
-.twk-mf-plan--pro .twk-mf-plan-go{background:linear-gradient(135deg,#ff2d87,#9d4edd);border-color:transparent;color:#fff}
-.twk-mf-plan--pro:hover .twk-mf-plan-go{box-shadow:0 12px 32px rgba(255,45,135,.45);transform:translateY(-1px)}
-
 /* secondary: earn tokens free */
-.twk-mf-or{
-  display:flex;align-items:center;justify-content:center;margin:32px 0 22px;gap:14px;
-  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:#5a5a68;
-}
-.twk-mf-or::before,.twk-mf-or::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.07);max-width:140px}
 .twk-mf-earn{
   background:rgba(255,255,255,.018);border:1px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px 24px;margin-bottom:54px;
 }
@@ -382,14 +303,11 @@ code{font-family:'JetBrains Mono',ui-monospace,monospace;background:rgba(255,255
 .twk-mf-bottom a{color:#8a8a99;text-decoration:none;margin:0 4px}
 .twk-mf-bottom a:hover{color:#ff6fa8}
 @media(max-width:1100px){
-  .twk-mf-subs-grid{grid-template-columns:1fr}
   .twk-mf-earn-grid{grid-template-columns:repeat(2,1fr)}
   .twk-mf-row{grid-template-columns:1fr 1fr;gap:28px}
 }
 @media(max-width:720px){
   .twk-mf-wrap{padding:0 18px}
-  .twk-mf-subs{padding:28px 22px}
-  .twk-mf-subs-head h3{font-size:28px}
   .twk-mf-earn-grid{grid-template-columns:1fr}
   .twk-mf-row{grid-template-columns:1fr;gap:24px}
 }
@@ -397,65 +315,7 @@ code{font-family:'JetBrains Mono',ui-monospace,monospace;background:rgba(255,255
 <footer class="twk-mf" role="contentinfo">
   <div class="twk-mf-wrap">
 
-    <!-- SUBSCRIBE block — paid conversion focus -->
-    <div class="twk-mf-subs">
-      <div class="twk-mf-subs-head">
-        <div>
-          <h3>Subscribe and unlock the <em>full vault</em>.</h3>
-          <p>The free preview is 4% of the archive. Members watch the other 96% — 749 4K cuts, weekly drops, custom commissions. Pick a tier, take the seat.</p>
-        </div>
-        <a class="twk-mf-cta-pill" href="/membership.html">Compare all tiers →</a>
-      </div>
-      <div class="twk-mf-subs-grid">
-
-        <a class="twk-mf-plan" href="/membership.html">
-          <div class="twk-mf-plan-tag">Tier · Medium</div>
-          <div class="twk-mf-plan-name">Patron</div>
-          <div class="twk-mf-plan-price">$9<small>.99/mo</small></div>
-          <div class="twk-mf-plan-period">unlock the grid</div>
-          <ul>
-            <li>All 7 vaults · standard cuts</li>
-            <li>Early access · 24h pre-drop</li>
-            <li>HD downloads · selected</li>
-            <li>2× token earn rate</li>
-          </ul>
-          <span class="twk-mf-plan-go">Subscribe →</span>
-        </a>
-
-        <a class="twk-mf-plan twk-mf-plan--pro" href="/membership.html">
-          <div class="twk-mf-plan-tag">Tier · Premium</div>
-          <div class="twk-mf-plan-name">Collector</div>
-          <div class="twk-mf-plan-price">$19<small>.99/mo</small></div>
-          <div class="twk-mf-plan-period">the full archive</div>
-          <ul>
-            <li>4K downloads · all 7 vaults</li>
-            <li>VIP Latin Models · 1,500+ cuts</li>
-            <li>1-on-1 Discord channel</li>
-            <li>Pre-release private beta</li>
-            <li>Naming rights · 1 cut/quarter</li>
-          </ul>
-          <span class="twk-mf-plan-go">Take the seat →</span>
-        </a>
-
-        <a class="twk-mf-plan" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">
-          <div class="twk-mf-plan-tag">Tier · VIP</div>
-          <div class="twk-mf-plan-name">Founder</div>
-          <div class="twk-mf-plan-price">$199<small>/mo</small></div>
-          <div class="twk-mf-plan-period">by interview only</div>
-          <ul>
-            <li>2 custom commissions / month</li>
-            <li>Direct line to Alexia</li>
-            <li>Founder badge · permanent</li>
-            <li>Annual dinner · Buenos Aires</li>
-          </ul>
-          <span class="twk-mf-plan-go">Apply for VIP →</span>
-        </a>
-
-      </div>
-    </div>
-
     <!-- secondary path: earn tokens free -->
-    <div class="twk-mf-or">— or work your way up for free —</div>
     <div class="twk-mf-earn">
       <div class="twk-mf-earn-head">
         <h4>Earn tokens · <b>climb tiers without paying</b></h4>
