@@ -59,9 +59,14 @@
     shares:    3   // +150/day max from share
   };
 
-  // Tier thresholds: welcome 200 alone leaves you in Basic. After ~10 videos
-  // you cross into Medium. VIP Top requires ~6.5 months of grinding.
-  var TIER_THRESHOLDS = { medium: 300, premium: 3000, vip: 50000 };
+  // Tier thresholds (2026-04-29 update — Anti):
+  //   Basic   = 0–299  (default · welcome 200 + a couple watches)
+  //   Medium  = 300–2,999  (~10 videos in or 1 referral)
+  //   Premium = 3,000–8,999  (commitment tier)
+  //   VIP Top = 9,000+  (was 50k — collapsed to keep the curve realistic)
+  // Card "or X tokens" labels in index.html must match these:
+  //   Basic 300 · Medium 3,000 · Premium 9,000 · VIP 50,000 (kept high — "buy" path)
+  var TIER_THRESHOLDS = { medium: 3000, premium: 9000, vip: 50000 };
 
   function N(k, dflt){ try { var v = localStorage.getItem(k); return v == null ? dflt : JSON.parse(v); } catch(_){ return dflt; } }
   function S(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(_){} }
