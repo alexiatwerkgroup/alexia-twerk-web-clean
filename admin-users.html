@@ -66,10 +66,11 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Twerkhub <em>Leaderboard</em></h1>
+  <h1>Twerkhub <em>Admin · Stats</em></h1>
   <p class="sub">
-    Top users ordenados por tokens. <strong>Source: Supabase</strong> (lista global · todos los users registrados en el sitio).
-    Cambiá a <em>Local</em> para ver solo los users registrados en este navegador (para debug).
+    Owner-only dashboard. Real users + full metrics: tokens, time on site, videos watched, streak, last seen.
+    Backed by Supabase RPC <code style="background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:11.5px;color:#ffd78a">admin_get_full_stats()</code>
+    which silently returns empty for any caller that isn't the owner email. Cambiá a <em>Local</em> para ver users registrados solo en este navegador (debug).
   </p>
 
   <div class="source-toggle">
@@ -96,13 +97,16 @@
         <th data-sort="email">Email <span class="arrow">↕</span></th>
         <th data-sort="tokens" class="active">Tokens <span class="arrow">↓</span></th>
         <th data-sort="total_earned">Earned <span class="arrow">↕</span></th>
+        <th data-sort="seconds_on_site">Time on site <span class="arrow">↕</span></th>
+        <th data-sort="cuts_watched">Videos watched <span class="arrow">↕</span></th>
         <th data-sort="streak">Streak <span class="arrow">↕</span></th>
         <th data-sort="tier">Tier <span class="arrow">↕</span></th>
+        <th data-sort="last_seen_at">Last seen <span class="arrow">↕</span></th>
         <th data-sort="registered_at">Registered <span class="arrow">↕</span></th>
       </tr>
     </thead>
     <tbody id="rows">
-      <tr><td colspan="8" class="loading">Loading from Supabase</td></tr>
+      <tr><td colspan="11" class="loading">Loading from Supabase</td></tr>
     </tbody>
   </table>
 </div>
@@ -121,21 +125,33 @@
     try {
       var sb = await window.twkGetSupabase();
       if (!sb) throw new Error('Supabase client unavailable');
-      // Use the `leaderboard` view which already filters tokens > 0 and joins.
-      // For full list including users with 0 tokens, query profiles directly.
-      var resp = await sb.from('profiles').select('id,username,email,tokens,total_earned,streak,tier,registered_at').order('tokens', { ascending:false }).limit(500);
-      if (resp.error) throw resp.error;
-      state.users = (resp.data || []).map(function(p){
+      // Owner-gated full stats (email + session metrics + cuts watched).
+      // Returns [] silently if the caller is not the platform owner.
+      var resp = await sb.rpc('admin_get_full_stats');
+      // Fallback for installs that haven't run schema-tokens-v2 yet.
+      if (resp.error) {
+        var fallback = await sb.from('profiles').select('id,username,email,tokens,total_earned,streak,tier,registered_at,seconds_on_site,cuts_watched,last_seen_at').order('tokens', { ascending:false }).limit(500);
+        if (fallback.error) throw fallback.error;
+        resp = fallback;
+      }
+      var rows = resp.data || [];
+      if (!rows.length) {
+        state.err = 'No data returned. Either you are not signed in as the owner email, or no one has registered yet, or schema-tokens-v2 has not been run in Supabase.';
+      }
+      state.users = rows.map(function(p){
         return {
           id: p.id, username: p.username || '(no name)', email: p.email || '',
           tokens: p.tokens||0, total_earned: p.total_earned||0, streak: p.streak||0,
           tier: p.tier || tierFor(p.tokens||0),
-          registered_at: p.registered_at || null
+          seconds_on_site: Number(p.seconds_on_site||0),
+          cuts_watched: p.cuts_watched||0,
+          registered_at: p.registered_at || null,
+          last_seen_at: p.last_seen_at || null
         };
       });
     } catch(e){
       console.error('[admin] supabase load failed', e);
-      state.err = 'Could not query Supabase: ' + (e.message || 'unknown error') + '. Run the schema-tokens-v1.sql first if you haven\'t.';
+      state.err = 'Could not query Supabase: ' + (e.message || 'unknown error') + '. Run schema-tokens-v1.sql + schema-tokens-v2-session-tracking.sql in Supabase Dashboard SQL Editor.';
       state.users = [];
     }
   }
@@ -170,7 +186,7 @@
   }
 
   async function load(){
-    document.getElementById('rows').innerHTML = '<tr><td colspan="8" class="loading">Loading</td></tr>';
+    document.getElementById('rows').innerHTML = '<tr><td colspan="11" class="loading">Loading</td></tr>';
     if (state.source === 'supabase') await loadSupabase();
     else loadLocal();
     render();
@@ -193,23 +209,50 @@
     });
   }
   function fmtDate(t){ if (!t) return '—'; try { return new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}); } catch(_){ return '—'; } }
+  function fmtRelative(t){
+    if (!t) return '—';
+    try {
+      var d = new Date(t).getTime();
+      var diff = Math.floor((Date.now() - d) / 1000);
+      if (diff < 60)        return diff + 's ago';
+      if (diff < 3600)      return Math.floor(diff/60) + 'm ago';
+      if (diff < 86400)     return Math.floor(diff/3600) + 'h ago';
+      if (diff < 86400*30)  return Math.floor(diff/86400) + 'd ago';
+      return new Date(t).toLocaleDateString('en-US',{month:'short',day:'2-digit'});
+    } catch(_){ return '—'; }
+  }
+  function fmtDuration(secs){
+    secs = Number(secs)||0;
+    if (secs < 60)     return secs + 's';
+    if (secs < 3600)   return Math.floor(secs/60) + 'm ' + (secs%60) + 's';
+    if (secs < 86400) {
+      var h = Math.floor(secs/3600); var m = Math.floor((secs%3600)/60);
+      return h + 'h ' + m + 'm';
+    }
+    var d = Math.floor(secs/86400); var hr = Math.floor((secs%86400)/3600);
+    return d + 'd ' + hr + 'h';
+  }
   function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
   function renderStats(users){
     var total = users.length;
     var withEmail = users.filter(function(u){return u.email;}).length;
     var totalTokens = users.reduce(function(s,u){return s+(u.tokens||0);},0);
+    var totalSecs   = users.reduce(function(s,u){return s+Number(u.seconds_on_site||0);},0);
+    var totalCuts   = users.reduce(function(s,u){return s+(u.cuts_watched||0);},0);
     var topTokens = users.length ? Math.max.apply(null, users.map(function(u){return u.tokens||0;})) : 0;
     document.getElementById('stats').innerHTML =
       '<div class="stat"><div class="stat-label">Total users</div><div class="stat-value">' + total + '</div></div>' +
       '<div class="stat"><div class="stat-label">With email</div><div class="stat-value">' + withEmail + '</div></div>' +
       '<div class="stat"><div class="stat-label">Total tokens</div><div class="stat-value">' + totalTokens.toLocaleString('en-US') + '</div></div>' +
-      '<div class="stat"><div class="stat-label">Top user</div><div class="stat-value">' + topTokens.toLocaleString('en-US') + '</div></div>';
+      '<div class="stat"><div class="stat-label">Top user</div><div class="stat-value">' + topTokens.toLocaleString('en-US') + '</div></div>' +
+      '<div class="stat"><div class="stat-label">Total time on site</div><div class="stat-value" style="font-size:24px">' + fmtDuration(totalSecs) + '</div></div>' +
+      '<div class="stat"><div class="stat-label">Total videos watched</div><div class="stat-value">' + totalCuts.toLocaleString('en-US') + '</div></div>';
   }
   function renderRows(users){
     var tbody = document.getElementById('rows');
     if (!users.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="empty">No users yet. ' + (state.source==='supabase' ? 'Run schema-tokens-v1.sql in Supabase first, then have someone sign up.' : 'No registered users in this browser yet.') + '</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="11" class="empty">No users yet. ' + (state.source==='supabase' ? 'Run schema-tokens-v1.sql + schema-tokens-v2 in Supabase first, then sign in as the owner email.' : 'No registered users in this browser yet.') + '</td></tr>';
       return;
     }
     tbody.innerHTML = users.map(function(u, i){
@@ -221,8 +264,11 @@
         '<td>' + (u.email ? escapeHtml(u.email) : '<span style="opacity:.4">—</span>') + '</td>' +
         '<td class="tokens">' + (u.tokens||0).toLocaleString('en-US') + '</td>' +
         '<td>' + (u.total_earned||0).toLocaleString('en-US') + '</td>' +
+        '<td>' + fmtDuration(u.seconds_on_site||0) + '</td>' +
+        '<td style="font-weight:700;color:#ffd78a">' + (u.cuts_watched||0).toLocaleString('en-US') + '</td>' +
         '<td>' + (u.streak||0) + 'd</td>' +
         '<td><span class="tier tier-' + u.tier + '">' + u.tier + '</span></td>' +
+        '<td style="font-size:11.5px;color:#a8a8b8">' + fmtRelative(u.last_seen_at) + '</td>' +
         '<td>' + fmtDate(u.registered_at) + '</td>' +
       '</tr>';
     }).join('');
@@ -269,10 +315,18 @@
 
   window.exportCSV = function(){
     var users = applySort(state.users);
-    var rows = [['rank','username','email','tokens','total_earned','streak','tier','registered_at']];
-    users.forEach(function(u, i){ rows.push([i+1,u.username,u.email,u.tokens,u.total_earned,u.streak,u.tier,u.registered_at||'']); });
+    var rows = [['rank','username','email','tokens','total_earned','seconds_on_site','time_on_site','cuts_watched','streak','tier','last_seen_at','registered_at']];
+    users.forEach(function(u, i){
+      rows.push([
+        i+1, u.username, u.email,
+        u.tokens, u.total_earned,
+        u.seconds_on_site||0, fmtDuration(u.seconds_on_site||0),
+        u.cuts_watched||0, u.streak, u.tier,
+        u.last_seen_at||'', u.registered_at||''
+      ]);
+    });
     var csv = rows.map(function(r){ return r.map(function(c){ var s=String(c==null?'':c); if (s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0) s='"'+s.replace(/"/g,'""')+'"'; return s; }).join(','); }).join('\n');
-    download('twerkhub-leaderboard-' + new Date().toISOString().slice(0,10) + '.csv', csv, 'text/csv');
+    download('twerkhub-admin-stats-' + new Date().toISOString().slice(0,10) + '.csv', csv, 'text/csv');
   };
   window.exportJSON = function(){
     var users = applySort(state.users);
