@@ -1,4 +1,4 @@
-/* thumb-fallback.js v2 (2026-04-28b)
+/* thumb-fallback.js v2.1 (2026-04-30)
    ---
    Strict YouTube thumbnail recovery + dead-video gate.
    - Cascade: maxresdefault -> hqdefault -> mqdefault -> default
@@ -8,6 +8,10 @@
      intercept click on the card to open a small "Video unavailable"
      modal with a Discord CTA. Cards with alive videos are never
      touched.
+   - v2.1: cards with [data-no-dead] (e.g. homepage hub feature cards
+     navigating to /try-on-hot-leaks/, /korean-girls-kpop-twerk/, etc.)
+     are now exempt from the dead modal — they're navigation cards,
+     not video cards, so blocking their click was a regression.
 */
 (function () {
   "use strict";
@@ -88,6 +92,11 @@
   function check(img) {
     if (!img || !img.src || img.src.indexOf("i.ytimg.com") === -1) return;
     if (img.dataset.twkDead) return;
+    // EXEMPTION: hub-navigation cards (homepage feature cards, etc.) opt out
+    // of the dead-video gate via [data-no-dead]. They link to a hub index,
+    // not to a single video, so blocking the click is incorrect.
+    var card0 = img.closest && img.closest("[data-no-dead]");
+    if (card0) return;
     if (img.complete) {
       if (isPh(img)) tryNext(img);
       return;
