@@ -1,42 +1,51 @@
 {
   "playlist": "try-on-haul-leaks",
   "source_youtube_list": "PLMzWifnZnpVIEC44D0SQnnk-NRs9yIx7T",
-  "curated_by": "Anti (firestarter)",
-  "updated": "2026-04-20",
-  "notes": "Top 5 hot-ranking are free previews with real id/title. Grid is paywall-gated + anti-piracy: hidden_id is base64+sha256 tag, real fields prefixed with \"_\" are only rendered after subscription.",
+  "curated_by": "Anti (firestarter) · curated top 5 from PLMzWifnZnpVIEC44D0SQnnk-NRs9yIx7T",
+  "updated": "2026-04-30",
+  "notes": "Top 5 hot-ranking are free previews curated from Alexia Twerk Group's official Hot Try On YouTube playlist. Grid is paywall-gated + anti-piracy: hidden_id is base64+sha256 tag, real fields prefixed with \"_\" are only rendered after subscription. 2026-04-30: VX channel went private; rank 2 now uses the loly-twerk-dancer re-upload tvj8nFUhq4Y.",
   "hot_ranking": [
     {
-      "id": "jXBni3AN52M",
-      "title": "These Shorts Are Way Too Short!! Try On Haul",
-      "channel": "VICTORIA XAVIER",
-      "duration": "10:07",
+      "id": "phlPRrYpmz0",
+      "title": "Trying on summer outfits by Toree & Hareniks in VR180 3D",
+      "channel": "SUN Media Group",
+      "duration": "2:39",
       "rank": 1,
       "free": true,
       "badge": "gold"
     },
     {
-      "id": "cimL6f-9e3Q",
-      "title": "MINI SKIRT TRY ON HAUL",
-      "channel": "VICTORIA XAVIER",
-      "duration": "6:05",
+      "id": "tvj8nFUhq4Y",
+      "title": "These Shorts Are Way Too Short!! Try On Haul",
+      "channel": "loly twerk dancer",
+      "duration": "10:07",
+      "rank": 2,
+      "free": true,
+      "badge": "pink"
+    },
+    {
+      "id": "HJ8mpQAziLM",
+      "title": "Fashion VR. My Favorite Looks with Annet (Part 4) @AnnetOfficial1 in VR180 3D",
+      "channel": "SUN Media Group",
+      "duration": "3:11",
       "rank": 3,
       "free": true,
       "badge": "pink"
     },
     {
-      "id": "RTFL7VpjW3E",
-      "title": "Four sets of swimsuits and underwear in VR Fashion Room",
+      "id": "PuXyeNAywhw",
+      "title": "Toree rehearses a popular dance in VR180 3D",
       "channel": "SUN Media Group",
-      "duration": "19:12",
+      "duration": "4:12",
       "rank": 4,
       "free": true,
       "badge": "monochrome"
     },
     {
-      "id": "wCL45YPpWiA",
-      "title": "Trying On Yoga Suits in VR Fashion Room",
+      "id": "N48dgssYhqQ",
+      "title": "VR180 3D. Model Olena tries on a blue lingerie set",
       "channel": "SUN Media Group",
-      "duration": "14:27",
+      "duration": "2:59",
       "rank": 5,
       "free": true,
       "badge": "monochrome"
