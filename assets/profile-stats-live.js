@@ -1,5 +1,6 @@
 /*!
- * profile-stats-live.js v1 (2026-04-29)
+ * profile-stats-live.js v2 (2026-04-29)
+ * Adds: animated counter rolling + topbar balance chip
  * --------------------------------------------------------------
  * Live-updates the six profile sidebar stats from localStorage:
  *
@@ -127,6 +128,32 @@
     return { name: "max",  at: TIERS.vip, prev: TIERS.vip };  // already at top
   }
 
+  // ── animated counter rolling ──────────────────────────────
+  function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+  var animTokens = new WeakMap();
+  function animateNumber(el, to, prefix){
+    prefix = prefix || "";
+    var from = animTokens.get(el);
+    if (from == null) {
+      // first ever set — try to read current text
+      var cur = parseInt((el.textContent || "0").replace(/[^\d-]/g, ""), 10);
+      from = isNaN(cur) ? 0 : cur;
+    }
+    if (from === to) return;
+    var dur = 800;
+    var t0 = performance.now();
+    var token = (animTokens.get(el)|0) + 1;  // cancel previous animation
+    animTokens.set(el, to);
+    function step(now){
+      if (animTokens.get(el) !== to) return;     // newer animation took over
+      var p = Math.min(1, (now - t0) / dur);
+      var v = Math.round(from + (to - from) * easeOutCubic(p));
+      el.textContent = prefix + fmt(v);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
   // ── render ────────────────────────────────────────────────
   function render(){
     var bal = 0;
@@ -145,30 +172,101 @@
       ? 100
       : Math.min(100, Math.round( ((bal - nxt.prev) / (nxt.at - nxt.prev)) * 100 ));
 
-    var map = {
-      "balance":   fmt(bal),
-      "tier":      tier,
-      "streak":    fmt(streak.days),
-      "cuts":      fmt(cuts.total),
-      "next-pct":  pct + "%",
-      "next-label": nxt.name === "max" ? "max tier reached" : "to " + nxt.name,
-      "today":     "+" + fmt(today.amount)
+    // numeric stats (animated)
+    var numericStats = {
+      "balance": bal,
+      "streak":  streak.days,
+      "cuts":    cuts.total,
+      "today":   today.amount
     };
-
-    Object.keys(map).forEach(function(k){
+    Object.keys(numericStats).forEach(function(k){
       var els = document.querySelectorAll('[data-live="'+k+'"]');
       for (var i = 0; i < els.length; i++) {
-        if (els[i].textContent !== map[k]) els[i].textContent = map[k];
+        var prefix = (k === "today") ? "+" : "";
+        animateNumber(els[i], numericStats[k], prefix);
+      }
+    });
+
+    // text stats (no anim)
+    var textStats = {
+      "tier":       tier,
+      "next-pct":   pct + "%",
+      "next-label": nxt.name === "max" ? "max tier reached" : "to " + nxt.name
+    };
+    Object.keys(textStats).forEach(function(k){
+      var els = document.querySelectorAll('[data-live="'+k+'"]');
+      for (var i = 0; i < els.length; i++) {
+        if (els[i].textContent !== textStats[k]) els[i].textContent = textStats[k];
       }
     });
 
     // Also keep #tokens-balance (separate widget at top of sidebar) live
     var tb = document.getElementById("tokens-balance");
     if (tb) {
-      var existing = tb.innerHTML;
-      var html = fmt(bal) + ' <small>TWK</small>';
-      if (existing !== html) tb.innerHTML = html;
+      var inner = tb.querySelector("[data-live-num]");
+      if (!inner) {
+        tb.innerHTML = '<span data-live-num>0</span> <small>TWK</small>';
+        inner = tb.querySelector("[data-live-num]");
+      }
+      animateNumber(inner, bal);
     }
+
+    // Sync the topbar chip
+    renderTopbar(bal, tier, pct, nxt);
+  }
+
+  // ── topbar balance chip ───────────────────────────────────
+  // Injects a fixed top-right pill on every page so the user sees their
+  // balance + tier without going to /profile. Click → /profile.html.
+  function ensureTopbarChip(){
+    if (document.getElementById("twk-topbar-chip")) return document.getElementById("twk-topbar-chip");
+    var s = document.createElement("style");
+    s.textContent = [
+      "#twk-topbar-chip{position:fixed;top:14px;right:18px;z-index:9998;display:inline-flex;align-items:center;gap:0;padding:0;border-radius:999px;background:rgba(10,10,18,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,180,84,.28);box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 22px rgba(255,180,84,.08);text-decoration:none;font-family:'JetBrains Mono',ui-monospace,monospace;color:#f5f5fb;cursor:pointer;transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .25s,box-shadow .25s;overflow:hidden;line-height:1}",
+      "#twk-topbar-chip:hover{transform:translateY(-1px);border-color:rgba(255,180,84,.6);box-shadow:0 14px 40px rgba(0,0,0,.55),0 0 32px rgba(255,180,84,.18)}",
+      "#twk-topbar-chip .twk-tc-coin{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#ffd78a,#ff6fa8);color:#0a0a14;font-size:13px;font-weight:900;margin:5px 0 5px 6px;flex-shrink:0;box-shadow:0 0 12px rgba(255,180,84,.4) inset}",
+      "#twk-topbar-chip .twk-tc-bal{font-size:12.5px;font-weight:700;letter-spacing:.04em;padding:0 10px 0 8px;color:#fff}",
+      "#twk-topbar-chip .twk-tc-bal small{font-size:9.5px;color:#8a8a99;font-weight:600;letter-spacing:.18em;margin-left:3px;text-transform:uppercase}",
+      "#twk-topbar-chip .twk-tc-tier{display:inline-flex;align-items:center;height:100%;padding:8px 12px 8px 10px;background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(157,78,221,.18));border-left:1px solid rgba(255,180,84,.18);font-size:9.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#ffd78a;border-top-right-radius:999px;border-bottom-right-radius:999px}",
+      "#twk-topbar-chip[data-tier='medium']  .twk-tc-tier{color:#7af;background:linear-gradient(135deg,rgba(60,140,255,.2),rgba(80,180,255,.16))}",
+      "#twk-topbar-chip[data-tier='premium'] .twk-tc-tier{color:#ff6fa8;background:linear-gradient(135deg,rgba(255,45,135,.28),rgba(157,78,221,.22))}",
+      "#twk-topbar-chip[data-tier='vip']     .twk-tc-tier{color:#0a0a14;background:linear-gradient(135deg,#ffd78a,#ff6fa8)}",
+      "#twk-topbar-chip .twk-tc-pgr{display:none;width:46px;height:3px;background:rgba(255,255,255,.08);position:absolute;left:36px;right:auto;bottom:6px;border-radius:2px;overflow:hidden}",
+      "#twk-topbar-chip .twk-tc-pgr i{display:block;height:100%;background:linear-gradient(90deg,#ffd78a,#ff6fa8);transition:width .8s cubic-bezier(.2,.7,.2,1)}",
+      "@media(max-width:540px){#twk-topbar-chip{top:auto;bottom:14px;right:14px}#twk-topbar-chip .twk-tc-tier{display:none}}",
+      ".twk-tc-pop{animation:twk-tc-pop .55s cubic-bezier(.34,1.56,.64,1)}",
+      "@keyframes twk-tc-pop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}"
+    ].join("");
+    document.head.appendChild(s);
+
+    var a = document.createElement("a");
+    a.id = "twk-topbar-chip";
+    a.href = "/profile.html";
+    a.setAttribute("aria-label", "Token balance · go to profile");
+    a.innerHTML = ''+
+      '<span class="twk-tc-coin">★</span>'+
+      '<span class="twk-tc-bal"><span data-live-num>0</span><small>TWK</small></span>'+
+      '<span class="twk-tc-tier">basic</span>';
+    document.body.appendChild(a);
+    return a;
+  }
+  var lastChipBal = null;
+  function renderTopbar(bal, tier, pct, nxt){
+    if (window.__twkTopbarChipDisabled) return;
+    if (location.pathname.indexOf("/profile.html") === 0) return;  // not needed on profile itself
+    var chip = ensureTopbarChip();
+    chip.setAttribute("data-tier", tier);
+    chip.title = "Balance: " + fmt(bal) + " TWK · " + tier + " tier · " + pct + "% to " + (nxt.name === "max" ? "max" : nxt.name);
+    var tierEl = chip.querySelector(".twk-tc-tier");
+    if (tierEl && tierEl.textContent !== tier) tierEl.textContent = tier;
+    var num = chip.querySelector("[data-live-num]");
+    if (num) animateNumber(num, bal);
+    if (lastChipBal !== null && bal > lastChipBal) {
+      chip.querySelector(".twk-tc-coin").classList.remove("twk-tc-pop");
+      void chip.offsetWidth;  // force reflow to restart animation
+      chip.querySelector(".twk-tc-coin").classList.add("twk-tc-pop");
+    }
+    lastChipBal = bal;
   }
 
   // ── auto-instrument video clicks ─────────────────────────
@@ -205,15 +303,14 @@
 
   // ── boot ─────────────────────────────────────────────────
   function boot(){
-    if (!document.querySelector("[data-live]") && !document.getElementById("tokens-balance")) return;
+    // Always render — the topbar chip works on every page; data-live and
+    // #tokens-balance only render if the elements exist on this page.
     render();
     instrumentClicks();
     document.addEventListener("alexia-tokens-changed", render);
     document.addEventListener("alexia-cut-watched", render);
-    // soft poll in case some module writes to localStorage without firing the event
-    setInterval(function(){
-      try { if (read(BAL_KEY, null)) render(); } catch(_){}
-    }, 4000);
+    // soft poll for cross-tab updates and modules that don't fire events
+    setInterval(render, 4000);
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
