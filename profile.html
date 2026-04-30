@@ -617,12 +617,16 @@ body::before{
         <div class="panel-body">
           <div class="stat-list">
             <div class="stat gold">
-              <div class="stat-value" data-live="balance">0</div>
-              <div class="stat-label">Token balance</div>
-            </div>
-            <div class="stat">
               <div class="stat-value" data-live="tier" style="text-transform:uppercase;letter-spacing:.04em">basic</div>
               <div class="stat-label">Current tier</div>
+            </div>
+            <div class="stat gold">
+              <div class="stat-value" data-live="today">+0</div>
+              <div class="stat-label">Tokens today</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" data-live="total">0</div>
+              <div class="stat-label">Total earned</div>
             </div>
             <div class="stat">
               <div class="stat-value" data-live="streak">0</div>
@@ -632,13 +636,9 @@ body::before{
               <div class="stat-value" data-live="cuts">0</div>
               <div class="stat-label">Cuts watched</div>
             </div>
-            <div class="stat gold">
+            <div class="stat">
               <div class="stat-value" data-live="next-pct">0%</div>
               <div class="stat-label" data-live="next-label">to medium</div>
-            </div>
-            <div class="stat">
-              <div class="stat-value" data-live="today">0</div>
-              <div class="stat-label">Tokens today</div>
             </div>
           </div>
         </div>
@@ -1131,7 +1131,7 @@ body::before{
 <!-- Legacy global-brand / global-i18n / online-count-global were duplicating widgets (two locales, two counters). Removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle this now. -->
 <script defer src="/assets/enter-now-widget.js?v=20260417-02"></script>
 <script src="/assets/token-system.js?v=20260425-p8" defer></script>
-<script defer src="/assets/profile-stats-live.js?v=20260429-p1"></script>
+<script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
 
 <script>
 /* ─── Mirror avatar + nickname from edit form into hero (same source of truth) ─── */
@@ -1328,4 +1328,4 @@ body::before{
 <script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
 <script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
-<script src="/assets
+<script src="/assets  

@@ -1,12 +1,15 @@
 /*!
- * profile-stats-live.js v2 (2026-04-29)
- * Adds: animated counter rolling + topbar balance chip
+ * profile-stats-live.js v3 (2026-04-30)
+ * Fix: read from token-system.js's canonical DOTTED keys
+ *      (alexia_tokens_v1.balance, .tier, .total_earned, .streak_days)
+ *      + fall back to window.AlexiaTokens.getState() if available.
  * --------------------------------------------------------------
- * Live-updates the six profile sidebar stats from localStorage:
+ * Live-updates the profile sidebar stats from localStorage:
  *
- *   data-live="balance"    →  alexia_tokens_v1.balance
+ *   data-live="balance"    →  alexia_tokens_v1.balance      (dotted key)
+ *   data-live="total"      →  alexia_tokens_v1.total_earned (dotted key)
  *   data-live="tier"       →  computed from balance (basic/medium/premium/vip)
- *   data-live="streak"     →  alexia_streak_v1.days  (auto-bumped on each visit)
+ *   data-live="streak"     →  alexia_tokens_v1.streak_days  (canonical)
  *   data-live="cuts"       →  alexia_cuts_watched_v1
  *   data-live="next-pct"   →  computed: balance vs next tier threshold
  *   data-live="next-label" →  e.g. "to medium"
@@ -29,8 +32,18 @@
   // Must match TIER_THRESHOLDS in /assets/token-system.js
   var TIERS = { medium: 3000, premium: 9000, vip: 50000 };
 
-  var BAL_KEY    = "alexia_tokens_v1";       // { balance:N, tier:string,... }
-  var STREAK_KEY = "alexia_streak_v1";       // { days:N, last:"YYYY-MM-DD" }
+  // Canonical dotted keys written by token-system.js (the source of truth).
+  // The legacy single-object key "alexia_tokens_v1" is kept as a fallback
+  // for old profiles that still have it.
+  var DOT = {
+    balance: "alexia_tokens_v1.balance",
+    total:   "alexia_tokens_v1.total_earned",
+    tier:    "alexia_tokens_v1.tier",
+    streak:  "alexia_tokens_v1.streak_days"
+  };
+  var LEGACY_BAL_KEY = "alexia_tokens_v1";   // { balance:N, ... } if it exists
+
+  var STREAK_KEY = "alexia_streak_v1";       // { days:N, last:"YYYY-MM-DD" }  (separate page-visit streak)
   var CUTS_KEY   = "alexia_cuts_watched_v1"; // { ids:[...], total:N, day:"...", today:N }
   var TODAY_KEY  = "alexia_tokens_today_v1"; // { day:"YYYY-MM-DD", amount:N, lastBalance:N }
 
@@ -154,27 +167,80 @@
     requestAnimationFrame(step);
   }
 
-  // ── render ────────────────────────────────────────────────
-  function render(){
-    var bal = 0;
+  // ── canonical balance / tier / total readers ──────────────
+  // PRIORITY ORDER (matches token-system.js semantics):
+  //   1. window.AlexiaTokens.getState() — live API if loaded
+  //   2. Dotted keys (alexia_tokens_v1.balance, .tier, .total_earned)
+  //   3. Legacy single-object key alexia_tokens_v1 (back-compat)
+  function readCanonical(){
+    var out = { balance: 0, total: 0, tier: null, streakDays: 0 };
+
+    // 1. Live API
     try {
-      var t = read(BAL_KEY, null);
-      if (t && typeof t === "object") bal = +t.balance || 0;
-      else if (typeof t === "number") bal = t;
+      if (window.AlexiaTokens && typeof window.AlexiaTokens.getState === "function") {
+        var st = window.AlexiaTokens.getState() || {};
+        out.balance    = +st.balance || 0;
+        out.total      = +st.total   || 0;
+        out.tier       = st.tier || null;
+        out.streakDays = +st.streak  || 0;
+        if (out.balance || out.total || out.tier) return out;
+      }
     } catch(_){}
 
+    // 2. Dotted keys (canonical localStorage layout)
+    var bDot = read(DOT.balance, null);
+    var tDot = read(DOT.total,   null);
+    var rDot = read(DOT.tier,    null);
+    var sDot = read(DOT.streak,  null);
+    if (bDot != null || tDot != null || rDot != null) {
+      out.balance    = +bDot || 0;
+      out.total      = +tDot || 0;
+      out.tier       = rDot || null;
+      out.streakDays = +sDot || 0;
+      return out;
+    }
+
+    // 3. Legacy single-object key
+    try {
+      var legacy = read(LEGACY_BAL_KEY, null);
+      if (legacy && typeof legacy === "object") {
+        out.balance    = +legacy.balance       || 0;
+        out.total      = +legacy.total_earned  || 0;
+        out.tier       = legacy.tier           || null;
+        out.streakDays = +legacy.streak_days   || 0;
+      } else if (typeof legacy === "number") {
+        out.balance = legacy;
+      }
+    } catch(_){}
+    return out;
+  }
+
+  // ── render ────────────────────────────────────────────────
+  function render(){
+    var canon  = readCanonical();
+    var bal    = canon.balance;
+    var total  = canon.total;
     var streak = tickStreak();
     var today  = tickToday(bal);
     var cuts   = ensureCuts();
-    var tier   = tierFromBalance(bal);
-    var nxt    = nextTierInfo(bal);
-    var pct    = (nxt.name === "max")
+    // Effective tier: prefer subscribed tier (if higher) over computed.
+    var computed = tierFromBalance(bal);
+    var rank = { basic:0, medium:1, premium:2, vip:3 };
+    var tier = computed;
+    if (canon.tier && rank[canon.tier] != null && rank[canon.tier] > rank[computed]) {
+      tier = canon.tier;
+    }
+    // Effective balance for tier-progress: if user is at "vip" we treat as max
+    var nxt = nextTierInfo(bal);
+    if (tier === "vip") nxt = { name: "max", at: TIERS.vip, prev: TIERS.vip };
+    var pct = (nxt.name === "max")
       ? 100
       : Math.min(100, Math.round( ((bal - nxt.prev) / (nxt.at - nxt.prev)) * 100 ));
 
     // numeric stats (animated)
     var numericStats = {
       "balance": bal,
+      "total":   total,
       "streak":  streak.days,
       "cuts":    cuts.total,
       "today":   today.amount
@@ -307,9 +373,15 @@
     // #tokens-balance only render if the elements exist on this page.
     render();
     instrumentClicks();
+    // token-system.js fires on document; profile-page.js fires on window — listen to both.
     document.addEventListener("alexia-tokens-changed", render);
+    window.addEventListener("alexia-tokens-changed", render);
     document.addEventListener("alexia-cut-watched", render);
-    // soft poll for cross-tab updates and modules that don't fire events
+    // Cross-tab: storage event fires when another tab writes to localStorage
+    window.addEventListener("storage", function(e){
+      if (e.key && e.key.indexOf("alexia_tokens_v1") === 0) render();
+    });
+    // soft poll for modules that don't fire events
     setInterval(render, 4000);
   }
   if (document.readyState === "loading") {
