@@ -1,0 +1,101 @@
+========================================================================
+THIN CONTENT AUDIT · /sessions/funny-eloquent-albattani/mnt/alexia-twerk-web-clean
+========================================================================
+
+Total HTML files: 992
+
+Distribution by unique word count (post-boilerplate strip):
+   <50 words   :   13  (extreme thin · likely rejected)
+   50-150      :   33  (thin · borderline)
+   150-300     :  375  (light · indexable but weak)
+   300-600     :  485  (acceptable · normal page)
+   600+        :   86  (rich · strong)
+
+Duplicate content groups (same hash · 1 groups):
+  b8ff8c3b0610  (2 pages)
+     - cosplay-fancam-leaks/index.html
+     - latina-model-leaks/index.html
+
+========================================================================
+TOP 80 THINNEST PAGES (likely rejected by Google)
+========================================================================
+     3 words ·    3 unique · playlist/models/nastya-nass.html
+     4 words ·    4 unique · playlist/studios/kato-dance.html
+     5 words ·    5 unique · playlist-hottest-cosplay-fancam/index.html
+     6 words ·    6 unique · best-twerk-dancers/index.html
+     6 words ·    6 unique · playlist-korean-girls-kpop-twerk/index.html
+     6 words ·    6 unique · playlist-try-on-hot-leaks/index.html
+     7 words ·    7 unique · top-100-twerk-videos/index.html
+    24 words ·   22 unique · twerk-dancer/anel-li.html
+    25 words ·   24 unique · twerk-dancer/foxyen.html
+    26 words ·   23 unique · auth-callback.html
+    28 words ·   27 unique · twerk-dancer/nika-chill.html
+    30 words ·   27 unique · twerk-dancer/emiliano-ferrari-villalobo.html
+    33 words ·   28 unique · 404.html
+    52 words ·   41 unique · admin-users.html
+    58 words ·   41 unique · top-100-twerk-videos.html
+    62 words ·   51 unique · ru/search.html
+    64 words ·   43 unique · search.html
+    67 words ·   46 unique · recommend.html
+    77 words ·   58 unique · es/search.html
+    78 words ·   58 unique · recommended-videos.html
+    91 words ·   67 unique · twerk-dancer/asha-l.html
+    93 words ·   69 unique · twerk-dancer/yur-aular.html
+   103 words ·   73 unique · twerk-dancer/twinkie-dance.html
+   104 words ·   70 unique · group-monika-99-percent.html
+   116 words ·   79 unique · model1.html
+   123 words ·   85 unique · twerk-dancer/noni-v-debii.html
+   130 words ·   75 unique · group-lexy-panterra.html
+   130 words ·  106 unique · ru/creator/jutty.html
+   132 words ·  110 unique · playlist/index.html
+   135 words ·   86 unique · group-kelvin-deejay.html
+   136 words ·   81 unique · premium-cosplay-fancam.html
+   137 words ·   93 unique · try-on-hot-leaks/index.html
+   138 words ·  113 unique · ttl-latin-models/index.html
+   139 words ·   93 unique · nastya-nass.html
+   140 words ·  116 unique · creator-dashboard.html
+   141 words ·   96 unique · twerk-dancer/street-project.html
+   142 words ·  111 unique · ru/creator/model-357-lab.html
+   143 words ·  139 unique · ja/korean-girls-kpop-twerk/index.html
+   146 words ·   94 unique · paid-content.html
+   146 words ·  111 unique · ru/creator/street-dance-greece.html
+   147 words ·   95 unique · yurgenis.html
+   147 words ·   98 unique · twerk-hub-leaks/index.html
+   148 words ·   80 unique · creators-greece.html
+   148 words ·   99 unique · cosplay-fancam-leaks/index.html
+   148 words ·   99 unique · latina-model-leaks/index.html
+   149 words ·   94 unique · twerk-dancer/rocio-ramirez.html
+   154 words ·  110 unique · creators-taipei.html
+   154 words ·   88 unique · twerk-dancer/melinda-efteni.html
+   156 words ·   96 unique · twerk-dance-video.html
+   156 words ·  106 unique · es/creator/model-357-lab.html
+   162 words ·  149 unique · ko/korean-girls-kpop-twerk/index.html
+   163 words ·  111 unique · twerk-dancer/adison-briana.html
+   163 words ·  104 unique · twerk-dancer/viktoria-boage.html
+   164 words ·   98 unique · manchester-twerk.html
+   164 words ·  152 unique · ja/hottest-cosplay-fancam/index.html
+   167 words ·   96 unique · akihabara-cosplay-fancam.html
+   167 words ·   91 unique · osaka-cosplay-fancam.html
+   167 words ·  143 unique · korean-girls-kpop-twerk/index.html
+   170 words ·  118 unique · es/creator/jutty.html
+   172 words ·  103 unique · atlanta-twerk.html
+   173 words ·  101 unique · london-twerk.html
+   174 words ·  105 unique · tokyo-cosplay-fancam.html
+   177 words ·  114 unique · california-twerk.html
+   177 words ·  114 unique · los-angeles-twerk.html
+   178 words ·  111 unique · miami-twerk.html
+   178 words ·  110 unique · es/creator/street-dance-greece.html
+   179 words ·   84 unique · kato-dance-studio.html
+   180 words ·  129 unique · creator/foxyen.html
+   183 words ·  112 unique · account.html
+   183 words ·  162 unique · ko/hottest-cosplay-fancam/index.html
+   186 words ·  159 unique · hottest-cosplay-fancam/index.html
+   188 words ·  145 unique · ru/creator/fraules.html
+   190 words ·  111 unique · twerk-dancer/velvet-young-dance-centre.html
+   194 words ·  114 unique · new-york-twerk.html
+   196 words ·  126 unique · twerk-dancer/katerina-shoshina.html
+   201 words ·  101 unique · group-emiliano-ferrari-villalobo.html
+   202 words ·  133 unique · contact.html
+   203 words ·  141 unique · creators-latam.html
+   204 words ·  143 unique · profile.html
+   207 words ·  156 unique · ru/contact.html
