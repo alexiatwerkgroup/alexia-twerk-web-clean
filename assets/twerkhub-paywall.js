@@ -24,15 +24,21 @@
   'use strict';
   if (window.TwerkhubPaywall) return;
 
-  // ── Anti 2026-04-24: KILL-SWITCH for playlist pages ──────────────────
-  // Rule: on /playlist/ and any /playlist-*.html, the user has been
-  // explicit that there is NO paywall, NO blur modal, NO gated hero
-  // banner, NO FOMO pill strip. Every video plays free. The paywall
-  // module's click-capture was still intercepting clicks on non-top-5
-  // cards and opening the blurred subscribe modal with giant "BLUE"
-  // placeholder behind it. Completely disable the module on these URLs.
+  // ── Anti 2026-04-24 + revised 2026-04-30 ───────────────────────────
+  // Kill-switch ONLY for the playlist HUB / catalog pages, NOT for
+  // individual /playlist/<slug>.html detail pages.
+  //   Disabled (no paywall): /playlist, /playlist/, /playlist/index.html,
+  //                          /playlist-* (any sibling like /playlist-twerk).
+  //   Enabled  (paywall on): /playlist/<slug>.html  → individual videos
+  //                          should gate like other hub detail pages do.
   var __twkPath = (location.pathname || '').toLowerCase();
-  var __twkIsPlaylistPage = /^\/playlist(\/|$|-)/.test(__twkPath);
+  var __twkIsPlaylistHub = (
+    __twkPath === '/playlist' ||
+    __twkPath === '/playlist/' ||
+    __twkPath === '/playlist/index.html' ||
+    /^\/playlist-/.test(__twkPath)
+  );
+  var __twkIsPlaylistPage = __twkIsPlaylistHub;
   if (__twkIsPlaylistPage){
     // Stub the public API so anything that calls it becomes a no-op.
     window.TwerkhubPaywall = {
