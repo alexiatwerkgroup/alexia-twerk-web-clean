@@ -2,7 +2,7 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://alexiatwerkgroup.com/sitemap.xml</loc>
-    <lastmod>2026-04-28</lastmod>
+    <lastmod>2026-05-01</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://alexiatwerkgroup.com/sitemap-videos.xml</loc>
@@ -11,5 +11,9 @@
   <sitemap>
     <loc>https://alexiatwerkgroup.com/sitemap-images.xml</loc>
     <lastmod>2026-04-28</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://alexiatwerkgroup.com/sitemap-ru.xml</loc>
+    <lastmod>2026-05-01</lastmod>
   </sitemap>
 </sitemapindex>
