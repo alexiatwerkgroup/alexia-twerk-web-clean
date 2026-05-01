@@ -35,7 +35,40 @@
     return Promise.resolve(window.__twkSupabase || null);
   }
 
+  // 2026-05-01: Disk IO reduction. Was: SELECT video_heatmap on EVERY page load
+  // (~70k reads/period across all video pages). Now: cached in sessionStorage
+  // per video for 30 minutes. Cuts video_heatmap reads ~20x.
+  var HM_CACHE_KEY = 'twk_heatmap_cache_v1';
+  var HM_CACHE_TTL = 1800000;  // 30 min
+
+  function getCachedHeatmap(vid){
+    try {
+      var raw = sessionStorage.getItem(HM_CACHE_KEY);
+      if (!raw) return null;
+      var all = JSON.parse(raw);
+      var hit = all && all[vid];
+      if (!hit || Date.now() - hit.ts > HM_CACHE_TTL) return null;
+      return hit.data;
+    } catch(_){ return null; }
+  }
+  function setCachedHeatmap(vid, data){
+    try {
+      var raw = sessionStorage.getItem(HM_CACHE_KEY);
+      var all = raw ? JSON.parse(raw) : {};
+      all[vid] = { ts: Date.now(), data: data };
+      // keep cache bounded — only last 30 entries per session
+      var keys = Object.keys(all);
+      if (keys.length > 30) {
+        keys.sort(function(a,b){ return all[a].ts - all[b].ts; });
+        for (var i = 0; i < keys.length - 30; i++) delete all[keys[i]];
+      }
+      sessionStorage.setItem(HM_CACHE_KEY, JSON.stringify(all));
+    } catch(_){}
+  }
+
   async function fetchHeatmap(vid){
+    var cached = getCachedHeatmap(vid);
+    if (cached) return cached;
     try {
       var sb = await getClient();
       if (!sb) return null;
@@ -44,6 +77,7 @@
         .eq('video_id', vid)
         .maybeSingle();
       if (res.error) return null;
+      setCachedHeatmap(vid, res.data);
       return res.data;
     } catch(e){
       console.warn('[heatmap] fetch failed', e);

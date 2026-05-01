@@ -10,10 +10,13 @@
   var TS_KEY = 'alexia_online_now_live_ts_v2';
   var VISITOR_KEY = 'alexia_online_visitor_v1';
   var LAST_BEAT_KEY = 'alexia_online_last_beat_v1';
-  var INTERVAL = 60000;
-  var HEARTBEAT_INTERVAL = 30000;   // post visitor_id every 30s
-  var WINDOW_MINUTES = 5;
-  var MAX_ROWS = 4000;
+  // 2026-05-01: drastic IO reduction — Supabase free tier was hitting Disk IO budget.
+  // Was: heartbeat 30s, refresh 60s. Now: heartbeat 5min, refresh 5min.
+  // Impact: ~10x fewer writes to page_visits + ~5x fewer reads.
+  var INTERVAL = 300000;            // 5min refresh (was 60s)
+  var HEARTBEAT_INTERVAL = 300000;  // 5min heartbeat (was 30s)
+  var WINDOW_MINUTES = 10;          // count visitors active in last 10min (was 5)
+  var MAX_ROWS = 1500;              // smaller fetch (was 4000)
   var FALLBACK_MIN = 1;
 
   function getVisitorId(){

@@ -129,18 +129,19 @@
       return out && out.data && out.data.session && out.data.session.user ? out.data.session.user : null;
     }catch(e){ return null; }
   }
+  // 2026-05-01: drastic IO reduction. Was 15s rate-limit per heartbeat AND
+  // a double-write for logged-in users (presence::userId). Now: 5min rate-limit,
+  // single write only (presence::userId track moved to bump_session RPC instead).
   async function heartbeat(force){
     try{
       var now = Date.now();
       var last = Number(localStorage.getItem(LAST_BEAT_KEY) || 0);
-      if (!force && last && now - last < 15000) return;
+      if (!force && last && now - last < 300000) return;  // 5min (was 15s)
       localStorage.setItem(LAST_BEAT_KEY, String(now));
       var vid = getVisitorId();
       await api('page_visits', { method:'POST', body: JSON.stringify({ page:'online', visitor_id:vid }) });
-      var user = await currentUser();
-      if (user && user.id) {
-        await api('page_visits', { method:'POST', body: JSON.stringify({ page:'presence::'+user.id, visitor_id:vid }) });
-      }
+      // NOTE: removed the double-write for presence::userId. The logged-in
+      // user activity is now tracked via bump_session RPC at lower cost.
     }catch(e){}
   }
   async function refreshOnline(){
@@ -160,9 +161,13 @@
     ensureProfileTopNav();
     document.querySelectorAll(COUNT_SELECTOR).forEach(function(el){ el.textContent = document.visibilityState === 'visible' ? '1' : '0'; });
     tick(true);
-    setInterval(function(){ if (document.visibilityState === 'visible') tick(false); }, 20000);
+    // 2026-05-01: was every 20s — now every 5min. The heartbeat rate-limiter
+    // inside `heartbeat(force)` also enforces the 5min minimum, so this is
+    // belt-and-braces against runaway IO on free tier.
+    setInterval(function(){ if (document.visibilityState === 'visible') tick(false); }, 300000);
     document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'visible') tick(true); });
-    window.addEventListener('focus', function(){ tick(true); });
+    // Removed window 'focus' listener — was firing tick(true) on every tab switch
+    // which forced a heartbeat regardless of rate limit. Free tier can't handle that.
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, {once:true}); else boot();
 })();

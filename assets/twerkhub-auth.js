@@ -33,14 +33,43 @@
   function getCachedUser(){ return lsGet(KEY_CURRENT, null); }
   function setCachedUser(u){ if (u) lsSet(KEY_CURRENT, u); else try { localStorage.removeItem(KEY_CURRENT); } catch(_){} }
 
+  // 2026-05-01: Disk IO reduction.
+  // Was: fetches profiles table on EVERY refreshSession() call → 1.4M reads/period.
+  // Now: caches the profile read in sessionStorage with 5-min TTL. Forced refresh
+  // available via refreshSession({force:true}) if a caller really needs fresh data.
+  var PROFILE_CACHE_KEY = 'twk_profile_cache_v1';
+  var PROFILE_CACHE_TTL = 300000;  // 5 minutes
+
+  function getCachedProfile(uid){
+    try {
+      var raw = sessionStorage.getItem(PROFILE_CACHE_KEY);
+      if (!raw) return null;
+      var c = JSON.parse(raw);
+      if (!c || c.uid !== uid) return null;
+      if (Date.now() - c.ts > PROFILE_CACHE_TTL) return null;
+      return c.profile;
+    } catch(_){ return null; }
+  }
+  function setCachedProfile(uid, profile){
+    try { sessionStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify({ uid: uid, ts: Date.now(), profile: profile })); } catch(_){}
+  }
+
   // Fetch fresh profile + session from Supabase. Returns { user, profile } or null.
-  async function refreshSession(){
+  async function refreshSession(opts){
+    var force = opts && opts.force;
     try {
       var sb = await getClient();
       if (!sb) return null;
       var sess = await sb.auth.getSession();
       var user = sess && sess.data && sess.data.session && sess.data.session.user;
       if (!user) { setCachedUser(null); return null; }
+
+      // 5-min cache hit: skip the SELECT entirely, return cached profile.
+      var cachedProfile = !force ? getCachedProfile(user.id) : null;
+      if (cachedProfile) {
+        return { user: user, profile: cachedProfile };
+      }
+
       var p = await sb.from('profiles').select('id,username,email,tokens,total_earned,streak,tier,registered_at').eq('id', user.id).maybeSingle();
       var profile = p && p.data;
       if (profile) {
@@ -51,6 +80,7 @@
           registeredAt: profile.registered_at ? new Date(profile.registered_at).getTime() : Date.now(),
           nick: profile.username
         });
+        setCachedProfile(user.id, profile);
       }
       return { user: user, profile: profile };
     } catch(e){ console.warn('[twk-auth] refreshSession', e); return null; }

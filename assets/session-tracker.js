@@ -20,9 +20,12 @@
   if (window.__twkSessionTracker) return;
   window.__twkSessionTracker = true;
 
-  var HEARTBEAT_MS    = 30000;   // 30s
-  var MIN_BUMP_MS     = 5000;    // don't bump for less than 5s of visible time
-  var MAX_BUMP_SECS   = 60;      // server caps at 60 anyway
+  // 2026-05-01: drastic IO reduction. Was 30s heartbeat. Now 5min.
+  // Aggregating up to 60s of visible time per bump (server cap) but only
+  // sending once every 5 minutes. Cuts profiles UPDATEs by 10x.
+  var HEARTBEAT_MS    = 300000;  // 5min (was 30s)
+  var MIN_BUMP_MS     = 60000;   // don't bump for less than 60s of visible time (was 5s)
+  var MAX_BUMP_SECS   = 60;      // server still caps at 60 per call
 
   var visibleSinceMs = null;     // ms timestamp when tab became visible
   var pendingSecs    = 0;        // accumulated visible seconds not yet sent
