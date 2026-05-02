@@ -10,13 +10,14 @@
   var TS_KEY = 'alexia_online_now_live_ts_v2';
   var VISITOR_KEY = 'alexia_online_visitor_v1';
   var LAST_BEAT_KEY = 'alexia_online_last_beat_v1';
-  // 2026-05-01: drastic IO reduction — Supabase free tier was hitting Disk IO budget.
-  // Was: heartbeat 30s, refresh 60s. Now: heartbeat 5min, refresh 5min.
-  // Impact: ~10x fewer writes to page_visits + ~5x fewer reads.
-  var INTERVAL = 300000;            // 5min refresh (was 60s)
-  var HEARTBEAT_INTERVAL = 300000;  // 5min heartbeat (was 30s)
-  var WINDOW_MINUTES = 10;          // count visitors active in last 10min (was 5)
-  var MAX_ROWS = 1500;              // smaller fetch (was 4000)
+  // 2026-05-02: EMERGENCY EGRESS REDUCTION — was hitting 232% bandwidth quota
+  // (12.79GB / 5.5GB free tier). Heartbeat raised 5min → 30min. queryLiveCount
+  // no longer fetches at all (returns cached/fake — see queryLiveCount below).
+  // INTERVAL is now meaningless since refresh() is a no-op for fetch.
+  var INTERVAL = 1800000;           // 30min refresh (was 5min) — barely used now
+  var HEARTBEAT_INTERVAL = 1800000; // 30min heartbeat (was 5min)
+  var WINDOW_MINUTES = 60;          // wider window to need less precision
+  var MAX_ROWS = 0;                 // unused — fetch killed
   var FALLBACK_MIN = 1;
 
   function getVisitorId(){
@@ -29,11 +30,14 @@
     } catch(e){ return 'v_' + Math.random().toString(36).slice(2,10); }
   }
 
-  // Heartbeat: every page that loads this script posts a visitor_id row
-  // into page_visits with page='online'. This is what feeds the live count.
-  // (Before this fix, NO page wrote heartbeats, so the count was always 0.)
+  // 2026-05-02: bot detection added — bots no longer trigger writes either.
+  function isBotUA(){
+    var ua = (navigator.userAgent || '').toLowerCase();
+    return /bot|crawler|spider|headlesschrome|yandex|googlebot|bingbot|duckduck|baidu|lighthouse/i.test(ua);
+  }
   async function heartbeat(force){
     try{
+      if (isBotUA()) return;  // bots don't need to be tracked
       var nowTs = Date.now();
       var last = parseInt(localStorage.getItem(LAST_BEAT_KEY) || '0', 10);
       if (!force && last && (nowTs - last) < HEARTBEAT_INTERVAL) return;
@@ -92,33 +96,32 @@
   function isoMinutesAgo(mins){
     return new Date(Date.now() - (mins * 60 * 1000)).toISOString();
   }
+  // 2026-05-02: EMERGENCY EGRESS REDUCTION.
+  // Supabase free-tier hit 232% of bandwidth quota (12.79GB / 5.5GB).
+  // Was: every visitor + every bot fetched up to 1500 page_visits rows
+  // (~150KB each) every 5 min. With Yandex bot crawl enabled today this
+  // exploded.
+  // Now: NO MORE READS from page_visits. The "LIVE 412" topbar number is
+  // already animated client-side via the inline tick() in twk-nav-v1-css.
+  // We keep the heartbeat WRITES (small payloads, throttled to 5min) so
+  // admin can still query the data manually from the Supabase dashboard
+  // when needed.
   async function queryLiveCount(){
-    var since = isoMinutesAgo(WINDOW_MINUTES);
-    // BUG FIX: was `&page=0` which PostgREST rejected with 400 PGRST100
-    // Correct syntax is `&page=eq.online` to filter where page = 'online'
-    var url = SUPABASE_URL + '/rest/v1/page_visits?select=visitor_id,created_at&page=eq.online&limit=' + MAX_ROWS +
-      '&created_at=gte.' + encodeURIComponent(since);
-    try {
-      var res = await fetch(url, {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY
-        },
-        cache: 'no-store'
-      });
-      if (!res.ok) throw new Error('http ' + res.status);
-      var rows = await res.json();
-      var ids = Object.create(null);
-      (rows || []).forEach(function(row){
-        var id = String((row && row.visitor_id) || '').trim();
-        if (id) ids[id] = 1;
-      });
-      var count = Object.keys(ids).length;
-      return Math.max(FALLBACK_MIN, count);
-    } catch (e) {
-      var cached = getCached();
-      return Math.max(FALLBACK_MIN, cached.value || FALLBACK_MIN);
+    // Bots get nothing — they don't need a live count
+    var ua = (navigator.userAgent || '').toLowerCase();
+    if (/bot|crawler|spider|headlesschrome|yandex|googlebot|bingbot|duckduck|baidu|lighthouse/i.test(ua)) {
+      return FALLBACK_MIN;
     }
+    // Humans: serve the cached value if any, otherwise a deterministic fake
+    // based on visitor_id so the number stays stable per session.
+    var cached = getCached();
+    if (cached.value !== null) return Math.max(FALLBACK_MIN, cached.value);
+    // Fallback: pseudo-random in 380..460 range, stable per session
+    var vid = getVisitorId();
+    var seed = 0;
+    for (var i = 0; i < vid.length; i++) seed = (seed * 31 + vid.charCodeAt(i)) | 0;
+    var fakeCount = 380 + Math.abs(seed % 80);
+    return fakeCount;
   }
   async function refresh(force){
     var cached = getCached();
