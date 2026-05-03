@@ -180,6 +180,18 @@
     syncToSupabase(amount, reason);
     toast('+' + amount, reason);
     broadcast();
+    // ── Cut-watched detection: when grant fires with a watch-related reason,
+    // dispatch the alexia-cut-watched event so session-tracker.js can post
+    // +1 to cuts_watched on Supabase. Catches both onVideoStart's "Video
+    // watched" and pl-theater's "watch_clip" fallback path.
+    try {
+      var r = (reason || '').toLowerCase();
+      if (r.indexOf('watch') !== -1 || r.indexOf('video') !== -1) {
+        document.dispatchEvent(new CustomEvent('alexia-cut-watched', {
+          detail: { reason: reason, amount: amount }
+        }));
+      }
+    } catch(_){}
     // ── Level-up detection: dispatch a separate event so the HUD can play
     // its special chime and the user sees the celebration.
     if (newTier !== prevTier) {
@@ -369,6 +381,7 @@
     onPageVisit: onPageVisit,
     onVideoStart: onVideoStart,
     onVideoComplete: onVideoComplete,
+    watchClip: onVideoStart,  // alias used by pl-theater.js (was undefined before)
     onShare: onShare,
     isLoggedIn: isLoggedIn,
     REWARDS: REWARDS

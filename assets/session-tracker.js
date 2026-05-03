@@ -23,8 +23,11 @@
   // 2026-05-01: drastic IO reduction. Was 30s heartbeat. Now 5min.
   // Aggregating up to 60s of visible time per bump (server cap) but only
   // sending once every 5 minutes. Cuts profiles UPDATEs by 10x.
+  // 2026-05-03: lowered MIN_BUMP_MS 60s → 15s and force-flush on pagehide.
+  // Was missing all bouncer sessions (<60s). Now any visitor who stays >=15s
+  // gets tracked. Heartbeat still 5min so egress stays low for long sessions.
   var HEARTBEAT_MS    = 300000;  // 5min (was 30s)
-  var MIN_BUMP_MS     = 60000;   // don't bump for less than 60s of visible time (was 5s)
+  var MIN_BUMP_MS     = 15000;   // 15s minimum to avoid empty hits but catch quick visits
   var MAX_BUMP_SECS   = 60;      // server still caps at 60 per call
 
   var visibleSinceMs = null;     // ms timestamp when tab became visible
@@ -56,11 +59,15 @@
     }
   }
 
-  async function flush(){
+  async function flush(force){
     if (sending) return;
     if (!isLoggedIn()) return;
     drainVisibleTime();
-    if (pendingSecs < (MIN_BUMP_MS/1000) && pendingCuts === 0) return;
+    // Heartbeat path respects MIN_BUMP_MS to avoid noise. Force path (called
+    // on pagehide/beforeunload) bypasses the threshold so we capture ANY
+    // accumulated visible-time before the user leaves — even if it's <15s.
+    if (!force && pendingSecs < (MIN_BUMP_MS/1000) && pendingCuts === 0) return;
+    if (pendingSecs <= 0 && pendingCuts === 0) return; // truly nothing to send
     var secs = Math.min(MAX_BUMP_SECS, pendingSecs);
     var cuts = Math.min(5, pendingCuts);
     sending = true;
@@ -100,8 +107,9 @@
   function onPageHide(){
     drainVisibleTime();
     visibleSinceMs = null;
-    // best-effort final bump — fire-and-forget, browser may kill it but tries
-    flush();
+    // best-effort final bump — fire-and-forget, browser may kill it but tries.
+    // force=true → bypass MIN_BUMP_MS threshold so even short visits get tracked.
+    flush(true);
   }
 
   function onCutWatched(){

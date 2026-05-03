@@ -77,7 +77,7 @@
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260425-p8','twk-loader-supabase-config');
-  loadOnce('/assets/token-system.js?v=20260503-p1','twk-loader-token-system');
+  loadOnce('/assets/token-system.js?v=20260503-p2','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260425-p8','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260426-p8','twk-loader-twerkhub-auth');
 })();
@@ -1248,7 +1248,7 @@ button.yt-comment-avatar > *, .yt-comment [data-open-profile] > *{pointer-events
 <!-- /twk-related-block -->
   <script src="/assets/thumb-fallback.js" defer></script>
 <script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
-<script defer src="/assets/session-tracker.js?v=20260430-p1"></script>
+<script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
 <!-- TWK_VISIBLE_DATA_V1 -->
 <section class="twk-video-details" aria-label="Video details" style="max-width:760px;margin:48px auto;padding:28px 28px 22px;background:linear-gradient(180deg,rgba(255,255,255,.022),rgba(255,255,255,0));border:1px solid rgba(255,180,84,.22);border-radius:16px;font-family:'Inter',-apple-system,sans-serif">
   <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:#ffd78a;margin-bottom:6px">Catalog entry · verified</div>
