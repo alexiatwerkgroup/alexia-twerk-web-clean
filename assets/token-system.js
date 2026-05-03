@@ -296,11 +296,59 @@
   }
 
   // ── Init: claim daily + page visit on every page load ───────────────
+  // ── ONE-TIME RECONCILIATION (rebate for the grant_tokens ambiguity bug)
+  // Apr 25 → May 3 2026: every grant_tokens RPC call returned 400 silently,
+  // so users earned tokens locally (localStorage) but nothing synced to
+  // Supabase. After fixing the RPC, this routine runs ONCE per browser:
+  //   • reads server total_earned
+  //   • compares to local total
+  //   • if local > server, mints the difference back into Supabase via
+  //     grant_tokens (capped at 5000 to prevent abuse / runaway local state)
+  //   • flags itself done in localStorage so it never runs again
+  // Server-side rebate (+300 to everyone) runs independently in SQL.
+  var RECONCILE_FLAG = 'alexia_tokens_reconciled_v1';
+  var RECONCILE_CAP  = 5000;
+  async function reconcileWithServer(){
+    try {
+      if (localStorage.getItem(RECONCILE_FLAG)) return;
+      if (!isLoggedIn()) return;
+      if (!window.twkGetSupabase) return;
+      var sb = await window.twkGetSupabase();
+      if (!sb) return;
+      var sess = await sb.auth.getSession();
+      if (!sess || !sess.data || !sess.data.session) return;
+      var uid = sess.data.session.user.id;
+      var resp = await sb.from('profiles')
+        .select('total_earned').eq('id', uid).maybeSingle();
+      if (!resp || !resp.data) return;
+      var serverTotal = Number(resp.data.total_earned) || 0;
+      var localTotal  = N(KEYS.total, 0);
+      var deficit = localTotal - serverTotal;
+      if (deficit <= 0) {
+        // Server is already even or ahead — nothing to do, mark done.
+        localStorage.setItem(RECONCILE_FLAG, '1');
+        return;
+      }
+      deficit = Math.min(deficit, RECONCILE_CAP);
+      // RPC caps single grant at 1000, so we send in chunks
+      while (deficit > 0) {
+        var chunk = Math.min(deficit, 1000);
+        var r = await sb.rpc('grant_tokens', { amount: chunk, reason: 'reconcile_v1_grant_tokens_bug' });
+        if (r && r.error) return; // bail without setting flag, retry next load
+        deficit -= chunk;
+      }
+      localStorage.setItem(RECONCILE_FLAG, '1');
+    } catch(_){ /* silent — try again next session */ }
+  }
+
   function init(){
     try {
       welcome();
       dailyCheck();
       onPageVisit();
+      // Run reconcile after a short delay so it doesn't compete with
+      // critical path (login/welcome/daily). Fire-and-forget.
+      setTimeout(reconcileWithServer, 1500);
     } catch(_){}
   }
 
