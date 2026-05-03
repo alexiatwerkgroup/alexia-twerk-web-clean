@@ -213,15 +213,31 @@
     </div>
   </div>
   <!-- Featured video · live YouTube embed · silenced by default · hover unmutes -->
-  <aside class="twerkhub-home-hero-media" aria-label="Featured cut" data-hero-video-id="bDfPfmpUPmw">
+  <aside class="twerkhub-home-hero-media" aria-label="Featured cut" data-hero-video-id="">
     <div class="twerkhub-hh-media-inner">
       <iframe class="twerkhub-hh-iframe" id="twerkhub-hh-iframe"
-              src="https://www.youtube.com/embed/bDfPfmpUPmw?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=bDfPfmpUPmw&amp;controls=0&amp;modestbranding=1&amp;rel=0&amp;playsinline=1&amp;fs=0&amp;iv_load_policy=3&amp;disablekb=1&amp;enablejsapi=1&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;start=35"
+              src="about:blank"
               title="Fancam · featured preview"
               loading="eager"
               allow="autoplay; encrypted-media; picture-in-picture"
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
+      <script>
+      /* Hero video rotator · 33% chance each. Picks one ID+start on every page load. */
+      (function(){
+        var pool=[
+          {i:'mpZ4-dQFmqo',s:18},
+          {i:'JGxxoMNscmc',s:19},
+          {i:'XDkH0yaocJ8',s:16}
+        ];
+        var p=pool[Math.floor(Math.random()*pool.length)];
+        var f=document.getElementById('twerkhub-hh-iframe');
+        var a=document.querySelector('.twerkhub-home-hero-media');
+        if(!f||!a) return;
+        f.src='https://www.youtube.com/embed/'+p.i+'?autoplay=1&mute=1&loop=1&playlist='+p.i+'&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&origin=https%3A%2F%2Falexiatwerkgroup.com&start='+p.s;
+        a.setAttribute('data-hero-video-id',p.i);
+      })();
+      </script>
       <div class="twerkhub-hh-media-scrim"></div>
       <button type="button" class="twerkhub-hh-mute" data-twerkhub-hero-mute aria-pressed="true" aria-label="Tap to unmute">
         <span class="twerkhub-hh-mute-ico" aria-hidden="true">🔈</span>
@@ -884,7 +900,7 @@
     <a href="/akihabara-cosplay-fancam.html"><div class="name">Akihabara Cosplay</div><div class="blurb">Otaku district</div></a>
   </div>
 </section>
-<style id="twk-related-css">
+<style id="twk-related-css">.twk-related,.twk-mf{grid-column:1/-1!important}
 .twk-related{max-width:1200px;margin:60px auto 40px;padding:24px 26px;border-top:1px solid rgba(255,255,255,.08);font-family:'Inter',ui-sans-serif,system-ui,sans-serif}
 .twk-related-head{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px}
 .twk-related ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px}
@@ -1457,4 +1473,4 @@
 <script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
 <script src="/assets/js/image-seo-engine.js" defer></script>
-  <script src="/asse
+  <scri
