@@ -369,7 +369,7 @@ alexia-twerk-web-clean/
 - **playlist-korean** — TOP5: `Ba8udR5zP3g`, `bmL9kEfYtjA`, `6aoJbhxfOn4`, `EX8pMpkLDYI`, `iybt52yxGd8`
 - **playlist-try-on-haul-leaks** — TOP5: `vpF6oGPZf1s`, `X-lPzSuvf3k`, `jV43SVvpkso`, `Kj9T74htwrA`, `k68KXBiflR8`
 - **YouTube playlist source** for cosplay-fancam: `PLMzWifnZnpVLt_Epf5QNFIBw146T_Ui7j` (Twerk Playlist #1 from 1 to 275)
-- **Hero video on home (index.html)**: `XDkH0yaocJ8`
+- **Hero video on home (index.html)**: `bDfPfmpUPmw`
 
 ### Brand identity
 - **Primary brand color (pink)**: `#ff2d87`
