@@ -585,6 +585,97 @@
 <!-- /TWK_MEGA_FOOTER_V1 -->
 
 
+
+<script>
+/* Inline player swap - restored after file truncation cleanup. Mirrors the
+ * pattern from /korean-girls-kpop-twerk/ and /ttl-latin-models/. */
+(function(){
+  'use strict';
+  try {
+    var player = document.getElementById('twerkhub-pl-player');
+    var title  = document.getElementById('twerkhub-pl-now-title');
+    if (!player) return;
+
+    if (!document.getElementById('twk-pl-loading-css')) {
+      var s = document.createElement('style');
+      s.id = 'twk-pl-loading-css';
+      s.textContent =
+        '.twerkhub-pl-player-wrap{position:relative}'+
+        '.twk-pl-loader{position:absolute;inset:0;z-index:5;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0a14,#1a0e1f);border-radius:18px;pointer-events:none}'+
+        '.twk-pl-loader.is-active{display:flex}'+
+        '.twk-pl-loader-spin{width:48px;height:48px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:#ff2d87;animation:twkPlSpin .8s linear infinite}'+
+        '@keyframes twkPlSpin{to{transform:rotate(360deg)}}';
+      document.head.appendChild(s);
+    }
+    var loaderEl = null;
+    function showLoader(){
+      var wrap = player && player.parentNode;
+      if (!wrap) return;
+      if (!loaderEl) {
+        loaderEl = wrap.querySelector('.twk-pl-loader');
+        if (!loaderEl) {
+          loaderEl = document.createElement('div');
+          loaderEl.className = 'twk-pl-loader';
+          loaderEl.innerHTML = '<div class="twk-pl-loader-spin"></div>';
+          wrap.appendChild(loaderEl);
+        }
+      }
+      loaderEl.classList.add('is-active');
+    }
+    function hideLoader(){ if (loaderEl) loaderEl.classList.remove('is-active'); }
+
+    function swap(vid, number){
+      if (!player) return;
+      showLoader();
+      var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
+                '?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+      player.src = url;
+      if (title && number) title.textContent = 'Playing ' + number;
+      try {
+        player.onload = function(){
+          setTimeout(hideLoader, 400);
+          [200, 800, 1500, 2500].forEach(function(d){
+            setTimeout(function(){
+              try {
+                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
+                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
+                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
+              } catch(_){}
+            }, d);
+          });
+        };
+      } catch(_){}
+      setTimeout(hideLoader, 5000);
+      try {
+        if (window.TwerkhubPlTheater && window.TwerkhubPlTheater.markViewed) {
+          window.TwerkhubPlTheater.markViewed(vid);
+        }
+      } catch(_){}
+      try {
+        if (window.AlexiaTokens && window.AlexiaTokens.watchClip) window.AlexiaTokens.watchClip();
+      } catch(_){}
+      try {
+        var pc = document.querySelector('.twerkhub-pl-player-col');
+        if (pc) pc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch(_){}
+    }
+
+    document.addEventListener('click', function(ev){
+      var a = ev.target.closest && ev.target.closest('a[data-vid]');
+      if (!a) return;
+      if (!a.matches('.rk-item') && !a.matches('.vcard')) return;
+      var vid = a.getAttribute('data-vid');
+      if (!vid) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      swap(vid, a.getAttribute('data-number') || '');
+    }, true);
+  } catch(e){
+    console.warn('[twerkhub-playlist] theater boot failed', e);
+  }
+})();
+</script>
+
 <script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
 <script defer src="/assets/twk-video-shield.js?v=20260503-p13"></script>
 </body>
