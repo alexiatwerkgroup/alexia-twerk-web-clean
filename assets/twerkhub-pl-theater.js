@@ -489,16 +489,25 @@
       // postMessage (no wrapper, no iframe destruction).
       setTimeout(subscribeInlineToEvents, 50);
 
-      // â”€â”€ Black-screen heartbeat: 2.5s after load, if no PLAYING (1) or
+      // ── Black-screen heartbeat: 2.5s after load, if no PLAYING (1) or
       // BUFFERING (3) state has been reported, assume +18 silent block →
       // show paywall. 2.5s gives slow connections a fair shot at buffering.
+      // CRITICAL FIX (2026-05-04): removed the !window.TwkAgeGate guard.
+      // It was preventing the paywall from firing on playlists where
+      // TwkAgeGate wasn't loaded → +18 videos showed YouTube's default
+      // cartel instead of our Discord/Telegram paywall. Now the paywall
+      // ALWAYS fires after 2.5s if no playback started, regardless of
+      // whether TwkAgeGate exists. If TwkAgeGate IS loaded and marks the
+      // video as protected (whitelisted), we honour that and skip.
       if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
       window.__twkInlineHeartbeat = setTimeout(function(){
         if (window.__twkInlinePlaybackStarted) return;
-        if (!vid || !window.TwkAgeGate) return;
+        if (!vid) return;
+        // Honour whitelist if TwkAgeGate is loaded (top-5 immune videos)
+        if (window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) return;
         showInlinePaywall(player, wrap, vid);
         stopTimeTracker();
-      }, 1500);
+      }, 2500);
 
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
@@ -614,5 +623,61 @@
     init();
   }
 
-  window.TwerkhubPlTheater = { open: open, close: close, markViewed: markViewed };
+  // Public heartbeat arming. Called from swap() in playlist HTML pages
+  // after loadVideoById. loadVideoById doesn't reload the iframe so onLoad
+  // never fires and patchInlinePlayer's internal heartbeat never arms.
+  function armPaywallHeartbeat(vid){
+    var player = document.getElementById('twerkhub-pl-player');
+    if (!player || !vid) return;
+    var wrap = player.closest('.twerkhub-pl-player-wrap') || player.parentNode;
+    window.__twkInlinePlaybackStarted = false;
+    if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
+    window.__twkInlineHeartbeat = setTimeout(function(){
+      if (window.__twkInlinePlaybackStarted) return;
+      if (window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) return;
+      try {
+        player.style.visibility = 'hidden';
+        player.style.opacity = '0';
+        player.style.pointerEvents = 'none';
+        player.src = 'about:blank';
+      } catch(_){}
+      if (window.TwkAgeGate && window.TwkAgeGate.showOverlay) {
+        try { window.TwkAgeGate.showOverlay(wrap, vid); return; } catch(_){}
+      }
+      try { renderFallbackPaywall(wrap); } catch(_){}
+    }, 2500);
+  }
+
+  function renderFallbackPaywall(wrap){
+    if (!wrap) return;
+    if (wrap.querySelector('.twk-pl-fallback-paywall')) return;
+    var DISCORD = 'https://discord.gg/WWn8ZgQMjn';
+    var TELEGRAM = 'https://t.me/+0xNr69raiIlmYWRh';
+    var ov = document.createElement('div');
+    ov.className = 'twk-pl-fallback-paywall';
+    ov.style.cssText = 'position:absolute;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:32px;text-align:center;background:linear-gradient(145deg,#1a0a1f 0%,#2a0e2f 100%);color:#fff;font-family:Inter,system-ui,sans-serif;border-radius:18px';
+    ov.innerHTML =
+      '<div style="font-size:28px;font-weight:800;letter-spacing:-.02em">+18 PRIVATE CUT</div>' +
+      '<div style="font-size:15px;color:rgba(255,255,255,.78);max-width:520px;line-height:1.5">' +
+        'This clip is age-restricted on YouTube. Unlock the full uncut version inside our private community.' +
+      '</div>' +
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px">' +
+        '<a href="' + DISCORD + '" target="_blank" rel="noopener nofollow ugc" ' +
+          'style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:999px;background:linear-gradient(145deg,#5865F2,#4752C4);color:#fff;font-weight:800;text-decoration:none;font-size:14px;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 12px 32px rgba(88,101,242,.35)">' +
+          'Join Discord \u2192</a>' +
+        '<a href="' + TELEGRAM + '" target="_blank" rel="noopener nofollow ugc" ' +
+          'style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:999px;background:linear-gradient(145deg,#2AABEE,#229ED9);color:#fff;font-weight:800;text-decoration:none;font-size:14px;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 12px 32px rgba(42,171,238,.35)">' +
+          'Join Telegram \u2192</a>' +
+      '</div>';
+    var prevPos = getComputedStyle(wrap).position;
+    if (prevPos === 'static') wrap.style.position = 'relative';
+    wrap.appendChild(ov);
+  }
+
+  window.TwerkhubPlTheater = {
+    open: open,
+    close: close,
+    markViewed: markViewed,
+    armPaywallHeartbeat: armPaywallHeartbeat
+  };
 })();
