@@ -304,20 +304,22 @@
             var ico = muteBtn.querySelector('.twerkhub-hh-mute-ico');
             if (ico) ico.textContent = '🔊';
           }
-          // Self-managed countdown — totally independent of any other driver.
-          // Uses #twk-rotator-cd-timer which is a unique ID neither
-          // twerkhub-countdowns.js nor any inline v3 driver knows about, so
-          // there's no chance of a duplicate ticker overwriting our value.
-          startRotatorCountdown(p.m);
         }
 
-        // Single, self-contained countdown owned by the rotator. Reset every
-        // time applyVideo runs (page load + Next click). No events, no
-        // localStorage, no dependencies → impossible for another driver to
-        // override this since it targets #twk-rotator-cd-timer (unique ID).
+        // ── GLOBAL countdown — independent of which video is active.
+        // Starts ONCE on page load. Next clicks change the video but DON'T
+        // reset the countdown (it keeps ticking). When it reaches 0, it
+        // restarts with a new duration picked from the pool, AND auto-
+        // advances to the next video in the rotation.
         var rotatorTickInterval = null;
         var rotatorEndStamp = 0;
-        function startRotatorCountdown(minutes){
+        var rotatorCurrentMinutes = 0;
+        function pickRandomMinutes(){
+          // Randomly pick one of the pool's m values for variety on each cycle
+          return pool[Math.floor(Math.random() * pool.length)].m;
+        }
+        function startGlobalCountdown(minutes){
+          rotatorCurrentMinutes = minutes;
           rotatorEndStamp = Date.now() + minutes * 60 * 1000;
           if (rotatorTickInterval) clearInterval(rotatorTickInterval);
           var t = document.getElementById('twk-rotator-cd-timer');
@@ -327,7 +329,12 @@
           function rotatorTick(){
             var rem = rotatorEndStamp - Date.now();
             if (rem <= 0) {
-              rotatorEndStamp = Date.now() + minutes * 60 * 1000;
+              // Hit 0 → restart with new random duration AND advance to next video
+              rotatorCurrentMinutes = pickRandomMinutes();
+              rotatorEndStamp = Date.now() + rotatorCurrentMinutes * 60 * 1000;
+              if (cd) cd.setAttribute('data-remaining-minutes', String(rotatorCurrentMinutes));
+              currentIdx = (currentIdx + 1) % pool.length;
+              applyVideo(pool[currentIdx]);
               rem = rotatorEndStamp - Date.now();
             }
             var s = Math.floor(rem / 1000);
@@ -340,6 +347,9 @@
         // Initial pick — weighted random ONLY on page load
         currentIdx = weightedPick();
         applyVideo(pool[currentIdx]);
+        // Start the GLOBAL countdown ONCE with the initial video's minutes.
+        // From here on it ticks down continuously regardless of Next clicks.
+        startGlobalCountdown(pool[currentIdx].m);
 
         // Next button → cycle to the next in fixed order, wrap at end.
         // No randomness here — strict 1→2→3→4→1 sequence, no repeats.
@@ -1391,16 +1401,16 @@ ript defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
 (function(){
   'use strict';
   if (window.__twerkhubCountdownsV1Init) return;
-  window.__twerkhubCountdownsV1Init = true;
-  if (true) return;
+  window.__twerkhubCountdownsV1Init=true;
+  if(true)return;
 })();
 </script>
 
-<script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
 <script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
 <script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
 <script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
 <script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
+<script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
 </body>
 </html>

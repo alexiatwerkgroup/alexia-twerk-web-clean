@@ -50,6 +50,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://i.ytimg.com" crossorigin>
 <link rel="preconnect" href="https://www.youtube.com" crossorigin>
+<link rel="preconnect" href="https://www.youtube-nocookie.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com" crossorigin>
+<link rel="preconnect" href="https://yt3.ggpht.com" crossorigin>
+<link rel="preconnect" href="https://googlevideo.com" crossorigin>
 
 <style>*{box-sizing:border-box;margin:0;padding:0}body.twerkhub-pl-page{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;min-height:100vh;line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:80px}body.twerkhub-pl-page a{color:inherit;text-decoration:none}.twerkhub-pl-visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.twerkhub-pl-skip{position:absolute;top:-60px;left:12px;z-index:9999;padding:10px 16px;background:#1ee08f;color:#000;border-radius:6px;font-weight:700;transition:top .2s}.twerkhub-pl-skip:focus{top:12px;outline:2px solid #ffb454}</style>
 
@@ -608,17 +612,45 @@
     // changes. By using the YouTube IFrame API instead, the same iframe
     // session loads the new video internally — no new network request to
     // /embed/, no bot challenge.
+    // Loading overlay (shown during the 1-3s gap while iframe loads)
+    if (!document.getElementById('twk-pl-loading-css')) {
+      var s = document.createElement('style');
+      s.id = 'twk-pl-loading-css';
+      s.textContent =
+        '.twerkhub-pl-player-wrap{position:relative}'+
+        '.twk-pl-loader{position:absolute;inset:0;z-index:5;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0a14,#1a0e1f);border-radius:18px;pointer-events:none}'+
+        '.twk-pl-loader.is-active{display:flex}'+
+        '.twk-pl-loader-spin{width:48px;height:48px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:#ff2d87;animation:twkPlSpin .8s linear infinite}'+
+        '@keyframes twkPlSpin{to{transform:rotate(360deg)}}';
+      document.head.appendChild(s);
+    }
+    var loaderEl = null;
+    function showLoader(){
+      var wrap = player && player.parentNode;
+      if (!wrap) return;
+      if (!loaderEl) {
+        loaderEl = wrap.querySelector('.twk-pl-loader');
+        if (!loaderEl) {
+          loaderEl = document.createElement('div');
+          loaderEl.className = 'twk-pl-loader';
+          loaderEl.innerHTML = '<div class="twk-pl-loader-spin"></div>';
+          wrap.appendChild(loaderEl);
+        }
+      }
+      loaderEl.classList.add('is-active');
+    }
+    function hideLoader(){ if (loaderEl) loaderEl.classList.remove('is-active'); }
+
     function swap(vid, number){
       if (!player) return;
-      // EXACT clone of /playlist/index.html swap() (the only playlist where
-      // the +18 paywall works perfectly). Direct iframe.src swap → onLoad
-      // fires → heartbeat in twerkhub-pl-theater.js arms → paywall fires.
+      showLoader();
       var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
                 '?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
       player.src = url;
       if (title && number) title.textContent = 'Playing ' + number;
       try {
         player.onload = function(){
+          setTimeout(hideLoader, 400);
           [200, 800, 1500, 2500].forEach(function(d){
             setTimeout(function(){
               try {
@@ -630,6 +662,7 @@
           });
         };
       } catch(_){}
+      setTimeout(hideLoader, 5000);
       // Mark as viewed (delegated to the global pl-theater module if loaded)
       try {
         if (window.TwerkhubPlTheater && window.TwerkhubPlTheater.markViewed) {
