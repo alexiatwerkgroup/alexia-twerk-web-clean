@@ -34,6 +34,9 @@
   var MUTE_CLASS    = 'twk-video-shield-mute';
   var CTRLS_CLASS   = 'twk-video-shield-ctrls';
 
+  var SEEK_STEP = 10; // seconds to skip on each ⏪/⏩ click or ←/→ keypress
+  var DEFAULT_START = 5; // skip YouTube intro logo
+
   // Inline SVG icons (no external requests, no FOUC)
   var ICON_MUTED =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
@@ -44,6 +47,12 @@
   var ICON_FS =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M8 3H3v5"/><path d="M21 8V3h-5"/><path d="M16 21h5v-5"/><path d="M3 16v5h5"/></svg>';
+  var ICON_BACK =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg>';
+  var ICON_FWD =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg>';
 
   // ── Inject styles once ──────────────────────────────────────────────
   function injectStyles(){
@@ -52,13 +61,12 @@
     st.id = 'twk-video-shield-css';
     st.textContent =
       '.' + WRAP_CLASS + '{position:relative;width:100%;height:100%;overflow:hidden;background:#000}' +
-      // Default (windowed): zoom 12% anchored at center-bottom — all extra
-      // height goes UP, cropping YouTube's pause-state title overlay.
-      '.' + WRAP_CLASS + '>iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;transform:scale(1.12);transform-origin:center bottom}' +
-      // Fullscreen: stronger uniform zoom from CENTER so both top AND bottom
-      // are cropped. Hides any overlay YouTube might still render (title,
-      // share, "Watch on YouTube", related-grid hints, etc) in either edge.
-      ':fullscreen .' + WRAP_CLASS + '>iframe,:-webkit-full-screen .' + WRAP_CLASS + '>iframe,.' + WRAP_CLASS + ':fullscreen>iframe{transform:scale(1.20)!important;transform-origin:center center!important}' +
+      // Windowed: zoom 18% from CENTER → crops top, bottom AND sides equally
+      // (~9% each). Hides YouTube title overlay AND any baked-in watermarks
+      // (e.g. "teenbeautyfitness.com" at the bottom of some videos).
+      '.' + WRAP_CLASS + '>iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;transform:scale(1.18);transform-origin:center center}' +
+      // Fullscreen: slightly stronger zoom (still center) — same intent.
+      ':fullscreen .' + WRAP_CLASS + '>iframe,:-webkit-full-screen .' + WRAP_CLASS + '>iframe,.' + WRAP_CLASS + ':fullscreen>iframe{transform:scale(1.22)!important;transform-origin:center center!important}' +
       '.' + CAP_CLASS  + '{position:absolute;inset:0;z-index:5;background:transparent;border:0;padding:0;margin:0;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}' +
       '.' + CAP_CLASS  + ':focus-visible{outline:none}' +
       '.' + CTRLS_CLASS + '{position:absolute;bottom:10px;right:10px;z-index:10;display:flex;gap:6px;align-items:center}' +
@@ -88,6 +96,10 @@
         enablejsapi:     '1'
       };
       Object.keys(enforce).forEach(function(k){ u.searchParams.set(k, enforce[k]); });
+      // Skip YouTube intro logo by starting at a small offset (only if no
+      // explicit start time is set, or the existing one is < DEFAULT_START).
+      var existingStart = parseInt(u.searchParams.get('start') || '0', 10) || 0;
+      if (existingStart < DEFAULT_START) u.searchParams.set('start', String(DEFAULT_START));
       // Some embeds use `loop=1` + `playlist=ID` to loop; we don't touch those
       return u.toString();
     } catch(e){
@@ -139,6 +151,59 @@
     } catch(_){}
   }
 
+  // ── Register the iframe to send infoDelivery events back to us ──────
+  // YouTube sends {event:'infoDelivery', info:{currentTime, duration, ...}}
+  // every ~250ms once we've sent {event:'listening'} as a handshake.
+  function registerListener(iframe){
+    try {
+      // Wait for the iframe to load before sending the handshake; YouTube
+      // ignores postMessages sent before its API is ready.
+      var send = function(){
+        try {
+          iframe.contentWindow.postMessage(JSON.stringify({event:'listening'}), '*');
+        } catch(_){}
+      };
+      // Resend a couple of times to defeat race conditions
+      [0, 600, 1500, 3000].forEach(function(d){ setTimeout(send, d); });
+    } catch(_){}
+  }
+
+  // Global message listener: track currentTime per iframe (keyed by data-uid)
+  var iframeUid = 0;
+  var timeMap = Object.create(null); // uid → currentTime seconds
+  window.addEventListener('message', function(e){
+    if (!e || !e.origin) return;
+    if (!/^https:\/\/www\.youtube(?:-nocookie)?\.com$/.test(e.origin)) return;
+    var data;
+    try { data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch(_){ return; }
+    if (!data || data.event !== 'infoDelivery' || !data.info) return;
+    if (typeof data.info.currentTime !== 'number') return;
+    // Find which iframe this came from by source window
+    var iframes = document.querySelectorAll('iframe[' + SHIELDED_ATTR + ']');
+    for (var i = 0; i < iframes.length; i++) {
+      if (iframes[i].contentWindow === e.source) {
+        var uid = iframes[i].dataset.twkUid;
+        if (uid) timeMap[uid] = data.info.currentTime;
+        break;
+      }
+    }
+  });
+
+  // ── Seek by N seconds (positive or negative) ────────────────────────
+  function seekDelta(iframe, deltaSecs){
+    try {
+      var uid = iframe.dataset.twkUid;
+      var current = (uid && typeof timeMap[uid] === 'number') ? timeMap[uid] : 0;
+      var target = Math.max(0, current + deltaSecs);
+      iframe.contentWindow.postMessage(JSON.stringify({
+        event:'command', func:'seekTo', args:[target, true]
+      }), '*');
+      // Update local cache so consecutive presses chain properly without
+      // waiting for the next infoDelivery tick.
+      if (uid) timeMap[uid] = target;
+    } catch(_){}
+  }
+
   // ── Apply the shield to a single iframe ─────────────────────────────
   function shield(iframe){
     if (!iframe || iframe.getAttribute(SHIELDED_ATTR) === '1') return;
@@ -181,11 +246,39 @@
       wrap.appendChild(cap);
     }
 
-    // 4. Build the controls bar (mute + fullscreen) above overlay
+    // Assign a UID so we can track currentTime per iframe
+    if (!iframe.dataset.twkUid) {
+      iframeUid += 1;
+      iframe.dataset.twkUid = 'twk' + iframeUid;
+    }
+
+    // 4. Build the controls bar (back, forward, mute, fullscreen) above overlay
     var ctrls = wrap.querySelector('.' + CTRLS_CLASS);
     if (!ctrls) {
       ctrls = document.createElement('div');
       ctrls.className = CTRLS_CLASS;
+
+      // Back 10s
+      var backBtn = document.createElement('button');
+      backBtn.type = 'button';
+      backBtn.setAttribute('aria-label', 'Back ' + SEEK_STEP + ' seconds');
+      backBtn.innerHTML = ICON_BACK;
+      backBtn.addEventListener('click', function(ev){
+        ev.preventDefault(); ev.stopPropagation();
+        seekDelta(iframe, -SEEK_STEP);
+      });
+      ctrls.appendChild(backBtn);
+
+      // Forward 10s
+      var fwdBtn = document.createElement('button');
+      fwdBtn.type = 'button';
+      fwdBtn.setAttribute('aria-label', 'Forward ' + SEEK_STEP + ' seconds');
+      fwdBtn.innerHTML = ICON_FWD;
+      fwdBtn.addEventListener('click', function(ev){
+        ev.preventDefault(); ev.stopPropagation();
+        seekDelta(iframe, SEEK_STEP);
+      });
+      ctrls.appendChild(fwdBtn);
 
       // Mute / unmute toggle
       var muteBtn = document.createElement('button');
@@ -195,26 +288,20 @@
       muteBtn.setAttribute('aria-label', 'Unmute');
       muteBtn.innerHTML = ICON_MUTED;
       muteBtn.addEventListener('click', function(ev){
-        ev.preventDefault();
-        ev.stopPropagation();
+        ev.preventDefault(); ev.stopPropagation();
         var nowMuted = muteBtn.dataset.muted === 'true';
-        // toggle: if currently muted → unmute, and vice versa
         setMuted(iframe, muteBtn, !nowMuted);
       });
       ctrls.appendChild(muteBtn);
 
-      // Fullscreen button — also force-unmutes (user is committing to watch)
+      // Fullscreen — also force-unmutes when entering
       var fsBtn = document.createElement('button');
       fsBtn.type = 'button';
       fsBtn.className = FS_CLASS;
       fsBtn.setAttribute('aria-label', 'Fullscreen');
       fsBtn.innerHTML = ICON_FS;
       fsBtn.addEventListener('click', function(ev){
-        ev.preventDefault();
-        ev.stopPropagation();
-        // Going fullscreen = the user is committing to watch → unmute too.
-        // Only unmute when entering fullscreen (not when exiting), so the
-        // exit doesn't blast audio again unexpectedly.
+        ev.preventDefault(); ev.stopPropagation();
         var goingIntoFs = !(document.fullscreenElement || document.webkitFullscreenElement);
         toggleFullscreen(wrap);
         if (goingIntoFs) setMuted(iframe, muteBtn, false);
@@ -225,7 +312,35 @@
     }
 
     iframe.setAttribute(SHIELDED_ATTR, '1');
+    registerListener(iframe);
   }
+
+  // ── Keyboard: ←/→ seek the active shielded iframe ───────────────────
+  function pickActiveIframe(){
+    // Prefer fullscreen iframe if any
+    var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    if (fsEl) {
+      var inner = fsEl.querySelector('iframe[' + SHIELDED_ATTR + ']');
+      if (inner) return inner;
+    }
+    // Otherwise: pick the first shielded iframe in the viewport
+    var ifs = document.querySelectorAll('iframe[' + SHIELDED_ATTR + ']');
+    for (var i = 0; i < ifs.length; i++) {
+      var r = ifs[i].getBoundingClientRect();
+      if (r.bottom > 0 && r.top < (window.innerHeight || 0)) return ifs[i];
+    }
+    return ifs[0] || null;
+  }
+  document.addEventListener('keydown', function(ev){
+    // Don't hijack arrows when user is typing in an input/textarea/contenteditable
+    var t = ev.target;
+    if (t && (t.matches && t.matches('input,textarea,select,[contenteditable=""],[contenteditable="true"]'))) return;
+    if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
+    var iframe = pickActiveIframe();
+    if (!iframe) return;
+    ev.preventDefault();
+    seekDelta(iframe, ev.key === 'ArrowLeft' ? -SEEK_STEP : SEEK_STEP);
+  });
 
   // ── Scan for all YouTube iframes on the page ────────────────────────
   function scanAll(){
