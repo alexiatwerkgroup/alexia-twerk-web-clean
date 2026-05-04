@@ -61,11 +61,11 @@
     st.id = 'twk-video-shield-css';
     st.textContent =
       '.' + WRAP_CLASS + '{position:relative;width:100%;height:100%;overflow:hidden;background:#000}' +
-      // Windowed: zoom 18% from CENTER → crops top, bottom AND sides equally
-      // (~9% each). Hides YouTube title overlay AND any baked-in watermarks
-      // (e.g. "teenbeautyfitness.com" at the bottom of some videos).
-      '.' + WRAP_CLASS + '>iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;transform:scale(1.18);transform-origin:center center}' +
-      // Fullscreen: slightly stronger zoom (still center) — same intent.
+      // Windowed: zoom 22% from CENTER → crops top, bottom AND sides equally
+      // (~11% each). Hides YouTube title overlay, baked-in watermarks, AND
+      // the brief YouTube logo flash that happens during seek transitions.
+      '.' + WRAP_CLASS + '>iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;transform:scale(1.22);transform-origin:center center}' +
+      // Fullscreen: same zoom — keeps it consistent with windowed.
       ':fullscreen .' + WRAP_CLASS + '>iframe,:-webkit-full-screen .' + WRAP_CLASS + '>iframe,.' + WRAP_CLASS + ':fullscreen>iframe{transform:scale(1.22)!important;transform-origin:center center!important}' +
       '.' + CAP_CLASS  + '{position:absolute;inset:0;z-index:5;background:transparent;border:0;padding:0;margin:0;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}' +
       '.' + CAP_CLASS  + ':focus-visible{outline:none}' +
@@ -93,7 +93,9 @@
         iv_load_policy:  '3',
         disablekb:       '1',
         playsinline:     '1',
-        enablejsapi:     '1'
+        enablejsapi:     '1',
+        vq:              'hd2160',  // request max quality (4K → falls back if unavailable)
+        hd:              '1'        // legacy hint that's still respected by some clients
       };
       Object.keys(enforce).forEach(function(k){ u.searchParams.set(k, enforce[k]); });
       // Skip YouTube intro logo by starting at a small offset (only if no
@@ -160,11 +162,18 @@
       // ignores postMessages sent before its API is ready.
       var send = function(){
         try {
-          iframe.contentWindow.postMessage(JSON.stringify({event:'listening'}), '*');
+          var w = iframe.contentWindow;
+          // 1. Register for state updates
+          w.postMessage(JSON.stringify({event:'listening'}), '*');
+          // 2. Force max playback quality. YouTube ignores some of these
+          //    depending on the video's available levels, but the highest
+          //    available is what we get back. Set both single and range.
+          w.postMessage(JSON.stringify({event:'command', func:'setPlaybackQuality', args:['highres']}), '*');
+          w.postMessage(JSON.stringify({event:'command', func:'setPlaybackQualityRange', args:['hd2160','hd2160']}), '*');
         } catch(_){}
       };
       // Resend a couple of times to defeat race conditions
-      [0, 600, 1500, 3000].forEach(function(d){ setTimeout(send, d); });
+      [0, 600, 1500, 3000, 6000].forEach(function(d){ setTimeout(send, d); });
     } catch(_){}
   }
 
