@@ -223,7 +223,7 @@
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
       <style>
-        .twerkhub-hh-next{position:absolute;top:14px;right:14px;z-index:14;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s cubic-bezier(.3,1.2,.4,1),background .2s,border-color .2s;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+        .twerkhub-hh-next{position:absolute;top:14px;left:14px;z-index:14;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s cubic-bezier(.3,1.2,.4,1),background .2s,border-color .2s;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.4)}
         .twerkhub-hh-next:hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(255,45,135,.22),rgba(255,180,84,.10));border-color:rgba(255,45,135,.4)}
         .twerkhub-hh-next svg{width:14px;height:14px;flex-shrink:0}
       </style>
@@ -258,8 +258,33 @@
         }
 
         function applyVideo(p){
+          // Note: keep mute=1 in URL so browsers ALLOW autoplay; we unmute
+          // immediately via postMessage right after the iframe loads.
           f.src='https://www.youtube.com/embed/'+p.i+'?autoplay=1&mute=1&loop=1&playlist='+p.i+'&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&origin=https%3A%2F%2Falexiatwerkgroup.com&start='+p.s;
           a.setAttribute('data-hero-video-id',p.i);
+          // Try to unmute right after load. Browsers without autoplay-with-audio
+          // will keep it muted; the existing "Tap to unmute" button stays as
+          // fallback. Retry a few times to defeat race conditions with the YT API.
+          [400, 900, 1800, 3000].forEach(function(d){
+            setTimeout(function(){
+              try {
+                var w = f.contentWindow;
+                w.postMessage(JSON.stringify({event:'command', func:'unMute', args:[]}), '*');
+                w.postMessage(JSON.stringify({event:'command', func:'setVolume', args:[100]}), '*');
+                w.postMessage(JSON.stringify({event:'command', func:'playVideo', args:[]}), '*');
+              } catch(_){}
+            }, d);
+          });
+          // Flip the existing mute button label to reflect the intended unmuted state
+          var muteBtn = document.querySelector('.twerkhub-hh-mute');
+          if (muteBtn) {
+            muteBtn.setAttribute('aria-pressed','false');
+            muteBtn.setAttribute('aria-label','Tap to mute');
+            var lbl = muteBtn.querySelector('.twerkhub-hh-mute-label');
+            if (lbl) lbl.textContent = 'Tap to mute';
+            var ico = muteBtn.querySelector('.twerkhub-hh-mute-ico');
+            if (ico) ico.textContent = '🔊';
+          }
           // Update countdown for this video
           var cd = document.getElementById('twerkhub-hh-countdown');
           if (cd) {
