@@ -34,9 +34,9 @@
   var MUTE_CLASS    = 'twk-video-shield-mute';
   var CTRLS_CLASS   = 'twk-video-shield-ctrls';
   var CTA_CLASS     = 'twk-video-shield-cta';
-  var CTA_URL       = 'https://discord.gg/WWn8ZgQMjn'; // premium VIP Discord
-  var CTA_TITLE     = '+1,500 4K videos →';        // → arrow points into the video
-  var CTA_SUB       = 'get the full collection';
+  var CTA_URL       = (typeof window.TWK_VIDEO_CTA_URL   === 'string' && window.TWK_VIDEO_CTA_URL)   || 'https://discord.gg/WWn8ZgQMjn'; // premium VIP Discord
+  var CTA_TITLE     = (typeof window.TWK_VIDEO_CTA_TITLE === 'string' && window.TWK_VIDEO_CTA_TITLE) || '+1,500 4K videos →';
+  var CTA_SUB       = (typeof window.TWK_VIDEO_CTA_SUB   === 'string' && window.TWK_VIDEO_CTA_SUB)   || 'get the full collection';
 
   var SEEK_STEP = 10; // seconds to skip on each ⏪/⏩ click or ←/→ keypress
   var DEFAULT_START = 5; // skip YouTube intro logo
@@ -189,10 +189,10 @@
           var w = iframe.contentWindow;
           // 1. Register for state updates
           w.postMessage(JSON.stringify({event:'listening'}), '*');
-          // 2. Force max playback quality. YouTube ignores some of these
-          //    depending on the video's available levels, but the highest
-          //    available is what we get back. Set both single and range.
-          w.postMessage(JSON.stringify({event:'command', func:'setPlaybackQuality', args:['highres']}), '*');
+          // 2. Force playback quality. CAP at 4K (hd2160) — never 8K, even
+          //    if available. 8K barely benefits anyone and burns bandwidth.
+          //    Set both single quality and range so YouTube respects the cap.
+          w.postMessage(JSON.stringify({event:'command', func:'setPlaybackQuality', args:['hd2160']}), '*');
           w.postMessage(JSON.stringify({event:'command', func:'setPlaybackQualityRange', args:['hd2160','hd2160']}), '*');
         } catch(_){}
       };
