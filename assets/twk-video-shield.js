@@ -51,8 +51,11 @@
     var st = document.createElement('style');
     st.id = 'twk-video-shield-css';
     st.textContent =
-      '.' + WRAP_CLASS + '{position:relative;width:100%;height:100%}' +
-      '.' + WRAP_CLASS + '>iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important}' +
+      '.' + WRAP_CLASS + '{position:relative;width:100%;height:100%;overflow:hidden}' +
+      // Soft zoom (~12%) anchored at center-bottom so all the extra height goes
+      // UP and crops out YouTube's pause-state title overlay (top ~50px). The
+      // wrapper's overflow:hidden clips the overflow.
+      '.' + WRAP_CLASS + '>iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;transform:scale(1.12);transform-origin:center bottom}' +
       '.' + CAP_CLASS  + '{position:absolute;inset:0;z-index:5;background:transparent;border:0;padding:0;margin:0;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}' +
       '.' + CAP_CLASS  + ':focus-visible{outline:none}' +
       '.' + CTRLS_CLASS + '{position:absolute;bottom:10px;right:10px;z-index:10;display:flex;gap:6px;align-items:center}' +
