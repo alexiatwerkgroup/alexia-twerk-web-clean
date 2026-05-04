@@ -223,6 +223,10 @@
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
       <style>
+        /* Zoom on the hero iframe to crop YouTube's pause-state title overlay,
+           bottom watermarks and any logo flash. Same treatment as twk-video-shield. */
+        .twerkhub-hh-media-inner{overflow:hidden!important}
+        .twerkhub-hh-iframe{transform:scale(1.22)!important;transform-origin:center center!important}
         .twerkhub-hh-next{position:absolute;top:14px;left:14px;z-index:14;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s cubic-bezier(.3,1.2,.4,1),background .2s,border-color .2s;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.4)}
         .twerkhub-hh-next:hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(255,45,135,.22),rgba(255,180,84,.10));border-color:rgba(255,45,135,.4)}
         .twerkhub-hh-next svg{width:14px;height:14px;flex-shrink:0}
@@ -232,8 +236,11 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <script>
-      /* Hero video rotator · weighted random pick on each page load + Next button.
-         Each video has its own countdown. v9zzf8elj_w 40% · others 20% each. */
+      /* Hero video rotator
+         · On page load: weighted pick (40/20/20/20)
+         · On Next click: cycles through the pool in fixed order (no repeats,
+           no randomness — each click goes to the next in the array, wrapping
+           back to the start at the end). */
       (function(){
         var pool=[
           {i:'v9zzf8elj_w', s:0,  w:40, m:75 },  // 1h 15m
@@ -244,17 +251,17 @@
         var f=document.getElementById('twerkhub-hh-iframe');
         var a=document.querySelector('.twerkhub-home-hero-media');
         if(!f||!a) return;
+        var currentIdx = 0;  // index into `pool` of the currently-playing video
 
-        function weightedPick(exclude){
-          var subset = pool.filter(function(x){ return x.i !== exclude; });
-          // If excluding, distribute weights proportionally over the remainder
-          var totalW=0; for (var k=0;k<subset.length;k++) totalW+=subset[k].w;
-          var roll=Math.random()*totalW, acc=0, p=subset[0];
-          for (var k=0;k<subset.length;k++){
-            acc+=subset[k].w;
-            if (roll < acc){ p=subset[k]; break; }
+        function weightedPick(){
+          // Used ONLY on initial page load. Pure random by weights.
+          var totalW=0; for (var k=0;k<pool.length;k++) totalW+=pool[k].w;
+          var roll=Math.random()*totalW, acc=0, idx=0;
+          for (var k=0;k<pool.length;k++){
+            acc+=pool[k].w;
+            if (roll < acc){ idx=k; break; }
           }
-          return p;
+          return idx;
         }
 
         function applyVideo(p){
@@ -298,18 +305,19 @@
           }
         }
 
-        // Initial pick
-        var current = weightedPick();
-        applyVideo(current);
+        // Initial pick — weighted random ONLY on page load
+        currentIdx = weightedPick();
+        applyVideo(pool[currentIdx]);
 
-        // Next button → pick a different video, never the current one
+        // Next button → cycle to the next in fixed order, wrap at end.
+        // No randomness here — strict 1→2→3→4→1 sequence, no repeats.
         var nextBtn = document.getElementById('twerkhub-hh-next');
         if (nextBtn) {
           nextBtn.addEventListener('click', function(ev){
             ev.preventDefault();
             ev.stopPropagation();
-            current = weightedPick(current.i);
-            applyVideo(current);
+            currentIdx = (currentIdx + 1) % pool.length;
+            applyVideo(pool[currentIdx]);
           });
         }
       })();
