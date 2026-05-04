@@ -33,6 +33,10 @@
   var FS_CLASS      = 'twk-video-shield-fs';
   var MUTE_CLASS    = 'twk-video-shield-mute';
   var CTRLS_CLASS   = 'twk-video-shield-ctrls';
+  var CTA_CLASS     = 'twk-video-shield-cta';
+  var CTA_URL       = 'https://discord.gg/WWn8ZgQMjn'; // premium VIP Discord
+  var CTA_TITLE     = '+1,500 4K videos ←';        // ← arrow
+  var CTA_SUB       = 'get the full collection';
 
   var SEEK_STEP = 10; // seconds to skip on each ⏪/⏩ click or ←/→ keypress
   var DEFAULT_START = 5; // skip YouTube intro logo
@@ -67,6 +71,17 @@
       '.' + WRAP_CLASS + '>iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;transform:scale(1.22);transform-origin:center center}' +
       // Fullscreen: same zoom — keeps it consistent with windowed.
       ':fullscreen .' + WRAP_CLASS + '>iframe,:-webkit-full-screen .' + WRAP_CLASS + '>iframe,.' + WRAP_CLASS + ':fullscreen>iframe{transform:scale(1.22)!important;transform-origin:center center!important}' +
+      // Premium glassmorphism CTA — top-right of every shielded video.
+      // Transparent gradient + heavy backdrop blur + inset highlight = glossy look.
+      '.' + CTA_CLASS + '{position:absolute;top:14px;right:14px;z-index:12;display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:10px 16px 11px;border-radius:14px;text-decoration:none;color:#fff;cursor:pointer;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 32px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.04);transition:transform .25s cubic-bezier(.3,1.2,.4,1),background .25s,border-color .25s,box-shadow .25s;line-height:1;-webkit-tap-highlight-color:transparent}' +
+      '.' + CTA_CLASS + ':hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(255,45,135,.22),rgba(255,180,84,.10));border-color:rgba(255,45,135,.45);box-shadow:0 12px 40px rgba(255,45,135,.35),inset 0 1px 0 rgba(255,255,255,.25)}' +
+      '.' + CTA_CLASS + '-title{font-family:\'Inter\',ui-sans-serif,system-ui,sans-serif;font-weight:800;font-size:13px;letter-spacing:.01em;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);white-space:nowrap}' +
+      '.' + CTA_CLASS + '-sub{font-family:\'JetBrains Mono\',ui-monospace,monospace;font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.78);text-shadow:0 1px 1px rgba(0,0,0,.4);white-space:nowrap}' +
+      // Fullscreen — bigger, more presence
+      ':fullscreen .' + CTA_CLASS + ',:-webkit-full-screen .' + CTA_CLASS + ',.' + WRAP_CLASS + ':fullscreen .' + CTA_CLASS + '{top:28px;right:32px;padding:14px 22px 16px;border-radius:18px;gap:4px}' +
+      ':fullscreen .' + CTA_CLASS + '-title,:-webkit-full-screen .' + CTA_CLASS + '-title,.' + WRAP_CLASS + ':fullscreen .' + CTA_CLASS + '-title{font-size:19px}' +
+      ':fullscreen .' + CTA_CLASS + '-sub,:-webkit-full-screen .' + CTA_CLASS + '-sub,.' + WRAP_CLASS + ':fullscreen .' + CTA_CLASS + '-sub{font-size:11px}' +
+      '@media(max-width:540px){.' + CTA_CLASS + '{top:10px;right:10px;padding:8px 12px 9px}.' + CTA_CLASS + '-title{font-size:11.5px}.' + CTA_CLASS + '-sub{font-size:8px}}' +
       '.' + CAP_CLASS  + '{position:absolute;inset:0;z-index:5;background:transparent;border:0;padding:0;margin:0;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}' +
       '.' + CAP_CLASS  + ':focus-visible{outline:none}' +
       '.' + CTRLS_CLASS + '{position:absolute;bottom:10px;right:10px;z-index:10;display:flex;gap:6px;align-items:center}' +
@@ -318,6 +333,23 @@
       ctrls.appendChild(fsBtn);
 
       wrap.appendChild(ctrls);
+    }
+
+    // 5. Premium CTA overlay (top-right) → click goes to Discord VIP
+    var cta = wrap.querySelector('.' + CTA_CLASS);
+    if (!cta) {
+      cta = document.createElement('a');
+      cta.className = CTA_CLASS;
+      cta.href = CTA_URL;
+      cta.target = '_blank';
+      cta.rel = 'noopener noreferrer';
+      cta.setAttribute('aria-label', CTA_TITLE + ' · ' + CTA_SUB);
+      cta.innerHTML =
+        '<span class="' + CTA_CLASS + '-title">' + CTA_TITLE + '</span>' +
+        '<span class="' + CTA_CLASS + '-sub">' + CTA_SUB + '</span>';
+      // Make sure the click reaches the link, not the click-capture overlay
+      cta.addEventListener('click', function(ev){ ev.stopPropagation(); });
+      wrap.appendChild(cta);
     }
 
     iframe.setAttribute(SHIELDED_ATTR, '1');
