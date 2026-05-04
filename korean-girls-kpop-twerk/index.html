@@ -654,19 +654,16 @@
           func: 'loadVideoById',
           args: [{ videoId: vid, startSeconds: 5, suggestedQuality: 'hd2160' }]
         }), '*');
-        // After the new video is loaded, unmute (we keep mute=1 on initial
-        // load so YouTube's autoplay policy is satisfied; postMessage unMute
-        // is allowed because we're inside a click handler).
-        [300, 900, 1700].forEach(function(d){
-          setTimeout(function(){
-            try {
-              player.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
-              player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
-              player.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
-              player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setPlaybackQuality',args:['hd2160']}), '*');
-            } catch(_){}
-          }, d);
-        });
+        // CRITICAL: send unMute exactly ONCE. Multi-command postMessage spam
+        // to a YouTube embed triggers the bot challenge.
+        setTimeout(function(){
+          try {
+            player.contentWindow.postMessage(
+              JSON.stringify({event:'command', func:'unMute', args:[]}),
+              'https://www.youtube-nocookie.com'
+            );
+          } catch(_){}
+        }, 1500);
       } catch(e){
         // Fallback: if postMessage fails (rare), do an iframe.src swap with mute=1.
         var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +

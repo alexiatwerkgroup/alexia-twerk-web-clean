@@ -198,26 +198,23 @@
   }
 
   // ── Register the iframe to send infoDelivery events back to us ──────
-  // YouTube sends {event:'infoDelivery', info:{currentTime, duration, ...}}
-  // every ~250ms once we've sent {event:'listening'} as a handshake.
+  // CRITICAL (2026-05-04): rapid-fire postMessage to a YouTube embed (more
+  // than ~3 messages within seconds) triggers the "Sign in to confirm
+  // you're not a bot" challenge. Each send() must fire AT MOST ONCE per
+  // iframe load, and must use a proper target origin (not '*').
   function registerListener(iframe){
     try {
-      // Wait for the iframe to load before sending the handshake; YouTube
-      // ignores postMessages sent before its API is ready.
-      var send = function(){
+      setTimeout(function(){
         try {
           var w = iframe.contentWindow;
-          // 1. Register for state updates
-          w.postMessage(JSON.stringify({event:'listening'}), '*');
-          // 2. Force playback quality. CAP at 4K (hd2160) — never 8K, even
-          //    if available. 8K barely benefits anyone and burns bandwidth.
-          //    Set both single quality and range so YouTube respects the cap.
-          w.postMessage(JSON.stringify({event:'command', func:'setPlaybackQuality', args:['hd2160']}), '*');
-          w.postMessage(JSON.stringify({event:'command', func:'setPlaybackQualityRange', args:['hd2160','hd2160']}), '*');
+          var YT_ORIGIN = 'https://www.youtube-nocookie.com';
+          // Single handshake — this enables infoDelivery events for our
+          // currentTime tracking (used by seekDelta).
+          w.postMessage(JSON.stringify({event:'listening'}), YT_ORIGIN);
+          // Quality cap at 4K. ONE message only.
+          w.postMessage(JSON.stringify({event:'command', func:'setPlaybackQualityRange', args:['hd2160','hd2160']}), YT_ORIGIN);
         } catch(_){}
-      };
-      // Resend a couple of times to defeat race conditions
-      [0, 600, 1500, 3000, 6000].forEach(function(d){ setTimeout(send, d); });
+      }, 1800);
     } catch(_){}
   }
 

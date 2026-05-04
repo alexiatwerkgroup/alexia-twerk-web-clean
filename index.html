@@ -296,17 +296,20 @@
                       '&origin=https%3A%2F%2Falexiatwerkgroup.com&start=' + p.s;
             }
           }
-          // Unmute via postMessage (same logic for both initial + loadVideoById)
-          [400, 900, 1800, 3000].forEach(function(d){
-            setTimeout(function(){
-              try {
-                var w = f.contentWindow;
-                w.postMessage(JSON.stringify({event:'command', func:'unMute', args:[]}), '*');
-                w.postMessage(JSON.stringify({event:'command', func:'setVolume', args:[100]}), '*');
-                w.postMessage(JSON.stringify({event:'command', func:'playVideo', args:[]}), '*');
-              } catch(_){}
-            }, d);
-          });
+          // Unmute via ONE postMessage after the player is ready.
+          // CRITICAL: rapid-fire postMessage to a YouTube embed (multiple
+          // commands within seconds) triggers the "Sign in to confirm
+          // you're not a bot" challenge. We send a single command once.
+          // If the browser's autoplay policy still refuses audio, the user
+          // can click the existing "Tap to unmute" button.
+          setTimeout(function(){
+            try {
+              f.contentWindow.postMessage(
+                JSON.stringify({event:'command', func:'unMute', args:[]}),
+                'https://www.youtube-nocookie.com'
+              );
+            } catch(_){}
+          }, 1500);
           // Flip the existing mute button label to reflect the intended unmuted state
           var muteBtn = document.querySelector('.twerkhub-hh-mute');
           if (muteBtn) {

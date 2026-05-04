@@ -568,15 +568,21 @@
     });
   }
 
-  // Tell the iframe to start pushing events to us (must be called after load)
+  // Tell the iframe to start pushing events to us (must be called after load).
+  // CRITICAL (2026-05-04): rapid postMessage to a YouTube embed triggers the
+  // "Sign in to confirm you're not a bot" challenge. We send a SINGLE
+  // listening handshake — addEventListener calls were redundant since the
+  // listening event already enables onError/onStateChange events.
   function subscribeInlineToEvents(){
     var ifr = document.getElementById('twerkhub-pl-player');
     if (!ifr || !ifr.contentWindow) return;
-    try { ifr.contentWindow.postMessage(JSON.stringify({event:'listening', id: 1, channel: 'twk_inline'}), '*'); } catch(_){}
-    setTimeout(function(){
-      try { ifr.contentWindow.postMessage(JSON.stringify({event:'command', func:'addEventListener', args:['onError']}), '*'); } catch(_){}
-      try { ifr.contentWindow.postMessage(JSON.stringify({event:'command', func:'addEventListener', args:['onStateChange']}), '*'); } catch(_){}
-    }, 50); }
+    try {
+      ifr.contentWindow.postMessage(
+        JSON.stringify({event:'listening', id: 1, channel: 'twk_inline'}),
+        'https://www.youtube-nocookie.com'
+      );
+    } catch(_){}
+  }
 
   function init(){
     injectStyle();  // CRITICAL: badge CSS must exist before applyViewedClasses adds .twk-viewed

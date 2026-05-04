@@ -616,16 +616,16 @@
           func: 'loadVideoById',
           args: [{ videoId: vid, startSeconds: 5, suggestedQuality: 'hd2160' }]
         }), '*');
-        [300, 900, 1700].forEach(function(d){
-          setTimeout(function(){
-            try {
-              player.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
-              player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
-              player.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
-              player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setPlaybackQuality',args:['hd2160']}), '*');
-            } catch(_){}
-          }, d);
-        });
+        // CRITICAL: send unMute exactly ONCE. Multi-command postMessage spam
+        // to a YouTube embed triggers the bot challenge.
+        setTimeout(function(){
+          try {
+            player.contentWindow.postMessage(
+              JSON.stringify({event:'command', func:'unMute', args:[]}),
+              'https://www.youtube-nocookie.com'
+            );
+          } catch(_){}
+        }, 1500);
       } catch(e){
         var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
                   '?autoplay=1&mute=1&controls=0&fs=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&enablejsapi=1' +
