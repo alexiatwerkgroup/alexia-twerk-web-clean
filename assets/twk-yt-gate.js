@@ -39,7 +39,14 @@
   'use strict';
   if (window.TwkYTGate) return;
 
-  var YT_ORIGIN = 'https://www.youtube-nocookie.com';
+  // CRITICAL: target origin must be '*'. YouTube's embed iframe sometimes
+  // changes its internal origin (nocookie ↔ youtube.com) during the player
+  // lifecycle, which causes postMessage with specific origins to be
+  // silently dropped by the browser. The previous version that successfully
+  // delivered addEventListener('onError') for the +18 paywall used '*'.
+  // The bot challenge was caused by SPAM (frequency), not by the target
+  // origin — our throttle handles that.
+  var YT_ORIGIN = '*';
   var MIN_INTERVAL_MS = 500;
   var COOLOFF_KEY = 'twk_yt_gate_cooloff_until';
   var DEFAULT_COOLOFF_MIN = 30;
@@ -141,8 +148,7 @@
     coolOff: coolOff,
     clearCoolOff: clearCoolOff,
     isCoolingOff: isCoolingOff,
-    isDev: function(){ return isDev; },
-    YT_ORIGIN: YT_ORIGIN
+    isDev: function(){ return isDev; }
   };
 
   if (isDev) console.info('[twk-yt-gate] dev mode ACTIVE — all postMessage disabled');
