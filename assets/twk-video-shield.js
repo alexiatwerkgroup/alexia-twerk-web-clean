@@ -363,6 +363,42 @@
 
     iframe.setAttribute(SHIELDED_ATTR, '1');
     registerListener(iframe);
+
+    // 6. Intercept future src changes BEFORE YouTube loads them.
+    // Without this, pl-theater sets src to a baseline URL → iframe starts
+    // loading → MutationObserver fires → we patch + setAttribute → YouTube
+    // RESTARTS the load with our params. That double-load is the 2-3s lag
+    // when switching videos. By overriding the property setter, we patch the
+    // URL synchronously before the browser even kicks off the network request.
+    if (!iframe.__twkSrcHooked) {
+      iframe.__twkSrcHooked = true;
+      var proto = Object.getPrototypeOf(iframe);
+      var d = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'src');
+      if (d && d.set && d.get) {
+        Object.defineProperty(iframe, 'src', {
+          configurable: true, enumerable: true,
+          get: function(){ return d.get.call(this); },
+          set: function(v){
+            try {
+              if (typeof v === 'string' && /youtube(?:-nocookie)?\.com\/embed\//.test(v)) {
+                v = patchSrc(v);
+              }
+            } catch(_){}
+            d.set.call(this, v);
+          }
+        });
+      }
+      // Also wrap setAttribute('src', ...) — some code paths use that instead
+      var nativeSetAttr = iframe.setAttribute.bind(iframe);
+      iframe.setAttribute = function(name, val){
+        try {
+          if (name === 'src' && typeof val === 'string' && /youtube(?:-nocookie)?\.com\/embed\//.test(val)) {
+            val = patchSrc(val);
+          }
+        } catch(_){}
+        return nativeSetAttr(name, val);
+      };
+    }
   }
 
   // ── Keyboard: ←/→ seek the active shielded iframe ───────────────────
