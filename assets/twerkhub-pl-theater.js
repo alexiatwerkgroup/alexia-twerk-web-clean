@@ -547,7 +547,14 @@
         }
         return;
       }
-      if (data.event === 'infoDelivery' || data.event === 'initialDelivery' || data.event === 'apiInfoDelivery') { window.__twkInlinePlaybackStarted = true; if (window.__twkInlineHeartbeat) { clearTimeout(window.__twkInlineHeartbeat); window.__twkInlineHeartbeat = null; } return; } if (data.event !== 'onError') return;
+      // CRITICAL FIX (2026-05-04): infoDelivery/initialDelivery events are
+      // sent by YouTube for ALL videos during init (with title, duration,
+      // etc.) BEFORE actual playback starts. Treating them as "playback
+      // started" cancels the heartbeat fallback → paywall never fires for
+      // age-restricted videos. ONLY onStateChange state 1 (PLAYING) or 3
+      // (BUFFERING) above means real playback. Just return for info events.
+      if (data.event === 'infoDelivery' || data.event === 'initialDelivery' || data.event === 'apiInfoDelivery') return;
+      if (data.event !== 'onError') return;
       var code = data.info;
       if (code !== 101 && code !== 150) return;
       // Resolve which iframe sent it
