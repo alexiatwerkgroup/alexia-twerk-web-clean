@@ -222,28 +222,71 @@
               allow="autoplay; encrypted-media; picture-in-picture"
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
+      <style>
+        .twerkhub-hh-next{position:absolute;top:14px;right:14px;z-index:14;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s cubic-bezier(.3,1.2,.4,1),background .2s,border-color .2s;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+        .twerkhub-hh-next:hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(255,45,135,.22),rgba(255,180,84,.10));border-color:rgba(255,45,135,.4)}
+        .twerkhub-hh-next svg{width:14px;height:14px;flex-shrink:0}
+      </style>
+      <button type="button" class="twerkhub-hh-next" id="twerkhub-hh-next" aria-label="Next video">
+        Next
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
       <script>
-      /* Hero video rotator · weighted random pick on each page load.
-         v9zzf8elj_w: 40% · others: 20% each (60% split equally). */
+      /* Hero video rotator · weighted random pick on each page load + Next button.
+         Each video has its own countdown. v9zzf8elj_w 40% · others 20% each. */
       (function(){
         var pool=[
-          {i:'v9zzf8elj_w',s:0,  w:40},
-          {i:'mpZ4-dQFmqo',s:18, w:20},
-          {i:'JGxxoMNscmc',s:19, w:20},
-          {i:'XDkH0yaocJ8',s:16, w:20}
+          {i:'v9zzf8elj_w', s:0,  w:40, m:75 },  // 1h 15m
+          {i:'mpZ4-dQFmqo', s:18, w:20, m:95 },  // 1h 35m  (+20)
+          {i:'JGxxoMNscmc', s:19, w:20, m:110},  // 1h 50m  (+15)
+          {i:'XDkH0yaocJ8', s:16, w:20, m:130}   // 2h 10m  (+20)
         ];
-        // Weighted pick
-        var totalW=0; for (var k=0;k<pool.length;k++) totalW+=pool[k].w;
-        var roll=Math.random()*totalW, acc=0, p=pool[0];
-        for (var k=0;k<pool.length;k++){
-          acc+=pool[k].w;
-          if (roll < acc){ p=pool[k]; break; }
-        }
         var f=document.getElementById('twerkhub-hh-iframe');
         var a=document.querySelector('.twerkhub-home-hero-media');
         if(!f||!a) return;
-        f.src='https://www.youtube.com/embed/'+p.i+'?autoplay=1&mute=1&loop=1&playlist='+p.i+'&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&origin=https%3A%2F%2Falexiatwerkgroup.com&start='+p.s;
-        a.setAttribute('data-hero-video-id',p.i);
+
+        function weightedPick(exclude){
+          var subset = pool.filter(function(x){ return x.i !== exclude; });
+          // If excluding, distribute weights proportionally over the remainder
+          var totalW=0; for (var k=0;k<subset.length;k++) totalW+=subset[k].w;
+          var roll=Math.random()*totalW, acc=0, p=subset[0];
+          for (var k=0;k<subset.length;k++){
+            acc+=subset[k].w;
+            if (roll < acc){ p=subset[k]; break; }
+          }
+          return p;
+        }
+
+        function applyVideo(p){
+          f.src='https://www.youtube.com/embed/'+p.i+'?autoplay=1&mute=1&loop=1&playlist='+p.i+'&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&origin=https%3A%2F%2Falexiatwerkgroup.com&start='+p.s;
+          a.setAttribute('data-hero-video-id',p.i);
+          // Update countdown for this video
+          var cd = document.getElementById('twerkhub-hh-countdown');
+          if (cd) {
+            cd.setAttribute('data-remaining-minutes', String(p.m));
+            // Format mm into HH:MM:SS for the visible timer
+            var totalSecs = p.m * 60;
+            var hh = String(Math.floor(totalSecs/3600)).padStart(2,'0');
+            var mm = String(Math.floor((totalSecs%3600)/60)).padStart(2,'0');
+            var t = document.getElementById('twerkhub-hh-cd-timer');
+            if (t) t.textContent = hh+':'+mm+':00';
+          }
+        }
+
+        // Initial pick
+        var current = weightedPick();
+        applyVideo(current);
+
+        // Next button → pick a different video, never the current one
+        var nextBtn = document.getElementById('twerkhub-hh-next');
+        if (nextBtn) {
+          nextBtn.addEventListener('click', function(ev){
+            ev.preventDefault();
+            ev.stopPropagation();
+            current = weightedPick(current.i);
+            applyVideo(current);
+          });
+        }
       })();
       </script>
       <div class="twerkhub-hh-media-scrim"></div>
