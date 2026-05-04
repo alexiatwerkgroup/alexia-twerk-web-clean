@@ -35,7 +35,7 @@
   var CTRLS_CLASS   = 'twk-video-shield-ctrls';
   var CTA_CLASS     = 'twk-video-shield-cta';
   var CTA_URL       = 'https://discord.gg/WWn8ZgQMjn'; // premium VIP Discord
-  var CTA_TITLE     = '+1,500 4K videos ←';        // ← arrow
+  var CTA_TITLE     = '+1,500 4K videos →';        // → arrow points into the video
   var CTA_SUB       = 'get the full collection';
 
   var SEEK_STEP = 10; // seconds to skip on each ⏪/⏩ click or ←/→ keypress
@@ -71,17 +71,26 @@
       '.' + WRAP_CLASS + '>iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;transform:scale(1.22);transform-origin:center center}' +
       // Fullscreen: same zoom — keeps it consistent with windowed.
       ':fullscreen .' + WRAP_CLASS + '>iframe,:-webkit-full-screen .' + WRAP_CLASS + '>iframe,.' + WRAP_CLASS + ':fullscreen>iframe{transform:scale(1.22)!important;transform-origin:center center!important}' +
-      // Premium glassmorphism CTA — top-right of every shielded video.
+      // Premium glassmorphism CTA — top-LEFT of every shielded video.
       // Transparent gradient + heavy backdrop blur + inset highlight = glossy look.
-      '.' + CTA_CLASS + '{position:absolute;top:14px;right:14px;z-index:12;display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:10px 16px 11px;border-radius:14px;text-decoration:none;color:#fff;cursor:pointer;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 32px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.04);transition:transform .25s cubic-bezier(.3,1.2,.4,1),background .25s,border-color .25s,box-shadow .25s;line-height:1;-webkit-tap-highlight-color:transparent}' +
-      '.' + CTA_CLASS + ':hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(255,45,135,.22),rgba(255,180,84,.10));border-color:rgba(255,45,135,.45);box-shadow:0 12px 40px rgba(255,45,135,.35),inset 0 1px 0 rgba(255,255,255,.25)}' +
+      // overflow:hidden so the shimmer pseudo-element stays clipped to the pill.
+      '.' + CTA_CLASS + '{position:absolute;top:14px;left:14px;z-index:12;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 16px 11px;border-radius:14px;text-decoration:none;color:#fff;cursor:pointer;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 0 0 rgba(255,45,135,.55),inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.04);transition:transform .25s cubic-bezier(.3,1.2,.4,1),background .25s,border-color .25s,box-shadow .25s;line-height:1;-webkit-tap-highlight-color:transparent;overflow:hidden;animation:twkCtaPulse 2.6s ease-out infinite}' +
+      // Pulsing glow ring → grabs attention without being noisy
+      '@keyframes twkCtaPulse{0%,100%{box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 0 0 rgba(255,45,135,.55),inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.04)}50%{box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 0 10px rgba(255,45,135,0),inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.04)}}' +
+      // Shimmer sweep — diagonal highlight that travels across the pill
+      '.' + CTA_CLASS + '::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);background-size:200% 100%;background-position:-100% 0;animation:twkCtaShimmer 3.2s ease-in-out infinite;animation-delay:.6s;pointer-events:none;mix-blend-mode:overlay}' +
+      '@keyframes twkCtaShimmer{0%{background-position:-100% 0;opacity:0}10%{opacity:1}50%{background-position:200% 0;opacity:1}55%,100%{opacity:0}}' +
+      // Hover: stop the pulse, intensify the brand color
+      '.' + CTA_CLASS + ':hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(255,45,135,.28),rgba(255,180,84,.14));border-color:rgba(255,45,135,.55);box-shadow:0 14px 42px rgba(255,45,135,.45),inset 0 1px 0 rgba(255,255,255,.25);animation:none}' +
+      '.' + CTA_CLASS + '-title,.' + CTA_CLASS + '-sub{position:relative;z-index:1}' +
       '.' + CTA_CLASS + '-title{font-family:\'Inter\',ui-sans-serif,system-ui,sans-serif;font-weight:800;font-size:13px;letter-spacing:.01em;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);white-space:nowrap}' +
       '.' + CTA_CLASS + '-sub{font-family:\'JetBrains Mono\',ui-monospace,monospace;font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.78);text-shadow:0 1px 1px rgba(0,0,0,.4);white-space:nowrap}' +
       // Fullscreen — bigger, more presence
-      ':fullscreen .' + CTA_CLASS + ',:-webkit-full-screen .' + CTA_CLASS + ',.' + WRAP_CLASS + ':fullscreen .' + CTA_CLASS + '{top:28px;right:32px;padding:14px 22px 16px;border-radius:18px;gap:4px}' +
+      ':fullscreen .' + CTA_CLASS + ',:-webkit-full-screen .' + CTA_CLASS + ',.' + WRAP_CLASS + ':fullscreen .' + CTA_CLASS + '{top:28px;left:32px;padding:14px 22px 16px;border-radius:18px;gap:4px}' +
       ':fullscreen .' + CTA_CLASS + '-title,:-webkit-full-screen .' + CTA_CLASS + '-title,.' + WRAP_CLASS + ':fullscreen .' + CTA_CLASS + '-title{font-size:19px}' +
       ':fullscreen .' + CTA_CLASS + '-sub,:-webkit-full-screen .' + CTA_CLASS + '-sub,.' + WRAP_CLASS + ':fullscreen .' + CTA_CLASS + '-sub{font-size:11px}' +
-      '@media(max-width:540px){.' + CTA_CLASS + '{top:10px;right:10px;padding:8px 12px 9px}.' + CTA_CLASS + '-title{font-size:11.5px}.' + CTA_CLASS + '-sub{font-size:8px}}' +
+      '@media(max-width:540px){.' + CTA_CLASS + '{top:10px;left:10px;padding:8px 12px 9px}.' + CTA_CLASS + '-title{font-size:11.5px}.' + CTA_CLASS + '-sub{font-size:8px}}' +
+      '@media(prefers-reduced-motion:reduce){.' + CTA_CLASS + '{animation:none}.' + CTA_CLASS + '::before{display:none}}' +
       '.' + CAP_CLASS  + '{position:absolute;inset:0;z-index:5;background:transparent;border:0;padding:0;margin:0;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}' +
       '.' + CAP_CLASS  + ':focus-visible{outline:none}' +
       '.' + CTRLS_CLASS + '{position:absolute;bottom:10px;right:10px;z-index:10;display:flex;gap:6px;align-items:center}' +
