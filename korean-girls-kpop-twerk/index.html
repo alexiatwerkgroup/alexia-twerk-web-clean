@@ -640,19 +640,16 @@
     var title  = document.getElementById('twerkhub-pl-now-title');
     function swap(vid, number){
       if (!player) return;
-      // Autoplay WITHOUT mute=1 → browsers allow it because a click gesture
-      // preceded the swap (we're inside the click handler). The URL omits
-      // mute so the video plays audible at its native volume. If the browser
-      // still refuses to play audible, we fall back to muted autoplay + an
-      // unMute postMessage (handled below once the iframe loads).
+      // CRITICAL: include mute=1 to match the initial-load URL EXACTLY.
+      // YouTube's bot challenge fires when src changes from a muted-autoplay
+      // URL to an audible-autoplay URL — the audio policy mismatch is
+      // treated as a suspicious embed request. We unmute via postMessage
+      // AFTER the iframe loads (handled below).
       // Pre-bake ALL shield params so the shield's patchSrc is no-op for this
-      // URL. If we omit them, the shield ADDs them after the iframe starts
-      // loading → URL changes → reload → YouTube bot challenge fires.
-      // Critical: widget_referrer + origin are the signals YouTube uses to
-      // verify the embed is from a legit parent; without them, every click
-      // looks like a new scrape attempt.
+      // URL. widget_referrer + origin are the signals YouTube uses to
+      // verify the embed is from a legit parent.
       var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
-                '?autoplay=1&controls=0&fs=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&enablejsapi=1' +
+                '?autoplay=1&mute=1&controls=0&fs=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&enablejsapi=1' +
                 '&widget_referrer=' + encodeURIComponent(location.origin) +
                 '&origin=' + encodeURIComponent(location.origin) +
                 '&start=5';
@@ -716,22 +713,6 @@
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
 <script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
 <script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
-<!-- shield disabled -->
-</body>
-</html>    }, true);
-  } catch(e){
-    console.warn('[twerkhub-playlist] theater boot failed', e);
-  }
-})();
-</script>
-
-<script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
-<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
-<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
-<script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
-<script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
-<script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
-<script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
-<!-- shield disabled -->
+<script defer src="/assets/twk-video-shield.js?v=20260503-p13"></script>
 </body>
 </html>

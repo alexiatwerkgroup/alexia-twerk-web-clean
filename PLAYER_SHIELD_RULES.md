@@ -23,6 +23,40 @@ Schema.org `embedUrl` and `contentUrl` should also use nocookie when possible.
 
 ---
 
+## RULE 0.5 — Click-swap URL MUST include `mute=1`
+
+**Critical: when the user clicks a thumbnail and JS swaps `iframe.src` to a new video, the new URL MUST include `mute=1`.**
+
+Reason: YouTube's bot challenge ("Sign in to confirm you're not a bot") fires on the swap when the new URL changes the audio policy from the initial-load URL. If the initial iframe loads with `mute=1&autoplay=1` (which it must, for browser autoplay policy compliance) and the swap URL drops `mute=1` to play audible, YouTube treats the new request as a suspicious embed and serves the bot interstitial.
+
+**The fix:** swap URLs must keep `mute=1`. Unmute via postMessage AFTER the iframe `load` event:
+
+```js
+function swap(vid, number){
+  var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
+            '?autoplay=1&mute=1&controls=0&fs=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&enablejsapi=1' +
+            '&widget_referrer=' + encodeURIComponent(location.origin) +
+            '&origin=' + encodeURIComponent(location.origin) +
+            '&start=5';
+  player.src = url;
+  player.onload = function(){
+    [200, 800, 1500, 2500].forEach(function(d){
+      setTimeout(function(){
+        try {
+          player.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
+          player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
+          player.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
+        } catch(_){}
+      }, d);
+    });
+  };
+}
+```
+
+**Symptom of violation:** 1st video loads fine, 2nd click → bot challenge. This is the canonical signature of an audio-policy-mismatch bot trigger. Fix by re-adding `mute=1` to the swap URL.
+
+---
+
 ## RULE 1 — Shield script tag
 
 Every video-bearing page needs this right before `</body>`:
