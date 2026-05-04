@@ -223,15 +223,22 @@
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
       <script>
-      /* Hero video rotator · 25% chance each. Picks one ID+start on every page load. */
+      /* Hero video rotator · weighted random pick on each page load.
+         v9zzf8elj_w: 40% · others: 20% each (60% split equally). */
       (function(){
         var pool=[
-          {i:'mpZ4-dQFmqo',s:18},
-          {i:'JGxxoMNscmc',s:19},
-          {i:'XDkH0yaocJ8',s:16},
-          {i:'v9zzf8elj_w',s:10}
+          {i:'v9zzf8elj_w',s:0,  w:40},
+          {i:'mpZ4-dQFmqo',s:18, w:20},
+          {i:'JGxxoMNscmc',s:19, w:20},
+          {i:'XDkH0yaocJ8',s:16, w:20}
         ];
-        var p=pool[Math.floor(Math.random()*pool.length)];
+        // Weighted pick
+        var totalW=0; for (var k=0;k<pool.length;k++) totalW+=pool[k].w;
+        var roll=Math.random()*totalW, acc=0, p=pool[0];
+        for (var k=0;k<pool.length;k++){
+          acc+=pool[k].w;
+          if (roll < acc){ p=pool[k]; break; }
+        }
         var f=document.getElementById('twerkhub-hh-iframe');
         var a=document.querySelector('.twerkhub-home-hero-media');
         if(!f||!a) return;
