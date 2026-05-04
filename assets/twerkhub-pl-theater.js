@@ -569,23 +569,45 @@
   }
 
   // Tell the iframe to start pushing events to us (must be called after load).
-  // CRITICAL (2026-05-04): rapid postMessage to a YouTube embed triggers the
-  // "Sign in to confirm you're not a bot" challenge. We send a SINGLE
-  // listening handshake — addEventListener calls were redundant since the
-  // listening event already enables onError/onStateChange events.
+  // CRITICAL (2026-05-04): rapid-fire postMessage triggers the YouTube "Sign
+  // in to confirm you're not a bot" challenge. We space the 3 commands out
+  // (handshake → onError → onStateChange) so they don't look like bot spam.
+  // The addEventListener calls are REQUIRED for the +18 paywall to work —
+  // they subscribe us to YouTube's error 101/150 events for age-restricted
+  // videos, which trigger the Discord/Telegram paywall overlay.
   function subscribeInlineToEvents(){
     var ifr = document.getElementById('twerkhub-pl-player');
     if (!ifr || !ifr.contentWindow) return;
+    var YT_ORIGIN = 'https://www.youtube-nocookie.com';
+    // Step 1: handshake — register listening channel
     try {
       ifr.contentWindow.postMessage(
         JSON.stringify({event:'listening', id: 1, channel: 'twk_inline'}),
-        'https://www.youtube-nocookie.com'
+        YT_ORIGIN
       );
     } catch(_){}
+    // Step 2: subscribe to onError (after 800ms — fires for 101/150 → paywall)
+    setTimeout(function(){
+      try {
+        ifr.contentWindow.postMessage(
+          JSON.stringify({event:'command', func:'addEventListener', args:['onError']}),
+          YT_ORIGIN
+        );
+      } catch(_){}
+    }, 800);
+    // Step 3: subscribe to onStateChange (after 1600ms — fires for play/pause/buffering → heartbeat)
+    setTimeout(function(){
+      try {
+        ifr.contentWindow.postMessage(
+          JSON.stringify({event:'command', func:'addEventListener', args:['onStateChange']}),
+          YT_ORIGIN
+        );
+      } catch(_){}
+    }, 1600);
   }
 
   function init(){
-    injectStyle();  // CRITICAL: badge CSS must exist before applyViewedClasses adds .twk-viewed
+    injectStyle();
     installInlineErrorListener();
     patchInlinePlayer();
     applyViewedClasses();
@@ -595,7 +617,7 @@
         var added = false;
         muts.forEach(function(m){ if (m.addedNodes && m.addedNodes.length) added = true; });
         if (added) applyViewedClasses();
-      }).observe(document.body, { childList: true, subtree: true });
+      }).observe(document.body || document.documentElement, { childList: true, subtree: true });
     }
   }
 
