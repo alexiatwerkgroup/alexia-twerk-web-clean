@@ -48,3 +48,18 @@
 [33m1b1ad0b[m refs/remotes/origin/HEAD@{42}: remote set-head
 [33m1b1ad0b[m refs/remotes/origin/HEAD@{43}: remote set-head
 [33m1b1ad0b[m refs/remotes/origin/HEAD@{44}: remote set-head
+[33m7b2e4b8e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m fix(player): drastically reduce postMessage spam to YouTube iframes (was triggering bot challenge)
+[33m55bf9eab[m fix(player): use postMessage loadVideoById in hero+playlists to eliminate bot challenge
+[33m462eaf4f[m fix(player): use postMessage loadVideoById to eliminate bot challenge
+[33mc92a59ff[m fix(player): include mute=1 in swap URL to prevent YouTube bot challenge
+[33m05e39034[m temp: disable shield while diagnosing bot challenge; fix mojibake markers in PLAYER_SHIELD_RULES.md so pre-commit hook passes
+[33m36d55f89[m perf(player): intercept iframe src setter to eliminate double-load when switching videos (was causing 3s delay); add YouTube preconnect hints; bump shield to v20260503-p9
+[33m89274d80[m revert(k-pop): restore zoom 1.22 on featured player - the zoom IS what hides the YouTube title overlay
+[33m8e011e65[m fix(k-pop): disable shield zoom 1.22 on featured #twerkhub-pl-player iframe (overlay/controls/CTA stay active, just no transform crop)
+[33m79d45b7f[m feat(hero): zoom 1.22 to crop YouTube title + watermarks; Next button cycles in fixed order (1->2->3->4->1) no random no repeats; weights only apply on initial page load
+[33m9e8570af[m fix(k-pop): repair truncated HTML end - re-add session-tracker + twk-video-shield script tags + close body/html (player rules now actually apply on this page)
+[33me4707153[m feat(hero): move Next button to top-left; auto-unmute videos on load via postMessage (sound by default with autoplay-mute fallback)
+[33mdce0c091[m feat(k-pop): align kicker (400+ Korean cuts, free archive) with subtitle messaging; full TTL rule applied (50+ SEO renames, schema, shield, +400 CTA, hero clean); hero rotator: per-video countdowns 75/95/110/130min + Next button; mojibake â–¶ -> ▶ in 3 playlists
+[33m19d1b8fc[m feat(hero): per-video countdowns (75/95/110/130min) + Next button (glassy, top-right) that picks a non-repeating video; fix mojibake â–¶ -> ▶ in 3 playlists
+[33md8c558f3[m feat(rules+content): apply full TTL rule to k-pop (SEO rename of 50+ aria-labels, rk-titles, rk-metas, schema names); v9zzf8elj_w as new #1 (K-pop School Cuts Vol 01); hero rotator: add v9zzf8elj_w (4 videos @ 25% each); subtitle kept w/ 'free for everyone'; CTA +400 override; cap quality at 4K (no 8K); per-page CTA configurability via window.TWK_VIDEO_CTA_*
+[33m185062cf[m feat(content): k-pop #1 swap to v9zzf8elj_w (K-pop School Cuts Vol 01); hero rotator: add v9zzf8elj_w (4 videos @ 25% each)

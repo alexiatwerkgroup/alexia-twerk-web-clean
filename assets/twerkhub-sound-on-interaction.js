@@ -26,12 +26,10 @@
 
   function sendYt(iframe, func, args){
     if (!iframe || !iframe.contentWindow) return;
-    try {
-      iframe.contentWindow.postMessage(
-        JSON.stringify({ event: 'command', func: func, args: args || [] }),
-        '*'
-      );
-    } catch (e) {}
+    // Route through TwkYTGate for throttling + cool-off respect.
+    if (window.TwkYTGate) {
+      window.TwkYTGate.send(iframe, { event: 'command', func: func, args: args || [] });
+    }
   }
 
   function allYtIframes(){

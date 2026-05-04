@@ -153,14 +153,14 @@
     }
   }
 
-  // ── Toggle play/pause on the iframe via the YouTube postMessage API ─
+  // ── Toggle play/pause via TwkYTGate ─────────────────────────────────
   function togglePlay(iframe, cap){
-    try {
-      var playing = cap.dataset.playing === 'true';
-      var fn = playing ? 'pauseVideo' : 'playVideo';
-      iframe.contentWindow.postMessage(JSON.stringify({event:'command', func:fn, args:[]}), '*');
+    if (!window.TwkYTGate) return;
+    var playing = cap.dataset.playing === 'true';
+    var fn = playing ? 'pauseVideo' : 'playVideo';
+    if (window.TwkYTGate.send(iframe, {event:'command', func:fn, args:[]})) {
       cap.dataset.playing = playing ? 'false' : 'true';
-    } catch(_){}
+    }
   }
 
   // ── Fullscreen handler — fullscreens the wrapper so the shield stays ─
@@ -176,46 +176,31 @@
     } catch(_){}
   }
 
-  // ── Mute / unmute via postMessage (also setVolume to a sensible level) ─
+  // ── Mute / unmute via TwkYTGate (throttled, single chokepoint) ──────
   function setMuted(iframe, btn, muted){
-    try {
-      var w = iframe.contentWindow;
-      if (muted) {
-        w.postMessage(JSON.stringify({event:'command', func:'mute', args:[]}), '*');
-      } else {
-        w.postMessage(JSON.stringify({event:'command', func:'unMute', args:[]}), '*');
-        w.postMessage(JSON.stringify({event:'command', func:'setVolume', args:[100]}), '*');
-        // Some browsers need a nudge to start playing audible after autoplay-mute
-        w.postMessage(JSON.stringify({event:'command', func:'playVideo', args:[]}), '*');
-      }
-      if (btn) {
-        btn.dataset.muted = muted ? 'true' : 'false';
-        btn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
-        // Swap the SVG to reflect state
-        btn.innerHTML = muted ? ICON_MUTED : ICON_UNMUTED;
-      }
-    } catch(_){}
+    if (!window.TwkYTGate) return;
+    if (muted) {
+      window.TwkYTGate.send(iframe, {event:'command', func:'mute', args:[]});
+    } else {
+      window.TwkYTGate.send(iframe, {event:'command', func:'unMute', args:[]});
+      window.TwkYTGate.send(iframe, {event:'command', func:'setVolume', args:[100]});
+    }
+    if (btn) {
+      btn.dataset.muted = muted ? 'true' : 'false';
+      btn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
+      btn.innerHTML = muted ? ICON_MUTED : ICON_UNMUTED;
+    }
   }
 
   // ── Register the iframe to send infoDelivery events back to us ──────
-  // CRITICAL (2026-05-04): rapid-fire postMessage to a YouTube embed (more
-  // than ~3 messages within seconds) triggers the "Sign in to confirm
-  // you're not a bot" challenge. Each send() must fire AT MOST ONCE per
-  // iframe load, and must use a proper target origin (not '*').
+  // All postMessage now goes through TwkYTGate (assets/twk-yt-gate.js)
+  // which throttles to max 1 msg/500ms per iframe and respects cool-off.
   function registerListener(iframe){
-    try {
-      setTimeout(function(){
-        try {
-          var w = iframe.contentWindow;
-          var YT_ORIGIN = 'https://www.youtube-nocookie.com';
-          // Single handshake — this enables infoDelivery events for our
-          // currentTime tracking (used by seekDelta).
-          w.postMessage(JSON.stringify({event:'listening'}), YT_ORIGIN);
-          // Quality cap at 4K. ONE message only.
-          w.postMessage(JSON.stringify({event:'command', func:'setPlaybackQualityRange', args:['hd2160','hd2160']}), YT_ORIGIN);
-        } catch(_){}
-      }, 1800);
-    } catch(_){}
+    if (!window.TwkYTGate) return;
+    setTimeout(function(){
+      window.TwkYTGate.send(iframe, {event:'listening'});
+      window.TwkYTGate.send(iframe, {event:'command', func:'setPlaybackQualityRange', args:['hd2160','hd2160']});
+    }, 1800);
   }
 
   // Global message listener: track currentTime per iframe (keyed by data-uid)
@@ -245,9 +230,9 @@
       var uid = iframe.dataset.twkUid;
       var current = (uid && typeof timeMap[uid] === 'number') ? timeMap[uid] : 0;
       var target = Math.max(0, current + deltaSecs);
-      iframe.contentWindow.postMessage(JSON.stringify({
-        event:'command', func:'seekTo', args:[target, true]
-      }), '*');
+      if (window.TwkYTGate) {
+        window.TwkYTGate.send(iframe, {event:'command', func:'seekTo', args:[target, true]});
+      }
       // Update local cache so consecutive presses chain properly without
       // waiting for the next infoDelivery tick.
       if (uid) timeMap[uid] = target;

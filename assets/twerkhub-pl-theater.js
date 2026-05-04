@@ -577,33 +577,13 @@
   // videos, which trigger the Discord/Telegram paywall overlay.
   function subscribeInlineToEvents(){
     var ifr = document.getElementById('twerkhub-pl-player');
-    if (!ifr || !ifr.contentWindow) return;
-    var YT_ORIGIN = 'https://www.youtube-nocookie.com';
-    // Step 1: handshake — register listening channel
-    try {
-      ifr.contentWindow.postMessage(
-        JSON.stringify({event:'listening', id: 1, channel: 'twk_inline'}),
-        YT_ORIGIN
-      );
-    } catch(_){}
-    // Step 2: subscribe to onError (after 800ms — fires for 101/150 → paywall)
-    setTimeout(function(){
-      try {
-        ifr.contentWindow.postMessage(
-          JSON.stringify({event:'command', func:'addEventListener', args:['onError']}),
-          YT_ORIGIN
-        );
-      } catch(_){}
-    }, 800);
-    // Step 3: subscribe to onStateChange (after 1600ms — fires for play/pause/buffering → heartbeat)
-    setTimeout(function(){
-      try {
-        ifr.contentWindow.postMessage(
-          JSON.stringify({event:'command', func:'addEventListener', args:['onStateChange']}),
-          YT_ORIGIN
-        );
-      } catch(_){}
-    }, 1600);
+    if (!ifr || !ifr.contentWindow || !window.TwkYTGate) return;
+    // All postMessage routed through TwkYTGate — automatic throttling +
+    // cool-off respect. Gate spaces them at 500ms intervals → 3 messages
+    // over ~1.5s, well below YouTube's bot detection threshold.
+    window.TwkYTGate.send(ifr, {event:'listening', id: 1, channel: 'twk_inline'});
+    window.TwkYTGate.send(ifr, {event:'command', func:'addEventListener', args:['onError']});
+    window.TwkYTGate.send(ifr, {event:'command', func:'addEventListener', args:['onStateChange']});
   }
 
   function init(){

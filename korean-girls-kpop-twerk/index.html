@@ -645,34 +645,15 @@
     // session loads the new video internally — no new network request to
     // /embed/, no bot challenge.
     function swap(vid, number){
-      if (!player) return;
-      try {
-        // Send loadVideoById to the existing iframe via postMessage.
-        // No iframe reload → no bot challenge.
-        player.contentWindow.postMessage(JSON.stringify({
-          event: 'command',
-          func: 'loadVideoById',
-          args: [{ videoId: vid, startSeconds: 5, suggestedQuality: 'hd2160' }]
-        }), '*');
-        // CRITICAL: send unMute exactly ONCE. Multi-command postMessage spam
-        // to a YouTube embed triggers the bot challenge.
-        setTimeout(function(){
-          try {
-            player.contentWindow.postMessage(
-              JSON.stringify({event:'command', func:'unMute', args:[]}),
-              'https://www.youtube-nocookie.com'
-            );
-          } catch(_){}
-        }, 1500);
-      } catch(e){
-        // Fallback: if postMessage fails (rare), do an iframe.src swap with mute=1.
-        var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
-                  '?autoplay=1&mute=1&controls=0&fs=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&enablejsapi=1' +
-                  '&widget_referrer=' + encodeURIComponent(location.origin) +
-                  '&origin=' + encodeURIComponent(location.origin) +
-                  '&start=5';
-        player.src = url;
-      }
+      if (!player || !window.TwkYTGate) return;
+      // All postMessage routed through TwkYTGate. No iframe.src swap →
+      // no new /embed/ network request → no bot challenge.
+      window.TwkYTGate.send(player, {
+        event: 'command',
+        func: 'loadVideoById',
+        args: [{ videoId: vid, startSeconds: 5, suggestedQuality: 'hd2160' }]
+      });
+      window.TwkYTGate.send(player, {event:'command', func:'unMute', args:[]});
       if (title && number) title.textContent = 'Playing ' + number;
       // Mark as viewed (delegated to the global pl-theater module if loaded)
       try {
@@ -718,6 +699,7 @@
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
 <script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
 <script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
+<script defer src="/assets/twk-yt-gate.js?v=20260504-p1"></script>
 <script defer src="/assets/twk-video-shield.js?v=20260503-p13"></script>
 </body>
 </html>

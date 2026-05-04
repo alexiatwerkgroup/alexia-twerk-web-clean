@@ -280,36 +280,20 @@
                     '&origin=https%3A%2F%2Falexiatwerkgroup.com&start=' + p.s;
             heroInitialized = true;
           } else {
-            // Subsequent Next clicks → use IFrame API loadVideoById.
-            try {
-              f.contentWindow.postMessage(JSON.stringify({
+            // Subsequent Next clicks → use IFrame API loadVideoById via TwkYTGate.
+            // No iframe.src change → no new /embed/ request → no bot challenge.
+            if (window.TwkYTGate) {
+              window.TwkYTGate.send(f, {
                 event: 'command',
                 func: 'loadVideoById',
                 args: [{ videoId: p.i, startSeconds: p.s, suggestedQuality: 'hd2160' }]
-              }), '*');
-            } catch(_){
-              // Fallback: src swap (only if postMessage somehow fails)
-              f.src = 'https://www.youtube-nocookie.com/embed/' + p.i +
-                      '?autoplay=1&mute=1&loop=1&playlist=' + p.i +
-                      '&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1' +
-                      '&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com' +
-                      '&origin=https%3A%2F%2Falexiatwerkgroup.com&start=' + p.s;
+              });
             }
           }
-          // Unmute via ONE postMessage after the player is ready.
-          // CRITICAL: rapid-fire postMessage to a YouTube embed (multiple
-          // commands within seconds) triggers the "Sign in to confirm
-          // you're not a bot" challenge. We send a single command once.
-          // If the browser's autoplay policy still refuses audio, the user
-          // can click the existing "Tap to unmute" button.
-          setTimeout(function(){
-            try {
-              f.contentWindow.postMessage(
-                JSON.stringify({event:'command', func:'unMute', args:[]}),
-                'https://www.youtube-nocookie.com'
-              );
-            } catch(_){}
-          }, 1500);
+          // Unmute via TwkYTGate (throttled, single chokepoint, respects cool-off)
+          if (window.TwkYTGate) {
+            window.TwkYTGate.send(f, {event:'command', func:'unMute', args:[]});
+          }
           // Flip the existing mute button label to reflect the intended unmuted state
           var muteBtn = document.querySelector('.twerkhub-hh-mute');
           if (muteBtn) {
@@ -1328,10 +1312,8 @@
   if (window.__twerkhubHeroVideoInit) return;
   window.__twerkhubHeroVideoInit = true;
   function send(iframe, fn, args){
-    if (!iframe || !iframe.contentWindow) return;
-    try {
-      iframe.contentWindow.postMessage(JSON.stringify({event:'command', func:fn, args: args || []}), '*');
-    } catch(e){}
+    if (!iframe || !window.TwkYTGate) return;
+    window.TwkYTGate.send(iframe, {event:'command', func:fn, args: args || []});
   }
   function init(){
     try {
@@ -1414,6 +1396,7 @@ ript defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
 })();
 </script>
 
+<script defer src="/assets/twk-yt-gate.js?v=20260504-p1"></script>
 <script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
 <script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
