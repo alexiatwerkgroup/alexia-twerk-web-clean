@@ -267,7 +267,9 @@
         function applyVideo(p){
           // Note: keep mute=1 in URL so browsers ALLOW autoplay; we unmute
           // immediately via postMessage right after the iframe loads.
-          f.src='https://www.youtube.com/embed/'+p.i+'?autoplay=1&mute=1&loop=1&playlist='+p.i+'&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&origin=https%3A%2F%2Falexiatwerkgroup.com&start='+p.s;
+          // Use youtube-nocookie.com (not youtube.com) — less aggressive
+          // bot-check / "confirm you're not a robot" interstitials.
+          f.src='https://www.youtube-nocookie.com/embed/'+p.i+'?autoplay=1&mute=1&loop=1&playlist='+p.i+'&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&origin=https%3A%2F%2Falexiatwerkgroup.com&start='+p.s;
           a.setAttribute('data-hero-video-id',p.i);
           // Try to unmute right after load. Browsers without autoplay-with-audio
           // will keep it muted; the existing "Tap to unmute" button stays as
@@ -292,17 +294,37 @@
             var ico = muteBtn.querySelector('.twerkhub-hh-mute-ico');
             if (ico) ico.textContent = '🔊';
           }
-          // Update countdown for this video
-          var cd = document.getElementById('twerkhub-hh-countdown');
-          if (cd) {
-            cd.setAttribute('data-remaining-minutes', String(p.m));
-            // Format mm into HH:MM:SS for the visible timer
-            var totalSecs = p.m * 60;
-            var hh = String(Math.floor(totalSecs/3600)).padStart(2,'0');
-            var mm = String(Math.floor((totalSecs%3600)/60)).padStart(2,'0');
-            var t = document.getElementById('twerkhub-hh-cd-timer');
-            if (t) t.textContent = hh+':'+mm+':00';
+          // Self-managed countdown — totally independent of any other driver.
+          // Uses #twk-rotator-cd-timer which is a unique ID neither
+          // twerkhub-countdowns.js nor any inline v3 driver knows about, so
+          // there's no chance of a duplicate ticker overwriting our value.
+          startRotatorCountdown(p.m);
+        }
+
+        // Single, self-contained countdown owned by the rotator. Reset every
+        // time applyVideo runs (page load + Next click). No events, no
+        // localStorage, no dependencies → impossible for another driver to
+        // override this since it targets #twk-rotator-cd-timer (unique ID).
+        var rotatorTickInterval = null;
+        var rotatorEndStamp = 0;
+        function startRotatorCountdown(minutes){
+          rotatorEndStamp = Date.now() + minutes * 60 * 1000;
+          if (rotatorTickInterval) clearInterval(rotatorTickInterval);
+          var t = document.getElementById('twk-rotator-cd-timer');
+          var cd = document.getElementById('twk-rotator-countdown');
+          if (cd) cd.setAttribute('data-remaining-minutes', String(minutes));
+          function pad(n){ return String(n).padStart(2,'0'); }
+          function rotatorTick(){
+            var rem = rotatorEndStamp - Date.now();
+            if (rem <= 0) {
+              rotatorEndStamp = Date.now() + minutes * 60 * 1000;
+              rem = rotatorEndStamp - Date.now();
+            }
+            var s = Math.floor(rem / 1000);
+            if (t) t.textContent = pad(Math.floor(s/3600)) + ':' + pad(Math.floor((s%3600)/60)) + ':' + pad(s%60);
           }
+          rotatorTick();
+          rotatorTickInterval = setInterval(rotatorTick, 1000);
         }
 
         // Initial pick — weighted random ONLY on page load
@@ -329,7 +351,7 @@
       </button>
       <div class="twerkhub-hh-media-meta">
         <span class="twerkhub-hh-live" id="twerkhub-hh-status"><span class="twerkhub-hh-status-dot" aria-hidden="true"></span><span class="twerkhub-hh-status-label">online</span></span>
-        <h2 id="twerkhub-hh-countdown" data-remaining-minutes="75"><span class="twerkhub-hh-cd-kicker">Private · ends in</span> <span class="twerkhub-hh-cd-timer" id="twerkhub-hh-cd-timer">01:15:00</span></h2>
+        <h2 id="twk-rotator-countdown" data-remaining-minutes="75"><span class="twerkhub-hh-cd-kicker">Private · ends in</span> <span class="twerkhub-hh-cd-timer" id="twk-rotator-cd-timer">01:15:00</span></h2>
       </div>
     </div>
   </aside>
@@ -1343,67 +1365,10 @@
 })();
 </script>
 
-<!-- Hero countdown v3 — HH:MM:SS format, ticks every second. When the 7h
-     window expires, the countdown resets itself to a fresh 7h and keeps going.
-     Status stays "online" at all times (the session never ends visually). The
-     end-stamp is persisted in localStorage so refreshing keeps it in sync. -->
-<script>
-(function(){
-  'use strict';
-  if (window.__twerkhubHeroCountdownInit) return;
-  window.__twerkhubHeroCountdownInit = true;
-  // v3 key bump — the window length dropped from 7h to 1h15m, so old saved
-  // endstamps from v2 need to be ignored; new key forces a fresh window.
-  var KEY = 'twerkhub_hero_countdown_endstamp_v3';
-  function two(n){ return String(n).padStart(2,'0'); }
-  function init(){
-    try {
-      var wrap = document.getElementById('twerkhub-hh-countdown');
-      var timerEl = document.getElementById('twerkhub-hh-cd-timer');
-      var statusEl = document.getElementById('twerkhub-hh-status');
-      var statusLabel = statusEl && statusEl.querySelector('.twerkhub-hh-status-label');
-      if (!wrap || !timerEl) return;
-      var windowMinutes = Number(wrap.getAttribute('data-remaining-minutes')) || 420;
-      var windowMs = windowMinutes * 60 * 1000;
-
-      function freshEnd(){ return Date.now() + windowMs; }
-      function loadOrResetEnd(){
-        var saved = Number(localStorage.getItem(KEY) || 0);
-        if (!saved || saved <= Date.now()) {
-          saved = freshEnd();
-          try { localStorage.setItem(KEY, String(saved)); } catch(_){}
-        }
-        return saved;
-      }
-      var end = loadOrResetEnd();
-
-      function fmt(ms){
-        var total = Math.max(0, Math.floor(ms / 1000));
-        var h = Math.floor(total / 3600);
-        var m = Math.floor((total % 3600) / 60);
-        var s = total % 60;
-        return two(h) + ':' + two(m) + ':' + two(s);
-      }
-      function tick(){
-        var remaining = end - Date.now();
-        if (remaining <= 0) {
-          // Reset: new 7h window, status stays "online". No offline state.
-          end = freshEnd();
-          try { localStorage.setItem(KEY, String(end)); } catch(_){}
-          remaining = end - Date.now();
-        }
-        timerEl.textContent = fmt(remaining);
-        if (statusEl) statusEl.classList.remove('is-offline');
-        if (statusLabel) statusLabel.textContent = 'online';
-      }
-      tick();
-      // Refresh every second so seconds tick visibly — cheap, no CPU impact.
-      setInterval(tick, 1000);
-    } catch(e){}
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
-  else init();
-})();</script>
+<!-- Hero countdown REMOVED inline — now solely driven by
+     /assets/twerkhub-countdowns.js (which listens to 'twk-hh-countdown-set')
+     so there's a SINGLE source of truth and no duplicate intervals.
+     The hero rotator above dispatches the event with per-video minutes. -->
 
 
 
@@ -1412,7 +1377,7 @@
 <script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
 
 <!-- Countdowns moved to /assets/twerkhub-countdowns.js (was inline, got truncated). -->
-<script defer src="/assets/twerkhub-countdowns.js?v=20260426-p1"></script>
+<script defer src="/assets/twerkhub-countdowns.js?v=20260503-p2"></script>
 <script>
 /* Legacy inline countdowns driver — DISABLED. The dedicated file above handles it now. */
 (function(){
@@ -1420,130 +1385,14 @@
   if (window.__twerkhubCountdownsV1Init) return;
   window.__twerkhubCountdownsV1Init = true;
   if (true) return; // ← short-circuited; logic preserved below for reference only
-
-  function two(n){ return String(n).padStart(2,'0'); }
-
-  function startFarmCountdown(){
-    var wrap = document.getElementById('twerkhub-farm-countdown');
-    if (!wrap) return;
-    var dEl = document.getElementById('farm-cd-d');
-    var hEl = document.getElementById('farm-cd-h');
-    var mEl = document.getElementById('farm-cd-m');
-    var sEl = document.getElementById('farm-cd-s');
-    if (!dEl || !hEl || !mEl || !sEl) return;
-    var days = Number(wrap.getAttribute('data-initial-days')) || 30;
-    var KEY = 'twerkhub_farm_countdown_endstamp_v1';
-    function freshEnd(){ return Date.now() + days * 86400 * 1000; }
-    function loadOrReset(){
-      var saved = Number(localStorage.getItem(KEY) || 0);
-      if (!saved || saved <= Date.now()){
-        saved = freshEnd();
-        try { localStorage.setItem(KEY, String(saved)); } catch(_){}
-      }
-      return saved;
-    }
-    var end = loadOrReset();
-    function tick(){
-      var rem = end - Date.now();
-      if (rem <= 0){
-        end = freshEnd();
-        try { localStorage.setItem(KEY, String(end)); } catch(_){}
-        rem = end - Date.now();
-      }
-      var total = Math.floor(rem / 1000);
-      var d = Math.floor(total / 86400);
-      var h = Math.floor((total % 86400) / 3600);
-      var m = Math.floor((total % 3600) / 60);
-      var s = total % 60;
-      dEl.textContent = two(d);
-      hEl.textContent = two(h);
-      mEl.textContent = two(m);
-      sEl.textContent = two(s);
-    }
-    tick();
-    setInterval(tick, 1000);
-  }
-
-  function startNewModelsCountdowns(){
-    var els = document.querySelectorAll('[data-drop-days]');
-    if (!els.length) return;
-    els.forEach(function(el, i){
-      var days = Number(el.getAttribute('data-drop-days')) || 7;
-      var KEY = 'twerkhub_drop_endstamp_v1_' + i + '_' + days;
-      function freshEnd(){ return Date.now() + days * 86400 * 1000; }
-      function load(){
-        var saved = Number(localStorage.getItem(KEY) || 0);
-        if (!saved || saved <= Date.now()){
-          saved = freshEnd();
-          try { localStorage.setItem(KEY, String(saved)); } catch(_){}
-        }
-        return saved;
-      }
-      var end = load();
-      var strongEl = el.querySelector('strong');
-      if (!strongEl) return;
-      function two(n){ return String(n).padStart(2,'0'); }
-      function tick(){
-        var rem = end - Date.now();
-        if (rem <= 0){
-          end = freshEnd();
-          try { localStorage.setItem(KEY, String(end)); } catch(_){}
-          rem = end - Date.now();
-        }
-        var total = Math.floor(rem / 1000);
-        var d = Math.floor(total / 86400);
-        var h = Math.floor((total % 86400) / 3600);
-        var m = Math.floor((total % 3600) / 60);
-        var s = total % 60;
-        // Always show seconds so the countdown looks alive
-        if (d > 0) strongEl.textContent = d + 'd · ' + two(h) + ':' + two(m) + ':' + two(s);
-        else       strongEl.textContent = two(h) + ':' + two(m) + ':' + two(s);
-      }
-      tick();
-      setInterval(tick, 1000);
-    });
-  }
-
-  function start(){
-    try { startFarmCountdown(); } catch(e){}
-    try { startNewModelsCountdowns(); } catch(e){}
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
-  else start();
 })();
+/* legacy script body removed — was unreachable after `if (true) return;` */
 </script>
 
-<!-- TWERKHUB · CTA bulletproofing — guarantees membership tier buttons always work, even if a future edit truncates a script above. -->
-<script>
-(function(){
-  'use strict';
-  if (window.__twkCtaBulletproofInit) return;
-  window.__twkCtaBulletproofInit = true;
-  var DISCORD = 'https://discord.gg/WWn8ZgQMjn';
-  var TELEGRAM = 'https://t.me/+0xNr69raiIlmYWRh';
-  function fixCta(el){
-    if (!el || el.__twkCtaFixed) return;
-    var tier = el.getAttribute('data-tier') || '';
-    var href = el.getAttribute('href') || '';
-    // Dead anchors that point to non-existent #checkout-X anchors → redirect to Discord with tier query
-    if (href.indexOf('#checkout-') === 0) {
-      el.setAttribute('href', DISCORD + '?utm_source=twerkhub&utm_medium=tier-cta&utm_content=' + encodeURIComponent(tier || 'tier'));
-      el.setAttribute('target', '_blank');
-      el.setAttribute('rel', 'noopener nofollow ugc');
-    }
-    // Register Free → ensure /profile.html (already correct on home, defensive elsewhere)
-    if (/register/i.test(el.textContent) && (!href || href === '#')) {
-      el.setAttribute('href', '/profile.html');
-    }
-    el.__twkCtaFixed = true;
-  }
-  function scan(){
-    var ctas = document.querySelectorAll('.tier__cta, [data-tier][href^="#checkout"], a[href^="#checkout"]');
-    for (var i = 0; i < ctas.length; i++) fixCta(ctas[i]);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan, { once: true });
-  else scan();
-  // Re-scan on DOM mutations for any late-injected CTAs
-  if (typeof MutationObserver !== 'undefined') {
-    new MutationObserver(function(muts){
-      var
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
+<script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
+<script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
+<script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
+</body>
+</html>

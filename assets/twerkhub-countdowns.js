@@ -25,47 +25,11 @@
 
   function two(n){ return String(n).padStart(2,'0'); }
 
-  // ── Hero "Private · ends in HH:MM:SS" window ─────────────────────
-  function startHeroCountdown(){
-    var wrap = document.getElementById('twerkhub-hh-countdown');
-    var timerEl = document.getElementById('twerkhub-hh-cd-timer');
-    if (!wrap || !timerEl) return;
-    var statusEl = document.getElementById('twerkhub-hh-status');
-    var statusLabel = statusEl && statusEl.querySelector('.twerkhub-hh-status-label');
-    var KEY = 'twerkhub_hh_window_endstamp_v1';
-    var windowMinutes = Number(wrap.getAttribute('data-remaining-minutes')) || 420;
-    var windowMs = windowMinutes * 60 * 1000;
-    function freshEnd(){ return Date.now() + windowMs; }
-    function loadOrReset(){
-      var saved = Number(localStorage.getItem(KEY) || 0);
-      if (!saved || saved <= Date.now()) {
-        saved = freshEnd();
-        try { localStorage.setItem(KEY, String(saved)); } catch(_){}
-      }
-      return saved;
-    }
-    var end = loadOrReset();
-    function fmt(ms){
-      var total = Math.max(0, Math.floor(ms / 1000));
-      var h = Math.floor(total / 3600);
-      var m = Math.floor((total % 3600) / 60);
-      var s = total % 60;
-      return two(h) + ':' + two(m) + ':' + two(s);
-    }
-    function tick(){
-      var rem = end - Date.now();
-      if (rem <= 0) {
-        end = freshEnd();
-        try { localStorage.setItem(KEY, String(end)); } catch(_){}
-        rem = end - Date.now();
-      }
-      timerEl.textContent = fmt(rem);
-      if (statusEl) statusEl.classList.remove('is-offline');
-      if (statusLabel) statusLabel.textContent = 'online';
-    }
-    tick();
-    setInterval(tick, 1000);
-  }
+  // ── Hero countdown REMOVED — hero rotator (inline in index.html) is the
+  // sole driver and uses unique IDs (#twk-rotator-cd-timer). The previous
+  // generic hero handler conflicted with the rotator's per-video minutes
+  // and caused the "all videos show same time" bug. Removed entirely.
+  function startHeroCountdown(){ /* intentionally empty */ }
 
   // ── Farm-tokens 30-day window ─────────────────────────────────────
   function startFarmCountdown(){

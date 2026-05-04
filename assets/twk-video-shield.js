@@ -109,6 +109,19 @@
     try {
       // Preserve everything; just force the params we need
       var u = new URL(src, location.href);
+      // Force the nocookie variant — significantly fewer bot-check / "are
+      // you a robot" interstitials than the regular youtube.com embed,
+      // because there's no cookie-based tracking signal that YouTube uses
+      // for those challenges. Same content, same player, no UX disruption.
+      if (u.hostname === 'www.youtube.com' || u.hostname === 'youtube.com') {
+        u.hostname = 'www.youtube-nocookie.com';
+      }
+      // Conservative param policy: only ADD what's missing, never overwrite.
+      // Overwriting params even with the SAME value still mutates the URL
+      // string (encoding/order may differ) and YouTube's anti-bot heuristic
+      // counts that as another fresh embed request → triggers the challenge.
+      // By only adding missing params we minimize URL churn between the
+      // hero rotator URL and the shield-patched URL → no spurious reloads.
       var enforce = {
         controls:        '0',
         fs:              '0',
@@ -118,10 +131,17 @@
         disablekb:       '1',
         playsinline:     '1',
         enablejsapi:     '1',
-        vq:              'hd2160',  // request max quality (4K → falls back if unavailable)
-        hd:              '1'        // legacy hint that's still respected by some clients
+        // widget_referrer + origin are the critical SIGNAL that tells YouTube
+        // this embed comes from a verified parent page. Without them, the
+        // 2nd+ embeds in a session trigger the bot challenge. With them set
+        // (matching hero's hardcoded values), YouTube treats embeds as a
+        // legit site flow → no challenge.
+        widget_referrer: location.origin || 'https://alexiatwerkgroup.com',
+        origin:          location.origin || 'https://alexiatwerkgroup.com'
       };
-      Object.keys(enforce).forEach(function(k){ u.searchParams.set(k, enforce[k]); });
+      Object.keys(enforce).forEach(function(k){
+        if (!u.searchParams.has(k)) u.searchParams.set(k, enforce[k]);
+      });
       // Skip YouTube intro logo by starting at a small offset (only if no
       // explicit start time is set, or the existing one is < DEFAULT_START).
       var existingStart = parseInt(u.searchParams.get('start') || '0', 10) || 0;
@@ -247,21 +267,19 @@
     var newSrc = patchSrc(src);
     if (newSrc !== src) iframe.setAttribute('src', newSrc);
 
-    // 2. Wrap the iframe in our shielded container (preserves layout via
-    //    100% width/height on the wrapper).
+    // 2. CRITICAL: do NOT move the iframe in the DOM. Moving it (via
+    //    appendChild/insertBefore/etc) FORCES the browser to reload the
+    //    iframe content — and YouTube classifies the reload as a fresh
+    //    embed request, which after a few firings triggers the
+    //    "Sign in to confirm you're not a bot" interstitial.
+    //    Instead, just add our wrap class to the iframe's EXISTING parent
+    //    so all our CSS selectors still match without any DOM mutation.
     var parent = iframe.parentNode;
     if (!parent) return;
-    var wrap;
-    if (parent.classList && parent.classList.contains(WRAP_CLASS)) {
-      wrap = parent;
-    } else {
-      wrap = document.createElement('div');
-      wrap.className = WRAP_CLASS;
-      parent.insertBefore(wrap, iframe);
-      wrap.appendChild(iframe);
+    if (parent.classList && !parent.classList.contains(WRAP_CLASS)) {
+      parent.classList.add(WRAP_CLASS);
     }
-    // Make sure the wrapper inherits the iframe's display dimensions.
-    // Most parents are aspect-ratio containers, so wrapper just fills.
+    var wrap = parent;
 
     // 3. Add the click-capture overlay
     var cap = wrap.querySelector('.' + CAP_CLASS);
@@ -436,59 +454,9 @@
     for (var i = 0; i < iframes.length; i++) shield(iframes[i]);
   }
 
-  // ── React to src changes (the playlist theater swaps src on click) ──
-  function watchSrcChanges(){
-    var mo = new MutationObserver(function(muts){
-      for (var i = 0; i < muts.length; i++) {
-        var m = muts[i];
-        if (m.type === 'attributes' && m.attributeName === 'src') {
-          var t = m.target;
-          if (t.tagName === 'IFRAME') {
-            // Re-patch the new src so our params are preserved
-            var src = t.getAttribute('src') || '';
-            if (/youtube(?:-nocookie)?\.com\/embed\//.test(src)) {
-              var patched = patchSrc(src);
-              if (patched !== src) {
-                // Avoid infinite loop — only set if different
-                t.setAttribute('src', patched);
-              }
-              // Reset the play state since the new video starts fresh
-              var wrap = t.closest('.' + WRAP_CLASS);
-              if (wrap) {
-                var cap = wrap.querySelector('.' + CAP_CLASS);
-                if (cap) cap.dataset.playing = 'true';
-              }
-            }
-          }
-        }
-        // New iframes added to the DOM
-        if (m.type === 'childList' && m.addedNodes && m.addedNodes.length) {
-          for (var j = 0; j < m.addedNodes.length; j++) {
-            var node = m.addedNodes[j];
-            if (node.nodeType === 1) {
-              if (node.tagName === 'IFRAME') shield(node);
-              else if (node.querySelectorAll) {
-                var inner = node.querySelectorAll('iframe[src*="youtube.com/embed/"], iframe[src*="youtube-nocookie.com/embed/"]');
-                for (var k = 0; k < inner.length; k++) shield(inner[k]);
-              }
-            }
-          }
-        }
-      }
-    });
-    mo.observe(document.documentElement, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeFilter: ['src']
-    });
-  }
-
-  // ── Boot ────────────────────────────────────────────────────────────
   function boot(){
     injectStyles();
     scanAll();
-    watchSrcChanges();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot, { once: true });
