@@ -499,15 +499,21 @@
       // ALWAYS fires after 2.5s if no playback started, regardless of
       // whether TwkAgeGate exists. If TwkAgeGate IS loaded and marks the
       // video as protected (whitelisted), we honour that and skip.
+      // CRITICAL FIX (2026-05-04 v2): extended heartbeat from 2.5s → 5s.
+      // Confirmed via YouTube oEmbed API that only 2 of 50 K-pop videos
+      // are actually +18. The previous 2.5s timeout was firing false
+      // positives on clean videos that took longer to start (ads, slow
+      // network, complex initialization). 5s is the safer threshold —
+      // YouTube's own age-restriction cartel appears within 1-2s, so 5s
+      // gives a generous buffer before declaring a video blocked.
       if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
       window.__twkInlineHeartbeat = setTimeout(function(){
         if (window.__twkInlinePlaybackStarted) return;
         if (!vid) return;
-        // Honour whitelist if TwkAgeGate is loaded (top-5 immune videos)
         if (window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) return;
         showInlinePaywall(player, wrap, vid);
         stopTimeTracker();
-      }, 2500);
+      }, 5000);
 
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
@@ -556,13 +562,26 @@
         }
         return;
       }
-      // CRITICAL FIX (2026-05-04): infoDelivery/initialDelivery events are
-      // sent by YouTube for ALL videos during init (with title, duration,
-      // etc.) BEFORE actual playback starts. Treating them as "playback
-      // started" cancels the heartbeat fallback → paywall never fires for
-      // age-restricted videos. ONLY onStateChange state 1 (PLAYING) or 3
-      // (BUFFERING) above means real playback. Just return for info events.
-      if (data.event === 'infoDelivery' || data.event === 'initialDelivery' || data.event === 'apiInfoDelivery') return;
+      // CRITICAL FIX v3 (2026-05-04): infoDelivery events ARE sent during
+      // init with metadata-only payloads BEFORE playback. But once playback
+      // actually starts, they include currentTime > 0 or playerState 1/3.
+      // Use those as a backup signal in case addEventListener('onStateChange')
+      // didn't reach YouTube (e.g. gate cool-off). Without this fallback,
+      // clean videos got false-positive paywalls.
+      if (data.event === 'infoDelivery' || data.event === 'initialDelivery' || data.event === 'apiInfoDelivery') {
+        var info = data.info || {};
+        // Only count as "playing" if we have positive evidence
+        var realPlaying = (info.playerState === 1 || info.playerState === 3) ||
+                          (typeof info.currentTime === 'number' && info.currentTime > 0);
+        if (realPlaying) {
+          window.__twkInlinePlaybackStarted = true;
+          if (window.__twkInlineHeartbeat) {
+            clearTimeout(window.__twkInlineHeartbeat);
+            window.__twkInlineHeartbeat = null;
+          }
+        }
+        return;
+      }
       if (data.event !== 'onError') return;
       var code = data.info;
       if (code !== 101 && code !== 150) return;
@@ -593,13 +612,22 @@
   // videos, which trigger the Discord/Telegram paywall overlay.
   function subscribeInlineToEvents(){
     var ifr = document.getElementById('twerkhub-pl-player');
-    if (!ifr || !ifr.contentWindow || !window.TwkYTGate) return;
-    // All postMessage routed through TwkYTGate — automatic throttling +
-    // cool-off respect. Gate spaces them at 500ms intervals → 3 messages
-    // over ~1.5s, well below YouTube's bot detection threshold.
-    window.TwkYTGate.send(ifr, {event:'listening', id: 1, channel: 'twk_inline'});
-    window.TwkYTGate.send(ifr, {event:'command', func:'addEventListener', args:['onError']});
-    window.TwkYTGate.send(ifr, {event:'command', func:'addEventListener', args:['onStateChange']});
+    if (!ifr || !ifr.contentWindow) return;
+    // CRITICAL: bypass TwkYTGate here. The gate's cool-off feature can
+    // silently drop addEventListener calls if it thinks the IP is bot-flagged
+    // → YouTube never sends back onStateChange → heartbeat fires on EVERY
+    // video (false positive paywall on clean videos). These 3 calls are
+    // essential for paywall accuracy, so we send them directly. We stagger
+    // them at 50ms / 200ms / 400ms — far below YouTube's bot threshold but
+    // not blocked by gate state.
+    var send = function(d, msg){
+      setTimeout(function(){
+        try { ifr.contentWindow.postMessage(JSON.stringify(msg), '*'); } catch(_){}
+      }, d);
+    };
+    send(50,  {event:'listening', id: 1, channel: 'twk_inline'});
+    send(200, {event:'command', func:'addEventListener', args:['onError']});
+    send(400, {event:'command', func:'addEventListener', args:['onStateChange']});
   }
 
   function init(){
