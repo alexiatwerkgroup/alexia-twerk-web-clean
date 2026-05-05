@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>https://alexiatwerkgroup.com/sitemap.xml</loc>
-    <lastmod>2026-05-01</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://alexiatwerkgroup.com/sitemap-videos.xml</loc>
-    <lastmod>2026-04-28</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://alexiatwerkgroup.com/sitemap-images.xml</loc>
-    <lastmod>2026-04-28</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://alexiatwerkgroup.com/sitemap-ru.xml</loc>
-    <lastmod>2026-05-01</lastmod>
-  </sitemap>
+<sitemap><loc>https://alexiatwerkgroup.com/sitemap.xml</loc></sitemap>
+<sitemap><loc>https://alexiatwerkgroup.com/sitemap-images.xml</loc></sitemap>
+<sitemap><loc>https://alexiatwerkgroup.com/sitemap-videos.xml</loc></sitemap>
+<sitemap><loc>https://alexiatwerkgroup.com/sitemap-ru.xml</loc></sitemap>
 </sitemapindex>
