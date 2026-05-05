@@ -264,36 +264,26 @@
           return idx;
         }
 
-        // Only the FIRST applyVideo() call sets f.src. Every subsequent call
-        // (Next button) uses postMessage loadVideoById to swap videos
-        // INSIDE the existing player session. Result: zero new /embed/
-        // network requests after page load → zero YouTube bot challenges.
-        var heroInitialized = false;
+        // applyVideo: every call sets f.src directly. No dependency on
+        // TwkYTGate (which can be in cool-off and silently drop commands).
+        // Direct src swap proven to work in all states.
         function applyVideo(p){
           a.setAttribute('data-hero-video-id', p.i);
-          if (!heroInitialized) {
-            // Initial load: instantiate the player by setting f.src.
-            f.src = 'https://www.youtube-nocookie.com/embed/' + p.i +
-                    '?autoplay=1&mute=1&loop=1&playlist=' + p.i +
-                    '&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1' +
-                    '&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com' +
-                    '&origin=https%3A%2F%2Falexiatwerkgroup.com&start=' + p.s;
-            heroInitialized = true;
-          } else {
-            // Subsequent Next clicks → use IFrame API loadVideoById via TwkYTGate.
-            // No iframe.src change → no new /embed/ request → no bot challenge.
-            if (window.TwkYTGate) {
-              window.TwkYTGate.send(f, {
-                event: 'command',
-                func: 'loadVideoById',
-                args: [{ videoId: p.i, startSeconds: p.s, suggestedQuality: 'hd2160' }]
-              });
-            }
-          }
-          // Unmute via TwkYTGate (throttled, single chokepoint, respects cool-off)
-          if (window.TwkYTGate) {
-            window.TwkYTGate.send(f, {event:'command', func:'unMute', args:[]});
-          }
+          f.src = 'https://www.youtube-nocookie.com/embed/' + p.i +
+                  '?autoplay=1&mute=1&loop=1&playlist=' + p.i +
+                  '&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&start=' + p.s;
+          // Unmute via direct postMessage after iframe load
+          try {
+            f.onload = function(){
+              setTimeout(function(){
+                try {
+                  f.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
+                  f.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
+                  f.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
+                } catch(_){}
+              }, 800);
+            };
+          } catch(_){}
           // Flip the existing mute button label to reflect the intended unmuted state
           var muteBtn = document.querySelector('.twerkhub-hh-mute');
           if (muteBtn) {
