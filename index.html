@@ -324,11 +324,9 @@
           if (rotatorTickInterval) clearInterval(rotatorTickInterval);
           function pad(n){ return String(n).padStart(2,'0'); }
           function rotatorTick(){
-            // CRITICAL: lazy-resolve DOM elements each tick — the inline
-            // <script> executes BEFORE #twk-rotator-cd-timer exists in the
-            // DOM (the span is ~10 lines after </script>). Without lazy
-            // lookup, t/cd capture null and the timer is stuck on the
-            // initial 01:15:00 value forever.
+            // Lazy-resolve DOM elements each tick (the timer span lives
+            // below this script tag in the source order, so t/cd are null
+            // when the function is first called).
             var t = document.getElementById('twk-rotator-cd-timer');
             var cd = document.getElementById('twk-rotator-countdown');
             var rem = rotatorEndStamp - Date.now();
