@@ -322,14 +322,17 @@
           rotatorCurrentMinutes = minutes;
           rotatorEndStamp = Date.now() + minutes * 60 * 1000;
           if (rotatorTickInterval) clearInterval(rotatorTickInterval);
-          var t = document.getElementById('twk-rotator-cd-timer');
-          var cd = document.getElementById('twk-rotator-countdown');
-          if (cd) cd.setAttribute('data-remaining-minutes', String(minutes));
           function pad(n){ return String(n).padStart(2,'0'); }
           function rotatorTick(){
+            // CRITICAL: lazy-resolve DOM elements each tick — the inline
+            // <script> executes BEFORE #twk-rotator-cd-timer exists in the
+            // DOM (the span is ~10 lines after </script>). Without lazy
+            // lookup, t/cd capture null and the timer is stuck on the
+            // initial 01:15:00 value forever.
+            var t = document.getElementById('twk-rotator-cd-timer');
+            var cd = document.getElementById('twk-rotator-countdown');
             var rem = rotatorEndStamp - Date.now();
             if (rem <= 0) {
-              // Hit 0 → restart with new random duration AND advance to next video
               rotatorCurrentMinutes = pickRandomMinutes();
               rotatorEndStamp = Date.now() + rotatorCurrentMinutes * 60 * 1000;
               if (cd) cd.setAttribute('data-remaining-minutes', String(rotatorCurrentMinutes));
@@ -339,6 +342,7 @@
             }
             var s = Math.floor(rem / 1000);
             if (t) t.textContent = pad(Math.floor(s/3600)) + ':' + pad(Math.floor((s%3600)/60)) + ':' + pad(s%60);
+            if (cd && !cd.getAttribute('data-remaining-minutes')) cd.setAttribute('data-remaining-minutes', String(rotatorCurrentMinutes));
           }
           rotatorTick();
           rotatorTickInterval = setInterval(rotatorTick, 1000);
@@ -1411,6 +1415,5 @@ ript defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
 <script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
 <script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
-<script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
 </body>
 </html>
