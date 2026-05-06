@@ -82,7 +82,7 @@
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
 <link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p5">
 <link rel="stylesheet" href="/assets/twerkhub-design-tokens.css?v=20260424-p1">
-<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p17">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260506-p20">
 <script>
 (function(){
   function eager(img){
@@ -284,27 +284,20 @@
           f.src = 'https://www.youtube-nocookie.com/embed/' + p.i +
                   '?autoplay=1&mute=1&loop=1&playlist=' + p.i +
                   '&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&start=' + p.s;
-          // Unmute via direct postMessage after iframe load
-          try {
-            f.onload = function(){
-              setTimeout(function(){
-                try {
-                  f.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
-                  f.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
-                  f.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
-                } catch(_){}
-              }, 800);
-            };
-          } catch(_){}
-          // Flip the existing mute button label to reflect the intended unmuted state
+          // 2026-05-06: AUTO-UNMUTE REMOVED. Previously this set f.onload to
+          // unmute after 800ms regardless of user intent — that overrode any
+          // mouseleave-mute the user fired. Now: video stays MUTED by default;
+          // only hover (mouseenter) or explicit click toggles audio on.
+          // Reset the mute button label to "muted" since new video starts muted.
           var muteBtn = document.querySelector('.twerkhub-hh-mute');
           if (muteBtn) {
-            muteBtn.setAttribute('aria-pressed','false');
-            muteBtn.setAttribute('aria-label','Tap to mute');
+            muteBtn.setAttribute('aria-pressed','true');
+            muteBtn.classList.add('is-muted');
+            muteBtn.setAttribute('aria-label','Tap to unmute');
             var lbl = muteBtn.querySelector('.twerkhub-hh-mute-label');
-            if (lbl) lbl.textContent = 'Tap to mute';
+            if (lbl) lbl.textContent = 'Sound off';
             var ico = muteBtn.querySelector('.twerkhub-hh-mute-ico');
-            if (ico) ico.textContent = '🔊';
+            if (ico) ico.textContent = '🔈';
           }
         }
 
@@ -1396,6 +1389,41 @@
         ev.preventDefault(); ev.stopPropagation();
         toggleMute();
       });
+      // 2026-05-06 (3rd time): hover unmutes, mouseleave silences.
+      // - Mouse enters video area → audio plays
+      // - Mouse leaves video area → audio mutes IMMEDIATELY
+      // - The auto-unmute that used to fire 800ms after iframe load is gone,
+      //   so the muted state set here is no longer overridden.
+      aside.addEventListener('mouseenter', function(){
+        muted = false;
+        send(iframe, 'unMute');
+        sendDirect('unMute');
+        sendDirect('setVolume', [100]);
+        send(iframe, 'playVideo');
+        sendDirect('playVideo');
+        try { window.TwerkhubSound && window.TwerkhubSound.claim(iframe); } catch(_){}
+        if (btn){
+          btn.setAttribute('aria-pressed', 'false');
+          btn.classList.remove('is-muted');
+          var lbl = btn.querySelector('.twerkhub-hh-mute-label');
+          var ico = btn.querySelector('.twerkhub-hh-mute-ico');
+          if (lbl) lbl.textContent = 'Sound on';
+          if (ico) ico.textContent = '🔊';
+        }
+      });
+      aside.addEventListener('mouseleave', function(){
+        muted = true;
+        send(iframe, 'mute');
+        sendDirect('mute');
+        if (btn){
+          btn.setAttribute('aria-pressed', 'true');
+          btn.classList.add('is-muted');
+          var lbl = btn.querySelector('.twerkhub-hh-mute-label');
+          var ico = btn.querySelector('.twerkhub-hh-mute-ico');
+          if (lbl) lbl.textContent = 'Sound off';
+          if (ico) ico.textContent = '🔈';
+        }
+      });
       // Page hide → silence (don't keep audio if user tabs away)
       document.addEventListener('visibilitychange', function(){
         if (document.hidden) setMuted(true);
@@ -1419,7 +1447,7 @@
 
 
 <script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
-ript defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
+<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
 
 <!-- Countdowns moved to /assets/twerkhub-countdowns.js (was inline, got truncated). -->
 <script defer src="/assets/twerkhub-countdowns.js?v=20260503-p2"></script>

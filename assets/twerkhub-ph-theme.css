@@ -457,252 +457,45 @@ body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):hover {
    above the ticker without covering it. Repaint to PH orange theme.
    ──────────────────────────────────────────────────────────────────── */
 
-/* Hide the duplicate orange ★ chip created by profile-stats-live.js */
-body.twerkhub-ph-theme #twk-topbar-chip {
-  display: none !important;
-}
+/* ── 2026-05-06 · CLEAN PILL — single source of truth ────────────────────
+   ONE pill, IDENTICAL position + style on every page (home, /account,
+   /community, /membership, /profile, /playlist/, /creator/*, blog, etc.).
+   No JS relocation, no per-page conditional, no glow, no shimmer, no
+   in-nav repositioning. Only:
+     1. Hide the orange ★ chip from profile-stats-live.js (we keep just the
+        green-T pill rendered by twerkhub-tokens.js)
+     2. Repaint the green-T pill in PH orange (color overrides ONLY; the
+        position stays at the default top:82px right:18px from
+        twerkhub-tokens.css — exactly how it looks on /community + /account)
+   ─────────────────────────────────────────────────────────────────────── */
 
-/* 2026-05-05: pill now lives as a position:absolute child of the OUTER
-   .twk-nav-v1 (which spans full viewport), NOT inside .twk-nav-v1-inner
-   (max-width 1480px). This fixes the "gap to right edge on wide screens"
-   bug — pill is now flush against the screen edge regardless of monitor. */
-body.twerkhub-ph-theme nav.twk-nav-v1 {
-  position: sticky !important;
-  /* anchor for the absolute-positioned pill child */
-}
+/* 1. Kill the orange ★ chip everywhere */
+body.twerkhub-ph-theme #twk-topbar-chip { display: none !important; }
 
-body.twerkhub-ph-theme .twerkhub-tokens-hud {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-}
-body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
-  position: absolute !important;
-  top: 50% !important;
-  right: 6px !important;
-  bottom: auto !important;
-  left: auto !important;
-  transform: translateY(-50%) !important;
-  margin: 0 !important;
-  z-index: 100 !important;
-  height: 24px !important;
-  pointer-events: auto !important;
-  gap: 0 !important;
-}
-/* The toast inside the HUD must NOT take vertical flow space — pin it
-   absolutely below the pill so it can pop on token-earn events without
-   stretching the HUD wrapper above LIVE pill height. */
-body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-toast {
-  position: absolute !important;
-  top: calc(100% + 8px) !important;
-  right: 0 !important;
-  z-index: 10001 !important;
-}
-/* Mobile: bottom-right floating (untouched by in-nav class) */
-@media (max-width: 540px) {
-  body.twerkhub-ph-theme .twerkhub-tokens-hud,
-  body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
-    position: fixed !important;
-    top: auto !important;
-    bottom: 14px !important;
-    right: 14px !important;
-    margin: 0 !important;
-    z-index: 10000 !important;
-    height: auto !important;
-  }
-}
-/* The badge inside the HUD: explicit height 24px (= LIVE pill height),
-   no vertical padding (height controls), only horizontal padding.
-   Box-sizing border-box so the height includes the 1px border. */
+/* 2. Recolor the green-T pill (position untouched) */
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge {
-  pointer-events: auto !important;
   background: rgba(255,144,0,.10) !important;
   background-image: none !important;
   border: 1px solid rgba(255,144,0,.55) !important;
-  height: 24px !important;
-  padding: 0 12px !important;
-  box-sizing: border-box !important;
-  border-radius: 999px !important;
-  gap: 7px !important;
-  line-height: 1 !important;
-  font-family: "JetBrains Mono", ui-monospace, monospace !important;
-  position: relative !important;
-  overflow: hidden !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  animation: twk-tk-pulse-glow 2.4s ease-in-out infinite;
-  box-shadow:
-    0 0 0 1px rgba(255,144,0,.25),
-    0 0 18px rgba(255,144,0,.35),
-    0 4px 14px rgba(0,0,0,.4) !important;
-}
-@keyframes twk-tk-pulse-glow {
-  0%, 100% {
-    box-shadow:
-      0 0 0 1px rgba(255,144,0,.25),
-      0 0 14px rgba(255,144,0,.30),
-      0 4px 14px rgba(0,0,0,.4);
-    border-color: rgba(255,144,0,.5);
-  }
-  50% {
-    box-shadow:
-      0 0 0 1px rgba(255,144,0,.55),
-      0 0 28px rgba(255,144,0,.6),
-      0 6px 22px rgba(255,144,0,.25);
-    border-color: rgba(255,144,0,.95);
-  }
-}
-/* Diagonal shimmer sweep — passes once every 5s */
-body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,.18) 50%, transparent 100%);
-  animation: twk-tk-shimmer 5s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes twk-tk-shimmer {
-  0%, 60% { left: -60%; }
-  100%    { left: 160%; }
+  box-shadow: 0 6px 20px rgba(255,144,0,.18), 0 2px 6px rgba(0,0,0,.4) !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge:hover {
   border-color: #ff9000 !important;
-  background: rgba(255,144,0,.18) !important;
-  animation-play-state: paused;
+  box-shadow: 0 10px 26px rgba(255,144,0,.26), 0 3px 8px rgba(0,0,0,.5) !important;
 }
-/* Respect reduced-motion preference: kill the pulse + shimmer */
-@media (prefers-reduced-motion: reduce) {
-  body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge,
-  body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge::before {
-    animation: none !important;
-  }
-}
-
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-coin {
   background: radial-gradient(circle at 30% 30%, #ffd596, #ff6a00) !important;
   color: #000 !important;
-  box-shadow: 0 0 8px rgba(255,144,0,.65), inset 0 0 4px rgba(255,255,255,.4) !important;
-  width: 12px !important;
-  height: 12px !important;
-  font-size: 7px !important;
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0 !important;
+  box-shadow: 0 0 10px rgba(255,144,0,.7), inset 0 0 4px rgba(255,255,255,.4) !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-count {
-  color: #ffb04d !important;
-  font-size: 11px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  position: relative;
-  z-index: 1;
-  text-shadow: 0 0 8px rgba(255,144,0,.4);
+  color: #ff9000 !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-unit {
-  color: rgba(255,255,255,.7) !important;
-  font-size: 9px !important;
-  font-weight: 800 !important;
-  letter-spacing: .18em !important;
-  position: relative;
-  z-index: 1;
+  color: #ffd596 !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-tier {
-  color: #ff9000 !important;
-  border-left-color: rgba(255,144,0,.35) !important;
-  font-size: 9px !important;
-  letter-spacing: .2em !important;
-  padding-left: 7px !important;
-  margin-left: 4px !important;
-  position: relative;
-  z-index: 1;
-}
-
-/* Mobile: keep the pill fixed bottom-right (default mobile behavior) */
-@media (max-width: 540px) {
-  body.twerkhub-ph-theme .twerkhub-tokens-hud {
-    top: auto !important;
-    bottom: 14px !important;
-    right: 14px !important;
-  }
-}
-
-/* (deferred — orange-star chip overrides kept below for legacy reach) */
-body.twerkhub-ph-theme #twk-topbar-chip__legacy {
-  position: fixed !important;
-  top: 140px !important;
-  right: 18px !important;
-  z-index: 9999 !important;
-  overflow: visible !important;
-  background: rgba(0,0,0,.85) !important;
-  border-color: rgba(255,144,0,.35) !important;
-  box-shadow: 0 8px 28px rgba(0,0,0,.55), 0 0 22px rgba(255,144,0,.12) !important;
-}
-body.twerkhub-ph-theme #twk-topbar-chip:hover {
-  border-color: #ff9000 !important;
-  box-shadow: 0 14px 40px rgba(0,0,0,.6), 0 0 32px rgba(255,144,0,.25) !important;
-}
-body.twerkhub-ph-theme #twk-topbar-chip .twk-tc-coin {
-  background: linear-gradient(135deg,#ff9000,#ffb04d) !important;
-  color: #000 !important;
-  box-shadow: 0 0 12px rgba(255,144,0,.45) inset !important;
-}
-body.twerkhub-ph-theme #twk-topbar-chip .twk-tc-bal {
-  color: #fff !important;
-}
-body.twerkhub-ph-theme #twk-topbar-chip .twk-tc-bal small {
-  color: #b3b3b3 !important;
-}
-/* Tier pill on the right side of chip → orange across all tiers */
-body.twerkhub-ph-theme #twk-topbar-chip .twk-tc-tier,
-body.twerkhub-ph-theme #twk-topbar-chip[data-tier='medium']  .twk-tc-tier,
-body.twerkhub-ph-theme #twk-topbar-chip[data-tier='premium'] .twk-tc-tier,
-body.twerkhub-ph-theme #twk-topbar-chip[data-tier='vip']     .twk-tc-tier {
-  background: linear-gradient(135deg, rgba(255,144,0,.28), rgba(255,144,0,.18)) !important;
-  border-left: 1px solid rgba(255,144,0,.35) !important;
-  color: #ff9000 !important;
-}
-
-/* Custom tooltip BELOW the chip (replaces native browser title position).
-   Uses data-tooltip set by profile-stats-live.js mirroring the native title. */
-body.twerkhub-ph-theme #twk-topbar-chip::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  background: rgba(0,0,0,.96);
-  border: 1px solid #ff9000;
-  color: #fff;
-  padding: 9px 14px;
-  border-radius: 10px;
-  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: .04em;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-6px);
-  transition: opacity .22s, transform .22s;
-  z-index: 10000;
-  box-shadow: 0 10px 28px rgba(0,0,0,.65), 0 0 18px rgba(255,144,0,.25);
-}
-body.twerkhub-ph-theme #twk-topbar-chip:hover::after {
-  opacity: 1;
-  transform: translateY(0);
-}
-@media (max-width:540px) {
-  body.twerkhub-ph-theme #twk-topbar-chip {
-    top: auto !important;
-    bottom: 14px !important;
-    right: 14px !important;
-  }
-  body.twerkhub-ph-theme #twk-topbar-chip::after {
-    top: auto;
-    bottom: calc(100% + 10px);
-  }
+  border-left-color: rgba(255,144,0,.25) !important;
 }
 
 /* ────────────────────────────────────────────────────────────────────
