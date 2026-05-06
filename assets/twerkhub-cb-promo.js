@@ -17,6 +17,8 @@
   window.__twkCbPromoInit = true;
 
   var DELAY_MS = 600;
+  // 18s rotation — fresh iframe BEFORE Chrome's Heavy Ad kicks in (~30s).
+  // User asked "cada 20 segundos" — 18s gives 2s safety margin.
   var ROTATE_MS = 18000;
   var API_PATH = '/api/cb-top';
   var AFF_CODE = 'Re5nr';
@@ -135,6 +137,32 @@
       'position:absolute;inset:0;width:100%;height:100%;border:0;',
       'pointer-events:none;background:#000;',
     '}',
+    // Thumbnail image (replaces iframe to bypass Chrome Heavy Ad Intervention)
+    '.twk-cb-promo__thumb{',
+      'position:absolute;inset:0;width:100%;height:100%;',
+      'object-fit:cover;object-position:center top;',
+      'background:#0a0a0a;display:block;',
+      'pointer-events:none;',
+      'animation:twkCbFadeIn .4s ease;',
+    '}',
+    '@keyframes twkCbFadeIn{from{opacity:.4}to{opacity:1}}',
+    // Play overlay icon — visual cue that thumbnail is clickable as live cam
+    '.twk-cb-promo__play{',
+      'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);',
+      'width:54px;height:54px;border-radius:50%;',
+      'background:rgba(255,144,0,.92);',
+      'box-shadow:0 6px 20px rgba(255,144,0,.55),0 0 0 4px rgba(255,144,0,.18);',
+      'display:flex;align-items:center;justify-content:center;',
+      'z-index:5;pointer-events:none;',
+      'transition:transform .25s ease;',
+    '}',
+    '.twk-cb-promo__cam:hover .twk-cb-promo__play{transform:translate(-50%,-50%) scale(1.08);}',
+    '.twk-cb-promo__play::before{',
+      'content:"";display:block;',
+      'border-style:solid;border-width:10px 0 10px 18px;',
+      'border-color:transparent transparent transparent #000;',
+      'margin-left:4px;',
+    '}',
     '.twk-cb-promo__overlay{',
       'position:absolute;inset:0;z-index:3;cursor:pointer;',
       'background:transparent;text-decoration:none;color:inherit;',
@@ -234,6 +262,7 @@
         '<div class="twk-cb-promo__placeholder" id="twk-cb-placeholder">' +
           '<div class="twk-cb-promo__placeholder-spinner"></div>' +
         '</div>' +
+        '<div class="twk-cb-promo__play" aria-hidden="true"></div>' +
         '<div class="twk-cb-promo__featured-bar">' +
           '<span class="twk-cb-promo__featured-name" id="twk-cb-feat-name">…</span>' +
           '<span class="twk-cb-promo__featured-viewers" id="twk-cb-feat-viewers">● —</span>' +
@@ -273,7 +302,10 @@
     }).join('');
   }
 
-  // KEY FIX: nuke + recreate iframe so the rotation actually reloads.
+  // LIVE iframe approach: nuke + recreate every 18s. Each fresh iframe
+  // gets a clean Heavy Ad budget (Chrome tracks per-element). By rotating
+  // BEFORE the ~30s Heavy Ad threshold, each iframe never accumulates
+  // enough resources to be killed. User sees real live streams.
   function renderFeatured(idx) {
     if (!rooms || !rooms.length) return;
     var r = rooms[idx % rooms.length];
@@ -284,23 +316,22 @@
     var fviewers = document.getElementById('twk-cb-feat-viewers');
     if (!cam) return;
 
-    // Remove existing iframe (if any)
-    var oldIframe = document.getElementById('twk-cb-iframe');
-    if (oldIframe && oldIframe.parentNode) oldIframe.parentNode.removeChild(oldIframe);
+    // Remove existing media (iframe or img from older versions)
+    var oldMedia = cam.querySelector('.twk-cb-promo__iframe, .twk-cb-promo__thumb');
+    if (oldMedia && oldMedia.parentNode) oldMedia.parentNode.removeChild(oldMedia);
 
-    // Create fresh iframe — sandboxed so its content cannot escape
-    // (cannot navigate parent, cannot open popups outside sandbox)
+    // Create fresh iframe with affiliate-friendly tour=Jrvi
     var iframe = document.createElement('iframe');
     iframe.id = 'twk-cb-iframe';
     iframe.className = 'twk-cb-promo__iframe';
     iframe.allow = 'autoplay';
-    iframe.loading = 'lazy';
+    iframe.loading = 'eager';
     iframe.frameBorder = '0';
     iframe.scrolling = 'no';
+    iframe.referrerPolicy = 'no-referrer';
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
     iframe.src = r.iframe_url;
 
-    // Insert iframe BEFORE the placeholder (placeholder is z:1, iframe is z:2 default)
     var placeholder = document.getElementById('twk-cb-placeholder');
     if (placeholder && placeholder.nextSibling) {
       cam.insertBefore(iframe, placeholder.nextSibling);
@@ -308,11 +339,9 @@
       cam.appendChild(iframe);
     }
 
-    // Hide spinner placeholder once iframe loads
     iframe.addEventListener('load', function () {
       if (placeholder) placeholder.style.display = 'none';
     });
-    // Fallback: hide placeholder after 3s even if load doesn't fire
     setTimeout(function () { if (placeholder) placeholder.style.display = 'none'; }, 3000);
 
     if (overlay) overlay.href = r.chat_room_url;
