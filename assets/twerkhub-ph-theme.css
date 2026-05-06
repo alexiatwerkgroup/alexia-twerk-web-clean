@@ -462,11 +462,14 @@ body.twerkhub-ph-theme #twk-topbar-chip {
   display: none !important;
 }
 
-/* Reposition the green-T HUD: nested INTO the nav bar (via inline JS at
-   bottom of index.html) so it lives as a flex item next to the lang
-   switcher — same vertical alignment as the nav buttons, far right.
-   When inside the nav (gets class .twk-tk-hud--in-nav), strip the
-   default position:fixed and let flex layout handle placement. */
+/* Reduce the nav-inner right padding so the rightmost item (the token
+   pill once relocated by inline JS) hugs the screen edge prolijamente. */
+body.twerkhub-ph-theme .twk-nav-v1-inner {
+  padding-right: 12px !important;
+}
+
+/* Pill sits as a flex item INSIDE the nav (relocated via inline JS).
+   Naturally aligned with LIVE pill vertically (both flex-center). */
 body.twerkhub-ph-theme .twerkhub-tokens-hud {
   display: flex !important;
 }
@@ -478,39 +481,120 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   margin-left: 8px !important;
   flex-shrink: 0 !important;
   z-index: auto !important;
+  align-self: center !important;
 }
+/* Mobile keeps the bottom-right floating position (not in nav) */
+@media (max-width: 540px) {
+  body.twerkhub-ph-theme .twerkhub-tokens-hud,
+  body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 14px !important;
+    right: 14px !important;
+    margin-left: 0 !important;
+    z-index: 10000 !important;
+  }
+}
+/* Match LIVE pill geometry exactly: padding 6px 12px, gap 7px, font 10-11px,
+   border 1px solid, border-radius 999. Then add an animated outer glow that
+   pulses + a subtle shimmer sweep so the pill draws the eye. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge {
   pointer-events: auto !important;
-  background: rgba(0,0,0,.65) !important;
+  background: rgba(255,144,0,.10) !important;
   background-image: none !important;
-  border: 1px solid rgba(255,144,0,.45) !important;
-  box-shadow: 0 4px 14px rgba(0,0,0,.45), 0 0 14px rgba(255,144,0,.18) !important;
+  border: 1px solid rgba(255,144,0,.55) !important;
   padding: 6px 12px !important;
   border-radius: 999px !important;
+  gap: 7px !important;
+  font-family: "JetBrains Mono", ui-monospace, monospace !important;
+  position: relative !important;
+  overflow: hidden !important;
+  animation: twk-tk-pulse-glow 2.4s ease-in-out infinite;
+  box-shadow:
+    0 0 0 1px rgba(255,144,0,.25),
+    0 0 18px rgba(255,144,0,.35),
+    0 4px 14px rgba(0,0,0,.4) !important;
+}
+@keyframes twk-tk-pulse-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(255,144,0,.25),
+      0 0 14px rgba(255,144,0,.30),
+      0 4px 14px rgba(0,0,0,.4);
+    border-color: rgba(255,144,0,.5);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(255,144,0,.55),
+      0 0 28px rgba(255,144,0,.6),
+      0 6px 22px rgba(255,144,0,.25);
+    border-color: rgba(255,144,0,.95);
+  }
+}
+/* Diagonal shimmer sweep — passes once every 5s */
+body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,.18) 50%, transparent 100%);
+  animation: twk-tk-shimmer 5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes twk-tk-shimmer {
+  0%, 60% { left: -60%; }
+  100%    { left: 160%; }
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge:hover {
   border-color: #ff9000 !important;
-  box-shadow: 0 14px 40px rgba(0,0,0,.6), 0 0 32px rgba(255,144,0,.3) !important;
+  background: rgba(255,144,0,.18) !important;
+  animation-play-state: paused;
 }
+/* Respect reduced-motion preference: kill the pulse + shimmer */
+@media (prefers-reduced-motion: reduce) {
+  body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge,
+  body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge::before {
+    animation: none !important;
+  }
+}
+
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-coin {
-  background: radial-gradient(circle at 30% 30%, #ffb04d, #ff6a00) !important;
+  background: radial-gradient(circle at 30% 30%, #ffd596, #ff6a00) !important;
   color: #000 !important;
-  box-shadow: 0 0 8px rgba(255,144,0,.55), inset 0 0 4px rgba(255,255,255,.3) !important;
-  width: 16px !important;
-  height: 16px !important;
-  font-size: 8px !important;
+  box-shadow: 0 0 10px rgba(255,144,0,.7), inset 0 0 4px rgba(255,255,255,.4) !important;
+  width: 14px !important;
+  height: 14px !important;
+  font-size: 7.5px !important;
+  position: relative;
+  z-index: 1;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-count {
-  color: #ff9000 !important;
-  font-size: 12px !important;
+  color: #ffb04d !important;
+  font-size: 11px !important;
   font-weight: 900 !important;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 8px rgba(255,144,0,.4);
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-unit {
-  color: #ffb04d !important;
+  color: rgba(255,255,255,.7) !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: .18em !important;
+  position: relative;
+  z-index: 1;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-tier {
   color: #ff9000 !important;
-  border-left-color: rgba(255,144,0,.25) !important;
+  border-left-color: rgba(255,144,0,.35) !important;
+  font-size: 9px !important;
+  letter-spacing: .2em !important;
+  padding-left: 7px !important;
+  margin-left: 4px !important;
+  position: relative;
+  z-index: 1;
 }
 
 /* Mobile: keep the pill fixed bottom-right (default mobile behavior) */
