@@ -462,10 +462,10 @@ body.twerkhub-ph-theme #twk-topbar-chip {
   display: none !important;
 }
 
-/* Reduce the nav-inner right padding so the rightmost item (the token
-   pill once relocated by inline JS) hugs the screen edge prolijamente. */
-body.twerkhub-ph-theme .twk-nav-v1-inner {
-  padding-right: 12px !important;
+/* Force the rightmost item (the token pill) to hug the screen edge.
+   Higher-specificity selector to beat the inline <style> in index.html. */
+body.twerkhub-ph-theme nav.twk-nav-v1 .twk-nav-v1-inner {
+  padding-right: 6px !important;
 }
 
 /* Pill sits as a flex item INSIDE the nav (relocated via inline JS).
@@ -478,7 +478,7 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   top: auto !important;
   right: auto !important;
   bottom: auto !important;
-  margin-left: 8px !important;
+  margin: 0 !important;
   flex-shrink: 0 !important;
   z-index: auto !important;
   align-self: center !important;
@@ -495,17 +495,18 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
     z-index: 10000 !important;
   }
 }
-/* Match LIVE pill geometry exactly: padding 6px 12px, gap 7px, font 10-11px,
-   border 1px solid, border-radius 999. Then add an animated outer glow that
-   pulses + a subtle shimmer sweep so the pill draws the eye. */
+/* Match LIVE pill EXACTLY: padding 6px 12px, font 10px, border 1px,
+   line-height 1, total height ~24px. Coin reduced to 12px so the pill
+   doesn't grow taller than LIVE. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge {
   pointer-events: auto !important;
   background: rgba(255,144,0,.10) !important;
   background-image: none !important;
   border: 1px solid rgba(255,144,0,.55) !important;
-  padding: 6px 12px !important;
+  padding: 5px 12px !important;
   border-radius: 999px !important;
   gap: 7px !important;
+  line-height: 1 !important;
   font-family: "JetBrains Mono", ui-monospace, monospace !important;
   position: relative !important;
   overflow: hidden !important;
@@ -563,17 +564,19 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge:hover {
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-coin {
   background: radial-gradient(circle at 30% 30%, #ffd596, #ff6a00) !important;
   color: #000 !important;
-  box-shadow: 0 0 10px rgba(255,144,0,.7), inset 0 0 4px rgba(255,255,255,.4) !important;
-  width: 14px !important;
-  height: 14px !important;
-  font-size: 7.5px !important;
+  box-shadow: 0 0 8px rgba(255,144,0,.65), inset 0 0 4px rgba(255,255,255,.4) !important;
+  width: 12px !important;
+  height: 12px !important;
+  font-size: 7px !important;
   position: relative;
   z-index: 1;
+  flex-shrink: 0 !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-count {
   color: #ffb04d !important;
   font-size: 11px !important;
   font-weight: 900 !important;
+  line-height: 1 !important;
   position: relative;
   z-index: 1;
   text-shadow: 0 0 8px rgba(255,144,0,.4);
