@@ -62,7 +62,8 @@
     return false;
   }
   function getTokens(){
-    if (!isLoggedIn()) return 0;
+    /* 2026-05-06: gate removed. Anonymous users see localStorage balance
+       (or 0 if never set). Was: if (!isLoggedIn()) return 0; */
     // Prefer the live module state (in case it has unflushed in-memory writes).
     if (hasAlexia()) {
       try {
@@ -153,10 +154,11 @@
   }
 
   function render(){
-    // Hide HUD entirely for anonymous users — pill should only appear when
-    // there's an actual user accumulating tokens.
+    // 2026-05-06: pill ALWAYS visible (Supabase stubbed → can't reliably know
+    // login state for new visitors). Anonymous users see "0 TOKENS · BASIC"
+    // which is fine — encourages signup. Old gate left as comment for ref.
     if (hud) {
-      hud.style.display = isLoggedIn() ? '' : 'none';
+      hud.style.display = '';
     }
     var t = getTokens();
     if (countEl) countEl.textContent = t.toLocaleString('en-US');
