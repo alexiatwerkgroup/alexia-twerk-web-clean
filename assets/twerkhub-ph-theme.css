@@ -543,13 +543,17 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-
   }
 }
 
-/* 4. Repaint the badge in PH orange — same height profile as LIVE pill */
+/* 4. Repaint the badge in PH orange — same height profile as LIVE pill.
+   Force min-width so the pill stays uniform across pages even if token
+   state varies. All child elements (coin/count/unit/tier) ALWAYS visible
+   with explicit display so the badge has consistent content width. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge {
   background: rgba(255,144,0,.10) !important;
   background-image: none !important;
   border: 1px solid rgba(255,144,0,.55) !important;
   box-shadow: 0 4px 14px rgba(255,144,0,.18), 0 2px 6px rgba(0,0,0,.4) !important;
   height: 28px !important;
+  min-width: 130px !important;
   padding: 0 12px !important;
   border-radius: 999px !important;
   gap: 7px !important;
@@ -557,7 +561,23 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge {
   font-family: "JetBrains Mono", ui-monospace, monospace !important;
   display: inline-flex !important;
   align-items: center !important;
+  justify-content: center !important;
   box-sizing: border-box !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+/* Ensure all four parts of the badge are always rendered so width is
+   consistent across pages even if a previous CSS hid one of them. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge > * {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-tier {
+  display: inline-flex !important;
+  padding-left: 7px !important;
+  margin-left: 1px !important;
+  border-left: 1px solid rgba(255,144,0,.25) !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge:hover {
   border-color: #ff9000 !important;
