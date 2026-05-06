@@ -467,12 +467,9 @@ body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):hover {
 /* Kill the orange ★ chip everywhere */
 body.twerkhub-ph-theme #twk-topbar-chip { display: none !important; }
 
-/* Pill: fixed at top-right of viewport. ALWAYS. Higher z-index than nav
-   so it sits ON TOP of the nav, vertically aligned with LIVE / nav links
-   (LIVE pill top sits at ~14-19px depending on flex centering; pill at
-   top:14px overlaps that range exactly). */
-body.twerkhub-ph-theme .twerkhub-tokens-hud,
-body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+/* Pill default (before relocator runs): fixed at top-right of viewport so
+   it is visible immediately during page load, doesn't flash bottom-right. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud {
   position: fixed !important;
   top: 14px !important;
   right: 14px !important;
@@ -488,13 +485,36 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   transform: none !important;
 }
 
+/* Pill RELOCATED into nav.twk-nav-v1: switch to absolute + true vertical
+   centering against the nav. The nav is position:sticky which establishes
+   a containing block for absolute children, so the pill rides with the
+   navbar through scroll AND aligns perfectly with LIVE / lang buttons
+   regardless of nav padding/font-size variations across pages. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+  position: absolute !important;
+  top: 50% !important;
+  right: 14px !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  pointer-events: none !important;
+  height: auto !important;
+}
+
 /* Mobile: pill floats bottom-right (away from possible mobile menu) */
 @media (max-width: 540px) {
   body.twerkhub-ph-theme .twerkhub-tokens-hud,
   body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+    position: fixed !important;
     top: auto !important;
     bottom: 14px !important;
     right: 14px !important;
+    transform: none !important;
   }
 }
 

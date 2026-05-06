@@ -15,7 +15,7 @@ import os
 import re
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
-NEW_VER = "20260506-p20"
+NEW_VER = "20260506-p22"
 NEW_PATH = f"/assets/twerkhub-ph-theme.css?v={NEW_VER}"
 RE_VER = re.compile(r'/assets/twerkhub-ph-theme\.css\?v=[^"\'<>\s]+', re.IGNORECASE)
 

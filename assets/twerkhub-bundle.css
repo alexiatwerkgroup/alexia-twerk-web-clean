@@ -2098,6 +2098,29 @@ img[loading="lazy"].is-loaded{animation:none;background:none;}
 }
 .twk-skip-link:focus{left:0;top:0;}
 
+/* ── 16b · Screen-reader-only utility (visually hidden, SR-readable) ──── */
+/* Used by skip-links and SEO hidden-text blocks. Kept here so any page
+   that loads the bundle gets sr-only behavior even without the inline
+   <style id="twk-sr-only-seo"> block. Fixes the "Skip to content" leak
+   that pushed nav down on /account and similar pages. */
+.twk-sr-only{
+  position:absolute !important;
+  width:1px !important;height:1px !important;
+  padding:0 !important;margin:-1px !important;
+  overflow:hidden !important;clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;border:0 !important;
+}
+.twk-sr-only:focus{
+  position:fixed !important;left:8px !important;top:8px !important;
+  width:auto !important;height:auto !important;clip:auto !important;
+  padding:10px 18px !important;margin:0 !important;
+  background:#0a0a14;color:#fff;border:2px solid #ff2d87;
+  border-radius:8px;z-index:10000;
+  font-family:'Inter',sans-serif;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;font-size:12px;
+  white-space:nowrap !important;overflow:visible !important;
+}
+
 /* ── 17 · Prefers-reduced-motion fallback ────────────────────────────── */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{
