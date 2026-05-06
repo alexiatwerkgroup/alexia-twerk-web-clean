@@ -133,9 +133,16 @@
       'position:relative;display:block;width:100%;aspect-ratio:16/11;',
       'background:#000;cursor:pointer;overflow:hidden;',
     '}',
+    // Iframe renders at NATIVE chaturbate size (800x550) and is scaled
+    // down via transform — this guarantees the full player layout is
+    // visible (model centered, no edge clipping). JS sets transform
+    // dynamically based on container width.
     '.twk-cb-promo__iframe{',
-      'position:absolute;inset:0;width:100%;height:100%;border:0;',
-      'pointer-events:none;background:#000;',
+      'position:absolute;top:0;left:0;',
+      'width:800px;height:550px;',
+      'border:0;background:#000;',
+      'pointer-events:none;',
+      'transform-origin:top left;',
     '}',
     // Thumbnail image (replaces iframe to bypass Chrome Heavy Ad Intervention)
     '.twk-cb-promo__thumb{',
@@ -302,6 +309,29 @@
     }).join('');
   }
 
+  // Iframe renders at native 800x550 and is CSS-scaled down to fit the
+  // container — guarantees the model is fully visible, not clipped.
+  var IFRAME_NATIVE_W = 800;
+  var IFRAME_NATIVE_H = 550;
+  function applyIframeScale(iframe, container) {
+    if (!iframe || !container) return;
+    var w = container.getBoundingClientRect().width;
+    if (!w) return;
+    var scale = w / IFRAME_NATIVE_W;
+    iframe.style.transform = 'scale(' + scale.toFixed(4) + ')';
+  }
+
+  var resizeRaf = null;
+  function onResize() {
+    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(function () {
+      var iframe = document.getElementById('twk-cb-iframe');
+      var cam = document.getElementById('twk-cb-cam');
+      applyIframeScale(iframe, cam);
+    });
+  }
+  window.addEventListener('resize', onResize);
+
   // LIVE iframe approach: nuke + recreate every 18s. Each fresh iframe
   // gets a clean Heavy Ad budget (Chrome tracks per-element). By rotating
   // BEFORE the ~30s Heavy Ad threshold, each iframe never accumulates
@@ -343,6 +373,11 @@
       if (placeholder) placeholder.style.display = 'none';
     });
     setTimeout(function () { if (placeholder) placeholder.style.display = 'none'; }, 3000);
+
+    // Apply scale immediately + after iframe loads (in case container size shifts)
+    applyIframeScale(iframe, cam);
+    iframe.addEventListener('load', function () { applyIframeScale(iframe, cam); });
+    setTimeout(function () { applyIframeScale(iframe, cam); }, 100);
 
     if (overlay) overlay.href = r.chat_room_url;
     if (cta) cta.href = r.chat_room_url;
