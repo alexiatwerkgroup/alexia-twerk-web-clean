@@ -28,6 +28,9 @@
   "redirects": [
     { "source": "/home", "destination": "/", "permanent": true },
     { "source": "/home.html", "destination": "/", "permanent": true },
+    { "source": "/es/playlist", "destination": "/playlist/", "permanent": true },
+    { "source": "/es/playlist/", "destination": "/playlist/", "permanent": true },
+    { "source": "/es/playlist/index.html", "destination": "/playlist/", "permanent": true },
     { "source": "/models-catalog.html", "destination": "/", "permanent": true },
     { "source": "/variety-catalog.html", "destination": "/", "permanent": true },
     { "source": "/playlist-del-otro-lado", "destination": "/", "statusCode": 410 },
