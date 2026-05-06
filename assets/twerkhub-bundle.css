@@ -1928,7 +1928,7 @@ html{color-scheme:dark;}
 /* ── 4 · Page-load reveal (subtle) ───────────────────────────────────── */
 @keyframes twk-page-fade{
   from{opacity:0;transform:translateY(8px);}
-  to{opacity:1;transform:translateY(0);}
+  to{opacity:1;transform:none;}
 }
 body{
   animation:twk-page-fade .55s cubic-bezier(.22,.9,.38,1) both;
