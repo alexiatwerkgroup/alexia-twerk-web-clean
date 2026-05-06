@@ -5,7 +5,7 @@ What it does to each .html file under the project root:
   1. Adds  twerkhub-ph-theme  to the <body> class list (if missing).
   2. Adds  <link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p16">
      in <head> after twerkhub-design-tokens.css (or before </head> as fallback).
-  3. Appends  &family=Anton&family=Bebas+Neue  to the Google Fonts URL (if missing).
+  3. Appends  &family=Anton  to the Google Fonts URL (if missing).
   4. Re-writes the file in UTF-8 WITHOUT BOM (respects the SAGRADAS encoding rule).
   5. Idempotent: detects existing patches by string presence and skips them.
 
@@ -27,7 +27,7 @@ if not os.path.exists(os.path.join(ROOT, "index.html")):
 PH_VER = "20260505-p16"
 PH_LINK = f'<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v={PH_VER}">'
 PH_CLASS = "twerkhub-ph-theme"
-ANTON_QUERY = "&family=Anton&family=Bebas+Neue"
+ANTON_QUERY = "&family=Anton"
 
 SKIP_DIRS = (
     os.sep + ".git" + os.sep,
