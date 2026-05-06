@@ -21,7 +21,6 @@ Disallow: /_
 Disallow: /search.html?q=
 Disallow: /es/search.html?q=
 Disallow: /ru/search.html?q=
-Disallow: /*?q=*
 
 # Sitemaps (index + main + blog + video + image + RU locale sitemaps registered)
 Sitemap: https://alexiatwerkgroup.com/sitemap-index.xml
