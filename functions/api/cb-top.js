@@ -10,7 +10,7 @@ const API_URL =
   'https://chaturbate.com/affiliates/api/onlinerooms/' +
   '?wm=' + AFF_CODE +
   '&format=json' +
-  '&limit=10' +
+  '&limit=40' +     // pull more so we can filter out blocked rooms
   '&gender=f' +
   '&order_by=-num_users' +
   '&hd=true';
@@ -36,7 +36,18 @@ export async function onRequest(context) {
     }
 
     const rooms = await upstream.json();
-    const slim = (Array.isArray(rooms) ? rooms : []).slice(0, 10).map(function (r) {
+    // Filter out rooms with country/state blocks — those show
+    // "Esta sala no está disponible en tu región o género" in the iframe.
+    // Only keep rooms with NO blocks set (block_from_countries empty + no state blocks).
+    const usable = (Array.isArray(rooms) ? rooms : []).filter(function (r) {
+      const cBlock = (r.block_from_countries || '').toString().trim();
+      const sBlock = (r.block_from_states || '').toString().trim();
+      // Empty string or 'null' means no block
+      const noCBlock = !cBlock || cBlock === 'null' || cBlock === '[]';
+      const noSBlock = !sBlock || sBlock === 'null' || sBlock === '[]';
+      return noCBlock && noSBlock && r.is_hd;
+    });
+    const slim = usable.slice(0, 15).map(function (r) {
       return {
         username: r.username,
         display_name: r.display_name || r.username,

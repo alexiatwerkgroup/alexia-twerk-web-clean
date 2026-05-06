@@ -17,7 +17,7 @@
   window.__twkCbPromoInit = true;
 
   var DELAY_MS = 600;
-  var ROTATE_MS = 25000;
+  var ROTATE_MS = 18000;
   var API_PATH = '/api/cb-top';
   var AFF_CODE = 'Re5nr';
   var DISMISS_KEY = 'twkCbPromoDismissed_v4';
@@ -33,16 +33,21 @@
 
   // ── CSS — Pornhub vibe: black + #ff9000 orange ──────────────────────────
   var css = [
-    '.twk-cb-promo{',
-      'position:fixed;bottom:14px;right:14px;width:340px;max-width:calc(100vw - 24px);',
+    // Use max specificity + !important to defeat any theme rule that
+    // might break position:fixed on this widget.
+    'html body .twk-cb-promo,body .twk-cb-promo,.twk-cb-promo{',
+      'position:fixed !important;',
+      'bottom:14px !important;right:14px !important;top:auto !important;left:auto !important;',
+      'width:340px;max-width:calc(100vw - 24px);',
       'background:#000;',
       'border:1px solid #ff9000;',
       'border-radius:6px;overflow:hidden;',
       'box-shadow:0 18px 50px rgba(255,144,0,.32),0 6px 18px rgba(0,0,0,.85);',
       'font-family:"Inter",ui-sans-serif,system-ui,sans-serif;',
-      'color:#fff;z-index:9999;',
+      'color:#fff;z-index:2147483647 !important;',
       'opacity:0;transform:translateY(20px);',
       'transition:opacity .35s ease,transform .35s ease;',
+      'margin:0 !important;',
     '}',
     '.twk-cb-promo.is-visible{opacity:1;transform:translateY(0)}',
 
@@ -216,7 +221,7 @@
     box.innerHTML =
       '<div class="twk-cb-promo__header">' +
         '<span class="twk-cb-promo__logo">' +
-          '<span class="twk-cb-promo__logo-left">LIVE</span>' +
+          '<span class="twk-cb-promo__logo-left">ONLINE</span>' +
           '<span class="twk-cb-promo__logo-right">CAMS</span>' +
         '</span>' +
         '<span class="twk-cb-promo__live-badge">' +
@@ -241,7 +246,13 @@
         '</a>' +
         '<div class="twk-cb-promo__total"><strong id="twk-cb-total">—</strong> live models online</div>' +
       '</div>';
-    document.body.appendChild(box);
+    // Append to <html> instead of <body> — bypasses any body transform/filter
+    // that creates a containing block and breaks position:fixed.
+    (document.documentElement || document.body).appendChild(box);
+    // Belt-and-suspenders: also force position via inline style
+    box.style.cssText +=
+      ';position:fixed !important;bottom:14px !important;right:14px !important;' +
+      'top:auto !important;left:auto !important;z-index:2147483647 !important;';
     return box;
   }
 
