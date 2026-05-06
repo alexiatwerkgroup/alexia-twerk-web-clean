@@ -467,14 +467,21 @@ body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):hover {
 /* Kill the orange ★ chip everywhere */
 body.twerkhub-ph-theme #twk-topbar-chip { display: none !important; }
 
-/* Pill: ALWAYS position:fixed so it sticks to viewport regardless of
-   relocation state. Vertically centered with LIVE pill: nav is 60px tall
-   sticky at top:0, so nav center is at viewport y=30px. We anchor the pill
-   center at the same y=30px via top:30px + translateY(-50%) on a 28px
-   height-locked container. Math: top edge=30-14=16px, center=30px. LIVE
-   pill (22px tall, flex-centered in 60px nav row): center=30px. MATCH. */
-body.twerkhub-ph-theme .twerkhub-tokens-hud,
-body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+/* LIVE pill height-lock — match TOKENS pill (28px) for visual symmetry. */
+body.twerkhub-ph-theme .twk-nav-v1-live,
+body.twerkhub-ph-theme #twk-nav-v1-live {
+  height: 28px !important;
+  box-sizing: border-box !important;
+  padding: 0 12px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+/* Pill DEFAULT (before relocator runs): fixed at top-right of viewport so
+   it shows up immediately during page load. Once relocator runs and moves
+   the pill into the flex row, the .twk-tk-hud--in-nav rule overrides this. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud {
   position: fixed !important;
   top: 30px !important;
   right: 14px !important;
@@ -488,6 +495,40 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   pointer-events: none !important;
   height: 28px !important;
   transform: translateY(-50%) !important;
+}
+
+/* Pill RELOCATED into the flex row of nav-inner, right next to LIVE pill.
+   Drop ALL positioning — let the flex row's align-items:center handle the
+   vertical alignment automatically. Both pills are 28px tall, same flex
+   parent → same vertical position. Sticky-to-viewport because nav is
+   position:sticky and pill is its descendant. No math required. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  margin-right: 6px !important;
+  z-index: 10000 !important;
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  pointer-events: auto !important;
+  height: 28px !important;
+  width: auto !important;
+  transform: none !important;
+  flex-shrink: 0 !important;
+}
+
+/* Toast host: take it out of layout flow so toast popups don't push the
+   flex row when they appear. Anchored above the badge, slides down. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-toast-host {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  margin-top: 6px !important;
+  pointer-events: none !important;
 }
 
 /* Mobile: pill floats bottom-right (away from possible mobile menu) */

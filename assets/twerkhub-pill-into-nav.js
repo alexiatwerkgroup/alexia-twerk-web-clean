@@ -1,68 +1,45 @@
 /* ═══ TWERKHUB · token pill → universal in-nav loader ═══
- * v20260506-p4
+ * v20260506-p6
  *
  * Relocates .twerkhub-tokens-hud (created async by twerkhub-tokens.js)
- * into the OUTER <nav class="twk-nav-v1"> on every page so the pill
- * lives next to LIVE / EN-ES-RU buttons. Then MEASURES the LIVE pill's
- * actual rendered position and pins TOKENS to the exact same vertical
- * center via inline style — bypasses all CSS / cache / font-rendering
- * variation between browsers.
+ * INTO the flex row of nav-inner, RIGHT NEXT TO the LIVE pill. The
+ * flex row already has align-items:center so the pill aligns with LIVE
+ * automatically — no JS measurement, no math, no CSS top calculation.
+ * Both pills sit in the same flex container so they CANNOT differ
+ * vertically. Scroll-sticky is automatic because nav.twk-nav-v1 is
+ * position:sticky.
  *
- *   - Pill stays position:fixed (sticky to viewport) but top is set in
- *     JS based on LIVE.getBoundingClientRect() so alignment is pixel-
- *     perfect on every page regardless of nav height differences.
- *   - Re-measures on resize (font reflow, nav wrapping) so alignment
- *     survives responsive breakpoints.
- *   - Idempotent. Self-disconnects after success or 10s timeout.
+ * Idempotent. Re-checks on DOM mutations because tokens.js creates the
+ * HUD lazily after page interactivity. Self-disconnects after success.
  */
 (function(){
   'use strict';
   if (window.__twkPillIntoNavInit) return;
   window.__twkPillIntoNavInit = true;
 
-  function alignToLive(){
+  function relocate(){
     var pill = document.querySelector('.twerkhub-tokens-hud');
-    var live = document.querySelector('.twk-nav-v1-live, #twk-nav-v1-live');
-    if (!pill || !live) return false;
-    try {
-      var lr = live.getBoundingClientRect();
-      var pillH = pill.offsetHeight || 28;
-      // y of LIVE pill's vertical center, relative to viewport
-      var liveCenterY = lr.top + (lr.height / 2);
-      // Pill is height-locked to ~28px and uses translateY(-50%) so its
-      // visual center sits at `top:N` where N = liveCenterY (after the
-      // -50% transform pulls it up by half its own height).
-      pill.style.setProperty('position', 'fixed',  'important');
-      pill.style.setProperty('top',      liveCenterY + 'px', 'important');
-      pill.style.setProperty('right',    '14px',   'important');
-      pill.style.setProperty('bottom',   'auto',   'important');
-      pill.style.setProperty('left',     'auto',   'important');
-      pill.style.setProperty('transform','translateY(-50%)', 'important');
-      pill.style.setProperty('height',   pillH + 'px', 'important');
-      pill.classList.add('twk-tk-hud--in-nav');
-    } catch(e){ return false; }
+    if (!pill) return false;
+    // Prefer placing right BEFORE the LIVE pill so order is:
+    //   [logo] [...links...] [EN/ES/RU] [LIVE]  →  [logo] [...links...] [EN/ES/RU] [TOKENS] [LIVE]
+    // If LIVE not found, fall back to the inner container's last position.
+    var inner = document.querySelector('.twk-nav-v1 .twk-nav-v1-inner');
+    var live  = document.querySelector('.twk-nav-v1-live, #twk-nav-v1-live');
+    if (!inner) return false;
+    if (pill.parentElement === inner) return true; // already placed
+    pill.classList.add('twk-tk-hud--in-nav');
+    if (live && live.parentElement === inner) {
+      inner.insertBefore(pill, live);
+    } else {
+      inner.appendChild(pill);
+    }
     return true;
   }
 
   function arm(){
-    if (alignToLive()) {
-      // Re-align on viewport resize / font reflow.
-      var t = null;
-      window.addEventListener('resize', function(){
-        if (t) clearTimeout(t);
-        t = setTimeout(alignToLive, 80);
-      }, { passive: true });
-      return;
-    }
+    if (relocate()) return;
     var obs = new MutationObserver(function(){
-      if (alignToLive()) {
-        obs.disconnect();
-        var t = null;
-        window.addEventListener('resize', function(){
-          if (t) clearTimeout(t);
-          t = setTimeout(alignToLive, 80);
-        }, { passive: true });
-      }
+      if (relocate()) obs.disconnect();
     });
     obs.observe(document.body || document.documentElement, { childList: true, subtree: true });
     setTimeout(function(){ obs.disconnect(); }, 10000);
