@@ -314,9 +314,10 @@
 
 <!-- â•â•â•â•â•â•â• CHECKOUT MODAL · Discord + Telegram dual-channel â•â•â•â•â•â•â• -->
 <style id="twk-checkout-modal-css">
-.twk-checkout-modal{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:99999;display:none;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;padding:20px;box-sizing:border-box}
+/* v3 nuclear-centering 2026-05-06 — flexbox + absolute belt+suspenders */
+.twk-checkout-modal{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;width:100vw !important;height:100vh !important;height:100dvh !important;z-index:2147483646 !important;display:none;background:rgba(0,0,0,.85) !important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;padding:20px;box-sizing:border-box;margin:0 !important;transform:none !important;filter:none !important}
 .twk-checkout-modal.is-open{display:flex !important;align-items:center !important;justify-content:center !important}
-.twk-checkout-card{position:relative;max-width:440px;width:100%;max-height:calc(100dvh - 40px);overflow-y:auto;background:linear-gradient(180deg,#13131c,#0a0a10);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:28px 26px;text-align:center;color:#f4f4f8;box-shadow:0 30px 80px rgba(0,0,0,.7);margin:auto}
+.twk-checkout-card{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;margin:0 !important;max-width:440px !important;width:calc(100vw - 48px) !important;max-height:calc(100vh - 48px) !important;max-height:calc(100dvh - 48px) !important;overflow-y:auto !important;background:linear-gradient(180deg,#13131c,#0a0a10) !important;border:1px solid rgba(255,255,255,.12) !important;border-radius:18px !important;padding:28px 26px !important;text-align:center !important;color:#f4f4f8 !important;box-shadow:0 30px 80px rgba(0,0,0,.7) !important;z-index:2147483647 !important}
 .twk-checkout-close{position:absolute;top:10px;right:14px;width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer;line-height:1}
 .twk-checkout-close:hover{background:rgba(255,255,255,.08)}
 .twk-checkout-kicker{font:800 11px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase;color:#e8c880;margin-bottom:10px}
