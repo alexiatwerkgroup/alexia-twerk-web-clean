@@ -452,28 +452,82 @@ body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):hover {
 }
 
 /* ────────────────────────────────────────────────────────────────────
-   10 · Token HUD (live token counter widget)
+   10 · Token HUD — keep the legacy green-T pill, KILL the orange ★ chip.
+   User reverted: only the green pill should show, sticky on the right
+   above the ticker without covering it. Repaint to PH orange theme.
    ──────────────────────────────────────────────────────────────────── */
-body.twerkhub-ph-theme .twerkhub-tokens-hud,
-body.twerkhub-ph-theme [class*="-tokens-hud"] {
-  background: rgba(0,0,0,.92) !important;
-  border-color: rgba(255,144,0,.35) !important;
-}
-body.twerkhub-ph-theme .twerkhub-tokens-hud * {
-  color: #fff;
-}
-body.twerkhub-ph-theme [class*="-tokens"] [class*="-balance"] {
-  color: #ff9000 !important;
-  font-family: "Anton", sans-serif !important;
+
+/* Hide the duplicate orange ★ chip created by profile-stats-live.js */
+body.twerkhub-ph-theme #twk-topbar-chip {
+  display: none !important;
 }
 
-/* ── Topbar token chip · reposition + custom tooltip ──────────────── */
-/* Default chip is top:14px right:18px which sits inside the topbar
-   nav area and overlaps the ticker. Push it below both (≈100px tall
-   stack of topbar+ticker) and let the tooltip drop BELOW the chip. */
-body.twerkhub-ph-theme #twk-topbar-chip {
-  top: 110px !important;
+/* Reposition the green-T HUD: nested INTO the nav bar (via inline JS at
+   bottom of index.html) so it lives as a flex item next to the lang
+   switcher — same vertical alignment as the nav buttons, far right.
+   When inside the nav (gets class .twk-tk-hud--in-nav), strip the
+   default position:fixed and let flex layout handle placement. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud {
+  display: flex !important;
+}
+body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin-left: 8px !important;
+  flex-shrink: 0 !important;
+  z-index: auto !important;
+}
+body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge {
+  pointer-events: auto !important;
+  background: rgba(0,0,0,.65) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255,144,0,.45) !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,.45), 0 0 14px rgba(255,144,0,.18) !important;
+  padding: 6px 12px !important;
+  border-radius: 999px !important;
+}
+body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge:hover {
+  border-color: #ff9000 !important;
+  box-shadow: 0 14px 40px rgba(0,0,0,.6), 0 0 32px rgba(255,144,0,.3) !important;
+}
+body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-coin {
+  background: radial-gradient(circle at 30% 30%, #ffb04d, #ff6a00) !important;
+  color: #000 !important;
+  box-shadow: 0 0 8px rgba(255,144,0,.55), inset 0 0 4px rgba(255,255,255,.3) !important;
+  width: 16px !important;
+  height: 16px !important;
+  font-size: 8px !important;
+}
+body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-count {
+  color: #ff9000 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-unit {
+  color: #ffb04d !important;
+}
+body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-tier {
+  color: #ff9000 !important;
+  border-left-color: rgba(255,144,0,.25) !important;
+}
+
+/* Mobile: keep the pill fixed bottom-right (default mobile behavior) */
+@media (max-width: 540px) {
+  body.twerkhub-ph-theme .twerkhub-tokens-hud {
+    top: auto !important;
+    bottom: 14px !important;
+    right: 14px !important;
+  }
+}
+
+/* (deferred — orange-star chip overrides kept below for legacy reach) */
+body.twerkhub-ph-theme #twk-topbar-chip__legacy {
+  position: fixed !important;
+  top: 140px !important;
   right: 18px !important;
+  z-index: 9999 !important;
   overflow: visible !important;
   background: rgba(0,0,0,.85) !important;
   border-color: rgba(255,144,0,.35) !important;

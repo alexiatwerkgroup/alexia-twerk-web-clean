@@ -82,7 +82,7 @@
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
 <link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p5">
 <link rel="stylesheet" href="/assets/twerkhub-design-tokens.css?v=20260424-p1">
-<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p5">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p9">
 <script>
 (function(){
   function eager(img){
@@ -175,6 +175,30 @@
   loadOnce('/assets/token-system.js?v=20260503-p2','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260425-p8','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260426-p8','twk-loader-twerkhub-auth');
+
+  /* PH theme · move the token pill INTO the nav bar so it sits as a
+     flex item at the far right (same vertical alignment as the buttons,
+     sticky together with the nav). Watches for late creation by
+     twerkhub-tokens.js. */
+  if (document.body && document.body.classList.contains('twerkhub-ph-theme')) {
+    function twkRelocateTokenPill(){
+      var pill = document.querySelector('.twerkhub-tokens-hud');
+      var nav  = document.querySelector('.twk-nav-v1-inner');
+      if (!pill || !nav) return false;
+      if (pill.parentElement === nav) return true;
+      pill.classList.add('twk-tk-hud--in-nav');
+      nav.appendChild(pill);
+      return true;
+    }
+    if (!twkRelocateTokenPill()) {
+      var twkTkObs = new MutationObserver(function(){
+        if (twkRelocateTokenPill()) twkTkObs.disconnect();
+      });
+      twkTkObs.observe(document.body, { childList: true, subtree: true });
+      // Hard timeout: stop watching after 8s to avoid leaking observers.
+      setTimeout(function(){ twkTkObs.disconnect(); }, 8000);
+    }
+  }
 })();
 </script>
 
