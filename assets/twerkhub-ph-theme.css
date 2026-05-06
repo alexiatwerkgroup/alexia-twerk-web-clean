@@ -467,11 +467,13 @@ body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):hover {
 /* Kill the orange ★ chip everywhere */
 body.twerkhub-ph-theme #twk-topbar-chip { display: none !important; }
 
-/* Pill default (before relocator runs): fixed at top-right of viewport so
-   it is visible immediately during page load, doesn't flash bottom-right. */
+/* Pill default (before relocator runs): fixed at viewport, vertically
+   centered to match LIVE pill which sits centered inside nav (~30px from
+   viewport top for a 60px-tall nav). Use top:30px with translateY(-50%)
+   on a 28px badge so badge top:16px, badge center:30px ≈ LIVE center. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud {
   position: fixed !important;
-  top: 14px !important;
+  top: 30px !important;
   right: 14px !important;
   bottom: auto !important;
   left: auto !important;
@@ -481,15 +483,14 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud {
   flex-direction: column !important;
   align-items: flex-end !important;
   pointer-events: none !important;
-  height: auto !important;
-  transform: none !important;
+  height: 28px !important;
+  transform: translateY(-50%) !important;
 }
 
-/* Pill RELOCATED into nav.twk-nav-v1: switch to absolute + true vertical
-   centering against the nav. The nav is position:sticky which establishes
-   a containing block for absolute children, so the pill rides with the
-   navbar through scroll AND aligns perfectly with LIVE / lang buttons
-   regardless of nav padding/font-size variations across pages. */
+/* Pill RELOCATED into nav.twk-nav-v1: switch to absolute centered against
+   the nav. nav is position:sticky which IS a containing block for absolute
+   children, so the pill rides with the navbar through scroll AND aligns
+   perfectly with LIVE / lang buttons regardless of nav padding variations. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   position: absolute !important;
   top: 50% !important;
@@ -503,7 +504,7 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   flex-direction: column !important;
   align-items: flex-end !important;
   pointer-events: none !important;
-  height: auto !important;
+  height: 28px !important;
 }
 
 /* Mobile: pill floats bottom-right (away from possible mobile menu) */
