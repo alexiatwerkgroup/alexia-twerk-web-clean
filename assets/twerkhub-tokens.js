@@ -110,15 +110,15 @@
   function setSeenVids(a){ lsSet(LS.VIDS, a); }
 
   // Tier label based on current token balance (mirrors 4-tier pricing).
-  // 2026-05-06 update — aligned with /membership.html canonical:
-  //   Basic   = 0-299
-  //   Medium  = 300-2,999     (or $9.99/mo)
-  //   Premium = 3,000-49,999  (or $29.99/mo)
-  //   VIP Top = 50,000+       (or $99.99/mo)
+  // 2026-05-06 update — aligned with /membership.html canonical "or X tokens" unlocks:
+  //   Basic   = 0-2,999       (free entry)
+  //   Medium  = 3,000-8,999   (or $9.99/mo  · "or 3,000 tokens" on card)
+  //   Premium = 9,000-49,999  (or $29.99/mo · "or 9,000 tokens" on card)
+  //   VIP Top = 50,000+       (or $99.99/mo · "or 50,000 tokens" on card)
   function tierFor(tokens){
     if (tokens >= 50000) return 'VIP';
-    if (tokens >= 3000)  return 'Premium';
-    if (tokens >= 300)   return 'Medium';
+    if (tokens >= 9000)  return 'Premium';
+    if (tokens >= 3000)  return 'Medium';
     return 'Basic';
   }
 

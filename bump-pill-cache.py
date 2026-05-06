@@ -16,7 +16,7 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 PATCHES = [
     (
         re.compile(r'/assets/twerkhub-tokens\.js\?v=[^"\'<>\s]+', re.IGNORECASE),
-        '/assets/twerkhub-tokens.js?v=20260506-p9',
+        '/assets/twerkhub-tokens.js?v=20260506-p11',
     ),
     (
         re.compile(r'/assets/twerkhub-ph-theme\.css\?v=[^"\'<>\s]+', re.IGNORECASE),

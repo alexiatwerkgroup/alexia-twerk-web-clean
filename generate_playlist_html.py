@@ -220,7 +220,7 @@ PAGE_TEMPLATE = """<!doctype html>
 </footer>
 
 <script defer src="/assets/global-brand.js?v=20260424-p1"></script>
-<script defer src="/assets/twerkhub-tokens.js?v=20260424-p1"></script>
+<script defer src="/assets/twerkhub-tokens.js?v=20260506-p11"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p1"></script>
 <script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p1"></script>
 <script defer src="/assets/twerkhub-locale-switcher.js?v=20260424-p1"></script>

@@ -59,13 +59,12 @@
     shares:    3   // +150/day max from share
   };
 
-  // Tier thresholds (2026-05-06 update — Anti, canonical w/ membership.html):
-  //   Basic   = 0–2,999  (free + early progression)
-  //   Medium  = 3,000–8,999  (entry commitment tier — $9.99/mo or 3,000 tokens)
-  //   Premium = 9,000–49,999  (full archive — $29.99/mo or 9,000 tokens)
-  //   VIP Top = 50,000+  ($99.99/mo or 50,000 tokens — ~6 months daily)
-  // Card "or X tokens" labels in index.html must match these:
-  //   Basic 300 · Medium 3,000 · Premium 9,000 · VIP 50,000
+  // Tier thresholds (2026-05-06 update — Anti, canonical w/ membership.html
+  // and twerkhub-tokens.js display pill):
+  //   Basic   = 0–2,999       (free entry)
+  //   Medium  = 3,000–8,999   ($9.99/mo  or "or 3,000 tokens" unlock)
+  //   Premium = 9,000–49,999  ($29.99/mo or "or 9,000 tokens" unlock)
+  //   VIP Top = 50,000+       ($99.99/mo or "or 50,000 tokens" unlock — ~6 months daily)
   var TIER_THRESHOLDS = { medium: 3000, premium: 9000, vip: 50000 };
 
   function N(k, dflt){ try { var v = localStorage.getItem(k); return v == null ? dflt : JSON.parse(v); } catch(_){ return dflt; } }

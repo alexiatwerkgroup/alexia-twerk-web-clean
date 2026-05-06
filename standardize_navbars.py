@@ -59,8 +59,8 @@ CANONICAL_NAV = """<!-- TWK_NAV_V1 -->
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260425-p8','twk-loader-supabase-config');
-  loadOnce('/assets/token-system.js?v=20260425-p8','twk-loader-token-system');
-  loadOnce('/assets/twerkhub-tokens.js?v=20260425-p8','twk-loader-twerkhub-tokens');
+  loadOnce('/assets/token-system.js?v=20260506-p3','twk-loader-token-system');
+  loadOnce('/assets/twerkhub-tokens.js?v=20260506-p11','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260425-p8','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-sw-killer.js?v=20260425-p1','twk-loader-sw-killer');
 })();
