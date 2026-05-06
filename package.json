@@ -1,0 +1,9 @@
+{
+  "name": "alexia-twerk-web-clean",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TWERKHUB static site + Vercel serverless API for affiliate proxy",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
