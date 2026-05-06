@@ -2,8 +2,8 @@
 """
 Bump cache for the pill-alignment fix:
 - twerkhub-bundle.css : b3 -> b4   (added .twk-sr-only utility for /account fix)
-- twerkhub-ph-theme.css : -> 20260506-p23  (vertical-centered pill via translateY -50%)
-- twerkhub-pill-into-nav.js : -> 20260506-p3 (defensive bump for relocator)
+- twerkhub-ph-theme.css : -> 20260506-p24  (vertical-centered pill via translateY -50%)
+- twerkhub-pill-into-nav.js : -> 20260506-p5 (defensive bump for relocator)
 
 Run from project root:
     python bump-pill-align-cache.py
@@ -19,9 +19,9 @@ REPLACEMENTS = [
     # bundle: b3 -> b4
     (re.compile(r"(twerkhub-bundle\.css\?v=)20260506-b3"),       r"\g<1>20260506-b4"),
     # ph-theme: any version -> p23
-    (re.compile(r"(twerkhub-ph-theme\.css\?v=)[^\"'<>\s]+"),     r"\g<1>20260506-p23"),
+    (re.compile(r"(twerkhub-ph-theme\.css\?v=)[^\"'<>\s]+"),     r"\g<1>20260506-p24"),
     # pill-into-nav: p2 -> p3
-    (re.compile(r"(twerkhub-pill-into-nav\.js\?v=)[^\"'<>\s]+"), r"\g<1>20260506-p3"),
+    (re.compile(r"(twerkhub-pill-into-nav\.js\?v=)[^\"'<>\s]+"), r"\g<1>20260506-p5"),
 ]
 
 EXCLUDE_DIRS = {".git", "node_modules", ".vercel", ".next", "__pycache__", "_supabase"}
@@ -52,5 +52,5 @@ for d, ds, fs in os.walk(ROOT):
 
 print(f"Done: {changed_files} files patched, {total_replacements} replacements")
 print(f"  bundle      -> v=20260506-b4")
-print(f"  ph-theme    -> v=20260506-p23")
-print(f"  pill-relocator -> v=20260506-p3")
+print(f"  ph-theme    -> v=20260506-p24")
+print(f"  pill-relocator -> v=20260506-p5")
