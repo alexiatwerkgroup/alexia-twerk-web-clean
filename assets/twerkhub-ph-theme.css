@@ -1,0 +1,254 @@
+/* ═══ TWERKHUB · PH-INSPIRED THEME (preview · home only) ═══
+ * v20260505-p1
+ *
+ * Loads ON TOP of design-tokens / page / polish / premium / tokens CSS.
+ * Activates only when <body> has the class `twerkhub-ph-theme`.
+ * No global token mutations — safe to delete by removing the link tag.
+ *
+ *   · Background: pure black (#000)
+ *   · Primary accent: PH orange (#ff9000)
+ *   · Display font: Anton (geometric heavy sans, free Google Font)
+ *   · Body font: Inter 900 (already loaded site-wide)
+ *   · Logo lockup: TWERK white + HUB on orange chip (iconic PH treatment)
+ *   · Buttons / pills / links repaint pink → orange
+ *   · Subtle orange glow replaces pink/purple ambient
+ */
+
+/* ── Color + token overrides scoped to the theme ────────────────────── */
+body.twerkhub-ph-theme {
+  --twk-c-bg-0:       #000000;
+  --twk-c-bg-1:       #0a0a0a;
+  --twk-c-bg-2:       #131313;
+  --twk-c-surface:    rgba(255,255,255,.03);
+  --twk-c-border:     rgba(255,255,255,.06);
+  --twk-c-border-hi:  rgba(255,144,0,.3);
+  --twk-c-text:       #ffffff;
+  --twk-c-text-dim:   #b3b3b3;
+  --twk-c-text-mute:  #6b6b6b;
+
+  /* Repaint brand: pink/purple/gold all collapse to PH orange family */
+  --twk-c-pink:        #ff9000;
+  --twk-c-pink-soft:   #ffa530;
+  --twk-c-purple:      #1f1f1f;
+  --twk-c-purple-soft: #2a2a2a;
+  --twk-c-gold:        #ff9000;
+  --twk-c-gold-soft:   #ffb04d;
+
+  --twk-grad-pink:    linear-gradient(135deg, #ff9000 0%, #ff6a00 100%);
+  --twk-grad-gold:    linear-gradient(135deg, #ff9000 0%, #ffb04d 60%, #ffd596 100%);
+  --twk-grad-vip:     linear-gradient(135deg, #ffd596 0%, #ff9000 50%, #1f1f1f 100%);
+  --twk-grad-ambient:
+    radial-gradient(ellipse at 18% 12%, rgba(255,144,0,.08), transparent 48%),
+    radial-gradient(ellipse at 86% 22%, rgba(255,144,0,.05), transparent 52%),
+    radial-gradient(ellipse at 50% 88%, rgba(0,0,0,.4),       transparent 58%);
+
+  --twk-elev-glow-pink: 0 14px 40px rgba(255,144,0,.32), 0 0 0 1px rgba(255,144,0,.18) inset;
+  --twk-elev-glow-gold: 0 14px 40px rgba(255,144,0,.30), 0 0 0 1px rgba(255,144,0,.18) inset;
+
+  background: #000 !important;
+  color: #fff;
+}
+
+/* ── Display font (only on home) ──────────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-home-hero h1,
+body.twerkhub-ph-theme .twerkhub-stack-head h2,
+body.twerkhub-ph-theme .twerkhub-tiers h2,
+body.twerkhub-ph-theme .twerkhub-comm-hero h1 {
+  font-family: "Anton", "Bebas Neue", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: .005em;
+  text-transform: uppercase;
+  color: #fff;
+}
+body.twerkhub-ph-theme .twerkhub-home-hero h1 {
+  font-size: clamp(48px, 8vw, 112px);
+  line-height: 0.95;
+}
+
+/* ── Repaint the v1 nav (sticky topbar) to PH look ────────────────── */
+body.twerkhub-ph-theme .twk-nav-v1 {
+  background: rgba(0,0,0,.96) !important;
+  border-bottom: 1px solid rgba(255,144,0,.25) !important;
+}
+body.twerkhub-ph-theme .twk-nav-v1-brand {
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 13px;
+  letter-spacing: .15em;
+  color: #fff;
+}
+/* Hide the legacy logo text "TWERKHUB · EST. 2018" — we replace with chip */
+body.twerkhub-ph-theme .twk-nav-v1-brand span { display: none; }
+/* Hide the existing PNG logo so we can render the wordmark text instead */
+body.twerkhub-ph-theme .twk-nav-v1-brand img { display: none; }
+/* Inject TWERK + HUB chip via ::before / ::after */
+body.twerkhub-ph-theme .twk-nav-v1-brand::before {
+  content: "TWERK";
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: .01em;
+  line-height: 1;
+}
+body.twerkhub-ph-theme .twk-nav-v1-brand::after {
+  content: "HUB";
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: #000;
+  background: #ff9000;
+  letter-spacing: .01em;
+  padding: 4px 10px 3px;
+  border-radius: 6px;
+  line-height: 1;
+}
+@media (max-width: 880px) {
+  body.twerkhub-ph-theme .twk-nav-v1-brand::before { font-size: 22px; }
+  body.twerkhub-ph-theme .twk-nav-v1-brand::after { font-size: 18px; padding: 3px 8px 2px; }
+}
+
+/* Active link underline → orange (was pink+gold) */
+body.twerkhub-ph-theme .twk-nav-v1-links a.is-active::after {
+  background: #ff9000 !important;
+  box-shadow: 0 0 10px rgba(255,144,0,.55) !important;
+}
+body.twerkhub-ph-theme .twk-nav-v1-links a:hover {
+  background: rgba(255,144,0,.08) !important;
+  color: #fff !important;
+}
+
+/* HOT PACKS button → solid orange */
+body.twerkhub-ph-theme .twk-nav-v1-links a.twk-nav-v1-hot {
+  background: #ff9000 !important;
+  color: #000 !important;
+  border: 1px solid #ff9000 !important;
+  font-weight: 900 !important;
+}
+body.twerkhub-ph-theme .twk-nav-v1-links a.twk-nav-v1-hot:hover {
+  background: #ffb04d !important;
+  color: #000 !important;
+  box-shadow: 0 6px 18px rgba(255,144,0,.5) !important;
+}
+
+/* LIVE pill — keep green but bg darker */
+body.twerkhub-ph-theme .twk-nav-v1-live {
+  background: rgba(30,224,143,.08) !important;
+  border-color: rgba(30,224,143,.4) !important;
+}
+
+/* Lang switcher → orange active */
+body.twerkhub-ph-theme .twk-nav-v1-lang a.is-active {
+  background: rgba(255,144,0,.18) !important;
+  border: 1px solid rgba(255,144,0,.35) !important;
+  color: #ff9000 !important;
+}
+
+/* ── Ticker bar → orange accent ───────────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-ticker {
+  background: #0a0a0a;
+  border-top: 1px solid rgba(255,144,0,.2);
+  border-bottom: 1px solid rgba(255,144,0,.2);
+}
+body.twerkhub-ph-theme .twerkhub-ticker span {
+  color: #ff9000;
+}
+
+/* ── Hero subtitle in orange uppercase ─────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-home-hero-sub {
+  color: #ff9000 !important;
+  font-family: "Inter", sans-serif;
+  font-weight: 900;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+/* ── Buttons: pink/gold gradients → orange ────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-btn-primary,
+body.twerkhub-ph-theme .twerkhub-btn-gold,
+body.twerkhub-ph-theme .twerkhub-btn[class*="primary"],
+body.twerkhub-ph-theme button[class*="-primary"]:not([class*="ghost"]) {
+  background: #ff9000 !important;
+  color: #000 !important;
+  border: none !important;
+  font-weight: 900 !important;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  box-shadow: 0 4px 14px rgba(255,144,0,.28) !important;
+}
+body.twerkhub-ph-theme .twerkhub-btn-primary:hover,
+body.twerkhub-ph-theme .twerkhub-btn-gold:hover,
+body.twerkhub-ph-theme .twerkhub-btn[class*="primary"]:hover {
+  background: #ffb04d !important;
+  box-shadow: 0 8px 22px rgba(255,144,0,.42) !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-btn-ghost,
+body.twerkhub-ph-theme .twerkhub-btn[class*="ghost"] {
+  background: transparent !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,144,0,.5) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+}
+body.twerkhub-ph-theme .twerkhub-btn-ghost:hover {
+  background: rgba(255,144,0,.08) !important;
+  border-color: #ff9000 !important;
+}
+
+/* ── Cards: black bg, orange edge on hover ─────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-pl-card,
+body.twerkhub-ph-theme .twerkhub-coming-card,
+body.twerkhub-ph-theme .twerkhub-club-card,
+body.twerkhub-ph-theme .twerkhub-tl-node,
+body.twerkhub-ph-theme .twerkhub-stack-card,
+body.twerkhub-ph-theme .twerkhub-thread,
+body.twerkhub-ph-theme .twerkhub-member-card {
+  background: #131313 !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+}
+body.twerkhub-ph-theme .twerkhub-pl-card:hover,
+body.twerkhub-ph-theme .twerkhub-coming-card:hover,
+body.twerkhub-ph-theme .twerkhub-club-card:hover {
+  border-color: #ff9000 !important;
+  box-shadow: 0 14px 40px rgba(255,144,0,.18) !important;
+}
+
+/* Override the legacy thumb gradient (added inline at top of body) */
+body.twerkhub-ph-theme .twerkhub-pl-thumb,
+body.twerkhub-ph-theme .vthumb,
+body.twerkhub-ph-theme .rk-thumb,
+body.twerkhub-ph-theme .twerkhub-fp-thumb,
+body.twerkhub-ph-theme .twerkhub-club-thumb {
+  background: linear-gradient(135deg, #1f1f1f 0%, #0a0a0a 100%) !important;
+}
+
+/* ── Kicker (small uppercase headers) → orange ─────────────────────── */
+body.twerkhub-ph-theme .twerkhub-kicker {
+  color: #ff9000 !important;
+}
+
+/* ── Strong, em, links → orange ────────────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-page strong { color: #ff9000; }
+body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):not(.twerkhub-brand):not(.twk-nav-v1-brand):not(.twk-nav-v1-links a):not(.vcard):not(.rk-item) {
+  color: #ff9000;
+}
+
+/* ── Tier pills (token economy) → orange family ────────────────────── */
+body.twerkhub-ph-theme [class*="tier-medium"],
+body.twerkhub-ph-theme [class*="tier-premium"],
+body.twerkhub-ph-theme [class*="tier-vip"] {
+  border-color: rgba(255,144,0,.4) !important;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme footer,
+body.twerkhub-ph-theme .twerkhub-footer {
+  background: #000 !important;
+  border-top: 1px solid rgba(255,144,0,.15);
+}
+
+/* ── Focus ring: orange ────────────────────────────────────────────── */
+body.twerkhub-ph-theme :focus-visible {
+  outline: 2px solid #ff9000 !important;
+  outline-offset: 3px;
+}
