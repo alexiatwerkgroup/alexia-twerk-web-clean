@@ -314,10 +314,21 @@
 
 <!-- â•â•â•â•â•â•â• CHECKOUT MODAL · Discord + Telegram dual-channel â•â•â•â•â•â•â• -->
 <style id="twk-checkout-modal-css">
-/* v3 nuclear-centering 2026-05-06 — flexbox + absolute belt+suspenders */
-.twk-checkout-modal{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;width:100vw !important;height:100vh !important;height:100dvh !important;z-index:2147483646 !important;display:none;background:rgba(0,0,0,.85) !important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;padding:20px;box-sizing:border-box;margin:0 !important;transform:none !important;filter:none !important}
-.twk-checkout-modal.is-open{display:flex !important;align-items:center !important;justify-content:center !important}
-.twk-checkout-card{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;margin:0 !important;max-width:440px !important;width:calc(100vw - 48px) !important;max-height:calc(100vh - 48px) !important;max-height:calc(100dvh - 48px) !important;overflow-y:auto !important;background:linear-gradient(180deg,#13131c,#0a0a10) !important;border:1px solid rgba(255,255,255,.12) !important;border-radius:18px !important;padding:28px 26px !important;text-align:center !important;color:#f4f4f8 !important;box-shadow:0 30px 80px rgba(0,0,0,.7) !important;z-index:2147483647 !important}
+/* v5 NATIVE DIALOG 2026-05-06 — browser-native centering, immune to ancestor CSS */
+dialog.twk-checkout-modal{
+  /* Browser auto-centers <dialog> when opened with showModal() */
+  max-width:440px;width:calc(100vw - 48px);max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);
+  margin:auto;padding:0;overflow-y:auto;
+  background:linear-gradient(180deg,#13131c,#0a0a10);
+  border:1px solid rgba(255,255,255,.12);border-radius:18px;
+  color:#f4f4f8;box-shadow:0 30px 80px rgba(0,0,0,.7);
+  font-family:'Inter',ui-sans-serif,system-ui,sans-serif;
+}
+dialog.twk-checkout-modal::backdrop{
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.twk-checkout-card{padding:28px 26px;text-align:center;position:relative}
 .twk-checkout-close{position:absolute;top:10px;right:14px;width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer;line-height:1}
 .twk-checkout-close:hover{background:rgba(255,255,255,.08)}
 .twk-checkout-kicker{font:800 11px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase;color:#e8c880;margin-bottom:10px}
@@ -334,7 +345,7 @@
 .twk-checkout-btn--telegram:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(42,171,238,.45)}
 .twk-checkout-foot{font-size:11px;color:rgba(255,255,255,.45);margin-top:14px;letter-spacing:.04em}
 </style>
-<div class="twk-checkout-modal" id="twk-checkout-modal" role="dialog" aria-modal="true" aria-label="Checkout">
+<dialog class="twk-checkout-modal" id="twk-checkout-modal" aria-label="Checkout">
   <div class="twk-checkout-card">
     <button class="twk-checkout-close" type="button" aria-label="Close">&times;</button>
     <div class="twk-checkout-kicker" id="twk-checkout-tier-label">TIER</div>
@@ -353,7 +364,7 @@
     </div>
     <div class="twk-checkout-foot">Auto-renews monthly · cancel anytime · 100% private</div>
   </div>
-</div>
+</dialog>
 <script>
 /* TWERKHUB · Tier checkout interceptor + bulletproof.
  * - Wraps the 3 paid tier CTAs (medium, premium, vip-top) so click opens a
@@ -379,8 +390,10 @@
     closeBtn = modal && modal.querySelector('.twk-checkout-close');
     if (modal && closeBtn && !closeBtn.__bound){
       closeBtn.addEventListener('click', close);
+      // Native <dialog> ESC handling is automatic via 'cancel' event
+      modal.addEventListener('cancel', function(ev){ /* allow native ESC close */ });
+      // Click on backdrop closes (click target is the dialog itself, not children)
       modal.addEventListener('click', function(ev){ if (ev.target === modal) close(); });
-      document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && modal.classList.contains('is-open')) close(); });
       closeBtn.__bound = true;
     }
   }
@@ -397,59 +410,20 @@
     var qs = '?tier=' + encodeURIComponent(tier || '') + (price ? '&price=' + encodeURIComponent(price) : '');
     if (dBtn) dBtn.setAttribute('href', DISCORD + qs);
     if (tBtn) tBtn.setAttribute('href', TELEGRAM + qs);
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.documentElement.style.overflow = 'hidden';
-    // BULLETPROOF CENTERING: ensure modal is body-level (no ancestor transform
-    // can break position:fixed), then compute pixel-perfect viewport center.
-    // This bypasses any CSS issue and guarantees centering on every browser.
-    try {
-      if (modal.parentNode !== document.body) document.body.appendChild(modal);
-    } catch(_){}
-    var card = modal.querySelector('.twk-checkout-card');
-    function centerCard(){
-      if (!card) return;
-      var vh = window.innerHeight, vw = window.innerWidth;
-      var cardW = Math.min(440, vw - 48);
-      // measure actual rendered height first by un-fixing
-      card.style.cssText = 'position:fixed;visibility:hidden;width:'+cardW+'px;max-height:'+(vh-48)+'px;overflow-y:auto;left:0;top:0;';
-      var cardH = Math.min(card.scrollHeight, vh - 48);
-      var top  = Math.max(24, (vh - cardH) / 2);
-      var left = Math.max(24, (vw - cardW) / 2);
-      card.style.cssText =
-        'position:fixed !important;' +
-        'top:'+top+'px !important;' +
-        'left:'+left+'px !important;' +
-        'width:'+cardW+'px !important;' +
-        'max-height:'+(vh-48)+'px !important;' +
-        'overflow-y:auto !important;' +
-        'transform:none !important;' +
-        'margin:0 !important;' +
-        'z-index:2147483647 !important;' +
-        'visibility:visible !important;' +
-        'background:linear-gradient(180deg,#13131c,#0a0a10) !important;' +
-        'border:1px solid rgba(255,255,255,.12) !important;' +
-        'border-radius:18px !important;' +
-        'padding:28px 26px !important;' +
-        'text-align:center !important;' +
-        'color:#f4f4f8 !important;' +
-        'box-shadow:0 30px 80px rgba(0,0,0,.7) !important;';
+    // Native <dialog> showModal: browser handles centering, focus, ESC, backdrop
+    if (typeof modal.showModal === 'function' && !modal.open) {
+      try { modal.showModal(); } catch(_){}
+    } else {
+      // Fallback for ancient browsers (shouldn't be needed in 2026)
+      modal.setAttribute('open', '');
     }
-    centerCard();
-    // Re-center on resize while modal is open
-    var resizeHandler = function(){ if (modal.classList.contains('is-open')) centerCard(); };
-    window.addEventListener('resize', resizeHandler);
-    modal.__twkResizeHandler = resizeHandler;
   }
   function close(){
     if (!modal) return;
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden', 'true');
-    document.documentElement.style.overflow = '';
-    // Remove resize handler
-    if (modal.__twkResizeHandler) {
-      window.removeEventListener('resize', modal.__twkResizeHandler);
-      modal.__twkResizeHandler = null;
+    if (typeof modal.close === 'function' && modal.open) {
+      try { modal.close(); } catch(_){}
+    } else {
+      modal.removeAttribute('open');
     }
   }
   function bind(el){
@@ -460,12 +434,11 @@
     el.addEventListener('click', function(ev){
       ev.preventDefault();
       try { open(tier, price); } catch(_){}
-      // SAFETY: if the modal didn't actually become visible (CSS fail, etc.)
-      // within 200ms, fall back to direct Discord navigation so the user is
-      // never stuck on a click that "did nothing".
+      // SAFETY: if the modal didn't actually become visible within 200ms,
+      // fall back to direct Discord navigation so the user is never stuck.
       setTimeout(function(){
         var m = document.getElementById('twk-checkout-modal');
-        if (!m || !m.classList.contains('is-open')) {
+        if (!m || !m.open) {
           window.open(DISCORD + '?tier=' + encodeURIComponent(tier), '_blank', 'noopener');
         }
       }, 200);
