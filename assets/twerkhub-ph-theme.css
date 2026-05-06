@@ -1,32 +1,33 @@
-/* ═══ TWERKHUB · PH-INSPIRED THEME (preview · home only) ═══
- * v20260505-p1
+/* ═══ TWERKHUB · PH-INSPIRED THEME (HOME · 100% coverage) ═══
+ * v20260505-p2
  *
- * Loads ON TOP of design-tokens / page / polish / premium / tokens CSS.
- * Activates only when <body> has the class `twerkhub-ph-theme`.
- * No global token mutations — safe to delete by removing the link tag.
+ * Full PH-style adaptation scoped to body.twerkhub-ph-theme.
+ * - Pure black background everywhere
+ * - PornHub orange (#ff9000) as primary brand color
+ * - Anton (geometric heavy display) for ALL headings
+ * - Inter 800/900 for body, uppercase + bold for labels
+ * - Logo lockup: TWERK (white) + HUB (black on orange chip)
+ * - All pink/purple/gold gradients neutralized
+ * - Cards: black surfaces, orange edge on hover
+ * - Buttons: solid orange, no pink anywhere
  *
- *   · Background: pure black (#000)
- *   · Primary accent: PH orange (#ff9000)
- *   · Display font: Anton (geometric heavy sans, free Google Font)
- *   · Body font: Inter 900 (already loaded site-wide)
- *   · Logo lockup: TWERK white + HUB on orange chip (iconic PH treatment)
- *   · Buttons / pills / links repaint pink → orange
- *   · Subtle orange glow replaces pink/purple ambient
+ * Zero impact on the other ~980 pages — they don't have the body class.
  */
 
-/* ── Color + token overrides scoped to the theme ────────────────────── */
+/* ────────────────────────────────────────────────────────────────────
+   1 · Token overrides
+   ──────────────────────────────────────────────────────────────────── */
 body.twerkhub-ph-theme {
-  --twk-c-bg-0:       #000000;
-  --twk-c-bg-1:       #0a0a0a;
-  --twk-c-bg-2:       #131313;
-  --twk-c-surface:    rgba(255,255,255,.03);
-  --twk-c-border:     rgba(255,255,255,.06);
-  --twk-c-border-hi:  rgba(255,144,0,.3);
-  --twk-c-text:       #ffffff;
-  --twk-c-text-dim:   #b3b3b3;
-  --twk-c-text-mute:  #6b6b6b;
+  --twk-c-bg-0:        #000000;
+  --twk-c-bg-1:        #0a0a0a;
+  --twk-c-bg-2:        #131313;
+  --twk-c-surface:     rgba(255,255,255,.03);
+  --twk-c-border:      rgba(255,255,255,.06);
+  --twk-c-border-hi:   rgba(255,144,0,.32);
+  --twk-c-text:        #ffffff;
+  --twk-c-text-dim:    #c9c9c9;
+  --twk-c-text-mute:   #6b6b6b;
 
-  /* Repaint brand: pink/purple/gold all collapse to PH orange family */
   --twk-c-pink:        #ff9000;
   --twk-c-pink-soft:   #ffa530;
   --twk-c-purple:      #1f1f1f;
@@ -34,9 +35,9 @@ body.twerkhub-ph-theme {
   --twk-c-gold:        #ff9000;
   --twk-c-gold-soft:   #ffb04d;
 
-  --twk-grad-pink:    linear-gradient(135deg, #ff9000 0%, #ff6a00 100%);
-  --twk-grad-gold:    linear-gradient(135deg, #ff9000 0%, #ffb04d 60%, #ffd596 100%);
-  --twk-grad-vip:     linear-gradient(135deg, #ffd596 0%, #ff9000 50%, #1f1f1f 100%);
+  --twk-grad-pink:     linear-gradient(135deg, #ff9000 0%, #ff6a00 100%);
+  --twk-grad-gold:     linear-gradient(135deg, #ffb04d 0%, #ff9000 60%, #ff6a00 100%);
+  --twk-grad-vip:      linear-gradient(135deg, #ffd596 0%, #ff9000 50%, #1f1f1f 100%);
   --twk-grad-ambient:
     radial-gradient(ellipse at 18% 12%, rgba(255,144,0,.08), transparent 48%),
     radial-gradient(ellipse at 86% 22%, rgba(255,144,0,.05), transparent 52%),
@@ -47,44 +48,112 @@ body.twerkhub-ph-theme {
 
   background: #000 !important;
   color: #fff;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "kern","liga";
 }
 
-/* ── Display font (only on home) ──────────────────────────────────── */
+body.twerkhub-ph-theme::before { display: none; }
+body.twerkhub-ph-theme::after { display: none; }
+
+/* ────────────────────────────────────────────────────────────────────
+   2 · Typography — Anton for ALL headings, Inter 800 for body
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme h1,
+body.twerkhub-ph-theme h2,
+body.twerkhub-ph-theme h3,
+body.twerkhub-ph-theme h4,
+body.twerkhub-ph-theme h5,
+body.twerkhub-ph-theme h6,
 body.twerkhub-ph-theme .twerkhub-home-hero h1,
 body.twerkhub-ph-theme .twerkhub-stack-head h2,
 body.twerkhub-ph-theme .twerkhub-tiers h2,
-body.twerkhub-ph-theme .twerkhub-comm-hero h1 {
-  font-family: "Anton", "Bebas Neue", "Inter", ui-sans-serif, system-ui, sans-serif;
-  font-weight: 400;
-  letter-spacing: .005em;
-  text-transform: uppercase;
+body.twerkhub-ph-theme .twerkhub-comm-hero h1,
+body.twerkhub-ph-theme [class*="-head"] h2,
+body.twerkhub-ph-theme [class*="-head"] h3 {
+  font-family: "Anton", "Bebas Neue", "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .005em !important;
+  text-transform: uppercase !important;
   color: #fff;
 }
-body.twerkhub-ph-theme .twerkhub-home-hero h1 {
-  font-size: clamp(48px, 8vw, 112px);
-  line-height: 0.95;
+
+body.twerkhub-ph-theme h1 em,
+body.twerkhub-ph-theme h2 em,
+body.twerkhub-ph-theme h3 em {
+  font-family: "Anton", "Bebas Neue", "Inter", sans-serif !important;
+  font-style: normal !important;
+  color: #ff9000 !important;
 }
 
-/* ── Repaint the v1 nav (sticky topbar) to PH look ────────────────── */
-body.twerkhub-ph-theme .twk-nav-v1 {
-  background: rgba(0,0,0,.96) !important;
-  border-bottom: 1px solid rgba(255,144,0,.25) !important;
+body.twerkhub-ph-theme .twerkhub-home-hero h1 {
+  font-size: clamp(48px, 8vw, 120px) !important;
+  line-height: 0.92 !important;
 }
+
+body.twerkhub-ph-theme h2 { font-size: clamp(34px, 5vw, 64px); line-height: 1; }
+body.twerkhub-ph-theme h3 { font-size: clamp(24px, 3.2vw, 38px); line-height: 1.05; }
+body.twerkhub-ph-theme h4 { font-size: clamp(18px, 2.4vw, 24px); line-height: 1.1; }
+
+body.twerkhub-ph-theme p,
+body.twerkhub-ph-theme li,
+body.twerkhub-ph-theme span:not(.twk-nav-v1-live):not(.twk-nav-v1-brand span),
+body.twerkhub-ph-theme div {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+body.twerkhub-ph-theme p { color: #c9c9c9; font-weight: 500; }
+body.twerkhub-ph-theme strong { color: #ff9000 !important; font-weight: 800; }
+
+body.twerkhub-ph-theme .twerkhub-kicker {
+  color: #ff9000 !important;
+  font-family: "Inter", monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .22em;
+}
+
+/* Stat counters: Anton, big and orange */
+body.twerkhub-ph-theme .twerkhub-hh-stat strong,
+body.twerkhub-ph-theme [data-twk-count] {
+  font-family: "Anton", "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  font-size: clamp(28px, 4vw, 44px) !important;
+  color: #ff9000 !important;
+  letter-spacing: 0;
+}
+body.twerkhub-ph-theme .twerkhub-hh-stat span {
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  color: #b3b3b3;
+  font-size: 11px;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   3 · Sticky topbar (twk-nav-v1)
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme .twk-nav-v1 {
+  background: rgba(0,0,0,.97) !important;
+  border-bottom: 2px solid #ff9000 !important;
+  backdrop-filter: blur(8px) !important;
+}
+
 body.twerkhub-ph-theme .twk-nav-v1-brand {
-  font-family: "Anton", "Inter", sans-serif;
+  font-family: "Anton", "Inter", sans-serif !important;
   font-size: 13px;
   letter-spacing: .15em;
   color: #fff;
+  gap: 6px;
 }
-/* Hide the legacy logo text "TWERKHUB · EST. 2018" — we replace with chip */
-body.twerkhub-ph-theme .twk-nav-v1-brand span { display: none; }
-/* Hide the existing PNG logo so we can render the wordmark text instead */
-body.twerkhub-ph-theme .twk-nav-v1-brand img { display: none; }
-/* Inject TWERK + HUB chip via ::before / ::after */
+body.twerkhub-ph-theme .twk-nav-v1-brand span { display: none !important; }
+body.twerkhub-ph-theme .twk-nav-v1-brand img { display: none !important; }
+
 body.twerkhub-ph-theme .twk-nav-v1-brand::before {
   content: "TWERK";
   font-family: "Anton", "Inter", sans-serif;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 400;
   color: #fff;
   letter-spacing: .01em;
@@ -93,12 +162,12 @@ body.twerkhub-ph-theme .twk-nav-v1-brand::before {
 body.twerkhub-ph-theme .twk-nav-v1-brand::after {
   content: "HUB";
   font-family: "Anton", "Inter", sans-serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 400;
   color: #000;
   background: #ff9000;
   letter-spacing: .01em;
-  padding: 4px 10px 3px;
+  padding: 5px 11px 4px;
   border-radius: 6px;
   line-height: 1;
 }
@@ -107,17 +176,21 @@ body.twerkhub-ph-theme .twk-nav-v1-brand::after {
   body.twerkhub-ph-theme .twk-nav-v1-brand::after { font-size: 18px; padding: 3px 8px 2px; }
 }
 
-/* Active link underline → orange (was pink+gold) */
-body.twerkhub-ph-theme .twk-nav-v1-links a.is-active::after {
-  background: #ff9000 !important;
-  box-shadow: 0 0 10px rgba(255,144,0,.55) !important;
+body.twerkhub-ph-theme .twk-nav-v1-links a {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,.7) !important;
 }
 body.twerkhub-ph-theme .twk-nav-v1-links a:hover {
   background: rgba(255,144,0,.08) !important;
   color: #fff !important;
 }
-
-/* HOT PACKS button → solid orange */
+body.twerkhub-ph-theme .twk-nav-v1-links a.is-active::after {
+  background: #ff9000 !important;
+  box-shadow: 0 0 10px rgba(255,144,0,.55) !important;
+}
 body.twerkhub-ph-theme .twk-nav-v1-links a.twk-nav-v1-hot {
   background: #ff9000 !important;
   color: #000 !important;
@@ -130,56 +203,89 @@ body.twerkhub-ph-theme .twk-nav-v1-links a.twk-nav-v1-hot:hover {
   box-shadow: 0 6px 18px rgba(255,144,0,.5) !important;
 }
 
-/* LIVE pill — keep green but bg darker */
 body.twerkhub-ph-theme .twk-nav-v1-live {
   background: rgba(30,224,143,.08) !important;
   border-color: rgba(30,224,143,.4) !important;
+  color: #1ee08f !important;
 }
 
-/* Lang switcher → orange active */
 body.twerkhub-ph-theme .twk-nav-v1-lang a.is-active {
   background: rgba(255,144,0,.18) !important;
   border: 1px solid rgba(255,144,0,.35) !important;
   color: #ff9000 !important;
 }
 
-/* ── Ticker bar → orange accent ───────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────────────
+   4 · Ticker
+   ──────────────────────────────────────────────────────────────────── */
 body.twerkhub-ph-theme .twerkhub-ticker {
-  background: #0a0a0a;
+  background: #0a0a0a !important;
   border-top: 1px solid rgba(255,144,0,.2);
   border-bottom: 1px solid rgba(255,144,0,.2);
 }
 body.twerkhub-ph-theme .twerkhub-ticker span {
-  color: #ff9000;
+  color: #ff9000 !important;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 800 !important;
 }
 
-/* ── Hero subtitle in orange uppercase ─────────────────────────────── */
+/* ────────────────────────────────────────────────────────────────────
+   5 · Hero
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-home-hero {
+  background: #000 !important;
+}
 body.twerkhub-ph-theme .twerkhub-home-hero-sub {
   color: #ff9000 !important;
-  font-family: "Inter", sans-serif;
-  font-weight: 900;
-  letter-spacing: .2em;
-  text-transform: uppercase;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 900 !important;
+  letter-spacing: .2em !important;
+  text-transform: uppercase !important;
+}
+body.twerkhub-ph-theme .twerkhub-home-hero-body {
+  color: #c9c9c9 !important;
+  font-weight: 500;
 }
 
-/* ── Buttons: pink/gold gradients → orange ────────────────────────── */
+/* "Next" button on the hero video — was pink-purple gradient */
+body.twerkhub-ph-theme .twerkhub-hh-next {
+  background: rgba(255,144,0,.15) !important;
+  border-color: rgba(255,144,0,.45) !important;
+  color: #ff9000 !important;
+}
+body.twerkhub-ph-theme .twerkhub-hh-next:hover {
+  background: #ff9000 !important;
+  border-color: #ff9000 !important;
+  color: #000 !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-hh-mute {
+  background: rgba(255,144,0,.15) !important;
+  border-color: rgba(255,144,0,.45) !important;
+  color: #fff !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   6 · Buttons (universal)
+   ──────────────────────────────────────────────────────────────────── */
 body.twerkhub-ph-theme .twerkhub-btn-primary,
 body.twerkhub-ph-theme .twerkhub-btn-gold,
 body.twerkhub-ph-theme .twerkhub-btn[class*="primary"],
 body.twerkhub-ph-theme button[class*="-primary"]:not([class*="ghost"]) {
   background: #ff9000 !important;
+  background-image: none !important;
   color: #000 !important;
   border: none !important;
+  font-family: "Inter", sans-serif !important;
   font-weight: 900 !important;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  box-shadow: 0 4px 14px rgba(255,144,0,.28) !important;
+  text-transform: uppercase !important;
+  letter-spacing: .1em !important;
+  box-shadow: 0 4px 14px rgba(255,144,0,.32) !important;
 }
 body.twerkhub-ph-theme .twerkhub-btn-primary:hover,
-body.twerkhub-ph-theme .twerkhub-btn-gold:hover,
-body.twerkhub-ph-theme .twerkhub-btn[class*="primary"]:hover {
+body.twerkhub-ph-theme .twerkhub-btn-gold:hover {
   background: #ffb04d !important;
-  box-shadow: 0 8px 22px rgba(255,144,0,.42) !important;
+  box-shadow: 0 8px 22px rgba(255,144,0,.5) !important;
 }
 
 body.twerkhub-ph-theme .twerkhub-btn-ghost,
@@ -188,32 +294,40 @@ body.twerkhub-ph-theme .twerkhub-btn[class*="ghost"] {
   color: #fff !important;
   border: 1px solid rgba(255,144,0,.5) !important;
   font-weight: 800 !important;
-  text-transform: uppercase;
+  text-transform: uppercase !important;
+  letter-spacing: .1em !important;
 }
 body.twerkhub-ph-theme .twerkhub-btn-ghost:hover {
   background: rgba(255,144,0,.08) !important;
   border-color: #ff9000 !important;
 }
 
-/* ── Cards: black bg, orange edge on hover ─────────────────────────── */
+/* ────────────────────────────────────────────────────────────────────
+   7 · Cards (playlists, coming, club, threads, members, tiers)
+   ──────────────────────────────────────────────────────────────────── */
 body.twerkhub-ph-theme .twerkhub-pl-card,
 body.twerkhub-ph-theme .twerkhub-coming-card,
 body.twerkhub-ph-theme .twerkhub-club-card,
 body.twerkhub-ph-theme .twerkhub-tl-node,
 body.twerkhub-ph-theme .twerkhub-stack-card,
 body.twerkhub-ph-theme .twerkhub-thread,
-body.twerkhub-ph-theme .twerkhub-member-card {
+body.twerkhub-ph-theme .twerkhub-member-card,
+body.twerkhub-ph-theme [class*="-tier-card"] {
   background: #131313 !important;
   border: 1px solid rgba(255,255,255,.06) !important;
+  background-image: none !important;
 }
 body.twerkhub-ph-theme .twerkhub-pl-card:hover,
 body.twerkhub-ph-theme .twerkhub-coming-card:hover,
-body.twerkhub-ph-theme .twerkhub-club-card:hover {
+body.twerkhub-ph-theme .twerkhub-club-card:hover,
+body.twerkhub-ph-theme .twerkhub-stack-card:hover,
+body.twerkhub-ph-theme .twerkhub-member-card:hover {
   border-color: #ff9000 !important;
   box-shadow: 0 14px 40px rgba(255,144,0,.18) !important;
+  transform: translateY(-2px);
 }
 
-/* Override the legacy thumb gradient (added inline at top of body) */
+/* Replace legacy thumb gradient (inline style at line 137 in index.html) */
 body.twerkhub-ph-theme .twerkhub-pl-thumb,
 body.twerkhub-ph-theme .vthumb,
 body.twerkhub-ph-theme .rk-thumb,
@@ -222,33 +336,347 @@ body.twerkhub-ph-theme .twerkhub-club-thumb {
   background: linear-gradient(135deg, #1f1f1f 0%, #0a0a0a 100%) !important;
 }
 
-/* ── Kicker (small uppercase headers) → orange ─────────────────────── */
-body.twerkhub-ph-theme .twerkhub-kicker {
+/* Card titles — Anton */
+body.twerkhub-ph-theme .twerkhub-pl-card h3,
+body.twerkhub-ph-theme .twerkhub-coming-card h3,
+body.twerkhub-ph-theme .twerkhub-club-card h3,
+body.twerkhub-ph-theme .twerkhub-stack-card h3,
+body.twerkhub-ph-theme [class*="-tier-card"] h3 {
+  font-family: "Anton", "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .01em !important;
+  color: #fff !important;
+}
+
+/* Number badges (rk-num, ranking) → orange */
+body.twerkhub-ph-theme .rk-num,
+body.twerkhub-ph-theme [class*="-rank-num"],
+body.twerkhub-ph-theme [class*="-num-badge"] {
+  color: #ff9000 !important;
+  font-family: "Anton", sans-serif !important;
+  font-weight: 400 !important;
+}
+
+/* Pills, chips, badges */
+body.twerkhub-ph-theme .twerkhub-tag,
+body.twerkhub-ph-theme [class*="-pill"],
+body.twerkhub-ph-theme [class*="-chip"],
+body.twerkhub-ph-theme [class*="-badge"] {
+  background: rgba(255,144,0,.12) !important;
+  color: #ff9000 !important;
+  border: 1px solid rgba(255,144,0,.35) !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .08em !important;
+}
+
+/* Tier cards: gradients → orange */
+body.twerkhub-ph-theme [class*="tier-medium"] { border-color: rgba(255,144,0,.4) !important; }
+body.twerkhub-ph-theme [class*="tier-premium"] { border-color: #ff9000 !important; }
+body.twerkhub-ph-theme [class*="tier-vip"] {
+  border-color: #ff9000 !important;
+  background: linear-gradient(180deg, rgba(255,144,0,.08), #131313) !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   8 · Section heads + dividers
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme [class*="-stack-head"]::after,
+body.twerkhub-ph-theme [class*="-section-head"]::after {
+  background: #ff9000 !important;
+}
+
+body.twerkhub-ph-theme hr,
+body.twerkhub-ph-theme [class*="-divider"] {
+  border-color: rgba(255,144,0,.2) !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   9 · Inline links inside content
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):not(.twerkhub-brand):not(.twk-nav-v1-brand):not(.twk-nav-v1-links a):not(.vcard):not(.rk-item):not(.twerkhub-pl-card):not(.twerkhub-coming-card) {
+  color: #ff9000 !important;
+}
+body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):hover {
+  color: #ffb04d !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   10 · Token HUD (live token counter widget)
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-tokens-hud,
+body.twerkhub-ph-theme [class*="-tokens-hud"] {
+  background: rgba(0,0,0,.92) !important;
+  border-color: rgba(255,144,0,.35) !important;
+}
+body.twerkhub-ph-theme .twerkhub-tokens-hud * {
+  color: #fff;
+}
+body.twerkhub-ph-theme [class*="-tokens"] [class*="-balance"] {
+  color: #ff9000 !important;
+  font-family: "Anton", sans-serif !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   11 · Footer
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme footer,
+body.twerkhub-ph-theme .twerkhub-footer,
+body.twerkhub-ph-theme [class*="-footer"] {
+  background: #000 !important;
+  border-top: 1px solid rgba(255,144,0,.2);
+  color: #b3b3b3;
+}
+body.twerkhub-ph-theme footer a,
+body.twerkhub-ph-theme .twerkhub-footer a {
+  color: #c9c9c9 !important;
+}
+body.twerkhub-ph-theme footer a:hover,
+body.twerkhub-ph-theme .twerkhub-footer a:hover {
   color: #ff9000 !important;
 }
 
-/* ── Strong, em, links → orange ────────────────────────────────────── */
-body.twerkhub-ph-theme .twerkhub-page strong { color: #ff9000; }
-body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):not(.twerkhub-brand):not(.twk-nav-v1-brand):not(.twk-nav-v1-links a):not(.vcard):not(.rk-item) {
-  color: #ff9000;
+/* ────────────────────────────────────────────────────────────────────
+   12 · Modals / paywall
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme [class*="modal"],
+body.twerkhub-ph-theme [class*="paywall"],
+body.twerkhub-ph-theme [class*="drawer"] {
+  background: #0a0a0a !important;
+  border-color: rgba(255,144,0,.3) !important;
+}
+body.twerkhub-ph-theme [class*="modal"] h2,
+body.twerkhub-ph-theme [class*="paywall"] h2 {
+  color: #ff9000 !important;
 }
 
-/* ── Tier pills (token economy) → orange family ────────────────────── */
-body.twerkhub-ph-theme [class*="tier-medium"],
-body.twerkhub-ph-theme [class*="tier-premium"],
-body.twerkhub-ph-theme [class*="tier-vip"] {
-  border-color: rgba(255,144,0,.4) !important;
-}
-
-/* ── Footer ────────────────────────────────────────────────────────── */
-body.twerkhub-ph-theme footer,
-body.twerkhub-ph-theme .twerkhub-footer {
-  background: #000 !important;
-  border-top: 1px solid rgba(255,144,0,.15);
-}
-
-/* ── Focus ring: orange ────────────────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────────────
+   13 · Focus + scrollbar
+   ──────────────────────────────────────────────────────────────────── */
 body.twerkhub-ph-theme :focus-visible {
   outline: 2px solid #ff9000 !important;
   outline-offset: 3px;
+}
+
+body.twerkhub-ph-theme ::-webkit-scrollbar { width: 10px; height: 10px; }
+body.twerkhub-ph-theme ::-webkit-scrollbar-track { background: #000; }
+body.twerkhub-ph-theme ::-webkit-scrollbar-thumb {
+  background: #ff9000;
+  border-radius: 5px;
+}
+body.twerkhub-ph-theme ::-webkit-scrollbar-thumb:hover { background: #ffb04d; }
+
+/* ────────────────────────────────────────────────────────────────────
+   14 · Selection
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme ::selection {
+  background: #ff9000;
+  color: #000;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   15 · Featured playlists section (twerkhub-fp-*) — inline styles in
+   index.html still have pink/purple/green gradients hardcoded. Override
+   each with PH orange.
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-fp-head h2 {
+  font-family: "Anton", "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  color: #fff !important;
+  letter-spacing: .005em !important;
+}
+body.twerkhub-ph-theme .twerkhub-fp-head h2 em {
+  font-style: normal !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  color: #ff9000 !important;
+  -webkit-text-fill-color: #ff9000 !important;
+}
+body.twerkhub-ph-theme .twerkhub-fp-head p {
+  color: #c9c9c9 !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-fp-card {
+  background: #131313 !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  background-image: none !important;
+}
+body.twerkhub-ph-theme .twerkhub-fp-card:hover {
+  border-color: #ff9000 !important;
+  box-shadow: 0 24px 55px rgba(255,144,0,.22) !important;
+}
+body.twerkhub-ph-theme .twerkhub-fp-card-featured {
+  background: linear-gradient(180deg, rgba(255,144,0,.06), #131313) !important;
+  border-color: rgba(255,144,0,.4) !important;
+}
+body.twerkhub-ph-theme .twerkhub-fp-card-featured:hover {
+  border-color: #ff9000 !important;
+  box-shadow: 0 26px 60px rgba(255,144,0,.3) !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-fp-thumb {
+  background: #000 !important;
+}
+
+/* All badge variants → unified orange */
+body.twerkhub-ph-theme .twerkhub-fp-badge,
+body.twerkhub-ph-theme .twerkhub-fp-badge-signature,
+body.twerkhub-ph-theme .twerkhub-fp-badge-pink,
+body.twerkhub-ph-theme .twerkhub-fp-badge-purple,
+body.twerkhub-ph-theme .twerkhub-fp-badge-gold,
+body.twerkhub-ph-theme .twerkhub-fp-badge-vip {
+  background: #ff9000 !important;
+  background-image: none !important;
+  color: #000 !important;
+  box-shadow: 0 4px 12px rgba(255,144,0,.4) !important;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 900 !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-fp-live {
+  background: rgba(0,0,0,.85) !important;
+  border-color: rgba(30,224,143,.55) !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-fp-kicker,
+body.twerkhub-ph-theme .twerkhub-fp-card-featured .twerkhub-fp-kicker {
+  color: #ff9000 !important;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 900 !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-fp-title {
+  font-family: "Anton", "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .005em !important;
+  text-transform: uppercase !important;
+  color: #fff !important;
+}
+body.twerkhub-ph-theme .twerkhub-fp-title em,
+body.twerkhub-ph-theme .twerkhub-fp-card-featured .twerkhub-fp-title em {
+  font-style: normal !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  color: #ff9000 !important;
+  -webkit-text-fill-color: #ff9000 !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-fp-desc {
+  color: #c9c9c9 !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-fp-meta span {
+  background: rgba(255,144,0,.08) !important;
+  border: 1px solid rgba(255,144,0,.25) !important;
+  color: #ff9000 !important;
+}
+
+body.twerkhub-ph-theme .twerkhub-fp-cta,
+body.twerkhub-ph-theme .twerkhub-fp-card-featured .twerkhub-fp-cta {
+  background: #ff9000 !important;
+  background-image: none !important;
+  color: #000 !important;
+  box-shadow: 0 8px 22px rgba(255,144,0,.35) !important;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 900 !important;
+}
+body.twerkhub-ph-theme .twerkhub-fp-card:hover .twerkhub-fp-cta,
+body.twerkhub-ph-theme .twerkhub-fp-card-featured:hover .twerkhub-fp-cta {
+  box-shadow: 0 10px 28px rgba(255,144,0,.55) !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   16 · Tiers / pricing cards (commonly use pink-purple-gold gradients)
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme [class*="-tier"] [class*="-price"],
+body.twerkhub-ph-theme [class*="-tier"] [class*="-amount"] {
+  color: #ff9000 !important;
+  font-family: "Anton", sans-serif !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   17 · Bio + timeline (Alexia section) — Playfair em → Anton
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-bio-home h2,
+body.twerkhub-ph-theme .twerkhub-bio-home h2 em {
+  font-family: "Anton", "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  color: #fff !important;
+  text-transform: uppercase !important;
+  letter-spacing: .005em !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: #fff !important;
+}
+body.twerkhub-ph-theme .twerkhub-bio-home h2 em {
+  color: #ff9000 !important;
+  -webkit-text-fill-color: #ff9000 !important;
+}
+body.twerkhub-ph-theme .twerkhub-bio-flag {
+  background: rgba(255,144,0,.08) !important;
+  border: 1px solid rgba(255,144,0,.3) !important;
+  color: #ff9000 !important;
+}
+body.twerkhub-ph-theme .twerkhub-tl-node {
+  background: #131313 !important;
+  border-color: rgba(255,255,255,.06) !important;
+}
+body.twerkhub-ph-theme .twerkhub-tl-active {
+  border-color: #ff9000 !important;
+  box-shadow: 0 14px 40px rgba(255,144,0,.18) !important;
+}
+body.twerkhub-ph-theme .twerkhub-tl-badge {
+  background: #ff9000 !important;
+  color: #000 !important;
+}
+body.twerkhub-ph-theme .twerkhub-tl-year {
+  color: #ff9000 !important;
+  font-family: "Anton", sans-serif !important;
+}
+body.twerkhub-ph-theme .twerkhub-tl-arrow {
+  color: #ff9000 !important;
+}
+body.twerkhub-ph-theme .twerkhub-tl-ico {
+  filter: hue-rotate(20deg) saturate(.8);
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   18 · Stack section
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme .twerkhub-plus {
+  color: #ff9000 !important;
+}
+body.twerkhub-ph-theme .twerkhub-stack-card-accent,
+body.twerkhub-ph-theme .twerkhub-stack-card-accent2 {
+  border-color: rgba(255,144,0,.35) !important;
+  background: linear-gradient(180deg, rgba(255,144,0,.05), #131313) !important;
+}
+body.twerkhub-ph-theme .twerkhub-stack-foot {
+  color: #ff9000 !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   19 · Hero countdown timer + status pills
+   ──────────────────────────────────────────────────────────────────── */
+body.twerkhub-ph-theme #twk-rotator-countdown,
+body.twerkhub-ph-theme .twerkhub-hh-cd-timer {
+  color: #ff9000 !important;
+  font-family: "Anton", "JetBrains Mono", monospace !important;
+}
+body.twerkhub-ph-theme .twerkhub-hh-cd-kicker {
+  color: #c9c9c9 !important;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .15em !important;
+}
+body.twerkhub-ph-theme .twerkhub-hh-live {
+  color: #1ee08f !important;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 900 !important;
 }

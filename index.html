@@ -82,7 +82,7 @@
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
 <link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p5">
 <link rel="stylesheet" href="/assets/twerkhub-design-tokens.css?v=20260424-p1">
-<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p1">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p3">
 <script>
 (function(){
   function eager(img){
@@ -270,6 +270,12 @@
         // TwkYTGate (which can be in cool-off and silently drop commands).
         // Direct src swap proven to work in all states.
         function applyVideo(p){
+          // Reset countdown to THIS video's duration (was random — caused all
+          // 4 videos to share the same timer regardless of which was playing).
+          rotatorCurrentMinutes = p.m;
+          rotatorEndStamp = Date.now() + p.m * 60 * 1000;
+          var _cd = document.getElementById('twk-rotator-countdown');
+          if (_cd) _cd.setAttribute('data-remaining-minutes', String(p.m));
           a.setAttribute('data-hero-video-id', p.i);
           f.src = 'https://www.youtube-nocookie.com/embed/' + p.i +
                   '?autoplay=1&mute=1&loop=1&playlist=' + p.i +
@@ -323,11 +329,8 @@
             var cd = document.getElementById('twk-rotator-countdown');
             var rem = rotatorEndStamp - Date.now();
             if (rem <= 0) {
-              rotatorCurrentMinutes = pickRandomMinutes();
-              rotatorEndStamp = Date.now() + rotatorCurrentMinutes * 60 * 1000;
-              if (cd) cd.setAttribute('data-remaining-minutes', String(rotatorCurrentMinutes));
               currentIdx = (currentIdx + 1) % pool.length;
-              applyVideo(pool[currentIdx]);
+              applyVideo(pool[currentIdx]); // applyVideo now resets countdown to the new video's m
               rem = rotatorEndStamp - Date.now();
             }
             var s = Math.floor(rem / 1000);
@@ -354,6 +357,36 @@
             ev.stopPropagation();
             currentIdx = (currentIdx + 1) % pool.length;
             applyVideo(pool[currentIdx]);
+          });
+        }
+
+        // Mute button click handler — toggles iframe audio via YT postMessage.
+        // Bug fix: previously the button only flipped its label on video load
+        // and had no click handler, so manual mute/unmute never reached YT.
+        var muteBtn = document.querySelector('.twerkhub-hh-mute');
+        if (muteBtn) {
+          function setMuteUI(muted){
+            muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+            muteBtn.setAttribute('aria-label', muted ? 'Tap to unmute' : 'Tap to mute');
+            var lbl = muteBtn.querySelector('.twerkhub-hh-mute-label');
+            if (lbl) lbl.textContent = muted ? 'Tap to unmute' : 'Tap to mute';
+            var ico = muteBtn.querySelector('.twerkhub-hh-mute-ico');
+            if (ico) ico.textContent = muted ? '🔈' : '🔊';
+          }
+          muteBtn.addEventListener('click', function(ev){
+            ev.preventDefault();
+            ev.stopPropagation();
+            var isMuted = muteBtn.getAttribute('aria-pressed') === 'true';
+            try {
+              if (isMuted) {
+                f.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
+                f.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
+                f.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
+              } else {
+                f.contentWindow.postMessage(JSON.stringify({event:'command',func:'mute',args:[]}), '*');
+              }
+            } catch(_){}
+            setMuteUI(!isMuted);
           });
         }
       })();
