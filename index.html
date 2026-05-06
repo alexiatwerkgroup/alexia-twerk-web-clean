@@ -82,7 +82,7 @@
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
 <link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p5">
 <link rel="stylesheet" href="/assets/twerkhub-design-tokens.css?v=20260424-p1">
-<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p3">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p4">
 <script>
 (function(){
   function eager(img){
@@ -360,41 +360,15 @@
           });
         }
 
-        // Mute button click handler — toggles iframe audio via YT postMessage.
-        // Bug fix: previously the button only flipped its label on video load
-        // and had no click handler, so manual mute/unmute never reached YT.
-        var muteBtn = document.querySelector('.twerkhub-hh-mute');
-        if (muteBtn) {
-          function setMuteUI(muted){
-            muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
-            muteBtn.setAttribute('aria-label', muted ? 'Tap to unmute' : 'Tap to mute');
-            var lbl = muteBtn.querySelector('.twerkhub-hh-mute-label');
-            if (lbl) lbl.textContent = muted ? 'Tap to unmute' : 'Tap to mute';
-            var ico = muteBtn.querySelector('.twerkhub-hh-mute-ico');
-            if (ico) ico.textContent = muted ? '🔈' : '🔊';
-          }
-          muteBtn.addEventListener('click', function(ev){
-            ev.preventDefault();
-            ev.stopPropagation();
-            var isMuted = muteBtn.getAttribute('aria-pressed') === 'true';
-            try {
-              if (isMuted) {
-                f.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
-                f.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
-                f.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
-              } else {
-                f.contentWindow.postMessage(JSON.stringify({event:'command',func:'mute',args:[]}), '*');
-              }
-            } catch(_){}
-            setMuteUI(!isMuted);
-          });
-        }
+        // Mute button click handler is delegated to the bottom hero controller
+        // (line ~1346) which already routes through TwkYTGate + claims audio
+        // from other videos via TwerkhubSound. We don't add a duplicate here.
       })();
       </script>
       <div class="twerkhub-hh-media-scrim"></div>
-      <button type="button" class="twerkhub-hh-mute" data-twerkhub-hero-mute aria-pressed="true" aria-label="Tap to unmute">
+      <button type="button" class="twerkhub-hh-mute is-muted" data-twerkhub-hero-mute aria-pressed="true" aria-label="Tap to unmute">
         <span class="twerkhub-hh-mute-ico" aria-hidden="true">🔈</span>
-        <span class="twerkhub-hh-mute-label">Tap to unmute</span>
+        <span class="twerkhub-hh-mute-label">Sound off</span>
       </button>
       <div class="twerkhub-hh-media-meta">
         <span class="twerkhub-hh-live" id="twerkhub-hh-status"><span class="twerkhub-hh-status-dot" aria-hidden="true"></span><span class="twerkhub-hh-status-label">online</span></span>
@@ -1382,19 +1356,41 @@
           if (ico)   ico.textContent   = muted ? '🔈' : '🔊';
         }
       }
-      // Firefox pauses the iframe when we switch mute state mid-playback even
-      // with an immediate playVideo chaser. Chromium is fine. Skip the hover
-      // behavior entirely on Firefox — users can still unmute via the button.
-      var isFirefox = /\bFirefox\//i.test(navigator.userAgent) && !/Seamonkey/i.test(navigator.userAgent);
-      if (!isFirefox) {
-        // Hover unmutes (desktop Chromium) · mouseleave silences again.
-        aside.addEventListener('mouseenter', function(){ setMuted(false); });
-        aside.addEventListener('mouseleave', function(){ setMuted(true); });
+      // 2026-05-05: hover-mute behavior removed by user request — sound now
+      // stays at the user's chosen state regardless of mouse position. Only
+      // the explicit click toggle controls mute.
+      // Direct postMessage fallback: if TwkYTGate is unavailable / in
+      // cool-off, send commands straight to the iframe so the click never
+      // silently no-ops.
+      function sendDirect(fn, args){
+        try { iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}), '*'); } catch(_){}
+      }
+      function toggleMute(){
+        muted = !muted;
+        if (!muted) {
+          try { window.TwerkhubSound && window.TwerkhubSound.claim(iframe); } catch(_){}
+          send(iframe, 'unMute');
+          sendDirect('unMute');
+          sendDirect('setVolume', [100]);
+        } else {
+          send(iframe, 'mute');
+          sendDirect('mute');
+        }
+        send(iframe, 'playVideo');
+        sendDirect('playVideo');
+        if (btn){
+          btn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+          btn.classList.toggle('is-muted', muted);
+          var label = btn.querySelector('.twerkhub-hh-mute-label');
+          var ico   = btn.querySelector('.twerkhub-hh-mute-ico');
+          if (label) label.textContent = muted ? 'Sound off' : 'Sound on';
+          if (ico)   ico.textContent   = muted ? '🔈' : '🔊';
+        }
       }
       // Tap toggles (mobile + click)
       if (btn) btn.addEventListener('click', function(ev){
         ev.preventDefault(); ev.stopPropagation();
-        setMuted(!muted);
+        toggleMute();
       });
       // Page hide → silence (don't keep audio if user tabs away)
       document.addEventListener('visibilitychange', function(){
