@@ -457,45 +457,114 @@ body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):hover {
    above the ticker without covering it. Repaint to PH orange theme.
    ──────────────────────────────────────────────────────────────────── */
 
-/* ── 2026-05-06 · CLEAN PILL — single source of truth ────────────────────
-   ONE pill, IDENTICAL position + style on every page (home, /account,
-   /community, /membership, /profile, /playlist/, /creator/*, blog, etc.).
-   No JS relocation, no per-page conditional, no glow, no shimmer, no
-   in-nav repositioning. Only:
-     1. Hide the orange ★ chip from profile-stats-live.js (we keep just the
-        green-T pill rendered by twerkhub-tokens.js)
-     2. Repaint the green-T pill in PH orange (color overrides ONLY; the
-        position stays at the default top:82px right:18px from
-        twerkhub-tokens.css — exactly how it looks on /community + /account)
+/* ── 2026-05-06 · UNIVERSAL PILL — single source of truth ───────────────
+   ONE pill, IDENTICAL position on every page (home, /account, /community,
+   /membership, /profile, /playlist/, /creator/*, blog, search, etc.):
+     - Inside the OUTER sticky nav (.twk-nav-v1)
+     - Vertically aligned with LIVE / lang buttons (top: 50%)
+     - Flush against the right edge of the viewport (right: 6px)
+     - Sticky together with the nav (inherited)
+   The relocator JS (assets/twerkhub-pill-into-nav.js) appends the HUD to
+   nav.twk-nav-v1 on every page; this CSS positions it absolute over the
+   nav so it ignores the inner 1480px max-width.
    ─────────────────────────────────────────────────────────────────────── */
 
 /* 1. Kill the orange ★ chip everywhere */
 body.twerkhub-ph-theme #twk-topbar-chip { display: none !important; }
 
-/* 2. Recolor the green-T pill (position untouched) */
+/* 2. Anchor the nav so absolute children position relative to it */
+body.twerkhub-ph-theme nav.twk-nav-v1 {
+  position: sticky !important;  /* already sticky from inline CSS, reinforced */
+}
+
+/* 3. The HUD wrapper inside the nav: pinned to the right edge, vertically
+   centered with the rest of the nav items. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+  position: absolute !important;
+  top: 50% !important;
+  right: 6px !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  z-index: 100 !important;
+  pointer-events: auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0 !important;
+  height: 28px !important;
+}
+/* Toast inside the HUD: absolute below so it doesn't grow the wrapper */
+body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-toast {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  z-index: 10001 !important;
+}
+/* Mobile: keep pill floating bottom-right (legacy mobile pattern) */
+@media (max-width: 540px) {
+  body.twerkhub-ph-theme .twerkhub-tokens-hud,
+  body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 14px !important;
+    right: 14px !important;
+    transform: none !important;
+    margin: 0 !important;
+    z-index: 10000 !important;
+    height: auto !important;
+  }
+}
+
+/* 4. Repaint the badge in PH orange — same height profile as LIVE pill */
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge {
   background: rgba(255,144,0,.10) !important;
   background-image: none !important;
   border: 1px solid rgba(255,144,0,.55) !important;
-  box-shadow: 0 6px 20px rgba(255,144,0,.18), 0 2px 6px rgba(0,0,0,.4) !important;
+  box-shadow: 0 4px 14px rgba(255,144,0,.18), 0 2px 6px rgba(0,0,0,.4) !important;
+  height: 28px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  gap: 7px !important;
+  line-height: 1 !important;
+  font-family: "JetBrains Mono", ui-monospace, monospace !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge:hover {
   border-color: #ff9000 !important;
-  box-shadow: 0 10px 26px rgba(255,144,0,.26), 0 3px 8px rgba(0,0,0,.5) !important;
+  box-shadow: 0 8px 22px rgba(255,144,0,.3), 0 3px 8px rgba(0,0,0,.5) !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-coin {
   background: radial-gradient(circle at 30% 30%, #ffd596, #ff6a00) !important;
   color: #000 !important;
   box-shadow: 0 0 10px rgba(255,144,0,.7), inset 0 0 4px rgba(255,255,255,.4) !important;
+  width: 16px !important;
+  height: 16px !important;
+  font-size: 9px !important;
+  flex-shrink: 0 !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-count {
   color: #ff9000 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-unit {
   color: #ffd596 !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: .15em !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-tier {
+  color: #ff9000 !important;
   border-left-color: rgba(255,144,0,.25) !important;
+  font-size: 9px !important;
+  letter-spacing: .18em !important;
+  padding-left: 7px !important;
+  margin-left: 4px !important;
 }
 
 /* ────────────────────────────────────────────────────────────────────
