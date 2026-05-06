@@ -2,12 +2,12 @@
  * v20260426-p9 · Auth-gated. Anonymous users see balance=0.
  * Logged-in users earn locally and sync to Supabase via grant_tokens RPC.
  *
- * 2026-04-26 fix p9: tightened economy so VIP Top requires ~6 months of
+ * 2026-05-06 fix p10: tightened economy so VIP Top requires ~6 months of
  * hardcore grinding. Per-action rewards lowered + DAILY CAPS added (so a
- * user can't burn through all unique pages/videos in week 1). New tier
- * thresholds: Basic 0–499 · Medium 500–9,999 · Premium 10,000–44,999 ·
- * VIP Top 45,000+. Hardcore daily max ≈ 280 tokens incl. streaks → ~6
- * months minimum to reach VIP Top.
+ * user can't burn through all unique pages/videos in week 1). Canonical
+ * tier thresholds (mirror membership.html): Basic 0–299 · Medium 300+ ·
+ * Premium 3,000+ · VIP Top 50,000+. Hardcore daily max ≈ 280 tokens incl.
+ * streaks → ~6 months minimum to reach VIP Top.
  */
 (function(){
   'use strict';
@@ -59,13 +59,13 @@
     shares:    3   // +150/day max from share
   };
 
-  // Tier thresholds (2026-04-29 update — Anti):
-  //   Basic   = 0–299  (default · welcome 200 + a couple watches)
-  //   Medium  = 300–2,999  (~10 videos in or 1 referral)
-  //   Premium = 3,000–8,999  (commitment tier)
-  //   VIP Top = 9,000+  (was 50k — collapsed to keep the curve realistic)
+  // Tier thresholds (2026-05-06 update — Anti, canonical w/ membership.html):
+  //   Basic   = 0–2,999  (free + early progression)
+  //   Medium  = 3,000–8,999  (entry commitment tier — $9.99/mo or 3,000 tokens)
+  //   Premium = 9,000–49,999  (full archive — $29.99/mo or 9,000 tokens)
+  //   VIP Top = 50,000+  ($99.99/mo or 50,000 tokens — ~6 months daily)
   // Card "or X tokens" labels in index.html must match these:
-  //   Basic 300 · Medium 3,000 · Premium 9,000 · VIP 50,000 (kept high — "buy" path)
+  //   Basic 300 · Medium 3,000 · Premium 9,000 · VIP 50,000
   var TIER_THRESHOLDS = { medium: 3000, premium: 9000, vip: 50000 };
 
   function N(k, dflt){ try { var v = localStorage.getItem(k); return v == null ? dflt : JSON.parse(v); } catch(_){ return dflt; } }

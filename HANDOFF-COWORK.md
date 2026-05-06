@@ -71,7 +71,7 @@ You are continuing work on **Twerkhub** — a private creator subscription platf
   7. `twerkhub-cursor.js` (DISABLED — kill-switch at top)
   8. `twerkhub-share.js` (social share bar on blog/legal/playlist pages, 6 networks)
   9. `twerkhub-vitals.js` (Core Web Vitals RUM beacon to `/api/vitals`)
-- **Token economy**: 4 tiers — Basic (0-499) · Medium (500-1999) · Premium (2000-9999) · VIP Top (10000+). Localstorage `alexia_tokens_v1.balance`.
+- **Token economy**: 4 tiers — Basic (0-299) · Medium (300+ or $9.99/mo · 3,000 tokens to subscribe-equivalent) · Premium (3,000+ or $29.99/mo · 9,000 tokens to subscribe-equivalent) · VIP Top (50,000+ or $99.99/mo). Localstorage `alexia_tokens_v1.balance`. Canonical source = membership.html.
 - **YouTube embed rule**: Always use `youtube.com/embed/` (NOT youtube-nocookie) + `enablejsapi=1` + `widget_referrer=https%3A%2F%2Falexiatwerkgroup.com` + `origin=https%3A%2F%2Falexiatwerkgroup.com`. Without those params, YouTube triggers a "Confirm you're not a bot" gate that blocks autoplay.
 
 ### SEO state
@@ -389,10 +389,10 @@ alexia-twerk-web-clean/
 - Preload Playfair Display 700 woff2: `https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvXDQpA.woff2`
 
 ### Token economy
-- **Basic**: 0–499 tokens · $0/mo · Free previews + hot ranking
-- **Medium**: 500–1,999 tokens · $9.99/mo · Early drops + Discord lounge
-- **Premium**: 2,000–9,999 tokens · $29.99/mo · Full archive (1,500+ videos)
-- **VIP Top**: 10,000+ tokens · $99.99/mo · Custom content + direct Alexia line
+- **Basic**: 0–299 tokens · $0/mo · Free previews + hot ranking
+- **Medium**: 300+ tokens · $9.99/mo or 3,000 tokens to unlock · Early drops + Discord lounge
+- **Premium**: 3,000+ tokens · $29.99/mo or 9,000 tokens to unlock · Full archive (1,500+ videos)
+- **VIP Top**: 50,000+ tokens · $99.99/mo · Custom content + direct Alexia line · ~6 months daily to earn
 - **Token earning rules**: +5/page-explore (max 50/day) · +15/clip-watch (max 300/day) · +30/clip-finish · +50/daily-login · streak bonuses Day 7=200, Day 14=400, Day 30=1000 · +500/referral
 - **localStorage key**: `alexia_tokens_v1.balance` (legacy: `twerkhub_tokens`)
 
