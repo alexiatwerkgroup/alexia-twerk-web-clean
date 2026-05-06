@@ -20,8 +20,8 @@ OF_URL = "https://onlyfans.com/alexiatwerkoficial"
 
 with open(F, "r", encoding="utf-8") as f: src = f.read()
 
-# Match href="/creator/01" through /creator/13 (with optional trailing /)
-PAT = re.compile(r'href="/creator/(0[1-9]|1[0-3])/?"', re.IGNORECASE)
+# Match href="/creator/NN" where NN is 2 digits (01-99 placeholder slugs)
+PAT = re.compile(r'href="/creator/(\d{2})/?"', re.IGNORECASE)
 new_src, n = PAT.subn(f'href="{OF_URL}"', src)
 print(f"Replaced {n} placeholder links to canonical OF URL")
 
