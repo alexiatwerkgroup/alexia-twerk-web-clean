@@ -467,15 +467,30 @@ body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):hover {
 /* Kill the orange ★ chip everywhere */
 body.twerkhub-ph-theme #twk-topbar-chip { display: none !important; }
 
-/* LIVE pill height-lock — match TOKENS pill (28px) for visual symmetry. */
+/* LIVE pill height + width lock — match TOKENS pill (28px tall, 130px wide)
+   for visual symmetry. Force min-width so both pills render identically
+   regardless of content / page / browser. */
 body.twerkhub-ph-theme .twk-nav-v1-live,
 body.twerkhub-ph-theme #twk-nav-v1-live {
   height: 28px !important;
+  min-width: 130px !important;
   box-sizing: border-box !important;
   padding: 0 12px !important;
   line-height: 1 !important;
   display: inline-flex !important;
   align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  font-size: 11px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+/* Hide LIVE on small screens (mobile) — same breakpoint as inline rules */
+@media (max-width: 880px) {
+  body.twerkhub-ph-theme .twk-nav-v1-live,
+  body.twerkhub-ph-theme #twk-nav-v1-live {
+    display: none !important;
+  }
 }
 
 /* Pill DEFAULT (before relocator runs): fixed at top-right of viewport so
@@ -874,4 +889,20 @@ body.twerkhub-ph-theme .twerkhub-hh-live {
   color: #1ee08f !important;
   font-family: "Inter", sans-serif !important;
   font-weight: 900 !important;
+}
+
+/* TWK-CB-CARPET-BOMB-2026-05-06 */
+body.twerkhub-ph-theme .twk-nav-v1-live,
+body.twerkhub-ph-theme #twk-nav-v1-live {
+  height: 28px !important;
+  min-width: 130px !important;
+  box-sizing: border-box !important;
+  padding: 0 12px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+  gap: 7px !important;
 }

@@ -151,7 +151,7 @@
   gtag('js', new Date());
   gtag('config', 'G-YSFR7FHCLS', { send_page_view: true });
 </script>
-<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260506-p27">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260506-p29">
 </head>
 <body class="twerkhub-ph-theme">
 <a href="#main" class="twk-sr-only">Skip to content</a>
@@ -211,7 +211,7 @@
 <script>
 (function(){
   try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
-  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
+  try{var n=document.getElementById('twk-nav-v1-live-n');var m=document.getElementById('mbh-members');var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);if(n)n.textContent=v;if(m)m.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));if(n)n.textContent=v;if(m)m.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}if(n||m)setTimeout(tick,4000);}catch(e){}
   function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
@@ -220,6 +220,7 @@
   loadOnce('/assets/token-system.js?v=20260506-p3','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260506-p11','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260426-p8','twk-loader-twerkhub-auth');
+  loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p1','twk-loader-cb-promo');
 })();
 </script>
 
@@ -230,7 +231,7 @@
   <span class="mbh__eye">Private Circle · By Invitation & Subscription</span>
   <h1 class="mbh__h">Access The <em>Inside</em>.</h1>
   <p class="mbh__p">Three ways in. Pay monthly, farm your way with tokens, or DM Alexia for a custom starter. Everything else lives behind the curtain.</p>
-  <div class="mbh__stat"><span class="dot"></span>891 members online · 3 doors below</div>
+  <div class="mbh__stat"><span class="dot"></span><span id="mbh-members">412</span> MEMBERS ONLINE · 4 DOORS BELOW</div>
 </header>
 
 <!-- â•â•â•â•â•â•â• TIERS · 4 levels, matches the home page â•â•â•â•â•â•â• -->
@@ -736,7 +737,7 @@ dialog.twk-checkout-modal::backdrop{
 </footer>
 <!-- /TWK_MEGA_FOOTER_V1 -->
 <script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
-<script defer src="/asset
+<script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
 <!--twk-seo-hidden-block-->
 <aside class="twk-sr-only" aria-hidden="true" lang="en">
   <p>Curated curated twerk archive on TWERKHUB — Full uncut version updated weekly.</p>
@@ -744,6 +745,6 @@ dialog.twk-checkout-modal::backdrop{
   <p>Browse the full TWERKHUB catalog: curated twerk archive, premium dance cuts, and rare uncut releases reserved for verified members.</p>
 </aside>
 <!--/twk-seo-hidden-block-->
-<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p6"></script>
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p7"></script>
 </body>
 </html>
