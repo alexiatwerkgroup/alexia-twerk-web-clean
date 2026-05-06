@@ -400,12 +400,57 @@
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
+    // BULLETPROOF CENTERING: ensure modal is body-level (no ancestor transform
+    // can break position:fixed), then compute pixel-perfect viewport center.
+    // This bypasses any CSS issue and guarantees centering on every browser.
+    try {
+      if (modal.parentNode !== document.body) document.body.appendChild(modal);
+    } catch(_){}
+    var card = modal.querySelector('.twk-checkout-card');
+    function centerCard(){
+      if (!card) return;
+      var vh = window.innerHeight, vw = window.innerWidth;
+      var cardW = Math.min(440, vw - 48);
+      // measure actual rendered height first by un-fixing
+      card.style.cssText = 'position:fixed;visibility:hidden;width:'+cardW+'px;max-height:'+(vh-48)+'px;overflow-y:auto;left:0;top:0;';
+      var cardH = Math.min(card.scrollHeight, vh - 48);
+      var top  = Math.max(24, (vh - cardH) / 2);
+      var left = Math.max(24, (vw - cardW) / 2);
+      card.style.cssText =
+        'position:fixed !important;' +
+        'top:'+top+'px !important;' +
+        'left:'+left+'px !important;' +
+        'width:'+cardW+'px !important;' +
+        'max-height:'+(vh-48)+'px !important;' +
+        'overflow-y:auto !important;' +
+        'transform:none !important;' +
+        'margin:0 !important;' +
+        'z-index:2147483647 !important;' +
+        'visibility:visible !important;' +
+        'background:linear-gradient(180deg,#13131c,#0a0a10) !important;' +
+        'border:1px solid rgba(255,255,255,.12) !important;' +
+        'border-radius:18px !important;' +
+        'padding:28px 26px !important;' +
+        'text-align:center !important;' +
+        'color:#f4f4f8 !important;' +
+        'box-shadow:0 30px 80px rgba(0,0,0,.7) !important;';
+    }
+    centerCard();
+    // Re-center on resize while modal is open
+    var resizeHandler = function(){ if (modal.classList.contains('is-open')) centerCard(); };
+    window.addEventListener('resize', resizeHandler);
+    modal.__twkResizeHandler = resizeHandler;
   }
   function close(){
     if (!modal) return;
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     document.documentElement.style.overflow = '';
+    // Remove resize handler
+    if (modal.__twkResizeHandler) {
+      window.removeEventListener('resize', modal.__twkResizeHandler);
+      modal.__twkResizeHandler = null;
+    }
   }
   function bind(el){
     if (!el || el.__twkCheckoutBound) return;
