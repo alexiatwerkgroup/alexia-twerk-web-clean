@@ -35,25 +35,13 @@
     var ua = (navigator.userAgent || '').toLowerCase();
     return /bot|crawler|spider|headlesschrome|yandex|googlebot|bingbot|duckduck|baidu|lighthouse/i.test(ua);
   }
+  // 2026-05-06: STUBBED. The page_visits table was deleted on 2026-05-02
+  // during the egress emergency. This function used to POST visitor
+  // heartbeats every 30min — now those POSTs return 404 from Supabase,
+  // and each 404 response body still consumes egress. With ~1GB/day still
+  // bleeding from these dead-letter calls, we kill it entirely.
   async function heartbeat(force){
-    try{
-      if (isBotUA()) return;  // bots don't need to be tracked
-      var nowTs = Date.now();
-      var last = parseInt(localStorage.getItem(LAST_BEAT_KEY) || '0', 10);
-      if (!force && last && (nowTs - last) < HEARTBEAT_INTERVAL) return;
-      localStorage.setItem(LAST_BEAT_KEY, String(nowTs));
-      await fetch(SUPABASE_URL + '/rest/v1/page_visits', {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({ page: 'online', visitor_id: getVisitorId() }),
-        keepalive: true
-      });
-    } catch(e){}
+    return; // no-op — table is gone
   }
 
   function now(){ return Date.now(); }
