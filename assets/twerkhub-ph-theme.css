@@ -474,11 +474,26 @@ body.twerkhub-ph-theme #twk-topbar-chip { display: none !important; }
 
 /* 2. Anchor the nav so absolute children position relative to it */
 body.twerkhub-ph-theme nav.twk-nav-v1 {
-  position: sticky !important;  /* already sticky from inline CSS, reinforced */
+  position: sticky !important;
 }
 
-/* 3. The HUD wrapper inside the nav: pinned to the right edge, vertically
-   centered with the rest of the nav items. */
+/* 3. FALLBACK position — used BEFORE the relocator JS finishes moving the
+   pill into the nav (or if it fails entirely on some page). Without this,
+   the pill renders at its default top:82px right:18px from twerkhub-tokens.css
+   which is FAR BELOW the nav. We force it to top:14px right:14px so it's
+   AT THE SAME HEIGHT as the nav buttons even before relocation. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud {
+  position: fixed !important;
+  top: 14px !important;
+  right: 14px !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 9999 !important;
+}
+
+/* 4. ONCE the relocator moves the pill INTO the nav (adds .twk-tk-hud--in-nav),
+   it switches to position:absolute relative to the nav, vertically centered
+   with the rest of the nav items, flush against the right edge. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   position: absolute !important;
   top: 50% !important;

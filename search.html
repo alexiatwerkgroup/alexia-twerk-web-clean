@@ -66,7 +66,7 @@ mark{background:rgba(255,45,135,.3);color:#fff;padding:1px 3px;border-radius:3px
   gtag('config', 'G-YSFR7FHCLS', { send_page_view: true });
 </script>
 <link rel="stylesheet" href="/assets/twerkhub-tokens.css?v=20260429-mf1">
-<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260506-p20">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260506-p21">
 </head>
 <body class="twerkhub-page twerkhub-ph-theme">
 <!-- TWK_NAV_V1 -->
@@ -213,7 +213,7 @@ function runSearch(){
   }
   el.innerHTML = filtered.map(function(r){
     var thumb = r.thumb ? '<img src="'+r.thumb+'" alt="'+r.title+'" loading="lazy" decoding="async">' : '<div style="width:110px;height:70px;border-radius:10px;background:linear-gradient(135deg,rgba(255,45,135,.15),rgba(157,78,221,.15));display:flex;align-items:center;justify-content:center;font-size:24px">📄</div>';
-    return '<a class="r" href="'+r.href+'">' + thumb +
+    return '<a class="r" href="'+r.href+'" data-no-dead>' + thumb +
       '<div><div class="src">'+(r.country||r.type)+'</div><h3>'+highlight(r.title,q)+'</h3><p>'+highlight(r.desc,q)+'</p></div></a>';
   }).join('');
 }
@@ -529,6 +529,6 @@ runSearch();
   <p>Browse the full TWERKHUB catalog: premium dance cuts, premium dance cuts, and rare uncut releases reserved for verified members.</p>
 </aside>
 <!--/twk-seo-hidden-block-->
-<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260505-p1"></script>
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p2"></script>
 </body>
 </html>
