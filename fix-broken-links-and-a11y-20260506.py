@@ -54,11 +54,21 @@ TD_RE = re.compile(
     re.IGNORECASE
 )
 
-td_fixed = 0
-td_fallback = 0
-td_unchanged = 0
+counters = {"td_fixed": 0, "td_fallback": 0}
 files_changed = set()
 fallback_creators_url = "/creators.html"
+
+def make_repl(local):
+    """Build a substitution function that mutates the `local` dict."""
+    def repl(m):
+        slug = m.group(2).lower()
+        if slug in existing_creators:
+            local["fixes"] += 1
+            return f'href="/creator/{slug}.html"'
+        else:
+            local["fallbacks"] += 1
+            return f'href="{fallback_creators_url}"'
+    return repl
 
 for dirpath, dirnames, filenames in os.walk(ROOT):
     dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS]
@@ -66,29 +76,16 @@ for dirpath, dirnames, filenames in os.walk(ROOT):
         if not fn.lower().endswith((".html", ".htm")): continue
         full = os.path.join(dirpath, fn)
         with open(full, "r", encoding="utf-8") as f: content = f.read()
-        new_content = content
-        local_fixes = 0
-        local_fallbacks = 0
-
-        def repl(m):
-            nonlocal td_fixed, td_fallback, td_unchanged, local_fixes, local_fallbacks
-            slug = m.group(2).lower()
-            # If creator exists with same slug, redirect there
-            if slug in existing_creators:
-                # Use absolute path for consistency
-                local_fixes += 1
-                return f'href="/creator/{slug}.html"'
-            else:
-                # Fallback to creators index
-                local_fallbacks += 1
-                return f'href="{fallback_creators_url}"'
-
-        new_content = TD_RE.sub(repl, new_content)
-        if local_fixes + local_fallbacks > 0 and new_content != content:
+        local = {"fixes": 0, "fallbacks": 0}
+        new_content = TD_RE.sub(make_repl(local), content)
+        if (local["fixes"] + local["fallbacks"]) > 0 and new_content != content:
             with open(full, "w", encoding="utf-8", newline="") as f: f.write(new_content)
             files_changed.add(os.path.relpath(full, ROOT))
-            td_fixed += local_fixes
-            td_fallback += local_fallbacks
+            counters["td_fixed"] += local["fixes"]
+            counters["td_fallback"] += local["fallbacks"]
+
+td_fixed = counters["td_fixed"]
+td_fallback = counters["td_fallback"]
 
 print(f"  Fixed (slug match): {td_fixed} link(s)")
 print(f"  Fallback to /creators.html: {td_fallback} link(s)")
