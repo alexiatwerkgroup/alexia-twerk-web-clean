@@ -322,7 +322,9 @@
     if (location.pathname.indexOf("/profile.html") === 0) return;  // not needed on profile itself
     var chip = ensureTopbarChip();
     chip.setAttribute("data-tier", tier);
-    chip.title = "Balance: " + fmt(bal) + " TWK · " + tier + " tier · " + pct + "% to " + (nxt.name === "max" ? "max" : nxt.name);
+    var _tip = "Balance: " + fmt(bal) + " TWK · " + tier + " tier · " + pct + "% to " + (nxt.name === "max" ? "max" : nxt.name);
+    chip.title = _tip;
+    chip.setAttribute("data-tooltip", _tip);
     var tierEl = chip.querySelector(".twk-tc-tier");
     if (tierEl && tierEl.textContent !== tier) tierEl.textContent = tier;
     var num = chip.querySelector("[data-live-num]");
