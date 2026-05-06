@@ -462,31 +462,29 @@ body.twerkhub-ph-theme #twk-topbar-chip {
   display: none !important;
 }
 
-/* Reduce the nav-inner right padding so the rightmost item (the pill,
-   relocated into the nav by inline JS) hugs the screen edge.
-   Higher specificity to beat the inline <style> in index.html. */
-body.twerkhub-ph-theme nav.twk-nav-v1 .twk-nav-v1-inner {
-  padding-right: 4px !important;
-  gap: 8px !important;
+/* 2026-05-05: pill now lives as a position:absolute child of the OUTER
+   .twk-nav-v1 (which spans full viewport), NOT inside .twk-nav-v1-inner
+   (max-width 1480px). This fixes the "gap to right edge on wide screens"
+   bug — pill is now flush against the screen edge regardless of monitor. */
+body.twerkhub-ph-theme nav.twk-nav-v1 {
+  position: sticky !important;
+  /* anchor for the absolute-positioned pill child */
 }
 
-/* The HUD wrapper inside the nav: behaves as a single inline-flex pill
-   that doesn't push layout. Force height 24px to match LIVE pill. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
-  position: static !important;
-  top: auto !important;
-  right: auto !important;
+  position: absolute !important;
+  top: 50% !important;
+  right: 6px !important;
   bottom: auto !important;
   left: auto !important;
+  transform: translateY(-50%) !important;
   margin: 0 !important;
-  flex-shrink: 0 !important;
-  z-index: auto !important;
-  align-self: center !important;
+  z-index: 100 !important;
   height: 24px !important;
   pointer-events: auto !important;
   gap: 0 !important;

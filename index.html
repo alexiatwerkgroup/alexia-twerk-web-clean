@@ -82,7 +82,7 @@
 <link rel="stylesheet" href="/assets/twerkhub-polish.css?v=20260424-p4">
 <link rel="stylesheet" href="/assets/twerkhub-premium.css?v=20260424-p5">
 <link rel="stylesheet" href="/assets/twerkhub-design-tokens.css?v=20260424-p1">
-<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p16">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260505-p17">
 <script>
 (function(){
   function eager(img){
@@ -176,29 +176,9 @@
   loadOnce('/assets/twerkhub-tokens.js?v=20260425-p8','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260426-p8','twk-loader-twerkhub-auth');
 
-  /* PH theme · move the token pill INTO the nav bar so it sits as a
-     flex item at the far right edge (after LIVE + lang switcher,
-     vertically aligned with everything). The nav-inner right padding
-     is reduced to 12px in CSS so the pill hugs the screen edge.
-     MutationObserver waits for the async creation by twerkhub-tokens.js. */
-  if (document.body && document.body.classList.contains('twerkhub-ph-theme')) {
-    function twkRelocateTokenPill(){
-      var pill = document.querySelector('.twerkhub-tokens-hud');
-      var nav  = document.querySelector('.twk-nav-v1-inner');
-      if (!pill || !nav) return false;
-      if (pill.parentElement === nav) return true;
-      pill.classList.add('twk-tk-hud--in-nav');
-      nav.appendChild(pill);
-      return true;
-    }
-    if (!twkRelocateTokenPill()) {
-      var twkTkObs = new MutationObserver(function(){
-        if (twkRelocateTokenPill()) twkTkObs.disconnect();
-      });
-      twkTkObs.observe(document.body, { childList: true, subtree: true });
-      setTimeout(function(){ twkTkObs.disconnect(); }, 8000);
-    }
-  }
+  /* PH theme · token pill relocator → moved to external file
+     /assets/twerkhub-pill-into-nav.js so it loads on every page (not just
+     the home). Inline duplicate removed 2026-05-05. */
 })();
 </script>
 
