@@ -462,28 +462,45 @@ body.twerkhub-ph-theme #twk-topbar-chip {
   display: none !important;
 }
 
-/* Force the rightmost item (the token pill) to hug the screen edge.
-   Higher-specificity selector to beat the inline <style> in index.html. */
+/* Reduce the nav-inner right padding so the rightmost item (the pill,
+   relocated into the nav by inline JS) hugs the screen edge.
+   Higher specificity to beat the inline <style> in index.html. */
 body.twerkhub-ph-theme nav.twk-nav-v1 .twk-nav-v1-inner {
-  padding-right: 6px !important;
+  padding-right: 4px !important;
+  gap: 8px !important;
 }
 
-/* Pill sits as a flex item INSIDE the nav (relocated via inline JS).
-   Naturally aligned with LIVE pill vertically (both flex-center). */
+/* The HUD wrapper inside the nav: behaves as a single inline-flex pill
+   that doesn't push layout. Force height 24px to match LIVE pill. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud {
   display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   position: static !important;
   top: auto !important;
   right: auto !important;
   bottom: auto !important;
+  left: auto !important;
   margin: 0 !important;
   flex-shrink: 0 !important;
   z-index: auto !important;
   align-self: center !important;
+  height: 24px !important;
+  pointer-events: auto !important;
+  gap: 0 !important;
 }
-/* Mobile keeps the bottom-right floating position (not in nav) */
+/* The toast inside the HUD must NOT take vertical flow space — pin it
+   absolutely below the pill so it can pop on token-earn events without
+   stretching the HUD wrapper above LIVE pill height. */
+body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-toast {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  z-index: 10001 !important;
+}
+/* Mobile: bottom-right floating (untouched by in-nav class) */
 @media (max-width: 540px) {
   body.twerkhub-ph-theme .twerkhub-tokens-hud,
   body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
@@ -491,25 +508,30 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
     top: auto !important;
     bottom: 14px !important;
     right: 14px !important;
-    margin-left: 0 !important;
+    margin: 0 !important;
     z-index: 10000 !important;
+    height: auto !important;
   }
 }
-/* Match LIVE pill EXACTLY: padding 6px 12px, font 10px, border 1px,
-   line-height 1, total height ~24px. Coin reduced to 12px so the pill
-   doesn't grow taller than LIVE. */
+/* The badge inside the HUD: explicit height 24px (= LIVE pill height),
+   no vertical padding (height controls), only horizontal padding.
+   Box-sizing border-box so the height includes the 1px border. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-badge {
   pointer-events: auto !important;
   background: rgba(255,144,0,.10) !important;
   background-image: none !important;
   border: 1px solid rgba(255,144,0,.55) !important;
-  padding: 5px 12px !important;
+  height: 24px !important;
+  padding: 0 12px !important;
+  box-sizing: border-box !important;
   border-radius: 999px !important;
   gap: 7px !important;
   line-height: 1 !important;
   font-family: "JetBrains Mono", ui-monospace, monospace !important;
   position: relative !important;
   overflow: hidden !important;
+  display: inline-flex !important;
+  align-items: center !important;
   animation: twk-tk-pulse-glow 2.4s ease-in-out infinite;
   box-shadow:
     0 0 0 1px rgba(255,144,0,.25),
