@@ -218,7 +218,7 @@ function runSearch(){
   }
   el.innerHTML = filtered.map(function(r){
     var thumb = r.thumb ? '<img src="'+r.thumb+'" alt="'+r.title+'" loading="lazy" decoding="async">' : '<div style="width:110px;height:70px;border-radius:10px;background:linear-gradient(135deg,rgba(255,45,135,.15),rgba(157,78,221,.15));display:flex;align-items:center;justify-content:center;font-size:24px">📄</div>';
-    return '<a class="r" href="'+r.href+'">' + thumb +
+    return '<a class="r" href="'+r.href+'" data-no-dead>' + thumb +
       '<div><div class="src">'+(r.country||r.type)+'</div><h3>'+highlight(r.title,q)+'</h3><p>'+highlight(r.desc,q)+'</p></div></a>';
   }).join('');
 }
