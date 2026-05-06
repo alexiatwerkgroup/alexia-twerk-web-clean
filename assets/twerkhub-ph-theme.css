@@ -457,78 +457,44 @@ body.twerkhub-ph-theme .twerkhub-page a:not(.twerkhub-btn):hover {
    above the ticker without covering it. Repaint to PH orange theme.
    ──────────────────────────────────────────────────────────────────── */
 
-/* ── 2026-05-06 · UNIVERSAL PILL — single source of truth ───────────────
-   ONE pill, IDENTICAL position on every page (home, /account, /community,
-   /membership, /profile, /playlist/, /creator/*, blog, search, etc.):
-     - Inside the OUTER sticky nav (.twk-nav-v1)
-     - Vertically aligned with LIVE / lang buttons (top: 50%)
-     - Flush against the right edge of the viewport (right: 6px)
-     - Sticky together with the nav (inherited)
-   The relocator JS (assets/twerkhub-pill-into-nav.js) appends the HUD to
-   nav.twk-nav-v1 on every page; this CSS positions it absolute over the
-   nav so it ignores the inner 1480px max-width.
+/* ── 2026-05-06 · PILL POSITION — DEFINITIVE ────────────────────────────
+   CSS-only positioning. NO JS relocator. NO in-nav class. NO conditional
+   logic. The pill is `position: fixed` at top:14px right:14px on EVERY
+   single page. Sticky behavior comes for free with position:fixed.
+   This is the ONLY rule that controls position. Nothing else needed.
    ─────────────────────────────────────────────────────────────────────── */
 
-/* 1. Kill the orange ★ chip everywhere */
+/* Kill the orange ★ chip everywhere */
 body.twerkhub-ph-theme #twk-topbar-chip { display: none !important; }
 
-/* 2. Anchor the nav so absolute children position relative to it */
-body.twerkhub-ph-theme nav.twk-nav-v1 {
-  position: sticky !important;
-}
-
-/* 3. FALLBACK position — used BEFORE the relocator JS finishes moving the
-   pill into the nav (or if it fails entirely on some page). Without this,
-   the pill renders at its default top:82px right:18px from twerkhub-tokens.css
-   which is FAR BELOW the nav. We force it to top:14px right:14px so it's
-   AT THE SAME HEIGHT as the nav buttons even before relocation. */
-body.twerkhub-ph-theme .twerkhub-tokens-hud {
+/* Pill: fixed at top-right of viewport. ALWAYS. Higher z-index than nav
+   so it sits ON TOP of the nav, vertically aligned with LIVE / nav links
+   (LIVE pill top sits at ~14-19px depending on flex centering; pill at
+   top:14px overlaps that range exactly). */
+body.twerkhub-ph-theme .twerkhub-tokens-hud,
+body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   position: fixed !important;
   top: 14px !important;
   right: 14px !important;
   bottom: auto !important;
   left: auto !important;
-  z-index: 9999 !important;
+  margin: 0 !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  pointer-events: none !important;
+  height: auto !important;
+  transform: none !important;
 }
 
-/* 4. ONCE the relocator moves the pill INTO the nav (adds .twk-tk-hud--in-nav),
-   it switches to position:absolute relative to the nav, vertically centered
-   with the rest of the nav items, flush against the right edge. */
-body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
-  position: absolute !important;
-  top: 50% !important;
-  right: 6px !important;
-  bottom: auto !important;
-  left: auto !important;
-  transform: translateY(-50%) !important;
-  margin: 0 !important;
-  z-index: 100 !important;
-  pointer-events: auto !important;
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 0 !important;
-  height: 28px !important;
-}
-/* Toast inside the HUD: absolute below so it doesn't grow the wrapper */
-body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-toast {
-  position: absolute !important;
-  top: calc(100% + 8px) !important;
-  right: 0 !important;
-  z-index: 10001 !important;
-}
-/* Mobile: keep pill floating bottom-right (legacy mobile pattern) */
+/* Mobile: pill floats bottom-right (away from possible mobile menu) */
 @media (max-width: 540px) {
   body.twerkhub-ph-theme .twerkhub-tokens-hud,
   body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
-    position: fixed !important;
     top: auto !important;
     bottom: 14px !important;
     right: 14px !important;
-    transform: none !important;
-    margin: 0 !important;
-    z-index: 10000 !important;
-    height: auto !important;
   }
 }
 
