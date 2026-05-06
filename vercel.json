@@ -69,6 +69,11 @@
     { "source": "/models", "destination": "/playlist/", "permanent": true },
     { "source": "/models/", "destination": "/playlist/", "permanent": true },
     { "source": "/studios", "destination": "/twerk-studios.html", "permanent": true },
-    { "source": "/studios/", "destination": "/twerk-studios.html", "permanent": true }
+    { "source": "/studios/", "destination": "/twerk-studios.html", "permanent": true },
+
+    { "source": "/premium-cosplay-fancam", "destination": "/hottest-cosplay-fancam/", "permanent": true },
+    { "source": "/premium-cosplay-fancam.html", "destination": "/hottest-cosplay-fancam/", "permanent": true },
+    { "source": "/premium-cosplay-fancam/", "destination": "/hottest-cosplay-fancam/", "permanent": true },
+    { "source": "/premium-cosplay-fancam/(.*)", "destination": "/hottest-cosplay-fancam/$1", "permanent": true }
   ]
 }
