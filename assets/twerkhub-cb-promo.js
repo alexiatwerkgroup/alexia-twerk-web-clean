@@ -40,7 +40,7 @@
     'html body .twk-cb-promo,body .twk-cb-promo,.twk-cb-promo{',
       'position:fixed !important;',
       'bottom:14px !important;right:14px !important;top:auto !important;left:auto !important;',
-      'width:340px;max-width:calc(100vw - 24px);',
+      'width:370px;max-width:calc(100vw - 24px);',
       'background:#000;',
       'border:1px solid #ff9000;',
       'border-radius:6px;overflow:hidden;',
@@ -269,7 +269,6 @@
         '<div class="twk-cb-promo__placeholder" id="twk-cb-placeholder">' +
           '<div class="twk-cb-promo__placeholder-spinner"></div>' +
         '</div>' +
-        '<div class="twk-cb-promo__play" aria-hidden="true"></div>' +
         '<div class="twk-cb-promo__featured-bar">' +
           '<span class="twk-cb-promo__featured-name" id="twk-cb-feat-name">…</span>' +
           '<span class="twk-cb-promo__featured-viewers" id="twk-cb-feat-viewers">● —</span>' +
