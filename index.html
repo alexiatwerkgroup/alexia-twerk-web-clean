@@ -520,8 +520,8 @@
            data-yt-id="X-lPzSuvf3k" data-yt-start="18" data-yt-stop="34" data-yt-freeze="20">
         <!-- Poster shown until YT iframe loads (zero-flicker fallback) -->
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/X-lPzSuvf3k/maxresdefault.jpg" alt="Hottest twerk videos — the signature archive · Лада Гоцци High-Heels · Moscow Dance Centre NRG" loading="eager" fetchpriority="high" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg';}">
-        <!-- Freeze frame: pre-loaded silent so swap is instant on video stop -->
-        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/X-lPzSuvf3k/1.jpg" alt="" aria-hidden="true" loading="eager" decoding="async">
+        <!-- Freeze frame: HD quality (1280x720) preloaded -->
+        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/X-lPzSuvf3k/maxresdefault.jpg" alt="" aria-hidden="true" loading="eager" decoding="async">
         <!-- 18-34s preview, instant freeze on stop -->
         <iframe id="twerkhub-fp-hero-yt-1"
                 class="twerkhub-fp-hero-iframe"
@@ -555,10 +555,11 @@
       <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
            data-yt-id="phlPRrYpmz0" data-yt-start="15" data-yt-stop="33" data-yt-freeze="17">
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/phlPRrYpmz0/maxresdefault.jpg" alt="Try-on hot leaks · exclusive haul cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
-        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/phlPRrYpmz0/1.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/phlPRrYpmz0/maxresdefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <!-- Card #2: data-src instead of src — only loads when Card #1 finishes -->
         <iframe id="twerkhub-fp-hero-yt-2"
                 class="twerkhub-fp-hero-iframe"
-                src="https://www.youtube-nocookie.com/embed/phlPRrYpmz0?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&origin=https%3A%2F%2Falexiatwerkgroup.com&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com"
+                data-src="https://www.youtube-nocookie.com/embed/phlPRrYpmz0?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&origin=https%3A%2F%2Falexiatwerkgroup.com&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com"
                 title="Try-on hot leaks — preview"
                 frameborder="0"
                 allow="autoplay; encrypted-media; picture-in-picture"
@@ -673,23 +674,29 @@
       };
     }
 
-    function setupPlayer(iframe){
+    function setupPlayer(iframe, onFinish){
       var parent = iframe.closest('.twerkhub-fp-hero-video');
-      if (!parent) return;
+      if (!parent) { if (onFinish) onFinish(); return; }
       var START = parseFloat(parent.getAttribute('data-yt-start')) || 0;
       var STOP  = parseFloat(parent.getAttribute('data-yt-stop'))  || 999999;
       var freezeImg = parent.querySelector('.twerkhub-fp-hero-freeze');
       var stopped = false;
 
-      // INSTANT freeze: hide iframe + show preloaded freeze poster.
-      // No fade, no seek inside iframe → no YouTube buffering spinner.
+      // Lazy-load src if iframe was held back (data-src instead of src)
+      if (iframe.dataset && iframe.dataset.src && !iframe.getAttribute('src')) {
+        iframe.src = iframe.dataset.src;
+      }
+
       function freezeNow(player){
         if (stopped) return;
         stopped = true;
         try { player.pauseVideo(); } catch(_){}
         if (freezeImg) freezeImg.classList.add('is-shown');
-        // Hide the iframe entirely — the freeze poster is now on top
         iframe.style.display = 'none';
+        // Hand off to next card in the queue (sequential playback)
+        if (typeof onFinish === 'function') {
+          setTimeout(onFinish, 200);
+        }
       }
 
       try {
@@ -719,11 +726,20 @@
             }
           }
         });
-      } catch(_){}
+      } catch(_) {
+        if (onFinish) onFinish();
+      }
     }
 
     function init(){
-      iframes.forEach(setupPlayer);
+      // Sequential queue: Card #2 only starts after Card #1 finishes.
+      // Avoids running two HD video streams simultaneously (laggy on most devices).
+      var list = Array.prototype.slice.call(iframes);
+      function next(i){
+        if (i >= list.length) return;
+        setupPlayer(list[i], function(){ next(i + 1); });
+      }
+      next(0);
     }
 
     loadYTApi(init);
