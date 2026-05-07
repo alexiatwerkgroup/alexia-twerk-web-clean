@@ -526,7 +526,7 @@
         <!-- 18-34s preview, instant freeze on stop -->
         <iframe id="twerkhub-fp-hero-yt-1"
                 class="twerkhub-fp-hero-iframe"
-                src="https://www.youtube-nocookie.com/embed/X-lPzSuvf3k?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&origin=https%3A%2F%2Falexiatwerkgroup.com&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com"
+                data-src="https://www.youtube-nocookie.com/embed/X-lPzSuvf3k?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&origin=https%3A%2F%2Falexiatwerkgroup.com&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com"
                 title="Hottest twerk videos — preview"
                 frameborder="0"
                 allow="autoplay; encrypted-media; picture-in-picture"
@@ -712,86 +712,115 @@
       };
     }
 
-    function setupPlayer(iframe, onFinish){
+    // Each hero card has its own controller. First trigger creates the
+    // YT.Player; subsequent triggers just seek+play (replay) — supports
+    // unlimited replays on hover without re-creating the iframe.
+    function buildController(iframe){
       var parent = iframe.closest('.twerkhub-fp-hero-video');
-      if (!parent) { if (onFinish) onFinish(); return; }
+      if (!parent) return null;
       var START = parseFloat(parent.getAttribute('data-yt-start')) || 0;
       var STOP  = parseFloat(parent.getAttribute('data-yt-stop'))  || 999999;
       var freezeImg = parent.querySelector('.twerkhub-fp-hero-freeze');
-      var stopped = false;
 
-      // Lazy-load src if iframe was held back (data-src instead of src)
-      if (iframe.dataset && iframe.dataset.src && !iframe.getAttribute('src')) {
-        iframe.src = iframe.dataset.src;
+      var player = null;
+      var stopped = false;
+      var watchdog = null;
+      var inited = false;
+      var pendingPlay = false; // queued replay before player ready
+
+      function clearWatchdog(){
+        if (watchdog) { clearInterval(watchdog); watchdog = null; }
       }
 
-      function freezeNow(player){
+      function freezeNow(){
         if (stopped) return;
         stopped = true;
-        try { player.pauseVideo(); } catch(_){}
+        try { if (player) player.pauseVideo(); } catch(_){}
         if (freezeImg) freezeImg.classList.add('is-shown');
         iframe.style.display = 'none';
-        // Hand off to next card in the queue (sequential playback)
-        if (typeof onFinish === 'function') {
-          setTimeout(onFinish, 200);
-        }
+        clearWatchdog();
       }
 
-      try {
-        new YT.Player(iframe.id, {
-          events: {
-            'onReady': function(e){
-              try {
-                e.target.mute();
-                e.target.seekTo(START, true);
-                e.target.playVideo();
-              } catch(_){}
-              var watchdog = setInterval(function(){
-                if (stopped) { clearInterval(watchdog); return; }
-                try {
-                  var t = e.target.getCurrentTime();
-                  if (t >= STOP) {
-                    clearInterval(watchdog);
-                    freezeNow(e.target);
-                  }
-                } catch(_){}
-              }, 100);
-            },
-            'onStateChange': function(e){
-              if (e.data === 0 && !stopped) {
-                freezeNow(e.target);
+      function startWatchdog(){
+        clearWatchdog();
+        watchdog = setInterval(function(){
+          if (stopped) { clearWatchdog(); return; }
+          try {
+            var t = player.getCurrentTime();
+            if (t >= STOP) freezeNow();
+          } catch(_){}
+        }, 100);
+      }
+
+      function startPlay(){
+        if (!player) { pendingPlay = true; return; }
+        // Reset state for replay (also covers first play after init)
+        stopped = false;
+        if (freezeImg) freezeImg.classList.remove('is-shown');
+        iframe.style.display = '';
+        try {
+          player.mute();
+          player.seekTo(START, true);
+          player.playVideo();
+        } catch(_){}
+        startWatchdog();
+      }
+
+      function init(){
+        if (inited) return;
+        inited = true;
+        // Lazy-load src if iframe was held back (data-src instead of src)
+        if (iframe.dataset && iframe.dataset.src && !iframe.getAttribute('src')) {
+          iframe.src = iframe.dataset.src;
+        }
+        try {
+          new YT.Player(iframe.id, {
+            events: {
+              'onReady': function(e){
+                player = e.target;
+                if (pendingPlay) { pendingPlay = false; }
+                startPlay();
+              },
+              'onStateChange': function(e){
+                if (e.data === 0 && !stopped) freezeNow();
               }
             }
-          }
-        });
-      } catch(_) {
-        if (onFinish) onFinish();
+          });
+        } catch(_){}
       }
+
+      return {
+        // Trigger: first call inits player (which auto-plays). Subsequent
+        // calls replay from START (resets watchdog + freeze state).
+        trigger: function(){
+          if (!inited) init();
+          else startPlay();
+        }
+      };
     }
 
     function init(){
-      // Split cards by trigger type:
-      //   - "auto" (default): plays in sequential queue (one after another)
-      //   - "hover": plays only when mouse enters the thumb (lazy-loaded)
+      // Each card gets its own controller. Hover cards: trigger on hover
+      // intent (≥350ms). Auto cards (legacy): play in sequential queue.
       var list = Array.prototype.slice.call(iframes);
       var autoQueue = [];
+
       list.forEach(function(iframe){
         var parent = iframe.closest('.twerkhub-fp-hero-video');
         if (!parent) return;
+        var ctl = buildController(iframe);
+        if (!ctl) return;
         var trigger = (parent.getAttribute('data-yt-trigger') || 'auto').toLowerCase();
+
         if (trigger === 'hover') {
-          // Hover with INTENT delay: must hover ≥350ms to trigger.
-          // Prevents accidental fires while the user just scrolls past the card.
-          var triggered = false;
+          // Hover INTENT delay: must hover ≥350ms before triggering.
+          // EVERY hover fires (no single-shot lock) — user can replay unlimited.
           var hoverTimer = null;
           var HOVER_INTENT_MS = 350;
           var arm = function(){
-            if (triggered) return;
             if (hoverTimer) clearTimeout(hoverTimer);
             hoverTimer = setTimeout(function(){
-              if (triggered) return;
-              triggered = true;
-              setupPlayer(iframe);
+              ctl.trigger();
             }, HOVER_INTENT_MS);
           };
           var disarm = function(){
@@ -801,22 +830,24 @@
           parent.addEventListener('mouseleave', disarm);
           parent.addEventListener('focusin', arm);
           parent.addEventListener('focusout', disarm);
-          // touchstart fires immediately on mobile (no scroll-pass issue there)
           parent.addEventListener('touchstart', function(){
-            if (triggered) return;
-            triggered = true;
-            setupPlayer(iframe);
+            ctl.trigger();
           }, { passive: true });
         } else {
-          autoQueue.push(iframe);
+          // Auto-trigger (legacy): play once in sequential queue
+          autoQueue.push({ ctl: ctl, parent: parent });
         }
       });
-      // Sequential queue for auto cards: Card #2 starts after Card #1 finishes.
-      function next(i){
+
+      // Sequential queue for any remaining auto cards
+      // (kept for backward compat; currently no cards are auto)
+      function nextAuto(i){
         if (i >= autoQueue.length) return;
-        setupPlayer(autoQueue[i], function(){ next(i + 1); });
+        autoQueue[i].ctl.trigger();
+        // Note: auto-mode chained playback would need additional logic
+        // to listen for finish events. Left simple since user wants all hover.
       }
-      next(0);
+      nextAuto(0);
     }
 
     loadYTApi(init);
