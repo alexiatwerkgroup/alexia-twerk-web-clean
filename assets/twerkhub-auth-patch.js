@@ -62,7 +62,7 @@
       '.twerkhub-handoff-card{width:min(460px,100%);background:linear-gradient(180deg,rgba(20,20,32,.98),rgba(10,10,20,.98));border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:30px 28px;box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 60px rgba(255,180,84,.18);position:relative;color:#f5f5fb;font-family:"Inter",ui-sans-serif,system-ui,sans-serif}',
       '.twerkhub-handoff-card::before{content:"";position:absolute;top:-1px;left:-1px;right:-1px;height:3px;border-radius:22px 22px 0 0;background:linear-gradient(90deg,#ff2d87,#9d4edd,#ffb454)}',
       '.twerkhub-handoff-kicker{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ffd69a;margin-bottom:12px;display:inline-flex;align-items:center;gap:8px}',
-      '.twerkhub-handoff-kicker::before{content:"";display:inline-block;width:18px;height:1px;background:#ffb454}',
+      '.twerkhub-handoff-kicker::before{display:none}',
       '.twerkhub-handoff-card h3{font-family:"Playfair Display",Georgia,serif;font-size:24px;font-weight:900;line-height:1.15;letter-spacing:-.01em;margin-bottom:10px}',
       '.twerkhub-handoff-card h3 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}',
       '.twerkhub-handoff-card p{color:#c7c7d3;font-size:14.5px;line-height:1.6;margin-bottom:18px}',
