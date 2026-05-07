@@ -518,7 +518,7 @@
     <!-- 1 · FEATURED · /playlist/ · signature archive, updated weekly, infinite list -->
     <a class="twerkhub-fp-card twerkhub-fp-card-featured" href="/playlist/">
       <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
-           data-yt-id="X-lPzSuvf3k" data-yt-start="18" data-yt-stop="34" data-yt-freeze="20" data-yt-trigger="hover">
+           data-yt-id="X-lPzSuvf3k" data-yt-start="18" data-yt-stop="34" data-yt-freeze="20">
         <!-- Poster shown until YT iframe loads (zero-flicker fallback) -->
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/X-lPzSuvf3k/sddefault.jpg" alt="Hottest twerk videos — the signature archive · Лада Гоцци High-Heels · Moscow Dance Centre NRG" loading="eager" fetchpriority="high" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg';}">
         <!-- Freeze frame: SD quality (640x480) — exists for ALL videos (maxresdefault often 404) -->
@@ -551,10 +551,10 @@
       </div>
     </a>
 
-    <!-- 2 · Try-on hot leaks — HOVER preview 15-33s -->
+    <!-- 2 · Try-on hot leaks — AUTO after card #1 finishes (sequential queue) -->
     <a class="twerkhub-fp-card" href="/try-on-hot-leaks/" data-no-dead="1">
       <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
-           data-yt-id="phlPRrYpmz0" data-yt-start="15" data-yt-stop="33" data-yt-freeze="17" data-yt-trigger="hover">
+           data-yt-id="phlPRrYpmz0" data-yt-start="15" data-yt-stop="33" data-yt-freeze="17">
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/phlPRrYpmz0/maxresdefault.jpg" alt="Try-on hot leaks · exclusive haul cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
         <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/phlPRrYpmz0/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
         <!-- Card #2: data-src instead of src — only loads when Card #1 finishes -->
@@ -616,9 +616,9 @@
 
     <!-- 4 · Korean girls K-pop twerk -->
     <a class="twerkhub-fp-card" href="/korean-girls-kpop-twerk/" data-no-dead="1">
-      <!-- HOVER preview: 2nd of top 5 (bDfPfmpUPmw) from 2:44 to 3:01 -->
+      <!-- SCROLL preview: triggers when card enters viewport (vid #2 of top 5) 2:44-3:01 -->
       <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
-           data-yt-id="bDfPfmpUPmw" data-yt-start="164" data-yt-stop="181" data-yt-trigger="hover">
+           data-yt-id="bDfPfmpUPmw" data-yt-start="164" data-yt-stop="181" data-yt-trigger="scroll">
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/bDfPfmpUPmw/sddefault.jpg" alt="Korean girls K-pop and twerk · Seoul choreography" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/bDfPfmpUPmw/hqdefault.jpg';}">
         <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/bDfPfmpUPmw/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/bDfPfmpUPmw/hqdefault.jpg';}">
         <iframe id="twerkhub-fp-hero-yt-4"
@@ -713,8 +713,8 @@
     }
 
     // Each hero card has its own controller. First trigger creates the
-    // YT.Player; subsequent triggers just seek+play (replay) — supports
-    // unlimited replays on hover without re-creating the iframe.
+    // YT.Player + auto-plays; subsequent triggers seek+play (replay).
+    // Supports onFinish callbacks for queue chaining (auto sequential).
     function buildController(iframe){
       var parent = iframe.closest('.twerkhub-fp-hero-video');
       if (!parent) return null;
@@ -726,7 +726,7 @@
       var stopped = false;
       var watchdog = null;
       var inited = false;
-      var pendingPlay = false; // queued replay before player ready
+      var finishCallbacks = [];
 
       function clearWatchdog(){
         if (watchdog) { clearInterval(watchdog); watchdog = null; }
@@ -739,6 +739,11 @@
         if (freezeImg) freezeImg.classList.add('is-shown');
         iframe.style.display = 'none';
         clearWatchdog();
+        // Notify queue (and any other listeners) that we finished
+        finishCallbacks.forEach(function(cb){
+          try { setTimeout(cb, 100); } catch(_){}
+        });
+        finishCallbacks = []; // one-shot per natural finish
       }
 
       function startWatchdog(){
@@ -753,8 +758,7 @@
       }
 
       function startPlay(){
-        if (!player) { pendingPlay = true; return; }
-        // Reset state for replay (also covers first play after init)
+        if (!player) return;
         stopped = false;
         if (freezeImg) freezeImg.classList.remove('is-shown');
         iframe.style.display = '';
@@ -769,7 +773,6 @@
       function init(){
         if (inited) return;
         inited = true;
-        // Lazy-load src if iframe was held back (data-src instead of src)
         if (iframe.dataset && iframe.dataset.src && !iframe.getAttribute('src')) {
           iframe.src = iframe.dataset.src;
         }
@@ -778,7 +781,6 @@
             events: {
               'onReady': function(e){
                 player = e.target;
-                if (pendingPlay) { pendingPlay = false; }
                 startPlay();
               },
               'onStateChange': function(e){
@@ -790,18 +792,56 @@
       }
 
       return {
-        // Trigger: first call inits player (which auto-plays). Subsequent
-        // calls replay from START (resets watchdog + freeze state).
         trigger: function(){
           if (!inited) init();
           else startPlay();
+        },
+        // Register a one-shot callback for next natural finish (used by queue)
+        onFinish: function(cb){
+          if (typeof cb === 'function') finishCallbacks.push(cb);
         }
       };
     }
 
+    // Hover-intent (≥350ms) — attached to ALL cards regardless of trigger type
+    // so users can replay any preview by hovering, even after auto-playback.
+    function attachHoverReplay(parent, ctl){
+      var hoverTimer = null;
+      var HOVER_INTENT_MS = 350;
+      var arm = function(){
+        if (hoverTimer) clearTimeout(hoverTimer);
+        hoverTimer = setTimeout(function(){ ctl.trigger(); }, HOVER_INTENT_MS);
+      };
+      var disarm = function(){
+        if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+      };
+      parent.addEventListener('mouseenter', arm);
+      parent.addEventListener('mouseleave', disarm);
+      parent.addEventListener('focusin', arm);
+      parent.addEventListener('focusout', disarm);
+      parent.addEventListener('touchstart', function(){ ctl.trigger(); }, { passive: true });
+    }
+
+    // Scroll-into-view trigger (intersection observer, fires once when ≥50% visible)
+    function attachScrollTrigger(parent, ctl){
+      if (!('IntersectionObserver' in window)) {
+        ctl.trigger();
+        return;
+      }
+      var fired = false;
+      var obs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting && !fired) {
+            fired = true;
+            obs.disconnect();
+            ctl.trigger();
+          }
+        });
+      }, { threshold: 0.5 });
+      obs.observe(parent);
+    }
+
     function init(){
-      // Each card gets its own controller. Hover cards: trigger on hover
-      // intent (≥350ms). Auto cards (legacy): play in sequential queue.
       var list = Array.prototype.slice.call(iframes);
       var autoQueue = [];
 
@@ -812,40 +852,25 @@
         if (!ctl) return;
         var trigger = (parent.getAttribute('data-yt-trigger') || 'auto').toLowerCase();
 
+        // Hover replay is ALWAYS available, regardless of initial trigger type.
+        attachHoverReplay(parent, ctl);
+
         if (trigger === 'hover') {
-          // Hover INTENT delay: must hover ≥350ms before triggering.
-          // EVERY hover fires (no single-shot lock) — user can replay unlimited.
-          var hoverTimer = null;
-          var HOVER_INTENT_MS = 350;
-          var arm = function(){
-            if (hoverTimer) clearTimeout(hoverTimer);
-            hoverTimer = setTimeout(function(){
-              ctl.trigger();
-            }, HOVER_INTENT_MS);
-          };
-          var disarm = function(){
-            if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
-          };
-          parent.addEventListener('mouseenter', arm);
-          parent.addEventListener('mouseleave', disarm);
-          parent.addEventListener('focusin', arm);
-          parent.addEventListener('focusout', disarm);
-          parent.addEventListener('touchstart', function(){
-            ctl.trigger();
-          }, { passive: true });
+          // Hover-only: hover replay (above) is the only trigger.
+        } else if (trigger === 'scroll') {
+          // Auto-fire when card scrolls into viewport.
+          attachScrollTrigger(parent, ctl);
         } else {
-          // Auto-trigger (legacy): play once in sequential queue
-          autoQueue.push({ ctl: ctl, parent: parent });
+          // Default: auto sequential queue (DOM order).
+          autoQueue.push(ctl);
         }
       });
 
-      // Sequential queue for any remaining auto cards
-      // (kept for backward compat; currently no cards are auto)
+      // Sequential auto queue: each card chains onFinish to the next.
       function nextAuto(i){
         if (i >= autoQueue.length) return;
-        autoQueue[i].ctl.trigger();
-        // Note: auto-mode chained playback would need additional logic
-        // to listen for finish events. Left simple since user wants all hover.
+        autoQueue[i].onFinish(function(){ nextAuto(i + 1); });
+        autoQueue[i].trigger();
       }
       nextAuto(0);
     }
