@@ -515,11 +515,12 @@
 
     <!-- 1 · FEATURED · /playlist/ · signature archive, updated weekly, infinite list -->
     <a class="twerkhub-fp-card twerkhub-fp-card-featured" href="/playlist/">
-      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video">
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
+           data-yt-id="X-lPzSuvf3k" data-yt-start="18" data-yt-stop="34" data-yt-freeze="20">
         <!-- Poster shown until YT iframe loads (zero-flicker fallback) -->
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/X-lPzSuvf3k/maxresdefault.jpg" alt="Hottest twerk videos — the signature archive · Лада Гоцци High-Heels · Moscow Dance Centre NRG" loading="eager" fetchpriority="high" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg';}">
-        <!-- Real live preview: 15s loop of YouTube video #1 of /playlist/ (ID X-lPzSuvf3k) -->
-        <iframe id="twerkhub-fp-hero-yt"
+        <!-- 18-34s preview, fade out + freeze on second 20 -->
+        <iframe id="twerkhub-fp-hero-yt-1"
                 class="twerkhub-fp-hero-iframe"
                 src="https://www.youtube-nocookie.com/embed/X-lPzSuvf3k?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&origin=https%3A%2F%2Falexiatwerkgroup.com&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com"
                 title="Hottest twerk videos — preview"
@@ -546,10 +547,21 @@
       </div>
     </a>
 
-    <!-- 2 · Try-on hot leaks -->
+    <!-- 2 · Try-on hot leaks (with 15-33s video preview) -->
     <a class="twerkhub-fp-card" href="/try-on-hot-leaks/" data-no-dead="1">
-      <div class="twerkhub-fp-thumb">
-        <img height="360" width="480" src="https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg" alt="Try-on hot leaks · exclusive haul cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/default.jpg';}">
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
+           data-yt-id="phlPRrYpmz0" data-yt-start="15" data-yt-stop="33" data-yt-freeze="17">
+        <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/phlPRrYpmz0/maxresdefault.jpg" alt="Try-on hot leaks · exclusive haul cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
+        <iframe id="twerkhub-fp-hero-yt-2"
+                class="twerkhub-fp-hero-iframe"
+                src="https://www.youtube-nocookie.com/embed/phlPRrYpmz0?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&origin=https%3A%2F%2Falexiatwerkgroup.com&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com"
+                title="Try-on hot leaks — preview"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"></iframe>
         <div class="twerkhub-fp-scrim"></div>
         <span class="twerkhub-fp-badge twerkhub-fp-badge-pink">Try-on</span>
       </div>
@@ -627,18 +639,18 @@
 
   </div>
 
-  <!-- Hero video preview: 15s loop control via YouTube IFrame API -->
+  <!-- Hero video previews: configurable via data-yt-* attrs on .twerkhub-fp-hero-video -->
   <script>
   (function(){
     if (window.__twkFpHeroInit) return;
     window.__twkFpHeroInit = true;
 
-    var iframe = document.getElementById('twerkhub-fp-hero-yt');
-    if (!iframe) return;
+    var iframes = document.querySelectorAll('.twerkhub-fp-hero-iframe');
+    if (!iframes.length) return;
 
-    // When the iframe loads, fade it in over the poster image
-    iframe.addEventListener('load', function(){
-      iframe.classList.add('is-ready');
+    // Fade-in each iframe over its poster when it loads
+    iframes.forEach(function(f){
+      f.addEventListener('load', function(){ f.classList.add('is-ready'); });
     });
 
     function loadYTApi(cb){
@@ -657,29 +669,44 @@
       };
     }
 
-    function init(){
+    function setupPlayer(iframe){
+      var parent = iframe.closest('.twerkhub-fp-hero-video');
+      if (!parent) return;
+      var START  = parseFloat(parent.getAttribute('data-yt-start'))  || 0;
+      var STOP   = parseFloat(parent.getAttribute('data-yt-stop'))   || 999999;
+      var FREEZE = parseFloat(parent.getAttribute('data-yt-freeze')) || START;
+      var stopped = false;
+      var pendingFreezeReady = false;
+      var fadeInFallback = null;
+
+      function commitFadeIn(){
+        if (!pendingFreezeReady) return;
+        pendingFreezeReady = false;
+        if (fadeInFallback) { clearTimeout(fadeInFallback); fadeInFallback = null; }
+        // Tiny extra delay so YT renders the actual frame before unhiding
+        setTimeout(function(){
+          iframe.classList.remove('is-fading-out');
+        }, 80);
+      }
+
+      function fadeOutSeekFreeze(player){
+        if (stopped) return;
+        stopped = true;
+        try { player.pauseVideo(); } catch(_){}
+        // Phase 1: fade out
+        iframe.classList.add('is-fading-out');
+        setTimeout(function(){
+          // Phase 2 (invisible): seek to freeze frame + pause
+          try { player.seekTo(FREEZE, true); player.pauseVideo(); } catch(_){}
+          // Phase 3: wait for YT to confirm frame is rendered (state change PAUSED)
+          pendingFreezeReady = true;
+          // Fallback in case the state-change event doesn't fire (some browsers)
+          fadeInFallback = setTimeout(commitFadeIn, 2500);
+        }, 750);
+      }
+
       try {
-        var START = 18, STOP = 34, FREEZE = 20;
-        var stopped = false;
-
-        function fadeOutSeekFreeze(player){
-          if (stopped) return;
-          stopped = true;
-          try { player.pauseVideo(); } catch(_){}
-          // Phase 1: fade out (700ms)
-          iframe.classList.add('is-fading-out');
-          setTimeout(function(){
-            // Phase 2 (invisible): seek to freeze frame at second 20
-            try { player.seekTo(FREEZE, true); player.pauseVideo(); } catch(_){}
-            // Wait briefly for the seek to render the new frame
-            setTimeout(function(){
-              // Phase 3: fade back in to show the 20s frame
-              iframe.classList.remove('is-fading-out');
-            }, 250);
-          }, 750);
-        }
-
-        var p = new YT.Player('twerkhub-fp-hero-yt', {
+        new YT.Player(iframe.id, {
           events: {
             'onReady': function(e){
               try {
@@ -687,7 +714,6 @@
                 e.target.seekTo(START, true);
                 e.target.playVideo();
               } catch(_){}
-              // Tight watchdog 100ms — when we hit STOP, fade out + freeze
               var watchdog = setInterval(function(){
                 if (stopped) { clearInterval(watchdog); return; }
                 try {
@@ -700,14 +726,23 @@
               }, 100);
             },
             'onStateChange': function(e){
-              // Safety net — if video naturally ENDS, also fade out + freeze
+              // 0 = ENDED, 1 = PLAYING, 2 = PAUSED, 3 = BUFFERING, 5 = CUED
               if (e.data === 0 && !stopped) {
                 fadeOutSeekFreeze(e.target);
+              }
+              // After our seek+pause to FREEZE, YT goes BUFFERING → PAUSED.
+              // Trigger fade-in only when PAUSED is confirmed (frame ready).
+              if (e.data === 2 && pendingFreezeReady) {
+                commitFadeIn();
               }
             }
           }
         });
       } catch(_){}
+    }
+
+    function init(){
+      iframes.forEach(setupPlayer);
     }
 
     loadYTApi(init);
