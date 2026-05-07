@@ -616,8 +616,21 @@
 
     <!-- 4 · Korean girls K-pop twerk -->
     <a class="twerkhub-fp-card" href="/korean-girls-kpop-twerk/" data-no-dead="1">
-      <div class="twerkhub-fp-thumb">
-        <img height="360" width="480" src="https://i.ytimg.com/vi/v9zzf8elj_w/hqdefault.jpg" alt="Korean girls K-pop and twerk · Seoul choreography" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/v9zzf8elj_w/default.jpg';}">
+      <!-- HOVER triggered preview: 2nd of top 5 (bDfPfmpUPmw) from 2:44 to 3:01 -->
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
+           data-yt-id="bDfPfmpUPmw" data-yt-start="164" data-yt-stop="181" data-yt-trigger="hover">
+        <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/bDfPfmpUPmw/sddefault.jpg" alt="Korean girls K-pop and twerk · Seoul choreography" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/bDfPfmpUPmw/hqdefault.jpg';}">
+        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/bDfPfmpUPmw/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/bDfPfmpUPmw/hqdefault.jpg';}">
+        <iframe id="twerkhub-fp-hero-yt-4"
+                class="twerkhub-fp-hero-iframe"
+                data-src="https://www.youtube-nocookie.com/embed/bDfPfmpUPmw?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&origin=https%3A%2F%2Falexiatwerkgroup.com&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com"
+                title="Korean K-pop twerk — preview"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"></iframe>
         <div class="twerkhub-fp-scrim"></div>
         <span class="twerkhub-fp-badge twerkhub-fp-badge-gold">K-pop</span>
       </div>
@@ -755,16 +768,33 @@
         if (!parent) return;
         var trigger = (parent.getAttribute('data-yt-trigger') || 'auto').toLowerCase();
         if (trigger === 'hover') {
+          // Hover with INTENT delay: must hover ≥350ms to trigger.
+          // Prevents accidental fires while the user just scrolls past the card.
           var triggered = false;
+          var hoverTimer = null;
+          var HOVER_INTENT_MS = 350;
           var arm = function(){
+            if (triggered) return;
+            if (hoverTimer) clearTimeout(hoverTimer);
+            hoverTimer = setTimeout(function(){
+              if (triggered) return;
+              triggered = true;
+              setupPlayer(iframe);
+            }, HOVER_INTENT_MS);
+          };
+          var disarm = function(){
+            if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+          };
+          parent.addEventListener('mouseenter', arm);
+          parent.addEventListener('mouseleave', disarm);
+          parent.addEventListener('focusin', arm);
+          parent.addEventListener('focusout', disarm);
+          // touchstart fires immediately on mobile (no scroll-pass issue there)
+          parent.addEventListener('touchstart', function(){
             if (triggered) return;
             triggered = true;
             setupPlayer(iframe);
-          };
-          parent.addEventListener('mouseenter', arm);
-          parent.addEventListener('focusin', arm);
-          // touchstart for mobile (taps the card area)
-          parent.addEventListener('touchstart', arm, { passive: true });
+          }, { passive: true });
         } else {
           autoQueue.push(iframe);
         }
