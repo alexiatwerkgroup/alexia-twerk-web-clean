@@ -583,10 +583,22 @@
       </div>
     </a>
 
-    <!-- 3 · Hottest cosplay fancam -->
+    <!-- 3 · Hottest cosplay fancam — HOVER triggered preview 3:15-3:27 -->
     <a class="twerkhub-fp-card" href="/hottest-cosplay-fancam/" data-no-dead="1">
-      <div class="twerkhub-fp-thumb">
-        <img height="360" width="480" src="https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg" alt="Hottest cosplay and fancam · verified cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/qoho-dzADrc/default.jpg';}">
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
+           data-yt-id="qoho-dzADrc" data-yt-start="195" data-yt-stop="207" data-yt-trigger="hover">
+        <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/qoho-dzADrc/sddefault.jpg" alt="Hottest cosplay and fancam · verified cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg';}">
+        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/qoho-dzADrc/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg';}">
+        <iframe id="twerkhub-fp-hero-yt-3"
+                class="twerkhub-fp-hero-iframe"
+                data-src="https://www.youtube-nocookie.com/embed/qoho-dzADrc?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&origin=https%3A%2F%2Falexiatwerkgroup.com&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com"
+                title="Hottest cosplay fancam — preview"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"></iframe>
         <div class="twerkhub-fp-scrim"></div>
         <span class="twerkhub-fp-badge twerkhub-fp-badge-purple">Cosplay</span>
       </div>
@@ -733,12 +745,34 @@
     }
 
     function init(){
-      // Sequential queue: Card #2 only starts after Card #1 finishes.
-      // Avoids running two HD video streams simultaneously (laggy on most devices).
+      // Split cards by trigger type:
+      //   - "auto" (default): plays in sequential queue (one after another)
+      //   - "hover": plays only when mouse enters the thumb (lazy-loaded)
       var list = Array.prototype.slice.call(iframes);
+      var autoQueue = [];
+      list.forEach(function(iframe){
+        var parent = iframe.closest('.twerkhub-fp-hero-video');
+        if (!parent) return;
+        var trigger = (parent.getAttribute('data-yt-trigger') || 'auto').toLowerCase();
+        if (trigger === 'hover') {
+          var triggered = false;
+          var arm = function(){
+            if (triggered) return;
+            triggered = true;
+            setupPlayer(iframe);
+          };
+          parent.addEventListener('mouseenter', arm);
+          parent.addEventListener('focusin', arm);
+          // touchstart for mobile (taps the card area)
+          parent.addEventListener('touchstart', arm, { passive: true });
+        } else {
+          autoQueue.push(iframe);
+        }
+      });
+      // Sequential queue for auto cards: Card #2 starts after Card #1 finishes.
       function next(i){
-        if (i >= list.length) return;
-        setupPlayer(list[i], function(){ next(i + 1); });
+        if (i >= autoQueue.length) return;
+        setupPlayer(autoQueue[i], function(){ next(i + 1); });
       }
       next(0);
     }
