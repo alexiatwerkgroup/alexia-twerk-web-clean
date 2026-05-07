@@ -12,80 +12,463 @@
     {
       "source": "/manifest.json",
       "headers": [
-        { "key": "Content-Type", "value": "application/manifest+json" }
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        }
       ]
     },
     {
       "source": "/service-worker.js",
       "headers": [
-        { "key": "Content-Type", "value": "application/javascript" },
-        { "key": "Service-Worker-Allowed", "value": "/" }
+        {
+          "key": "Content-Type",
+          "value": "application/javascript"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
       ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
       ]
     }
   ],
   "redirects": [
-    { "source": "/home", "destination": "/", "permanent": true },
-    { "source": "/home.html", "destination": "/", "permanent": true },
-    { "source": "/es/playlist", "destination": "/playlist/", "permanent": true },
-    { "source": "/es/playlist/", "destination": "/playlist/", "permanent": true },
-    { "source": "/es/playlist/index.html", "destination": "/playlist/", "permanent": true },
-    { "source": "/twerk-dancer", "destination": "/creators.html", "permanent": true },
-    { "source": "/twerk-dancer/", "destination": "/creators.html", "permanent": true },
-    { "source": "/twerk-dancer/index.html", "destination": "/creators.html", "permanent": true },
-    { "source": "/models-catalog.html", "destination": "/", "permanent": true },
-    { "source": "/variety-catalog.html", "destination": "/", "permanent": true },
-    { "source": "/playlist-del-otro-lado", "destination": "/", "statusCode": 410 },
-    { "source": "/playlist-del-otro-lado.html", "destination": "/", "statusCode": 410 },
-    { "source": "/playlist-try-on-hot-leaks", "destination": "/try-on-hot-leaks/", "permanent": true },
-    { "source": "/playlist-try-on-hot-leaks/(.*)", "destination": "/try-on-hot-leaks/$1", "permanent": true },
-    { "source": "/playlist-hottest-cosplay-fancam", "destination": "/hottest-cosplay-fancam/", "permanent": true },
-    { "source": "/playlist-hottest-cosplay-fancam/(.*)", "destination": "/hottest-cosplay-fancam/$1", "permanent": true },
-    { "source": "/playlist-korean-girls-kpop-twerk", "destination": "/korean-girls-kpop-twerk/", "permanent": true },
-    { "source": "/playlist-korean-girls-kpop-twerk/(.*)", "destination": "/korean-girls-kpop-twerk/$1", "permanent": true },
-
-    { "source": "/playlist-twerk-hub-leaks", "destination": "/twerk-hub-leaks/", "permanent": true },
-    { "source": "/playlist-twerk-hub-leaks.html", "destination": "/twerk-hub-leaks/", "permanent": true },
-    { "source": "/playlist-twerk-hub-leaks/(.*)", "destination": "/twerk-hub-leaks/$1", "permanent": true },
-    { "source": "/playlist-cosplay-fancam-leaks", "destination": "/cosplay-fancam-leaks/", "permanent": true },
-    { "source": "/playlist-cosplay-fancam-leaks.html", "destination": "/cosplay-fancam-leaks/", "permanent": true },
-    { "source": "/playlist-cosplay-fancam-leaks/(.*)", "destination": "/cosplay-fancam-leaks/$1", "permanent": true },
-    { "source": "/playlist-korean", "destination": "/korean-girls-kpop-twerk/", "permanent": true },
-    { "source": "/playlist-korean.html", "destination": "/korean-girls-kpop-twerk/", "permanent": true },
-    { "source": "/playlist-korean/(.*)", "destination": "/korean-girls-kpop-twerk/$1", "permanent": true },
-    { "source": "/playlist-try-on-haul-leaks", "destination": "/try-on-hot-leaks/", "permanent": true },
-    { "source": "/playlist-try-on-haul-leaks.html", "destination": "/try-on-hot-leaks/", "permanent": true },
-    { "source": "/playlist-try-on-haul-leaks/(.*)", "destination": "/try-on-hot-leaks/$1", "permanent": true },
-    { "source": "/playlist-latina-model-leaks", "destination": "/ttl-latin-models/", "permanent": true },
-    { "source": "/playlist-latina-model-leaks.html", "destination": "/ttl-latin-models/", "permanent": true },
-    { "source": "/playlist-latina-model-leaks/(.*)", "destination": "/ttl-latin-models/$1", "permanent": true },
-
-    { "source": "/playlist-model-1.html", "destination": "/playlist/", "permanent": true },
-    { "source": "/playlist-model-1-dark-premium.html", "destination": "/playlist/", "permanent": true },
-    { "source": "/playlist-recently-added.html", "destination": "/playlist/", "permanent": true },
-    { "source": "/twerk-hub-leaks.html", "destination": "/twerk-hub-leaks/", "permanent": true },
-    { "source": "/ttl-latin-models.html", "destination": "/ttl-latin-models/", "permanent": true },
-    { "source": "/korean.html", "destination": "/korean-girls-kpop-twerk/", "permanent": true },
-    { "source": "/kpop-twerk.html", "destination": "/korean-girls-kpop-twerk/", "permanent": true },
-    { "source": "/alexia-twerk.html", "destination": "/alexia-twerk-leaks.html", "permanent": true },
-    { "source": "/twerk-leaks.html", "destination": "/alexia-twerk-leaks.html", "permanent": true },
-    { "source": "/creator", "destination": "/creators.html", "permanent": true },
-    { "source": "/creator/", "destination": "/creators.html", "permanent": true },
-    { "source": "/models", "destination": "/playlist/", "permanent": true },
-    { "source": "/models/", "destination": "/playlist/", "permanent": true },
-    { "source": "/studios", "destination": "/twerk-studios.html", "permanent": true },
-    { "source": "/studios/", "destination": "/twerk-studios.html", "permanent": true },
-
-    { "source": "/premium-cosplay-fancam", "destination": "/hottest-cosplay-fancam/", "permanent": true },
-    { "source": "/premium-cosplay-fancam.html", "destination": "/hottest-cosplay-fancam/", "permanent": true },
-    { "source": "/premium-cosplay-fancam/", "destination": "/hottest-cosplay-fancam/", "permanent": true },
-    { "source": "/premium-cosplay-fancam/(.*)", "destination": "/hottest-cosplay-fancam/$1", "permanent": true }
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/es/playlist",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/es/playlist/",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/es/playlist/index.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-dancer",
+      "destination": "/creators.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-dancer/",
+      "destination": "/creators.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-dancer/index.html",
+      "destination": "/creators.html",
+      "permanent": true
+    },
+    {
+      "source": "/models-catalog.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/variety-catalog.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-del-otro-lado",
+      "destination": "/",
+      "statusCode": 410
+    },
+    {
+      "source": "/playlist-del-otro-lado.html",
+      "destination": "/",
+      "statusCode": 410
+    },
+    {
+      "source": "/playlist-try-on-hot-leaks",
+      "destination": "/try-on-hot-leaks/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-try-on-hot-leaks/(.*)",
+      "destination": "/try-on-hot-leaks/$1",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-hottest-cosplay-fancam",
+      "destination": "/hottest-cosplay-fancam/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-hottest-cosplay-fancam/(.*)",
+      "destination": "/hottest-cosplay-fancam/$1",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-korean-girls-kpop-twerk",
+      "destination": "/korean-girls-kpop-twerk/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-korean-girls-kpop-twerk/(.*)",
+      "destination": "/korean-girls-kpop-twerk/$1",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-twerk-hub-leaks",
+      "destination": "/twerk-hub-leaks/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-twerk-hub-leaks.html",
+      "destination": "/twerk-hub-leaks/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-twerk-hub-leaks/(.*)",
+      "destination": "/twerk-hub-leaks/$1",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-cosplay-fancam-leaks",
+      "destination": "/cosplay-fancam-leaks/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-cosplay-fancam-leaks.html",
+      "destination": "/cosplay-fancam-leaks/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-cosplay-fancam-leaks/(.*)",
+      "destination": "/cosplay-fancam-leaks/$1",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-korean",
+      "destination": "/korean-girls-kpop-twerk/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-korean.html",
+      "destination": "/korean-girls-kpop-twerk/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-korean/(.*)",
+      "destination": "/korean-girls-kpop-twerk/$1",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-try-on-haul-leaks",
+      "destination": "/try-on-hot-leaks/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-try-on-haul-leaks.html",
+      "destination": "/try-on-hot-leaks/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-try-on-haul-leaks/(.*)",
+      "destination": "/try-on-hot-leaks/$1",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-latina-model-leaks",
+      "destination": "/ttl-latin-models/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-latina-model-leaks.html",
+      "destination": "/ttl-latin-models/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-latina-model-leaks/(.*)",
+      "destination": "/ttl-latin-models/$1",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-model-1.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-model-1-dark-premium.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-recently-added.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks.html",
+      "destination": "/twerk-hub-leaks/",
+      "permanent": true
+    },
+    {
+      "source": "/ttl-latin-models.html",
+      "destination": "/ttl-latin-models/",
+      "permanent": true
+    },
+    {
+      "source": "/korean.html",
+      "destination": "/korean-girls-kpop-twerk/",
+      "permanent": true
+    },
+    {
+      "source": "/kpop-twerk.html",
+      "destination": "/korean-girls-kpop-twerk/",
+      "permanent": true
+    },
+    {
+      "source": "/alexia-twerk.html",
+      "destination": "/alexia-twerk-leaks.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-leaks.html",
+      "destination": "/alexia-twerk-leaks.html",
+      "permanent": true
+    },
+    {
+      "source": "/creator",
+      "destination": "/creators.html",
+      "permanent": true
+    },
+    {
+      "source": "/creator/",
+      "destination": "/creators.html",
+      "permanent": true
+    },
+    {
+      "source": "/models",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/models/",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/studios",
+      "destination": "/twerk-studios.html",
+      "permanent": true
+    },
+    {
+      "source": "/studios/",
+      "destination": "/twerk-studios.html",
+      "permanent": true
+    },
+    {
+      "source": "/premium-cosplay-fancam",
+      "destination": "/hottest-cosplay-fancam/",
+      "permanent": true
+    },
+    {
+      "source": "/premium-cosplay-fancam.html",
+      "destination": "/hottest-cosplay-fancam/",
+      "permanent": true
+    },
+    {
+      "source": "/premium-cosplay-fancam/",
+      "destination": "/hottest-cosplay-fancam/",
+      "permanent": true
+    },
+    {
+      "source": "/premium-cosplay-fancam/(.*)",
+      "destination": "/hottest-cosplay-fancam/$1",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/baja-ghetto-kids-ft-malo-y-darell-choreography-by-yur-a.html",
+      "destination": "/playlist/baja-ghetto-kids-ft-malo-y-darell-choreography-by-yur-aular.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/big-boss-vette-pretty-girls-walk-angela-choreographyida.html",
+      "destination": "/playlist/big-boss-vette-pretty-girls-walk-angela-choreographyidance.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/chica-mala-trap-latino-lexi-panterra-twerking-2024-expl.html",
+      "destination": "/playlist/chica-mala-trap-latino-lexi-panterra-twerking-2024-explicit-kelvin-deejay.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/chlöe-have-mercy-foxyen-choreography-idance-studio.html",
+      "destination": "/playlist/chloe-have-mercy-foxyen-choreography.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/danileigh-tastywangong-lin-kerry-chiu-choreography2024.html",
+      "destination": "/playlist/danileigh-tastywangong-lin-kerry-chiu-choreography2024-taiwan-twerk-family-workshop-vol5.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/fantasy-vedo-debii-choreography-debii-abreu.html",
+      "destination": "/playlist/fantasy-vedo-debii-choreography.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/gwen-stefani-hollaback-girl-nix-choreography-idance-stu.html",
+      "destination": "/playlist/gwen-stefani-hollaback-girl-nix-choreography.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/hrs-hrs-muni-long-patricia-atakora-choreography-find-yo.html",
+      "destination": "/playlist/hrs-hrs-muni-long-patricia-atakora-choreography-find-your-confidance.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/i-like-reggaeton-reggaeton-by-emiliano-ferrari-villalob.html",
+      "destination": "/playlist/i-like-reggaeton-reggaeton-by-emiliano-ferrari-villalobo-hd.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/iggy-azalea-tyga-sip-it-angela-choreography-iggyazalea.html",
+      "destination": "/playlist/iggy-azalea-tyga-sip-it-angela-choreography-iggyazalea-tygatygatv.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/indica-twerk-choreoмк-в-омске-lena-indica.html",
+      "destination": "/playlist/indica-twerk-choreo--.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/jazz-funk-kids-animal-школа-танцев-street-project-волжс.html",
+      "destination": "/playlist/jazz-funk-kids-animal---street-project-.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/kool-john-feat-p-lo-blue-hunnids-twerk-choreo-by-indica.html",
+      "destination": "/playlist/kool-john-feat-p-lo-blue-hunnids-twerk-choreo-by-indica.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/me-gusta-el-reggaeton-bonus-reggaeton-by-emiliano-ferra.html",
+      "destination": "/playlist/me-gusta-el-reggaeton-bonus-reggaeton-by-emiliano-ferrari-villalobo-hd.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/nicki-minaj-barbie-world-twerk-dance-ciri-kato-dance-st.html",
+      "destination": "/playlist/nicki-minaj-barbie-world-twerk-dance-ciri.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/nicki-minaj-yikes-twerk-dasha-kolesnikova.html",
+      "destination": "/playlist/nicki-minaj-yikes-twerk.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/park-dance-in-180-degrees-ice-spice-hannah-montana-4k-5.html",
+      "destination": "/playlist/park-dance-in-180-degrees-ice-spice-hannah-montana-4k-5k-6k-vr-video.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/pop-smoke-dior-twerk-choreo-by-indica-team-lena-indica.html",
+      "destination": "/playlist/pop-smoke-dior-twerk-choreo-by-indica-team.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/post-malone-candy-paint-twerk-dance-choreo-by-indica-wi.html",
+      "destination": "/playlist/post-malone-candy-paint-twerk-dance-choreo-by-indica-with-students.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/rubi-rose-twork-rubirosevevo.html",
+      "destination": "/playlist/rubi-rose-twork.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/sam-smith-unholy-ft-kim-petras-fox-choreography-stripda.html",
+      "destination": "/playlist/sam-smith-unholy-ft-kim-petras-fox-choreography-stripdance-strip-dance.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/so-pretty-reyanna-maria-debii-choreography-debii-abreu.html",
+      "destination": "/playlist/so-pretty-reyanna-maria-debii-choreography.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/sugaarrbbaby-playboy-bunny-girl-prod-lao-paul-marmota-s.html",
+      "destination": "/playlist/sugaarrbbaby-playboy-bunny-girl-prod-lao-paul-marmota.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/tinashe-feat-kaash-paige-angels-twerk-heels-choreo-lena.html",
+      "destination": "/playlist/tinashe-feat-kaash-paige-angels-twerk-heels-choreo.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/twerk-by-monika-99-percent-yike-in-it-школа-танцев-stre.html",
+      "destination": "/playlist/-twerk.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/twerk-choreo-by-abasheva-yana-twerkitstudio-begginers-r.html",
+      "destination": "/playlist/twerk-choreo-by-abasheva-yana-twerkitstudio-begginers-rihanna-needed-me-2.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/twerk-choreo-by-kate-knaub-goody-брокколи-kate-knaub.html",
+      "destination": "/playlist/twerk-choreo-by-kate-knaub-goody-.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/twerk-shake-dat-школа-танцев-street-project-волжский-шк.html",
+      "destination": "/playlist/-twerk.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/wheelie-latto-twerking-kato-dance-studio.html",
+      "destination": "/playlist/wheelie-latto-twerking.html",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/лада-гоцци-high-heels-pharaoh-пломбир-школа-танцев-mdc.html",
+      "destination": "/playlist/",
+      "permanent": true
+    },
+    {
+      "source": "/twerk-hub-leaks/(.*)",
+      "destination": "/playlist/",
+      "permanent": true
+    }
   ]
 }
