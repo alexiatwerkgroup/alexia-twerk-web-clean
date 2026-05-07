@@ -611,7 +611,7 @@ body.twerkhub-pl-page a{color:inherit;text-decoration:none}
 /* ═══ HOT RANKING SIDEBAR — Capa A: contract names ═══ */
 .hotrank{position:sticky;top:96px;align-self:start;border:1px solid var(--tw-line);border-radius:var(--tw-r-lg);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));padding:22px;box-shadow:var(--tw-shadow)}
 .hotrank .rk-head{font-family:var(--tw-font-mono);font-size:10.5px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--tw-pink-soft);display:flex;align-items:center;gap:8px;margin-bottom:16px}
-.hotrank .rk-head::before{content:"";display:inline-block;width:18px;height:1px;background:var(--tw-pink)}
+.hotrank .rk-head::before{display:none}
 .hotrank h2{font-family:var(--tw-font-display);font-size:22px;font-weight:800;line-height:1.08;margin-bottom:18px}
 .hotrank h2 em{font-style:italic;background:linear-gradient(135deg,var(--tw-pink),var(--tw-gold));-webkit-background-clip:text;background-clip:text;color:transparent}
 .rk-list{display:flex;flex-direction:column;gap:10px}
