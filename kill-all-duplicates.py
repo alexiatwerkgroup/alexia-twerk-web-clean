@@ -59,6 +59,13 @@ JOBS = [
         'catch_all': '/creators.html',
         'reason': 'legacy URL pattern, redirected to /creators.html or specific /creator/SLUG',
     },
+    {
+        'old': 'cosplay-fancam-leaks',
+        'target_folder': 'hottest-cosplay-fancam',
+        'index_redirect': '/hottest-cosplay-fancam/',
+        'catch_all': '/hottest-cosplay-fancam/',
+        'reason': 'legacy slug for /hottest-cosplay-fancam/ playlist hub - 71 indexed URLs to consolidate',
+    },
 ]
 
 

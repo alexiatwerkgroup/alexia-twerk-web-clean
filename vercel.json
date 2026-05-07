@@ -157,17 +157,32 @@
     },
     {
       "source": "/playlist-cosplay-fancam-leaks",
-      "destination": "/cosplay-fancam-leaks/",
+      "destination": "/hottest-cosplay-fancam/",
       "permanent": true
     },
     {
       "source": "/playlist-cosplay-fancam-leaks.html",
-      "destination": "/cosplay-fancam-leaks/",
+      "destination": "/hottest-cosplay-fancam/",
       "permanent": true
     },
     {
       "source": "/playlist-cosplay-fancam-leaks/(.*)",
-      "destination": "/cosplay-fancam-leaks/$1",
+      "destination": "/hottest-cosplay-fancam/",
+      "permanent": true
+    },
+    {
+      "source": "/cosplay-fancam-leaks",
+      "destination": "/hottest-cosplay-fancam/",
+      "permanent": true
+    },
+    {
+      "source": "/cosplay-fancam-leaks/",
+      "destination": "/hottest-cosplay-fancam/",
+      "permanent": true
+    },
+    {
+      "source": "/cosplay-fancam-leaks/(.*)",
+      "destination": "/hottest-cosplay-fancam/",
       "permanent": true
     },
     {
