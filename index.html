@@ -475,8 +475,8 @@
     .twerkhub-fp-badge-gold{background:linear-gradient(135deg,#ffb454,#ff9500);color:#2a1400;box-shadow:0 4px 12px rgba(255,180,84,.4)}
     .twerkhub-fp-badge-purple{background:linear-gradient(135deg,#9d4edd,#ff2d87);box-shadow:0 4px 12px rgba(157,78,221,.4)}
     .twerkhub-fp-badge-vip{background:linear-gradient(135deg,#ffb454,#ff2d87);color:#fff;box-shadow:0 4px 12px rgba(255,180,84,.4)}
-    .twerkhub-fp-live{position:absolute;top:14px;right:14px;padding:5px 11px;border-radius:999px;background:rgba(5,5,10,.78);backdrop-filter:blur(10px);border:1px solid rgba(30,224,143,.55);color:#1ee08f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;z-index:3;display:inline-flex;align-items:center;gap:6px}
-    .twerkhub-fp-live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#1ee08f;box-shadow:0 0 10px #1ee08f;animation:twerkhub-fp-live-pulse 2s ease-in-out infinite}
+    .twerkhub-fp-live{position:absolute;top:14px;right:14px;padding:5px 11px;border-radius:999px;background:linear-gradient(90deg,#ff2d87 0%,#ff9000 100%);border:1px solid rgba(255,144,0,.85);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;z-index:3;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(255,45,135,.4)}
+    .twerkhub-fp-live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.95);animation:twerkhub-fp-live-pulse 2s ease-in-out infinite}
     @keyframes twerkhub-fp-live-pulse{0%,100%{opacity:1}50%{opacity:.35}}
     .twerkhub-fp-body{padding:20px 22px 22px;position:relative;z-index:2}
     .twerkhub-fp-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:8px}
@@ -493,6 +493,13 @@
     .twerkhub-fp-card:hover .twerkhub-fp-cta{transform:translateX(4px);box-shadow:0 10px 28px rgba(255,45,135,.5)}
     .twerkhub-fp-card-featured .twerkhub-fp-cta{background:linear-gradient(135deg,#1ee08f,#ffb454);color:#031a11;box-shadow:0 10px 28px rgba(30,224,143,.45)}
     .twerkhub-fp-card-featured:hover .twerkhub-fp-cta{box-shadow:0 14px 36px rgba(30,224,143,.65)}
+    /* Hero video preview: iframe sits over poster, scaled to cover */
+    .twerkhub-fp-hero-video{position:relative}
+    .twerkhub-fp-hero-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+    .twerkhub-fp-hero-iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .6s ease;background:#000;
+      /* scale up slightly to crop YT chrome bars at top/bottom */
+      transform:scale(1.42);transform-origin:center center}
+    .twerkhub-fp-hero-iframe.is-ready{opacity:1}
   </style>
 
   <div class="twerkhub-fp-head">
@@ -505,8 +512,20 @@
 
     <!-- 1 · FEATURED · /playlist/ · signature archive, updated weekly, infinite list -->
     <a class="twerkhub-fp-card twerkhub-fp-card-featured" href="/playlist/">
-      <div class="twerkhub-fp-thumb">
-        <img height="360" width="480" src="https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg" alt="Hottest twerk videos — the signature archive · Лада Гоцци High-Heels · Moscow Dance Centre NRG" loading="eager" fetchpriority="high" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/X-lPzSuvf3k/default.jpg';}">
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video">
+        <!-- Poster shown until YT iframe loads (zero-flicker fallback) -->
+        <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/X-lPzSuvf3k/maxresdefault.jpg" alt="Hottest twerk videos — the signature archive · Лада Гоцци High-Heels · Moscow Dance Centre NRG" loading="eager" fetchpriority="high" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg';}">
+        <!-- Real live preview: 15s loop of YouTube video #1 of /playlist/ (ID X-lPzSuvf3k) -->
+        <iframe id="twerkhub-fp-hero-yt"
+                class="twerkhub-fp-hero-iframe"
+                src="https://www.youtube-nocookie.com/embed/X-lPzSuvf3k?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&start=0&end=15&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&loop=1&playlist=X-lPzSuvf3k&origin=https%3A%2F%2Falexiatwerkgroup.com&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com"
+                title="Hottest twerk videos — preview"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"></iframe>
         <div class="twerkhub-fp-scrim"></div>
         <span class="twerkhub-fp-badge twerkhub-fp-badge-signature">✦ Signature</span>
         <span class="twerkhub-fp-live">● Infinite list</span>
@@ -604,6 +623,65 @@
 
 
   </div>
+
+  <!-- Hero video preview: 15s loop control via YouTube IFrame API -->
+  <script>
+  (function(){
+    if (window.__twkFpHeroInit) return;
+    window.__twkFpHeroInit = true;
+
+    var iframe = document.getElementById('twerkhub-fp-hero-yt');
+    if (!iframe) return;
+
+    // When the iframe loads, fade it in over the poster image
+    iframe.addEventListener('load', function(){
+      iframe.classList.add('is-ready');
+    });
+
+    function loadYTApi(cb){
+      if (window.YT && window.YT.Player) { cb(); return; }
+      var existing = document.getElementById('twk-yt-iframe-api');
+      if (!existing) {
+        var s = document.createElement('script');
+        s.id = 'twk-yt-iframe-api';
+        s.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(s);
+      }
+      var prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function(){
+        if (typeof prev === 'function') { try { prev(); } catch(_){} }
+        cb();
+      };
+    }
+
+    function init(){
+      try {
+        var p = new YT.Player('twerkhub-fp-hero-yt', {
+          events: {
+            'onReady': function(e){
+              try { e.target.mute(); e.target.playVideo(); } catch(_){}
+              // Watchdog: every 250ms check time, seek to 0 if past 15s
+              setInterval(function(){
+                try {
+                  var t = e.target.getCurrentTime();
+                  if (t >= 15) e.target.seekTo(0, true);
+                } catch(_){}
+              }, 250);
+            },
+            'onStateChange': function(e){
+              // 0 = ENDED — re-loop manually
+              if (e.data === 0) {
+                try { e.target.seekTo(0, true); e.target.playVideo(); } catch(_){}
+              }
+            }
+          }
+        });
+      } catch(_){}
+    }
+
+    loadYTApi(init);
+  })();
+  </script>
 </section>
 
 <!-- ═══ CLUB MEMBERS · sponsored tier 2 ═══ -->
