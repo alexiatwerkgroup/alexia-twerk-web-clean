@@ -712,6 +712,21 @@
       };
     }
 
+    // Global state: how many cards are currently playing (or about to play).
+    // Used by scroll-trigger cards to wait until everything is idle.
+    var activeCount = 0;
+    var pendingScrollFires = [];
+
+    function bumpActive(){ activeCount++; }
+    function dropActive(){
+      activeCount = Math.max(0, activeCount - 1);
+      if (activeCount === 0 && pendingScrollFires.length) {
+        // Drain queued scroll triggers (only one at a time — chain via finish)
+        var next = pendingScrollFires.shift();
+        try { next(); } catch(_){}
+      }
+    }
+
     // Each hero card has its own controller. First trigger creates the
     // YT.Player + auto-plays; subsequent triggers seek+play (replay).
     // Supports onFinish callbacks for queue chaining (auto sequential).
@@ -739,6 +754,7 @@
         if (freezeImg) freezeImg.classList.add('is-shown');
         iframe.style.display = 'none';
         clearWatchdog();
+        dropActive();
         // Notify queue (and any other listeners) that we finished
         finishCallbacks.forEach(function(cb){
           try { setTimeout(cb, 100); } catch(_){}
@@ -759,6 +775,9 @@
 
       function startPlay(){
         if (!player) return;
+        // If we were stopped/frozen, count as a fresh play (bump active).
+        // If we were already playing (re-trigger mid-playback), don't double-count.
+        if (stopped) bumpActive();
         stopped = false;
         if (freezeImg) freezeImg.classList.remove('is-shown');
         iframe.style.display = '';
@@ -773,6 +792,13 @@
       function init(){
         if (inited) return;
         inited = true;
+        // Reserve a slot in the active count BEFORE the YT.Player loads.
+        // This way, if K-pop's scroll trigger fires while #1 is still
+        // initializing, K-pop sees activeCount > 0 and waits.
+        bumpActive();
+        // Mark as "stopped" so the first onReady's startPlay() will
+        // un-stop and play (without double-bumping active).
+        stopped = true;
         if (iframe.dataset && iframe.dataset.src && !iframe.getAttribute('src')) {
           iframe.src = iframe.dataset.src;
         }
@@ -781,14 +807,27 @@
             events: {
               'onReady': function(e){
                 player = e.target;
-                startPlay();
+                // startPlay() will un-stop & resume, but it'd bump active again.
+                // We pre-bumped, so just clear stopped + play directly:
+                stopped = false;
+                if (freezeImg) freezeImg.classList.remove('is-shown');
+                iframe.style.display = '';
+                try {
+                  player.mute();
+                  player.seekTo(START, true);
+                  player.playVideo();
+                } catch(_){}
+                startWatchdog();
               },
               'onStateChange': function(e){
                 if (e.data === 0 && !stopped) freezeNow();
               }
             }
           });
-        } catch(_){}
+        } catch(_){
+          // If YT.Player ctor throws, undo the pre-bump
+          dropActive();
+        }
       }
 
       return {
@@ -822,10 +861,16 @@
       parent.addEventListener('touchstart', function(){ ctl.trigger(); }, { passive: true });
     }
 
-    // Scroll-into-view trigger (intersection observer, fires once when ≥50% visible)
+    // Scroll-into-view trigger (intersection observer, fires once when ≥50% visible).
+    // CRITICAL: if any other card is currently playing/initializing, this card
+    // QUEUES its trigger and waits — only fires when activeCount drops to 0.
     function attachScrollTrigger(parent, ctl){
       if (!('IntersectionObserver' in window)) {
-        ctl.trigger();
+        if (activeCount > 0) {
+          pendingScrollFires.push(function(){ ctl.trigger(); });
+        } else {
+          ctl.trigger();
+        }
         return;
       }
       var fired = false;
@@ -834,7 +879,12 @@
           if (entry.isIntersecting && !fired) {
             fired = true;
             obs.disconnect();
-            ctl.trigger();
+            if (activeCount > 0) {
+              // Something else is playing — queue this for later
+              pendingScrollFires.push(function(){ ctl.trigger(); });
+            } else {
+              ctl.trigger();
+            }
           }
         });
       }, { threshold: 0.5 });
