@@ -716,14 +716,30 @@
     // Used by scroll-trigger cards to wait until everything is idle.
     var activeCount = 0;
     var pendingScrollFires = [];
+    var drainTimer = null;
+    var DRAIN_GRACE_MS = 350; // gap to allow chained auto-queue to bump active
 
-    function bumpActive(){ activeCount++; }
+    function bumpActive(){
+      activeCount++;
+      // Cancel any pending drain — something just became active
+      if (drainTimer) {
+        clearTimeout(drainTimer);
+        drainTimer = null;
+      }
+    }
     function dropActive(){
       activeCount = Math.max(0, activeCount - 1);
       if (activeCount === 0 && pendingScrollFires.length) {
-        // Drain queued scroll triggers (only one at a time — chain via finish)
-        var next = pendingScrollFires.shift();
-        try { next(); } catch(_){}
+        // Wait DRAIN_GRACE_MS — if the auto queue chains a new card during
+        // that grace window, bumpActive() will cancel this drain.
+        if (drainTimer) clearTimeout(drainTimer);
+        drainTimer = setTimeout(function(){
+          drainTimer = null;
+          if (activeCount === 0 && pendingScrollFires.length) {
+            var next = pendingScrollFires.shift();
+            try { next(); } catch(_){}
+          }
+        }, DRAIN_GRACE_MS);
       }
     }
 
