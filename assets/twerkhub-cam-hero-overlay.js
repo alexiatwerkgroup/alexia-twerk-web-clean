@@ -85,6 +85,15 @@
       '}',
       '.twk-cam-styled .twerkhub-hh-next svg{width:11px !important;height:11px !important}',
 
+      /* CLICK-OUT overlay → LiveJasmin afiliado.
+         z-index 12 = arriba del iframe pero debajo de los controles (header,
+         mute, next, countdown que estan en z-index 14-15). */
+      '.twk-cam-cta-link{',
+        'position:absolute;inset:0;z-index:12;display:block;',
+        'cursor:pointer;text-decoration:none;',
+        'background:transparent;',  // invisible pero captura clicks
+      '}',
+
       /* HEADER STRIP — black bar arriba (NO gradient, sólido como banner) */
       '.twk-cam-hero-header{',
         'position:absolute;top:0;left:0;right:0;z-index:15;',
@@ -95,24 +104,28 @@
         'pointer-events:none;',
         'font-family:"Inter",ui-sans-serif,system-ui,sans-serif;',
       '}',
-      /* ONLINE [CAMS] top-LEFT */
+      /* ONLINE [CAMS] top-LEFT — Inter Black 900 (NEGRITA, no condensado) */
       '.twk-cam-brand{',
         'display:inline-flex;align-items:center;gap:0;',
-        'font-family:"Anton","Bebas Neue",sans-serif;',
-        'font-size:14px;letter-spacing:.04em;line-height:1;text-transform:uppercase;',
+        'font-family:"Inter",ui-sans-serif,system-ui,sans-serif;',
+        'font-weight:900;',  // Black — bold como el banner
+        'font-size:15px;letter-spacing:0;line-height:1;text-transform:uppercase;',
       '}',
-      '.twk-cam-online{color:#fff;padding-right:5px}',
-      '.twk-cam-cams{background:#ff9000;color:#000;padding:3px 8px;border-radius:4px}',
+      '.twk-cam-online{color:#fff;padding-right:6px;font-weight:900}',
+      '.twk-cam-cams{',
+        'background:#ff9000;color:#000;padding:3px 9px 3px 9px;border-radius:5px;',
+        'font-weight:900;',
+      '}',
       /* LIVE NOW center */
       '.twk-cam-live{',
         'margin:0 auto;',  // empuja al centro
         'display:inline-flex;align-items:center;gap:6px;',
         'font-family:"JetBrains Mono",ui-monospace,monospace;',
         'font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;',
-        'color:#ff5577;white-space:nowrap;',
+        'color:#ff0033;white-space:nowrap;',
       '}',
       '.twk-cam-live::before{',
-        'content:"";width:7px;height:7px;border-radius:50%;background:#ff5577;',
+        'content:"";width:7px;height:7px;border-radius:50%;background:#ff0033;',
         'animation:twk-cam-blink 1.4s ease-in-out infinite;',
       '}',
       '@keyframes twk-cam-blink{0%,49%,100%{opacity:1}50%,99%{opacity:0}}',
@@ -124,17 +137,18 @@
         'padding:4px 8px;border-radius:4px;',
       '}',
 
-      /* Round mute icon (debajo del header strip, mid-right) */
+      /* Round mute icon (transparente, campana blanca clara — match al banner) */
       '.twk-cam-mute{',
         'position:absolute;top:48px;right:12px;z-index:14;',
-        'width:38px;height:38px;border-radius:50%;',
-        'background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.22);',
+        'width:42px;height:42px;border-radius:50%;',
+        'background:rgba(20,20,20,.45);',  // mucho mas transparente
+        'border:1px solid rgba(255,255,255,.18);',
         'color:#fff;display:flex;align-items:center;justify-content:center;',
         'cursor:pointer;padding:0;',
-        '-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);',
+        '-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);',
         'transition:background .15s,border-color .15s,color .15s,transform .15s;',
       '}',
-      '.twk-cam-mute:hover{background:rgba(255,144,0,.95);color:#000;border-color:#ff9000;transform:scale(1.05)}',
+      '.twk-cam-mute:hover{background:rgba(255,144,0,.85);color:#000;border-color:#ff9000;transform:scale(1.05)}',
       '.twk-cam-mute svg{width:18px;height:18px;display:block}',
       '.twk-cam-mute .icon-on{display:none}',
       '.twk-cam-mute.is-on .icon-off{display:none}',
@@ -155,8 +169,16 @@
     document.head.appendChild(st);
   }
 
+  // LiveJasmin affiliate URL (mismo psid/pstool/psprogram que el cb-promo widget)
+  var AFFILIATE_URL =
+    'https://www.livejasmin.com/en/?psid=alexiatwerk&pstool=202_1&psprogram=revs&category=girl';
+
   function buildOverlay(){
     return [
+      // Click-out overlay sobre el iframe — abre LJ en new tab.
+      // z-index 12 → debajo del header(15), mute(14), next(14), countdown(14)
+      // pero arriba del iframe, asi captura clicks en el área del video.
+      '<a class="twk-cam-cta-link" href="' + AFFILIATE_URL + '" target="_blank" rel="noopener sponsored" data-track="hero-cam-click" aria-label="Open live cams"></a>',
       '<div class="twk-cam-hero-header">',
         '<span class="twk-cam-brand">',
           '<span class="twk-cam-online">ONLINE</span>',
