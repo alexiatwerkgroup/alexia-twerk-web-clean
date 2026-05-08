@@ -788,9 +788,20 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
       function freezeNow(){
         if (stopped) return;
         stopped = true;
-        try { if (player) player.pauseVideo(); } catch(_){}
-        if (freezeImg) freezeImg.classList.add('is-shown');
-        iframe.style.display = 'none';
+        // FREEZE on the actual last frame at STOP timestamp — NO swap to
+        // YouTube static thumbnail. Visual continuity: el cuadro final
+        // del video se queda visible (iframe paused at exact STOP position).
+        try {
+          if (player) {
+            player.seekTo(STOP, true);  // precision: jump to exact STOP frame
+            player.pauseVideo();        // hold on that frame
+          }
+        } catch(_){}
+        // DO NOT show the static thumbnail (was: freezeImg.classList.add)
+        // DO NOT hide the iframe (was: iframe.style.display = 'none')
+        // Iframe stays visible at z-index 2 with pointer-events:none → user
+        // sees the actual paused frame, can't accidentally click → YT pause UI
+        // is minimized by controls=0 + modestbranding=1 + rel=0.
         clearWatchdog();
         dropActive();
         // Notify queue (and any other listeners) that we finished
