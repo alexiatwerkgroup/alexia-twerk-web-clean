@@ -1,44 +1,101 @@
 /* TWERKHUB · Cam-style overlay for the home HERO video rotator
- * v2 (2026-05-08) — APUNTA SOLO al .twerkhub-home-hero-media (el player
- * rotativo del top del home con el boton "Next" que cycla entre 4 YT IDs).
- * NO toca las 5 playlist cards (twerkhub-fp-card).
- *
- * Visual:
- *   - Border + glow naranja alrededor del player
- *   - Header overlay: ONLINE [CAMS] · LIVE NOW · AD
- *   - Round mute icon mid-right del video
- *   - El boton "Next" existente se mantiene (LJ-style, no lo toco)
+ * v3 (2026-05-08) — match al banner LiveJasmin EXACTO:
+ *   1. ONLINE [CAMS] top-LEFT (white "ONLINE" + orange box "CAMS")
+ *   2. ● LIVE NOW center (red dot + JetBrains Mono uppercase)
+ *   3. AD top-RIGHT (gray translucent)
+ *   4. Black bar top (solid background, no gradient)
+ *   5. Round mute icon mid-right (NO duplicar con Sound off pill)
+ *   6. NEXT bottom-right (Anton uppercase, orange border)
+ *   7. PRIVATE · ENDS IN bottom-LEFT (JetBrains Mono, orange timer)
+ *   8. Border + glow naranja alrededor del player
+ *   9. ESCONDER los elementos VIEJOS del hero que duplican:
+ *      - .twerkhub-hh-mute (pill "Sound off") → reemplazado por round icon
+ *      - .twerkhub-hh-live (green ONLINE pill) → no esta en el banner
+ *      - El countdown viejo se RE-USA pero re-estilado
  */
 (function(){
   'use strict';
-  if (window.__twkCamHeroV2Init) return;
-  window.__twkCamHeroV2Init = true;
+  if (window.__twkCamHeroV3Init) return;
+  window.__twkCamHeroV3Init = true;
 
   function injectCSS(){
-    if (document.getElementById('twk-cam-hero-v2-css')) return;
+    if (document.getElementById('twk-cam-hero-v3-css')) return;
     var st = document.createElement('style');
-    st.id = 'twk-cam-hero-v2-css';
+    st.id = 'twk-cam-hero-v3-css';
     st.textContent = [
-      /* Border + glow naranja en el player rotativo del hero */
+      /* Border + glow naranja en el player rotativo */
       '.twerkhub-home-hero-media.twk-cam-styled{',
         'border:2px solid #ff9000 !important;',
         'box-shadow:0 0 24px rgba(255,144,0,.32),0 0 60px rgba(255,144,0,.14) !important;',
         'border-radius:14px !important;overflow:hidden !important;',
+        'position:relative !important;',
       '}',
-      /* Header overlay (ONLINE CAMS · LIVE NOW · AD) — top strip sobre el video */
+
+      /* HIDE elementos viejos que duplican o no van */
+      '.twk-cam-styled .twerkhub-hh-mute{display:none !important}',  // pill "Sound off"
+      '.twk-cam-styled .twerkhub-hh-live,',
+      '.twk-cam-styled #twerkhub-hh-status{display:none !important}',  // green ONLINE pill
+      /* El countdown viejo lo reposicionamos abajo izquierda y re-estilamos */
+      '.twk-cam-styled .twerkhub-hh-media-meta{',
+        'position:absolute !important;bottom:12px !important;left:12px !important;',
+        'top:auto !important;right:auto !important;',
+        'z-index:14 !important;display:flex !important;flex-direction:column !important;',
+        'align-items:flex-start !important;gap:2px !important;',
+        'background:rgba(0,0,0,.78) !important;',
+        'padding:6px 12px !important;border-radius:4px !important;',
+        '-webkit-backdrop-filter:blur(6px) !important;backdrop-filter:blur(6px) !important;',
+        'border:1px solid rgba(255,144,0,.3) !important;',
+        'margin:0 !important;',
+      '}',
+      '.twk-cam-styled .twerkhub-hh-media-meta h2,',
+      '.twk-cam-styled #twk-rotator-countdown{',
+        'margin:0 !important;padding:0 !important;background:transparent !important;',
+        'display:flex !important;flex-direction:column !important;align-items:flex-start !important;gap:2px !important;',
+      '}',
+      '.twk-cam-styled .twerkhub-hh-cd-kicker{',
+        'font-family:"JetBrains Mono",ui-monospace,monospace !important;',
+        'font-size:8.5px !important;font-weight:700 !important;',
+        'letter-spacing:.16em !important;text-transform:uppercase !important;',
+        'color:rgba(255,255,255,.55) !important;background:transparent !important;',
+        'padding:0 !important;line-height:1 !important;',
+      '}',
+      '.twk-cam-styled .twerkhub-hh-cd-timer{',
+        'font-family:"JetBrains Mono",ui-monospace,monospace !important;',
+        'font-size:14px !important;font-weight:800 !important;',
+        'letter-spacing:.04em !important;color:#ff9000 !important;',
+        'background:transparent !important;padding:0 !important;line-height:1.1 !important;',
+      '}',
+
+      /* Re-style el botón Next existente (.twerkhub-hh-next) → bottom-right */
+      '.twk-cam-styled .twerkhub-hh-next{',
+        'top:auto !important;left:auto !important;',
+        'bottom:12px !important;right:12px !important;',
+        'background:rgba(0,0,0,.7) !important;color:#ff9000 !important;',
+        'border:1px solid rgba(255,144,0,.55) !important;',
+        'font-family:"Anton","Bebas Neue",sans-serif !important;',
+        'font-size:13px !important;font-weight:400 !important;',
+        'letter-spacing:.06em !important;text-transform:uppercase !important;',
+        'padding:5px 12px 5px 14px !important;border-radius:999px !important;',
+        'line-height:1 !important;z-index:14 !important;',
+        '-webkit-backdrop-filter:blur(6px) !important;backdrop-filter:blur(6px) !important;',
+        'box-shadow:none !important;',
+      '}',
+      '.twk-cam-styled .twerkhub-hh-next:hover{',
+        'background:#ff9000 !important;color:#000 !important;border-color:#ff9000 !important;',
+      '}',
+      '.twk-cam-styled .twerkhub-hh-next svg{width:11px !important;height:11px !important}',
+
+      /* HEADER STRIP — black bar arriba (NO gradient, sólido como banner) */
       '.twk-cam-hero-header{',
-        'position:absolute;top:0;left:0;right:0;z-index:13;',
-        'display:flex;align-items:center;justify-content:flex-end;gap:10px;',
-        'padding:10px 14px 18px;',
-        'background:linear-gradient(180deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.55) 70%,rgba(0,0,0,0) 100%);',
+        'position:absolute;top:0;left:0;right:0;z-index:15;',
+        'display:flex;align-items:center;gap:12px;',
+        'padding:10px 14px;',
+        'background:#000;',  // black bar SOLIDA
+        'border-bottom:1px solid rgba(255,144,0,.15);',
         'pointer-events:none;',
         'font-family:"Inter",ui-sans-serif,system-ui,sans-serif;',
       '}',
-      /* En desktop el "Next" button del hero ocupa el top-left, asi que
-         posicionamos ONLINE CAMS desde la izquierda con padding-left para
-         dejarle espacio al Next */
-      '.twk-cam-hero-header .twk-cam-brand{margin-right:auto;padding-left:130px}',
-      '@media(max-width:520px){.twk-cam-hero-header .twk-cam-brand{padding-left:90px}}',
+      /* ONLINE [CAMS] top-LEFT */
       '.twk-cam-brand{',
         'display:inline-flex;align-items:center;gap:0;',
         'font-family:"Anton","Bebas Neue",sans-serif;',
@@ -46,7 +103,9 @@
       '}',
       '.twk-cam-online{color:#fff;padding-right:5px}',
       '.twk-cam-cams{background:#ff9000;color:#000;padding:3px 8px;border-radius:4px}',
+      /* LIVE NOW center */
       '.twk-cam-live{',
+        'margin:0 auto;',  // empuja al centro
         'display:inline-flex;align-items:center;gap:6px;',
         'font-family:"JetBrains Mono",ui-monospace,monospace;',
         'font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;',
@@ -57,6 +116,7 @@
         'animation:twk-cam-blink 1.4s ease-in-out infinite;',
       '}',
       '@keyframes twk-cam-blink{0%,49%,100%{opacity:1}50%,99%{opacity:0}}',
+      /* AD top-RIGHT */
       '.twk-cam-ad{',
         'background:rgba(255,255,255,.16);color:#fff;',
         'font-family:"JetBrains Mono",monospace;',
@@ -64,10 +124,10 @@
         'padding:4px 8px;border-radius:4px;',
       '}',
 
-      /* Round mute icon (mid-right del video, debajo del header) */
+      /* Round mute icon (debajo del header strip, mid-right) */
       '.twk-cam-mute{',
-        'position:absolute;top:60px;right:14px;z-index:14;',
-        'width:40px;height:40px;border-radius:50%;',
+        'position:absolute;top:48px;right:12px;z-index:14;',
+        'width:38px;height:38px;border-radius:50%;',
         'background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.22);',
         'color:#fff;display:flex;align-items:center;justify-content:center;',
         'cursor:pointer;padding:0;',
@@ -82,13 +142,14 @@
       '.twk-cam-mute.is-on{background:rgba(255,144,0,.9);color:#000;border-color:#ff9000}',
 
       '@media(max-width:520px){',
-        '.twk-cam-hero-header{padding:8px 10px 14px;gap:6px}',
+        '.twk-cam-hero-header{padding:8px 10px;gap:8px}',
         '.twk-cam-brand{font-size:12px}',
         '.twk-cam-cams{padding:2px 6px}',
         '.twk-cam-live{font-size:8.5px;letter-spacing:.14em}',
         '.twk-cam-ad{font-size:8px;padding:3px 6px}',
-        '.twk-cam-mute{width:36px;height:36px;top:54px;right:10px}',
-        '.twk-cam-mute svg{width:16px;height:16px}',
+        '.twk-cam-mute{width:34px;height:34px;top:42px;right:10px}',
+        '.twk-cam-styled .twerkhub-hh-next{font-size:11px;padding:4px 10px}',
+        '.twk-cam-styled .twerkhub-hh-cd-timer{font-size:12px}',
       '}',
     ].join('\n');
     document.head.appendChild(st);
@@ -128,12 +189,8 @@
     hero.classList.add('twk-cam-styled');
     var inner = hero.querySelector('.twerkhub-hh-media-inner');
     if (inner){
-      // Inject AFTER the existing iframe + Next button (no los pisamos)
       inner.insertAdjacentHTML('beforeend', buildOverlay());
 
-      // Mute click handler — toggle visual state. El iframe es YouTube
-      // cross-origin asi que el audio real lo controla YT (autoplay=mute=1
-      // por default). El click es VISUAL feedback + user gesture.
       var muteBtn = inner.querySelector('.twk-cam-mute');
       if (muteBtn){
         muteBtn.addEventListener('click', function(e){
