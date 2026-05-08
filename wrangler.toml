@@ -1,0 +1,20 @@
+# wrangler.toml â€” Cloudflare Pages config for alexia-twerk-web-clean
+# Esto le dice a Cloudflare que el Pages Function /api/subscribe necesita
+# una D1 binding llamada "DB" apuntando a la database "twerkhub-subscribers".
+#
+# Cuando hagas git push, Cloudflare Pages lee este archivo y bindea automÃ¡ticamente
+# la D1 sin que tengas que tocar el dashboard. âš¡
+
+name = "alexia-twerk-web-clean"
+compatibility_date = "2025-05-01"
+pages_build_output_dir = "."
+
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# D1 binding for /functions/api/subscribe.js
+# El database_id se llena DESPUES de correr:
+#   wrangler d1 create twerkhub-subscribers
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+[[d1_databases]]
+binding = "DB"
+database_name = "twerkhub-subscribers"
+database_id = "a9203ef0-3f9d-4a1d-bd44-4a9748504afd"

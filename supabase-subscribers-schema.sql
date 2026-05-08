@@ -1,0 +1,5 @@
+-- ⚠️ DEPRECATED 2026-05-07 — migrated to Cloudflare D1.
+-- Ver: d1-subscribers-schema.sql + functions/api/subscribe.js
+-- Razon: Supabase del proyecto recommend-video supero limites de uso.
+-- D1 es free, native a Cloudflare Pages, cero egress, 5GB storage,
+-- 5M reads/dia, 100K writes/dia. Mas que suficiente para email capture.
