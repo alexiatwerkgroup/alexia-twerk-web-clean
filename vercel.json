@@ -56,6 +56,16 @@
       "permanent": true
     },
     {
+      "source": "/tt",
+      "destination": "/tt.html",
+      "permanent": false
+    },
+    {
+      "source": "/tiktok",
+      "destination": "/tt.html",
+      "permanent": false
+    },
+    {
       "source": "/home.html",
       "destination": "/",
       "permanent": true

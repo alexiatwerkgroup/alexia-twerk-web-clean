@@ -37,7 +37,8 @@ def main():
             continue
         # Saltamos pages "internas" donde no querés modal:
         # - account, profile, auth-callback, paid-content, admin-*
-        if any(seg in p.name for seg in ['account.html', 'profile.html', 'auth-callback.html', 'admin-', 'paid-content.html']):
+        # - tt.html (landing TikTok ya tiene form inline propio)
+        if any(seg in p.name for seg in ['account.html', 'profile.html', 'auth-callback.html', 'admin-', 'paid-content.html', 'tt.html']):
             continue
         htmls.append(p)
 
