@@ -524,11 +524,15 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
     .twerkhub-fp-hero-iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .35s ease;background:#000;
       transform:scale(1.42);transform-origin:center center}
     .twerkhub-fp-hero-iframe.is-ready{opacity:1}
-    /* Card #2 (try-on, phlPRrYpmz0) — zoom extra para tapar el watermark
-       "SUN Media Group" que aparece en los primeros segundos. Origin center
-       60% = crop ligeramente mas desde abajo (donde suele ir el logo). */
+    /* Card #2 (try-on, phlPRrYpmz0) — zoom moderado para tapar watermark
+       SUN Media Group sin sobrecargar al iframe (1.62 disparaba quirks). */
     .twerkhub-fp-hero-video[data-yt-id="phlPRrYpmz0"] .twerkhub-fp-hero-iframe{
-      transform:scale(1.62)!important;transform-origin:center 60%!important;
+      transform:scale(1.50)!important;transform-origin:center center!important;
+    }
+    /* Card #1 (Lada High-Heels, X-lPzSuvf3k) — zoom moderado para tapar
+       branding Moscow Dance Centre NRG. */
+    .twerkhub-fp-hero-video[data-yt-id="X-lPzSuvf3k"] .twerkhub-fp-hero-iframe{
+      transform:scale(1.50)!important;transform-origin:center center!important;
     }
     /* Freeze frame poster (preloaded ~thumb 1.jpg ≈ first quarter): instant swap on stop */
     .twerkhub-fp-hero-freeze{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;display:none}
@@ -787,8 +791,11 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
       var inited = false;
       var finishCallbacks = [];
 
+      var hardStopTimer = null;  // controller-level: cleared between startWatchdog calls
+
       function clearWatchdog(){
         if (watchdog) { clearInterval(watchdog); watchdog = null; }
+        if (hardStopTimer) { clearTimeout(hardStopTimer); hardStopTimer = null; }
       }
 
       // Per-card freeze mode: "frame" = freeze on actual last frame (iframe
@@ -833,21 +840,23 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
       }
 
       function startWatchdog(){
-        clearWatchdog();
+        clearWatchdog();  // also clears any stale hardStopTimer
         // Fallback hard-stop: si el video laguea/buffers y currentTime
         // nunca llega a STOP, el chain a la siguiente card se rompe.
         // Calculamos cuanto deberia durar el preview (STOP - START + 3s buffer)
         // y forzamos freezeNow() despues de ese tiempo absoluto.
         var maxDurationMs = ((STOP - START) + 3) * 1000;
-        var hardStopTimeout = setTimeout(function(){
+        hardStopTimer = setTimeout(function(){
           if (!stopped) freezeNow();
         }, maxDurationMs);
         watchdog = setInterval(function(){
-          if (stopped) { clearWatchdog(); clearTimeout(hardStopTimeout); return; }
+          if (stopped) { clearWatchdog(); return; }
           try {
             var t = player.getCurrentTime();
-            if (t >= STOP) {
-              clearTimeout(hardStopTimeout);
+            // SANITY: getCurrentTime can return 0 / NaN / negative durante
+            // estados raros (buffering, seek-en-progreso). Solo freezamos si
+            // t es positivo Y >= STOP. Asi evitamos triggers fantasma.
+            if (typeof t === 'number' && t > 0 && t >= STOP) {
               freezeNow();
             }
           } catch(_){}
@@ -901,12 +910,22 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
                 } catch(_){}
                 startWatchdog();
               },
-              // 2026-05-08: REMOVED onPlaybackQualityChange auto-re-force.
-              // Cause it provocaba stutters/saltos mid-loop: cuando YT
-              // intentaba subir calidad y nosotros la bajabamos de vuelta,
-              // se generaba un buffer-cycle cada pocos segundos. Setear
-              // 720p UNA VEZ en onReady es suficiente; dejar que YT mantenga
-              // o ajuste sin perseguirla = playback fluido.
+              // 2026-05-08 v2: re-add quality limiter pero one-shot only
+              // (sin cascada). Si YT decide subir a 1080p+, lo bajamos UNA
+              // sola vez a 720p y desactivamos el handler. Asi no se genera
+              // el buffer-cycle infinito de antes pero limitamos VR180 3D
+              // que puede pedir mucho ancho de banda.
+              'onPlaybackQualityChange': function(e){
+                try {
+                  if (e.data === 'hd1080' || e.data === 'highres' || e.data === 'hd1440' || e.data === 'hd2160') {
+                    e.target.setPlaybackQuality('hd720');
+                    // Self-disable: solo intervenir UNA vez por player
+                    // (despues de esto YT puede subir/bajar libremente)
+                    e.target.removeEventListener &&
+                      e.target.removeEventListener('onPlaybackQualityChange');
+                  }
+                } catch(_){}
+              },
               'onStateChange': function(e){
                 if (e.data === 0 && !stopped) freezeNow();
               }
