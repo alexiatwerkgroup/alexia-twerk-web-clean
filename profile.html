@@ -577,10 +577,10 @@ body::before{
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
-  loadOnce('/assets/supabase-config.js?v=20260508-d1-p2','twk-loader-supabase-config');
+  loadOnce('/assets/supabase-config.js?v=20260508-d1-p3','twk-loader-supabase-config');
   loadOnce('/assets/token-system.js?v=20260506-p3','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260506-p11','twk-loader-twerkhub-tokens');
-  loadOnce('/assets/twerkhub-auth.js?v=20260508-d1-p2','twk-loader-twerkhub-auth');
+  loadOnce('/assets/twerkhub-auth.js?v=20260508-d1-p3','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
 </script>
@@ -662,9 +662,9 @@ body::before{
 
       <div class="tabs" role="tablist">
         <button class="tab active" data-tab="history" role="tab">History <span class="count">0</span></button>
-        <button class="tab" data-tab="favorites" role="tab">Favorites <span class="count">12</span></button>
-        <button class="tab" data-tab="playlists" role="tab">Playlists <span class="count">3</span></button>
-        <button class="tab" data-tab="models" role="tab">Models <span class="count">8</span></button>
+        <button class="tab" data-tab="favorites" role="tab">Favorites <span class="count" data-twk-favorites-count>0</span></button>
+        <button class="tab" data-tab="playlists" role="tab">Playlists <span class="count" data-twk-playlists-count>0</span></button>
+        <button class="tab" data-tab="models" role="tab">Models <span class="count" data-twk-models-count>0</span></button>
       </div>
 
       <!-- History -->
@@ -685,53 +685,15 @@ body::before{
       <section class="section" data-section="favorites">
         <div class="section-head">
           <h2>Your Favorites</h2>
-          <span class="muted">12 saved</span>
+          <span class="muted" data-twk-favorites-label>0 saved</span>
         </div>
-        <div class="card-grid">
-          <article class="card">
-            <div class="card-thumb">
-              <div class="placeholder">💎</div>
-              <span class="card-tag gold">Premium</span>
-              <span class="card-dur">4:12</span>
-            </div>
-            <div class="card-body">
-              <div class="card-title">Alexia · Oriental final cut</div>
-              <div class="card-meta"><span class="ch">@alexiatwerk</span><span>· 2.1M</span></div>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-thumb">
-              <div class="placeholder">🔥</div>
-              <span class="card-tag">Hot</span>
-              <span class="card-dur">3:45</span>
-            </div>
-            <div class="card-body">
-              <div class="card-title">Velvet Young · Dance centre set</div>
-              <div class="card-meta"><span class="ch">@velvetyoung</span><span>· 890K</span></div>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-thumb">
-              <div class="placeholder">⭐</div>
-              <span class="card-tag">New</span>
-              <span class="card-dur">5:02</span>
-            </div>
-            <div class="card-body">
-              <div class="card-title">Nastya Nass · Studio recording</div>
-              <div class="card-meta"><span class="ch">@nastyanass</span><span>· 1.4M</span></div>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-thumb">
-              <div class="placeholder">💫</div>
-              <span class="card-tag">Saved</span>
-              <span class="card-dur">2:58</span>
-            </div>
-            <div class="card-body">
-              <div class="card-title">Kato Dance Studio · Compilation</div>
-              <div class="card-meta"><span class="ch">@kato</span><span>· 540K</span></div>
-            </div>
-          </article>
+        <div class="card-grid" data-twk-favorites-grid>
+          <div style="grid-column:1/-1;padding:42px 24px;text-align:center;border:1px dashed rgba(255,255,255,.08);border-radius:14px;color:rgba(244,243,247,.55)">
+            <div style="font-size:36px;margin-bottom:12px">⭐</div>
+            <div style="font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.04em;color:#fff;margin-bottom:6px">No favorites yet</div>
+            <div style="font-size:13px">Click the ★ on any video to save it here.</div>
+            <a href="/playlist/" style="display:inline-block;margin-top:14px;padding:10px 20px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#ffb454);color:#000;text-decoration:none;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase">Browse playlist →</a>
+          </div>
         </div>
       </section>
 
@@ -739,39 +701,14 @@ body::before{
       <section class="section" data-section="playlists">
         <div class="section-head">
           <h2>Your Playlists</h2>
-          <span class="muted">3 collections</span>
+          <span class="muted" data-twk-playlists-label>0 collections</span>
         </div>
-        <div class="card-grid">
-          <article class="card">
-            <div class="card-thumb">
-              <div class="placeholder" style="font-size:42px">🎯</div>
-              <span class="card-tag gold">42 videos</span>
-            </div>
-            <div class="card-body">
-              <div class="card-title">Late night loops</div>
-              <div class="card-meta"><span>Updated 2d ago</span></div>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-thumb">
-              <div class="placeholder" style="font-size:42px">👑</div>
-              <span class="card-tag">18 videos</span>
-            </div>
-            <div class="card-body">
-              <div class="card-title">The originals</div>
-              <div class="card-meta"><span>Updated last week</span></div>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-thumb">
-              <div class="placeholder" style="font-size:42px">🌙</div>
-              <span class="card-tag">9 videos</span>
-            </div>
-            <div class="card-body">
-              <div class="card-title">Watch later</div>
-              <div class="card-meta"><span>Updated 1h ago</span></div>
-            </div>
-          </article>
+        <div class="card-grid" data-twk-playlists-grid>
+          <div style="grid-column:1/-1;padding:42px 24px;text-align:center;border:1px dashed rgba(255,255,255,.08);border-radius:14px;color:rgba(244,243,247,.55)">
+            <div style="font-size:36px;margin-bottom:12px">📚</div>
+            <div style="font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.04em;color:#fff;margin-bottom:6px">No playlists yet</div>
+            <div style="font-size:13px">Build collections by saving videos to a custom list.</div>
+          </div>
         </div>
       </section>
 
@@ -779,39 +716,15 @@ body::before{
       <section class="section" data-section="models">
         <div class="section-head">
           <h2>Models You Follow</h2>
-          <span class="muted">8 creators</span>
+          <span class="muted" data-twk-models-label>0 creators</span>
         </div>
-        <div class="card-grid">
-          <article class="card model-card">
-            <div class="model-av">A</div>
-            <h4>Alexia Twerk</h4>
-            <div class="meta">LATAM · #1</div>
-          </article>
-          <article class="card model-card">
-            <div class="model-av" style="background:linear-gradient(135deg,#ffb454,#ff2d87)">V</div>
-            <h4>Velvet Young</h4>
-            <div class="meta">Dance centre</div>
-          </article>
-          <article class="card model-card">
-            <div class="model-av" style="background:linear-gradient(135deg,#9d4edd,#c084fc)">N</div>
-            <h4>Nastya Nass</h4>
-            <div class="meta">Pro studio</div>
-          </article>
-          <article class="card model-card">
-            <div class="model-av" style="background:linear-gradient(135deg,#ff2d87,#ffb454)">S</div>
-            <h4>Shoshina K.</h4>
-            <div class="meta">Rising</div>
-          </article>
-          <article class="card model-card">
-            <div class="model-av" style="background:linear-gradient(135deg,#c084fc,#ff6fa8)">Y</div>
-            <h4>Yurgenis</h4>
-            <div class="meta">LATAM</div>
-          </article>
-          <article class="card model-card">
-            <div class="model-av" style="background:linear-gradient(135deg,#ffb454,#9d4edd)">K</div>
-            <h4>Kato Dance</h4>
-            <div class="meta">Studio</div>
-          </article>
+        <div class="card-grid" data-twk-models-grid>
+          <div style="grid-column:1/-1;padding:42px 24px;text-align:center;border:1px dashed rgba(255,255,255,.08);border-radius:14px;color:rgba(244,243,247,.55)">
+            <div style="font-size:36px;margin-bottom:12px">👥</div>
+            <div style="font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.04em;color:#fff;margin-bottom:6px">Not following anyone yet</div>
+            <div style="font-size:13px">Discover creators and tap Follow to keep up with their drops.</div>
+            <a href="/creators/" style="display:inline-block;margin-top:14px;padding:10px 20px;border-radius:999px;background:linear-gradient(135deg,#9d4edd,#c084fc);color:#fff;text-decoration:none;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase">Browse creators →</a>
+          </div>
         </div>
       </section>
 

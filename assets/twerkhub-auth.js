@@ -54,7 +54,9 @@
     try { sessionStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify({ uid: uid, ts: Date.now(), profile: profile })); } catch(_){}
   }
 
-  // Fetch fresh profile + session from Supabase. Returns { user, profile } or null.
+  // Fetch fresh profile + session. Returns { user, profile } or null.
+  // 2026-05-08 v3 (D1): use TwkAPI.profile.me() instead of from('profiles')
+  // (which is stubbed). Falls back to cached user data if API fails.
   async function refreshSession(opts){
     var force = opts && opts.force;
     try {
@@ -64,21 +66,30 @@
       var user = sess && sess.data && sess.data.session && sess.data.session.user;
       if (!user) { setCachedUser(null); return null; }
 
-      // 5-min cache hit: skip the SELECT entirely, return cached profile.
+      // 5-min cache hit: skip the API call entirely.
       var cachedProfile = !force ? getCachedProfile(user.id) : null;
       if (cachedProfile) {
         return { user: user, profile: cachedProfile };
       }
 
-      var p = await sb.from('profiles').select('id,username,email,tokens,total_earned,streak,tier,registered_at').eq('id', user.id).maybeSingle();
-      var profile = p && p.data;
+      // Fetch profile via the new D1-backed endpoint.
+      var profile = null;
+      try {
+        if (window.TwkAPI && window.TwkAPI.profile && window.TwkAPI.profile.me) {
+          var res = await window.TwkAPI.profile.me();
+          if (res && res.ok && res.profile) {
+            profile = res.profile;
+          }
+        }
+      } catch(_){ /* fall through to fallback */ }
+
       if (profile) {
         setCachedUser({
           id: profile.id, username: profile.username, email: profile.email,
-          tokens: profile.tokens, totalEarned: profile.total_earned,
-          streak: profile.streak, tier: profile.tier,
+          tokens: profile.tokens || 0, totalEarned: profile.total_earned || 0,
+          streak: profile.streak || 0, tier: profile.tier || 'basic',
           registeredAt: profile.registered_at ? new Date(profile.registered_at).getTime() : Date.now(),
-          nick: profile.username
+          nick: profile.username || (profile.email||'').split('@')[0]
         });
         setCachedProfile(user.id, profile);
       }
@@ -432,17 +443,23 @@
           return;
         }
         // Success path: signup-no-confirmation OR signin.
-        // 2026-05-08 v2 (D1): show success briefly, then RELOAD so the
-        // inline mount on /account.html re-renders as logged-in. Without
-        // this, the form stays visible and looks like nothing happened.
+        // 2026-05-08 v3 (D1): redirect to HOME (/) instead of reloading
+        // /account.html. The home page is the natural landing for a freshly
+        // logged-in user, AND it picks up the JWT from localStorage cleanly
+        // without any race against the inline form re-mount.
         showOk(isSignUp
-          ? 'Welcome <strong>' + escapeHtml(u) + '</strong>! Loading your dashboard...'
+          ? 'Welcome <strong>' + escapeHtml(u) + '</strong>! Redirecting to home...'
           : 'Signed in as <strong>' + escapeHtml(u) + '</strong>. Redirecting...');
-        closeForm();  // closes modal if present (no-op inline)
+        closeForm();
         setTimeout(function(){
-          // If we're on /account or /profile, reload to show logged-in state.
-          // Otherwise just reload current page to refresh auth state everywhere.
-          location.reload();
+          // If we were on /account.html or /profile.html → home.
+          // Otherwise reload to refresh auth state in place.
+          var path = (location.pathname || '').toLowerCase();
+          if (path.indexOf('/account') === 0 || path.indexOf('/profile') === 0) {
+            location.href = '/';
+          } else {
+            location.reload();
+          }
         }, 700);
       } catch(err){ btn.disabled = false; showError('Error: ' + (err && err.message || 'Unknown error')); }
     });
@@ -458,9 +475,22 @@
     injectStyle();
 
     // Determine state: logged in?
+    // 2026-05-08 v3: previously required (user && profile). With the D1
+    // migration, from('profiles') is stubbed → profile is always null,
+    // making logged-in users see the signup form. Now we trust the JWT:
+    // if there's a user, you're logged in.
     var snap = null;
     try { snap = await refreshSession(); } catch(_){}
-    var loggedIn = snap && snap.user && snap.profile;
+    var loggedIn = !!(snap && snap.user);
+    // Build a minimal profile fallback from cached user / email if API didn't.
+    if (loggedIn && !snap.profile) {
+      var cu = getCachedUser() || {};
+      snap.profile = {
+        id: snap.user.id,
+        username: cu.username || (snap.user.email || '').split('@')[0],
+        email: snap.user.email
+      };
+    }
 
     if (loggedIn) {
       host.innerHTML =
