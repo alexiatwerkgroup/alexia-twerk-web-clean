@@ -1209,7 +1209,10 @@ body::before{
         heroSection.appendChild(block);
         block.querySelector('#guest-signup-btn').addEventListener('click', function(ev){
           ev.preventDefault();
-          try { window.TwerkhubAuth && window.TwerkhubAuth.showForm && window.TwerkhubAuth.showForm(); } catch(_){}
+          // 2026-05-08: Supabase auth caido (services restricted / exceeded usage).
+          // Redirect a /tt (email capture funciona via D1, no Supabase).
+          // Cuando se restaure Supabase, revertir a window.TwerkhubAuth.showForm().
+          window.location.href = '/tt?utm_source=profile_signup';
         });
       } else if (!isGuest && existingGuestBlock) {
         existingGuestBlock.remove();

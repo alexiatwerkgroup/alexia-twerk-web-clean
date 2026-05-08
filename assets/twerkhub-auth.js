@@ -530,4 +530,23 @@
   } else {
     tryMount();
   }
+
+  // ═════════════════════════════════════════════════════════════════════
+  // 2026-05-08: SUPABASE-DOWN HOTFIX
+  // Supabase project marcado como "Services restricted · exceeded usage
+  // limits". Cualquier intento de signup/signin queda colgado en loading.
+  // OVERRIDE: showForm() ahora redirige a /tt (email capture via D1).
+  // Cuando se restaure Supabase Pro, BORRAR este bloque para que vuelva
+  // el modal de auth real.
+  // ═════════════════════════════════════════════════════════════════════
+  if (window.TwerkhubAuth) {
+    window.TwerkhubAuth.showForm = function(mode){
+      try {
+        var src = 'auth_' + (mode || 'signup');
+        window.location.href = '/tt?utm_source=' + encodeURIComponent(src);
+      } catch(_){
+        window.location.href = '/tt';
+      }
+    };
+  }
 })();
