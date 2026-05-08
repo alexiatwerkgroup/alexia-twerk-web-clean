@@ -81,7 +81,26 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Twerkhub","applicationCategory":"EntertainmentApplication","operatingSystem":"Web, iOS, Android (PWA)","url":"https://alexiatwerkgroup.com/","aggregateRating":{"@type":"AggregateRating","ratingValue":"4.84","bestRating":"5","worstRating":"1","ratingCount":"2178","reviewCount":"412"}}</script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-YSFR7FHCLS");</script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag("js",new Date());
+
+/* INTERNAL TRAFFIC FALLBACK (2026-05-08)
+ * Si Anti tiene localStorage[twk_internal_traffic]='1' o cookie twk_internal=1
+ * en su browser de testing, agregamos traffic_type=internal a GA4 → la rule
+ * "My Internal Traffic" lo captura como interno → el Data Filter lo excluye.
+ * Funciona aunque su IP cambie (ISP dynamic). Se setea via bookmarklet.
+ * NO afecta a usuarios externos (default value omitido = traffic externa). */
+var twkIsInternal = false;
+try {
+  if (localStorage.getItem('twk_internal_traffic') === '1' ||
+      document.cookie.indexOf('twk_internal=1') !== -1) {
+    twkIsInternal = true;
+  }
+} catch(_){}
+gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
+</script>
 <link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260507-p30-no-pink-lines">
 <script>
 (function(){
