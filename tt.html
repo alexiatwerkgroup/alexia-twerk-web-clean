@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>TWERKHUB · From TikTok</title>
-<meta name="description" content="The 4K twerk archive. 1500+ cuts. Weekly drops. Free for the first 100.">
+<meta name="description" content="The 4K twerk archive. 10,000+ cuts. Weekly drops. Free for the first 100.">
 <meta property="og:title" content="TWERKHUB · The archive you came looking for">
-<meta property="og:description" content="1500+ uncut 4K cuts. Weekly drops. Free for the first 100.">
+<meta property="og:description" content="10,000+ uncut 4K cuts. Weekly drops. Free for the first 100.">
 <meta property="og:image" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
 <meta property="og:url" content="https://alexiatwerkgroup.com/tt">
 <meta property="og:type" content="website">
@@ -17,52 +17,61 @@
 <link rel="preconnect" href="https://i.ytimg.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Anton&family=Bebas+Neue&family=JetBrains+Mono:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Anton&family=Bebas+Neue&family=JetBrains+Mono:wght@500;700;800&family=Playfair+Display:ital,wght@0,800;0,900;1,800;1,900&display=swap">
 
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
     --bg:#000;
-    --bg-2:#0e0e0e;
-    --bg-card:#141414;
+    --bg-card:rgba(20,20,20,.7);
+    --bg-card-solid:#141414;
     --orange:#ff9000;
-    --orange-dim:#cc7300;
+    --orange-bright:#ffa733;
     --orange-soft:#ffd693;
+    --pink:#ff2d87;
+    --gold:#ffb454;
+    --green:#1ee08f;
+    --tg:#229ED9;
     --text:#fff;
-    --text-dim:#c9c9c9;
-    --text-mute:#8a8a8a;
-    --border:rgba(255,255,255,.07);
-    --border-strong:rgba(255,144,0,.4);
+    --text-dim:#dcdce8;
+    --text-mute:#9a9aa6;
+    --border:rgba(255,255,255,.08);
+    --border-orange:rgba(255,144,0,.4);
   }
   html,body{
     background:var(--bg);color:var(--text);
     font-family:'Inter',ui-sans-serif,system-ui,sans-serif;
-    line-height:1.5;-webkit-font-smoothing:antialiased;
+    line-height:1.55;-webkit-font-smoothing:antialiased;
     min-height:100vh;
   }
+  /* subtle background glow for depth */
+  body{
+    background:
+      radial-gradient(circle at 15% -5%,rgba(255,144,0,.16) 0%,transparent 45%),
+      radial-gradient(circle at 85% 15%,rgba(255,45,135,.10) 0%,transparent 50%),
+      var(--bg);
+    background-attachment:fixed;
+  }
 
-  .wrap{max-width:560px;margin:0 auto;padding:18px 18px 60px;display:flex;flex-direction:column;gap:18px}
+  .wrap{max-width:560px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-direction:column;gap:24px}
 
-  /* ── HEADER · TWERK [HUB] orange box logo (Pornhub-style) ─────── */
+  /* ── HEADER ─────────────────────────────────────────────────── */
   .hd{
     display:flex;align-items:center;gap:10px;
-    padding:14px 16px;border-radius:8px;
-    background:#000;
-    border-bottom:3px solid var(--orange);
-    margin:-6px -6px 0;
+    padding:14px 4px 16px;
+    border-bottom:2px solid var(--orange);
   }
   .logo-text{
     font-family:'Anton','Bebas Neue',sans-serif;
-    font-weight:400;font-size:30px;letter-spacing:.01em;line-height:1;
+    font-weight:400;font-size:32px;letter-spacing:.01em;line-height:1;
     color:#fff;text-transform:uppercase;text-decoration:none;
     display:inline-flex;align-items:center;gap:0;
   }
   .logo-text:hover,.logo-text:focus,.logo-text:visited{text-decoration:none;color:#fff}
-  .logo-twerk{padding-right:7px}
+  .logo-twerk{padding-right:8px}
   .logo-hub{
     background:var(--orange);color:#000;
-    padding:4px 10px 4px 10px;border-radius:6px;
-    margin-left:0;
+    padding:5px 11px;border-radius:6px;
   }
   .hd-tag{
     margin-left:auto;
@@ -70,13 +79,13 @@
     font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
     color:var(--text-mute);white-space:nowrap;
   }
-  @keyframes blink{0%,49%,100%{opacity:1}50%,99%{opacity:0}}
 
-  /* ── FEATURED HERO ─────────────────────────────────────────────── */
+  /* ── FEATURED HERO ──────────────────────────────────────────── */
   .feat{
-    position:relative;border-radius:6px;overflow:hidden;
+    position:relative;border-radius:18px;overflow:hidden;
     border:1px solid var(--border);background:#000;
     aspect-ratio:9/12;
+    box-shadow:0 24px 60px rgba(0,0,0,.5);
   }
   .feat-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
   .feat-iframe{
@@ -86,197 +95,233 @@
   .feat-iframe.is-ready{opacity:1}
   .feat-scrim{
     position:absolute;inset:0;z-index:3;
-    background:linear-gradient(180deg,rgba(0,0,0,.3) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.95) 100%);
+    background:linear-gradient(180deg,rgba(0,0,0,.3) 0%,rgba(0,0,0,0) 28%,rgba(0,0,0,.92) 100%);
   }
   .feat-tag{
-    position:absolute;top:12px;left:12px;z-index:4;
+    position:absolute;top:14px;left:14px;z-index:4;
     background:var(--orange);color:#000;
     font-family:'JetBrains Mono',monospace;
-    font-size:9.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
-    padding:5px 9px;border-radius:3px;
+    font-size:9.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+    padding:6px 11px;border-radius:6px;
+    box-shadow:0 4px 14px rgba(255,144,0,.35);
   }
   .feat-live{
-    position:absolute;top:12px;right:12px;z-index:4;
+    position:absolute;top:14px;right:14px;z-index:4;
     display:inline-flex;align-items:center;gap:6px;
     background:#ff0044;color:#fff;
     font-family:'JetBrains Mono',monospace;
-    font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
-    padding:5px 9px;border-radius:3px;
+    font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+    padding:6px 10px;border-radius:6px;
   }
   .feat-live::before{
     content:"";width:6px;height:6px;border-radius:50%;background:#fff;
-    animation:blink 1.5s ease-in-out infinite;
+    animation:blink 1.4s ease-in-out infinite;
   }
-  .feat-body{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:20px 18px}
+  @keyframes blink{0%,49%,100%{opacity:1}50%,99%{opacity:0}}
+  .feat-body{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:26px 22px}
   .feat-kicker{
     font-family:'JetBrains Mono',monospace;
-    font-size:10px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;
-    color:var(--orange);margin-bottom:8px;
+    font-size:10.5px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--orange);margin-bottom:12px;
   }
+  /* Hero H1 mixes Anton (impact) with a Playfair italic accent for that Twerkhub editorial flavor */
   .feat-h1{
     font-family:'Anton','Bebas Neue',sans-serif;
-    font-weight:400;font-size:clamp(42px,11vw,58px);
-    line-height:.92;letter-spacing:.01em;text-transform:uppercase;
-    color:#fff;margin-bottom:10px;
+    font-weight:400;font-size:clamp(40px,10.5vw,54px);
+    line-height:.95;letter-spacing:.005em;text-transform:uppercase;
+    color:#fff;margin-bottom:14px;
   }
-  .feat-h1 span{color:var(--orange)}
-  .feat-sub{color:#dedede;font-size:14px;line-height:1.45;max-width:90%}
+  .feat-h1 em{
+    font-style:italic;font-family:'Playfair Display',Georgia,serif;
+    font-weight:900;letter-spacing:-.01em;
+    background:linear-gradient(135deg,var(--orange),var(--gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .feat-sub{color:var(--text-dim);font-size:15px;line-height:1.55;max-width:94%}
   .feat-sub strong{color:var(--orange);font-weight:800}
 
-  /* ── STATS · 3 columnas, brutal ─────────────────────────────── */
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  /* ── STATS ─────────────────────────────────────────────────── */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
   .stat{
-    padding:14px 6px 12px;background:var(--bg-2);
-    border:1px solid var(--border);border-radius:6px;
-    text-align:center;
+    padding:18px 10px 16px;
+    background:var(--bg-card);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--border);
+    border-radius:14px;text-align:center;
+    position:relative;overflow:hidden;
+  }
+  .stat::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--orange),transparent);
+    opacity:.5;
   }
   .stat-n{
     font-family:'Anton','Bebas Neue',sans-serif;
-    font-weight:400;font-size:30px;line-height:1;color:#fff;
-    letter-spacing:.01em;
+    font-weight:400;font-size:34px;line-height:1;color:#fff;letter-spacing:.01em;
   }
   .stat-n span{color:var(--orange)}
   .stat-l{
-    margin-top:6px;
+    margin-top:8px;
     font-family:'JetBrains Mono',monospace;
-    font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
     color:var(--text-mute);
   }
 
-  /* ── KICKER section header ─────────────────────────────────── */
+  /* ── SECTION HEADER ────────────────────────────────────────── */
+  .sec{display:flex;flex-direction:column;gap:14px}
   .sec-kicker{
     font-family:'JetBrains Mono',monospace;
-    font-size:10.5px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;
-    color:var(--orange);margin-bottom:12px;display:block;
+    font-size:10.5px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--orange);
   }
 
-  /* ── EMAIL FORM CARD ────────────────────────────────────────── */
+  /* ── EMAIL FORM (premium with gradient border) ─────────────── */
+  .form-wrap{
+    position:relative;border-radius:18px;padding:1.5px;
+    background:linear-gradient(135deg,var(--orange),var(--pink),var(--gold));
+  }
   .form-card{
-    background:var(--bg-2);
-    border:1px solid var(--border);border-left:3px solid var(--orange);
-    border-radius:6px;padding:20px 18px;
+    border-radius:16.5px;padding:26px 24px 24px;
+    background:linear-gradient(180deg,rgba(20,20,20,.96),rgba(8,8,8,.98));
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   }
   .form-h{
     font-family:'Anton','Bebas Neue',sans-serif;
-    font-weight:400;font-size:30px;line-height:1;letter-spacing:.01em;
-    text-transform:uppercase;color:#fff;margin-bottom:6px;
+    font-weight:400;font-size:34px;line-height:1;letter-spacing:.005em;
+    text-transform:uppercase;color:#fff;margin-bottom:8px;
   }
-  .form-h span{color:var(--orange)}
-  .form-d{font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.5}
+  .form-h em{
+    font-style:italic;font-family:'Playfair Display',Georgia,serif;
+    font-weight:900;letter-spacing:-.01em;
+    background:linear-gradient(135deg,var(--orange),var(--gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .form-d{font-size:14px;color:var(--text-dim);margin-bottom:18px;line-height:1.55}
   .form-d strong{color:var(--orange);font-weight:700}
-  .form-row{display:flex;gap:6px}
+  .form-row{display:flex;gap:8px}
   .form-row input[type="email"]{
-    flex:1;min-width:0;padding:13px 14px;border-radius:4px;
-    border:1px solid var(--border);background:#000;color:#fff;
-    font-size:15px;font-family:inherit;outline:none;
-    transition:border-color .15s;
+    flex:1;min-width:0;padding:14px 16px;border-radius:10px;
+    border:1px solid var(--border);background:rgba(0,0,0,.6);
+    color:#fff;font-size:15px;font-family:inherit;outline:none;
+    transition:border-color .15s,background .15s;
   }
-  .form-row input[type="email"]:focus{border-color:var(--orange)}
+  .form-row input[type="email"]:focus{border-color:var(--orange);background:#000}
   .form-row input[type="email"]::placeholder{color:var(--text-mute)}
   .form-row button{
-    padding:13px 18px;border-radius:4px;border:0;
+    padding:14px 20px;border-radius:10px;border:0;
     background:var(--orange);color:#000;
     font-family:'Anton','Bebas Neue',sans-serif;
     font-size:18px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;
     cursor:pointer;flex-shrink:0;
-    transition:background .15s,transform .15s;
+    transition:background .15s,transform .15s,box-shadow .25s;
+    box-shadow:0 4px 14px rgba(255,144,0,.35);
   }
-  .form-row button:hover{background:#ffa733;transform:translateY(-1px)}
+  .form-row button:hover{background:var(--orange-bright);transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,144,0,.5)}
   .form-row button:active{transform:translateY(0)}
-  .form-row button:disabled{opacity:.6;cursor:wait}
-  .form-msg{margin-top:10px;font-size:13px;display:none;line-height:1.4}
+  .form-row button:disabled{opacity:.6;cursor:wait;box-shadow:none}
+  .form-msg{margin-top:12px;font-size:13.5px;display:none;line-height:1.4}
   .form-msg.is-error{color:#ff5577;display:block}
-  .form-msg.is-ok{color:var(--orange);display:block;font-weight:700}
+  .form-msg.is-ok{color:var(--green);display:block;font-weight:700}
   .form-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
-  .form-foot{margin-top:10px;font-size:10.5px;color:var(--text-mute);letter-spacing:.05em}
+  .form-foot{margin-top:14px;font-size:11px;color:var(--text-mute);letter-spacing:.05em}
 
-  /* ── CTA BUTTONS · brutalist orange ─────────────────────────── */
-  .ctas{display:flex;flex-direction:column;gap:8px}
+  /* ── CTA BUTTONS (hybrid: orange icons + glassmorphic bg + clean hierarchy) ── */
+  .ctas{display:flex;flex-direction:column;gap:11px}
   .cta{
-    display:flex;align-items:center;gap:14px;
-    padding:14px 16px;border-radius:6px;
+    position:relative;display:flex;align-items:center;gap:16px;
+    padding:18px 18px;border-radius:14px;
     text-decoration:none;color:#fff;
-    background:var(--bg-2);
+    background:var(--bg-card);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     border:1px solid var(--border);
-    border-left:3px solid var(--orange);
-    transition:background .15s,border-color .15s,transform .15s;
+    transition:transform .25s,border-color .25s,background .25s,box-shadow .25s;
+    overflow:hidden;
   }
-  .cta:hover{background:#1a1a1a;border-color:var(--orange);transform:translateX(2px)}
-  .cta:active{transform:translateX(0)}
+  .cta::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--orange);
+  }
+  .cta:hover{
+    transform:translateY(-2px);
+    border-color:var(--border-orange);
+    background:rgba(30,20,10,.7);
+    box-shadow:0 12px 28px rgba(255,144,0,.18);
+  }
   .cta-ico{
-    width:38px;height:38px;border-radius:4px;
+    width:42px;height:42px;border-radius:10px;
     background:var(--orange);color:#000;
     display:flex;align-items:center;justify-content:center;
-    font-size:18px;font-weight:800;flex-shrink:0;
+    font-size:19px;font-weight:800;flex-shrink:0;
   }
-  .cta-body{flex:1;min-width:0}
+  .cta-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
   .cta-t{
-    font-family:'Anton','Bebas Neue',sans-serif;
-    font-size:20px;font-weight:400;letter-spacing:.02em;
-    text-transform:uppercase;line-height:1;color:#fff;
+    font-family:'Inter',sans-serif;font-size:16px;font-weight:800;
+    line-height:1.15;letter-spacing:-.005em;color:#fff;
   }
   .cta-d{
-    font-size:11.5px;color:var(--text-dim);margin-top:5px;
-    font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
+    font-size:12.5px;color:var(--text-dim);font-weight:500;
+    letter-spacing:.01em;line-height:1.35;
   }
   .cta-d strong{color:var(--orange);font-weight:700}
   .cta-arrow{
     font-size:22px;color:var(--orange);flex-shrink:0;
     font-family:'Anton','Bebas Neue',sans-serif;font-weight:400;
-    transition:transform .2s;
+    transition:transform .2s;line-height:1;
   }
   .cta:hover .cta-arrow{transform:translateX(3px)}
 
-  /* ── ROSTER ──────────────────────────────────────────────────── */
+  /* ── ROSTER ────────────────────────────────────────────────── */
   .roster{
-    background:var(--bg-2);
+    padding:20px 18px;border-radius:14px;
+    background:var(--bg-card);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     border:1px solid var(--border);
-    border-radius:6px;padding:16px 16px;
   }
-  .roster-row{display:flex;align-items:center;gap:12px}
+  .roster-row{display:flex;align-items:center;gap:14px}
   .roster-avs{display:flex;flex-shrink:0}
   .roster-av{
-    width:34px;height:34px;border-radius:50%;
-    border:2px solid var(--bg);margin-left:-9px;
+    width:38px;height:38px;border-radius:50%;
+    border:2px solid #000;margin-left:-10px;
     display:flex;align-items:center;justify-content:center;
     font-family:'Anton','Bebas Neue',sans-serif;
-    font-weight:400;font-size:14px;color:#fff;letter-spacing:.02em;
+    font-weight:400;font-size:15px;color:#fff;letter-spacing:.02em;
   }
   .roster-av:first-child{margin-left:0}
-  .roster-av-1{background:#9d4edd}
-  .roster-av-2{background:var(--orange);color:#000}
-  .roster-av-3{background:#1ee08f;color:#000}
-  .roster-av-4{background:#ff2d87}
+  .roster-av-1{background:linear-gradient(135deg,#9d4edd,#ff2d87)}
+  .roster-av-2{background:linear-gradient(135deg,var(--orange),var(--gold));color:#000}
+  .roster-av-3{background:linear-gradient(135deg,var(--green),var(--gold));color:#031a11}
+  .roster-av-4{background:linear-gradient(135deg,#ff2d87,#9d4edd)}
   .roster-av-more{background:#222;color:var(--orange);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em}
   .roster-text{flex:1;min-width:0}
   .roster-t{
-    font-family:'Inter',sans-serif;font-size:13.5px;font-weight:700;
+    font-family:'Inter',sans-serif;font-size:14px;font-weight:700;
     line-height:1.35;color:#fff;
   }
   .roster-d{
-    font-size:10.5px;color:var(--text-mute);margin-top:3px;
+    font-size:11.5px;color:var(--text-mute);margin-top:4px;
     font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
   }
 
-  /* ── FOOT ────────────────────────────────────────────────────── */
+  /* ── FOOT ─────────────────────────────────────────────────── */
   .foot{
-    margin-top:14px;padding-top:20px;border-top:1px solid var(--border);
-    text-align:center;font-size:11px;color:var(--text-mute);line-height:1.7;
+    margin-top:16px;padding-top:24px;border-top:1px solid var(--border);
+    text-align:center;font-size:11px;color:var(--text-mute);line-height:1.8;
     font-family:'JetBrains Mono',monospace;letter-spacing:.04em;
   }
   .foot a{color:var(--text-dim);text-decoration:none;transition:color .15s}
   .foot a:hover{color:var(--orange)}
-  .foot strong{color:var(--orange);font-weight:800}
+  .foot strong{color:var(--orange);font-weight:800;letter-spacing:.12em}
 
   @media(min-width:640px){
     .feat{aspect-ratio:9/10}
+    .wrap{padding:24px 24px 60px;gap:28px}
   }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- ═══ HEADER · TWERK [HUB] orange box ═══════════════════════ -->
+  <!-- ═══ HEADER ═══════════════════════════════════════════════ -->
   <header class="hd">
     <a href="/" class="logo-text" aria-label="TWERKHUB home">
       <span class="logo-twerk">TWERK</span><span class="logo-hub">HUB</span>
@@ -299,8 +344,8 @@
     <div class="feat-scrim"></div>
     <div class="feat-body">
       <div class="feat-kicker">★ You found the archive</div>
-      <h1 class="feat-h1">From <span>TikTok</span><br>to the real cuts.</h1>
-      <p class="feat-sub">10,000+ uncut 4K videos. Weekly drops. First 100 viewers every Monday 8AM get the new cut <strong>FREE</strong>.</p>
+      <h1 class="feat-h1">From <em>TikTok</em><br>to the real cuts.</h1>
+      <p class="feat-sub">10,000+ uncut 4K videos. Weekly drops. The first 100 viewers every Monday 8AM get the new cut <strong>FREE</strong>.</p>
     </div>
   </article>
 
@@ -311,31 +356,33 @@
     <div class="stat"><div class="stat-n"><span>1</span>/wk</div><div class="stat-l">drops</div></div>
   </div>
 
-  <!-- ═══ EMAIL FORM ═════════════════════════════════════════ -->
-  <section id="tt-form-section">
+  <!-- ═══ EMAIL FORM ═══════════════════════════════════════════ -->
+  <section class="sec" id="tt-form-section">
     <span class="sec-kicker">/ The Monday drop</span>
-    <div class="form-card">
-      <h3 class="form-h">Lock the <span>weekly drop</span></h3>
-      <p class="form-d">Every Monday 8AM, the new cut goes out to email first. The first <strong>100 viewers</strong> get the unlocked 4K version <strong>FREE</strong>. Then it goes to tokens.</p>
-      <form class="form-row" id="tt-form" novalidate>
-        <input type="text" name="hp" class="form-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" inputmode="email">
-        <button type="submit">Lock it</button>
-      </form>
-      <div class="form-msg" id="tt-form-msg" role="status" aria-live="polite"></div>
-      <div class="form-foot">No spam · 1 mail/week · unsubscribe anytime · 18+</div>
+    <div class="form-wrap">
+      <div class="form-card">
+        <h3 class="form-h">Lock the <em>weekly drop</em></h3>
+        <p class="form-d">Every Monday 8AM, the new cut goes out to email first. The first <strong>100 viewers</strong> get the unlocked 4K version <strong>FREE</strong>. Then it goes to tokens.</p>
+        <form class="form-row" id="tt-form" novalidate>
+          <input type="text" name="hp" class="form-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" inputmode="email">
+          <button type="submit">Lock it</button>
+        </form>
+        <div class="form-msg" id="tt-form-msg" role="status" aria-live="polite"></div>
+        <div class="form-foot">No spam · 1 mail/week · unsubscribe anytime · 18+</div>
+      </div>
     </div>
   </section>
 
   <!-- ═══ CTAs ═══════════════════════════════════════════════ -->
-  <section>
+  <section class="sec">
     <span class="sec-kicker">/ Or skip the line</span>
     <div class="ctas">
       <a class="cta" href="https://t.me/+q1cooFnvQctlNjRh" target="_blank" rel="noopener" data-track="tg">
         <span class="cta-ico" aria-hidden="true">✈</span>
         <span class="cta-body">
           <span class="cta-t">Telegram channel</span>
-          <span class="cta-d">Drops + previews · zero algorithm · <strong>private group invite</strong></span>
+          <span class="cta-d">Drops + previews · zero algorithm · <strong>private group</strong></span>
         </span>
         <span class="cta-arrow" aria-hidden="true">→</span>
       </a>
@@ -344,7 +391,7 @@
         <span class="cta-ico" aria-hidden="true">📂</span>
         <span class="cta-body">
           <span class="cta-t">The full archive</span>
-          <span class="cta-d">10,000+ cuts · creators · playlists by style</span>
+          <span class="cta-d">10,000+ cuts · 60+ creators · playlists by style</span>
         </span>
         <span class="cta-arrow" aria-hidden="true">→</span>
       </a>
@@ -353,7 +400,7 @@
         <span class="cta-ico" aria-hidden="true">✉</span>
         <span class="cta-body">
           <span class="cta-t">Weekly drop · email</span>
-          <span class="cta-d">First 100 free every Monday 8AM</span>
+          <span class="cta-d">First 100 viewers free every Monday 8AM</span>
         </span>
         <span class="cta-arrow" aria-hidden="true">↑</span>
       </a>
@@ -361,7 +408,7 @@
   </section>
 
   <!-- ═══ ROSTER ═════════════════════════════════════════════ -->
-  <section>
+  <section class="sec">
     <span class="sec-kicker">/ The roster</span>
     <div class="roster">
       <div class="roster-row">
@@ -396,7 +443,6 @@
 (function(){
   'use strict';
 
-  // ── 1. Lazy-boot hero iframe ────────────────────────────────────────
   function bootHero(){
     var iframe = document.getElementById('tt-hero-yt');
     if (!iframe) return;
@@ -411,12 +457,10 @@
     document.addEventListener('DOMContentLoaded', bootHero, { once:true });
   } else { bootHero(); }
 
-  // ── 2. UTM tracking ──────────────────────────────────────────────────
   var qs = new URLSearchParams(location.search);
   var utmCampaign = qs.get('utm_campaign') || 'bio';
   var source = 'tt_' + utmCampaign;
 
-  // ── 3. Email form submit ─────────────────────────────────────────────
   var form = document.getElementById('tt-form');
   var msg = document.getElementById('tt-form-msg');
   if (form){
@@ -461,26 +505,15 @@
     });
   }
 
-  // ── 4. CTA tracking + bulletproof scroll for in-page anchors ─────────
-  // (TT in-app browser ignores CSS scroll-behavior + sometimes skips
-  // scrollIntoView with smooth. Use raw scrollTo with offset as fallback.)
+  // Bulletproof scroll for in-page anchors (TT in-app browser fallback)
   function smoothScrollTo(targetEl){
     if (!targetEl) return;
-    var headerOffset = 12;
     var rect = targetEl.getBoundingClientRect();
-    var y = rect.top + window.pageYOffset - headerOffset;
-    // Try smooth first
-    try {
-      window.scrollTo({top: y, behavior: 'smooth'});
-    } catch(_){
-      // Fallback for old/wonky browsers
-      window.scrollTo(0, y);
-    }
-    // Hard fallback after 100ms in case smooth was ignored
+    var y = rect.top + window.pageYOffset - 12;
+    try { window.scrollTo({top: y, behavior: 'smooth'}); }
+    catch(_){ window.scrollTo(0, y); }
     setTimeout(function(){
-      if (Math.abs(window.pageYOffset - y) > 50){
-        window.scrollTo(0, y);
-      }
+      if (Math.abs(window.pageYOffset - y) > 50) window.scrollTo(0, y);
     }, 350);
   }
 
@@ -501,8 +534,6 @@
             var input = target.querySelector('input[type="email"]');
             if (input) input.focus({preventScroll:true});
           }, 700);
-        } else if (href === '#'){
-          smoothScrollTo(document.body);
         }
       }
     });
