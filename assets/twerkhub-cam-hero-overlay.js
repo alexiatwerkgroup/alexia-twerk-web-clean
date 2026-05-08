@@ -169,9 +169,9 @@
     document.head.appendChild(st);
   }
 
-  // LiveJasmin affiliate URL (mismo psid/pstool/psprogram que el cb-promo widget)
+  // LiveJasmin affiliate URL → seccion ASIAN GIRLS con psid
   var AFFILIATE_URL =
-    'https://www.livejasmin.com/en/?psid=alexiatwerk&pstool=202_1&psprogram=revs&category=girl';
+    'https://www.livejasmin.com/en/girls/asian?psid=alexiatwerk&pstool=202_1&psprogram=revs';
 
   function buildOverlay(){
     return [
