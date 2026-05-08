@@ -190,18 +190,17 @@
   .form-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
   .form-foot{margin-top:10px;font-size:10.5px;color:var(--text-mute);letter-spacing:.05em}
 
-  /* ── CTA BUTTONS · brutalist orange (con BREATHING ROOM) ───── */
-  /* CAMBIOS vs version anterior:
-     - gap entre CTAs: 8px → 14px (mas espacio entre cada uno)
-     - padding interno: 14px 16px → 22px 20px (mas aire dentro)
-     - gap entre icono y texto: 14px → 18px
-     - icono mas grande: 38px → 44px
-     - margen entre titulo y descripcion: 5px → 8px
-     - section margin-bottom para separar el bloque: 8px → 12px */
-  .ctas{display:flex;flex-direction:column;gap:14px}
+  /* ── CTA BUTTONS · variante STACKED ──────────────────────────
+     Fix real: .cta-body es flex-column, asi titulo y descripcion
+     ocupan filas separadas (antes flotaban inline y wrappeaban feo).
+     Visual: icono grande a la izquierda como un "tile", luego title
+     grande Anton, debajo description JetBrains Mono full-width.
+     El icono ahora se centra vertical con TODO el bloque (no solo
+     el title). */
+  .ctas{display:flex;flex-direction:column;gap:12px}
   .cta{
     display:flex;align-items:center;gap:18px;
-    padding:22px 20px;border-radius:6px;
+    padding:20px 20px;border-radius:6px;
     text-decoration:none;color:#fff;
     background:var(--bg-2);
     border:1px solid var(--border);
@@ -211,27 +210,30 @@
   .cta:hover{background:#1a1a1a;border-color:var(--orange);transform:translateX(2px)}
   .cta:active{transform:translateX(0)}
   .cta-ico{
-    width:44px;height:44px;border-radius:4px;
+    width:52px;height:52px;border-radius:6px;
     background:var(--orange);color:#000;
     display:flex;align-items:center;justify-content:center;
-    font-size:20px;font-weight:800;flex-shrink:0;
+    font-size:24px;font-weight:800;flex-shrink:0;
   }
-  .cta-body{flex:1;min-width:0}
+  /* CRITICAL: flex-column → title y description en filas separadas */
+  .cta-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
   .cta-t{
+    display:block;
     font-family:'Anton','Bebas Neue',sans-serif;
-    font-size:20px;font-weight:400;letter-spacing:.02em;
+    font-size:22px;font-weight:400;letter-spacing:.02em;
     text-transform:uppercase;line-height:1;color:#fff;
   }
   .cta-d{
-    font-size:11.5px;color:var(--text-dim);margin-top:8px;
-    font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
-    line-height:1.5;
+    display:block;
+    font-size:11.5px;color:var(--text-dim);
+    font-family:'JetBrains Mono',monospace;letter-spacing:.04em;
+    line-height:1.6;
   }
   .cta-d strong{color:var(--orange);font-weight:700}
   .cta-arrow{
-    font-size:24px;color:var(--orange);flex-shrink:0;
+    font-size:26px;color:var(--orange);flex-shrink:0;
     font-family:'Anton','Bebas Neue',sans-serif;font-weight:400;
-    transition:transform .2s;
+    transition:transform .2s;line-height:1;align-self:center;
   }
   .cta:hover .cta-arrow{transform:translateX(3px)}
 
