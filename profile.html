@@ -577,10 +577,10 @@ body::before{
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
-  loadOnce('/assets/supabase-config.js?v=20260508-d1-p1','twk-loader-supabase-config');
+  loadOnce('/assets/supabase-config.js?v=20260508-d1-p2','twk-loader-supabase-config');
   loadOnce('/assets/token-system.js?v=20260506-p3','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260506-p11','twk-loader-twerkhub-tokens');
-  loadOnce('/assets/twerkhub-auth.js?v=20260426-p8','twk-loader-twerkhub-auth');
+  loadOnce('/assets/twerkhub-auth.js?v=20260508-d1-p2','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
 </script>
@@ -1209,10 +1209,16 @@ body::before{
         heroSection.appendChild(block);
         block.querySelector('#guest-signup-btn').addEventListener('click', function(ev){
           ev.preventDefault();
-          // 2026-05-08: Supabase auth caido (services restricted / exceeded usage).
-          // Redirect a /tt (email capture funciona via D1, no Supabase).
-          // Cuando se restaure Supabase, revertir a window.TwerkhubAuth.showForm().
-          window.location.href = '/tt?utm_source=profile_signup';
+          // 2026-05-08 v2: Auth restaurado en Cloudflare D1. Abrir modal nativo
+          // de signup. Si TwerkhubAuth no está cargado todavía, fallback a /tt
+          // (Telegram landing) como red de seguridad.
+          if (window.TwerkhubAuth && typeof window.TwerkhubAuth.showForm === 'function') {
+            try {
+              window.TwerkhubAuth.showForm('signup');
+              return;
+            } catch (_) { /* fallthrough */ }
+          }
+          window.location.href = '/tt?utm_source=profile_signup_fallback';
         });
       } else if (!isGuest && existingGuestBlock) {
         existingGuestBlock.remove();

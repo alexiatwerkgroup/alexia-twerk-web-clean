@@ -80,6 +80,14 @@
   // ─── auth state subscription bus ──────────────────────────────────────
   var listeners = [];
   var currentSession = null;
+
+  // sessionReady = a Promise that resolves once the initial /api/auth/session
+  // call completes (or fails). Call sites that need a definitive auth state
+  // (profile-page, session-tracker, etc.) await this before checking
+  // currentSession. Without it, they race past the restore and see null.
+  var sessionReadyResolve;
+  var sessionReady = new Promise(function (res) { sessionReadyResolve = res; });
+
   function notifyAuth(event) {
     listeners.forEach(function (cb) {
       try { cb(event, currentSession); } catch (_) {}
@@ -89,11 +97,18 @@
   // ─── the Supabase-compat auth API ─────────────────────────────────────
   var auth = {
     getSession: function () {
-      return Promise.resolve({ data: { session: currentSession }, error: null });
+      // Wait for initial session restore before responding. Without this,
+      // page-load callers see null even when a valid token exists in
+      // localStorage (race against the async /api/auth/session restore).
+      return sessionReady.then(function () {
+        return { data: { session: currentSession }, error: null };
+      });
     },
     getUser: function () {
-      var u = currentSession && currentSession.user;
-      return Promise.resolve({ data: { user: u || null }, error: null });
+      return sessionReady.then(function () {
+        var u = currentSession && currentSession.user;
+        return { data: { user: u || null }, error: null };
+      });
     },
     onAuthStateChange: function (cb) {
       if (typeof cb === 'function') listeners.push(cb);
@@ -303,6 +318,12 @@
   window.twkGetSupabase = function () { return Promise.resolve(window.__twkSupabase); };
 
   // ─── boot: validate any stored token by calling /api/auth/session ─────
+  // Hard timeout: if /api/auth/session hangs >5s, we resolve sessionReady
+  // anyway with null so callers don't deadlock the UI.
+  var bootTimeout = setTimeout(function () {
+    if (sessionReadyResolve) { sessionReadyResolve(); sessionReadyResolve = null; }
+  }, 5000);
+
   api('/api/auth/session', { method: 'GET' })
     .then(function (r) {
       if (r.body && r.body.ok && r.body.user) {
@@ -314,6 +335,8 @@
     })
     .catch(function () {})
     .then(function () {
+      clearTimeout(bootTimeout);
+      if (sessionReadyResolve) { sessionReadyResolve(); sessionReadyResolve = null; }
       try { window.dispatchEvent(new CustomEvent('twk-supabase-ready')); } catch (_) {}
     });
 

@@ -429,10 +429,21 @@
         if (!res.ok) { showError(res.error); return; }
         if (isSignUp && res.requiresEmailConfirmation) {
           showOk('Account created! Check your email at <strong>' + escapeHtml(em) + '</strong> to confirm and unlock your +200 tokens.');
-          // Don't reload — let them see the message.
           return;
         }
-        closeForm();
+        // Success path: signup-no-confirmation OR signin.
+        // 2026-05-08 v2 (D1): show success briefly, then RELOAD so the
+        // inline mount on /account.html re-renders as logged-in. Without
+        // this, the form stays visible and looks like nothing happened.
+        showOk(isSignUp
+          ? 'Welcome <strong>' + escapeHtml(u) + '</strong>! Loading your dashboard...'
+          : 'Signed in as <strong>' + escapeHtml(u) + '</strong>. Redirecting...');
+        closeForm();  // closes modal if present (no-op inline)
+        setTimeout(function(){
+          // If we're on /account or /profile, reload to show logged-in state.
+          // Otherwise just reload current page to refresh auth state everywhere.
+          location.reload();
+        }, 700);
       } catch(err){ btn.disabled = false; showError('Error: ' + (err && err.message || 'Unknown error')); }
     });
   }
@@ -532,21 +543,9 @@
   }
 
   // ═════════════════════════════════════════════════════════════════════
-  // 2026-05-08: SUPABASE-DOWN HOTFIX
-  // Supabase project marcado como "Services restricted · exceeded usage
-  // limits". Cualquier intento de signup/signin queda colgado en loading.
-  // OVERRIDE: showForm() ahora redirige a /tt (email capture via D1).
-  // Cuando se restaure Supabase Pro, BORRAR este bloque para que vuelva
-  // el modal de auth real.
+  // 2026-05-08 v2: SUPABASE-DOWN HOTFIX REMOVED
+  // Auth migrated to Cloudflare D1 + Pages Functions. The original showForm
+  // (line ~308) now uses signUp/signInWithPassword which route through
+  // /api/auth/* via supabase-config.js. Modal works again.
   // ═════════════════════════════════════════════════════════════════════
-  if (window.TwerkhubAuth) {
-    window.TwerkhubAuth.showForm = function(mode){
-      try {
-        var src = 'auth_' + (mode || 'signup');
-        window.location.href = '/tt?utm_source=' + encodeURIComponent(src);
-      } catch(_){
-        window.location.href = '/tt';
-      }
-    };
-  }
 })();
