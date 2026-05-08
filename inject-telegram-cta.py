@@ -23,7 +23,7 @@ DRY_RUN = '--apply' not in sys.argv
 # ════════════════════════════════════════════════════════════════════════
 # ⚠️ EDITAR ANTES DE CORRER --apply
 # ════════════════════════════════════════════════════════════════════════
-TELEGRAM_URL = 'https://t.me/Alexia_twerk'  # @Alexia_Twerk_Group
+TELEGRAM_URL = 'https://t.me/Alexia_Twerk_Group'  # canonical username
 # ════════════════════════════════════════════════════════════════════════
 
 
