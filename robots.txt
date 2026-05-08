@@ -17,6 +17,9 @@ Disallow: /test-
 Disallow: /debug-
 Disallow: /_
 
+# Block internal tools (UTM builder, etc.) — owner-only utilities
+Disallow: /tools/
+
 # Block infinite-variant URLs (search queries) — keep crawl budget for content
 Disallow: /search.html?q=
 Disallow: /es/search.html?q=

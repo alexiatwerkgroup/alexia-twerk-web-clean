@@ -206,12 +206,71 @@
         'font-size:18px;line-height:1;cursor:pointer;padding:4px;flex-shrink:0;',
       '}',
 
+      // ─── Sticky bottom dock (5 quick paths, always visible) ───────
+      '.twk-sticky-dock{',
+        'position:fixed;bottom:0;left:0;right:380px;z-index:99;',  // right margin = no overlap CB widget
+        'display:flex;gap:0;',
+        'background:linear-gradient(180deg,rgba(0,0,0,.88),rgba(0,0,0,.96));',
+        '-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);',
+        'border-top:1px solid rgba(255,144,0,.32);',
+        'padding:5px 6px;',
+        'box-shadow:0 -8px 30px rgba(0,0,0,.4);',
+      '}',
+      '.twk-dock-item{',
+        'flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;',
+        'padding:7px 4px;border-radius:8px;',
+        'text-decoration:none;color:rgba(255,255,255,.72);',
+        'font-family:"JetBrains Mono",ui-monospace,monospace;',
+        'transition:color .15s,background .15s,transform .15s;',
+        'min-width:0;',
+      '}',
+      '.twk-dock-item:hover{color:#ff9000;background:rgba(255,144,0,.10);transform:translateY(-1px)}',
+      '.twk-dock-item .ico{font-size:16px;line-height:1;color:#ff9000}',
+      '.twk-dock-item .lbl{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:800}',
+      '.twk-dock-fire .ico{color:#ff2d87}',  // profile en pink
+
+      // ─── Profile push micro-CTA en hero ───────────────────────────
+      '.twk-profile-push{',
+        'display:inline-block;margin-top:14px;',
+        'padding:6px 12px;border-radius:999px;',
+        'background:rgba(255,144,0,.08);',
+        'border:1px solid rgba(255,144,0,.4);',
+        'color:#ff9000;text-decoration:none;',
+        'font-family:"JetBrains Mono",ui-monospace,monospace;',
+        'font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;',
+        'transition:background .15s,transform .15s,border-color .15s;',
+      '}',
+      '.twk-profile-push:hover{',
+        'background:rgba(255,144,0,.18);transform:translateY(-1px);border-color:#ff9000;',
+      '}',
+
+      // ─── Binge badge (top-right, after 3+ pages) ─────────────────
+      '.twk-binge-badge{',
+        'position:fixed;top:80px;right:14px;z-index:9997;',
+        'padding:9px 14px;border-radius:999px;',
+        'background:linear-gradient(135deg,#ff2d87,#ff9000);',
+        'color:#fff;font-family:"JetBrains Mono",ui-monospace,monospace;',
+        'font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;',
+        'box-shadow:0 6px 22px rgba(255,45,135,.4);',
+        'opacity:0;transform:translateY(-15px);',
+        'transition:opacity .4s ease,transform .4s ease;',
+      '}',
+      '.twk-binge-badge.is-visible{opacity:1;transform:translateY(0)}',
+
       '@media(max-width:640px){',
         '.twk-resume-inner{padding:8px 14px;gap:10px}',
         '.twk-resume-label{font-size:9.5px;letter-spacing:.14em}',
         '.twk-resume-item{font-size:11.5px;max-width:180px}',
         '.twk-funnel-pill{left:8px;right:8px;bottom:8px;max-width:none}',
+        '.twk-sticky-dock{right:0;padding:4px}',  // mobile: full width (CB widget se hace pequeno)
+        '.twk-dock-item{padding:6px 2px}',
+        '.twk-dock-item .ico{font-size:14px}',
+        '.twk-dock-item .lbl{font-size:8px;letter-spacing:.10em}',
+        '.twk-binge-badge{top:60px;right:8px;font-size:9px;padding:7px 11px}',
       '}',
+      // Cuando hay sticky dock visible, dejar espacio al final de la pagina
+      'body{padding-bottom:60px !important}',
+      '@media(max-width:640px){body{padding-bottom:54px !important}}',
     ].join('\n');
     document.head.appendChild(st);
   }
@@ -327,12 +386,73 @@
     document.head.appendChild(l);
   }, true);
 
+  // ─── 8. Sticky bottom mini-dock (5 paths a contenido, siempre visible)
+  function injectStickyDock(){
+    if (document.querySelector('.twk-sticky-dock')) return;
+    if (window.innerWidth < 340) return; // tiny phones, no dock
+    var dock = document.createElement('nav');
+    dock.className = 'twk-sticky-dock';
+    dock.setAttribute('aria-label', 'Quick access');
+    dock.innerHTML = [
+      '<a class="twk-dock-item" href="/playlist/" data-track="dock-watch">',
+        '<span class="ico" aria-hidden="true">▶</span><span class="lbl">Watch</span>',
+      '</a>',
+      '<a class="twk-dock-item" href="/creators.html" data-track="dock-creators">',
+        '<span class="ico" aria-hidden="true">★</span><span class="lbl">Creators</span>',
+      '</a>',
+      '<a class="twk-dock-item twk-dock-fire" href="/profile.html" data-track="dock-profile">',
+        '<span class="ico" aria-hidden="true">●</span><span class="lbl">Profile</span>',
+      '</a>',
+      '<a class="twk-dock-item" href="/community.html" data-track="dock-community">',
+        '<span class="ico" aria-hidden="true">◆</span><span class="lbl">Community</span>',
+      '</a>',
+      '<a class="twk-dock-item" href="/membership.html" data-track="dock-tiers">',
+        '<span class="ico" aria-hidden="true">◇</span><span class="lbl">Tiers</span>',
+      '</a>',
+    ].join('');
+    document.body.appendChild(dock);
+  }
+
+  // ─── 9. Profile push micro-CTA en el hero (sutil pero presente)
+  function injectProfilePush(){
+    var copy = document.querySelector('.twerkhub-home-hero-copy');
+    if (!copy) return;
+    if (copy.querySelector('.twk-profile-push')) return;
+    var a = document.createElement('a');
+    a.className = 'twk-profile-push';
+    a.href = '/profile.html';
+    a.setAttribute('data-track', 'profile-micro-cta');
+    a.innerHTML = '★ Pick your handle · track tokens →';
+    copy.appendChild(a);
+  }
+
+  // ─── 10. Binge badge (despues de 3+ pages = user enganchado, refuerzo)
+  function injectBingeBadge(){
+    if (pages < 3) return;
+    if (lsGet('twk_binge_seen_v1', false)) return;
+    if (document.querySelector('.twk-binge-badge')) return;
+    var b = document.createElement('div');
+    b.className = 'twk-binge-badge';
+    b.innerHTML = '🔥 ON A ROLL · keep going';
+    document.body.appendChild(b);
+    setTimeout(function(){ b.classList.add('is-visible'); }, 800);
+    // Auto-dismiss despues de 4s para no molestar
+    setTimeout(function(){
+      b.classList.remove('is-visible');
+      setTimeout(function(){ if (b.parentNode) b.parentNode.removeChild(b); }, 400);
+      lsSet('twk_binge_seen_v1', true);
+    }, 5000);
+  }
+
   // ─── Boot ───────────────────────────────────────────────────────────
   function boot(){
     injectCSS();
     injectResumeStrip();
     injectQuickNav();
     injectFunnelPill();
+    injectStickyDock();
+    injectProfilePush();
+    injectBingeBadge();
   }
 
   if (document.readyState === 'loading'){

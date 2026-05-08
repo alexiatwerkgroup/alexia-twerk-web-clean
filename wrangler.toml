@@ -18,3 +18,20 @@ pages_build_output_dir = "."
 binding = "DB"
 database_name = "twerkhub-subscribers"
 database_id = "a9203ef0-3f9d-4a1d-bd44-4a9748504afd"
+
+# ═════════════════════════════════════════════════════════════════════════
+# Required environment variables (set via Cloudflare Pages dashboard, NOT here):
+#
+#   JWT_SECRET   ← random 48+ byte string. Used to sign auth JWTs.
+#                  Set under: Pages project → Settings → Environment variables
+#                  → add "JWT_SECRET" (encrypted) for Production AND Preview.
+#                  Generate with:
+#                    [System.Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(48))
+#
+# Tables expected (apply via _d1/schema-auth-tokens.sql):
+#   users, profiles, video_comments, comment_reports,
+#   video_heatmap, user_video_views
+#
+# Apply schema:
+#   wrangler d1 execute twerkhub-subscribers --remote --file=_d1/schema-auth-tokens.sql
+# ═════════════════════════════════════════════════════════════════════════
