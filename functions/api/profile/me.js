@@ -62,7 +62,12 @@ export async function onRequest(context) {
     binds.push(b || null);
   }
   if (body.avatar_url !== undefined) {
-    const a = String(body.avatar_url || '').slice(0, 500);
+    // Accept base64 data URLs up to 200KB (covers a 240x240 JPEG @ 0.85 quality
+    // which is ~30-60KB typically). Larger uploads should go to R2 — Phase 4.
+    const a = String(body.avatar_url || '').slice(0, 200000);
+    if (a && !/^(data:image\/(png|jpeg|jpg|webp);base64,|https?:\/\/)/i.test(a)) {
+      return json({ ok: false, error: 'invalid_avatar_format' }, 400, origin);
+    }
     updates.push('avatar_url = ?');
     binds.push(a || null);
   }

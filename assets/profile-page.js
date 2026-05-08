@@ -440,23 +440,31 @@
       saveBtn.disabled = true;
       setStatus('Saving…', '');
       try {
-        var sb = await getClient();
-        if (!sb) { setStatus('Supabase not loaded.', 'err'); saveBtn.disabled = false; return; }
-        var sess = await sb.auth.getSession();
-        var user = sess && sess.data && sess.data.session && sess.data.session.user;
-        if (!user) { setStatus('You must sign in first.', 'err'); saveBtn.disabled = false; return; }
+        // 2026-05-08 v3 (D1): use TwkAPI.profile.updateMe() — real endpoint.
+        // The old sb.from('profiles').update() was stubbed and silently
+        // dropped the write, so saves looked OK but never persisted.
+        if (!window.TwkAPI || !window.TwkAPI.profile) {
+          setStatus('Auth client not loaded — please reload.', 'err');
+          saveBtn.disabled = false;
+          return;
+        }
         var update = { username: nick, bio: bioVal };
         if (avatarData !== '') update.avatar_url = avatarData;
-        var res = await sb.from('profiles').update(update).eq('id', user.id);
-        if (res && res.error) {
-          setStatus('Could not save: ' + res.error.message, 'err');
+        var res = await window.TwkAPI.profile.updateMe(update);
+        if (!res || !res.ok) {
+          var errMsg = (res && res.error) || 'unknown';
+          if (errMsg === 'unauthorized') errMsg = 'Session expired — please sign in again';
+          if (errMsg === 'username_taken') errMsg = 'That username is already taken';
+          if (errMsg === 'invalid_username') errMsg = 'Username: 3-24 chars, letters/digits/dots/dashes/underscores';
+          setStatus('Could not save: ' + errMsg, 'err');
         } else {
           setStatus('Profile saved.', 'ok');
-          // CRITICAL: force a full re-render with the saved data so the avatar
-          // appears without needing a page reload. Reset _lastAvatarUrl first
-          // so renderHero treats this as a real change.
           _lastAvatarUrl = null;
-          avatarData = ''; // clear staged upload so future saves don't re-upload
+          avatarData = '';
+          // Bust the legacy session cache so refresh re-fetches the new data
+          try {
+            sessionStorage.removeItem('twk_profile_cache_v1');
+          } catch(_){}
           await refresh();
         }
       } catch(e){
