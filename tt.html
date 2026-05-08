@@ -5,397 +5,332 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>TWERKHUB · From TikTok</title>
-<meta name="description" content="The 4K twerk archive. 1,500+ cuts. Weekly drops. Free for the first 100.">
-
+<meta name="description" content="The 4K twerk archive. 1500+ cuts. Weekly drops. Free for the first 100.">
 <meta property="og:title" content="TWERKHUB · The archive you came looking for">
-<meta property="og:description" content="1,500+ uncut 4K cuts. Weekly drops. Free for the first 100.">
+<meta property="og:description" content="1500+ uncut 4K cuts. Weekly drops. Free for the first 100.">
 <meta property="og:image" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
 <meta property="og:url" content="https://alexiatwerkgroup.com/tt">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-
 <link rel="icon" href="/logo-twerkhub.png">
 <link rel="preconnect" href="https://www.youtube-nocookie.com">
 <link rel="preconnect" href="https://i.ytimg.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Anton&family=Bebas+Neue&family=JetBrains+Mono:wght@500;700;800&display=swap">
 
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --bg:#0a0a14;
-    --bg-2:#141420;
-    --pink:#ff2d87;
-    --pink-soft:#ff6fa8;
+    --bg:#000;
+    --bg-2:#0e0e0e;
+    --bg-card:#141414;
     --orange:#ff9000;
-    --gold:#ffb454;
-    --green:#1ee08f;
-    --purple:#9d4edd;
-    --tg:#229ED9;
-    --text:#f5f5fb;
-    --text-dim:#c7c7d3;
-    --text-muted:#9a9aab;
-    --border:rgba(255,255,255,.08);
-    --border-strong:rgba(255,255,255,.14);
-    --r:22px;
-    --shadow-card:0 24px 55px rgba(0,0,0,.45);
-    --shadow-pink:0 8px 24px rgba(255,45,135,.32);
-    --shadow-green:0 8px 24px rgba(30,224,143,.28);
-    --shadow-tg:0 8px 24px rgba(34,158,217,.32);
+    --orange-dim:#cc7300;
+    --orange-soft:#ffd693;
+    --text:#fff;
+    --text-dim:#c9c9c9;
+    --text-mute:#8a8a8a;
+    --border:rgba(255,255,255,.07);
+    --border-strong:rgba(255,144,0,.4);
   }
-  html{scroll-behavior:smooth}
   html,body{
     background:var(--bg);color:var(--text);
     font-family:'Inter',ui-sans-serif,system-ui,sans-serif;
-    line-height:1.55;-webkit-font-smoothing:antialiased;
+    line-height:1.5;-webkit-font-smoothing:antialiased;
     min-height:100vh;
   }
-  body{
-    background:
-      radial-gradient(circle at 12% -5%,rgba(255,45,135,.22) 0%,transparent 42%),
-      radial-gradient(circle at 88% 8%,rgba(255,144,0,.18) 0%,transparent 42%),
-      radial-gradient(circle at 50% 35%,rgba(157,78,221,.10) 0%,transparent 50%),
-      radial-gradient(circle at 50% 100%,rgba(30,224,143,.08) 0%,transparent 50%),
-      var(--bg);
-    background-attachment:fixed;
+
+  .wrap{max-width:560px;margin:0 auto;padding:18px 18px 60px;display:flex;flex-direction:column;gap:18px}
+
+  /* ── HEADER · TWERK [HUB] orange box logo (Pornhub-style) ─────── */
+  .hd{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 16px;border-radius:8px;
+    background:#000;
+    border-bottom:3px solid var(--orange);
+    margin:-6px -6px 0;
   }
-
-  .wrap{max-width:560px;margin:0 auto;padding:24px 22px 60px;display:flex;flex-direction:column;gap:24px}
-
-  /* ── Header ───────────────────────────────────────────────────────── */
-  .hd{display:flex;align-items:center;gap:10px;padding-top:6px}
-  .hd-logo{height:34px;width:auto}
-  .hd-pill{
-    margin-left:auto;display:inline-flex;align-items:center;gap:7px;
-    padding:6px 12px;border-radius:999px;
-    background:linear-gradient(135deg,var(--pink),var(--orange));
+  .logo-text{
+    font-family:'Anton','Bebas Neue',sans-serif;
+    font-weight:400;font-size:30px;letter-spacing:.01em;line-height:1;
+    color:#fff;text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:0;
+  }
+  .logo-twerk{padding-right:7px}
+  .logo-hub{
+    background:var(--orange);color:#000;
+    padding:4px 10px 4px 10px;border-radius:6px;
+    margin-left:0;
+  }
+  .hd-tag{
+    margin-left:auto;
     font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
-    box-shadow:var(--shadow-pink);color:#fff;white-space:nowrap;
+    font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--text-mute);white-space:nowrap;
   }
-  .hd-pill::before{
-    content:"";width:8px;height:8px;border-radius:50%;
-    background:var(--green);box-shadow:0 0 10px var(--green);
-    animation:pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.85)}}
+  @keyframes blink{0%,49%,100%{opacity:1}50%,99%{opacity:0}}
 
-  /* ── Featured hero card (mismo estilo que homepage twerkhub-fp-card-featured) ── */
+  /* ── FEATURED HERO ─────────────────────────────────────────────── */
   .feat{
-    position:relative;border-radius:var(--r);overflow:hidden;
-    border:1px solid rgba(30,224,143,.35);
-    background:linear-gradient(135deg,rgba(30,224,143,.06),rgba(255,45,135,.06),rgba(157,78,221,.06));
-    box-shadow:var(--shadow-card);
+    position:relative;border-radius:6px;overflow:hidden;
+    border:1px solid var(--border);background:#000;
+    aspect-ratio:9/12;
   }
-  .feat-thumb{position:relative;aspect-ratio:9/12;overflow:hidden;background:#000}
   .feat-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
   .feat-iframe{
     position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2;pointer-events:none;
-    transform:scale(1.42);transform-origin:center;opacity:0;transition:opacity .4s ease;
+    transform:scale(1.42);transform-origin:center;opacity:0;transition:opacity .35s;
   }
   .feat-iframe.is-ready{opacity:1}
   .feat-scrim{
     position:absolute;inset:0;z-index:3;
-    background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,0) 35%,rgba(0,0,0,.93) 100%);
+    background:linear-gradient(180deg,rgba(0,0,0,.3) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.95) 100%);
   }
-  .feat-badge{
-    position:absolute;top:14px;left:14px;z-index:4;
-    padding:6px 12px;border-radius:999px;
-    background:linear-gradient(135deg,var(--green),var(--gold));color:#031a11;
-    font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
-    box-shadow:0 6px 18px rgba(30,224,143,.4);
+  .feat-tag{
+    position:absolute;top:12px;left:12px;z-index:4;
+    background:var(--orange);color:#000;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+    padding:5px 9px;border-radius:3px;
   }
   .feat-live{
-    position:absolute;top:14px;right:14px;z-index:4;
-    padding:6px 12px;border-radius:999px;
-    background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff;
-    font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
-    box-shadow:var(--shadow-pink);
+    position:absolute;top:12px;right:12px;z-index:4;
     display:inline-flex;align-items:center;gap:6px;
+    background:#ff0044;color:#fff;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+    padding:5px 9px;border-radius:3px;
   }
   .feat-live::before{
-    content:"";width:7px;height:7px;border-radius:50%;background:var(--green);
-    box-shadow:0 0 8px var(--green);animation:pulse 1.6s ease-in-out infinite;
+    content:"";width:6px;height:6px;border-radius:50%;background:#fff;
+    animation:blink 1.5s ease-in-out infinite;
   }
-  .feat-body{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:22px 22px 24px;color:#fff}
+  .feat-body{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:20px 18px}
   .feat-kicker{
-    font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:10.5px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;
-    color:var(--green);margin-bottom:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--orange);margin-bottom:8px;
   }
-  .feat-title{
-    font-family:'Playfair Display',Georgia,serif;font-weight:900;
-    font-size:clamp(30px,7.8vw,42px);line-height:1.04;letter-spacing:-.02em;
-    margin-bottom:8px;
+  .feat-h1{
+    font-family:'Anton','Bebas Neue',sans-serif;
+    font-weight:400;font-size:clamp(42px,11vw,58px);
+    line-height:.92;letter-spacing:.01em;text-transform:uppercase;
+    color:#fff;margin-bottom:10px;
   }
-  .feat-title em{
-    font-style:italic;
-    background:linear-gradient(135deg,var(--green),var(--gold));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .feat-sub{color:#dcdce8;font-size:15px;line-height:1.5;max-width:92%}
+  .feat-h1 span{color:var(--orange)}
+  .feat-sub{color:#dedede;font-size:14px;line-height:1.45;max-width:90%}
+  .feat-sub strong{color:var(--orange);font-weight:800}
 
-  /* ── Stats (3 cards glassmorphic) ────────────────────────────────── */
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  /* ── STATS · 3 columnas, brutal ─────────────────────────────── */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
   .stat{
-    padding:16px 10px 14px;border-radius:18px;
-    background:rgba(20,20,32,.6);
-    border:1px solid var(--border);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-    text-align:center;position:relative;overflow:hidden;
+    padding:14px 6px 12px;background:var(--bg-2);
+    border:1px solid var(--border);border-radius:6px;
+    text-align:center;
   }
-  .stat::before{
-    content:"";position:absolute;top:-1px;left:-1px;right:-1px;height:2px;
-    border-radius:18px 18px 0 0;
-    background:linear-gradient(90deg,var(--pink),var(--orange),var(--gold));
-    opacity:.5;
+  .stat-n{
+    font-family:'Anton','Bebas Neue',sans-serif;
+    font-weight:400;font-size:30px;line-height:1;color:#fff;
+    letter-spacing:.01em;
   }
-  .stat-n{font-family:'Playfair Display',serif;font-weight:900;font-size:24px;line-height:1;color:#fff}
-  .stat-n em{
-    font-style:italic;
-    background:linear-gradient(135deg,var(--pink),var(--orange));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
+  .stat-n span{color:var(--orange)}
   .stat-l{
     margin-top:6px;
-    font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--text-mute);
   }
 
-  /* ── Section heading ────────────────────────────────────────────── */
-  .sec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  /* ── KICKER section header ─────────────────────────────────── */
   .sec-kicker{
-    font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:10px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;
-    color:var(--pink-soft);
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--orange);margin-bottom:12px;display:block;
   }
 
-  /* ── Email form card (premium glass with gradient border) ───────── */
-  .form-wrap{position:relative;border-radius:var(--r);padding:1.5px;
-    background:linear-gradient(135deg,var(--pink),var(--orange),var(--gold))}
+  /* ── EMAIL FORM CARD ────────────────────────────────────────── */
   .form-card{
-    border-radius:calc(var(--r) - 1.5px);padding:22px 22px 22px;
-    background:linear-gradient(180deg,rgba(20,20,32,.97),rgba(10,10,20,.97));
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    position:relative;
+    background:var(--bg-2);
+    border:1px solid var(--border);border-left:3px solid var(--orange);
+    border-radius:6px;padding:20px 18px;
   }
   .form-h{
-    font-family:'Playfair Display',serif;font-weight:900;
-    font-size:24px;line-height:1.1;letter-spacing:-.01em;margin-bottom:6px;
+    font-family:'Anton','Bebas Neue',sans-serif;
+    font-weight:400;font-size:30px;line-height:1;letter-spacing:.01em;
+    text-transform:uppercase;color:#fff;margin-bottom:6px;
   }
-  .form-h em{
-    font-style:italic;
-    background:linear-gradient(135deg,var(--pink),var(--orange));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .form-d{font-size:13.5px;color:var(--text-dim);margin-bottom:14px;line-height:1.5}
-  .form-row{display:flex;gap:8px}
+  .form-h span{color:var(--orange)}
+  .form-d{font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.5}
+  .form-d strong{color:var(--orange);font-weight:700}
+  .form-row{display:flex;gap:6px}
   .form-row input[type="email"]{
-    flex:1;min-width:0;padding:13px 15px;border-radius:11px;
-    border:1px solid var(--border-strong);background:rgba(0,0,0,.5);
-    color:#fff;font-size:15px;font-family:inherit;outline:none;
-    transition:border-color .2s,background .2s;
+    flex:1;min-width:0;padding:13px 14px;border-radius:4px;
+    border:1px solid var(--border);background:#000;color:#fff;
+    font-size:15px;font-family:inherit;outline:none;
+    transition:border-color .15s;
   }
-  .form-row input[type="email"]:focus{border-color:var(--pink);background:rgba(0,0,0,.65)}
-  .form-row input[type="email"]::placeholder{color:rgba(230,230,240,.4)}
+  .form-row input[type="email"]:focus{border-color:var(--orange)}
+  .form-row input[type="email"]::placeholder{color:var(--text-mute)}
   .form-row button{
-    padding:13px 18px;border-radius:11px;border:0;
-    background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff;
-    font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
-    cursor:pointer;font-family:inherit;flex-shrink:0;
-    transition:transform .2s,box-shadow .25s;
-    box-shadow:var(--shadow-pink);
+    padding:13px 18px;border-radius:4px;border:0;
+    background:var(--orange);color:#000;
+    font-family:'Anton','Bebas Neue',sans-serif;
+    font-size:18px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;
+    cursor:pointer;flex-shrink:0;
+    transition:background .15s,transform .15s;
   }
-  .form-row button:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(255,45,135,.5)}
-  .form-row button:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
+  .form-row button:hover{background:#ffa733;transform:translateY(-1px)}
+  .form-row button:active{transform:translateY(0)}
+  .form-row button:disabled{opacity:.6;cursor:wait}
   .form-msg{margin-top:10px;font-size:13px;display:none;line-height:1.4}
-  .form-msg.is-error{color:#ff6f8a;display:block}
-  .form-msg.is-ok{color:var(--green);display:block;font-weight:700}
+  .form-msg.is-error{color:#ff5577;display:block}
+  .form-msg.is-ok{color:var(--orange);display:block;font-weight:700}
   .form-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
-  .form-foot{margin-top:10px;font-size:11px;color:var(--text-muted);letter-spacing:.04em}
-  .form-foot strong{color:var(--gold);font-weight:700}
+  .form-foot{margin-top:10px;font-size:10.5px;color:var(--text-mute);letter-spacing:.05em}
 
-  /* ── CTA cards (homepage twerkhub-fp-card style) ────────────────── */
-  .ctas{display:flex;flex-direction:column;gap:12px}
+  /* ── CTA BUTTONS · brutalist orange ─────────────────────────── */
+  .ctas{display:flex;flex-direction:column;gap:8px}
   .cta{
-    position:relative;display:flex;align-items:center;gap:14px;
-    padding:18px 18px;border-radius:18px;
+    display:flex;align-items:center;gap:14px;
+    padding:14px 16px;border-radius:6px;
     text-decoration:none;color:#fff;
+    background:var(--bg-2);
     border:1px solid var(--border);
-    background:rgba(20,20,32,.6);
-    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-    transition:transform .25s,border-color .25s,box-shadow .25s,background .25s;
-    overflow:hidden;
+    border-left:3px solid var(--orange);
+    transition:background .15s,border-color .15s,transform .15s;
   }
-  .cta::before{
-    content:"";position:absolute;top:0;left:0;right:0;height:2px;
-    opacity:0;transition:opacity .25s;
-  }
-  .cta:hover{transform:translateY(-3px)}
-  .cta:hover::before{opacity:1}
+  .cta:hover{background:#1a1a1a;border-color:var(--orange);transform:translateX(2px)}
+  .cta:active{transform:translateX(0)}
   .cta-ico{
-    width:42px;height:42px;border-radius:12px;
-    display:flex;align-items:center;justify-content:center;font-size:20px;
-    flex-shrink:0;font-weight:700;
+    width:38px;height:38px;border-radius:4px;
+    background:var(--orange);color:#000;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:800;flex-shrink:0;
   }
   .cta-body{flex:1;min-width:0}
   .cta-t{
-    font-family:'Inter',sans-serif;font-size:15.5px;font-weight:800;
-    line-height:1.2;letter-spacing:-.005em;
+    font-family:'Anton','Bebas Neue',sans-serif;
+    font-size:20px;font-weight:400;letter-spacing:.02em;
+    text-transform:uppercase;line-height:1;color:#fff;
   }
   .cta-d{
-    font-size:12.5px;color:var(--text-dim);margin-top:4px;font-weight:500;
-    letter-spacing:.02em;
+    font-size:11.5px;color:var(--text-dim);margin-top:5px;
+    font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
   }
-  .cta-arrow{font-size:18px;color:var(--text-dim);flex-shrink:0;transition:transform .25s,color .25s}
-  .cta:hover .cta-arrow{transform:translateX(4px);color:#fff}
-
-  /* Telegram CTA */
-  .cta-tg{
-    border-color:rgba(34,158,217,.4);
-    background:linear-gradient(135deg,rgba(34,158,217,.16),rgba(34,158,217,.04));
+  .cta-d strong{color:var(--orange);font-weight:700}
+  .cta-arrow{
+    font-size:22px;color:var(--orange);flex-shrink:0;
+    font-family:'Anton','Bebas Neue',sans-serif;font-weight:400;
+    transition:transform .2s;
   }
-  .cta-tg::before{background:linear-gradient(90deg,#229ED9,#28a8e0,#229ED9)}
-  .cta-tg .cta-ico{background:linear-gradient(135deg,#229ED9,#28a8e0);color:#fff}
-  .cta-tg:hover{border-color:#229ED9;box-shadow:var(--shadow-tg)}
+  .cta:hover .cta-arrow{transform:translateX(3px)}
 
-  /* Archive CTA */
-  .cta-archive{
-    border-color:rgba(30,224,143,.35);
-    background:linear-gradient(135deg,rgba(30,224,143,.08),rgba(255,180,84,.04));
-  }
-  .cta-archive::before{background:linear-gradient(90deg,var(--green),var(--gold),var(--green))}
-  .cta-archive .cta-ico{background:linear-gradient(135deg,var(--green),var(--gold));color:#031a11}
-  .cta-archive:hover{border-color:var(--green);box-shadow:var(--shadow-green)}
-
-  /* Email CTA (anchor to form) */
-  .cta-mail{
-    border-color:rgba(255,45,135,.4);
-    background:linear-gradient(135deg,rgba(255,45,135,.12),rgba(255,144,0,.06));
-  }
-  .cta-mail::before{background:linear-gradient(90deg,var(--pink),var(--orange),var(--pink))}
-  .cta-mail .cta-ico{background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff}
-  .cta-mail:hover{border-color:var(--pink);box-shadow:var(--shadow-pink)}
-
-  /* ── Social proof strip (creators thumbs) ───────────────────────── */
-  .proof{
-    padding:18px 18px;border-radius:18px;
-    background:rgba(20,20,32,.55);
+  /* ── ROSTER ──────────────────────────────────────────────────── */
+  .roster{
+    background:var(--bg-2);
     border:1px solid var(--border);
-    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    border-radius:6px;padding:16px 16px;
   }
-  .proof-row{display:flex;align-items:center;gap:14px}
-  .proof-avs{display:flex;flex-shrink:0}
-  .proof-av{
-    width:38px;height:38px;border-radius:50%;
-    background:linear-gradient(135deg,#1a0a1f,#2a0f3d,#0a0a14);
-    border:2px solid var(--bg);
-    margin-left:-10px;display:flex;align-items:center;justify-content:center;
-    font-family:'Playfair Display',serif;font-weight:900;font-size:14px;color:#fff;
-    flex-shrink:0;
+  .roster-row{display:flex;align-items:center;gap:12px}
+  .roster-avs{display:flex;flex-shrink:0}
+  .roster-av{
+    width:34px;height:34px;border-radius:50%;
+    border:2px solid var(--bg);margin-left:-9px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Anton','Bebas Neue',sans-serif;
+    font-weight:400;font-size:14px;color:#fff;letter-spacing:.02em;
   }
-  .proof-av:first-child{margin-left:0}
-  .proof-av-1{background:linear-gradient(135deg,#ff2d87,#9d4edd)}
-  .proof-av-2{background:linear-gradient(135deg,#ff9000,#ffb454)}
-  .proof-av-3{background:linear-gradient(135deg,#1ee08f,#ffb454);color:#031a11}
-  .proof-av-4{background:linear-gradient(135deg,#9d4edd,#ff2d87)}
-  .proof-av-more{
-    background:rgba(255,255,255,.08);color:var(--text);
-    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;
+  .roster-av:first-child{margin-left:0}
+  .roster-av-1{background:#9d4edd}
+  .roster-av-2{background:var(--orange);color:#000}
+  .roster-av-3{background:#1ee08f;color:#000}
+  .roster-av-4{background:#ff2d87}
+  .roster-av-more{background:#222;color:var(--orange);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em}
+  .roster-text{flex:1;min-width:0}
+  .roster-t{
+    font-family:'Inter',sans-serif;font-size:13.5px;font-weight:700;
+    line-height:1.35;color:#fff;
   }
-  .proof-text{flex:1;min-width:0}
-  .proof-t{
-    font-size:13.5px;font-weight:700;line-height:1.35;color:var(--text);
+  .roster-d{
+    font-size:10.5px;color:var(--text-mute);margin-top:3px;
+    font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
   }
-  .proof-d{
-    font-size:11.5px;color:var(--text-muted);margin-top:3px;
+
+  /* ── FOOT ────────────────────────────────────────────────────── */
+  .foot{
+    margin-top:14px;padding-top:20px;border-top:1px solid var(--border);
+    text-align:center;font-size:11px;color:var(--text-mute);line-height:1.7;
     font-family:'JetBrains Mono',monospace;letter-spacing:.04em;
   }
+  .foot a{color:var(--text-dim);text-decoration:none;transition:color .15s}
+  .foot a:hover{color:var(--orange)}
+  .foot strong{color:var(--orange);font-weight:800}
 
-  /* ── Foot ──────────────────────────────────────────────────────── */
-  .foot{
-    margin-top:14px;padding-top:24px;border-top:1px solid var(--border);
-    text-align:center;font-size:11.5px;color:var(--text-muted);line-height:1.7;
-  }
-  .foot a{color:var(--text-dim);text-decoration:none;transition:color .2s}
-  .foot a:hover{color:#fff}
-  .foot-sep{color:rgba(255,255,255,.15);margin:0 6px}
-  .foot strong{color:var(--gold);font-weight:700}
-
-  /* Larger viewports — keep mobile-first but allow some breathing room */
   @media(min-width:640px){
-    .feat-thumb{aspect-ratio:9/10}
+    .feat{aspect-ratio:9/10}
   }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- ═══ HEADER ═══════════════════════════════════════════════════ -->
+  <!-- ═══ HEADER · TWERK [HUB] orange box ═══════════════════════ -->
   <header class="hd">
-    <a href="/" aria-label="Twerkhub home"><img class="hd-logo" src="/logo-twerkhub.png" alt="TWERKHUB"></a>
-    <span class="hd-pill" aria-label="Live">LIVE</span>
+    <a href="/" class="logo-text" aria-label="TWERKHUB home">
+      <span class="logo-twerk">TWERK</span><span class="logo-hub">HUB</span>
+    </a>
+    <span class="hd-tag">From TikTok</span>
   </header>
 
-  <!-- ═══ FEATURED HERO ═══════════════════════════════════════════ -->
+  <!-- ═══ FEATURED HERO ════════════════════════════════════════ -->
   <article class="feat">
-    <div class="feat-thumb">
-      <span class="feat-badge">★ Signature</span>
-      <span class="feat-live">LIVE</span>
-      <img class="feat-poster" src="https://i.ytimg.com/vi/X-lPzSuvf3k/sddefault.jpg" alt="Hottest signature cut" loading="eager" decoding="async">
-      <iframe id="tt-hero-yt"
-              class="feat-iframe"
-              data-src="https://www.youtube-nocookie.com/embed/X-lPzSuvf3k?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&loop=1&playlist=X-lPzSuvf3k&start=18&end=34&enablejsapi=1"
-              allow="autoplay; encrypted-media"
-              referrerpolicy="strict-origin"
-              tabindex="-1"
-              title="Hero preview"></iframe>
-      <div class="feat-scrim"></div>
-      <div class="feat-body">
-        <div class="feat-kicker">★ You found the archive</div>
-        <h1 class="feat-title">From <em>TikTok</em> to the real cuts.</h1>
-        <p class="feat-sub">1,500+ uncut 4K videos. Weekly drops. The first 100 viewers every Monday 8AM get the new cut <strong style="color:var(--gold)">free</strong>.</p>
-      </div>
+    <span class="feat-tag">★ Signature</span>
+    <span class="feat-live">LIVE</span>
+    <img class="feat-poster" src="https://i.ytimg.com/vi/X-lPzSuvf3k/sddefault.jpg" alt="Hottest signature cut" loading="eager" decoding="async">
+    <iframe id="tt-hero-yt"
+            class="feat-iframe"
+            data-src="https://www.youtube-nocookie.com/embed/X-lPzSuvf3k?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&loop=1&playlist=X-lPzSuvf3k&start=18&end=34&enablejsapi=1"
+            allow="autoplay; encrypted-media"
+            referrerpolicy="strict-origin"
+            tabindex="-1"
+            title="Hero preview"></iframe>
+    <div class="feat-scrim"></div>
+    <div class="feat-body">
+      <div class="feat-kicker">★ You found the archive</div>
+      <h1 class="feat-h1">From <span>TikTok</span><br>to the real cuts.</h1>
+      <p class="feat-sub">1500+ uncut 4K videos. Weekly drops. First 100 viewers every Monday 8AM get the new cut <strong>FREE</strong>.</p>
     </div>
   </article>
 
-  <!-- ═══ STATS ═══════════════════════════════════════════════════ -->
+  <!-- ═══ STATS ═══════════════════════════════════════════════ -->
   <div class="stats">
-    <div class="stat"><div class="stat-n"><em>1,500</em>+</div><div class="stat-l">4K cuts</div></div>
-    <div class="stat"><div class="stat-n"><em>60</em>+</div><div class="stat-l">creators</div></div>
-    <div class="stat"><div class="stat-n"><em>1</em>/wk</div><div class="stat-l">drops</div></div>
+    <div class="stat"><div class="stat-n"><span>1500</span>+</div><div class="stat-l">4K cuts</div></div>
+    <div class="stat"><div class="stat-n"><span>60</span>+</div><div class="stat-l">creators</div></div>
+    <div class="stat"><div class="stat-n"><span>1</span>/wk</div><div class="stat-l">drops</div></div>
   </div>
 
-  <!-- ═══ EMAIL FORM ═════════════════════════════════════════════ -->
+  <!-- ═══ EMAIL FORM ═════════════════════════════════════════ -->
   <section id="tt-form-section">
-    <div class="sec-head">
-      <span class="sec-kicker">/ The Monday drop</span>
-    </div>
-    <div class="form-wrap">
-      <div class="form-card">
-        <h3 class="form-h">Lock the <em>weekly drop</em>.</h3>
-        <p class="form-d">Every Monday at 8AM, the new cut goes out to email first. The first <strong>100 viewers</strong> get the unlocked 4K version <strong>free</strong>. Then it goes to tokens.</p>
-        <form class="form-row" id="tt-form" novalidate>
-          <input type="text" name="hp" class="form-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" inputmode="email">
-          <button type="submit">Lock it →</button>
-        </form>
-        <div class="form-msg" id="tt-form-msg" role="status" aria-live="polite"></div>
-        <div class="form-foot">No spam · 1 mail/week · unsubscribe anytime · <strong>18+</strong></div>
-      </div>
+    <span class="sec-kicker">/ The Monday drop</span>
+    <div class="form-card">
+      <h3 class="form-h">Lock the <span>weekly drop</span></h3>
+      <p class="form-d">Every Monday 8AM, the new cut goes out to email first. The first <strong>100 viewers</strong> get the unlocked 4K version <strong>FREE</strong>. Then it goes to tokens.</p>
+      <form class="form-row" id="tt-form" novalidate>
+        <input type="text" name="hp" class="form-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" inputmode="email">
+        <button type="submit">Lock it</button>
+      </form>
+      <div class="form-msg" id="tt-form-msg" role="status" aria-live="polite"></div>
+      <div class="form-foot">No spam · 1 mail/week · unsubscribe anytime · 18+</div>
     </div>
   </section>
 
-  <!-- ═══ CTAs ═══════════════════════════════════════════════════ -->
+  <!-- ═══ CTAs ═══════════════════════════════════════════════ -->
   <section>
-    <div class="sec-head">
-      <span class="sec-kicker">/ Or skip the line</span>
-    </div>
+    <span class="sec-kicker">/ Or skip the line</span>
     <div class="ctas">
-      <a class="cta cta-tg" href="https://t.me/Alexia_Twerk_Group" target="_blank" rel="noopener" data-track="tg">
+      <a class="cta" href="https://t.me/Alexia_Twerk_Group" target="_blank" rel="noopener" data-track="tg">
         <span class="cta-ico" aria-hidden="true">✈</span>
         <span class="cta-body">
           <span class="cta-t">Telegram channel</span>
@@ -404,16 +339,16 @@
         <span class="cta-arrow" aria-hidden="true">→</span>
       </a>
 
-      <a class="cta cta-archive" href="/" data-track="archive">
+      <a class="cta" href="/" data-track="archive">
         <span class="cta-ico" aria-hidden="true">📂</span>
         <span class="cta-body">
           <span class="cta-t">The full archive</span>
-          <span class="cta-d">1,500+ cuts · creators · playlists by style</span>
+          <span class="cta-d">1500+ cuts · creators · playlists by style</span>
         </span>
         <span class="cta-arrow" aria-hidden="true">→</span>
       </a>
 
-      <a class="cta cta-mail" href="#tt-form-section" data-track="email">
+      <a class="cta" href="#tt-form-section" data-track="email">
         <span class="cta-ico" aria-hidden="true">✉</span>
         <span class="cta-body">
           <span class="cta-t">Weekly drop · email</span>
@@ -424,34 +359,32 @@
     </div>
   </section>
 
-  <!-- ═══ SOCIAL PROOF ═══════════════════════════════════════════ -->
+  <!-- ═══ ROSTER ═════════════════════════════════════════════ -->
   <section>
-    <div class="sec-head">
-      <span class="sec-kicker">/ The roster</span>
-    </div>
-    <div class="proof">
-      <div class="proof-row">
-        <div class="proof-avs" aria-hidden="true">
-          <div class="proof-av proof-av-1">L</div>
-          <div class="proof-av proof-av-2">F</div>
-          <div class="proof-av proof-av-3">N</div>
-          <div class="proof-av proof-av-4">D</div>
-          <div class="proof-av proof-av-more">+56</div>
+    <span class="sec-kicker">/ The roster</span>
+    <div class="roster">
+      <div class="roster-row">
+        <div class="roster-avs" aria-hidden="true">
+          <div class="roster-av roster-av-1">L</div>
+          <div class="roster-av roster-av-2">F</div>
+          <div class="roster-av roster-av-3">N</div>
+          <div class="roster-av roster-av-4">D</div>
+          <div class="roster-av roster-av-more">+56</div>
         </div>
-        <div class="proof-text">
-          <div class="proof-t">Lada Gozzi · Fraules · Nika Chilli · 56 more</div>
-          <div class="proof-d">Verified creators · Moscow · Seoul · LATAM · Tokyo</div>
+        <div class="roster-text">
+          <div class="roster-t">Lada Gozzi · Fraules · Nika Chilli · 56 more</div>
+          <div class="roster-d">Verified · Moscow · Seoul · LATAM · Tokyo</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ FOOT ═══════════════════════════════════════════════════ -->
+  <!-- ═══ FOOT ═══════════════════════════════════════════════ -->
   <footer class="foot">
-    <strong>18+ only</strong><br>
-    <a href="/about.html">About</a><span class="foot-sep">·</span>
-    <a href="/privacy.html">Privacy</a><span class="foot-sep">·</span>
-    <a href="/terms.html">Terms</a><span class="foot-sep">·</span>
+    <strong>18+ ONLY</strong><br>
+    <a href="/about.html">About</a> ·
+    <a href="/privacy.html">Privacy</a> ·
+    <a href="/terms.html">Terms</a> ·
     <a href="/community.html">Community</a><br>
     <span style="opacity:.6">© TWERKHUB · alexiatwerkgroup.com</span>
   </footer>
@@ -462,7 +395,7 @@
 (function(){
   'use strict';
 
-  // ── 1. Trigger autoplay on hero iframe (lazy-load when DOM ready) ────────
+  // ── 1. Lazy-boot hero iframe ────────────────────────────────────────
   function bootHero(){
     var iframe = document.getElementById('tt-hero-yt');
     if (!iframe) return;
@@ -470,20 +403,19 @@
     if (src && !iframe.src){
       iframe.src = src;
       iframe.removeAttribute('data-src');
-      // Small delay to let YT player init, then fade in
-      setTimeout(function(){ iframe.classList.add('is-ready'); }, 800);
+      setTimeout(function(){ iframe.classList.add('is-ready'); }, 700);
     }
   }
   if (document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', bootHero, { once:true });
   } else { bootHero(); }
 
-  // ── 2. UTM / source tracking ──────────────────────────────────────────────
+  // ── 2. UTM tracking ──────────────────────────────────────────────────
   var qs = new URLSearchParams(location.search);
   var utmCampaign = qs.get('utm_campaign') || 'bio';
   var source = 'tt_' + utmCampaign;
 
-  // ── 3. Inline email form submit ───────────────────────────────────────────
+  // ── 3. Email form submit ─────────────────────────────────────────────
   var form = document.getElementById('tt-form');
   var msg = document.getElementById('tt-form-msg');
   if (form){
@@ -517,36 +449,59 @@
             ? 'That email did not pass validation.'
             : 'Something went wrong. Try again in a moment.';
           msg.className = 'form-msg is-error';
-          btn.disabled=false; btn.textContent='Lock it →';
+          btn.disabled=false; btn.textContent='Lock it';
         }
       })
       .catch(function(){
         msg.textContent = 'Network issue. Try again.';
         msg.className = 'form-msg is-error';
-        btn.disabled=false; btn.textContent='Lock it →';
+        btn.disabled=false; btn.textContent='Lock it';
       });
     });
   }
 
-  // ── 4. Track CTA clicks + force scroll for in-page anchors ────────────────
-  document.querySelectorAll('[data-track]').forEach(function(el){
+  // ── 4. CTA tracking + bulletproof scroll for in-page anchors ─────────
+  // (TT in-app browser ignores CSS scroll-behavior + sometimes skips
+  // scrollIntoView with smooth. Use raw scrollTo with offset as fallback.)
+  function smoothScrollTo(targetEl){
+    if (!targetEl) return;
+    var headerOffset = 12;
+    var rect = targetEl.getBoundingClientRect();
+    var y = rect.top + window.pageYOffset - headerOffset;
+    // Try smooth first
+    try {
+      window.scrollTo({top: y, behavior: 'smooth'});
+    } catch(_){
+      // Fallback for old/wonky browsers
+      window.scrollTo(0, y);
+    }
+    // Hard fallback after 100ms in case smooth was ignored
+    setTimeout(function(){
+      if (Math.abs(window.pageYOffset - y) > 50){
+        window.scrollTo(0, y);
+      }
+    }, 350);
+  }
+
+  document.querySelectorAll('[data-track], a[href^="#"]').forEach(function(el){
     el.addEventListener('click', function(e){
       try{
-        sessionStorage.setItem('tt_last_cta', el.getAttribute('data-track'));
+        var t = el.getAttribute('data-track');
+        if (t) sessionStorage.setItem('tt_last_cta', t);
       }catch(_){}
-      // Force smooth scroll for #anchor links (mobile browsers/TT in-app
-      // sometimes ignore CSS scroll-behavior:smooth on hash navigation)
       var href = el.getAttribute('href') || '';
       if (href.indexOf('#') === 0){
-        var target = document.getElementById(href.slice(1));
+        e.preventDefault();
+        var id = href.slice(1);
+        var target = id ? document.getElementById(id) : null;
         if (target){
-          e.preventDefault();
-          target.scrollIntoView({behavior:'smooth',block:'start'});
-          // Focus the email input after scroll for fast UX
+          smoothScrollTo(target);
           setTimeout(function(){
             var input = target.querySelector('input[type="email"]');
             if (input) input.focus({preventScroll:true});
-          }, 600);
+          }, 700);
+        } else if (href === '#'){
+          smoothScrollTo(document.body);
         }
       }
     });
