@@ -289,7 +289,7 @@
     <a href="/" class="logo-text" aria-label="TWERKHUB home">
       <span class="logo-twerk">TWERK</span><span class="logo-hub">HUB</span>
     </a>
-    <span class="hd-tag">From TikTok</span>
+    <span class="hd-tag" data-platform-from>From TikTok</span>
   </header>
 
   <!-- ═══ FEATURED HERO ════════════════════════════════════════ -->
@@ -307,7 +307,7 @@
     <div class="feat-scrim"></div>
     <div class="feat-body">
       <div class="feat-kicker">★ You found the archive</div>
-      <h1 class="feat-h1">From <span>TikTok</span><br>to the real cuts.</h1>
+      <h1 class="feat-h1">From <span data-platform-name>TikTok</span><br>to the real cuts.</h1>
       <p class="feat-sub">10,000+ uncut 4K videos. Weekly drops. First 100 viewers every Monday 8AM get the new cut <strong>FREE</strong>.</p>
     </div>
   </article>
@@ -418,9 +418,41 @@
     document.addEventListener('DOMContentLoaded', bootHero, { once:true });
   } else { bootHero(); }
 
+  // ── Platform detection (TT / X / IG / Reddit / etc.) ──────────────────
+  // Lee utm_source del URL. Default = tiktok (porque la mayoria del trafico
+  // del bio de TT no manda parametros). Tu bio en X/IG/etc DEBE incluir
+  // ?utm_source=twitter (o instagram, reddit, etc) para trackear separado.
   var qs = new URLSearchParams(location.search);
+  var rawSrc = (qs.get('utm_source') || 'tiktok').toLowerCase().trim();
+  var PLATFORM_LABELS = {
+    tiktok:    {name:'TikTok',    from:'From TikTok'},
+    tt:        {name:'TikTok',    from:'From TikTok'},
+    twitter:   {name:'X',         from:'From X'},
+    x:         {name:'X',         from:'From X'},
+    instagram: {name:'Instagram', from:'From Instagram'},
+    ig:        {name:'Instagram', from:'From Instagram'},
+    reddit:    {name:'Reddit',    from:'From Reddit'},
+    telegram:  {name:'Telegram',  from:'From Telegram'},
+    tg:        {name:'Telegram',  from:'From Telegram'},
+    youtube:   {name:'YouTube',   from:'From YouTube'},
+    yt:        {name:'YouTube',   from:'From YouTube'},
+    pinterest: {name:'Pinterest', from:'From Pinterest'},
+  };
+  var platform = PLATFORM_LABELS[rawSrc] || {name:rawSrc.charAt(0).toUpperCase()+rawSrc.slice(1), from:'From '+rawSrc};
+
+  // Update DOM platform-aware texts
+  document.querySelectorAll('[data-platform-name]').forEach(function(el){
+    el.textContent = platform.name;
+  });
+  document.querySelectorAll('[data-platform-from]').forEach(function(el){
+    el.textContent = platform.from;
+  });
+  // Update <title> for SEO (still noindex but cleaner share)
+  document.title = 'TWERKHUB · ' + platform.from;
+
+  // Source for D1 tracking: <platform>_<campaign>
   var utmCampaign = qs.get('utm_campaign') || 'bio';
-  var source = 'tt_' + utmCampaign;
+  var source = rawSrc + '_' + utmCampaign;
 
   var form = document.getElementById('tt-form');
   var msg = document.getElementById('tt-form-msg');

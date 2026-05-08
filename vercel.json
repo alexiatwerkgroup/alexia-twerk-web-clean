@@ -66,6 +66,36 @@
       "permanent": false
     },
     {
+      "source": "/x",
+      "destination": "/tt.html?utm_source=twitter",
+      "permanent": false
+    },
+    {
+      "source": "/twitter",
+      "destination": "/tt.html?utm_source=twitter",
+      "permanent": false
+    },
+    {
+      "source": "/ig",
+      "destination": "/tt.html?utm_source=instagram",
+      "permanent": false
+    },
+    {
+      "source": "/instagram",
+      "destination": "/tt.html?utm_source=instagram",
+      "permanent": false
+    },
+    {
+      "source": "/reddit",
+      "destination": "/tt.html?utm_source=reddit",
+      "permanent": false
+    },
+    {
+      "source": "/yt",
+      "destination": "/tt.html?utm_source=youtube",
+      "permanent": false
+    },
+    {
       "source": "/home.html",
       "destination": "/",
       "permanent": true
