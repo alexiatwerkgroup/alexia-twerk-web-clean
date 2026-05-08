@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-05-08
 
-## ✅ Phase 1 + 2 — DONE (code-wise)
+## ✅ Phase 1 + 2 + 3 — DONE (code-wise)
 
 ### Library
 - `functions/_lib/auth.js` — JWT (HS256) + PBKDF2 password hashing (Web Crypto)
@@ -17,118 +17,133 @@
 - `GET  /api/auth/username-available?u=` — check uniqueness
 
 ### Profile endpoints
-- `GET  /api/profile/me`               — read own profile
+- `GET  /api/profile/me`               — read own profile (+email)
 - `POST /api/profile/me`               — update username/bio/avatar_url
+- `GET  /api/profile/[id]`             — public profile by UUID OR username
 
-### Token economy endpoints (replaces Supabase RPCs)
-- `POST /api/tokens/claim-daily`       — daily 50 + streak bonus, idempotent
+### Token economy endpoints
+- `POST /api/tokens/claim-daily`       — daily 50 + streak bonus, idempotent UTC
 - `POST /api/tokens/claim-welcome`     — one-time +200
 - `POST /api/tokens/grant`             — generic +tokens (clamped 1..1000)
 - `POST /api/session/bump`             — heartbeat (clamped 0..60s + 0..5 cuts)
 
+### Comments endpoints
+- `GET  /api/comments?page=:slug`      — list (public read)
+- `POST /api/comments`                 — post comment (auth, rate-limited 1/5s)
+- `DELETE /api/comments/[id]`          — delete own (or admin)
+- `POST /api/comments/report`          — file moderation report
+
+### Heatmap endpoints
+- `POST /api/heatmap/record`           — record_watch, upserts buckets JSON
+- `GET  /api/heatmap/[video_id]`       — read heatmap (5min cache)
+
+### Admin endpoints
+- `GET  /api/admin/full-stats`         — owner-only (silent empty for others)
+
 ### Frontend integration
-- `assets/supabase-config.js` rewritten:
-  - `auth.signInWithPassword()` → `/api/auth/signin`
-  - `auth.signUp()` → `/api/auth/signup`
-  - `auth.signOut()` → `/api/auth/signout`
-  - `auth.getSession()` / `getUser()` → `/api/auth/session`
-  - `rpc('claim_daily')` → `/api/tokens/claim-daily`
-  - `rpc('claim_welcome')` → `/api/tokens/claim-welcome`
-  - `rpc('grant_tokens', {amount, reason})` → `/api/tokens/grant`
-  - `rpc('bump_session', {seconds_delta, cuts_delta})` → `/api/session/bump`
-  - `rpc('username_available', {text})` → `/api/auth/username-available`
+- `assets/supabase-config.js`:
+  - **auth.signInWithPassword/signUp/signOut/getSession/getUser** → endpoints reales
+  - **rpc('claim_daily' | 'claim_welcome' | 'grant_tokens' | 'bump_session' | 'username_available' | 'record_watch' | 'admin_get_full_stats')** → routed
+  - **window.TwkAPI** namespace — clean direct methods (recommended for new code)
+  - **from(table)** — todavía stub vacío (see Phase 4 below)
 
-### Schema
-- `_d1/schema-auth-tokens.sql` — all tables (users, profiles, video_comments,
-  comment_reports, video_heatmap, user_video_views)
+## ⏳ Phase 4 — pending (medium priority)
 
-## ⏳ Phase 3 — NOT YET (these still stubbed in client)
+### `from()` table compat layer
+Existing client code uses `__twkSupabase.from('profiles').select().eq('id', X).single()` etc. The chainable query builder is currently STUBBED (returns empty results).
 
-| Feature | Endpoint to build | Caller |
-|---|---|---|
-| Public profile read | `GET /api/profile/[id]` | profile-page.js |
-| Comments list | `GET /api/comments?page=` | comments-community-v2.js |
-| Comments post | `POST /api/comments` | comments-community-v2.js |
-| Comments delete | `DELETE /api/comments/[id]` | community-page.js |
-| Comments report | `POST /api/comments/[id]/report` | community-page.js |
-| Heatmap read | `GET /api/heatmap/[video_id]` | twerkhub-heatmap.js |
-| Heatmap record | `POST /api/heatmap/record` | twerkhub-heatmap.js |
-| Admin full stats | `GET /api/admin/full-stats` (gated by owner email) | admin-users.html |
-| Email-for-username | `GET /api/auth/email-for-username?u=` | (already handled by /api/auth/signin accepting username) |
-| Password reset | `POST /api/auth/reset-password` | account.html (deferred) |
+**Options to migrate:**
+1. **Best:** rewrite consuming files (twerkhub-auth.js, profile-page.js, comments-community-v2.js, etc.) to use `window.TwkAPI.*` directly. Cleaner code, easier to debug.
+2. **Quick:** implement a minimal chainable from() that maps to /api/* endpoints. Brittle for unsupported queries.
 
-The `from('table').select()` chain in `supabase-config.js` returns empty
-results until Phase 3, so callers using direct table reads (e.g.
-`from('profiles').select().eq('id', X)`) will see empty arrays. Need to
-migrate those to direct `fetch('/api/profile/[id]')` calls.
+Files that consume `from()`:
+- `assets/twerkhub-auth.js` / `twerkhub-auth-fixed.js`
+- `assets/profile-page.js`
+- `assets/comments-community-v2.js`
+- `assets/community-page.js`
+- `assets/twerkhub-heatmap.js`
+- `assets/session-tracker.js`
+- `assets/video-discussion-bars.js`
 
-## 🚀 Deploy checklist (do this NOW to go live)
+**Recommended migration plan:**
+1. Replace `__twkSupabase.from('profiles')...` calls with `TwkAPI.profile.*`
+2. Replace `__twkSupabase.from('video_comments')...` with `TwkAPI.comments.*`
+3. Replace `__twkSupabase.from('video_heatmap')...` and `rpc('record_watch')` with `TwkAPI.heatmap.*`
+4. Once all migrated, remove the `from()` stub entirely
+
+### Storage / file uploads (avatars)
+- `__twkSupabase.storage.*` is stubbed with errors. Cloudflare R2 would be the
+  natural target. Defer until needed.
+
+### Password reset / email verification / OAuth
+- Not implemented. Site doesn't support these as essential flows.
+- If needed later: integrate Resend or Postmark for transactional email.
+
+## 🚀 Deploy checklist
 
 ```powershell
 cd C:\Users\Claudio\OneDrive\Desktop\proyectos\alexia-twerk-web-clean
 
-# 1. Install wrangler if needed
-npm install -g wrangler
-wrangler login
-
-# 2. Apply schema to remote D1
+# 1. Schema applied? (one-time)
 wrangler d1 execute twerkhub-subscribers --remote --file=_d1/schema-auth-tokens.sql
 
-# 3. Set JWT_SECRET (do this in dashboard:
-#    Pages → alexia-twerk-web-clean → Settings → Environment variables
-#    Add JWT_SECRET as encrypted, value = 48 random bytes base64)
-#    Or via CLI:
+# 2. JWT_SECRET set in dashboard? (one-time, encrypted)
 wrangler pages secret put JWT_SECRET --project-name=alexia-twerk-web-clean
-# (paste the secret when prompted)
 
-# 4. Push code
+# 3. Deploy
 git add -A
-git commit -m "feat(auth): full Cloudflare D1 migration - Phase 1 (auth) + Phase 2 (tokens, profile)"
+git commit -m "feat(auth): Cloudflare D1 migration Phase 1+2+3 complete"
 git push
-
-# 5. Wait ~2 min for Cloudflare deploy, then hard-refresh alexiatwerkgroup.com
 ```
 
-## 🧪 Smoke tests after deploy
+## 🧪 Smoke tests
 
-Open browser DevTools → Console, paste:
+Browser DevTools → Console after deploy:
 
 ```js
-// Test 1: signup new user
-const r1 = await fetch('/api/auth/signup', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email: 'test@example.com', password: 'hunter22', username: 'testuser1' })
-}).then(r => r.json());
-console.log('signup:', r1);
+// Auth
+const u1 = await TwkAPI.auth.signup({ email:'test@a.com', password:'hunter22', username:'user1' });
+console.log('signup:', u1);
 
-// Test 2: signin
-const r2 = await fetch('/api/auth/signin', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email: 'test@example.com', password: 'hunter22' })
-}).then(r => r.json());
-console.log('signin:', r2);
+const u2 = await TwkAPI.auth.signin({ email:'test@a.com', password:'hunter22' });
+console.log('signin:', u2);
 
-// Test 3: session (should return user)
-const r3 = await fetch('/api/auth/session', {
-  headers: { 'Authorization': 'Bearer ' + r2.token }
-}).then(r => r.json());
-console.log('session:', r3);
+const s = await TwkAPI.auth.session();
+console.log('session:', s);
 
-// Test 4: claim daily (uses cookie)
-const r4 = await fetch('/api/tokens/claim-daily', {
-  method: 'POST',
-  credentials: 'include'
-}).then(r => r.json());
-console.log('claim daily:', r4);
+// Tokens
+const w = await TwkAPI.tokens.claimWelcome();
+console.log('welcome:', w);
+
+const d = await TwkAPI.tokens.claimDaily();
+console.log('daily:', d);
+
+// Profile
+const me = await TwkAPI.profile.me();
+console.log('me:', me);
+
+// Comments
+const c1 = await TwkAPI.comments.post('test-page', 'Hello world');
+console.log('post:', c1);
+
+const cl = await TwkAPI.comments.list('test-page');
+console.log('list:', cl);
+
+// Heatmap
+const h = await TwkAPI.heatmap.record('test-video', [0,1,2,3,4]);
+console.log('heatmap:', h);
 ```
 
-If r1.ok = true, r2.token exists, r3.user is non-null, and r4.granted = 50+ → 🎉 working.
+If all return `ok:true` → 🎉 fully migrated.
 
 ## 💰 Cost projection
 
-- D1 free tier: 5 GB storage + 5M reads/day → way under for 18 MAU
-- Pages Functions: 100k requests/day free → way under
-- Workers: $0 egress
-- **Total: $0/mo**
+| Resource | Free tier | Expected usage | Headroom |
+|---|---|---|---|
+| D1 storage | 5 GB | <10 MB | 99.8% free |
+| D1 reads/day | 5M | <10k | 99.8% free |
+| D1 writes/day | 100k | <1k | 99% free |
+| Pages Functions/day | 100k | <50k | 50% free |
+| Egress | unlimited | — | ∞ |
+
+**Total: $0/mo** (vs $25/mo Supabase Pro that would have been needed).

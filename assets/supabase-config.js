@@ -212,15 +212,67 @@
         return api('/api/auth/username-available?u=' + u, { method: 'GET' }).then(function (r) {
           return { data: r.body && r.body.available, error: null };
         });
-      case 'email_for_username':
-      case 'admin_get_full_stats':
       case 'record_watch':
-        // Phase 3 — not yet implemented
-        return Promise.resolve({ data: null, error: { message: 'rpc_not_implemented_yet', code: 'PHASE3' } });
+        return api('/api/heatmap/record', {
+          method: 'POST',
+          body: { vid: args.vid || args.video_id, watched: args.watched || [] },
+        }).then(toRpcResult);
+      case 'admin_get_full_stats':
+        return api('/api/admin/full-stats', { method: 'GET' }).then(function (r) {
+          if (r.body && r.body.ok) return { data: r.body.users || [], error: null };
+          return { data: null, error: { message: (r.body && r.body.error) || 'admin_failed' } };
+        });
+      case 'email_for_username':
+        // Implicit via /api/auth/signin which accepts {username, password}.
+        // No standalone endpoint — clients should send username directly to signin.
+        return Promise.resolve({ data: null, error: { message: 'use_signin_with_username', code: 'COMPAT' } });
       default:
         return Promise.resolve({ data: null, error: null });
     }
   }
+
+  // ─── window.TwkAPI · clean namespace for new code ─────────────────────
+  // Use these directly in new files; bypasses the from()/rpc() Supabase
+  // compat layer. Cleaner, easier to debug.
+  window.TwkAPI = {
+    auth: {
+      signin: function (creds) { return api('/api/auth/signin', { method: 'POST', body: creds }).then(function(r){return r.body;}); },
+      signup: function (creds) { return api('/api/auth/signup', { method: 'POST', body: creds }).then(function(r){return r.body;}); },
+      signout: function () { return api('/api/auth/signout', { method: 'POST' }).then(function(r){return r.body;}); },
+      session: function () { return api('/api/auth/session', { method: 'GET' }).then(function(r){return r.body;}); },
+      usernameAvailable: function (u) { return api('/api/auth/username-available?u=' + encodeURIComponent(u)).then(function(r){return r.body;}); },
+    },
+    profile: {
+      me: function () { return api('/api/profile/me', { method: 'GET' }).then(function(r){return r.body;}); },
+      updateMe: function (patch) { return api('/api/profile/me', { method: 'POST', body: patch }).then(function(r){return r.body;}); },
+      get: function (idOrUsername) { return api('/api/profile/' + encodeURIComponent(idOrUsername), { method: 'GET' }).then(function(r){return r.body;}); },
+    },
+    tokens: {
+      claimDaily: function () { return api('/api/tokens/claim-daily', { method: 'POST', body: {} }).then(function(r){return r.body;}); },
+      claimWelcome: function () { return api('/api/tokens/claim-welcome', { method: 'POST', body: {} }).then(function(r){return r.body;}); },
+      grant: function (amount, reason) { return api('/api/tokens/grant', { method: 'POST', body: { amount: amount, reason: reason } }).then(function(r){return r.body;}); },
+      bumpSession: function (secs, cuts) { return api('/api/session/bump', { method: 'POST', body: { seconds_delta: secs || 0, cuts_delta: cuts || 0 } }).then(function(r){return r.body;}); },
+    },
+    comments: {
+      list: function (pageSlug, opts) {
+        opts = opts || {};
+        var qs = '?page=' + encodeURIComponent(pageSlug);
+        if (opts.limit) qs += '&limit=' + opts.limit;
+        if (opts.offset) qs += '&offset=' + opts.offset;
+        return api('/api/comments' + qs, { method: 'GET' }).then(function(r){return r.body;});
+      },
+      post: function (pageSlug, bodyText) { return api('/api/comments', { method: 'POST', body: { page_slug: pageSlug, body: bodyText } }).then(function(r){return r.body;}); },
+      del: function (id) { return api('/api/comments/' + encodeURIComponent(id), { method: 'DELETE' }).then(function(r){return r.body;}); },
+      report: function (id, reason) { return api('/api/comments/report', { method: 'POST', body: { comment_id: id, reason: reason } }).then(function(r){return r.body;}); },
+    },
+    heatmap: {
+      get: function (videoId) { return api('/api/heatmap/' + encodeURIComponent(videoId), { method: 'GET' }).then(function(r){return r.body;}); },
+      record: function (videoId, watchedBuckets) { return api('/api/heatmap/record', { method: 'POST', body: { vid: videoId, watched: watchedBuckets || [] } }).then(function(r){return r.body;}); },
+    },
+    admin: {
+      fullStats: function () { return api('/api/admin/full-stats', { method: 'GET' }).then(function(r){return r.body;}); },
+    },
+  };
   function toRpcResult(r) {
     if (r.body && r.body.ok) return { data: r.body, error: null };
     return { data: null, error: { message: (r.body && r.body.error) || 'rpc_failed', code: r.status } };
