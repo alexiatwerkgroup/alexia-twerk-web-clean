@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>TWERKHUB · UTM Builder</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--panel:#141414;--panel-2:#1a1a1a;--bd:#2a2a2a;
+  --txt:#f5f5f5;--mute:#8a8a8a;
+  --pink:#ff2d87;--orange:#ff9000;--blue:#229ED9;--red:#ff0033;--green:#22c55e;
+}
+html,body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;min-height:100vh}
+body{padding:24px 16px 80px}
+.wrap{max-width:920px;margin:0 auto}
+header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--bd)}
+.logo{font-family:'Anton',sans-serif;font-size:34px;letter-spacing:.04em;color:var(--txt);text-transform:uppercase;line-height:1}
+.logo .accent{background:linear-gradient(90deg,var(--pink),var(--orange));-webkit-background-clip:text;color:transparent;background-clip:text}
+.tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.12em;border:1px solid var(--bd);padding:4px 8px;border-radius:4px}
+h2{font-family:'Anton',sans-serif;font-size:22px;text-transform:uppercase;letter-spacing:.04em;margin:24px 0 12px;color:var(--txt)}
+.panel{background:var(--panel);border:1px solid var(--bd);border-radius:10px;padding:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px}
+label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mute);font-weight:600}
+label .req{color:var(--pink);margin-left:4px}
+label .opt{color:var(--mute);margin-left:4px;font-style:italic;font-weight:400}
+input,select{
+  background:var(--panel-2);color:var(--txt);border:1px solid var(--bd);border-radius:6px;
+  padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;
+  transition:border-color .12s;
+}
+input:focus,select:focus{border-color:var(--pink)}
+input::placeholder{color:#555}
+.preview{
+  background:var(--panel-2);border:2px solid var(--bd);border-radius:10px;padding:18px;
+  margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:13px;
+  word-break:break-all;line-height:1.5;color:var(--txt);
+  position:relative;min-height:60px;
+}
+.preview .label{position:absolute;top:-9px;left:14px;background:var(--bg);padding:0 8px;font-size:10px;
+  color:var(--pink);text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+.preview a{color:var(--orange);text-decoration:none}
+.preview .pill{display:inline-block;background:rgba(255,45,135,.14);color:var(--pink);padding:2px 7px;border-radius:4px;font-size:11px;margin:0 2px}
+.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{
+  background:var(--panel-2);color:var(--txt);border:1px solid var(--bd);border-radius:6px;
+  padding:11px 18px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;
+  text-transform:uppercase;letter-spacing:.06em;transition:all .15s;
+}
+.btn:hover{border-color:var(--pink);color:var(--pink)}
+.btn.primary{background:linear-gradient(90deg,var(--pink),var(--orange));color:#fff;border:none}
+.btn.primary:hover{filter:brightness(1.1);color:#fff}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);
+  background:var(--green);color:#000;padding:12px 22px;border-radius:8px;font-weight:800;
+  text-transform:uppercase;letter-spacing:.06em;font-size:13px;
+  transition:transform .25s;z-index:99;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.history{margin-top:36px}
+.history-item{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:12px 14px;background:var(--panel);border:1px solid var(--bd);
+  border-radius:8px;margin-bottom:8px;
+}
+.history-item .url{font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.history-item .meta{font-size:10px;color:var(--mute);text-transform:uppercase;
+  letter-spacing:.1em;white-space:nowrap}
+.history-item .row-actions{display:flex;gap:6px;flex-shrink:0}
+.history-item button{
+  background:transparent;border:1px solid var(--bd);color:var(--mute);
+  padding:6px 10px;border-radius:4px;font-size:10px;cursor:pointer;
+  text-transform:uppercase;letter-spacing:.08em;font-weight:700;
+}
+.history-item button:hover{border-color:var(--pink);color:var(--pink)}
+.empty{text-align:center;color:var(--mute);padding:24px;font-size:13px}
+.hint{font-size:11px;color:var(--mute);margin-top:6px;font-style:italic}
+.qr-section{margin-top:18px;display:none;justify-content:center}
+.qr-section.show{display:flex}
+.qr-section canvas, .qr-section img{background:#fff;padding:8px;border-radius:8px}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.muted{color:var(--mute);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">TWERK<span class="accent">HUB</span></div>
+    <div class="tag">UTM Builder</div>
+  </header>
+
+  <div class="panel">
+    <h2 style="margin-top:0">URL base</h2>
+    <div class="grid">
+      <div class="field">
+        <label>Domain <span class="req">*</span></label>
+        <input id="base" value="https://alexiatwerkgroup.com" placeholder="https://alexiatwerkgroup.com">
+      </div>
+      <div class="field">
+        <label>Page path <span class="opt">(opt)</span></label>
+        <select id="path">
+          <option value="/">/  (home)</option>
+          <option value="/membership/">/membership/</option>
+          <option value="/creators/">/creators/</option>
+          <option value="/community/">/community/</option>
+          <option value="/playlist/">/playlist/</option>
+          <option value="/profile/">/profile/</option>
+          <option value="/tt">/tt  (Telegram landing)</option>
+          <option value="/tipjar/">/tipjar/</option>
+          <option value="__custom__">— Custom path —</option>
+        </select>
+        <input id="path_custom" placeholder="/your-custom-path/" style="display:none;margin-top:6px">
+      </div>
+    </div>
+
+    <h2>UTM parameters</h2>
+    <div class="grid">
+
+      <div class="field">
+        <label>utm_source <span class="req">*</span></label>
+        <select id="source">
+          <option value="">— Choose —</option>
+          <optgroup label="Telegram / Discord / Forums">
+            <option>telegram</option>
+            <option>discord</option>
+            <option>smgforum</option>
+            <option>reddit</option>
+          </optgroup>
+          <optgroup label="Adult platforms">
+            <option>eporner</option>
+            <option>pornhub</option>
+            <option>xvideos</option>
+            <option>xnxx</option>
+            <option>spankbang</option>
+            <option>youporn</option>
+            <option>redgifs</option>
+          </optgroup>
+          <optgroup label="Social">
+            <option>twitter</option>
+            <option>instagram</option>
+            <option>tiktok</option>
+            <option>youtube</option>
+            <option>threads</option>
+            <option>bluesky</option>
+          </optgroup>
+          <optgroup label="Cross-promo">
+            <option>onlyfans</option>
+            <option>fansly</option>
+            <option>manyvids</option>
+            <option>chaturbate</option>
+            <option>livejasmin</option>
+          </optgroup>
+          <optgroup label="Owned">
+            <option>email</option>
+            <option>signature</option>
+            <option>bio-link</option>
+            <option>direct-share</option>
+            <option>qr-code</option>
+            <option>print</option>
+          </optgroup>
+          <option value="__custom__">— Custom —</option>
+        </select>
+        <input id="source_custom" placeholder="custom-source" style="display:none;margin-top:6px">
+      </div>
+
+      <div class="field">
+        <label>utm_medium <span class="req">*</span></label>
+        <select id="medium">
+          <option value="">— Choose —</option>
+          <option>channel</option>
+          <option>group</option>
+          <option>dm</option>
+          <option>post</option>
+          <option>story</option>
+          <option>reel</option>
+          <option>thread</option>
+          <option>comment</option>
+          <option>bio</option>
+          <option>profile</option>
+          <option>signature</option>
+          <option>cpc</option>
+          <option>banner</option>
+          <option>referral</option>
+          <option value="__custom__">— Custom —</option>
+        </select>
+        <input id="medium_custom" placeholder="custom-medium" style="display:none;margin-top:6px">
+      </div>
+
+      <div class="field">
+        <label>utm_campaign <span class="req">*</span></label>
+        <select id="campaign">
+          <option value="">— Choose —</option>
+          <optgroup label="Recurring">
+            <option>daily-drop</option>
+            <option>weekly</option>
+            <option>monthly</option>
+          </optgroup>
+          <optgroup label="Pushes">
+            <option>signup-push</option>
+            <option>membership-push</option>
+            <option>vip-push</option>
+            <option>tipjar-push</option>
+            <option>community-push</option>
+          </optgroup>
+          <optgroup label="Launches">
+            <option>launch-membership</option>
+            <option>launch-creators</option>
+            <option>launch-playlist</option>
+            <option>launch-feature</option>
+          </optgroup>
+          <optgroup label="Content">
+            <option>creator-spotlight</option>
+            <option>new-video</option>
+            <option>weekly-roundup</option>
+            <option>throwback</option>
+          </optgroup>
+          <option value="__custom__">— Custom —</option>
+        </select>
+        <input id="campaign_custom" placeholder="custom-campaign" style="display:none;margin-top:6px">
+        <div class="hint">Use kebab-case: <code>signup-push</code>, <code>weekly-drop-may</code></div>
+      </div>
+
+      <div class="field">
+        <label>utm_content <span class="opt">(opt — variant tag)</span></label>
+        <input id="content" placeholder="ej: cta-red, hero-banner, v2">
+        <div class="hint">For A/B testing different variants of the same campaign</div>
+      </div>
+
+      <div class="field" style="grid-column:1/-1">
+        <label>utm_term <span class="opt">(opt — keyword/audience)</span></label>
+        <input id="term" placeholder="ej: latina, asian, cosplay">
+      </div>
+
+    </div>
+
+    <div class="preview" id="preview">
+      <span class="label">Generated URL</span>
+      <span style="color:var(--mute)">Llená los campos requeridos para generar tu URL...</span>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="copy">Copy URL</button>
+      <button class="btn" id="open">Open in new tab</button>
+      <button class="btn" id="qr">Show QR</button>
+      <button class="btn ghost" id="reset">Reset</button>
+    </div>
+
+    <div class="qr-section" id="qrsection">
+      <img id="qrimg" alt="QR code">
+    </div>
+  </div>
+
+  <div class="history">
+    <div class="flex-between" style="margin-bottom:12px">
+      <h2 style="margin:0">Recent links <span class="muted" style="font-size:13px">(last 20)</span></h2>
+      <button class="btn ghost" id="clearHistory" style="padding:7px 14px;font-size:11px">Clear all</button>
+    </div>
+    <div id="historyList"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Copiado!</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const STORAGE_KEY = 'twk_utm_history_v1';
+
+const fields = ['base','path','source','medium','campaign','content','term'];
+const customs = {
+  path: $('path_custom'),
+  source: $('source_custom'),
+  medium: $('medium_custom'),
+  campaign: $('campaign_custom'),
+};
+
+// Wire up custom-input toggles
+for (const [k, customInput] of Object.entries(customs)) {
+  $(k).addEventListener('change', e => {
+    if (e.target.value === '__custom__') {
+      customInput.style.display = 'block';
+      customInput.focus();
+    } else {
+      customInput.style.display = 'none';
+      customInput.value = '';
+    }
+    rebuild();
+  });
+  customInput.addEventListener('input', rebuild);
+}
+
+// Wire up regular inputs
+['base','content','term'].forEach(id => $(id).addEventListener('input', rebuild));
+
+function getVal(id) {
+  const el = $(id);
+  if (el.value === '__custom__') {
+    return (customs[id]?.value || '').trim();
+  }
+  return (el.value || '').trim();
+}
+
+function buildURL() {
+  const base = getVal('base').replace(/\/+$/, '');
+  let path = getVal('path');
+  if (!base) return null;
+  if (!path) path = '/';
+  if (!path.startsWith('/')) path = '/' + path;
+
+  const params = {
+    utm_source: getVal('source'),
+    utm_medium: getVal('medium'),
+    utm_campaign: getVal('campaign'),
+    utm_content: getVal('content'),
+    utm_term: getVal('term'),
+  };
+  // Validate required
+  if (!params.utm_source || !params.utm_medium || !params.utm_campaign) {
+    return { incomplete: true, missing: Object.keys(params).filter(k =>
+      ['utm_source','utm_medium','utm_campaign'].includes(k) && !params[k]) };
+  }
+  const qs = Object.entries(params)
+    .filter(([_, v]) => v)
+    .map(([k, v]) => `${k}=${encodeURIComponent(v.toLowerCase().replace(/\s+/g,'-'))}`)
+    .join('&');
+  return { url: `${base}${path}?${qs}`, params };
+}
+
+function rebuild() {
+  const result = buildURL();
+  const preview = $('preview');
+  if (!result) {
+    preview.innerHTML = `<span class="label">Generated URL</span><span style="color:var(--mute)">Falta el dominio base...</span>`;
+    $('copy').disabled = true; $('open').disabled = true; $('qr').disabled = true;
+    return;
+  }
+  if (result.incomplete) {
+    preview.innerHTML = `<span class="label">Generated URL</span><span style="color:var(--mute)">Faltan: <code>${result.missing.join(', ')}</code></span>`;
+    $('copy').disabled = true; $('open').disabled = true; $('qr').disabled = true;
+    return;
+  }
+  $('copy').disabled = false; $('open').disabled = false; $('qr').disabled = false;
+  // Highlight UTM params in preview
+  const u = new URL(result.url);
+  let html = `<span class="label">Generated URL</span>`;
+  html += `<a href="${result.url}" target="_blank">${u.origin}${u.pathname}</a>?`;
+  const parts = [];
+  for (const [k, v] of u.searchParams) {
+    parts.push(`<span class="pill">${k}=${v}</span>`);
+  }
+  html += parts.join('&');
+  preview.innerHTML = html;
+}
+
+function showToast(msg, color) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.style.background = color || 'var(--green)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+$('copy').addEventListener('click', async () => {
+  const result = buildURL();
+  if (!result || result.incomplete) return;
+  try {
+    await navigator.clipboard.writeText(result.url);
+    showToast('Copiado!');
+    addToHistory(result);
+  } catch (e) {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = result.url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('Copiado!');
+    addToHistory(result);
+  }
+});
+
+$('open').addEventListener('click', () => {
+  const result = buildURL();
+  if (result && !result.incomplete) {
+    addToHistory(result);
+    window.open(result.url, '_blank');
+  }
+});
+
+$('qr').addEventListener('click', () => {
+  const result = buildURL();
+  if (!result || result.incomplete) return;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(result.url)}`;
+  $('qrimg').src = qrUrl;
+  $('qrsection').classList.add('show');
+});
+
+$('reset').addEventListener('click', () => {
+  fields.forEach(f => {
+    if (f === 'base') return; // keep domain
+    const el = $(f);
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+  Object.values(customs).forEach(c => { c.style.display = 'none'; c.value = ''; });
+  $('qrsection').classList.remove('show');
+  rebuild();
+});
+
+// History
+function loadHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch (e) { return []; }
+}
+
+function saveHistory(arr) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr.slice(0, 20)));
+  } catch (e) {}
+}
+
+function addToHistory(result) {
+  const arr = loadHistory();
+  // Dedupe by URL
+  const filtered = arr.filter(x => x.url !== result.url);
+  filtered.unshift({
+    url: result.url,
+    source: result.params.utm_source,
+    medium: result.params.utm_medium,
+    campaign: result.params.utm_campaign,
+    ts: Date.now(),
+  });
+  saveHistory(filtered);
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = $('historyList');
+  const arr = loadHistory();
+  if (arr.length === 0) {
+    list.innerHTML = '<div class="empty">Aún no generaste links. Generá uno y arrancá.</div>';
+    return;
+  }
+  list.innerHTML = arr.map((it, i) => {
+    const date = new Date(it.ts);
+    const ago = timeAgo(date);
+    return `
+      <div class="history-item">
+        <div style="flex:1;min-width:0">
+          <div class="url" title="${it.url}">${it.url}</div>
+          <div class="meta">${it.source} · ${it.medium} · ${it.campaign} · ${ago}</div>
+        </div>
+        <div class="row-actions">
+          <button data-action="copy" data-i="${i}">Copy</button>
+          <button data-action="open" data-i="${i}">Open</button>
+          <button data-action="del" data-i="${i}">×</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function timeAgo(date) {
+  const s = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (s < 60) return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+$('historyList').addEventListener('click', async e => {
+  const btn = e.target.closest('button[data-action]');
+  if (!btn) return;
+  const i = parseInt(btn.dataset.i, 10);
+  const arr = loadHistory();
+  const it = arr[i];
+  if (!it) return;
+  if (btn.dataset.action === 'copy') {
+    try { await navigator.clipboard.writeText(it.url); } catch (_) {}
+    showToast('Copiado!');
+  } else if (btn.dataset.action === 'open') {
+    window.open(it.url, '_blank');
+  } else if (btn.dataset.action === 'del') {
+    arr.splice(i, 1);
+    saveHistory(arr);
+    renderHistory();
+  }
+});
+
+$('clearHistory').addEventListener('click', () => {
+  if (!confirm('Borrar TODO el historial de links?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  renderHistory();
+});
+
+// Initial render
+rebuild();
+renderHistory();
+</script>
+</body>
+</html>
