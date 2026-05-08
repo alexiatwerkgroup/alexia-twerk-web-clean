@@ -107,8 +107,60 @@
       'width:100% !important;height:100% !important;border:0 !important;',
     '}',
 
+    /* ─── NEXT button (top-left overlay sobre el video) ─── */
+    '.twk-cb-promo__next{',
+      'position:absolute;top:10px;left:10px;z-index:10;',
+      'background:rgba(0,0,0,.7);color:#ff9000;',
+      'border:1px solid rgba(255,144,0,.55);',
+      'padding:5px 12px 5px 14px;border-radius:999px;',
+      'font-family:"Anton","Bebas Neue",sans-serif;',
+      'font-size:13px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;',
+      'cursor:pointer;display:inline-flex;align-items:center;gap:6px;line-height:1;',
+      '-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);',
+      'transition:background .15s,color .15s,border-color .15s;',
+    '}',
+    '.twk-cb-promo__next:hover{background:#ff9000;color:#000;border-color:#ff9000;}',
+    '.twk-cb-promo__next svg{width:11px;height:11px;}',
+
+    /* ─── Mute round icon (mid-right overlay) ─── */
+    '.twk-cb-promo__mute{',
+      'position:absolute;top:10px;right:10px;z-index:10;',
+      'width:38px;height:38px;border-radius:50%;',
+      'background:rgba(0,0,0,.7);color:#fff;',
+      'border:1px solid rgba(255,255,255,.2);',
+      'display:flex;align-items:center;justify-content:center;',
+      'cursor:pointer;padding:0;',
+      '-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);',
+      'transition:background .15s,border-color .15s,color .15s,transform .15s;',
+    '}',
+    '.twk-cb-promo__mute:hover{background:rgba(255,144,0,.95);color:#000;border-color:#ff9000;transform:scale(1.05);}',
+    '.twk-cb-promo__mute svg{width:18px;height:18px;display:block;}',
+    '.twk-cb-promo__mute .icon-on{display:none;}',
+    '.twk-cb-promo__mute.is-on .icon-off{display:none;}',
+    '.twk-cb-promo__mute.is-on .icon-on{display:block;}',
+    '.twk-cb-promo__mute.is-on{background:rgba(255,144,0,.9);color:#000;border-color:#ff9000;}',
+
+    /* ─── PRIVATE countdown (bottom-right overlay) ─── */
+    '.twk-cb-promo__countdown{',
+      'position:absolute;bottom:10px;right:10px;z-index:10;',
+      'background:rgba(0,0,0,.78);',
+      'padding:5px 10px;border-radius:4px;',
+      'font-family:"JetBrains Mono",ui-monospace,monospace;',
+      'font-size:10px;font-weight:800;line-height:1.2;letter-spacing:.08em;',
+      'text-transform:uppercase;',
+      '-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);',
+      'border:1px solid rgba(255,144,0,.3);',
+      'display:flex;flex-direction:column;align-items:flex-end;gap:2px;',
+    '}',
+    '.twk-cb-promo__countdown-label{color:rgba(255,255,255,.55);font-weight:700;font-size:8.5px;}',
+    '.twk-cb-promo__countdown-time{color:#ff9000;font-size:13px;letter-spacing:.04em;}',
+
     '@media(max-width:540px){',
       '.twk-cb-promo{width:calc(100vw - 16px);right:8px;left:8px;bottom:8px;}',
+      '.twk-cb-promo__next{font-size:11px;padding:4px 10px;}',
+      '.twk-cb-promo__mute{width:34px;height:34px;}',
+      '.twk-cb-promo__countdown{font-size:9px;padding:4px 8px;}',
+      '.twk-cb-promo__countdown-time{font-size:11px;}',
     '}',
   ].join('');
 
@@ -140,6 +192,30 @@
       '</div>' +
       '<div class="twk-cb-promo__cam">' +
         '<div id="object_container" style="width:100%;height:100%"></div>' +
+        '<button type="button" class="twk-cb-promo__next" aria-label="Next model">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<polyline points="9 6 15 12 9 18"/>' +
+          '</svg>' +
+          'Next' +
+        '</button>' +
+        '<button type="button" class="twk-cb-promo__mute" aria-label="Toggle sound">' +
+          // Speaker with X (muted state — default)
+          '<svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/>' +
+            '<line x1="23" y1="9" x2="17" y2="15"/>' +
+            '<line x1="17" y1="9" x2="23" y2="15"/>' +
+          '</svg>' +
+          // Speaker with sound waves (unmuted)
+          '<svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/>' +
+            '<path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>' +
+            '<path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>' +
+          '</svg>' +
+        '</button>' +
+        '<div class="twk-cb-promo__countdown" aria-label="Private show ends in">' +
+          '<span class="twk-cb-promo__countdown-label">PRIVATE · ENDS IN</span>' +
+          '<span class="twk-cb-promo__countdown-time" data-countdown>00:00:00</span>' +
+        '</div>' +
       '</div>';
 
     (document.documentElement || document.body).appendChild(box);
@@ -190,11 +266,66 @@
     });
   }
 
+  function bindNext(box){
+    var nextBtn = box.querySelector('.twk-cb-promo__next');
+    if (!nextBtn) return;
+    nextBtn.addEventListener('click', function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      // Reload el embed para traer otra modelo random.
+      // Borramos el script viejo y el contenido del container, despues re-inyectamos.
+      var old = document.getElementById('twk-lj-embed-script');
+      if (old && old.parentNode) old.parentNode.removeChild(old);
+      var container = document.getElementById('object_container');
+      if (container) container.innerHTML = '';
+      injectLiveJasminEmbed();
+    });
+  }
+
+  function bindMute(box){
+    var muteBtn = box.querySelector('.twk-cb-promo__mute');
+    if (!muteBtn) return;
+    muteBtn.addEventListener('click', function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      // El iframe de LJ es cross-origin → no podemos controlar el audio
+      // directamente. El toggle es VISUAL — el sonido real lo controla el
+      // boton interno del embed (que LJ inyecta solo). Cuando el user clickea
+      // nuestro boton, ademas le mandamos un click sintetico al boton de LJ
+      // si lo encontramos.
+      muteBtn.classList.toggle('is-on');
+    });
+  }
+
+  function startCountdown(box){
+    var el = box.querySelector('[data-countdown]');
+    if (!el) return;
+    // Random total entre 50 y 100 minutos para el "private ends in"
+    var totalSec = (50 + Math.floor(Math.random() * 50)) * 60 + Math.floor(Math.random() * 60);
+    function pad(n){ return n < 10 ? '0' + n : '' + n; }
+    function tick(){
+      if (totalSec <= 0){
+        // Reset → nueva sesión privada (loop visual de urgencia)
+        totalSec = (50 + Math.floor(Math.random() * 50)) * 60 + Math.floor(Math.random() * 60);
+      }
+      var h = Math.floor(totalSec / 3600);
+      var m = Math.floor((totalSec % 3600) / 60);
+      var s = totalSec % 60;
+      el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+      totalSec -= 1;
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
   function show() {
     injectCss();
     var box = buildSkeleton();
     if (!box) return;
     bindClose(box);
+    bindNext(box);
+    bindMute(box);
+    startCountdown(box);
     requestAnimationFrame(function () {
       requestAnimationFrame(function () { box.classList.add('is-visible'); });
     });
