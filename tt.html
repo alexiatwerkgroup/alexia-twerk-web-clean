@@ -190,38 +190,63 @@
   .form-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
   .form-foot{margin-top:10px;font-size:10.5px;color:var(--text-mute);letter-spacing:.05em}
 
-  /* ── CTA PILLS · compactas, horizontales, livianas ───────────
-     El email form de arriba es el HEROE. Estas son secondary actions.
-     3 pills en una fila (wrap en mobile estrecho).
-     Sin cards gordas. Sin descripciones visibles (van como title hover).
-     Sin border-left naranja agresivo. Solo texto + icono pequeno.
-     Resultado: 1/4 del peso visual anterior, el ojo va al form. */
+  /* ── CTA PILLS · BIG + FILLED · cada uno con su color de marca
+     Telegram = azul Telegram brand
+     Archive  = naranja TWERKHUB brand
+     Email    = rosa→naranja gradient (matches el form)
+     Equal force. 3 en fila. Padding grande, shadow fuerte, hover lift. */
   .ctas{
-    display:flex;flex-wrap:wrap;gap:8px;
+    display:flex;flex-wrap:wrap;gap:10px;
   }
   .cta{
-    flex:1 1 calc(33.333% - 8px);min-width:140px;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    padding:12px 14px;border-radius:6px;
-    text-decoration:none;color:var(--text-dim);
-    background:transparent;
-    border:1px solid var(--border);
-    transition:color .15s,border-color .15s,background .15s;
+    flex:1 1 calc(33.333% - 7px);min-width:150px;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    padding:18px 14px;border-radius:8px;
+    text-decoration:none;color:#fff;
+    border:0;
     font-family:'Anton','Bebas Neue',sans-serif;
-    font-size:13px;font-weight:400;letter-spacing:.06em;
+    font-size:16px;font-weight:400;letter-spacing:.06em;
     text-transform:uppercase;line-height:1;
     white-space:nowrap;
+    transition:transform .2s,box-shadow .25s,filter .2s;
+    position:relative;overflow:hidden;
   }
-  .cta:hover{
-    color:#fff;border-color:var(--orange);
-    background:rgba(255,144,0,.08);
+  .cta::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,0) 50%);
+    pointer-events:none;
   }
-  .cta-ico{
-    font-size:14px;color:var(--orange);flex-shrink:0;line-height:1;
+  .cta:hover{transform:translateY(-2px);filter:brightness(1.08)}
+  .cta:active{transform:translateY(0)}
+  .cta-ico{font-size:16px;flex-shrink:0;line-height:1;position:relative;z-index:1}
+
+  /* CTA #1 → Telegram: azul brand */
+  .cta:nth-of-type(1){
+    background:linear-gradient(135deg,#229ED9,#28a8e0);
+    color:#fff;
+    box-shadow:0 6px 18px rgba(34,158,217,.45),0 0 0 1px rgba(34,158,217,.3) inset;
   }
+  .cta:nth-of-type(1):hover{box-shadow:0 10px 26px rgba(34,158,217,.65),0 0 0 1px rgba(34,158,217,.4) inset}
+
+  /* CTA #2 → Archive: naranja brand */
+  .cta:nth-of-type(2){
+    background:linear-gradient(135deg,#ff9000,#ffb454);
+    color:#000;
+    box-shadow:0 6px 18px rgba(255,144,0,.5),0 0 0 1px rgba(255,144,0,.3) inset;
+  }
+  .cta:nth-of-type(2):hover{box-shadow:0 10px 28px rgba(255,144,0,.7),0 0 0 1px rgba(255,144,0,.4) inset}
+
+  /* CTA #3 → Email: pink→orange gradient (matches el form) */
+  .cta:nth-of-type(3){
+    background:linear-gradient(135deg,#ff2d87,#ff9000);
+    color:#fff;
+    box-shadow:0 6px 18px rgba(255,45,135,.45),0 0 0 1px rgba(255,45,135,.3) inset;
+  }
+  .cta:nth-of-type(3):hover{box-shadow:0 10px 28px rgba(255,45,135,.65),0 0 0 1px rgba(255,45,135,.4) inset}
+
   /* hide los body/description/arrow del layout viejo, dejamos solo title + icono */
   .cta-body{display:contents}
-  .cta-t{display:inline}
+  .cta-t{display:inline;position:relative;z-index:1}
   .cta-d{display:none}
   .cta-arrow{display:none}
 
