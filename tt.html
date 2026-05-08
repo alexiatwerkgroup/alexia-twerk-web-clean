@@ -190,58 +190,46 @@
   .form-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
   .form-foot{margin-top:10px;font-size:10.5px;color:var(--text-mute);letter-spacing:.05em}
 
-  /* ── CTA BUTTONS · variante STACKED ──────────────────────────
-     Fix real: .cta-body es flex-column, asi titulo y descripcion
-     ocupan filas separadas (antes flotaban inline y wrappeaban feo).
-     Visual: icono grande a la izquierda como un "tile", luego title
-     grande Anton, debajo description JetBrains Mono full-width.
-     El icono ahora se centra vertical con TODO el bloque (no solo
-     el title). */
-  .ctas{display:flex;flex-direction:column;gap:12px}
+  /* ── CTA PILLS · compactas, horizontales, livianas ───────────
+     El email form de arriba es el HEROE. Estas son secondary actions.
+     3 pills en una fila (wrap en mobile estrecho).
+     Sin cards gordas. Sin descripciones visibles (van como title hover).
+     Sin border-left naranja agresivo. Solo texto + icono pequeno.
+     Resultado: 1/4 del peso visual anterior, el ojo va al form. */
+  .ctas{
+    display:flex;flex-wrap:wrap;gap:8px;
+  }
   .cta{
-    display:flex;align-items:center;gap:18px;
-    padding:20px 20px;border-radius:6px;
-    text-decoration:none;color:#fff;
-    background:var(--bg-2);
+    flex:1 1 calc(33.333% - 8px);min-width:140px;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:12px 14px;border-radius:6px;
+    text-decoration:none;color:var(--text-dim);
+    background:transparent;
     border:1px solid var(--border);
-    border-left:3px solid var(--orange);
-    transition:background .15s,border-color .15s,transform .15s;
-  }
-  .cta:hover{background:#1a1a1a;border-color:var(--orange);transform:translateX(2px)}
-  .cta:active{transform:translateX(0)}
-  .cta-ico{
-    width:52px;height:52px;border-radius:6px;
-    background:var(--orange);color:#000;
-    display:flex;align-items:center;justify-content:center;
-    font-size:24px;font-weight:800;flex-shrink:0;
-  }
-  /* CRITICAL: flex-column → title y description en filas separadas */
-  .cta-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
-  .cta-t{
-    display:block;
+    transition:color .15s,border-color .15s,background .15s;
     font-family:'Anton','Bebas Neue',sans-serif;
-    font-size:22px;font-weight:400;letter-spacing:.02em;
-    text-transform:uppercase;line-height:1;color:#fff;
+    font-size:13px;font-weight:400;letter-spacing:.06em;
+    text-transform:uppercase;line-height:1;
+    white-space:nowrap;
   }
-  .cta-d{
-    display:block;
-    font-size:11.5px;color:var(--text-dim);
-    font-family:'JetBrains Mono',monospace;letter-spacing:.04em;
-    line-height:1.6;
+  .cta:hover{
+    color:#fff;border-color:var(--orange);
+    background:rgba(255,144,0,.08);
   }
-  .cta-d strong{color:var(--orange);font-weight:700}
-  .cta-arrow{
-    font-size:26px;color:var(--orange);flex-shrink:0;
-    font-family:'Anton','Bebas Neue',sans-serif;font-weight:400;
-    transition:transform .2s;line-height:1;align-self:center;
+  .cta-ico{
+    font-size:14px;color:var(--orange);flex-shrink:0;line-height:1;
   }
-  .cta:hover .cta-arrow{transform:translateX(3px)}
+  /* hide los body/description/arrow del layout viejo, dejamos solo title + icono */
+  .cta-body{display:contents}
+  .cta-t{display:inline}
+  .cta-d{display:none}
+  .cta-arrow{display:none}
 
-  /* ── ROSTER ──────────────────────────────────────────────────── */
+  /* ── ROSTER · sutil, sin caja ─────────────────────────────── */
   .roster{
-    background:var(--bg-2);
-    border:1px solid var(--border);
-    border-radius:6px;padding:16px 16px;
+    background:transparent;
+    border:0;
+    padding:6px 4px 0;
   }
   .roster-row{display:flex;align-items:center;gap:12px}
   .roster-avs{display:flex;flex-shrink:0}
@@ -341,28 +329,28 @@
   <section>
     <span class="sec-kicker">/ Or skip the line</span>
     <div class="ctas">
-      <a class="cta" href="https://t.me/+q1cooFnvQctlNjRh" target="_blank" rel="noopener" data-track="tg">
+      <a class="cta" href="https://t.me/+q1cooFnvQctlNjRh" target="_blank" rel="noopener" data-track="tg" title="Telegram · drops + previews · private group">
         <span class="cta-ico" aria-hidden="true">✈</span>
         <span class="cta-body">
-          <span class="cta-t">Telegram channel</span>
+          <span class="cta-t">Telegram</span>
           <span class="cta-d">Drops + previews · zero algorithm · <strong>private group</strong></span>
         </span>
         <span class="cta-arrow" aria-hidden="true">→</span>
       </a>
 
-      <a class="cta" href="/" data-track="archive">
+      <a class="cta" href="/" data-track="archive" title="Full archive · 10K+ cuts · 60+ creators">
         <span class="cta-ico" aria-hidden="true">📂</span>
         <span class="cta-body">
-          <span class="cta-t">The full archive</span>
+          <span class="cta-t">Archive</span>
           <span class="cta-d">10,000+ cuts · 60+ creators · playlists by style</span>
         </span>
         <span class="cta-arrow" aria-hidden="true">→</span>
       </a>
 
-      <a class="cta" href="#tt-form-section" data-track="email">
-        <span class="cta-ico" aria-hidden="true">✉</span>
+      <a class="cta" href="#tt-form-section" data-track="email" title="Lock the weekly drop · scroll up to email form">
+        <span class="cta-ico" aria-hidden="true">↑</span>
         <span class="cta-body">
-          <span class="cta-t">Weekly drop · email</span>
+          <span class="cta-t">Lock email</span>
           <span class="cta-d">First 100 viewers free every Monday 8AM</span>
         </span>
         <span class="cta-arrow" aria-hidden="true">↑</span>
