@@ -494,6 +494,51 @@
       "source": "/twerk-hub-leaks/(.*)",
       "destination": "/playlist/",
       "permanent": true
+    },
+    {
+      "source": "/top-100-twerk-videos",
+      "destination": "/top-100-twerk-videos.html",
+      "permanent": true
+    },
+    {
+      "source": "/top-100-twerk-videos/",
+      "destination": "/top-100-twerk-videos.html",
+      "permanent": true
+    },
+    {
+      "source": "/top-100-twerk-videos/(.*)",
+      "destination": "/top-100-twerk-videos.html",
+      "permanent": true
+    },
+    {
+      "source": "/best-twerk-dancers",
+      "destination": "/best-twerk-dancers.html",
+      "permanent": true
+    },
+    {
+      "source": "/best-twerk-dancers/",
+      "destination": "/best-twerk-dancers.html",
+      "permanent": true
+    },
+    {
+      "source": "/best-twerk-dancers/(.*)",
+      "destination": "/best-twerk-dancers.html",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-try-on-hot-leaks/",
+      "destination": "/try-on-hot-leaks/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-korean-girls-kpop-twerk/",
+      "destination": "/korean-girls-kpop-twerk/",
+      "permanent": true
+    },
+    {
+      "source": "/playlist-hottest-cosplay-fancam/",
+      "destination": "/hottest-cosplay-fancam/",
+      "permanent": true
     }
   ]
 }
