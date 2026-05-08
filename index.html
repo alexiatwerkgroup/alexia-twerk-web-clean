@@ -550,7 +550,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
     <!-- 1 · FEATURED · /playlist/ · signature archive, updated weekly, infinite list -->
     <a class="twerkhub-fp-card twerkhub-fp-card-featured" href="/playlist/">
       <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
-           data-yt-id="X-lPzSuvf3k" data-yt-start="18" data-yt-stop="29" data-yt-freeze="20">
+           data-yt-id="X-lPzSuvf3k" data-yt-start="18" data-yt-stop="25" data-yt-freeze="20">
         <!-- Poster shown until YT iframe loads (zero-flicker fallback) -->
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/X-lPzSuvf3k/sddefault.jpg" alt="Hottest twerk videos — the signature archive · Лада Гоцци High-Heels · Moscow Dance Centre NRG" loading="eager" fetchpriority="high" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg';}">
         <!-- Freeze frame: SD quality (640x480) — exists for ALL videos (maxresdefault often 404) -->
@@ -586,7 +586,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
     <!-- 2 · Try-on hot leaks — AUTO after card #1 finishes (sequential queue) -->
     <a class="twerkhub-fp-card" href="/try-on-hot-leaks/" data-no-dead="1">
       <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
-           data-yt-id="phlPRrYpmz0" data-yt-start="25" data-yt-stop="38.6" data-yt-freeze="17" data-yt-freeze-mode="frame">
+           data-yt-id="phlPRrYpmz0" data-yt-start="25" data-yt-stop="38.6" data-yt-freeze="17" data-yt-freeze-mode="frame" data-yt-preload="1">
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/phlPRrYpmz0/maxresdefault.jpg" alt="Try-on hot leaks · exclusive haul cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
         <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/phlPRrYpmz0/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
         <!-- Card #2: data-src instead of src — only loads when Card #1 finishes -->
@@ -893,15 +893,17 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
         startWatchdog();
       }
 
+      // PRELOAD mode (data-yt-preload="1"): inits YT.Player + buffers video at
+      // START in background while OTHER cards are playing. Subsequent trigger()
+      // call (from auto-queue) finds the buffer ready → smooth playback.
+      // Critical for VR180 3D videos that need 5-10s of buffer time.
+      var PRELOAD = parent.getAttribute('data-yt-preload') === '1';
+      var prebuffered = false;
+
       function init(){
         if (inited) return;
         inited = true;
-        // Reserve a slot in the active count BEFORE the YT.Player loads.
-        // This way, if K-pop's scroll trigger fires while #1 is still
-        // initializing, K-pop sees activeCount > 0 and waits.
         bumpActive();
-        // Mark as "stopped" so the first onReady's startPlay() will
-        // un-stop and play (without double-bumping active).
         stopped = true;
         if (iframe.dataset && iframe.dataset.src && !iframe.getAttribute('src')) {
           iframe.src = iframe.dataset.src;
@@ -911,13 +913,32 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
             events: {
               'onReady': function(e){
                 player = e.target;
+                if (PRELOAD && !prebuffered) {
+                  // PRELOAD: buffer the video at START + then pause immediately.
+                  // The video doesn't visibly play (iframe stays hidden until
+                  // first real trigger), but the buffer fetches in background.
+                  try {
+                    player.mute();
+                    try { player.setPlaybackQuality('hd720'); } catch(_){}
+                    player.seekTo(START, true);
+                    player.playVideo();           // kicks buffer fetch
+                    setTimeout(function(){
+                      try { player.pauseVideo(); } catch(_){}
+                    }, 200);                       // pause shortly after = buffer kept
+                  } catch(_){}
+                  prebuffered = true;
+                  // We're not really playing → release the active slot so
+                  // other auto-queue cards aren't blocked by us.
+                  dropActive();
+                  // Stay "stopped" so next trigger() does a clean startPlay.
+                  stopped = true;
+                  return;
+                }
                 stopped = false;
                 if (freezeImg) freezeImg.classList.remove('is-shown');
                 iframe.style.display = '';
                 try {
                   player.mute();
-                  // Force 720p quality — smooth + no lag for short previews.
-                  // (Default auto-quality sometimes picks too high or buffers.)
                   try { player.setPlaybackQuality('hd720'); } catch(_){}
                   player.seekTo(START, true);
                   player.playVideo();
@@ -1015,6 +1036,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
     function init(){
       var list = Array.prototype.slice.call(iframes);
       var autoQueue = [];
+      var preloadCards = [];
 
       list.forEach(function(iframe){
         var parent = iframe.closest('.twerkhub-fp-hero-video');
@@ -1022,6 +1044,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
         var ctl = buildController(iframe);
         if (!ctl) return;
         var trigger = (parent.getAttribute('data-yt-trigger') || 'auto').toLowerCase();
+        var preload = parent.getAttribute('data-yt-preload') === '1';
 
         // Hover replay is ALWAYS available, regardless of initial trigger type.
         attachHoverReplay(parent, ctl);
@@ -1035,6 +1058,13 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
           // Default: auto sequential queue (DOM order).
           autoQueue.push(ctl);
         }
+
+        // PRELOAD: kick init() ASAP (in background) so the YT.Player loads +
+        // buffer fills BEFORE this card's auto-queue turn. Critical for
+        // high-bitrate videos (VR180 3D, 4K) that lag mid-loop without buffer.
+        if (preload) {
+          preloadCards.push(ctl);
+        }
       });
 
       // Sequential auto queue: each card chains onFinish to the next.
@@ -1044,6 +1074,15 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
         autoQueue[i].trigger();
       }
       nextAuto(0);
+
+      // Fire preload right after the auto-queue starts. Slight delay (250ms)
+      // so the first card's iframe has priority on the network → it starts
+      // playing instantly, while preload card buffers in parallel.
+      setTimeout(function(){
+        preloadCards.forEach(function(ctl){
+          try { ctl.trigger(); } catch(_){}
+        });
+      }, 250);
     }
 
     loadYTApi(init);
