@@ -31,6 +31,15 @@
         'position:relative !important;',
       '}',
 
+      /* CRITICAL FIX: el iframe tenia scale(1.22) original (crop top de YT
+         chrome). Combinado con nuestro header negro arriba = se duplicaba
+         el corte y no se veian las caras. Bajamos el scale a 1.05 →
+         minimo zoom, caras visibles, header sigue tapando solo el title
+         overlay de YT (no las caras). */
+      '.twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-iframe{',
+        'transform:scale(1.05) !important;',
+      '}',
+
       /* HIDE elementos viejos que duplican o no van.
          Specificity ALTA porque body.twerkhub-ph-theme tiene .twerkhub-hh-mute
          con !important — necesitamos ganar.
