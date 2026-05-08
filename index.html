@@ -783,11 +783,22 @@
 
       function startWatchdog(){
         clearWatchdog();
+        // Fallback hard-stop: si el video laguea/buffers y currentTime
+        // nunca llega a STOP, el chain a la siguiente card se rompe.
+        // Calculamos cuanto deberia durar el preview (STOP - START + 3s buffer)
+        // y forzamos freezeNow() despues de ese tiempo absoluto.
+        var maxDurationMs = ((STOP - START) + 3) * 1000;
+        var hardStopTimeout = setTimeout(function(){
+          if (!stopped) freezeNow();
+        }, maxDurationMs);
         watchdog = setInterval(function(){
-          if (stopped) { clearWatchdog(); return; }
+          if (stopped) { clearWatchdog(); clearTimeout(hardStopTimeout); return; }
           try {
             var t = player.getCurrentTime();
-            if (t >= STOP) freezeNow();
+            if (t >= STOP) {
+              clearTimeout(hardStopTimeout);
+              freezeNow();
+            }
           } catch(_){}
         }, 100);
       }
@@ -826,17 +837,26 @@
             events: {
               'onReady': function(e){
                 player = e.target;
-                // startPlay() will un-stop & resume, but it'd bump active again.
-                // We pre-bumped, so just clear stopped + play directly:
                 stopped = false;
                 if (freezeImg) freezeImg.classList.remove('is-shown');
                 iframe.style.display = '';
                 try {
                   player.mute();
+                  // Force 720p quality — smooth + no lag for short previews.
+                  // (Default auto-quality sometimes picks too high or buffers.)
+                  try { player.setPlaybackQuality('hd720'); } catch(_){}
                   player.seekTo(START, true);
                   player.playVideo();
                 } catch(_){}
                 startWatchdog();
+              },
+              'onPlaybackQualityChange': function(e){
+                // YT a veces sube/baja la calidad solo. Re-forzar 720p si es muy alta.
+                try {
+                  if (e.data === 'hd1080' || e.data === 'highres') {
+                    e.target.setPlaybackQuality('hd720');
+                  }
+                } catch(_){}
               },
               'onStateChange': function(e){
                 if (e.data === 0 && !stopped) freezeNow();
