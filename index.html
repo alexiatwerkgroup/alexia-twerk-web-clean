@@ -819,8 +819,15 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
             if (player) {
               try { player.pauseVideo(); } catch(_){}
               try { player.seekTo(STOP, true); } catch(_){}
-              setTimeout(function(){ try { player.pauseVideo(); } catch(_){} }, 120);
-              setTimeout(function(){ try { player.pauseVideo(); } catch(_){} }, 350);
+              // Defensive re-pauses ONLY if still stopped — si el usuario
+              // re-triggerea card #2 (via hover/scroll), no queremos pausar
+              // la nueva reproduccion.
+              setTimeout(function(){
+                if (stopped && player) { try { player.pauseVideo(); } catch(_){} }
+              }, 120);
+              setTimeout(function(){
+                if (stopped && player) { try { player.pauseVideo(); } catch(_){} }
+              }, 350);
             }
           } catch(_){}
           // Iframe stays visible (no thumbnail swap, no display:none)
@@ -841,24 +848,31 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
 
       function startWatchdog(){
         clearWatchdog();  // also clears any stale hardStopTimer
-        // Fallback hard-stop: si el video laguea/buffers y currentTime
-        // nunca llega a STOP, el chain a la siguiente card se rompe.
-        // Calculamos cuanto deberia durar el preview (STOP - START + 3s buffer)
-        // y forzamos freezeNow() despues de ese tiempo absoluto.
         var maxDurationMs = ((STOP - START) + 3) * 1000;
         hardStopTimer = setTimeout(function(){
           if (!stopped) freezeNow();
         }, maxDurationMs);
+        // CRITICAL FIX (2026-05-08): wait for the seekTo(START) to take
+        // effect BEFORE starting to check for STOP. Otherwise, on a re-trigger
+        // after a previous freezeNow (which seek'd to STOP=38.6), the
+        // first watchdog tick reads currentTime=38.6 and IMMEDIATELY
+        // fires freezeNow again → "loop salta al final" bug.
+        // We require currentTime to drop BELOW (STOP - 1) at least once
+        // before we trust subsequent reads.
+        var seekedToStart = false;
         watchdog = setInterval(function(){
           if (stopped) { clearWatchdog(); return; }
           try {
             var t = player.getCurrentTime();
-            // SANITY: getCurrentTime can return 0 / NaN / negative durante
-            // estados raros (buffering, seek-en-progreso). Solo freezamos si
-            // t es positivo Y >= STOP. Asi evitamos triggers fantasma.
-            if (typeof t === 'number' && t > 0 && t >= STOP) {
-              freezeNow();
+            if (typeof t !== 'number' || t < 0 || isNaN(t)) return;
+            if (!seekedToStart) {
+              // Waiting for playback to actually be at START (or near it).
+              // Once currentTime drops well below STOP, we know the seek
+              // landed and playback is heading toward STOP from below.
+              if (t < (STOP - 1)) seekedToStart = true;
+              return;
             }
+            if (t >= STOP) freezeNow();
           } catch(_){}
         }, 100);
       }
