@@ -576,7 +576,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
     <!-- 2 · Try-on hot leaks — AUTO after card #1 finishes (sequential queue) -->
     <a class="twerkhub-fp-card" href="/try-on-hot-leaks/" data-no-dead="1">
       <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
-           data-yt-id="phlPRrYpmz0" data-yt-start="15" data-yt-stop="39.4" data-yt-freeze="17">
+           data-yt-id="phlPRrYpmz0" data-yt-start="15" data-yt-stop="39.4" data-yt-freeze="17" data-yt-freeze-mode="frame">
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/phlPRrYpmz0/maxresdefault.jpg" alt="Try-on hot leaks · exclusive haul cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
         <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/phlPRrYpmz0/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
         <!-- Card #2: data-src instead of src — only loads when Card #1 finishes -->
@@ -785,23 +785,38 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
         if (watchdog) { clearInterval(watchdog); watchdog = null; }
       }
 
+      // Per-card freeze mode: "frame" = freeze on actual last frame (iframe
+      // visible, paused at STOP). Default = "thumbnail" = swap to static YT
+      // thumbnail (original behavior). Set via data-yt-freeze-mode="frame"
+      // on the .twerkhub-fp-hero-video parent.
+      var FREEZE_MODE = (parent.getAttribute('data-yt-freeze-mode') || 'thumbnail').toLowerCase();
+
       function freezeNow(){
         if (stopped) return;
         stopped = true;
-        // FREEZE on the actual last frame at STOP timestamp — NO swap to
-        // YouTube static thumbnail. Visual continuity: el cuadro final
-        // del video se queda visible (iframe paused at exact STOP position).
-        try {
-          if (player) {
-            player.seekTo(STOP, true);  // precision: jump to exact STOP frame
-            player.pauseVideo();        // hold on that frame
-          }
-        } catch(_){}
-        // DO NOT show the static thumbnail (was: freezeImg.classList.add)
-        // DO NOT hide the iframe (was: iframe.style.display = 'none')
-        // Iframe stays visible at z-index 2 with pointer-events:none → user
-        // sees the actual paused frame, can't accidentally click → YT pause UI
-        // is minimized by controls=0 + modestbranding=1 + rel=0.
+        if (FREEZE_MODE === 'frame') {
+          // Card #2 (try-on): freeze on the EXACT STOP frame.
+          // Sequence (robust against YT IFrame API quirks):
+          //   1. pauseVideo()   → stop playback NOW (current frame held)
+          //   2. seekTo(STOP)   → jump player head to the precise STOP timestamp
+          //                       while paused → loads + displays that frame
+          //   3. setTimeout pauseVideo x2 → defensive re-pauses to override any
+          //                       YT auto-resume after seek (some browsers do this)
+          try {
+            if (player) {
+              try { player.pauseVideo(); } catch(_){}
+              try { player.seekTo(STOP, true); } catch(_){}
+              setTimeout(function(){ try { player.pauseVideo(); } catch(_){} }, 120);
+              setTimeout(function(){ try { player.pauseVideo(); } catch(_){} }, 350);
+            }
+          } catch(_){}
+          // Iframe stays visible (no thumbnail swap, no display:none)
+        } else {
+          // Default for all other cards: original thumbnail behavior
+          try { if (player) player.pauseVideo(); } catch(_){}
+          if (freezeImg) freezeImg.classList.add('is-shown');
+          iframe.style.display = 'none';
+        }
         clearWatchdog();
         dropActive();
         // Notify queue (and any other listeners) that we finished
