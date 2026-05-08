@@ -31,10 +31,23 @@
         'position:relative !important;',
       '}',
 
-      /* HIDE elementos viejos que duplican o no van */
-      '.twk-cam-styled .twerkhub-hh-mute{display:none !important}',  // pill "Sound off"
-      '.twk-cam-styled .twerkhub-hh-live,',
-      '.twk-cam-styled #twerkhub-hh-status{display:none !important}',  // green ONLINE pill
+      /* HIDE elementos viejos que duplican o no van.
+         Specificity ALTA porque body.twerkhub-ph-theme tiene .twerkhub-hh-mute
+         con !important — necesitamos ganar.
+         Selector .twerkhub-home-hero-media.twk-cam-styled .x = 0,0,3,0
+         Vence al body.twerkhub-ph-theme .x = 0,0,2,1 */
+      '.twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-mute,',
+      'body .twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-mute,',
+      'body.twerkhub-ph-theme .twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-mute{',
+        'display:none !important;visibility:hidden !important;opacity:0 !important;',
+        'pointer-events:none !important;',
+      '}',
+      '.twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-live,',
+      '.twerkhub-home-hero-media.twk-cam-styled #twerkhub-hh-status,',
+      'body.twerkhub-ph-theme .twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-live,',
+      'body.twerkhub-ph-theme .twerkhub-home-hero-media.twk-cam-styled #twerkhub-hh-status{',
+        'display:none !important;visibility:hidden !important;opacity:0 !important;',
+      '}',
       /* El countdown viejo lo reposicionamos abajo izquierda y re-estilamos */
       '.twk-cam-styled .twerkhub-hh-media-meta{',
         'position:absolute !important;bottom:12px !important;left:12px !important;',
