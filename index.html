@@ -524,6 +524,12 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
     .twerkhub-fp-hero-iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .35s ease;background:#000;
       transform:scale(1.42);transform-origin:center center}
     .twerkhub-fp-hero-iframe.is-ready{opacity:1}
+    /* Card #2 (try-on, phlPRrYpmz0) — zoom extra para tapar el watermark
+       "SUN Media Group" que aparece en los primeros segundos. Origin center
+       60% = crop ligeramente mas desde abajo (donde suele ir el logo). */
+    .twerkhub-fp-hero-video[data-yt-id="phlPRrYpmz0"] .twerkhub-fp-hero-iframe{
+      transform:scale(1.62)!important;transform-origin:center 60%!important;
+    }
     /* Freeze frame poster (preloaded ~thumb 1.jpg ≈ first quarter): instant swap on stop */
     .twerkhub-fp-hero-freeze{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;display:none}
     .twerkhub-fp-hero-freeze.is-shown{display:block}
@@ -895,14 +901,12 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
                 } catch(_){}
                 startWatchdog();
               },
-              'onPlaybackQualityChange': function(e){
-                // YT a veces sube/baja la calidad solo. Re-forzar 720p si es muy alta.
-                try {
-                  if (e.data === 'hd1080' || e.data === 'highres') {
-                    e.target.setPlaybackQuality('hd720');
-                  }
-                } catch(_){}
-              },
+              // 2026-05-08: REMOVED onPlaybackQualityChange auto-re-force.
+              // Cause it provocaba stutters/saltos mid-loop: cuando YT
+              // intentaba subir calidad y nosotros la bajabamos de vuelta,
+              // se generaba un buffer-cycle cada pocos segundos. Setear
+              // 720p UNA VEZ en onReady es suficiente; dejar que YT mantenga
+              // o ajuste sin perseguirla = playback fluido.
               'onStateChange': function(e){
                 if (e.data === 0 && !stopped) freezeNow();
               }
