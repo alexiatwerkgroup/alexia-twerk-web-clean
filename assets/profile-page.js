@@ -274,9 +274,37 @@
     }
   }
 
+  // 2026-05-08 v6: sync the new D1 profile data into the LEGACY localStorage
+  // keys that profile.html's inline mirror() function reads. Without this,
+  // mirror() reads empty localStorage → falls back to email-prefix → overwrites
+  // the real username + clears the avatar that we just fetched.
+  function syncLegacyKeys(profile) {
+    if (!profile) return;
+    try {
+      // alexia_forum_profile_v1 — used by profile.html mirror() for nickname + avatar_url
+      localStorage.setItem('alexia_forum_profile_v1', JSON.stringify({
+        nickname: profile.username || '',
+        avatar_url: profile.avatar_url || '',
+        bio: profile.bio || ''
+      }));
+      // alexia_current_user — used by mirror() to detect logged-in state
+      var existing = {};
+      try { existing = JSON.parse(localStorage.getItem('alexia_current_user') || '{}') || {}; } catch(_){}
+      localStorage.setItem('alexia_current_user', JSON.stringify(Object.assign(existing, {
+        id: profile.id || profile._userId,
+        nick: profile.username || '',
+        name: profile.username || '',
+        email: profile.email || profile._userEmail || '',
+        tokens: profile.tokens || 0,
+        tier: profile.tier || 'basic'
+      })));
+    } catch(_){}
+  }
+
   function renderHero(profile){
     if (profile) {
       _lastProfile = profile;
+      syncLegacyKeys(profile);
       // Persist founder role + force min token balance BEFORE setText so the
       // dispatched 'alexia-tokens-changed' event reaches a fresh DOM render.
       persistFounderRole(profile);
