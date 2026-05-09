@@ -1166,9 +1166,32 @@ body::before{
   }
   window.addEventListener('storage', function(ev){ if (ev.key === STORAGE_KEY) mirror(); });
   window.addEventListener('alexia-profile-cache-updated', mirror);
-  // Poll once after profile-page.js has had a chance to run
   setTimeout(mirror, 400);
   setTimeout(mirror, 1200);
+
+  // 2026-05-08 v8 — DEFENDER: every 500ms for the first 5 seconds, force
+  // the h1 to match auth-v3 username. Some other code is writing email-prefix
+  // and we can't trace it via MutationObserver because it sets it before the
+  // observer attaches. This brute-forces the correct value.
+  (function defender(){
+    var ticks = 0;
+    var maxTicks = 10;
+    var interval = setInterval(function(){
+      ticks++;
+      try {
+        var raw = localStorage.getItem('alexia-auth-v3');
+        if (raw) {
+          var auth = JSON.parse(raw);
+          var realUsername = auth && auth.user && auth.user.username;
+          if (realUsername && heroName && heroName.textContent !== realUsername) {
+            console.log('[twk-defender] forcing hero-name "' + heroName.textContent + '" -> "' + realUsername + '"');
+            heroName.textContent = realUsername;
+          }
+        }
+      } catch(_){}
+      if (ticks >= maxTicks) clearInterval(interval);
+    }, 500);
+  })();
 
   // Re-run mirror after save button is clicked
   var saveBtn = document.getElementById('save-profile');
