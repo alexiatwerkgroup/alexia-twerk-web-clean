@@ -584,6 +584,22 @@
         welcome();
         dailyCheck();
         onPageVisit();
+        // 2026-05-09: if this page contains a video player (.vd-player[data-vid]),
+        // count it as a video watched. Single-page video pages need this since
+        // there's no iframe-click event to instrument.
+        try {
+          var vp = document.querySelector('.vd-player[data-vid], [data-vid]');
+          if (vp) {
+            var vid = vp.getAttribute('data-vid');
+            if (vid) {
+              // Wait a tick so the page settles, then grant.
+              setTimeout(function () { onVideoStart(vid); }, 1200);
+              // Mark as completed after 30s of staying on the page (likely
+              // watched at least a minute).
+              setTimeout(function () { onVideoComplete(vid); }, 30000);
+            }
+          }
+        } catch (_) {}
         // Drift reconcile after critical path
         setTimeout(reconcileWithServer, 1500);
       }
