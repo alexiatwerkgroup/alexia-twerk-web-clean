@@ -317,6 +317,11 @@
 
   function onPageVisit() {
     if (!isLoggedIn()) return;
+    // 2026-05-09: founder bypass — always rewards, no cap, no dedup.
+    if (isFounder()) {
+      grant(REWARDS.pageVisit, 'New page explored');
+      return;
+    }
     var path = location.pathname;
     var visited = read(KEYS.visited, {});
     if (visited[path]) return;
@@ -328,6 +333,11 @@
 
   function onVideoStart(vid) {
     if (!isLoggedIn() || !vid) return;
+    // 2026-05-09: founder bypass — always rewards, no cap, no dedup.
+    if (isFounder()) {
+      grant(REWARDS.videoWatch, 'Video watched');
+      return;
+    }
     var videos = read(KEYS.videos, {});
     if (videos[vid] && videos[vid].started) return;
     if (!consumeDaily('watches', DAILY_CAPS.watches)) return;
@@ -339,6 +349,10 @@
 
   function onVideoComplete(vid) {
     if (!isLoggedIn() || !vid) return;
+    if (isFounder()) {
+      grant(REWARDS.videoComplete, 'Video finished');
+      return;
+    }
     var videos = read(KEYS.videos, {});
     if (videos[vid] && videos[vid].completed) return;
     if (!consumeDaily('finishes', DAILY_CAPS.finishes)) return;
@@ -350,6 +364,10 @@
 
   function onShare() {
     if (!isLoggedIn()) return;
+    if (isFounder()) {
+      grant(REWARDS.share, 'Shared');
+      return;
+    }
     if (!consumeDaily('shares', DAILY_CAPS.shares)) return;
     grant(REWARDS.share, 'Shared');
   }
