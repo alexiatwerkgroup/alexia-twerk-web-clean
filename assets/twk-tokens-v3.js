@@ -46,8 +46,8 @@
   };
   var REWARDS = {
     pageVisit:     5,
-    videoWatch:    10,
-    videoComplete: 10,
+    videoWatch:    15,   // +15 per video watched, once per video.
+    videoComplete: 30,   // +30 on finish, once per video.
     share:         50,
     dailyLogin:    30,
     streakBonus:   15,
@@ -351,18 +351,10 @@
     grant(REWARDS.pageVisit, 'New page explored');
   }
 
+  // +15 watch + +30 finish, once per video, for everyone (founder included
+  // = same as normal user). No bypasses, no multi-fire.
   function onVideoStart(vid) {
     if (!isLoggedIn() || !vid) return;
-    // 2026-05-09: founder bypass — always rewards, no cap. Still tracks
-    // videos[vid].started for the dashboard "Watch a clip" achievement.
-    if (isFounder()) {
-      var fv = read(KEYS.videos, {});
-      fv[vid] = fv[vid] || {};
-      fv[vid].started = Date.now();
-      write(KEYS.videos, fv);
-      grant(REWARDS.videoWatch, 'Video watched');
-      return;
-    }
     var videos = read(KEYS.videos, {});
     if (videos[vid] && videos[vid].started) return;
     if (!consumeDaily('watches', DAILY_CAPS.watches)) return;
@@ -374,14 +366,6 @@
 
   function onVideoComplete(vid) {
     if (!isLoggedIn() || !vid) return;
-    if (isFounder()) {
-      var fv = read(KEYS.videos, {});
-      fv[vid] = fv[vid] || {};
-      fv[vid].completed = Date.now();
-      write(KEYS.videos, fv);
-      grant(REWARDS.videoComplete, 'Video finished');
-      return;
-    }
     var videos = read(KEYS.videos, {});
     if (videos[vid] && videos[vid].completed) return;
     if (!consumeDaily('finishes', DAILY_CAPS.finishes)) return;
@@ -623,11 +607,9 @@
           if (vp) {
             var vid = vp.getAttribute('data-vid');
             if (vid) {
-              // Wait a tick so the page settles, then grant.
+              // +15 watch once per video, +30 finish once per video.
               setTimeout(function () { onVideoStart(vid); }, 1200);
-              // Mark as completed after 30s of staying on the page (likely
-              // watched at least a minute).
-              setTimeout(function () { onVideoComplete(vid); }, 30000);
+              setTimeout(function () { onVideoComplete(vid); }, 25000);
             }
           }
         } catch (_) {}
