@@ -207,8 +207,8 @@
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p7-cleanlogout','twk-loader-supabase-config');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260509-v3e-autograntonpage','twk-loader-token-system');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260509-v3e-autograntonpage','twk-loader-twerkhub-tokens');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260509-v3f-track-and-accum','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260509-v3f-track-and-accum','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
@@ -310,7 +310,7 @@
   </div>
 </div>
 
-<script src="/assets/twk-tokens-v3.js?v=20260509-v3e-autograntonpage" defer></script>
+<script src="/assets/twk-tokens-v3.js?v=20260509-v3f-track-and-accum" defer></script>
 <script>
 (function(){
   // 2026-05-08 v8 (D1): pull canonical data from /api/profile/me when the
@@ -351,9 +351,22 @@
     // Build the canonical state. D1 wins when present, founder beats everything.
     var s;
     if (isFounder) {
+      // 2026-05-09: founder dashboard now shows ACCUMULATED balance, not the
+      // fixed floor. Balance = max(FLOOR, D1.tokens, localState.balance) so
+      // the +5/+10/+10/+50 grants are reflected live as the user explores.
+      var fAccBal = Math.max(
+        FOUNDER_TOKENS,
+        (d1 && d1.tokens) | 0,
+        (localState && localState.balance) | 0
+      );
+      var fAccTot = Math.max(
+        FOUNDER_TOKENS,
+        (d1 && d1.total_earned) | 0,
+        (localState && localState.total) | 0
+      );
       s = {
-        balance: FOUNDER_TOKENS,
-        total: FOUNDER_TOKENS,
+        balance: fAccBal,
+        total: fAccTot,
         streak: (d1 && d1.streak) || (localState && localState.streak) || 1,
         tier: 'vip',
         registered: FOUNDER_REGISTERED,
@@ -495,7 +508,7 @@
 <script defer src="/assets/enter-now-widget.js?v=20260417-03"></script>
 
 <!-- Legacy global-brand / global-counters / global-i18n / online-count-global removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle topbar now. -->
-<script defer src="/assets/twk-tokens-v3.js?v=20260509-v3e-autograntonpage"></script>
+<script defer src="/assets/twk-tokens-v3.js?v=20260509-v3f-track-and-accum"></script>
 <script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
 <script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>

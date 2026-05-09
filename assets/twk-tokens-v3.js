@@ -318,7 +318,12 @@
   function onPageVisit() {
     if (!isLoggedIn()) return;
     // 2026-05-09: founder bypass — always rewards, no cap, no dedup.
+    // Still tracks visited paths in localStorage so the dashboard "Explore
+    // a new page" achievement reflects activity.
     if (isFounder()) {
+      var v = read(KEYS.visited, {});
+      v[location.pathname] = Date.now();
+      write(KEYS.visited, v);
       grant(REWARDS.pageVisit, 'New page explored');
       return;
     }
@@ -333,8 +338,13 @@
 
   function onVideoStart(vid) {
     if (!isLoggedIn() || !vid) return;
-    // 2026-05-09: founder bypass — always rewards, no cap, no dedup.
+    // 2026-05-09: founder bypass — always rewards, no cap. Still tracks
+    // videos[vid].started for the dashboard "Watch a clip" achievement.
     if (isFounder()) {
+      var fv = read(KEYS.videos, {});
+      fv[vid] = fv[vid] || {};
+      fv[vid].started = Date.now();
+      write(KEYS.videos, fv);
       grant(REWARDS.videoWatch, 'Video watched');
       return;
     }
@@ -350,6 +360,10 @@
   function onVideoComplete(vid) {
     if (!isLoggedIn() || !vid) return;
     if (isFounder()) {
+      var fv = read(KEYS.videos, {});
+      fv[vid] = fv[vid] || {};
+      fv[vid].completed = Date.now();
+      write(KEYS.videos, fv);
       grant(REWARDS.videoComplete, 'Video finished');
       return;
     }
@@ -365,6 +379,8 @@
   function onShare() {
     if (!isLoggedIn()) return;
     if (isFounder()) {
+      var sh = read(KEYS.shares || 'alexia_tokens_v1.shares', 0) | 0;
+      try { localStorage.setItem('alexia_tokens_v1.shares', JSON.stringify(sh + 1)); } catch (_) {}
       grant(REWARDS.share, 'Shared');
       return;
     }
