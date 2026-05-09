@@ -129,7 +129,7 @@
   var FOUNDER_EMAILS = {
     'alexiatwerkoficial@gmail.com': true
   };
-  var FOUNDER_MIN_TOKENS = 999999;
+  var FOUNDER_MIN_TOKENS = 1000009;
 
   function isFounder(profile){
     try {

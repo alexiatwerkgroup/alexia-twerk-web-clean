@@ -119,6 +119,17 @@
     document.head.appendChild(css);
     document.body.appendChild(root);
 
+    // 2026-05-09: forzar scroll al top antes de mostrar el modal. Chrome
+    // restaura la posición de scroll de visitas anteriores, lo que hace
+    // que el modal aparezca con la página debajo scrolleada a la mitad.
+    // Al cerrar, el usuario quedaba mid-page. Ahora siempre arranca arriba.
+    try {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    } catch(_){}
+
     // Lock scroll while modal open
     var prevOverflow = document.documentElement.style.overflow;
     document.documentElement.style.overflow = 'hidden';
@@ -135,6 +146,8 @@
       setTimeout(function(){
         root.remove();
         document.documentElement.style.overflow = prevOverflow;
+        // Al salir del modal, asegurar que el usuario quede arriba de todo
+        try { window.scrollTo(0, 0); } catch(_){}
       }, 400);
     });
 

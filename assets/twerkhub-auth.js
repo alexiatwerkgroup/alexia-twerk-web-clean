@@ -176,7 +176,11 @@
     };
   }
 
-  // ── Sign in (Supabase) — accepts username OR email ──────────────────
+  // ── Sign in (D1) — accepts username OR email ──────────────────
+  // 2026-05-09: removed legacy email_for_username RPC lookup. The new D1
+  // /api/auth/signin endpoint accepts either {email, password} or
+  // {username, password} directly — pass the username/email through, the
+  // backend resolves it.
   async function signIn(usernameOrEmail, password, remember){
     var input = String(usernameOrEmail || '').trim();
     var pw = String(password || '');
@@ -185,20 +189,24 @@
     var sb = await getClient();
     if (!sb) return { ok:false, error:'Auth service unavailable.' };
 
-    // Determine if input is email or username, lookup email if username.
-    var email = input;
-    if (!isValidEmail(input)) {
-      try {
-        var rpc = await sb.rpc('email_for_username', { check_username: input });
-        if (!rpc || !rpc.data) return { ok:false, error:'No account with that username — try Sign Up' };
-        email = rpc.data;
-      } catch(e){ return { ok:false, error:'Login lookup failed. Try with your email instead.' }; }
+    // Build creds — let the backend decide (email vs username) based on field name.
+    var creds;
+    if (isValidEmail(input)) {
+      creds = { email: input.toLowerCase(), password: pw };
+    } else {
+      creds = { username: input, password: pw };
     }
 
-    var resp = await sb.auth.signInWithPassword({ email: email, password: pw });
+    var resp = await sb.auth.signInWithPassword(creds);
     if (resp.error) {
       var m = resp.error.message || 'Sign in failed';
-      if (/invalid.*credentials/i.test(m)) m = 'Wrong password';
+      // Map backend error codes to friendly UI messages.
+      if (/^invalid_credentials$/i.test(m)) {
+        m = creds.username
+          ? 'Wrong username or password'
+          : 'Wrong email or password';
+      }
+      if (/invalid.*credentials/i.test(m)) m = 'Wrong username/email or password';
       if (/email.*not.*confirmed/i.test(m)) m = 'Confirm your email first — check inbox + spam';
       return { ok:false, error: m };
     }

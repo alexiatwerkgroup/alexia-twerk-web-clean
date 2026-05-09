@@ -83,6 +83,17 @@
   }
 
   // ── Tokens-earned-today: tracks balance delta over a single day ──
+  // 2026-05-09: capped delta at MAX_DELTA_PER_TICK. Bug was: when founder
+  // logged out, lastBalance got set to 0 (logged-out state). On re-login,
+  // balance jumped back to 1,000,009, and the delta (~1M) was counted as
+  // "earned today". After 4 logout/login cycles → +4M today (impossible).
+  // Real "earning" actions add at most ~50 tokens at a time. Anything
+  // above 5000 in a single tick is a state restore, not earnings.
+  var MAX_DELTA_PER_TICK = 5000;
+  // Also auto-repair: if amount is already > some sane daily max, reset it.
+  // No human earns 100K+ tokens in a day organically.
+  var MAX_DAILY_AMOUNT = 100000;
+
   function tickToday(currentBal){
     var t = read(TODAY_KEY, { day: null, amount: 0, lastBalance: currentBal });
     var today = todayStr();
@@ -92,7 +103,15 @@
     } else {
       // same day — add positive delta to "amount earned today"
       var delta = currentBal - (t.lastBalance|0);
-      if (delta > 0) t.amount = (t.amount|0) + delta;
+      // Ignore implausibly large deltas (= state restore, not earning).
+      if (delta > 0 && delta <= MAX_DELTA_PER_TICK) {
+        t.amount = (t.amount|0) + delta;
+      }
+      t.lastBalance = currentBal;
+    }
+    // Sanity guard: cap accumulated daily total at a sane max.
+    if ((t.amount|0) > MAX_DAILY_AMOUNT) {
+      t.amount = 0;
       t.lastBalance = currentBal;
     }
     write(TODAY_KEY, t);
