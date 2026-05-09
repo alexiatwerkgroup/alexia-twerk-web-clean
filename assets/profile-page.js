@@ -279,8 +279,8 @@
   }
 
   // Sync D1 profile data into LEGACY localStorage keys that profile.html's
-  // inline mirror() function reads. Skips if profile is _isFallback (would
-  // overwrite real data with empty fallback).
+  // inline mirror() function reads. Skips if profile is _isFallback.
+  // CRITICAL: includes avatar_url in BOTH keys so mirror() can find it.
   function syncLegacyKeys(profile) {
     if (!profile || profile._isFallback) return;
     try {
@@ -297,8 +297,11 @@
         name: profile.username || '',
         email: profile.email || profile._userEmail || '',
         tokens: profile.tokens || 0,
-        tier: profile.tier || 'basic'
+        tier: profile.tier || 'basic',
+        avatar_url: profile.avatar_url || ''
       })));
+      // Also fire a cross-tab/cross-script event so mirror() picks it up
+      try { window.dispatchEvent(new CustomEvent('alexia-profile-cache-updated', { detail: { profile: profile } })); } catch(_){}
     } catch(_){}
   }
 

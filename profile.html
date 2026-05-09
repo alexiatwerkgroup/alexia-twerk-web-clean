@@ -1045,9 +1045,11 @@ body::before{
 <!-- Existing functional scripts — profile-page.js hooks into the IDs/classes above -->
 <!-- Supabase SDK removed 2026-05-08: migrated to Cloudflare D1. supabase-config.js
      now provides window.__twkSupabase as a thin shim over /api/* Pages Functions. -->
-<script defer src="/assets/profile-page.js?v=20260508-d1-p6"></script>
-<!-- Legacy global-brand / global-i18n / online-count-global were duplicating widgets (two locales, two counters). Removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle this now. -->
-<script defer src="/assets/enter-now-widget.js?v=20260508-d1-p1"></script>
+<script defer src="/assets/profile-page.js?v=20260508-d1-p7"></script>
+<!-- 2026-05-08: enter-now-widget removed from profile page (had a syntax error
+     at line 218 that was breaking the script chain). Not critical for profile UX. -->
+<!-- <script defer src="/assets/enter-now-widget.js?v=20260508-d1-p1"></script> -->
+<!-- Legacy global-brand / global-i18n / online-count-global were duplicating widgets. -->
 <script src="/assets/token-system.js?v=20260506-p3" defer></script>
 <script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
 <script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
@@ -1169,13 +1171,57 @@ body::before{
   setTimeout(mirror, 400);
   setTimeout(mirror, 1200);
 
-  // 2026-05-08 v8 — DEFENDER: every 500ms for the first 5 seconds, force
-  // the h1 to match auth-v3 username. Some other code is writing email-prefix
-  // and we can't trace it via MutationObserver because it sets it before the
-  // observer attaches. This brute-forces the correct value.
+  // 2026-05-08 v8 — DEFENDER: every 500ms for 8 seconds, force h1 + avatar
+  // to match the D1 profile. Fetches /api/profile/me directly to get the
+  // freshest avatar_url (which legacy localStorage may not have).
   (function defender(){
     var ticks = 0;
-    var maxTicks = 10;
+    var maxTicks = 16;
+    var lastAvatar = '';
+
+    function ensureAvatar(url, name){
+      if (!url) return;
+      var slots = [heroPreview, editPreview];
+      slots.forEach(function(slot){
+        if (!slot) return;
+        var img = slot.querySelector('img');
+        var currentSrc = img ? img.getAttribute('src') : '';
+        if (currentSrc !== url) {
+          slot.innerHTML = '<img src="' + esc(url) + '" alt="Avatar">';
+        }
+      });
+    }
+
+    // Fetch the canonical profile once at start to get avatar_url that may
+    // not yet be in localStorage.
+    (async function(){
+      try {
+        var token = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token;
+        if (!token) return;
+        var r = await fetch('/api/profile/me', { headers: { 'Authorization': 'Bearer ' + token }, credentials: 'include' });
+        var d = await r.json();
+        if (d && d.ok && d.profile) {
+          if (d.profile.username && heroName) heroName.textContent = d.profile.username;
+          if (d.profile.avatar_url) {
+            lastAvatar = d.profile.avatar_url;
+            ensureAvatar(d.profile.avatar_url, d.profile.username);
+          }
+          // Also write to localStorage so mirror() picks up next tick
+          try {
+            var existing = JSON.parse(localStorage.getItem('alexia_current_user') || '{}') || {};
+            existing.nick = d.profile.username;
+            existing.avatar_url = d.profile.avatar_url || '';
+            localStorage.setItem('alexia_current_user', JSON.stringify(existing));
+            localStorage.setItem('alexia_forum_profile_v1', JSON.stringify({
+              nickname: d.profile.username || '',
+              avatar_url: d.profile.avatar_url || '',
+              bio: d.profile.bio || ''
+            }));
+          } catch(_){}
+        }
+      } catch(_){}
+    })();
+
     var interval = setInterval(function(){
       ticks++;
       try {
@@ -1188,6 +1234,8 @@ body::before{
             heroName.textContent = realUsername;
           }
         }
+        // Re-assert avatar from cached value
+        if (lastAvatar) ensureAvatar(lastAvatar);
       } catch(_){}
       if (ticks >= maxTicks) clearInterval(interval);
     }, 500);
