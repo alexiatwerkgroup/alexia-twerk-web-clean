@@ -416,36 +416,91 @@
       status.className = 'status ' + (kind || '');
     }
 
+    // 2026-05-08 v6: avatar resize via createImageBitmap (off-main-thread,
+    // faster). Rejects files >10MB upfront so phone photos don't freeze
+    // the page during read+resize.
     function resizeImage(file){
-      return new Promise(function(resolve){
-        var reader = new FileReader();
-        reader.onload = function(){
-          var img = new Image();
-          img.onload = function(){
+      return new Promise(function(resolve, reject){
+        if (file.size > 10 * 1024 * 1024) {
+          return reject(new Error('Image too large (max 10MB). Compress it first.'));
+        }
+        if (!/^image\/(png|jpe?g|webp|gif)$/i.test(file.type || '')) {
+          return reject(new Error('Unsupported format. Use JPG, PNG, WEBP or GIF.'));
+        }
+
+        // Try the fast path first: createImageBitmap reads + decodes in a
+        // worker thread. Falls back to FileReader+Image if not available.
+        if (typeof createImageBitmap === 'function') {
+          createImageBitmap(file).then(function(bitmap){
+            try {
+              var size = 240, canvas = document.createElement('canvas');
+              canvas.width = size; canvas.height = size;
+              var ctx = canvas.getContext('2d');
+              var sw = bitmap.width, sh = bitmap.height, src = Math.min(sw, sh);
+              var sx = Math.max(0, (sw - src) / 2), sy = Math.max(0, (sh - src) / 2);
+              ctx.drawImage(bitmap, sx, sy, src, src, 0, 0, size, size);
+              bitmap.close && bitmap.close();
+              resolve(canvas.toDataURL('image/jpeg', 0.85));
+            } catch (e) {
+              reject(e);
+            }
+          }).catch(function(e){
+            // Fall back to FileReader path on browsers where createImageBitmap fails for some types
+            fallbackResize(file, resolve, reject);
+          });
+          return;
+        }
+        fallbackResize(file, resolve, reject);
+      });
+    }
+
+    function fallbackResize(file, resolve, reject) {
+      var reader = new FileReader();
+      var timeout = setTimeout(function(){
+        reject(new Error('Image read timed out (file may be corrupted).'));
+      }, 15000);
+      reader.onload = function(){
+        var img = new Image();
+        img.onload = function(){
+          clearTimeout(timeout);
+          try {
             var size = 240, canvas = document.createElement('canvas');
             canvas.width = size; canvas.height = size;
             var ctx = canvas.getContext('2d');
-            var sw = img.width, sh = img.height, src = Math.min(sw,sh);
-            var sx = Math.max(0,(sw-src)/2), sy = Math.max(0,(sh-src)/2);
+            var sw = img.width, sh = img.height, src = Math.min(sw, sh);
+            var sx = Math.max(0, (sw - src) / 2), sy = Math.max(0, (sh - src) / 2);
             ctx.drawImage(img, sx, sy, src, src, 0, 0, size, size);
-            try { resolve(canvas.toDataURL('image/jpeg', 0.85)); } catch(_){ resolve(reader.result); }
-          };
-          img.onerror = function(){ resolve(reader.result); };
-          img.src = reader.result;
+            resolve(canvas.toDataURL('image/jpeg', 0.85));
+          } catch (e) {
+            reject(e);
+          }
         };
-        reader.onerror = function(){ resolve(''); };
-        reader.readAsDataURL(file);
-      });
+        img.onerror = function(){
+          clearTimeout(timeout);
+          reject(new Error('Could not decode image.'));
+        };
+        img.src = reader.result;
+      };
+      reader.onerror = function(){
+        clearTimeout(timeout);
+        reject(new Error('Could not read file.'));
+      };
+      reader.readAsDataURL(file);
     }
 
     if (fileInput) fileInput.addEventListener('change', async function(ev){
       var file = ev.target.files && ev.target.files[0];
       if (!file) return;
-      setStatus('Preparing avatar…', '');
-      avatarData = await resizeImage(file);
-      var av = $('avatar-preview');
-      if (av && avatarData) av.innerHTML = '<img src="' + esc(avatarData) + '" alt="Avatar">';
-      setStatus('Avatar ready. Click Save to apply.', 'ok');
+      setStatus('Preparing avatar… (' + Math.round(file.size / 1024) + 'KB)', '');
+      try {
+        avatarData = await resizeImage(file);
+        var av = $('avatar-preview');
+        if (av && avatarData) av.innerHTML = '<img src="' + esc(avatarData) + '" alt="Avatar">';
+        setStatus('Avatar ready. Click Save to apply.', 'ok');
+      } catch (e) {
+        avatarData = '';
+        setStatus(e && e.message ? e.message : 'Could not process image.', 'err');
+      }
       ev.target.value = '';
     });
 
