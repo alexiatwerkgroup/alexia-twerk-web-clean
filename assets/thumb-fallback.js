@@ -18,29 +18,66 @@
   if (window.__twerkhubThumbFallback) return;
   window.__twerkhubThumbFallback = true;
 
-  // 2026-05-09 NUKE: aggressively remove any pre-existing dead-marker state
-  // that was applied by older cached versions of this file. Run on init AND
-  // periodically, so even if the page already loaded with stale state, we
-  // unwind it.
+  // 2026-05-09 v5 NUKE: clean up stale dead-state AND force-eager-load
+  // every YouTube thumbnail. Lazy loading was unreliable on /recent and
+  // playlist pages — many cards stayed black below the fold. We now:
+  //   1. Remove `loading="lazy"` from every i.ytimg.com img
+  //   2. If src was hijacked to thumb-unavailable.svg, recover via data-vid
+  //      (if available) or the closest <a href> URL pattern
+  //   3. Strip stale .twk-thumb-dead classes and restore original hrefs
+  //   4. NEVER hide any image — broken thumb is better than black void
+  function recoverYouTubeId(img) {
+    // Try data-vid on closest ancestor
+    var card = img.closest && img.closest('[data-vid]');
+    if (card) {
+      var v = card.getAttribute('data-vid');
+      if (v) return v;
+    }
+    // Try a stored original
+    if (img.dataset && img.dataset.twkOriginalVid) return img.dataset.twkOriginalVid;
+    // Try parent <a href> — extract from /playlist/, /korean-girls.../, etc.
+    var anchor = img.closest && img.closest('a[href]');
+    if (anchor) {
+      var h = anchor.getAttribute('href') || '';
+      // Match a known YouTube-id-like substring at end of URL
+      var m = h.match(/\/([A-Za-z0-9_-]{11})(?:[/.]|$)/);
+      if (m) return m[1];
+    }
+    return null;
+  }
+  // Preserve original src on first observation (so if hijacked later we recover).
+  function preserveOriginal() {
+    try {
+      var fresh = document.querySelectorAll('img[src*="i.ytimg.com"]:not([data-twk-orig-src])');
+      for (var i = 0; i < fresh.length; i++) {
+        var img = fresh[i];
+        img.dataset.twkOrigSrc = img.getAttribute('src') || '';
+        var m = (img.dataset.twkOrigSrc || '').match(/\/vi\/([^\/]+)\//);
+        if (m) img.dataset.twkOriginalVid = m[1];
+      }
+    } catch (_) {}
+  }
   function unmarkDead() {
     try {
-      var imgs = document.querySelectorAll('img[src*="thumb-unavailable"]');
-      for (var i = 0; i < imgs.length; i++) {
-        var img = imgs[i];
-        // Try to recover original YouTube URL from data attrs or alt
-        var card = img.closest && img.closest('[data-vid]');
-        var vid = card && card.getAttribute('data-vid');
-        if (!vid) {
-          // Try src history — might still have the original in dataset
-          vid = img.dataset.twkOriginalVid || '';
+      preserveOriginal();
+      // 1. Recover any imgs that got hijacked to the dead-poster SVG.
+      var bad = document.querySelectorAll('img[src*="thumb-unavailable"]');
+      for (var i = 0; i < bad.length; i++) {
+        var img = bad[i];
+        // Try original-src snapshot first (most reliable)
+        if (img.dataset.twkOrigSrc) {
+          img.src = img.dataset.twkOrigSrc;
+          delete img.dataset.twkDead;
+          continue;
         }
+        var vid = recoverYouTubeId(img);
         if (vid) {
-          img.src = 'https://i.ytimg.com/vi/' + vid + '/0.jpg';
-        } else {
-          // Hide the broken thumb so the dead-poster doesn't show
-          img.style.opacity = '0';
+          img.src = 'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg';
+          delete img.dataset.twkDead;
         }
+        // No fallback to opacity:0 — leave broken-img marker if no recovery.
       }
+      // 2. Strip stale dead classes + restore original hrefs.
       var dead = document.querySelectorAll('.twk-thumb-dead, .twk-thumb-maybe-dead');
       for (var j = 0; j < dead.length; j++) {
         dead[j].classList.remove('twk-thumb-dead');
@@ -48,6 +85,15 @@
         if (dead[j].tagName === 'A' && dead[j].dataset.twkDeadHref) {
           dead[j].setAttribute('href', dead[j].dataset.twkDeadHref);
         }
+      }
+      // 3. Force every YouTube thumbnail to eager-load. Lazy below-fold
+      //    cards were staying black on scroll-fast.
+      var lazy = document.querySelectorAll('img[loading="lazy"][src*="i.ytimg.com"]');
+      for (var k = 0; k < lazy.length; k++) {
+        lazy[k].setAttribute('loading', 'eager');
+        // Re-trigger fetch by reassigning src (forces network).
+        var src = lazy[k].getAttribute('src');
+        if (src) lazy[k].src = src;
       }
     } catch (_) {}
   }
