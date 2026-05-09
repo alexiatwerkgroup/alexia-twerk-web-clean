@@ -122,10 +122,34 @@
     return 'Basic';
   }
 
+  // ── 2026-05-09: self-injecting emergency CSS so the toast renders
+  // correctly even when the bundle CSS isn't loaded or when stale spans
+  // are produced by an older cached version of this script. We inject
+  // ONCE on first call. Uses !important to beat any stale rule.
+  function injectEmergencyCSS(){
+    if (document.getElementById('twk-emergency-fix-self')) return;
+    var s = document.createElement('style');
+    s.id = 'twk-emergency-fix-self';
+    s.textContent = [
+      '.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:300px!important;padding:12px 18px 12px 14px!important;border-radius:14px!important;background:linear-gradient(135deg,rgba(10,24,18,.96),rgba(20,15,30,.96))!important;border:1px solid rgba(30,224,143,.6)!important;color:#f5f5fb!important;font-family:Inter,ui-sans-serif,system-ui,sans-serif!important}',
+      '.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:24px!important;font-weight:900!important;line-height:1!important;color:#1ee08f!important;font-family:"Playfair Display",Georgia,serif!important;white-space:nowrap!important}',
+      '.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}',
+      '.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}',
+      '.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important;font-family:"JetBrains Mono",ui-monospace,monospace!important}',
+      '.twerkhub-tokens-toast-host{display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:8px!important;pointer-events:none!important}',
+      '.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}',
+      'img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}',
+      '.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}',
+      'a.twk-thumb-dead{pointer-events:auto!important}'
+    ].join('');
+    (document.head || document.documentElement).appendChild(s);
+  }
+
   // ── DOM: build the HUD (badge + toast host) ──────────────────────────────
   var hud, badge, countEl, tierEl, toastHost;
   function buildHud(){
     if (hud) return;
+    injectEmergencyCSS();
     hud = document.createElement('div');
     hud.className = 'twerkhub-tokens-hud';
     hud.setAttribute('aria-live', 'polite');
@@ -296,35 +320,66 @@
 
   function showToast(plusN, title, sub){
     if (!toastHost) return;
+    // 2026-05-09 (v3): nuked spans → divs. Even if EVERY style fails,
+    // divs are block-level so each piece lands on its own line. Plus we
+    // build the DOM manually with createElement + appendChild so no
+    // innerHTML quirks can re-collapse whitespace.
     var el = document.createElement('div');
     el.className = 'twerkhub-tokens-toast';
     el.setAttribute('role', 'status');
-    // 2026-05-09: inline styles as a hard fallback. The CSS classes still
-    // apply (and override these), but if for any reason the bundle isn't
-    // loaded on a given page, the toast STILL renders correctly instead
-    // of falling back to ugly run-on inline text like "+3Video unlocked..."
-    el.innerHTML =
-      '<span class="twerkhub-tokens-toast-plus" style="display:inline-block;font-size:22px;font-weight:900;line-height:1;color:#1ee08f;margin-right:12px;flex-shrink:0;">+' + Number(plusN) + '</span>' +
-      '<span class="twerkhub-tokens-toast-body" style="display:flex;flex-direction:column;gap:2px;min-width:0;">' +
-        '<span class="twerkhub-tokens-toast-title" style="display:block;font-size:13px;font-weight:800;color:#fff;line-height:1.2;">' + escapeHtml(title) + '</span>' +
-        '<span class="twerkhub-tokens-toast-sub" style="display:block;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1ee08f;opacity:.85;margin-top:2px;">' + escapeHtml(sub) + '</span>' +
-      '</span>';
-    // Container also gets defensive inline styles in case the CSS class is missing
-    el.style.cssText = (el.style.cssText || '') +
-      ';display:inline-flex;align-items:center;gap:0;padding:10px 16px 10px 12px;border-radius:14px;' +
-      'background:linear-gradient(135deg,rgba(10,24,18,.95),rgba(20,15,30,.95));' +
+    el.style.cssText =
+      'display:flex;align-items:center;gap:12px;' +
+      'padding:12px 18px 12px 14px;border-radius:14px;' +
+      'background:linear-gradient(135deg,rgba(10,24,18,.96),rgba(20,15,30,.96));' +
       'border:1px solid rgba(30,224,143,.6);' +
       'box-shadow:0 14px 40px rgba(30,224,143,.3),0 4px 12px rgba(0,0,0,.55);' +
-      'color:#f5f5fb;max-width:280px;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';
+      'color:#f5f5fb;max-width:300px;font-family:Inter,ui-sans-serif,system-ui,sans-serif;' +
+      'pointer-events:auto;opacity:0;transform:translateX(24px);' +
+      'transition:opacity .35s, transform .35s cubic-bezier(.2,1.2,.3,1);';
+
+    var plus = document.createElement('div');
+    plus.className = 'twerkhub-tokens-toast-plus';
+    plus.textContent = '+' + Number(plusN);
+    plus.style.cssText =
+      'font-size:24px;font-weight:900;line-height:1;color:#1ee08f;' +
+      'flex-shrink:0;font-family:"Playfair Display",Georgia,serif;';
+
+    var body = document.createElement('div');
+    body.className = 'twerkhub-tokens-toast-body';
+    body.style.cssText = 'display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;';
+
+    var titleEl = document.createElement('div');
+    titleEl.className = 'twerkhub-tokens-toast-title';
+    titleEl.textContent = String(title || '');
+    titleEl.style.cssText = 'font-size:13px;font-weight:800;color:#fff;line-height:1.25;';
+
+    var subEl = document.createElement('div');
+    subEl.className = 'twerkhub-tokens-toast-sub';
+    subEl.textContent = String(sub || '');
+    subEl.style.cssText =
+      'font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;' +
+      'color:#1ee08f;opacity:.85;font-family:"JetBrains Mono",ui-monospace,monospace;';
+
+    body.appendChild(titleEl);
+    body.appendChild(subEl);
+    el.appendChild(plus);
+    el.appendChild(body);
     toastHost.appendChild(el);
-    // Next frame → visible (trigger CSS transition)
+    // Next frame → visible. Direct style mutation since inline styles
+    // beat class-based ones in specificity.
     requestAnimationFrame(function(){
-      requestAnimationFrame(function(){ el.classList.add('is-visible'); });
+      requestAnimationFrame(function(){
+        el.classList.add('is-visible');
+        el.style.opacity = '1';
+        el.style.transform = 'translateX(0)';
+      });
     });
     // Play the pleasant coin ping alongside the toast.
     playTokenPing();
     setTimeout(function(){
       el.classList.remove('is-visible');
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(24px)';
       setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 400);
     }, TOAST_TTL);
   }

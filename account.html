@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
 <script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -203,8 +205,8 @@
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p7-cleanlogout','twk-loader-supabase-config');
-  loadOnce('/assets/token-system.js?v=20260509-d1-p4-d1sync','twk-loader-token-system');
-  loadOnce('/assets/twerkhub-tokens.js?v=20260506-p11','twk-loader-twerkhub-tokens');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260509-v3a','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260509-v3a','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
@@ -306,7 +308,7 @@
   </div>
 </div>
 
-<script src="/assets/token-system.js?v=20260509-d1-p4-d1sync" defer></script>
+<script src="/assets/twk-tokens-v3.js?v=20260509-v3a" defer></script>
 <script>
 (function(){
   // 2026-05-08 v8 (D1): pull canonical data from /api/profile/me when the
@@ -375,10 +377,14 @@
         shares: localState.shares || 0,
         nextTier: null
       };
+      // 2026-05-09: aligned with canonical thresholds in token-system.js
+      // and profile-stats-live.js. Old values (500/1500/5000) were left
+      // over from an earlier balance pass and made the dashboard show
+      // "Premium at 1,500" while the real economy needs 9,000.
       var TIERS = [
-        { key: 'medium',  at: 500 },
-        { key: 'premium', at: 1500 },
-        { key: 'vip',     at: 5000 }
+        { key: 'medium',  at: 3000 },
+        { key: 'premium', at: 9000 },
+        { key: 'vip',     at: 50000 }
       ];
       s.nextTier = TIERS.find(function(t){ return s.balance < t.at; }) || null;
     } else {
@@ -486,13 +492,16 @@
 </script>
 <script defer src="/assets/enter-now-widget.js?v=20260417-03"></script>
 
-<!-- Legacy global-brand / global-counters / global-i18n / online-count-global were duplicating topbar widgets (two locales, two counters, two logos). Removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle this now. CSS already in <head> above. -->
-<script defer src="/assets/twerkhub-tokens.js?v=20260506-p11"></script>
+<!-- Legacy global-brand / global-counters / global-i18n / online-count-global were duplicating topbar widgets (two locales, two counters, two logos). Removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle this now. CSS already in <head>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+above. -->
+<script defer src="/assets/twk-tokens-v3.js?v=20260509-v3a"></script>
 <script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
 <script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
 <script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
 <script src="/assets/js/image-seo-engine.js" defer></script>
-  <script src="/assets/thumb-fallback.js" defer></script>
+  <script src="/assets/thumb-fallback.js?v=20260509-nuke-final" defer></script>
 <!-- TWK_MEGA_FOOTER_V1 -->
 <style>
 .twk-mf{
@@ -601,7 +610,7 @@
       <div>
         <h5>Vaults · 7 playlists</h5>
         <ul>
-          <li><a href="/cosplay-fancam-leaks/">Cosplay &amp; fancam</a></li>
+          <li><a href="/hottest-cosplay-fancam/">Cosplay &amp; fancam</a></li>
           <li><a href="/korean-girls-kpop-twerk/">K-pop &amp; twerk</a></li>
           <li><a href="/try-on-hot-leaks/">Try-on hot leaks</a></li>
           <li><a href="/twerk-hub-leaks/">Twerk hub leaks</a></li>
@@ -762,7 +771,7 @@
   </div>
 </footer>
 <!-- /TWK_MEGA_FOOTER_V1 -->
-<script defer src="/assets/profile-stats-live.js?v=20260430-p2"></script>
+<script defer src="/assets/profile-stats-live.js?v=20260509-p3-deltacap"></script>
 <script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
 <script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p7"></script>
 

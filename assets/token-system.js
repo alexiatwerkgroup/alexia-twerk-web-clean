@@ -51,11 +51,15 @@
     referral:    200     // was 300
   };
 
-  // Daily caps — strict ceiling on number of grant events per category
+  // Daily caps — strict ceiling on number of grant events per category.
+  // 2026-05-09: bumped pages 10→50 so first-week explorers can actually
+  // earn tokens visiting blog pages, creator pages, and city playlists
+  // without hitting the cap after 10 clicks. Watches/finishes/shares
+  // remain conservative.
   var DAILY_CAPS = {
-    pages:    10,  // +50/day max from pageVisit
-    watches:  10,  // +100/day max from videoWatch
-    finishes:  5,  // +50/day max from videoComplete
+    pages:    50,  // +250/day max from pageVisit
+    watches:  20,  // +200/day max from videoWatch (was 10)
+    finishes: 10,  // +100/day max from videoComplete (was 5)
     shares:    3   // +150/day max from share
   };
 
@@ -293,9 +297,14 @@
     var path = location.pathname;
     var visited = N(KEYS.visited, {});
     if (visited[path]) return;
+    // 2026-05-09: only mark as visited AFTER the reward succeeds. The old
+    // logic marked first then checked the daily cap, so if the user hit
+    // the cap on page 11, page 11 was permanently marked visited but never
+    // earned its reward — even on subsequent days. Now: cap-blocked pages
+    // stay unmarked and can be re-rewarded tomorrow.
+    if (!dailyConsume(KEYS.dailyPages, DAILY_CAPS.pages)) return;
     visited[path] = now();
     S(KEYS.visited, visited);
-    if (!dailyConsume(KEYS.dailyPages, DAILY_CAPS.pages)) return;
     grant(REWARDS.pageVisit, 'New page explored');
   }
 
@@ -303,10 +312,11 @@
     if (!isLoggedIn() || !videoId) return;
     var videos = N(KEYS.videos, {});
     if (videos[videoId] && videos[videoId].started) return;
+    // 2026-05-09: only mark "started" after reward grants — see onPageVisit fix.
+    if (!dailyConsume(KEYS.dailyWatches, DAILY_CAPS.watches)) return;
     videos[videoId] = videos[videoId] || {};
     videos[videoId].started = now();
     S(KEYS.videos, videos);
-    if (!dailyConsume(KEYS.dailyWatches, DAILY_CAPS.watches)) return;
     grant(REWARDS.videoWatch, 'Video watched');
   }
 
@@ -314,10 +324,11 @@
     if (!isLoggedIn() || !videoId) return;
     var videos = N(KEYS.videos, {});
     if (videos[videoId] && videos[videoId].completed) return;
+    // 2026-05-09: only mark "completed" after reward grants — see onPageVisit fix.
+    if (!dailyConsume(KEYS.dailyFinishes, DAILY_CAPS.finishes)) return;
     videos[videoId] = videos[videoId] || {};
     videos[videoId].completed = now();
     S(KEYS.videos, videos);
-    if (!dailyConsume(KEYS.dailyFinishes, DAILY_CAPS.finishes)) return;
     grant(REWARDS.videoComplete, 'Video finished');
   }
 

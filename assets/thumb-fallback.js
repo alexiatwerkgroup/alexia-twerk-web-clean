@@ -18,7 +18,53 @@
   if (window.__twerkhubThumbFallback) return;
   window.__twerkhubThumbFallback = true;
 
-  var FB = ["maxresdefault", "hqdefault", "mqdefault", "default"];
+  // 2026-05-09 NUKE: aggressively remove any pre-existing dead-marker state
+  // that was applied by older cached versions of this file. Run on init AND
+  // periodically, so even if the page already loaded with stale state, we
+  // unwind it.
+  function unmarkDead() {
+    try {
+      var imgs = document.querySelectorAll('img[src*="thumb-unavailable"]');
+      for (var i = 0; i < imgs.length; i++) {
+        var img = imgs[i];
+        // Try to recover original YouTube URL from data attrs or alt
+        var card = img.closest && img.closest('[data-vid]');
+        var vid = card && card.getAttribute('data-vid');
+        if (!vid) {
+          // Try src history — might still have the original in dataset
+          vid = img.dataset.twkOriginalVid || '';
+        }
+        if (vid) {
+          img.src = 'https://i.ytimg.com/vi/' + vid + '/0.jpg';
+        } else {
+          // Hide the broken thumb so the dead-poster doesn't show
+          img.style.opacity = '0';
+        }
+      }
+      var dead = document.querySelectorAll('.twk-thumb-dead, .twk-thumb-maybe-dead');
+      for (var j = 0; j < dead.length; j++) {
+        dead[j].classList.remove('twk-thumb-dead');
+        dead[j].classList.remove('twk-thumb-maybe-dead');
+        if (dead[j].tagName === 'A' && dead[j].dataset.twkDeadHref) {
+          dead[j].setAttribute('href', dead[j].dataset.twkDeadHref);
+        }
+      }
+    } catch (_) {}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', unmarkDead);
+  } else {
+    unmarkDead();
+  }
+  setTimeout(unmarkDead, 500);
+  setTimeout(unmarkDead, 2000);
+
+  // 2026-05-09 v3: full cascade to ALL frame snapshots. For age-restricted
+  // YouTube videos i.ytimg.com sometimes returns 120x90 for hqdefault even
+  // though the video is alive. The /N.jpg endpoints (0,1,2,3) are
+  // auto-generated keyframes that exist for every public-but-restricted
+  // video. We try every variant before giving up.
+  var FB = ["maxresdefault", "sddefault", "hqdefault", "mqdefault", "default", "0", "1", "2", "3"];
   var DEAD_POSTER = "/assets/thumb-unavailable.svg";
   var DISCORD_URL = "https://discord.gg/WWn8ZgQMjn";
   var STYLE_ID = "twerkhub-dead-style";
@@ -66,21 +112,22 @@
     img.src = newSrc;
   }
 
+  // 2026-05-09: drastically softened. Old behavior: swap thumb to dead-poster
+  // SVG, replace href with javascript:void(0), block click, open modal.
+  // Problem: false positives on alive videos with quirky thumbnail availability
+  // (notably VR180 3D and some Korean fancams) made entire cards unclickable.
+  // New behavior: do NOTHING. Leave the broken/placeholder thumb visible —
+  // YouTube returns its own placeholder which is fine. The click still works
+  // and goes to the actual video. If the video IS dead, YouTube shows its
+  // own "Video unavailable" page, which is honest and accurate.
   function markDead(img) {
-    if (img.dataset.twkDead) return;
-    img.dataset.twkDead = "1";
-    img.removeAttribute("srcset");
-    img.src = DEAD_POSTER;
-    img.alt = "video unavailable";
-    var card = findCard(img);
-    if (!card) return;
-    card.classList.add("twk-thumb-dead");
-    if (card.tagName === "A") {
-      card.dataset.twkDeadHref = card.getAttribute("href") || "";
-      card.setAttribute("href", "javascript:void(0)");
-      card.setAttribute("data-twk-dead-card", "1");
-    }
-    card.addEventListener("click", deadClickHandler, true);
+    // 2026-05-09 v4: literally do nothing. The whole "mark dead" concept
+    // produced false positives on alive videos with quirky thumbnail
+    // availability, so we kill it completely. The browser will show
+    // YouTube's own placeholder for genuinely-broken thumbs, which is
+    // honest and clickable.
+    if (img && img.dataset) img.dataset.twkDead = "1";
+    return;
   }
 
   function deadClickHandler(ev) {

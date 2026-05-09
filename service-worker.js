@@ -14,8 +14,9 @@
 // On activation: nukes ALL prior caches (alexia-pwa-v1.*, alexia-runtime-v1.*)
 // to guarantee no stale rewritten HTML survives.
 // ─────────────────────────────────────────────────────────────────────────
-const CACHE_NAME = 'alexia-pwa-v2.0.0';
-const RUNTIME_CACHE = 'alexia-runtime-v2.0.0';
+// 2026-05-09: bumped to v2.1.0 → forces activate event → nukes old caches.
+const CACHE_NAME = 'alexia-pwa-v2.1.0';
+const RUNTIME_CACHE = 'alexia-runtime-v2.1.0';
 const OFFLINE_URL = '/';
 
 // Files that are part of the app shell and should be pre-cached on install.
@@ -60,6 +61,13 @@ self.addEventListener('fetch', event => {
   // Skip cross-origin (YouTube embeds, Google fonts, analytics, etc).
   if (url.origin !== self.location.origin) return;
 
+  // 2026-05-09: NEVER touch /api/* — these are dynamic, auth-dependent
+  // endpoints (session, profile, tokens, etc). The previous catch-all
+  // handler was caching them, including stale 401 responses, which made
+  // users get logged out at random on hard refresh because the SW kept
+  // serving the cached "no session" reply.
+  if (url.pathname.indexOf('/api/') === 0) return;
+
   const isPage = request.mode === 'navigate' ||
                  (request.headers.get('accept') || '').includes('text/html');
 
@@ -86,22 +94,23 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // ── Static same-origin assets: stale-while-revalidate.
-  //    Serve from cache immediately (fast paint) AND fetch in the background
-  //    to refresh the cache for the next visit. This prevents the "stale CSS
-  //    after HTML update" FOUC the previous version had.
+  // ── Static same-origin assets: NETWORK-FIRST with cache fallback.
+  //    2026-05-09: changed from stale-while-revalidate → network-first.
+  //    SWR was serving the OLD cached JS even when cache-busted (?v=)
+  //    URLs were requested, because the SW returns cached IMMEDIATELY
+  //    and only refreshes for next visit. That meant fixes never landed
+  //    until the second page load — and users saw broken UIs forever
+  //    in single-tab sessions. Now: try network first, fall back to
+  //    cache only on offline.
   if (isStaticAsset(url)) {
     event.respondWith(
-      caches.match(request).then(cached => {
-        const networkPromise = fetch(request).then(response => {
-          if (response && response.status === 200 && response.type !== 'opaque') {
-            const copy = response.clone();
-            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy));
-          }
-          return response;
-        }).catch(() => cached); // offline + nothing cached → fallthrough
-        return cached || networkPromise;
-      })
+      fetch(request).then(response => {
+        if (response && response.status === 200 && response.type !== 'opaque') {
+          const copy = response.clone();
+          caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy));
+        }
+        return response;
+      }).catch(() => caches.match(request))
     );
     return;
   }
