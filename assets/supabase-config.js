@@ -364,16 +364,51 @@
     if (sessionReadyResolve) { sessionReadyResolve(); sessionReadyResolve = null; }
   }, 5000);
 
+  // 2026-05-09: don't clearToken on transient session-validation failure.
+  // Hard refresh, network blip, or SW intercepting /api/auth/session can
+  // make this return non-ok temporarily — the OLD code wiped auth-v3 + 15
+  // other identity keys, randomly logging the user out. Now we ONLY clear
+  // on EXPLICIT 401/403 (server says "your token is invalid"), not on
+  // missing/empty body or 5xx.
   api('/api/auth/session', { method: 'GET' })
     .then(function (r) {
       if (r.body && r.body.ok && r.body.user) {
         currentSession = { access_token: readToken(), user: r.body.user };
         notifyAuth('SIGNED_IN');
-      } else {
+      } else if (r.status === 401 || r.status === 403) {
+        // Server explicitly rejected. Clear local auth.
         clearToken();
+      } else {
+        // Transient/empty response — DO NOT log the user out. Just leave
+        // the existing local token in place; later auth-required requests
+        // will revalidate when the network is back.
+        var stored = readToken();
+        if (stored) {
+          // Build a placeholder session from localStorage so the UI still
+          // treats user as signed-in until next successful validation.
+          try {
+            var raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            if (raw && raw.user) {
+              currentSession = { access_token: stored, user: raw.user };
+              notifyAuth('SIGNED_IN');
+            }
+          } catch (_) {}
+        }
       }
     })
-    .catch(function () {})
+    .catch(function () {
+      // Network error — same as transient: keep local auth.
+      var stored = readToken();
+      if (stored) {
+        try {
+          var raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          if (raw && raw.user) {
+            currentSession = { access_token: stored, user: raw.user };
+            notifyAuth('SIGNED_IN');
+          }
+        } catch (_) {}
+      }
+    })
     .then(function () {
       clearTimeout(bootTimeout);
       if (sessionReadyResolve) { sessionReadyResolve(); sessionReadyResolve = null; }

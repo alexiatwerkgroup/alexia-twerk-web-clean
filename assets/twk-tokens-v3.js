@@ -135,6 +135,11 @@
   function getState() {
     var localBal = read(KEYS.balance, 0) | 0;
     var localTot = read(KEYS.total, 0) | 0;
+    var visited  = read(KEYS.visited, {}) || {};
+    var videos   = read(KEYS.videos, {}) || {};
+    var shares   = read('alexia_tokens_v1.shares', 0) | 0;
+    var welcomed = !!read(KEYS.welcomed, false);
+    var lastLogin= read(KEYS.lastLogin, null);
     if (isFounder()) {
       var displayedBal = Math.max(FOUNDER_FLOOR, localBal);
       var displayedTot = Math.max(FOUNDER_FLOOR, localTot);
@@ -145,6 +150,11 @@
         streak:  read(KEYS.streak, 0) | 0,
         nextTier: null,
         founder: true,
+        visited: visited,
+        videos:  videos,
+        shares:  shares,
+        welcomed: welcomed,
+        lastLogin: lastLogin,
       };
     }
     return {
@@ -154,6 +164,11 @@
       streak:  read(KEYS.streak, 0) | 0,
       nextTier: nextTierFor(localBal),
       founder: false,
+      visited: visited,
+      videos:  videos,
+      shares:  shares,
+      welcomed: welcomed,
+      lastLogin: lastLogin,
     };
   }
   function setBalance(newBal) {
