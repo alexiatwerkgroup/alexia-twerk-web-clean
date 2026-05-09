@@ -146,17 +146,49 @@
     } catch(_){}
   }
 
-  // Sync token grants to Supabase via grant_tokens RPC
-  async function syncToSupabase(amount, reason){
+  // 2026-05-09: D1-direct sync via /api/tokens/grant. Sends the delta to
+  // server, which atomically increments tokens + total_earned and returns
+  // the canonical fresh values. We then OVERWRITE localStorage with those
+  // canonical values so local + server stay in lockstep — preventing the
+  // drift bug where local kept earning while server stayed behind.
+  async function syncToServer(amount, reason){
     try {
-      if (!window.twkGetSupabase) return;
-      var sb = await window.twkGetSupabase();
-      if (!sb) return;
-      var sess = await sb.auth.getSession();
-      if (!sess || !sess.data || !sess.data.session) return;
-      await sb.rpc('grant_tokens', { amount: amount, reason: reason || null });
-    } catch(_){ /* offline — local already incremented */ }
+      // Read JWT from auth-v3 localStorage (the new D1 auth namespace).
+      var token = '';
+      try {
+        var auth = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}');
+        if (auth && auth.token) token = auth.token;
+      } catch(_){}
+      if (!token) return; // not logged in — local-only, will sync on next login
+
+      var resp = await fetch((location.origin || '') + '/api/tokens/grant', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ amount: amount, reason: reason || null })
+      });
+      if (!resp.ok) return; // server rejected — keep local optimistic state
+      var data = await resp.json().catch(function(){ return null; });
+      if (!data || !data.ok) return;
+      // Reconcile: trust the server. Overwrite local with canonical values.
+      try {
+        if (typeof data.balance === 'number') S(KEYS.balance, data.balance);
+        if (typeof data.tier === 'string')    S(KEYS.tier, data.tier);
+        // total_earned not returned by current endpoint — we kept the local
+        // increment which matches the server-side increment of same amount.
+        try {
+          window.dispatchEvent(new CustomEvent('alexia-tokens-changed', {
+            detail: { balance: data.balance, tier: data.tier, source: 'server' }
+          }));
+        } catch(_){}
+      } catch(_){}
+    } catch(_){ /* offline — local already incremented, will reconcile on next login */ }
   }
+  // Keep the old name as alias for any existing callers.
+  var syncToSupabase = syncToServer;
 
   function setBalance(newBalance){
     S(KEYS.balance, Math.max(0, newBalance));
@@ -176,7 +208,7 @@
     S(KEYS.total, tot);
     S(KEYS.tier, newTier);
     syncUserSnapshot();
-    syncToSupabase(amount, reason);
+    syncToServer(amount, reason);
     toast('+' + amount, reason);
     broadcast();
     // ── Cut-watched detection: when grant fires with a watch-related reason,
@@ -317,39 +349,68 @@
   //     grant_tokens (capped at 5000 to prevent abuse / runaway local state)
   //   • flags itself done in localStorage so it never runs again
   // Server-side rebate (+300 to everyone) runs independently in SQL.
-  var RECONCILE_FLAG = 'alexia_tokens_reconciled_v1';
-  var RECONCILE_CAP  = 5000;
+  // 2026-05-09: Drift reconciler against D1. Runs on every page load.
+  //   1. Reads D1 balance via /api/profile/me
+  //   2. If local > D1 (offline earnings stuck in localStorage), pushes the
+  //      delta to D1 via /api/tokens/grant in chunks of 1000.
+  //   3. If local < D1 (server-side grant or admin top-up), hard-overwrites
+  //      localStorage with D1 values.
+  // Result: tokens earned offline make it to the server within one page-load
+  // of regaining connectivity, and admin grants reach the user immediately.
+  var RECONCILE_CAP = 5000;
   async function reconcileWithServer(){
     try {
-      if (localStorage.getItem(RECONCILE_FLAG)) return;
       if (!isLoggedIn()) return;
-      if (!window.twkGetSupabase) return;
-      var sb = await window.twkGetSupabase();
-      if (!sb) return;
-      var sess = await sb.auth.getSession();
-      if (!sess || !sess.data || !sess.data.session) return;
-      var uid = sess.data.session.user.id;
-      var resp = await sb.from('profiles')
-        .select('total_earned').eq('id', uid).maybeSingle();
-      if (!resp || !resp.data) return;
-      var serverTotal = Number(resp.data.total_earned) || 0;
-      var localTotal  = N(KEYS.total, 0);
-      var deficit = localTotal - serverTotal;
-      if (deficit <= 0) {
-        // Server is already even or ahead — nothing to do, mark done.
-        localStorage.setItem(RECONCILE_FLAG, '1');
-        return;
+      var token = '';
+      try {
+        var auth = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}');
+        if (auth && auth.token) token = auth.token;
+      } catch(_){}
+      if (!token) return;
+
+      // Get D1 canonical balance.
+      var meResp = await fetch((location.origin || '') + '/api/profile/me', {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (!meResp.ok) return;
+      var meData = await meResp.json().catch(function(){ return null; });
+      if (!meData || !meData.ok || !meData.profile) return;
+
+      var serverBal   = Number(meData.profile.tokens || 0);
+      var serverTier  = String(meData.profile.tier || 'basic');
+      var localBal    = N(KEYS.balance, 0);
+      var deficit     = localBal - serverBal;
+
+      if (deficit > 0) {
+        // Local has more than server — push delta to D1 in chunks of 1000.
+        deficit = Math.min(deficit, RECONCILE_CAP);
+        while (deficit > 0) {
+          var chunk = Math.min(deficit, 1000);
+          var r = await fetch((location.origin || '') + '/api/tokens/grant', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ amount: chunk, reason: 'drift_reconcile' })
+          });
+          if (!r.ok) return; // bail; retry next page load
+          deficit -= chunk;
+        }
+      } else if (deficit < 0) {
+        // Server has more than local — hard-sync local to server values.
+        S(KEYS.balance, serverBal);
+        S(KEYS.tier, serverTier);
+        try {
+          window.dispatchEvent(new CustomEvent('alexia-tokens-changed', {
+            detail: { balance: serverBal, tier: serverTier, source: 'reconcile' }
+          }));
+        } catch(_){}
       }
-      deficit = Math.min(deficit, RECONCILE_CAP);
-      // RPC caps single grant at 1000, so we send in chunks
-      while (deficit > 0) {
-        var chunk = Math.min(deficit, 1000);
-        var r = await sb.rpc('grant_tokens', { amount: chunk, reason: 'reconcile_v1_grant_tokens_bug' });
-        if (r && r.error) return; // bail without setting flag, retry next load
-        deficit -= chunk;
-      }
-      localStorage.setItem(RECONCILE_FLAG, '1');
-    } catch(_){ /* silent — try again next session */ }
+    } catch(_){ /* silent — try again next page load */ }
   }
 
   function init(){
