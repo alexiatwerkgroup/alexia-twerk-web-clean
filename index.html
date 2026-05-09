@@ -534,6 +534,12 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
     .twerkhub-fp-hero-video[data-yt-id="X-lPzSuvf3k"] .twerkhub-fp-hero-iframe{
       transform:scale(1.50)!important;transform-origin:center center!important;
     }
+    /* Card #5 (Premium Latin Models, AE9HqjQfqA8) — zoom mas fuerte para
+       tapar logo YouTube (bottom-right) + cualquier title overlay (top).
+       Origin center center = crop simetrico arriba/abajo. */
+    .twerkhub-fp-hero-video[data-yt-id="AE9HqjQfqA8"] .twerkhub-fp-hero-iframe{
+      transform:scale(1.55)!important;transform-origin:center center!important;
+    }
     /* Freeze frame poster (preloaded ~thumb 1.jpg ≈ first quarter): instant swap on stop */
     .twerkhub-fp-hero-freeze{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;display:none}
     .twerkhub-fp-hero-freeze.is-shown{display:block}
@@ -681,7 +687,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
     <!-- 5 · TTL Latin models VIP — HOVER preview: video #021 from 2:55 to 3:10 -->
     <a class="twerkhub-fp-card" href="/ttl-latin-models/" data-no-dead="1">
       <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
-           data-yt-id="AE9HqjQfqA8" data-yt-start="175" data-yt-stop="190" data-yt-preload="1" data-yt-chain-order="5">
+           data-yt-id="AE9HqjQfqA8" data-yt-start="175" data-yt-stop="185" data-yt-trigger="hover">
         <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/AE9HqjQfqA8/sddefault.jpg" alt="Premium Latin models · 1500+ VIP · premium content" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/AE9HqjQfqA8/hqdefault.jpg';}">
         <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/AE9HqjQfqA8/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/AE9HqjQfqA8/hqdefault.jpg';}">
         <iframe id="twerkhub-fp-hero-yt-5"
