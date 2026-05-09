@@ -26,6 +26,14 @@
     return;
   }
 
+  // 2026-05-09: skip the popup for SIGNED-IN users (they already gave us
+  // their email at signup — no need to capture again). Also skip if any
+  // TWERKHUB localStorage exists (returning user from another session).
+  try {
+    var auth = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}');
+    if (auth && auth.user && (auth.user.id || auth.user.email)) return;
+  } catch(_){}
+
   // Inject CSS once
   function injectCSS() {
     if (document.getElementById('twk-email-capture-css')) return;
