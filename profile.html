@@ -1070,10 +1070,19 @@ body::before{
   function esc(str){ return String(str||'').replace(/[&<>"']/g, function(s){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]);}); }
 
   function mirror(){
-    // PRIORITY 1: the new TwerkhubAuth session (set on registration). If a
-    // user is logged in via the new auth flow, always use their nick/name —
-    // never fall back to "Anti" (the old hardcoded default that kept showing
-    // after logout and was confusing users who never registered).
+    // PRIORITY 0 (2026-05-08 v7 — D1 source of truth): read directly from
+    // the auth-v3 state which is the canonical post-D1 user object. Bypass
+    // any legacy cache that might be stale or out-of-sync.
+    var authUser = null;
+    try {
+      var authRaw = localStorage.getItem('alexia-auth-v3');
+      if (authRaw) {
+        var authState = JSON.parse(authRaw);
+        authUser = authState && authState.user;
+      }
+    } catch(e){}
+
+    // PRIORITY 1: legacy `alexia_current_user` (set by setCachedUser).
     var currentUser = null;
     try {
       var raw = localStorage.getItem('alexia_current_user');
@@ -1084,12 +1093,16 @@ body::before{
     var p = {};
     try { p = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}; } catch(e){}
 
-    var nick = currentUser && currentUser.nick
-      ? String(currentUser.nick).trim()
-      : String(p.nickname || '').trim();
-    var displayName = nick || 'Guest';  // no more silent "Anti" default
-    var av = String(p.avatar_url || '').trim();
-    var isGuest = !currentUser && !nick;
+    // Determine username: D1 auth-v3 first, then nick from cache, then nickname.
+    // NEVER fall back to email-prefix or "Guest" if we have a logged-in session.
+    var nick =
+      (authUser && authUser.username && String(authUser.username).trim()) ||
+      (currentUser && currentUser.nick && String(currentUser.nick).trim()) ||
+      (currentUser && currentUser.username && String(currentUser.username).trim()) ||
+      String(p.nickname || '').trim();
+    var displayName = nick || 'Guest';
+    var av = String(p.avatar_url || (currentUser && currentUser.avatar_url) || '').trim();
+    var isGuest = !authUser && !currentUser && !nick;
 
     // Hero name — reflects actual session state
     if (heroName) {
