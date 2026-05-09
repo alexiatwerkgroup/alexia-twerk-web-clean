@@ -70,15 +70,38 @@
   }
 
   async function fetchProfile(){
-    var sb = await getClient();
-    if (!sb) return null;
+    // 2026-05-08 v6 (D1): use TwkAPI.profile.me() instead of stubbed from()
+    // chain. The old `sb.from('profiles').select().maybeSingle()` returned
+    // null silently → profile never loaded → page hung on guest state.
     try {
+      // Wait for the supabase-config IIFE to finish booting (validates the
+      // JWT against /api/auth/session). Without this, calling profile.me
+      // here can race ahead of the auth restore.
+      var sb = await getClient();
+      if (!sb) return null;
       var sess = await sb.auth.getSession();
       var user = sess && sess.data && sess.data.session && sess.data.session.user;
       if (!user) return null;
-      var p = await sb.from('profiles').select('id,username,email,bio,avatar_url,tokens,total_earned,streak,tier,registered_at').eq('id', user.id).maybeSingle();
-      if (p && p.data) return Object.assign({}, p.data, { _userId: user.id, _userEmail: user.email });
-      return { _userId: user.id, _userEmail: user.email, username: (user.email||'').split('@')[0], tokens: 0 };
+
+      // Pull the profile via the new endpoint.
+      if (window.TwkAPI && window.TwkAPI.profile && window.TwkAPI.profile.me) {
+        var res = await window.TwkAPI.profile.me();
+        if (res && res.ok && res.profile) {
+          return Object.assign({}, res.profile, { _userId: user.id, _userEmail: user.email });
+        }
+      }
+      // Fallback: minimal stub from session data so UI doesn't show Guest.
+      return {
+        id: user.id,
+        _userId: user.id,
+        _userEmail: user.email,
+        username: (user.email||'').split('@')[0],
+        email: user.email,
+        tokens: 0,
+        total_earned: 0,
+        streak: 0,
+        tier: 'basic'
+      };
     } catch(e){
       console.warn('[profile-page] fetchProfile failed', e);
       return null;
