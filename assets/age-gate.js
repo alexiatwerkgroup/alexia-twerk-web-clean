@@ -6,7 +6,9 @@
 (function(){
   'use strict';
 
-  if (window.__alexiaAgeGateMounted) return;
+  console.log('[age-gate] script loaded · path=' + location.pathname);
+
+  if (window.__alexiaAgeGateMounted) { console.log('[age-gate] already mounted, skipping'); return; }
   window.__alexiaAgeGateMounted = true;
 
   var LS_KEY = 'alexia_age_verified_v1';
@@ -26,12 +28,12 @@
       return window.__alexiaAgeGateSkippedNonPortal = true;
     }
   })();
-  if (window.__alexiaAgeGateSkippedNonPortal) return;
+  if (window.__alexiaAgeGateSkippedNonPortal) { console.log('[age-gate] non-portal page, skipping'); return; }
 
   // Already verified? skip
   try {
     var until = Number(localStorage.getItem(LS_KEY) || 0);
-    if (until && Date.now() < until) return;
+    if (until && Date.now() < until) { console.log('[age-gate] already verified (cookie)'); return; }
   } catch(e){}
 
   // 2026-05-08: skip age gate for signed-in users OR users who just came
@@ -45,7 +47,7 @@
   // (a) Has a signed-in session in localStorage
   try {
     var auth = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}');
-    if (auth && auth.user && auth.user.id) { autoVerify(); return; }
+    if (auth && auth.user && auth.user.id) { console.log('[age-gate] signed-in user, auto-verifying'); autoVerify(); return; }
   } catch(_){}
   // (b) Just came from an auth/verify flow (URL params set by /api/auth/*)
   try {
@@ -53,10 +55,12 @@
     if (u.searchParams.get('verified') === '1' ||
         u.searchParams.get('signed_in') === '1' ||
         u.hash.indexOf('twk_oauth_done') !== -1) {
+      console.log('[age-gate] auth-flow URL param, auto-verifying');
       autoVerify();
       return;
     }
   } catch(_){}
+  console.log('[age-gate] all checks passed, will mount modal');
   // 2026-05-09: condition (c) removed — was too lax. Other scripts write
   // alexia_* / twk_* localStorage on page load (trackers, session IDs),
   // making the gate skip for FRESH visitors who shouldn't be skipped.

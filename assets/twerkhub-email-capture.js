@@ -18,6 +18,12 @@
   var STORAGE_KEY = 'twkEmailCaptureDismissed_v1';
   var SUBSCRIBED_KEY = 'twkEmailCaptureSubscribed_v1';
 
+  // 2026-05-09: popup KEPT on home (it's the main lead-capture).
+  // Fix was: removed the backdrop-filter blur from .twk-ec-overlay so when
+  // the modal opens it just dims the page (solid dark), no blur. Plus we
+  // already skip for signed-in users below — so the founder + returning
+  // logged-in users never see it.
+
   // Already dismissed/subscribed in this session? Don't re-show.
   if (
     sessionStorage.getItem(STORAGE_KEY) === '1' ||
@@ -40,7 +46,7 @@
     var st = document.createElement('style');
     st.id = 'twk-email-capture-css';
     st.textContent = [
-      '.twk-ec-overlay{position:fixed;inset:0;background:rgba(5,5,12,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:99998;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease}',
+      '.twk-ec-overlay{position:fixed;inset:0;background:rgba(5,5,12,.86);z-index:99998;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease}',
       '.twk-ec-overlay.is-open{opacity:1;pointer-events:auto}',
       '.twk-ec-card{position:relative;width:min(440px,100%);background:linear-gradient(180deg,rgba(20,20,32,.98),rgba(10,10,20,.99));border:1px solid rgba(255,45,135,.35);border-radius:22px;padding:34px 30px 28px;box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 60px rgba(255,45,135,.18);color:#f5f5fb;font-family:"Inter",ui-sans-serif,system-ui,sans-serif;transform:translateY(20px) scale(.96);transition:transform .35s cubic-bezier(.2,1.2,.3,1)}',
       '.twk-ec-overlay.is-open .twk-ec-card{transform:translateY(0) scale(1)}',
