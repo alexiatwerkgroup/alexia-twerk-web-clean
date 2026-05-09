@@ -149,6 +149,9 @@
 
     toastHost = document.createElement('div');
     toastHost.className = 'twerkhub-tokens-toast-host';
+    // 2026-05-09: defensive inline styles so multiple toasts stack vertically
+    // even when the bundle CSS isn't loaded on a particular page.
+    toastHost.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none;';
 
     hud.appendChild(badge);
     hud.appendChild(toastHost);
@@ -269,11 +272,17 @@
       el.setAttribute('role', 'status');
       var label = String(d.to || '').toUpperCase();
       el.innerHTML =
-        '<span class="twerkhub-tokens-toast-plus">★</span>' +
-        '<span class="twerkhub-tokens-toast-body">' +
-          '<span class="twerkhub-tokens-toast-title">LEVEL UP · ' + escapeHtml(label) + '</span>' +
-          '<span class="twerkhub-tokens-toast-sub">New tier unlocked</span>' +
+        '<span class="twerkhub-tokens-toast-plus" style="display:inline-block;font-size:22px;font-weight:900;line-height:1;color:#ffb454;margin-right:12px;flex-shrink:0;">★</span>' +
+        '<span class="twerkhub-tokens-toast-body" style="display:flex;flex-direction:column;gap:2px;min-width:0;">' +
+          '<span class="twerkhub-tokens-toast-title" style="display:block;font-size:13px;font-weight:800;color:#fff;line-height:1.2;">LEVEL UP · ' + escapeHtml(label) + '</span>' +
+          '<span class="twerkhub-tokens-toast-sub" style="display:block;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1ee08f;opacity:.85;margin-top:2px;">New tier unlocked</span>' +
         '</span>';
+      el.style.cssText = (el.style.cssText || '') +
+        ';display:inline-flex;align-items:center;gap:0;padding:10px 16px 10px 12px;border-radius:14px;' +
+        'background:linear-gradient(135deg,rgba(40,28,10,.95),rgba(30,15,30,.95));' +
+        'border:1px solid rgba(255,180,84,.6);' +
+        'box-shadow:0 14px 40px rgba(255,180,84,.3),0 4px 12px rgba(0,0,0,.55);' +
+        'color:#f5f5fb;max-width:280px;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';
       toastHost.appendChild(el);
       requestAnimationFrame(function(){
         requestAnimationFrame(function(){ el.classList.add('is-visible'); });
@@ -290,12 +299,23 @@
     var el = document.createElement('div');
     el.className = 'twerkhub-tokens-toast';
     el.setAttribute('role', 'status');
+    // 2026-05-09: inline styles as a hard fallback. The CSS classes still
+    // apply (and override these), but if for any reason the bundle isn't
+    // loaded on a given page, the toast STILL renders correctly instead
+    // of falling back to ugly run-on inline text like "+3Video unlocked..."
     el.innerHTML =
-      '<span class="twerkhub-tokens-toast-plus">+' + Number(plusN) + '</span>' +
-      '<span class="twerkhub-tokens-toast-body">' +
-        '<span class="twerkhub-tokens-toast-title">' + escapeHtml(title) + '</span>' +
-        '<span class="twerkhub-tokens-toast-sub">' + escapeHtml(sub) + '</span>' +
+      '<span class="twerkhub-tokens-toast-plus" style="display:inline-block;font-size:22px;font-weight:900;line-height:1;color:#1ee08f;margin-right:12px;flex-shrink:0;">+' + Number(plusN) + '</span>' +
+      '<span class="twerkhub-tokens-toast-body" style="display:flex;flex-direction:column;gap:2px;min-width:0;">' +
+        '<span class="twerkhub-tokens-toast-title" style="display:block;font-size:13px;font-weight:800;color:#fff;line-height:1.2;">' + escapeHtml(title) + '</span>' +
+        '<span class="twerkhub-tokens-toast-sub" style="display:block;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1ee08f;opacity:.85;margin-top:2px;">' + escapeHtml(sub) + '</span>' +
       '</span>';
+    // Container also gets defensive inline styles in case the CSS class is missing
+    el.style.cssText = (el.style.cssText || '') +
+      ';display:inline-flex;align-items:center;gap:0;padding:10px 16px 10px 12px;border-radius:14px;' +
+      'background:linear-gradient(135deg,rgba(10,24,18,.95),rgba(20,15,30,.95));' +
+      'border:1px solid rgba(30,224,143,.6);' +
+      'box-shadow:0 14px 40px rgba(30,224,143,.3),0 4px 12px rgba(0,0,0,.55);' +
+      'color:#f5f5fb;max-width:280px;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';
     toastHost.appendChild(el);
     // Next frame → visible (trigger CSS transition)
     requestAnimationFrame(function(){
