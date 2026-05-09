@@ -57,16 +57,11 @@
       return;
     }
   } catch(_){}
-  // (c) Has any TWERKHUB-related localStorage (returning user from another tab/session)
-  try {
-    for (var i = 0; i < localStorage.length; i++) {
-      var k = localStorage.key(i);
-      if (k && (k.indexOf('alexia_') === 0 || k.indexOf('twk_') === 0)) {
-        autoVerify();
-        return;
-      }
-    }
-  } catch(_){}
+  // 2026-05-09: condition (c) removed — was too lax. Other scripts write
+  // alexia_* / twk_* localStorage on page load (trackers, session IDs),
+  // making the gate skip for FRESH visitors who shouldn't be skipped.
+  // The official "I'm verified" cookie/key is alexia_age_verified_v1 which
+  // is checked at the top of this file. That's enough for legit returning users.
 
   function mount(){
     var root = document.createElement('div');
