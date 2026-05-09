@@ -25,6 +25,8 @@ REPLACEMENTS = [
     ('profile-page.js?v=20260508-d1-p2',    'profile-page.js?v=20260508-d1-p6'),
     ('profile-page.js?v=20260508-d1-p3',    'profile-page.js?v=20260508-d1-p6'),
     ('profile-page.js?v=20260508-d1-p4',    'profile-page.js?v=20260508-d1-p6'),
+    ('profile-page.js?v=20260508-d1-p5',    'profile-page.js?v=20260508-d1-p6'),
+    ('enter-now-widget.js?v=20260417-02',   'enter-now-widget.js?v=20260508-d1-p1'),
 ]
 
 def main():
