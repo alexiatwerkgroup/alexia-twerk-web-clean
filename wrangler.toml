@@ -21,6 +21,7 @@ database_id = "a9203ef0-3f9d-4a1d-bd44-4a9748504afd"
 
 # R2 binding for avatar storage. Create the bucket first:
 #   wrangler r2 bucket create twerkhub-avatars
+# (Re-comment if you disable R2 in the dashboard.)
 [[r2_buckets]]
 binding = "AVATARS"
 bucket_name = "twerkhub-avatars"
