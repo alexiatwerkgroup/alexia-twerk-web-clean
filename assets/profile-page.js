@@ -550,16 +550,42 @@
       saveBtn.disabled = true;
       setStatus('Saving…', '');
       try {
-        // 2026-05-08 v3 (D1): use TwkAPI.profile.updateMe() — real endpoint.
-        // The old sb.from('profiles').update() was stubbed and silently
-        // dropped the write, so saves looked OK but never persisted.
         if (!window.TwkAPI || !window.TwkAPI.profile) {
           setStatus('Auth client not loaded — please reload.', 'err');
           saveBtn.disabled = false;
           return;
         }
+        // 2026-05-08 v8: if avatar staged, upload to R2 first → store URL
+        // (not base64) in DB. Falls back to base64-in-DB if R2 upload fails.
+        var avatarUrl = null;
+        if (avatarData) {
+          setStatus('Uploading avatar…', '');
+          try {
+            var token = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token;
+            var upRes = await fetch('/api/avatar/upload', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+              },
+              credentials: 'include',
+              body: JSON.stringify({ data: avatarData })
+            });
+            var upData = await upRes.json();
+            if (upData && upData.ok && upData.url) {
+              avatarUrl = upData.url;
+            } else {
+              // Fall back to base64 in DB (legacy path)
+              avatarUrl = avatarData;
+              console.warn('[profile-page] R2 upload failed, falling back to base64:', upData);
+            }
+          } catch (e) {
+            avatarUrl = avatarData;
+            console.warn('[profile-page] R2 upload error:', e);
+          }
+        }
         var update = { username: nick, bio: bioVal };
-        if (avatarData !== '') update.avatar_url = avatarData;
+        if (avatarUrl !== null) update.avatar_url = avatarUrl;
         var res = await window.TwkAPI.profile.updateMe(update);
         if (!res || !res.ok) {
           var errMsg = (res && res.error) || 'unknown';

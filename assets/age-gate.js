@@ -34,6 +34,20 @@
     if (until && Date.now() < until) return;
   } catch(e){}
 
+  // 2026-05-08: signed-in users (have a valid auth-v3 session) skip the age
+  // gate entirely — they're already known adults from signup. Also auto-marks
+  // them as verified for 30 days going forward, so even if they sign out the
+  // gate won't reappear on this device.
+  try {
+    var auth = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}');
+    if (auth && auth.user && auth.user.id) {
+      try {
+        localStorage.setItem(LS_KEY, String(Date.now() + EXPIRY_DAYS * 24 * 60 * 60 * 1000));
+      } catch(_){}
+      return;
+    }
+  } catch(_){}
+
   function mount(){
     var root = document.createElement('div');
     root.id = 'alexia-age-gate';
