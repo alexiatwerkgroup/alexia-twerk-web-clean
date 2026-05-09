@@ -34,17 +34,37 @@
     if (until && Date.now() < until) return;
   } catch(e){}
 
-  // 2026-05-08: signed-in users (have a valid auth-v3 session) skip the age
-  // gate entirely — they're already known adults from signup. Also auto-marks
-  // them as verified for 30 days going forward, so even if they sign out the
-  // gate won't reappear on this device.
+  // 2026-05-08: skip age gate for signed-in users OR users who just came
+  // from an auth flow (email verification, OAuth signin). These users have
+  // already proven they're adults via signup.
+  function autoVerify() {
+    try {
+      localStorage.setItem(LS_KEY, String(Date.now() + EXPIRY_DAYS * 24 * 60 * 60 * 1000));
+    } catch(_){}
+  }
+  // (a) Has a signed-in session in localStorage
   try {
     var auth = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}');
-    if (auth && auth.user && auth.user.id) {
-      try {
-        localStorage.setItem(LS_KEY, String(Date.now() + EXPIRY_DAYS * 24 * 60 * 60 * 1000));
-      } catch(_){}
+    if (auth && auth.user && auth.user.id) { autoVerify(); return; }
+  } catch(_){}
+  // (b) Just came from an auth/verify flow (URL params set by /api/auth/*)
+  try {
+    var u = new URL(location.href);
+    if (u.searchParams.get('verified') === '1' ||
+        u.searchParams.get('signed_in') === '1' ||
+        u.hash.indexOf('twk_oauth_done') !== -1) {
+      autoVerify();
       return;
+    }
+  } catch(_){}
+  // (c) Has any TWERKHUB-related localStorage (returning user from another tab/session)
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && (k.indexOf('alexia_') === 0 || k.indexOf('twk_') === 0)) {
+        autoVerify();
+        return;
+      }
     }
   } catch(_){}
 
