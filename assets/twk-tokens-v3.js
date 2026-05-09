@@ -128,24 +128,31 @@
   }
 
   // ─── State ───────────────────────────────────────────────────────────
+  // 2026-05-09 update: founder now accumulates on top of the floor.
+  // Display = max(FOUNDER_FLOOR, actualLocalBalance). When user earns
+  // 10 tokens, localBalance bumps and after a few earnings the displayed
+  // balance grows past 1,000,009.
   function getState() {
+    var localBal = read(KEYS.balance, 0) | 0;
+    var localTot = read(KEYS.total, 0) | 0;
     if (isFounder()) {
+      var displayedBal = Math.max(FOUNDER_FLOOR, localBal);
+      var displayedTot = Math.max(FOUNDER_FLOOR, localTot);
       return {
-        balance: FOUNDER_FLOOR,
-        total:   FOUNDER_FLOOR,
+        balance: displayedBal,
+        total:   displayedTot,
         tier:    'vip',
         streak:  read(KEYS.streak, 0) | 0,
         nextTier: null,
         founder: true,
       };
     }
-    var balance = read(KEYS.balance, 0) | 0;
     return {
-      balance: balance,
-      total:   read(KEYS.total, 0) | 0,
-      tier:    tierFromBalance(balance),
+      balance: localBal,
+      total:   localTot,
+      tier:    tierFromBalance(localBal),
       streak:  read(KEYS.streak, 0) | 0,
-      nextTier: nextTierFor(balance),
+      nextTier: nextTierFor(localBal),
       founder: false,
     };
   }
@@ -229,22 +236,29 @@
   }
 
   // ─── Grant ───────────────────────────────────────────────────────────
+  // 2026-05-09 update: founder accumulates too. Local balance starts at
+  // FOUNDER_FLOOR (set by ensureFounderFloor on init). Each grant adds
+  // on top, and getState returns max(FOUNDER_FLOOR, localBalance).
   function grant(amount, reason) {
     if (!isLoggedIn() || amount <= 0) return;
-    // Founder: don't actually accumulate in localStorage; just toast.
-    if (isFounder()) {
-      toast(amount, reason || 'Earned', 'FOUNDER');
-      return;
+    var founder = isFounder();
+    if (founder) {
+      // Ensure the local floor is set so accumulation is visible.
+      var curBal = read(KEYS.balance, 0) | 0;
+      if (curBal < FOUNDER_FLOOR) {
+        write(KEYS.balance, FOUNDER_FLOOR);
+        write(KEYS.total,   FOUNDER_FLOOR);
+      }
     }
     var prevBal = read(KEYS.balance, 0) | 0;
     var newBal  = prevBal + amount;
     write(KEYS.balance, newBal);
     write(KEYS.total,   (read(KEYS.total, 0) | 0) + amount);
-    var prevTier = tierFromBalance(prevBal);
-    var newTier  = tierFromBalance(newBal);
+    var prevTier = founder ? 'vip' : tierFromBalance(prevBal);
+    var newTier  = founder ? 'vip' : tierFromBalance(newBal);
     write(KEYS.tier, newTier);
     syncGrantToServer(amount, reason);
-    toast(amount, reason || 'Earned', tierLabel(newTier));
+    toast(amount, reason || 'Earned', founder ? 'FOUNDER' : tierLabel(newTier));
     broadcast();
     if (newTier !== prevTier) {
       try {
