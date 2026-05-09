@@ -577,10 +577,10 @@ body::before{
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.defer=true;document.head.appendChild(s);}
-  loadOnce('/assets/supabase-config.js?v=20260508-d1-p4','twk-loader-supabase-config');
+  loadOnce('/assets/supabase-config.js?v=20260508-d1-p6','twk-loader-supabase-config');
   loadOnce('/assets/token-system.js?v=20260506-p3','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260506-p11','twk-loader-twerkhub-tokens');
-  loadOnce('/assets/twerkhub-auth.js?v=20260508-d1-p4','twk-loader-twerkhub-auth');
+  loadOnce('/assets/twerkhub-auth.js?v=20260508-d1-p6','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
 </script>
@@ -1044,7 +1044,7 @@ body::before{
 
 <!-- Existing functional scripts — profile-page.js hooks into the IDs/classes above -->
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script defer src="/assets/profile-page.js?v=20260508-d1-p4"></script>
+<script defer src="/assets/profile-page.js?v=20260508-d1-p6"></script>
 <!-- Legacy global-brand / global-i18n / online-count-global were duplicating widgets (two locales, two counters). Removed. twerkhub-topbar-enhance + twerkhub-locale-switcher handle this now. -->
 <script defer src="/assets/enter-now-widget.js?v=20260417-02"></script>
 <script src="/assets/token-system.js?v=20260506-p3" defer></script>
@@ -1122,16 +1122,11 @@ body::before{
         heroSection.appendChild(block);
         block.querySelector('#guest-signup-btn').addEventListener('click', function(ev){
           ev.preventDefault();
-          // 2026-05-08 v2: Auth restaurado en Cloudflare D1. Abrir modal nativo
-          // de signup. Si TwerkhubAuth no está cargado todavía, fallback a /tt
-          // (Telegram landing) como red de seguridad.
-          if (window.TwerkhubAuth && typeof window.TwerkhubAuth.showForm === 'function') {
-            try {
-              window.TwerkhubAuth.showForm('signup');
-              return;
-            } catch (_) { /* fallthrough */ }
-          }
-          window.location.href = '/tt?utm_source=profile_signup_fallback';
+          // 2026-05-08 v4: redirect direct a /account.html (inline form que SÍ
+          // funciona en D1). El modal embedded tenia un bug de render que
+          // dejaba la pantalla borrosa sin form visible. /account.html es el
+          // landing oficial de auth y tiene mejor UX para nuevos signups.
+          window.location.href = '/account.html#signup';
         });
       } else if (!isGuest && existingGuestBlock) {
         existingGuestBlock.remove();

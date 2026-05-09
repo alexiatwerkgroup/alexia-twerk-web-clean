@@ -172,8 +172,11 @@
     verifyOtp: function () {
       return Promise.resolve({ data: null, error: { message: 'otp_not_supported_on_d1', code: 'PHASE2' } });
     },
-    resetPasswordForEmail: function () {
-      return Promise.resolve({ data: null, error: { message: 'password_reset_not_implemented', code: 'PHASE2' } });
+    resetPasswordForEmail: function (email) {
+      return api('/api/auth/forgot-password', { method: 'POST', body: { email: email } }).then(function (r) {
+        if (r.body && r.body.ok) return { data: { email: email }, error: null };
+        return { data: null, error: { message: (r.body && r.body.error) || 'reset_failed' } };
+      });
     },
   };
 
@@ -256,6 +259,9 @@
       signout: function () { return api('/api/auth/signout', { method: 'POST' }).then(function(r){return r.body;}); },
       session: function () { return api('/api/auth/session', { method: 'GET' }).then(function(r){return r.body;}); },
       usernameAvailable: function (u) { return api('/api/auth/username-available?u=' + encodeURIComponent(u)).then(function(r){return r.body;}); },
+      forgotPassword: function (email) { return api('/api/auth/forgot-password', { method: 'POST', body: { email: email } }).then(function(r){return r.body;}); },
+      resetPassword: function (tokenParam, newPassword) { return api('/api/auth/reset-password', { method: 'POST', body: { token: tokenParam, new_password: newPassword } }).then(function(r){return r.body;}); },
+      sendVerification: function () { return api('/api/auth/send-verification', { method: 'POST', body: {} }).then(function(r){return r.body;}); },
     },
     profile: {
       me: function () { return api('/api/profile/me', { method: 'GET' }).then(function(r){return r.body;}); },

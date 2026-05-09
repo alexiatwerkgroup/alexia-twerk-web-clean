@@ -10,17 +10,21 @@ REPO = Path(__file__).parent
 DRY_RUN = '--apply' not in sys.argv
 
 REPLACEMENTS = [
-    ('supabase-config.js?v=20260508-d1-p1', 'supabase-config.js?v=20260508-d1-p4'),
-    ('supabase-config.js?v=20260508-d1-p2', 'supabase-config.js?v=20260508-d1-p4'),
-    ('supabase-config.js?v=20260508-d1-p3', 'supabase-config.js?v=20260508-d1-p4'),
-    ('twerkhub-auth.js?v=20260426-p8',      'twerkhub-auth.js?v=20260508-d1-p4'),
-    ('twerkhub-auth.js?v=20260508-d1-p1',   'twerkhub-auth.js?v=20260508-d1-p4'),
-    ('twerkhub-auth.js?v=20260508-d1-p2',   'twerkhub-auth.js?v=20260508-d1-p4'),
-    ('twerkhub-auth.js?v=20260508-d1-p3',   'twerkhub-auth.js?v=20260508-d1-p4'),
-    ('profile-page.js?v=20260426-p6',       'profile-page.js?v=20260508-d1-p4'),
-    ('profile-page.js?v=20260508-d1-p1',    'profile-page.js?v=20260508-d1-p4'),
-    ('profile-page.js?v=20260508-d1-p2',    'profile-page.js?v=20260508-d1-p4'),
-    ('profile-page.js?v=20260508-d1-p3',    'profile-page.js?v=20260508-d1-p4'),
+    ('supabase-config.js?v=20260508-d1-p1', 'supabase-config.js?v=20260508-d1-p6'),
+    ('supabase-config.js?v=20260508-d1-p2', 'supabase-config.js?v=20260508-d1-p6'),
+    ('supabase-config.js?v=20260508-d1-p3', 'supabase-config.js?v=20260508-d1-p6'),
+    ('supabase-config.js?v=20260508-d1-p4', 'supabase-config.js?v=20260508-d1-p6'),
+    ('supabase-config.js?v=20260508-d1-p5', 'supabase-config.js?v=20260508-d1-p6'),
+    ('twerkhub-auth.js?v=20260426-p8',      'twerkhub-auth.js?v=20260508-d1-p6'),
+    ('twerkhub-auth.js?v=20260508-d1-p1',   'twerkhub-auth.js?v=20260508-d1-p6'),
+    ('twerkhub-auth.js?v=20260508-d1-p2',   'twerkhub-auth.js?v=20260508-d1-p6'),
+    ('twerkhub-auth.js?v=20260508-d1-p3',   'twerkhub-auth.js?v=20260508-d1-p6'),
+    ('twerkhub-auth.js?v=20260508-d1-p4',   'twerkhub-auth.js?v=20260508-d1-p6'),
+    ('profile-page.js?v=20260426-p6',       'profile-page.js?v=20260508-d1-p6'),
+    ('profile-page.js?v=20260508-d1-p1',    'profile-page.js?v=20260508-d1-p6'),
+    ('profile-page.js?v=20260508-d1-p2',    'profile-page.js?v=20260508-d1-p6'),
+    ('profile-page.js?v=20260508-d1-p3',    'profile-page.js?v=20260508-d1-p6'),
+    ('profile-page.js?v=20260508-d1-p4',    'profile-page.js?v=20260508-d1-p6'),
 ]
 
 def main():

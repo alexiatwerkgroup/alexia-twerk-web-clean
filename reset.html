@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reset Password · TWERKHUB</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--panel:#13131a;--panel-2:#1a1a25;--bd:#2a2a35;
+  --txt:#f4f3f7;--mute:#8a8898;
+  --pink:#ff2d87;--orange:#ffb454;--red:#ff0033;--green:#1ee08f;
+}
+html,body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{display:flex;align-items:center;justify-content:center;padding:32px 16px}
+.card{
+  background:var(--panel);border:1px solid var(--bd);border-radius:18px;
+  padding:36px 32px;max-width:480px;width:100%;
+  box-shadow:0 12px 48px rgba(0,0,0,.5);
+  position:relative;
+}
+.crest{
+  width:62px;height:62px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, var(--pink), var(--orange) 70%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Anton',sans-serif;font-size:22px;color:#fff;
+  margin-bottom:18px;letter-spacing:.04em;
+  box-shadow:0 0 30px rgba(255,45,135,.35);
+}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--pink);margin-bottom:8px}
+h1{font-family:'Anton',sans-serif;font-size:42px;letter-spacing:.02em;line-height:1;
+  text-transform:uppercase;color:#fff;margin-bottom:14px}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--pink),var(--orange));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+p.lede{font-size:14px;color:rgba(244,243,247,.75);margin-bottom:24px}
+label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;
+  font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--pink);
+  margin-bottom:6px}
+input[type=password]{
+  width:100%;background:var(--panel-2);color:var(--txt);
+  border:1px solid var(--bd);border-radius:10px;
+  padding:14px 16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;
+  outline:none;transition:border-color .15s;
+}
+input[type=password]:focus{border-color:var(--pink)}
+.field{margin-bottom:16px}
+.btn{
+  display:block;width:100%;padding:14px;border-radius:999px;border:0;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:800;font-size:14px;letter-spacing:.06em;
+  text-transform:uppercase;transition:filter .15s,transform .15s;
+  background:linear-gradient(135deg,var(--pink),var(--orange));color:#000;
+  box-shadow:0 4px 18px rgba(255,45,135,.35);
+  margin-top:8px;
+}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.msg{margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px;font-weight:600;display:none}
+.msg.is-shown{display:block}
+.msg.err{background:rgba(255,0,51,.12);color:#ff8095;border:1px solid rgba(255,0,51,.25)}
+.msg.ok{background:rgba(30,224,143,.12);color:var(--green);border:1px solid rgba(30,224,143,.25)}
+.foot{margin-top:24px;text-align:center;font-size:12px;color:var(--mute)}
+.foot a{color:var(--pink);text-decoration:none}
+.muted{color:var(--mute);font-size:12px;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="crest">A·T</div>
+  <div class="kicker">Password Recovery</div>
+  <h1>Set a new <em>password</em>.</h1>
+  <p class="lede">Enter your new password below. After saving, you'll be signed in automatically.</p>
+
+  <form id="reset-form" autocomplete="on" novalidate>
+    <div class="field">
+      <label for="pw1">New password</label>
+      <input type="password" id="pw1" autocomplete="new-password" minlength="6" maxlength="256" required>
+      <div class="muted">At least 6 characters.</div>
+    </div>
+    <div class="field">
+      <label for="pw2">Confirm new password</label>
+      <input type="password" id="pw2" autocomplete="new-password" minlength="6" maxlength="256" required>
+    </div>
+    <button type="submit" class="btn" id="submit-btn">Save new password →</button>
+    <div class="msg" id="msg"></div>
+  </form>
+
+  <div class="foot">
+    <a href="/account.html">← Back to sign in</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var url = new URL(location.href);
+  var token = url.searchParams.get('token') || '';
+  var card = document.getElementById('card');
+  var msg = document.getElementById('msg');
+  var btn = document.getElementById('submit-btn');
+
+  function showMsg(text, kind){
+    msg.textContent = text;
+    msg.className = 'msg is-shown ' + (kind || 'err');
+  }
+
+  if (!token) {
+    showMsg('Invalid or missing reset link. Check your email and click the link again.', 'err');
+    btn.disabled = true;
+    return;
+  }
+
+  document.getElementById('reset-form').addEventListener('submit', async function(ev){
+    ev.preventDefault();
+    var pw1 = document.getElementById('pw1').value;
+    var pw2 = document.getElementById('pw2').value;
+    if (pw1.length < 6) { showMsg('Password must be at least 6 characters.', 'err'); return; }
+    if (pw1 !== pw2) { showMsg('Passwords do not match.', 'err'); return; }
+    btn.disabled = true;
+    msg.classList.remove('is-shown');
+    try {
+      var r = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ token: token, new_password: pw1 })
+      });
+      var data = await r.json();
+      if (data && data.ok) {
+        // Persist token in localStorage so the redirect lands logged in
+        try {
+          localStorage.setItem('alexia-auth-v3', JSON.stringify({
+            token: data.token, user: data.user, savedAt: Date.now()
+          }));
+        } catch(_){}
+        showMsg('Password updated! Redirecting to home...', 'ok');
+        setTimeout(function(){ location.href = '/'; }, 900);
+      } else {
+        var err = (data && data.error) || 'unknown_error';
+        if (err === 'invalid_or_expired_token') err = 'This reset link is invalid or expired. Request a new one from the sign-in page.';
+        if (err === 'invalid_password_length') err = 'Password must be 6-256 characters.';
+        showMsg(err, 'err');
+        btn.disabled = false;
+      }
+    } catch(e) {
+      showMsg('Network error: ' + (e && e.message || 'unknown'), 'err');
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -7,6 +7,8 @@
 
 import { hashPassword, signJWT, uuidv4 } from '../../_lib/auth.js';
 import { json, preflight, readJSON, setSessionCookie } from '../../_lib/http.js';
+import { createTokenRow } from '../../_lib/tokens.js';
+import { sendEmail, renderVerifyEmail } from '../../_lib/resend.js';
 
 const EMAIL_RE = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 const USERNAME_RE = /^[a-z0-9_.-]{3,24}$/i;
@@ -78,6 +80,26 @@ export async function onRequest(context) {
     token = await signJWT({ sub: id, email }, env.JWT_SECRET);
   } catch (e) {
     return json({ ok: false, error: 'jwt_sign_failed' }, 500, origin);
+  }
+
+  // Send verification email — non-blocking. If it fails, signup still
+  // succeeds (user can re-request via /api/auth/send-verification).
+  if (env.RESEND_API_KEY) {
+    try {
+      const rawTok = await createTokenRow(env, id, 'email_verification', 24 * 60 * 60);
+      const siteOrigin = (env.SITE_URL || 'https://alexiatwerkgroup.com').replace(/\/+$/, '');
+      const verifyUrl = `${siteOrigin}/api/auth/verify-email?token=${encodeURIComponent(rawTok)}`;
+      // Fire-and-forget — we don't await on email delivery to keep signup snappy.
+      context.waitUntil(
+        sendEmail(env, {
+          to: email,
+          subject: 'TWERKHUB · Verify your email',
+          html: renderVerifyEmail({ verifyUrl, username: usernameRaw || null }),
+        }).catch(function (e) {
+          console.warn('signup verify-email send failed', e && e.message);
+        })
+      );
+    } catch (_) { /* non-fatal */ }
   }
 
   return json(
