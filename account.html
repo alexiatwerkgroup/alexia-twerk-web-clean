@@ -309,9 +309,81 @@
 <script src="/assets/token-system.js?v=20260506-p3" defer></script>
 <script>
 (function(){
-  function init(){
+  // 2026-05-08 v8 (D1): pull canonical data from /api/profile/me when the
+  // user is signed in. Falls back to AlexiaTokens.getState() (localStorage)
+  // for guests. Without this, the dashboard showed inflated localStorage
+  // numbers that didn't match D1 (e.g. balance 850 / total_earned 255).
+  async function loadD1Profile() {
+    try {
+      var token = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token;
+      if (!token) return null;
+      var r = await fetch('/api/profile/me', {
+        headers: { 'Authorization': 'Bearer ' + token },
+        credentials: 'include'
+      });
+      var d = await r.json();
+      if (d && d.ok && d.profile) return d.profile;
+    } catch (_) {}
+    return null;
+  }
+
+  async function init(){
     if (!window.AlexiaTokens) { setTimeout(init, 200); return; }
-    var s = window.AlexiaTokens.getState();
+    var localState = window.AlexiaTokens.getState();
+    var d1 = await loadD1Profile();
+
+    // FOUNDER OVERRIDE: alexiatwerkoficial@gmail.com is the founder. Always
+    // shows 1M tokens, VIP tier, and member-since 2018 day 1 (Jan 1 2018).
+    var FOUNDER_EMAILS = { 'alexiatwerkoficial@gmail.com': true };
+    var FOUNDER_TOKENS = 1000009;
+    var FOUNDER_REGISTERED = new Date('2018-01-01T00:00:00Z').getTime();
+    var isFounder = false;
+    try {
+      var authState = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}');
+      var email = authState && authState.user && String(authState.user.email || '').toLowerCase();
+      if (email && FOUNDER_EMAILS[email]) isFounder = true;
+    } catch(_){}
+
+    // Build the canonical state. D1 wins when present, founder beats everything.
+    var s;
+    if (isFounder) {
+      s = {
+        balance: FOUNDER_TOKENS,
+        total: FOUNDER_TOKENS,
+        streak: (d1 && d1.streak) || (localState && localState.streak) || 1,
+        tier: 'vip',
+        registered: FOUNDER_REGISTERED,
+        welcomed: true,
+        lastLogin: (d1 && d1.last_login_date) || localState.lastLogin || new Date().toISOString().slice(0,10),
+        visited: (localState && localState.visited) || {},
+        videos: (localState && localState.videos) || {},
+        shares: (localState && localState.shares) || 0,
+        nextTier: null,  // founder maxed
+        founder: true
+      };
+    } else if (d1) {
+      s = {
+        balance: d1.tokens || 0,
+        total: d1.total_earned || 0,
+        streak: d1.streak || 0,
+        tier: d1.tier || 'basic',
+        registered: d1.registered_at ? new Date(d1.registered_at).getTime() : (localState.registered || Date.now()),
+        welcomed: !!d1.welcomed,
+        lastLogin: d1.last_login_date || localState.lastLogin,
+        visited: localState.visited || {},
+        videos: localState.videos || {},
+        shares: localState.shares || 0,
+        nextTier: null
+      };
+      var TIERS = [
+        { key: 'medium',  at: 500 },
+        { key: 'premium', at: 1500 },
+        { key: 'vip',     at: 5000 }
+      ];
+      s.nextTier = TIERS.find(function(t){ return s.balance < t.at; }) || null;
+    } else {
+      s = localState;
+    }
     var threshold = window.AlexiaTokens.UNLOCK_THRESHOLD || 4000;
 
     // Token balance & totals
