@@ -89,18 +89,22 @@
         if (res && res.ok && res.profile) {
           return Object.assign({}, res.profile, { _userId: user.id, _userEmail: user.email });
         }
+        console.warn('[profile-page] TwkAPI.profile.me() returned no profile:', res);
       }
-      // Fallback: minimal stub from session data so UI doesn't show Guest.
+      // Fallback: marked _isFallback so syncLegacyKeys skips it.
+      // Username left empty so UI shows "Member" instead of email-prefix.
+      console.warn('[profile-page] using fallback profile (TwkAPI.profile.me unavailable or failed)');
       return {
         id: user.id,
         _userId: user.id,
         _userEmail: user.email,
-        username: (user.email||'').split('@')[0],
+        username: '',
         email: user.email,
         tokens: 0,
         total_earned: 0,
         streak: 0,
-        tier: 'basic'
+        tier: 'basic',
+        _isFallback: true
       };
     } catch(e){
       console.warn('[profile-page] fetchProfile failed', e);
@@ -274,20 +278,17 @@
     }
   }
 
-  // 2026-05-08 v6: sync the new D1 profile data into the LEGACY localStorage
-  // keys that profile.html's inline mirror() function reads. Without this,
-  // mirror() reads empty localStorage → falls back to email-prefix → overwrites
-  // the real username + clears the avatar that we just fetched.
+  // Sync D1 profile data into LEGACY localStorage keys that profile.html's
+  // inline mirror() function reads. Skips if profile is _isFallback (would
+  // overwrite real data with empty fallback).
   function syncLegacyKeys(profile) {
-    if (!profile) return;
+    if (!profile || profile._isFallback) return;
     try {
-      // alexia_forum_profile_v1 — used by profile.html mirror() for nickname + avatar_url
       localStorage.setItem('alexia_forum_profile_v1', JSON.stringify({
         nickname: profile.username || '',
         avatar_url: profile.avatar_url || '',
         bio: profile.bio || ''
       }));
-      // alexia_current_user — used by mirror() to detect logged-in state
       var existing = {};
       try { existing = JSON.parse(localStorage.getItem('alexia_current_user') || '{}') || {}; } catch(_){}
       localStorage.setItem('alexia_current_user', JSON.stringify(Object.assign(existing, {
