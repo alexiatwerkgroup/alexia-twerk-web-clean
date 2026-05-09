@@ -55,6 +55,40 @@
   }
   function clearToken() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+    // 2026-05-09: also wipe identity-leaking keys so the next user that
+    // logs in on the same device is NOT treated as the previous user
+    // (e.g. founder role + 1M token balance leaking from a prior session
+    // into a fresh login as a different user).
+    var IDENTITY_KEYS = [
+      'alexia_role',                    // founder flag
+      'alexia_tokens_v1.balance',       // canonical balance
+      'alexia_tokens_v1.total',         // legacy total
+      'alexia_tokens_v1.total_earned',  // canonical total earned
+      'alexia_tokens_v1.tier',          // tier
+      'alexia_tokens_v1.streak_days',   // streak
+      'alexia_tokens_v1',               // legacy combined object
+      'alexia_current_user',            // legacy mirrored profile
+      'alexia_forum_profile_v1',        // legacy mirrored profile
+      'alexia_tokens_today_v1',         // tokens-earned-today counter
+      'alexia_streak_v1',               // page-visit streak
+      'alexia_cuts_watched_v1',         // cuts watched counter
+      'alexia_age_verified_v1',         // age gate cookie (let the new user re-confirm)
+      'alexia_fav_videos',              // favorites list
+      'alexia_playlists',               // saved playlists
+    ];
+    try {
+      for (var i = 0; i < IDENTITY_KEYS.length; i++) {
+        localStorage.removeItem(IDENTITY_KEYS[i]);
+      }
+      // Also remove any twk_/alexia_ scoped keys defensively (best effort).
+      var doomed = [];
+      for (var j = 0; j < localStorage.length; j++) {
+        var k = localStorage.key(j);
+        if (!k) continue;
+        if (k.indexOf('alexia_tokens_v1.') === 0 || k.indexOf('alexia_token') === 0) doomed.push(k);
+      }
+      doomed.forEach(function(k){ try { localStorage.removeItem(k); } catch(_){} });
+    } catch (_) {}
   }
 
   // ─── HTTP helper ──────────────────────────────────────────────────────

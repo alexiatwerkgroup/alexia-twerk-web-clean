@@ -131,18 +131,17 @@
   };
   var FOUNDER_MIN_TOKENS = 1000009;
 
+  // 2026-05-09: ONLY trust the email match. localStorage 'alexia_role' was
+  // a security/UX bug — when founder logged out, the role stayed in
+  // localStorage and leaked to the NEXT user logging in on the same device,
+  // making them look like founder with 1M tokens. Email is the single source
+  // of truth: only emails in FOUNDER_EMAILS are founders, period.
   function isFounder(profile){
     try {
       var email = String((profile && profile.email) || '').toLowerCase().trim();
       if (email && FOUNDER_EMAILS[email]) return true;
     } catch(_){}
-    try {
-      var role = localStorage.getItem('alexia_role') || '';
-      role = String(role).replace(/"/g, '').toLowerCase();
-      if (role === 'founder') return true;
-    } catch(_){}
-    var tier = String((profile && profile.tier) || '').toLowerCase();
-    return tier === 'founder';
+    return false;
   }
 
   // Persist founder role to localStorage the first time we detect it via email,
