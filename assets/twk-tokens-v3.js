@@ -419,6 +419,55 @@
   }
 
   // ─── Toast (BULLETPROOF — divs + inline styles) ──────────────────────
+  // ─── LOUD coin-cascade ping — Web Audio, ~0.85 gain (max-ish) ─────────
+  var _audioCtx = null;
+  function ensureAudioCtx() {
+    if (_audioCtx) return _audioCtx;
+    try {
+      var Ctor = window.AudioContext || window.webkitAudioContext;
+      if (Ctor) _audioCtx = new Ctor();
+    } catch (_) {}
+    return _audioCtx;
+  }
+  function playLoudPing() {
+    try {
+      var ctx = ensureAudioCtx();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_){} }
+      var now = ctx.currentTime;
+      var master = ctx.createGain();
+      // 2026-05-09: bumped from 0.07 → 0.85 (12x louder).
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.85, now + 0.005);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.30);
+      master.connect(ctx.destination);
+      // 5 notes: ascending arpeggio with extra sparkle on top.
+      [[1320,0],[1760,0.04],[2093,0.08],[2637,0.13],[3136,0.18]].forEach(function(p){
+        var osc = ctx.createOscillator();
+        var g = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(p[0], now + p[1]);
+        g.gain.setValueAtTime(0.0001, now + p[1]);
+        g.gain.exponentialRampToValueAtTime(0.95, now + p[1] + 0.004);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + p[1] + 0.13);
+        osc.connect(g).connect(master);
+        osc.start(now + p[1]);
+        osc.stop(now + p[1] + 0.14);
+      });
+      // Add a soft sub-bass thump at the start so it feels weighty.
+      var bass = ctx.createOscillator();
+      var bg = ctx.createGain();
+      bass.type = 'sine';
+      bass.frequency.setValueAtTime(110, now);
+      bg.gain.setValueAtTime(0.0001, now);
+      bg.gain.exponentialRampToValueAtTime(0.4, now + 0.005);
+      bg.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+      bass.connect(bg).connect(master);
+      bass.start(now);
+      bass.stop(now + 0.13);
+    } catch (_) {}
+  }
+
   function toast(amount, title, sub) {
     var host = document.getElementById('twk-toast-host-v3');
     if (!host) return;
@@ -458,6 +507,9 @@
     card.appendChild(plus);
     card.appendChild(body);
     host.appendChild(card);
+
+    // 2026-05-09: PLAY THE LOUD COIN PING.
+    playLoudPing();
 
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
