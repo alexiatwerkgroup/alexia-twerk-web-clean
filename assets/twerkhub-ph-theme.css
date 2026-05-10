@@ -497,7 +497,7 @@ body.twerkhub-ph-theme #twk-nav-v1-live {
    it shows up immediately during page load. Once relocator runs and moves
    the pill into the flex row, the .twk-tk-hud--in-nav rule overrides this. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud {
-  position: fixed !important;
+  position: sticky !important;
   top: 30px !important;
   right: 14px !important;
   bottom: auto !important;
@@ -509,7 +509,7 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud {
   align-items: flex-end !important;
   pointer-events: none !important;
   height: 28px !important;
-  transform: translateY(-50%) !important;
+  transform: none !important;
 }
 
 /* Pill RELOCATED into the flex row of nav-inner, right next to LIVE pill.
