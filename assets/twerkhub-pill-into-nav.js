@@ -18,8 +18,13 @@
   window.__twkPillIntoNavInit = true;
 
   function relocate(){
-    var pill = document.querySelector('.twerkhub-tokens-hud');
-    if (!pill) return false;
+    var pills = document.querySelectorAll('.twerkhub-tokens-hud');
+    if (!pills.length) return false;
+    // Remove all duplicates, keep only first
+    for (var i = 1; i < pills.length; i++) {
+      try { pills[i].remove(); } catch (_) {}
+    }
+    var pill = pills[0];
     // Prefer placing right BEFORE the LIVE pill so order is:
     //   [logo] [...links...] [EN/ES/RU] [LIVE]  →  [logo] [...links...] [EN/ES/RU] [TOKENS] [LIVE]
     // If LIVE not found, fall back to the inner container's last position.
