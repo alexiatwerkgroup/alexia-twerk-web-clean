@@ -179,7 +179,8 @@
 
     hud.appendChild(badge);
     hud.appendChild(toastHost);
-    document.body.appendChild(hud);
+    // Don't append to body - pill is now in HTML navbar
+    // document.body.appendChild(hud);
 
     countEl = badge.querySelector('.twerkhub-tokens-count');
     tierEl  = badge.querySelector('.twerkhub-tokens-tier');
