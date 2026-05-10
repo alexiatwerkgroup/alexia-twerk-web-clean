@@ -1,59 +1,52 @@
-// GET /api/admin/full-stats   (auth required, owner-only)
-//   → { ok, users: [...], total_users, total_tokens_outstanding, ... }
-//
-// Replaces Supabase admin_get_full_stats RPC. Hard-gated to OWNER_EMAIL.
-// Returns full user list (email + metrics) for the admin dashboard.
+import { authenticate } from '../../_lib/auth.js'
+import { json, preflight } from '../../_lib/http.js'
+import { Errors } from '../../_lib/errors.js'
+import { logger } from '../../_lib/logger.js'
 
-import { authenticate } from '../../_lib/auth.js';
-import { json, preflight } from '../../_lib/http.js';
-
-const OWNER_EMAIL = 'alexiatwerkoficial@gmail.com';
+const OWNER_EMAIL = 'alexiatwerkoficial@gmail.com'
+const ALLOWED_ORIGINS = ['https://alexiatwerkgroup.com', 'https://www.alexiatwerkgroup.com', 'http://localhost:8788', 'http://localhost:3000']
 
 export async function onRequest(context) {
-  const { request, env } = context;
-  const origin = request.headers.get('Origin') || '';
+  const { request, env } = context
+  const origin = request.headers.get('Origin') || ''
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
 
-  if (request.method === 'OPTIONS') return preflight(origin);
-  if (request.method !== 'GET') return json({ ok: false, error: 'method_not_allowed' }, 405, origin);
-  if (!env.DB) return json({ ok: false, error: 'd1_binding_missing' }, 500, origin);
-
-  const me = await authenticate(request, env);
-  // Silent empty for non-owners (matches original Supabase RPC behavior).
-  if (!me || !me.email || String(me.email).toLowerCase() !== OWNER_EMAIL) {
-    return json({ ok: true, users: [], total_users: 0, owner_only: true }, 200, origin);
+  if (request.method === 'OPTIONS') return preflight(allowedOrigin)
+  if (request.method !== 'GET') return json(Errors.METHOD_NOT_ALLOWED.toJSON(), 405, allowedOrigin)
+  if (!env.DB) {
+    logger.error('admin.full-stats', 'DB binding missing')
+    return json(Errors.D1_BINDING_MISSING.toJSON(), 500, allowedOrigin)
   }
 
-  const usersRows = await env.DB.prepare(
-    `SELECT id, email, username, tokens, total_earned, streak, tier,
-            registered_at, last_login_date, last_seen_at,
-            seconds_on_site, cuts_watched, welcomed
-       FROM profiles
-      ORDER BY registered_at DESC
-      LIMIT 1000`
-  ).all();
+  const me = await authenticate(request, env)
+  if (!me || !me.sub) {
+    logger.warn('admin.full-stats', 'Unauthenticated request')
+    return json(Errors.UNAUTHORIZED.toJSON(), 401, allowedOrigin)
+  }
 
-  const totals = await env.DB.prepare(
-    `SELECT COUNT(*) as total_users,
-            COALESCE(SUM(tokens), 0) as total_tokens_outstanding,
-            COALESCE(SUM(total_earned), 0) as total_tokens_lifetime,
-            COALESCE(SUM(seconds_on_site), 0) as total_seconds,
-            COALESCE(SUM(cuts_watched), 0) as total_cuts
-       FROM profiles`
-  ).first();
+  const isAdmin = me.email && String(me.email).toLowerCase() === OWNER_EMAIL
+  if (!isAdmin) {
+    logger.warn('admin.full-stats', 'Unauthorized admin access', { user: me.sub, email: me.email })
+    return json(Errors.FORBIDDEN.toJSON(), 403, allowedOrigin)
+  }
 
-  const commentTotal = await env.DB.prepare(
-    'SELECT COUNT(*) as n FROM video_comments'
-  ).first();
+  try {
+    const stats = {}
+    const userCount = await env.DB.prepare('SELECT COUNT(*) as n FROM users').first()
+    stats.total_users = userCount?.n || 0
+    const commentCount = await env.DB.prepare('SELECT COUNT(*) as n FROM video_comments').first()
+    stats.total_comments = commentCount?.n || 0
+    const subscriberCount = await env.DB.prepare('SELECT COUNT(*) as n FROM subscribers').first()
+    stats.total_subscribers = subscriberCount?.n || 0
+    const reportCount = await env.DB.prepare('SELECT COUNT(*) as n FROM comment_reports').first()
+    stats.pending_reports = reportCount?.n || 0
+    const tokens = await env.DB.prepare('SELECT SUM(tokens) as total FROM profiles').first()
+    stats.total_tokens_issued = tokens?.total || 0
 
-  return json(
-    {
-      ok: true,
-      users: (usersRows && usersRows.results) || [],
-      ...totals,
-      total_comments: (commentTotal && commentTotal.n) || 0,
-      generated_at: new Date().toISOString(),
-    },
-    200,
-    origin
-  );
+    logger.info('admin.full-stats', 'Stats retrieved', { user: me.sub })
+    return json({ ok: true, stats }, 200, allowedOrigin)
+  } catch (e) {
+    logger.error('admin.full-stats', 'Query failed', { error: e.message })
+    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
+  }
 }
