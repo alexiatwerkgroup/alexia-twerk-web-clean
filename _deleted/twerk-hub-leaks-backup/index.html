@@ -106,65 +106,6 @@
 <link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260506-p27">
 </head>
 <body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater twerkhub-ph-theme" data-page="playlist-index">
-  <nav class="twk-nav-v1">
-    <div class="twk-nav-v1-inner">
-      <a href="/" class="twk-nav-v1-logo">
-        <img src="/assets/logo.png" alt="Alexia Twerk Group" style="height: 32px;">
-      </a>
-      <a href="/" class="twk-nav-v1-link">HOME</a>
-      <a href="/#exclusive" class="twk-nav-v1-link">EXCLUSIVE</a>
-      <a href="/playlist/" class="twk-nav-v1-link">PLAYLISTS</a>
-      <a href="/creators.html" class="twk-nav-v1-link">CREATORS</a>
-      <a href="/#hot-packs" class="twk-nav-v1-link">HOT PACKS</a>
-      <a href="/#community" class="twk-nav-v1-link">COMMUNITY</a>
-      <a href="/#membership" class="twk-nav-v1-link">MEMBERSHIP</a>
-      <a href="/auth/signin.html" class="twk-nav-v1-link">MY ACCOUNT</a>
-      <a href="/#profile" class="twk-nav-v1-link">PROFILE</a>
-      <div class="twk-nav-v1-lang">EN / ES / RU</div>
-      <div id="twk-tokens-hud-v3" class="twerkhub-tokens-hud" style="display: flex; gap: 8px; align-items: center; padding: 6px 12px; background: rgba(0,0,0,0.5); border-radius: 20px; font-size: 12px; min-width: 80px;">
-        <span style="color: #FFD700; font-weight: bold;" id="twk-tokens-count">0</span>
-        <span style="color: #999; font-size: 10px;" id="twk-tokens-tier">BASIC</span>
-      </div>
-      <div class="twk-nav-v1-live" id="twk-nav-v1-live">
-        <span class="twk-nav-v1-live-dot"></span>
-        <span id="twk-live-count">0</span> LIVE
-      </div>
-    </div>
-    <style>
-      .twk-nav-v1 { position: sticky; top: 0; z-index: 9999; background: #1a1a1a; border-bottom: 1px solid #333; padding: 8px 0; }
-      .twk-nav-v1-inner { display: flex; align-items: center; gap: 16px; max-width: 1400px; margin: 0 auto; padding: 0 16px; }
-      .twk-nav-v1-logo { display: flex; }
-      .twk-nav-v1-link { color: #fff; text-decoration: none; font-size: 13px; transition: color 0.2s; }
-      .twk-nav-v1-link:hover { color: #FFD700; }
-      .twk-nav-v1-lang { color: #999; font-size: 11px; margin-left: auto; }
-      .twk-nav-v1-live { color: #00FF00; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 4px; }
-      .twk-nav-v1-live-dot { width: 6px; height: 6px; background: #00FF00; border-radius: 50%; animation: blink 1s infinite; }
-      @keyframes blink { 50% { opacity: 0.5; } }
-    </style>
-    <script>
-      (function() {
-        var navLinks = document.querySelectorAll('.twk-nav-v1-link');
-        var currentPath = window.location.pathname;
-        navLinks.forEach(function(link) {
-          if (link.getAttribute('href') === currentPath || (currentPath === '/' && link.getAttribute('href') === '/')) {
-            link.style.color = '#FFD700';
-          }
-        });
-      })();
-      var thumbObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(function(e) {
-          if (e.isIntersecting && !e.target.src) {
-            e.target.src = e.target.dataset.src;
-            e.target.removeAttribute('data-src');
-          }
-        });
-      });
-      document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('img[data-src]').forEach(function(i) { thumbObserver.observe(i); });
-      });
-    </script>
-  </nav>
-
 <a href="#main" class="twk-sr-only">Skip to content</a>
 
 
@@ -743,6 +684,7 @@
 
 </body>
 </html>
+
 
 
 
