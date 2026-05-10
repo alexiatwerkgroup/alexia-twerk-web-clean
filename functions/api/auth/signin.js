@@ -1,76 +1,163 @@
 // POST /api/auth/signin
-// Body: { email, password }   OR   { username, password }
+// Body: { email, password } OR { username, password }
 // Returns: { ok, user: {id,email,username}, token } + Set-Cookie
-//
-// Verifies bcrypt-style password hash and issues a fresh JWT.
 
-import { verifyPassword, signJWT } from '../../_lib/auth.js';
-import { json, preflight, readJSON, setSessionCookie } from '../../_lib/http.js';
+import { verifyPassword, signJWT } from '../../_lib/auth.js'
+import { json, preflight, readJSON, setSessionCookie } from '../../_lib/http.js'
+import { validate, ValidationError } from '../../_lib/validate.js'
+import { Errors } from '../../_lib/errors.js'
+import { logger } from '../../_lib/logger.js'
 
-const EMAIL_RE = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+const ALLOWED_ORIGINS = [
+  'https://alexiatwerkgroup.com',
+  'https://www.alexiatwerkgroup.com',
+  'http://localhost:8788',
+  'http://localhost:3000',
+]
 
 export async function onRequest(context) {
-  const { request, env } = context;
-  const origin = request.headers.get('Origin') || '';
+  const { request, env } = context
+  const origin = request.headers.get('Origin') || ''
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
 
-  if (request.method === 'OPTIONS') return preflight(origin);
-  if (request.method !== 'POST') return json({ ok: false, error: 'method_not_allowed' }, 405, origin);
-  if (!env.DB) return json({ ok: false, error: 'd1_binding_missing' }, 500, origin);
-  if (!env.JWT_SECRET) return json({ ok: false, error: 'jwt_secret_missing' }, 500, origin);
+  if (request.method === 'OPTIONS') return preflight(allowedOrigin)
+  if (request.method !== 'POST') {
+    return json(Errors.METHOD_NOT_ALLOWED.toJSON(), 405, allowedOrigin)
+  }
+  if (!env.DB) {
+    logger.error('signin', 'DB binding missing')
+    return json(Errors.D1_BINDING_MISSING.toJSON(), 500, allowedOrigin)
+  }
+  if (!env.JWT_SECRET) {
+    logger.error('signin', 'JWT_SECRET missing')
+    return json(Errors.JWT_SECRET_MISSING.toJSON(), 500, allowedOrigin)
+  }
 
-  const body = await readJSON(request);
-  if (!body) return json({ ok: false, error: 'bad_json' }, 400, origin);
+  const body = await readJSON(request)
+  if (!body) {
+    return json(Errors.BAD_JSON.toJSON(), 400, allowedOrigin)
+  }
 
-  const password = String(body.password || '');
-  if (!password) return json({ ok: false, error: 'invalid_credentials' }, 400, origin);
+  const password = String(body.password || '').trim()
+  if (!password) {
+    logger.warn('signin', 'Missing password')
+    return json(Errors.INVALID_CREDENTIALS.toJSON(), 401, allowedOrigin)
+  }
 
-  // Resolve email — direct or via username lookup
-  let email = String(body.email || '').trim().toLowerCase();
-  const username = body.username ? String(body.username).trim() : '';
+  // Validate password format
+  try {
+    validate(password, 'password')
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      logger.warn('signin', 'Invalid password format')
+      return json(Errors.INVALID_CREDENTIALS.toJSON(), 401, allowedOrigin)
+    }
+    throw e
+  }
+
+  // Resolve email — direct or via username
+  let email = String(body.email || '').trim().toLowerCase()
+  const username = body.username ? String(body.username).trim() : ''
 
   if (!email && username) {
-    const row = await env.DB.prepare(
-      'SELECT email FROM profiles WHERE LOWER(username) = LOWER(?)'
+    try {
+      validate(username, 'username')
+      const row = await env.DB.prepare(
+        'SELECT email FROM profiles WHERE LOWER(username) = LOWER(?)'
+      )
+        .bind(username)
+        .first()
+      if (!row) {
+        logger.warn('signin', 'Username not found', { username })
+        return json(Errors.INVALID_CREDENTIALS.toJSON(), 401, allowedOrigin)
+      }
+      email = String(row.email || '').toLowerCase()
+    } catch (e) {
+      if (e instanceof ValidationError) {
+        logger.warn('signin', 'Invalid username format')
+        return json(Errors.INVALID_CREDENTIALS.toJSON(), 401, allowedOrigin)
+      }
+      throw e
+    }
+  }
+
+  // Validate email
+  if (!email) {
+    logger.warn('signin', 'Missing email and username')
+    return json(Errors.INVALID_CREDENTIALS.toJSON(), 401, allowedOrigin)
+  }
+
+  try {
+    validate(email, 'email')
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      logger.warn('signin', 'Invalid email format')
+      return json(Errors.INVALID_CREDENTIALS.toJSON(), 401, allowedOrigin)
+    }
+    throw e
+  }
+
+  // Look up user
+  let user
+  try {
+    user = await env.DB.prepare(
+      'SELECT id, email, password_hash FROM users WHERE email = ?'
     )
-      .bind(username)
-      .first();
-    if (!row) return json({ ok: false, error: 'invalid_credentials' }, 401, origin);
-    email = String(row.email || '').toLowerCase();
+      .bind(email)
+      .first()
+  } catch (e) {
+    logger.error('signin', 'Database error', { error: e.message })
+    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
   }
 
-  if (!email || !EMAIL_RE.test(email)) {
-    return json({ ok: false, error: 'invalid_credentials' }, 401, origin);
+  if (!user) {
+    logger.warn('signin', 'User not found', { email })
+    return json(Errors.INVALID_CREDENTIALS.toJSON(), 401, allowedOrigin)
   }
 
-  const user = await env.DB.prepare(
-    'SELECT id, email, password_hash FROM users WHERE email = ?'
-  )
-    .bind(email)
-    .first();
+  // Verify password
+  let passwordValid
+  try {
+    passwordValid = await verifyPassword(password, user.password_hash)
+  } catch (e) {
+    logger.error('signin', 'Password verification error', { error: e.message })
+    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
+  }
 
-  if (!user) return json({ ok: false, error: 'invalid_credentials' }, 401, origin);
+  if (!passwordValid) {
+    logger.warn('signin', 'Invalid password', { id: user.id })
+    return json(Errors.INVALID_CREDENTIALS.toJSON(), 401, allowedOrigin)
+  }
 
-  const ok = await verifyPassword(password, user.password_hash);
-  if (!ok) return json({ ok: false, error: 'invalid_credentials' }, 401, origin);
+  // Look up username from profile
+  let profile
+  try {
+    profile = await env.DB.prepare('SELECT username FROM profiles WHERE id = ?')
+      .bind(user.id)
+      .first()
+  } catch (e) {
+    logger.error('signin', 'Profile lookup error', { error: e.message })
+  }
 
-  // Look up username from profiles
-  const profile = await env.DB.prepare('SELECT username FROM profiles WHERE id = ?')
-    .bind(user.id)
-    .first();
-
-  // Bump last_seen_at
+  // Update last_seen_at (non-critical)
   try {
     await env.DB.prepare('UPDATE profiles SET last_seen_at = CURRENT_TIMESTAMP WHERE id = ?')
       .bind(user.id)
-      .run();
-  } catch (_) { /* non-fatal */ }
-
-  let token;
-  try {
-    token = await signJWT({ sub: user.id, email: user.email }, env.JWT_SECRET);
+      .run()
   } catch (e) {
-    return json({ ok: false, error: 'jwt_sign_failed' }, 500, origin);
+    logger.warn('signin', 'Failed to update last_seen_at', { error: e.message })
   }
+
+  // Sign JWT
+  let token
+  try {
+    token = await signJWT({ sub: user.id, email: user.email }, env.JWT_SECRET)
+  } catch (e) {
+    logger.error('signin', 'JWT sign failed', { error: e.message })
+    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
+  }
+
+  logger.info('signin', 'User authenticated', { id: user.id })
 
   return json(
     {
@@ -79,7 +166,7 @@ export async function onRequest(context) {
       token,
     },
     200,
-    origin,
+    allowedOrigin,
     { 'Set-Cookie': setSessionCookie(token) }
-  );
+  )
 }
