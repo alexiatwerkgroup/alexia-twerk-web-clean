@@ -1,0 +1,45 @@
+/* ═══ STICKY TOKEN PILL FIX ═══
+ * Makes .twerkhub-tokens-hud pill sticky to top when relocated into nav
+ * Fires AFTER all other CSS so these rules override defaults
+ */
+
+/* Make nav sticky to top if not already */
+.twk-nav-v1 {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+/* When pill is relocated into nav (.twk-tk-hud--in-nav class added by twerkhub-pill-into-nav.js),
+   change from fixed positioning to relative so it inherits parent's sticky behavior */
+.twerkhub-tokens-hud.twk-tk-hud--in-nav {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  margin-right: 8px !important;
+  z-index: auto !important;
+}
+
+/* Toast popups (the +tokens notifications) should appear above the badge */
+.twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-toast-host {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  margin-top: 6px !important;
+  pointer-events: none !important;
+}
+
+/* Mobile: keep pill fixed at bottom-right on small screens */
+@media (max-width: 768px) {
+  .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    margin: 0 !important;
+    margin-right: 0 !important;
+  }
+}
