@@ -255,9 +255,7 @@
   // FOUNDER_FLOOR (set by ensureFounderFloor on init). Each grant adds
   // on top, and getState returns max(FOUNDER_FLOOR, localBalance).
   function grant(amount, reason) {
-    if (amount <= 0) return;
-    // CHANGED 2026-05-10: Allow grants for logged-in OR anonymous users.
-    // Anonymous users accumulate tokens in localStorage; they sync when they login.
+    if (!isLoggedIn() || amount <= 0) return;
     var founder = isFounder();
     if (founder) {
       // Ensure the local floor is set so accumulation is visible.
@@ -333,7 +331,7 @@
   }
 
   function onPageVisit() {
-    // CHANGED 2026-05-10: Everyone earns tokens for visiting pages, logged in or not.
+    if (!isLoggedIn()) return;
     // 2026-05-09: founder bypass — always rewards, no cap, no dedup.
     // Still tracks visited paths in localStorage so the dashboard "Explore
     // a new page" achievement reflects activity.
@@ -356,8 +354,7 @@
   // +15 watch + +30 finish, once per video, for everyone (founder included
   // = same as normal user). No bypasses, no multi-fire.
   function onVideoStart(vid) {
-    if (!vid) return;
-    // CHANGED 2026-05-10: Everyone earns tokens for watching videos, logged in or not.
+    if (!isLoggedIn() || !vid) return;
     var videos = read(KEYS.videos, {});
     if (videos[vid] && videos[vid].started) return;
     if (!consumeDaily('watches', DAILY_CAPS.watches)) return;
@@ -368,8 +365,7 @@
   }
 
   function onVideoComplete(vid) {
-    if (!vid) return;
-    // CHANGED 2026-05-10: Everyone earns tokens for completing videos, logged in or not.
+    if (!isLoggedIn() || !vid) return;
     var videos = read(KEYS.videos, {});
     if (videos[vid] && videos[vid].completed) return;
     if (!consumeDaily('finishes', DAILY_CAPS.finishes)) return;
@@ -380,7 +376,7 @@
   }
 
   function onShare() {
-    // CHANGED 2026-05-10: Everyone earns tokens for sharing, logged in or not.
+    if (!isLoggedIn()) return;
     if (isFounder()) {
       var sh = read(KEYS.shares || 'alexia_tokens_v1.shares', 0) | 0;
       try { localStorage.setItem('alexia_tokens_v1.shares', JSON.stringify(sh + 1)); } catch (_) {}
@@ -570,28 +566,28 @@
       window.addEventListener('alexia-tokens-changed', renderHud);
       renderHud();
 
-      // EVERYONE earns tokens, logged-in or not. Sync to server only if authenticated.
-      welcome();
-      onPageVisit();
       if (isLoggedIn()) {
-        // Logged-in users get daily/streak bonuses
+        // Bootstrap rewards
+        welcome();
         dailyCheck();
+        onPageVisit();
+        // 2026-05-09: if this page contains a video player (.vd-player[data-vid]),
+        // count it as a video watched. Single-page video pages need this since
+        // there's no iframe-click event to instrument.
+        try {
+          var vp = document.querySelector('.vd-player[data-vid], [data-vid]');
+          if (vp) {
+            var vid = vp.getAttribute('data-vid');
+            if (vid) {
+              // +15 watch once per video, +30 finish once per video.
+              setTimeout(function () { onVideoStart(vid); }, 1200);
+              setTimeout(function () { onVideoComplete(vid); }, 25000);
+            }
+          }
+        } catch (_) {}
         // Drift reconcile after critical path
         setTimeout(reconcileWithServer, 1500);
       }
-
-      // Video player rewards for EVERYONE (logged in or not)
-      try {
-        var vp = document.querySelector('.vd-player[data-vid], [data-vid]');
-        if (vp) {
-          var vid = vp.getAttribute('data-vid');
-          if (vid) {
-            // +15 watch once per video, +30 finish once per video.
-            setTimeout(function () { onVideoStart(vid); }, 1200);
-            setTimeout(function () { onVideoComplete(vid); }, 25000);
-          }
-        }
-      } catch (_) {}
       instrumentClicks();
     } catch (_) {}
   }
