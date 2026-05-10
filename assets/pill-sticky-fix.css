@@ -1,46 +1,33 @@
-/* ═══ STICKY TOKEN PILL FIX ═══
- * Override pH theme to make pill stick to top while scrolling
- * Must clear transform and all positioning from theme
+/* ═══ STICKY TOKEN PILL - BULLETPROOF VERSION ═══
+ * Works whether pill is relocated to nav or stays in original position
  */
 
-/* Step 1: Make nav sticky as container */
-.twk-nav-v1 {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 101 !important;
-}
-
-/* Step 2: Clear ALL pH theme positioning when pill is relocated to nav
-   Remove: position fixed, transform, top offset, etc. */
-body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+/* REGARDLESS OF POSITION: Always make pill sticky, not fixed */
+body.twerkhub-ph-theme .twerkhub-tokens-hud {
   position: sticky !important;
   top: 10px !important;
   right: 14px !important;
-  bottom: auto !important;
-  left: auto !important;
-  margin: 0 !important;
-  margin-right: 14px !important;
-  z-index: 99 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-end !important;
-  pointer-events: none !important;
-  height: 28px !important;
   transform: none !important;
   will-change: auto !important;
+  z-index: 99 !important;
 }
 
-/* Keep toast above badge */
-body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-toast-host {
-  position: absolute !important;
-  top: 100% !important;
-  right: 0 !important;
-  margin-top: 4px !important;
+/* Make nav sticky as well for proper stacking */
+.twk-nav-v1 {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
 }
 
-/* Mobile: revert to fixed at bottom */
+/* If pill is IN nav, adjust positioning */
+body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+  top: 10px !important;
+  position: sticky !important;
+}
+
+/* Mobile: keep fixed at bottom */
 @media (max-width: 768px) {
-  body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
+  body.twerkhub-ph-theme .twerkhub-tokens-hud {
     position: fixed !important;
     top: auto !important;
     bottom: 20px !important;
