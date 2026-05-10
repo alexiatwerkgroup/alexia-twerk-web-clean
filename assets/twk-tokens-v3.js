@@ -542,6 +542,14 @@
   // ─── Init ────────────────────────────────────────────────────────────
   function init() {
     try {
+      // Clean up any stale fallback pills from legacy twerkhub-tokens.js
+      var allPills = document.querySelectorAll('.twerkhub-tokens-hud');
+      if (allPills.length > 1) {
+        for (var i = 1; i < allPills.length; i++) {
+          try { allPills[i].remove(); } catch (_) {}
+        }
+      }
+
       buildHud();
       // Listen for state changes from elsewhere (auth, sync, etc.)
       window.addEventListener('alexia-tokens-changed', renderHud);
