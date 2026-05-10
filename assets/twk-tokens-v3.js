@@ -542,11 +542,22 @@
   // ─── Init ────────────────────────────────────────────────────────────
   function init() {
     try {
-      // Clean up any stale fallback pills from legacy twerkhub-tokens.js
-      var allPills = document.querySelectorAll('.twerkhub-tokens-hud');
-      if (allPills.length > 1) {
-        for (var i = 1; i < allPills.length; i++) {
-          try { allPills[i].remove(); } catch (_) {}
+      // NUCLEAR: Remove ALL duplicate token pills, including any not in navbar
+      var allElements = document.querySelectorAll('*');
+      var mainPill = document.getElementById('twk-tokens-hud-v3');
+      for (var i = 0; i < allElements.length; i++) {
+        var el = allElements[i];
+        if (el === mainPill) continue; // Keep the main one
+        if (el.className && el.className.indexOf('twerkhub-tokens-hud') !== -1) {
+          try { el.remove(); } catch (_) {}
+        }
+        if (el.textContent && el.textContent.indexOf('TOKENS') > -1 &&
+            el.textContent.length < 100 && el !== mainPill &&
+            (el.textContent.indexOf('BASIC') > -1 || el.textContent.indexOf('VIP') > -1)) {
+          // Check if it's a duplicate pill element
+          if (el.textContent.indexOf('tokens') > -1 && el.tagName !== 'A' && el.tagName !== 'SPAN') {
+            try { el.remove(); } catch (_) {}
+          }
         }
       }
 
