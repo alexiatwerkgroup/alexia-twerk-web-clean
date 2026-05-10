@@ -395,15 +395,20 @@
     hudBalance = document.getElementById('twk-tokens-count');
     hudTier = document.getElementById('twk-tokens-tier');
 
+    console.log('[twk-tokens-v3] buildHud: hudRoot=', !!hudRoot, 'hudBalance=', !!hudBalance, 'hudTier=', !!hudTier);
+
     // If we found hudRoot, also search for balance/tier inside it as fallback
     if (hudRoot && !hudBalance) {
       hudBalance = hudRoot.querySelector('#twk-tokens-count') || hudRoot.querySelector('[id*="tokens-count"]');
+      console.log('[twk-tokens-v3] searched inside hudRoot for balance, found:', !!hudBalance);
     }
     if (hudRoot && !hudTier) {
       hudTier = hudRoot.querySelector('#twk-tokens-tier') || hudRoot.querySelector('[id*="tokens-tier"]');
+      console.log('[twk-tokens-v3] searched inside hudRoot for tier, found:', !!hudTier);
     }
 
     if (!hudRoot) {
+      console.log('[twk-tokens-v3] hudRoot not found, creating FALLBACK pill');
       // Fallback: create if not found in HTML
       hudRoot = document.createElement('div');
       hudRoot.id = 'twk-tokens-hud-v3';
