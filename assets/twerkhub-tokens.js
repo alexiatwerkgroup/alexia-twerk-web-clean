@@ -149,41 +149,44 @@
   var hud, badge, countEl, tierEl, toastHost;
   function buildHud(){
     if (hud) return;
-    injectEmergencyCSS();
-    hud = document.createElement('div');
-    hud.className = 'twerkhub-tokens-hud';
-    hud.setAttribute('aria-live', 'polite');
-    hud.setAttribute('aria-label', 'Token balance');
+    // Try to use existing HTML pill in navbar first
+    hud = document.getElementById('twk-tokens-hud-v3') || document.querySelector('.twerkhub-tokens-hud');
+    if (!hud) {
+      // Fallback: create pill if not found in HTML
+      injectEmergencyCSS();
+      hud = document.createElement('div');
+      hud.className = 'twerkhub-tokens-hud';
+      hud.setAttribute('aria-live', 'polite');
+      hud.setAttribute('aria-label', 'Token balance');
 
-    badge = document.createElement('button');
-    badge.type = 'button';
-    badge.className = 'twerkhub-tokens-badge';
-    badge.title = 'Your Twerkhub tokens — earn by exploring and watching';
-    badge.innerHTML =
-      '<span class="twerkhub-tokens-coin" aria-hidden="true"></span>' +
-      '<span class="twerkhub-tokens-count">0</span>' +
-      '<span class="twerkhub-tokens-unit">tokens</span>' +
-      '<span class="twerkhub-tokens-tier">BASIC</span>';
-    badge.addEventListener('click', function(){
-      // Click on badge scrolls to the tiers section so users can see what
-      // they're unlocking. Graceful no-op on pages without #tokens.
-      var tgt = document.getElementById('tokens');
-      if (tgt && tgt.scrollIntoView) tgt.scrollIntoView({behavior:'smooth', block:'start'});
-    });
+      badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'twerkhub-tokens-badge';
+      badge.title = 'Your Twerkhub tokens — earn by exploring and watching';
+      badge.innerHTML =
+        '<span class="twerkhub-tokens-coin" aria-hidden="true"></span>' +
+        '<span class="twerkhub-tokens-count">0</span>' +
+        '<span class="twerkhub-tokens-unit">tokens</span>' +
+        '<span class="twerkhub-tokens-tier">BASIC</span>';
+      badge.addEventListener('click', function(){
+        var tgt = document.getElementById('tokens');
+        if (tgt && tgt.scrollIntoView) tgt.scrollIntoView({behavior:'smooth', block:'start'});
+      });
 
-    toastHost = document.createElement('div');
-    toastHost.className = 'twerkhub-tokens-toast-host';
-    // 2026-05-09: defensive inline styles so multiple toasts stack vertically
-    // even when the bundle CSS isn't loaded on a particular page.
-    toastHost.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none;';
+      toastHost = document.createElement('div');
+      toastHost.className = 'twerkhub-tokens-toast-host';
+      toastHost.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none;';
 
-    hud.appendChild(badge);
-    hud.appendChild(toastHost);
-    // Don't append to body - pill is now in HTML navbar
-    // document.body.appendChild(hud);
+      hud.appendChild(badge);
+      hud.appendChild(toastHost);
+      document.body.appendChild(hud);
+    }
 
-    countEl = badge.querySelector('.twerkhub-tokens-count');
-    tierEl  = badge.querySelector('.twerkhub-tokens-tier');
+    // Get or create countEl + tierEl (must find both before we can render)
+    if (!countEl || !tierEl) {
+      countEl = countEl || document.getElementById('twk-tokens-count') || document.querySelector('.twerkhub-tokens-count') || (hud && hud.querySelector('.twerkhub-tokens-count'));
+      tierEl = tierEl || document.getElementById('twk-tokens-tier') || document.querySelector('.twerkhub-tokens-tier') || (badge && badge.querySelector('.twerkhub-tokens-tier'));
+    }
   }
 
   function render(){
