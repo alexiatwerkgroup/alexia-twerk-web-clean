@@ -1,27 +1,15 @@
 // POST /api/auth/signout
-// Clears the session cookie.
+// Clears the session cookie. JWT remains technically valid until exp,
+// but client-side will discard it.
 
-import { json, preflight, clearSessionCookie } from '../../_lib/http.js'
-import { Errors } from '../../_lib/errors.js'
-import { logger } from '../../_lib/logger.js'
-
-const ALLOWED_ORIGINS = [
-  'https://alexiatwerkgroup.com',
-  'https://www.alexiatwerkgroup.com',
-  'http://localhost:8788',
-  'http://localhost:3000',
-]
+import { json, preflight, clearSessionCookie } from '../../_lib/http.js';
 
 export async function onRequest(context) {
-  const { request } = context
-  const origin = request.headers.get('Origin') || ''
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  const { request } = context;
+  const origin = request.headers.get('Origin') || '';
 
-  if (request.method === 'OPTIONS') return preflight(allowedOrigin)
-  if (request.method !== 'POST') {
-    return json(Errors.METHOD_NOT_ALLOWED.toJSON(), 405, allowedOrigin)
-  }
+  if (request.method === 'OPTIONS') return preflight(origin);
+  if (request.method !== 'POST') return json({ ok: false, error: 'method_not_allowed' }, 405, origin);
 
-  logger.info('signout', 'User signed out')
-  return json({ ok: true }, 200, allowedOrigin, { 'Set-Cookie': clearSessionCookie() })
+  return json({ ok: true }, 200, origin, { 'Set-Cookie': clearSessionCookie() });
 }

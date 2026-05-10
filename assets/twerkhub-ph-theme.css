@@ -135,9 +135,12 @@ body.twerkhub-ph-theme .twerkhub-hh-stat span {
    3 · Sticky topbar (twk-nav-v1)
    ──────────────────────────────────────────────────────────────────── */
 body.twerkhub-ph-theme .twk-nav-v1 {
+  position: sticky !important;
+  top: 0 !important;
   background: rgba(0,0,0,.97) !important;
   border-bottom: 2px solid #ff9000 !important;
   backdrop-filter: blur(8px) !important;
+  z-index: 9999 !important;
 }
 
 body.twerkhub-ph-theme .twk-nav-v1-brand {
@@ -266,7 +269,7 @@ body.twerkhub-ph-theme .twerkhub-hh-mute {
   right: 14px !important;
   left: auto !important;
   bottom: auto !important;
-  transform: translateY(-50%) !important;
+  transform: none !important;
   z-index: 14 !important;
   padding: 9px 16px !important;
   border-radius: 999px !important;
@@ -503,13 +506,12 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud {
   bottom: auto !important;
   left: auto !important;
   margin: 0 !important;
-  z-index: 10000 !important;
+  z-index: 9998 !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important;
   pointer-events: none !important;
   height: 28px !important;
-  transform: translateY(-50%) !important;
 }
 
 /* Pill RELOCATED into the flex row of nav-inner, right next to LIVE pill.
@@ -532,7 +534,7 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   pointer-events: auto !important;
   height: 28px !important;
   width: auto !important;
-  transform: translateY(-50%) !important;
+  transform: none !important;
   flex-shrink: 0 !important;
 }
 
@@ -554,7 +556,7 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-
     top: auto !important;
     bottom: 14px !important;
     right: 14px !important;
-    transform: translateY(-50%) !important;
+    transform: none !important;
   }
 }
 

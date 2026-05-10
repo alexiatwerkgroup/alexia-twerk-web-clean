@@ -1,81 +1,43 @@
 // DELETE /api/comments/[id]   (auth required)
 //   → { ok }
 //
-// Owner-only delete. Hard delete (no soft-delete).
+// Owner-only delete. Hard delete (no soft-delete column in schema).
 
-import { authenticate } from '../../_lib/auth.js'
-import { json, preflight } from '../../_lib/http.js'
-import { Errors } from '../../_lib/errors.js'
-import { logger } from '../../_lib/logger.js'
+import { authenticate } from '../../_lib/auth.js';
+import { json, preflight } from '../../_lib/http.js';
 
-const OWNER_EMAIL = 'alexiatwerkoficial@gmail.com'
-
-const ALLOWED_ORIGINS = [
-  'https://alexiatwerkgroup.com',
-  'https://www.alexiatwerkgroup.com',
-  'http://localhost:8788',
-  'http://localhost:3000',
-]
+const OWNER_EMAIL = 'alexiatwerkoficial@gmail.com';
 
 export async function onRequest(context) {
-  const { request, env, params } = context
-  const origin = request.headers.get('Origin') || ''
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  const { request, env, params } = context;
+  const origin = request.headers.get('Origin') || '';
 
-  if (request.method === 'OPTIONS') return preflight(allowedOrigin)
-  if (request.method !== 'DELETE') {
-    return json(Errors.METHOD_NOT_ALLOWED.toJSON(), 405, allowedOrigin)
-  }
-  if (!env.DB) {
-    logger.error('comments.DELETE', 'DB binding missing')
-    return json(Errors.D1_BINDING_MISSING.toJSON(), 500, allowedOrigin)
-  }
+  if (request.method === 'OPTIONS') return preflight(origin);
+  if (request.method !== 'DELETE') return json({ ok: false, error: 'method_not_allowed' }, 405, origin);
+  if (!env.DB) return json({ ok: false, error: 'd1_binding_missing' }, 500, origin);
 
-  const me = await authenticate(request, env)
-  if (!me || !me.sub) {
-    logger.warn('comments.DELETE', 'Unauthenticated request')
-    return json(Errors.UNAUTHORIZED.toJSON(), 401, allowedOrigin)
-  }
+  const me = await authenticate(request, env);
+  if (!me || !me.sub) return json({ ok: false, error: 'unauthorized' }, 401, origin);
 
-  const commentId = (params && params.id) ? String(params.id) : ''
-  if (!commentId) {
-    logger.warn('comments.DELETE', 'Missing comment ID', { user: me.sub })
-    return json(Errors.MISSING_FIELD('id').toJSON(), 400, allowedOrigin)
-  }
+  const commentId = (params && params.id) ? String(params.id) : '';
+  if (!commentId) return json({ ok: false, error: 'missing_id' }, 400, origin);
 
-  // Get comment
-  let row
-  try {
-    row = await env.DB.prepare('SELECT user_id FROM video_comments WHERE id = ?')
-      .bind(commentId)
-      .first()
-  } catch (e) {
-    logger.error('comments.DELETE', 'Query failed', { error: e.message })
-    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
-  }
+  const row = await env.DB.prepare('SELECT user_id FROM video_comments WHERE id = ?')
+    .bind(commentId)
+    .first();
+  if (!row) return json({ ok: false, error: 'not_found' }, 404, origin);
 
-  if (!row) {
-    logger.warn('comments.DELETE', 'Comment not found', { id: commentId, user: me.sub })
-    return json(Errors.NOT_FOUND.toJSON(), 404, allowedOrigin)
-  }
-
-  // Authorization check
-  const isAdmin = me.email && String(me.email).toLowerCase() === OWNER_EMAIL
+  // Owner of the comment OR site admin (Anti) can delete
+  const isAdmin = me.email && String(me.email).toLowerCase() === OWNER_EMAIL;
   if (row.user_id !== me.sub && !isAdmin) {
-    logger.warn('comments.DELETE', 'Forbidden', { id: commentId, user: me.sub })
-    return json(Errors.FORBIDDEN.toJSON(), 403, allowedOrigin)
+    return json({ ok: false, error: 'forbidden' }, 403, origin);
   }
 
-  // Delete comment
   try {
-    await env.DB.prepare('DELETE FROM video_comments WHERE id = ?')
-      .bind(commentId)
-      .run()
-    logger.info('comments.DELETE', 'Comment deleted', { id: commentId, user: me.sub })
+    await env.DB.prepare('DELETE FROM video_comments WHERE id = ?').bind(commentId).run();
   } catch (e) {
-    logger.error('comments.DELETE', 'Delete failed', { error: e.message })
-    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
+    return json({ ok: false, error: 'storage_failed', detail: e && e.message }, 500, origin);
   }
 
-  return json({ ok: true }, 200, allowedOrigin)
+  return json({ ok: true }, 200, origin);
 }

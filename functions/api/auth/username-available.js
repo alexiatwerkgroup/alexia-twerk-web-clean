@@ -1,56 +1,28 @@
 // GET /api/auth/username-available?u=foo
 // Returns: { ok, available: bool }
 
-import { json, preflight } from '../../_lib/http.js'
-import { validate, ValidationError } from '../../_lib/validate.js'
-import { Errors } from '../../_lib/errors.js'
-import { logger } from '../../_lib/logger.js'
+import { json, preflight } from '../../_lib/http.js';
 
-const ALLOWED_ORIGINS = [
-  'https://alexiatwerkgroup.com',
-  'https://www.alexiatwerkgroup.com',
-  'http://localhost:8788',
-  'http://localhost:3000',
-]
+const USERNAME_RE = /^[a-z0-9_.-]{3,24}$/i;
 
 export async function onRequest(context) {
-  const { request, env } = context
-  const origin = request.headers.get('Origin') || ''
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  const { request, env } = context;
+  const origin = request.headers.get('Origin') || '';
 
-  if (request.method === 'OPTIONS') return preflight(allowedOrigin)
-  if (request.method !== 'GET') {
-    return json(Errors.METHOD_NOT_ALLOWED.toJSON(), 405, allowedOrigin)
-  }
-  if (!env.DB) {
-    logger.error('username-available', 'DB binding missing')
-    return json(Errors.D1_BINDING_MISSING.toJSON(), 500, allowedOrigin)
-  }
+  if (request.method === 'OPTIONS') return preflight(origin);
+  if (request.method !== 'GET') return json({ ok: false, error: 'method_not_allowed' }, 405, origin);
+  if (!env.DB) return json({ ok: false, error: 'd1_binding_missing' }, 500, origin);
 
-  const url = new URL(request.url)
-  const u = (url.searchParams.get('u') || '').trim()
+  const url = new URL(request.url);
+  const u = (url.searchParams.get('u') || '').trim();
 
-  // Validate username
-  try {
-    validate(u, 'username')
-  } catch (e) {
-    if (e instanceof ValidationError) {
-      logger.debug('username-available', 'Invalid username format', { username: u })
-      return json({ ok: false, error: e.code, detail: e.detail }, 400, allowedOrigin)
-    }
-    throw e
+  if (!u || !USERNAME_RE.test(u)) {
+    return json({ ok: false, error: 'invalid_username' }, 400, origin);
   }
 
-  try {
-    const row = await env.DB.prepare('SELECT id FROM profiles WHERE LOWER(username) = LOWER(?)')
-      .bind(u)
-      .first()
+  const row = await env.DB.prepare('SELECT id FROM profiles WHERE LOWER(username) = LOWER(?)')
+    .bind(u)
+    .first();
 
-    const available = !row
-    logger.debug('username-available', 'Check completed', { username: u, available })
-    return json({ ok: true, available }, 200, allowedOrigin)
-  } catch (e) {
-    logger.error('username-available', 'Query failed', { error: e.message })
-    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
-  }
+  return json({ ok: true, available: !row }, 200, origin);
 }

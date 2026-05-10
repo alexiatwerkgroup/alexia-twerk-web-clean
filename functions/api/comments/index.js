@@ -4,154 +4,99 @@
 // POST /api/comments  body: { page_slug, body }   (auth required)
 //   → { ok, comment }
 //
-// Public read (anyone), authenticated write. Anti-spam: throttled to 1 comment / 5s per user.
+// Public read (anyone), authenticated write. Body trimmed/limited to 2000
+// chars. Anti-spam: throttled to 1 comment / 5s per user (server-side).
 
-import { authenticate, uuidv4 } from '../../_lib/auth.js'
-import { json, preflight, readJSON } from '../../_lib/http.js'
-import { validate, ValidationError } from '../../_lib/validate.js'
-import { Errors } from '../../_lib/errors.js'
-import { logger } from '../../_lib/logger.js'
-import { checkRateLimit, makeUserKey } from '../../_lib/rate-limit.js'
+import { authenticate, uuidv4 } from '../../_lib/auth.js';
+import { json, preflight, readJSON } from '../../_lib/http.js';
 
-const ALLOWED_ORIGINS = [
-  'https://alexiatwerkgroup.com',
-  'https://www.alexiatwerkgroup.com',
-  'http://localhost:8788',
-  'http://localhost:3000',
-]
+const MIN_COMMENT_LEN = 1;
+const MAX_COMMENT_LEN = 2000;
+const RATE_WINDOW_MS = 5000;
 
 export async function onRequest(context) {
-  const { request, env } = context
-  const origin = request.headers.get('Origin') || ''
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  const { request, env } = context;
+  const origin = request.headers.get('Origin') || '';
 
-  if (request.method === 'OPTIONS') return preflight(allowedOrigin)
-  if (!env.DB) {
-    logger.error('comments', 'DB binding missing')
-    return json(Errors.D1_BINDING_MISSING.toJSON(), 500, allowedOrigin)
-  }
+  if (request.method === 'OPTIONS') return preflight(origin);
+  if (!env.DB) return json({ ok: false, error: 'd1_binding_missing' }, 500, origin);
 
   // ─── GET (list) ─────────────────────────────────────────────────────
   if (request.method === 'GET') {
-    const url = new URL(request.url)
-    const slug = (url.searchParams.get('page') || '').slice(0, 256)
-    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit'), 10) || 50))
-    const offset = Math.max(0, parseInt(url.searchParams.get('offset'), 10) || 0)
+    const url = new URL(request.url);
+    const slug = (url.searchParams.get('page') || '').slice(0, 256);
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit'), 10) || 50));
+    const offset = Math.max(0, parseInt(url.searchParams.get('offset'), 10) || 0);
+    if (!slug) return json({ ok: false, error: 'missing_page' }, 400, origin);
 
-    if (!slug) {
-      logger.warn('comments.GET', 'Missing page slug')
-      return json({ ok: false, error: 'missing_page' }, 400, allowedOrigin)
-    }
+    const rows = await env.DB.prepare(
+      `SELECT id, page_slug, body, author_name, username_snapshot, user_id,
+              likes_count, created_at
+         FROM video_comments WHERE page_slug = ?
+         ORDER BY created_at DESC
+         LIMIT ? OFFSET ?`
+    )
+      .bind(slug, limit, offset)
+      .all();
 
-    try {
-      const rows = await env.DB.prepare(
-        `SELECT id, page_slug, body, author_name, username_snapshot, user_id,
-                likes_count, created_at
-           FROM video_comments WHERE page_slug = ?
-           ORDER BY created_at DESC
-           LIMIT ? OFFSET ?`
-      )
-        .bind(slug, limit, offset)
-        .all()
+    const total = await env.DB.prepare(
+      'SELECT COUNT(*) as n FROM video_comments WHERE page_slug = ?'
+    )
+      .bind(slug)
+      .first();
 
-      const total = await env.DB.prepare(
-        'SELECT COUNT(*) as n FROM video_comments WHERE page_slug = ?'
-      )
-        .bind(slug)
-        .first()
-
-      logger.info('comments.GET', 'Comments fetched', { slug, count: rows?.results?.length || 0 })
-      return json(
-        { ok: true, comments: (rows && rows.results) || [], total: (total && total.n) || 0 },
-        200,
-        allowedOrigin
-      )
-    } catch (e) {
-      logger.error('comments.GET', 'Query failed', { error: e.message })
-      return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
-    }
+    return json({ ok: true, comments: (rows && rows.results) || [], total: (total && total.n) || 0 }, 200, origin);
   }
 
   // ─── POST (create) ──────────────────────────────────────────────────
-  if (request.method !== 'POST') {
-    return json(Errors.METHOD_NOT_ALLOWED.toJSON(), 405, allowedOrigin)
+  if (request.method !== 'POST') return json({ ok: false, error: 'method_not_allowed' }, 405, origin);
+
+  const me = await authenticate(request, env);
+  if (!me || !me.sub) return json({ ok: false, error: 'unauthorized' }, 401, origin);
+
+  const body = await readJSON(request);
+  if (!body) return json({ ok: false, error: 'bad_json' }, 400, origin);
+
+  const slug = String(body.page_slug || '').trim().slice(0, 256);
+  const text = String(body.body || '').trim();
+  if (!slug) return json({ ok: false, error: 'missing_page_slug' }, 400, origin);
+  if (text.length < MIN_COMMENT_LEN || text.length > MAX_COMMENT_LEN) {
+    return json({ ok: false, error: 'invalid_body_length' }, 400, origin);
   }
 
-  // Authenticate
-  const me = await authenticate(request, env)
-  if (!me || !me.sub) {
-    logger.warn('comments.POST', 'Unauthenticated request')
-    return json(Errors.UNAUTHORIZED.toJSON(), 401, allowedOrigin)
-  }
-
-  const body = await readJSON(request)
-  if (!body) {
-    return json(Errors.BAD_JSON.toJSON(), 400, allowedOrigin)
-  }
-
-  const slug = String(body.page_slug || '').trim().slice(0, 256)
-  const text = String(body.body || '').trim()
-
-  // Validate inputs
-  if (!slug) {
-    logger.warn('comments.POST', 'Missing page_slug', { user: me.sub })
-    return json(Errors.MISSING_FIELD('page_slug').toJSON(), 400, allowedOrigin)
-  }
-
-  try {
-    validate(text, 'comment')
-  } catch (e) {
-    if (e instanceof ValidationError) {
-      logger.warn('comments.POST', 'Invalid comment', { user: me.sub, error: e.code })
-      return json({ ok: false, error: e.code, detail: e.detail }, 400, allowedOrigin)
+  // Rate limit: deny if last comment by this user < 5s ago
+  const last = await env.DB.prepare(
+    "SELECT created_at FROM video_comments WHERE user_id = ? ORDER BY created_at DESC LIMIT 1"
+  )
+    .bind(me.sub)
+    .first();
+  if (last && last.created_at) {
+    const lastMs = Date.parse(last.created_at + 'Z') || 0;
+    if (lastMs && Date.now() - lastMs < RATE_WINDOW_MS) {
+      return json({ ok: false, error: 'rate_limited' }, 429, origin);
     }
-    throw e
   }
 
-  // Rate limit: 1 comment per 5 seconds per user
-  try {
-    const rl = await checkRateLimit(env, makeUserKey(me.sub, 'comment'), 5, 1)
-    if (!rl.allowed) {
-      logger.warn('comments.POST', 'Rate limited', { user: me.sub })
-      return json(
-        { ok: false, error: 'rate_limited', retry_after: rl.reset_in_seconds },
-        429,
-        allowedOrigin
-      )
-    }
-  } catch (e) {
-    logger.error('comments.POST', 'Rate limit check failed', { error: e.message })
-    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
-  }
+  // Snapshot author info from profile at post time
+  const profile = await env.DB.prepare(
+    'SELECT username, email FROM profiles WHERE id = ?'
+  )
+    .bind(me.sub)
+    .first();
 
-  // Get profile snapshot
-  let profile
-  try {
-    profile = await env.DB.prepare('SELECT username, email FROM profiles WHERE id = ?')
-      .bind(me.sub)
-      .first()
-  } catch (e) {
-    logger.error('comments.POST', 'Profile lookup failed', { error: e.message })
-    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
-  }
+  const id = uuidv4();
+  const username = (profile && profile.username) || null;
+  const authorName = username || (profile && profile.email ? String(profile.email).split('@')[0] : 'anon');
 
-  const id = uuidv4()
-  const username = (profile && profile.username) || null
-  const authorName =
-    username || (profile && profile.email ? String(profile.email).split('@')[0] : 'anon')
-
-  // Insert comment
   try {
     await env.DB.prepare(
       `INSERT INTO video_comments (id, page_slug, body, author_name, username_snapshot, user_id, likes_count)
        VALUES (?, ?, ?, ?, ?, ?, 0)`
     )
       .bind(id, slug, text, authorName, username, me.sub)
-      .run()
-    logger.info('comments.POST', 'Comment created', { id, user: me.sub, slug })
+      .run();
   } catch (e) {
-    logger.error('comments.POST', 'Insert failed', { error: e.message })
-    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
+    return json({ ok: false, error: 'storage_failed', detail: e && e.message }, 500, origin);
   }
 
   const comment = {
@@ -163,6 +108,6 @@ export async function onRequest(context) {
     user_id: me.sub,
     likes_count: 0,
     created_at: new Date().toISOString().replace('T', ' ').slice(0, 19),
-  }
-  return json({ ok: true, comment }, 200, allowedOrigin)
+  };
+  return json({ ok: true, comment }, 200, origin);
 }

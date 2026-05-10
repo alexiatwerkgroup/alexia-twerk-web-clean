@@ -2,18 +2,8 @@
   "name": "alexia-twerk-web-clean",
   "version": "1.0.0",
   "private": true,
-  "description": "TWERKHUB static site + Cloudflare Pages API + D1 database",
+  "description": "TWERKHUB static site + Vercel serverless API for affiliate proxy",
   "engines": {
     "node": ">=18.0.0"
-  },
-  "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "validate:bom": "node scripts/check-bom.js",
-    "validate:schema": "node scripts/validate-schema.js",
-    "validate": "npm run validate:bom && npm run validate:schema && npm test"
-  },
-  "devDependencies": {
-    "vitest": "^1.0.0"
   }
 }

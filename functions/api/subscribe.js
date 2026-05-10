@@ -1,85 +1,101 @@
-// TWERKHUB · email subscribe endpoint
-// POST /api/subscribe   body: { email, source?, hp? }
-// Returns: { ok, message }
-
-import { json, preflight, readJSON } from './_lib/http.js'
-import { validate, ValidationError } from './_lib/validate.js'
-import { Errors } from './_lib/errors.js'
-import { logger } from './_lib/logger.js'
+// TWERKHUB · email subscribe endpoint · Cloudflare Pages Function + D1
+// Deploy: lives at https://alexiatwerkgroup.com/api/subscribe
+//
+// Required Cloudflare Pages binding:
+//   D1 database: name "DB" → database "twerkhub-subscribers"
+//   (Settings → Functions → D1 database bindings → Add binding)
+//
+// No external services, no env vars, no egress. Pure Cloudflare.
+// Schema: see d1-subscribers-schema.sql
 
 const ALLOWED_ORIGINS = [
   'https://alexiatwerkgroup.com',
   'https://www.alexiatwerkgroup.com',
-  'http://localhost:8788',
-  'http://localhost:3000',
-]
+];
 
-// Blacklisted throwaway email domains
-const BANNED_DOMAINS = ['mailinator.com', 'guerrillamail.', 'tempmail.', 'yopmail.com', 'trashmail.']
+const EMAIL_RE = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+
+function corsHeaders(origin) {
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+  };
+}
+
+function json(body, status = 200, origin = '') {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      ...corsHeaders(origin),
+    },
+  });
+}
 
 export async function onRequest(context) {
-  const { request, env } = context
-  const origin = request.headers.get('Origin') || ''
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  const { request, env } = context;
+  const origin = request.headers.get('Origin') || '';
 
-  if (request.method === 'OPTIONS') return preflight(allowedOrigin)
+  // Preflight
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders(origin) });
+  }
+
   if (request.method !== 'POST') {
-    return json(Errors.METHOD_NOT_ALLOWED.toJSON(), 405, allowedOrigin)
+    return json({ ok: false, error: 'method_not_allowed' }, 405, origin);
   }
+
+  // D1 binding check
   if (!env.DB) {
-    logger.error('subscribe', 'DB binding missing')
-    return json(Errors.D1_BINDING_MISSING.toJSON(), 500, allowedOrigin)
+    return json({ ok: false, error: 'd1_binding_missing' }, 500, origin);
   }
 
-  const payload = await readJSON(request)
-  if (!payload) {
-    return json(Errors.BAD_JSON.toJSON(), 400, allowedOrigin)
-  }
-
-  // Honeypot detection
-  if (payload.hp && String(payload.hp).trim() !== '') {
-    logger.debug('subscribe', 'Honeypot triggered')
-    // Pretend success to confuse bots
-    return json({ ok: true, message: 'subscribed' }, 200, allowedOrigin)
-  }
-
-  const email = String(payload.email || '').trim().toLowerCase()
-  const source = String(payload.source || 'home_modal').slice(0, 64)
-
-  // Validate email
+  let payload;
   try {
-    validate(email, 'email')
-  } catch (e) {
-    if (e instanceof ValidationError) {
-      logger.warn('subscribe', 'Invalid email', { email: email.slice(0, 10) })
-      return json(Errors.INVALID_EMAIL.toJSON(), 400, allowedOrigin)
-    }
-    throw e
+    payload = await request.json();
+  } catch {
+    return json({ ok: false, error: 'bad_json' }, 400, origin);
   }
 
-  // Check for banned domains (throwaway emails)
-  if (BANNED_DOMAINS.some((d) => email.includes(d))) {
-    logger.warn('subscribe', 'Banned domain', { email: email.slice(0, 10) })
-    return json(Errors.INVALID_EMAIL.toJSON(), 400, allowedOrigin)
+  // Honeypot — if filled, it's a bot. Pretend success.
+  if (payload.hp && String(payload.hp).trim() !== '') {
+    return json({ ok: true, message: 'subscribed' }, 200, origin);
   }
 
-  // Capture metadata
-  const ip = (request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || '').slice(0, 64)
-  const ua = (request.headers.get('User-Agent') || '').slice(0, 256)
+  const email = String(payload.email || '').trim().toLowerCase();
+  const source = String(payload.source || 'home_modal').slice(0, 64);
 
-  // Insert into D1 (idempotent via unique constraint)
+  if (!email || !EMAIL_RE.test(email) || email.length > 200) {
+    return json({ ok: false, error: 'invalid_email' }, 400, origin);
+  }
+
+  // Block obvious throwaways
+  const banned = ['mailinator.com', 'guerrillamail.', 'tempmail.', 'yopmail.com', 'trashmail.'];
+  if (banned.some((d) => email.includes(d))) {
+    return json({ ok: false, error: 'invalid_email' }, 400, origin);
+  }
+
+  const ip =
+    request.headers.get('CF-Connecting-IP') ||
+    request.headers.get('X-Forwarded-For') ||
+    '';
+  const ua = request.headers.get('User-Agent') || '';
+
+  // Insert into D1 (idempotent: ignore duplicates by unique constraint on email)
   try {
     await env.DB.prepare(
-      `INSERT OR IGNORE INTO subscribers (email, source, ip, user_agent)
-       VALUES (?, ?, ?, ?)`
+      `insert or ignore into subscribers (email, source, ip, user_agent)
+       values (?, ?, ?, ?)`
     )
-      .bind(email, source, ip, ua)
-      .run()
-    logger.info('subscribe', 'Email subscribed', { email: email.slice(0, 10), source })
-  } catch (e) {
-    logger.error('subscribe', 'Insert failed', { error: e.message })
-    return json(Errors.INTERNAL_ERROR.toJSON(), 500, allowedOrigin)
-  }
+      .bind(email, source, ip.slice(0, 64), ua.slice(0, 256))
+      .run();
 
-  return json({ ok: true, message: 'subscribed' }, 200, allowedOrigin)
+    return json({ ok: true, message: 'subscribed' }, 200, origin);
+  } catch (err) {
+    console.error('D1 insert failed', err && err.message);
+    return json({ ok: false, error: 'storage_failed' }, 500, origin);
+  }
 }
