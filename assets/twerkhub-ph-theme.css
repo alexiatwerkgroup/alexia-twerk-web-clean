@@ -496,12 +496,12 @@ body.twerkhub-ph-theme #twk-nav-v1-live {
   }
 }
 
-/* Pill DEFAULT (before relocator runs): fixed at top-right of viewport so
-   it shows up immediately during page load. Once relocator runs and moves
-   the pill into the flex row, the .twk-tk-hud--in-nav rule overrides this. */
+/* Pill DEFAULT (before relocator runs): sticky at top-right so it scrolls
+   with content and sticks to nav. Once relocator moves it into nav,
+   the .twk-tk-hud--in-nav rule makes it relative (nav provides sticky). */
 body.twerkhub-ph-theme .twerkhub-tokens-hud {
-  position: fixed !important;
-  top: 30px !important;
+  position: sticky !important;
+  top: 0 !important;
   right: 14px !important;
   bottom: auto !important;
   left: auto !important;
