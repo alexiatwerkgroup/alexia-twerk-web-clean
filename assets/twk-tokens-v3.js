@@ -390,60 +390,17 @@
   // ─── HUD (badge top-right) ───────────────────────────────────────────
   var hudRoot = null, hudBalance = null, hudTier = null;
   function buildHud() {
-    if (hudRoot) return;
-    hudRoot = document.createElement('div');
-    hudRoot.id = 'twk-tokens-hud-v3';
-    hudRoot.className = 'twerkhub-tokens-hud';
-    hudRoot.style.cssText =
-      'position:sticky;top:0;right:14px;z-index:9900;' +
-      'display:flex;flex-direction:column;align-items:flex-end;gap:8px;' +
-      'pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';
+    // Use existing HTML elements in navbar instead of creating new ones
+    hudRoot = document.getElementById('twk-tokens-hud-v3');
+    hudBalance = document.getElementById('twk-tokens-count');
+    hudTier = document.getElementById('twk-tokens-tier');
 
-    var badge = document.createElement('button');
-    badge.type = 'button';
-    badge.style.cssText =
-      'pointer-events:auto;display:inline-flex;align-items:center;gap:10px;' +
-      'padding:9px 14px;border-radius:999px;' +
-      'background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(255,180,84,.16));' +
-      'border:1px solid rgba(30,224,143,.55);' +
-      'box-shadow:0 6px 20px rgba(30,224,143,.18),0 2px 6px rgba(0,0,0,.4);' +
-      'color:#f5f5fb;font-weight:800;letter-spacing:.06em;cursor:pointer;' +
-      'font-family:JetBrains Mono,ui-monospace,monospace;';
-
-    var coin = document.createElement('span');
-    coin.textContent = 'T';
-    coin.style.cssText =
-      'width:20px;height:20px;border-radius:50%;display:inline-flex;' +
-      'align-items:center;justify-content:center;font-size:10px;color:#031a11;' +
-      'background:radial-gradient(circle at 30% 30%,#1ee08f,#0a7a4b);' +
-      'box-shadow:0 0 10px rgba(30,224,143,.7);font-weight:900;flex-shrink:0;';
-
-    hudBalance = document.createElement('span');
-    hudBalance.textContent = '0';
-    hudBalance.style.cssText = 'color:#1ee08f;font-size:14px;font-weight:900;';
-
-    var unit = document.createElement('span');
-    unit.textContent = 'TOKENS';
-    unit.style.cssText = 'color:#b7f4d6;font-size:9.5px;font-weight:800;letter-spacing:.18em;opacity:.88;';
-
-    hudTier = document.createElement('span');
-    hudTier.textContent = 'BASIC';
-    hudTier.style.cssText =
-      'font-size:9px;letter-spacing:.18em;opacity:.72;' +
-      'padding-left:8px;border-left:1px solid rgba(255,255,255,.14);';
-
-    badge.appendChild(coin);
-    badge.appendChild(hudBalance);
-    badge.appendChild(unit);
-    badge.appendChild(hudTier);
-    hudRoot.appendChild(badge);
-
-    var host = document.createElement('div');
-    host.id = 'twk-toast-host-v3';
-    host.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;gap:8px;';
-    hudRoot.appendChild(host);
-
-    document.body.appendChild(hudRoot);
+    if (!hudRoot) {
+      // Fallback: create if not found in HTML
+      hudRoot = document.createElement('div');
+      hudRoot.id = 'twk-tokens-hud-v3';
+      document.body.appendChild(hudRoot);
+    }
   }
   function renderHud() {
     if (!hudRoot) return;
