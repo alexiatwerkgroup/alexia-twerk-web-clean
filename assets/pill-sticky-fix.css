@@ -1,48 +1,50 @@
 /* ═══ STICKY TOKEN PILL FIX ═══
- * Makes .twerkhub-tokens-hud pill stick to top while scrolling
- * Must override pH theme specificity, so using body selector
+ * Override pH theme to make pill stick to top while scrolling
+ * Must clear transform and all positioning from theme
  */
 
-/* Make nav sticky to top */
+/* Step 1: Make nav sticky as container */
 .twk-nav-v1 {
   position: sticky !important;
   top: 0 !important;
-  z-index: 100 !important;
+  z-index: 101 !important;
 }
 
-/* Match pH theme specificity: override when pill is in nav */
+/* Step 2: Clear ALL pH theme positioning when pill is relocated to nav
+   Remove: position fixed, transform, top offset, etc. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   position: sticky !important;
-  top: 8px !important;
-  right: 8px !important;
-  z-index: 99 !important;
+  top: 10px !important;
+  right: 14px !important;
+  bottom: auto !important;
+  left: auto !important;
   margin: 0 !important;
-  padding: 9px 14px !important;
+  margin-right: 14px !important;
+  z-index: 99 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  pointer-events: none !important;
+  height: 28px !important;
+  transform: none !important;
+  will-change: auto !important;
 }
 
-/* Toast notifications above badge */
+/* Keep toast above badge */
 body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-toast-host {
   position: absolute !important;
   top: 100% !important;
   right: 0 !important;
-  margin-top: 6px !important;
-  pointer-events: none !important;
+  margin-top: 4px !important;
 }
 
-/* Fallback for non-pH theme pages */
-.twerkhub-tokens-hud.twk-tk-hud--in-nav:not(body.twerkhub-ph-theme .twerkhub-tokens-hud) {
-  position: sticky !important;
-  top: 8px !important;
-  right: 8px !important;
-  z-index: 99 !important;
-}
-
-/* Mobile: keep pill fixed at bottom-right */
+/* Mobile: revert to fixed at bottom */
 @media (max-width: 768px) {
   body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
     position: fixed !important;
     top: auto !important;
     bottom: 20px !important;
     right: 20px !important;
+    transform: none !important;
   }
 }
