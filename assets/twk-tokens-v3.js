@@ -388,24 +388,20 @@
   }
 
   // ─── HUD (badge top-right) ───────────────────────────────────────────
-  var hudRoot = null, hudBalance = null, hudTier = null;
-  function buildHud() {
-    // ONLY use existing HTML elements. NO FALLBACK.
-    hudRoot = document.getElementById('twk-tokens-hud-v3');
-    if (!hudRoot) return; // Exit if pill HTML doesn't exist
-
-    hudBalance = document.getElementById('twk-tokens-count');
-    hudTier = document.getElementById('twk-tokens-tier');
-
-    // Fallback search inside the container if not found globally
-    if (!hudBalance) hudBalance = hudRoot.querySelector('[id*="tokens-count"]');
-    if (!hudTier) hudTier = hudRoot.querySelector('[id*="tokens-tier"]');
-  }
   function renderHud() {
-    if (!hudRoot) return;
+    // SIMPLEST POSSIBLE: just find and update the HTML elements directly
+    var countEl = document.getElementById('twk-tokens-count');
+    var tierEl = document.getElementById('twk-tokens-tier');
+
+    if (!countEl || !tierEl) return; // Exit if elements don't exist
+
     var s = getState();
-    if (hudBalance) hudBalance.textContent = (s.balance | 0).toLocaleString('en-US');
-    if (hudTier)    hudTier.textContent    = tierLabel(s.tier);
+    countEl.textContent = (s.balance | 0).toLocaleString('en-US');
+    tierEl.textContent = tierLabel(s.tier);
+  }
+  function buildHud() {
+    // Just render - that's it. No HUD building needed.
+    renderHud();
   }
 
   // ─── Toast (BULLETPROOF — divs + inline styles) ──────────────────────
