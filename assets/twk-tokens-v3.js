@@ -598,15 +598,6 @@
     init();
   }
 
-  // DEBUG: visible marker
-  try {
-    var marker = document.createElement('div');
-    marker.id = 'twk-debug-marker-v5';
-    marker.style.cssText = 'position:fixed;top:0;right:0;background:red;color:white;padding:2px 4px;font-size:10px;z-index:99999;';
-    marker.textContent = 'v5-noFallback';
-    document.body.appendChild(marker);
-  } catch(_){};
-
   // ─── Public API (backwards-compatible namespace) ─────────────────────
   window.AlexiaTokens = {
     getState: getState,
