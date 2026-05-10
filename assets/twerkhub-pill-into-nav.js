@@ -43,6 +43,14 @@
     });
     obs.observe(document.body || document.documentElement, { childList: true, subtree: true });
     setTimeout(function(){ obs.disconnect(); }, 10000);
+
+    // Retry polling as fallback
+    var retries = 0;
+    var poll = setInterval(function(){
+      if (relocate() || retries++ > 10) {
+        clearInterval(poll);
+      }
+    }, 500);
   }
 
   if (document.readyState === 'loading') {
