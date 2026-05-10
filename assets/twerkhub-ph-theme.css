@@ -266,7 +266,7 @@ body.twerkhub-ph-theme .twerkhub-hh-mute {
   right: 14px !important;
   left: auto !important;
   bottom: auto !important;
-  transform: none !important;
+  transform: translateY(-50%) !important;
   z-index: 14 !important;
   padding: 9px 16px !important;
   border-radius: 999px !important;
@@ -497,7 +497,7 @@ body.twerkhub-ph-theme #twk-nav-v1-live {
    it shows up immediately during page load. Once relocator runs and moves
    the pill into the flex row, the .twk-tk-hud--in-nav rule overrides this. */
 body.twerkhub-ph-theme .twerkhub-tokens-hud {
-  position: sticky !important;
+  position: fixed !important;
   top: 30px !important;
   right: 14px !important;
   bottom: auto !important;
@@ -509,7 +509,7 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud {
   align-items: flex-end !important;
   pointer-events: none !important;
   height: 28px !important;
-  transform: none !important;
+  transform: translateY(-50%) !important;
 }
 
 /* Pill RELOCATED into the flex row of nav-inner, right next to LIVE pill.
@@ -532,7 +532,7 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
   pointer-events: auto !important;
   height: 28px !important;
   width: auto !important;
-  transform: none !important;
+  transform: translateY(-50%) !important;
   flex-shrink: 0 !important;
 }
 
@@ -554,7 +554,7 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav .twerkhub-tokens-
     top: auto !important;
     bottom: 14px !important;
     right: 14px !important;
-    transform: none !important;
+    transform: translateY(-50%) !important;
   }
 }
 
