@@ -390,45 +390,16 @@
   // ─── HUD (badge top-right) ───────────────────────────────────────────
   var hudRoot = null, hudBalance = null, hudTier = null;
   function buildHud() {
-    // Use existing HTML elements in navbar instead of creating new ones
+    // ONLY use existing HTML elements. NO FALLBACK.
     hudRoot = document.getElementById('twk-tokens-hud-v3');
+    if (!hudRoot) return; // Exit if pill HTML doesn't exist
+
     hudBalance = document.getElementById('twk-tokens-count');
     hudTier = document.getElementById('twk-tokens-tier');
 
-    console.log('[twk-tokens-v3] buildHud: hudRoot=', !!hudRoot, 'hudBalance=', !!hudBalance, 'hudTier=', !!hudTier);
-
-    // If we found hudRoot, also search for balance/tier inside it as fallback
-    if (hudRoot && !hudBalance) {
-      hudBalance = hudRoot.querySelector('#twk-tokens-count') || hudRoot.querySelector('[id*="tokens-count"]');
-      console.log('[twk-tokens-v3] searched inside hudRoot for balance, found:', !!hudBalance);
-    }
-    if (hudRoot && !hudTier) {
-      hudTier = hudRoot.querySelector('#twk-tokens-tier') || hudRoot.querySelector('[id*="tokens-tier"]');
-      console.log('[twk-tokens-v3] searched inside hudRoot for tier, found:', !!hudTier);
-    }
-
-    if (!hudRoot) {
-      console.log('[twk-tokens-v3] hudRoot not found, creating FALLBACK pill');
-      // Fallback: create if not found in HTML
-      hudRoot = document.createElement('div');
-      hudRoot.id = 'twk-tokens-hud-v3';
-      hudRoot.style.cssText = 'display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:8px;background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);margin-left:12px;';
-      document.body.appendChild(hudRoot);
-
-      // Also create the balance and tier spans if they don't exist
-      if (!hudBalance) {
-        hudBalance = document.createElement('span');
-        hudBalance.id = 'twk-tokens-count';
-        hudBalance.style.cssText = 'font-weight:800;color:#1ee08f;font-variant-numeric:tabular-nums;';
-        hudRoot.appendChild(hudBalance);
-      }
-      if (!hudTier) {
-        hudTier = document.createElement('span');
-        hudTier.id = 'twk-tokens-tier';
-        hudTier.style.cssText = 'font-size:10px;font-weight:900;color:#1ee08f;letter-spacing:.15em;text-transform:uppercase;';
-        hudRoot.appendChild(hudTier);
-      }
-    }
+    // Fallback search inside the container if not found globally
+    if (!hudBalance) hudBalance = hudRoot.querySelector('[id*="tokens-count"]');
+    if (!hudTier) hudTier = hudRoot.querySelector('[id*="tokens-tier"]');
   }
   function renderHud() {
     if (!hudRoot) return;
