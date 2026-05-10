@@ -393,8 +393,9 @@
     if (hudRoot) return;
     hudRoot = document.createElement('div');
     hudRoot.id = 'twk-tokens-hud-v3';
+    hudRoot.className = 'twerkhub-tokens-hud';
     hudRoot.style.cssText =
-      'position:fixed;top:80px;right:18px;z-index:9900;' +
+      'position:sticky;top:0;right:14px;z-index:9900;' +
       'display:flex;flex-direction:column;align-items:flex-end;gap:8px;' +
       'pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';
 
