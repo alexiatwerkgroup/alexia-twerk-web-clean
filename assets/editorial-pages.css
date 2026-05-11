@@ -15,6 +15,7 @@
 /* container */
 body.has-final-nav.elite-defensive .wrap,
 body.has-final-nav.elite-defensive main.main{
+  width: 100% !important;
   max-width: 1100px !important;
   margin: 0 auto !important;
   padding: 56px 28px 80px !important;
@@ -29,10 +30,11 @@ body.has-final-nav.elite-defensive main.main{
 }
 
 /* masthead y heroCard — inherit parent width/centering */
-body.elite-defensive .masthead,
-body.elite-defensive .heroCard {
+body.has-final-nav.elite-defensive .masthead,
+body.has-final-nav.elite-defensive .heroCard {
   display: block !important;
   width: 100% !important;
+  max-width: none !important;
   box-sizing: border-box !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -265,4 +267,38 @@ body.elite-defensive .section-sub{
   color: #a8a8b8;
   margin: 0 0 22px;
   max-width: 70ch;
+}
+
+/* quick archive routes — center section like .wrap */
+body.has-final-nav.elite-defensive .alexia-quick-routes {
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+  padding: 56px 28px 80px !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+/* quick archive routes children — inherit width constraints */
+body.has-final-nav.elite-defensive .alexia-quick-routes h2 {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 0 16px !important;
+}
+
+body.has-final-nav.elite-defensive .alexia-quick-routes > p {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 0 24px !important;
+  font-size: 14.5px !important;
+  color: #a8a8b8 !important;
+}
+
+body.has-final-nav.elite-defensive .alexia-quick-routes-grid {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+  gap: 16px !important;
+  margin: 0 !important;
 }
