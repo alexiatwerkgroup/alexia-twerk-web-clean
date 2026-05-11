@@ -366,7 +366,8 @@
   // converted YouTube links are plain <a href="#" data-vid="..."> without
   // those marker classes, so they did nothing on click and looked broken.
   function onDocClick(ev){
-    if (INLINE_PLAYER_PRESENT) return; // /playlist/ handles its own clicks
+    // Allow onDocClick to handle clicks on all pages with data-vid links
+    // (the old check was preventing /playlist/ videos from opening)
     var a = ev.target.closest && ev.target.closest('a[data-vid]');
     if (!a) return;
     var vid = a.getAttribute('data-vid');
