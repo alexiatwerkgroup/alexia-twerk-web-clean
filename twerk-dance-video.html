@@ -431,7 +431,7 @@
     if(e) e.preventDefault();
     if(!box || box.dataset.loaded==='1') return;
     box.dataset.loaded='1';
-    box.innerHTML = '<iframe style="display:block;width:100%;height:100%;border:0;aspect-ratio:16/9;" src="https://www.youtube-nocookie.com/embed/ZkQi2pHgEYY?list=PLMzWifnZnpVJ7sAR9STyDXbTjd3x0ITmR&autoplay=1&rel=0&modestbranding=1&playsinline=1" title="Lista actualizada todos los dias de los mejores videos de twerk de YouTube" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="eager"></iframe>';
+    box.innerHTML = '<iframe style="display:block;width:100%;height:100%;border:0;aspect-ratio:16/9;" src="https://www.youtube-nocookie.com/embed/ZkQi2pHgEYY?list=PLMzWifnZnpVJ7sAR9STyDXbTjd3x0ITmR&amp;autoplay=1&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;controls=0&amp;fs=0&amp;iv_load_policy=3&amp;disablekb=1&amp;enablejsapi=1" title="Lista actualizada todos los dias de los mejores videos de twerk de YouTube" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="eager"></iframe>';
   }
   if(poster) poster.addEventListener('click', loadPlaylist, {passive:false});
   if(playBtn) playBtn.addEventListener('click', loadPlaylist, {passive:false});

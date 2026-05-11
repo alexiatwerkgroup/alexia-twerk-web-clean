@@ -142,7 +142,7 @@ function youtubeIdFromText(text){
 function renderVideo(item){
   const id=youtubeIdFromText(item.video);
   if(id){
-    return `<div class="video-shell"><iframe src="https://www.youtube.com/embed/${id}" title="${escapeHtml(item.video)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`;
+    return `<div class="video-shell"><iframe src="https://www.youtube.com/embed/${id}?controls=0&amp;fs=0&amp;rel=0&amp;modestbranding=1&amp;iv_load_policy=3&amp;disablekb=1&amp;enablejsapi=1&amp;playsinline=1" title="${escapeHtml(item.video)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`;
   }
   return `<div class="video-shell"><div class="video-fallback">This recommendation is not a direct YouTube link yet.<br><br>${escapeHtml(item.video)}</div></div>`;
 }
