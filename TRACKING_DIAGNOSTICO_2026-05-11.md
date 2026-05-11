@@ -126,7 +126,7 @@ Todas estas son pos 1 (perfecto) pero compiten contra otros blogs. El riesgo es 
 | `nicki minaj barbie world ciri kato dance studio` (movil) | `/twerk-hub-leaks/nicki-minaj-barbie-world-twerk-dance-ciri-kato-dance-st` (broken, en `_deleted/`) | pos4 `/playlist/...` | ⚠️ Cambiar la URL primaria al playlist (la actual está deletada) |
 | `cardi b up melinda efteni velvet young` | `/playlist/cardi-b-up-melinda-efteni-twerk-velvet-young.html` pos5 | pos9 `/twerk-dancer/melinda-efteni.html` | OK |
 | `britney spears toxic nika chill twerk class los angeles` (movil) | `/playlist/britney-spears-toxic-nika-chill-twerk-class-los-angeles.html` | pos8 `/creator/nika-chill.html` | OK |
-| `anitta tocame arcangel de la ghetto viktoria boage` | `/playlist/anitta-tocame-feat-arcangel-de-la-ghetto-viktoria-boage-...` pos7 | pos10 `/playlist/twerk-11.html` | OK, pero quitar el video del index `twerk-11` |
+| `anitta tocame arcangel de la ghetto viktoria boage` | `/playlist/anitta-tocame-feat-arcangel-de-la-ghetto-viktoria-boage-...` pos7 | pos10 `/playlist/oksi-twerk-twerk-choreography-btqqt1a.html` | OK, pero quitar el video del index `twerk-11` |
 | `boa megan thee stallion choreo jutty` (movil) | `/playlist/boa-juttys-twerk-team.html` | pos55 `/playlist/jutty-twerk-choreo-by-anaconda-slay-...` | OK |
 
 ### 🟡 Creator hub vs playlist (mantener creator hub si tier ≥ 9k)

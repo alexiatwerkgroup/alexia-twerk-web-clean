@@ -29,3 +29,56 @@
 
 # Ensure all routes without trailing slash redirect to with trailing slash
 # (This is handled by Cloudflare Pages default behavior, but can be explicit)
+
+# Slug SEO upgrade 2026-05-11: weak slugs renamed to descriptive ones
+# (preserves rank from old URLs, 301 to new descriptive slugs)
+/playlist/1-dance.html                      /playlist/1-dance-twerk-choreography-pqp0uxe.html  301
+/playlist/2-dance.html                      /playlist/2-dance-twerk-choreography-cujvk0k.html  301
+/playlist/2.html                            /playlist/tverk-sochi-2-twerk-choreography-nfogq7q.html  301
+/playlist/twerk-10.html                     /playlist/kalarashchuk-diana-twerk-twerk-choreography-bvzblpg.html  301
+/playlist/twerk-11.html                     /playlist/oksi-twerk-twerk-choreography-btqqt1a.html  301
+/playlist/twerk-12.html                     /playlist/diana-kalarashchuk-twerk-twerk-choreography-7o4ocuq.html  301
+/playlist/twerk-13.html                     /playlist/diana-kalarashchuk-twerk-twerk-choreography-zcm1imk.html  301
+/playlist/twerk-14.html                     /playlist/liuba-twerk-twerk-choreography-skp9izk.html  301
+/playlist/twerk-15.html                     /playlist/sonia-twerk-twerk-choreography-pzibuao.html  301
+/playlist/twerk-16.html                     /playlist/anait-kirakosian-twerk-twerk-choreography-ex8q-nq.html  301
+/playlist/twerk-17.html                     /playlist/kirakosian-anait-twerk-twerk-choreography-6wmlnme.html  301
+/playlist/twerk-18.html                     /playlist/liza-vavilkina-twerk-twerk-choreography-olcrn-i.html  301
+/playlist/twerk-19.html                     /playlist/liuba-twerk-twerk-choreography-rnzqsza.html  301
+/playlist/twerk-20.html                     /playlist/anait-kirakosian-twerk-twerk-choreography-cwk1am0.html  301
+/playlist/twerk-21.html                     /playlist/sonia-twerk-twerk-choreography-rzbnztm.html  301
+/playlist/twerk-22.html                     /playlist/diana-kalarashchuk-twerk-twerk-choreography-y-iauku.html  301
+/playlist/twerk-23.html                     /playlist/diana-kalarashchuk-twerk-twerk-choreography-wagjfdk.html  301
+/playlist/twerk-24.html                     /playlist/liuba-twerk-twerk-choreography-dumgwla.html  301
+/playlist/twerk-25.html                     /playlist/liuba-twerk-twerk-choreography-lldleei.html  301
+/playlist/twerk-26.html                     /playlist/ketrin-twerk-twerk-choreography-vx7uaw8.html  301
+/playlist/twerk-27.html                     /playlist/ketrin-twerk-twerk-choreography-oq-cl-c.html  301
+/playlist/twerk-28.html                     /playlist/liuba-twerk-twerk-choreography-qxpmhei.html  301
+/playlist/twerk-29.html                     /playlist/liuba-twerk-twerk-choreography-h6aq8pe.html  301
+/playlist/twerk-30.html                     /playlist/anait-twerk-twerk-choreography-eacswnc.html  301
+/playlist/twerk-31.html                     /playlist/diana-kalarashchuk-twerk-twerk-choreography-z9wjxsq.html  301
+/playlist/twerk-32.html                     /playlist/liuba-twerk-twerk-choreography-aqb-t7s.html  301
+/playlist/twerk-33.html                     /playlist/diana-kalarashchuk-twerk-twerk-choreography-nu5bums.html  301
+/playlist/twerk-34.html                     /playlist/ketrin-twerk-twerk-choreography-l5k5tko.html  301
+/playlist/twerk-35.html                     /playlist/anait-kirakosian-twerk-twerk-choreography-iudbl7y.html  301
+/playlist/twerk-36.html                     /playlist/ketrin-twerk-proletarskaia-twerk-choreography-nvr0b-g.html  301
+/playlist/twerk-37.html                     /playlist/liuba-twerk-proletarskaia-twerk-choreography-dtzzeta.html  301
+/playlist/twerk-38.html                     /playlist/ketrin-twerk-sokol-twerk-choreography-qw2eb1g.html  301
+/playlist/twerk-39.html                     /playlist/ketrin-twerk-proletarskaia-twerk-choreography-ljukcq0.html  301
+/playlist/twerk-40.html                     /playlist/start-gruppy-tania-kembo-twerk-novokuznetskaia-twerk-choreography-wf0bj-a.html  301
+/playlist/twerk-41.html                     /playlist/liuba-twerk-proletarskaia-twerk-choreography-sjxnjo8.html  301
+/playlist/twerk-42.html                     /playlist/ketrin-twerk-proletarskaia-twerk-choreography-ttl4j-o.html  301
+/playlist/twerk-43.html                     /playlist/dasha-gurova-twerk-novokuznetskaia-twerk-choreography-adjbzqi.html  301
+/playlist/twerk-44.html                     /playlist/ketrin-twerk-sokol-twerk-choreography-lqg028c.html  301
+/playlist/twerk-45.html                     /playlist/ketrin-twerk-proletarskaia-twerk-choreography-qowntce.html  301
+/playlist/twerk-46.html                     /playlist/liuba-twerk-novokuznetskaia-twerk-choreography-w6ga-ym.html  301
+/playlist/twerk-47.html                     /playlist/ketrin-twerk-proletarskaia-twerk-choreography-7qmoyq.html  301
+/playlist/twerk-48.html                     /playlist/dasha-gurova-twerk-novokuznetskaia-twerk-choreography-zswp1z0.html  301
+/playlist/twerk-49.html                     /playlist/ksiu-twerk-proletarskaia-twerk-choreography-vzkgn9i.html  301
+/playlist/twerk-5.html                      /playlist/iana-kopylova-twerk-twerk-choreography-3yfvoyy.html  301
+/playlist/twerk-50.html                     /playlist/liuba-twerk-proletarskaia-twerk-choreography-qppis5e.html  301
+/playlist/twerk-51.html                     /playlist/dvizhenie-po-ulitse-komsomol-skaia-v-mogiliove-otkryto-twerk-nina-savel-eva-x7evrvy.html  301
+/playlist/twerk-6.html                      /playlist/alina-pavliuchenko-twerk-twerk-choreography-qhijxeo.html  301
+/playlist/twerk-7.html                      /playlist/vika-kirillova-twerk-twerk-choreography-gqf9z34.html  301
+/playlist/twerk-8.html                      /playlist/alina-pavliuchenko-twerk-twerk-choreography-1dh7eys.html  301
+/playlist/twerk-9.html                      /playlist/pavliuchenko-alina-twerk-twerk-choreography-a7mfzey.html  301
