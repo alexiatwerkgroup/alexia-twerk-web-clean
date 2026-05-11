@@ -537,7 +537,16 @@
 
   function toast(amount, title, sub) {
     var host = document.getElementById('twk-toast-host-v3');
-    if (!host) return;
+    if (!host) {
+      // Create toast host if it doesn't exist
+      host = document.createElement('div');
+      host.id = 'twk-toast-host-v3';
+      host.style.cssText =
+        'position:fixed;bottom:20px;right:20px;z-index:999999;' +
+        'display:flex;flex-direction:column;gap:10px;pointer-events:none;' +
+        'font-family:Inter,ui-sans-serif,system-ui,sans-serif;';
+      document.body.appendChild(host);
+    }
     var card = document.createElement('div');
     card.style.cssText =
       'pointer-events:auto;display:flex;align-items:center;gap:14px;' +
@@ -630,6 +639,9 @@
         try { duplicates[i].remove(); } catch (_) {}
       }
     } catch (_) {}
+
+    // CRITICAL: Ensure HUD elements are created BEFORE token earning
+    try { ensureHudElements(); } catch (_) {}
 
     // Build HUD - ALWAYS DO THIS regardless of errors
     buildHud();
