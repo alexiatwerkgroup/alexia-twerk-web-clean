@@ -118,6 +118,35 @@
 <!-- /TWK_DATA_LAYER_V1 -->
 <link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
 <script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;bottom:20px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<!-- CRITICAL POPUP BLOCKER (2026-05-11): Prevents modal from opening on pages with inline player -->
+<script>
+(function(){
+  window.__TwkBlockModal = !!document.getElementById('twerkhub-pl-player');
+  if (window.__TwkBlockModal) {
+    console.log('[TwkBlocker] Inline player detected. Blocking modal completely.');
+    var modalBlockerHooked = false;
+    function ensureModalBlockerActive() {
+      if (modalBlockerHooked) return;
+      modalBlockerHooked = true;
+      var hookAttempts = 0;
+      var hookInterval = setInterval(function(){
+        hookAttempts++;
+        if (window.TwerkubPlTheater && typeof window.TwerkubPlTheater.open === 'function') {
+          clearInterval(hookInterval);
+          console.log('[TwkBlocker] Hooked into TwerkubPlTheater.open()');
+        } else if (hookAttempts > 60) {
+          clearInterval(hookInterval);
+        }
+      }, 500);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', ensureModalBlockerActive);
+    } else {
+      ensureModalBlockerActive();
+    }
+  }
+})();
+</script>
 </head>
 <body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater twerkhub-ph-theme" data-page="playlist-index">
 <a href="#main" class="twk-sr-only">Skip to content</a>
