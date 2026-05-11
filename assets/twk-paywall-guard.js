@@ -22,6 +22,32 @@
   var CLASSIFICATION_URL = '/assets/youtube-age-classification.json';
   var FOUNDER_EMAIL = 'alexiatwerkoficial@gmail.com';
 
+  // ─────────────────────────────────────────────────────────────────
+  // ⚠️ PAYWALL TEMPORARILY DISABLED — 2026-05-11
+  //
+  // Reason: Google needs to (re)index 162 age-restricted pages without
+  // seeing the paywall overlay (otherwise risk: cloaking flag / soft-404
+  // classification / thin content penalty).
+  //
+  // TO RE-ENABLE PAYWALL after Google has indexed:
+  //   1) Verify in GSC that the 162 pages are indexed (Coverage → Indexed)
+  //   2) Change PAYWALL_ENABLED below from `false` to `true`
+  //   3) Bump cache buster, commit, push.
+  // ─────────────────────────────────────────────────────────────────
+  var PAYWALL_ENABLED = false;
+  if (!PAYWALL_ENABLED) {
+    try { console.log('[twk-paywall-guard] paywall disabled (indexing window) — re-enable after GSC confirms 162 pages indexed'); } catch (_) {}
+    return;
+  }
+
+  // ⚡ Googlebot / search crawler whitelist (defense in depth)
+  // Even when paywall is enabled, bots should never see the overlay.
+  // window.__twkIsBot is set by /assets/twk-bot-detect.js (must load FIRST).
+  if (typeof window !== 'undefined' && window.__twkIsBot) {
+    try { console.log('[twk-paywall-guard] bot detected (' + (window.__twkBotName || '?') + ') — paywall skipped'); } catch (_) {}
+    return;
+  }
+
   function isMember() {
     try {
       // Founder by email (most reliable signal)

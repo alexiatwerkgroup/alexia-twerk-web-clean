@@ -8,6 +8,13 @@
 
   console.log('[age-gate] script loaded · path=' + location.pathname);
 
+  // ⚡ Googlebot / search crawler whitelist — bots never see the 18+ modal
+  // window.__twkIsBot is set by /assets/twk-bot-detect.js (must load FIRST).
+  if (typeof window !== 'undefined' && window.__twkIsBot) {
+    console.log('[age-gate] bot detected (' + (window.__twkBotName || '?') + ') — modal skipped');
+    return;
+  }
+
   if (window.__alexiaAgeGateMounted) { console.log('[age-gate] already mounted, skipping'); return; }
   window.__alexiaAgeGateMounted = true;
 

@@ -45,6 +45,38 @@
   'use strict';
   if (window.TwkAgeGate) return;
 
+  // ─────────────────────────────────────────────────────────────────
+  // ⚠️ AGE-GATE PAYWALL TEMPORARILY DISABLED — 2026-05-11
+  //
+  // Reason: Google needs to (re)index 162 age-restricted pages without
+  // seeing the paywall (otherwise risk: cloaking / soft-404 / thin content).
+  //
+  // TO RE-ENABLE after Google has indexed:
+  //   1) Verify in GSC that the 162 pages are indexed
+  //   2) Change AGE_GATE_ENABLED below from `false` to `true`
+  //   3) Bump cache buster, commit, push.
+  // ─────────────────────────────────────────────────────────────────
+  var AGE_GATE_ENABLED = false;
+
+  // ⚡ Stub the API when disabled OR when bot detected
+  // window.__twkIsBot is set by /assets/twk-bot-detect.js (must load FIRST)
+  var isBot = (typeof window !== 'undefined' && window.__twkIsBot);
+  if (!AGE_GATE_ENABLED || isBot) {
+    try {
+      if (!AGE_GATE_ENABLED) console.log('[twerkhub-age-gate] disabled (indexing window) — re-enable after GSC confirms');
+      else console.log('[twerkhub-age-gate] bot detected (' + (window.__twkBotName || '?') + ') — age gate skipped');
+    } catch (_) {}
+    // Stub the API so callers don't crash
+    window.TwkAgeGate = {
+      isBlocked: function () { return false; },
+      markBlocked: function () {},
+      show: function () {},
+      handleYTError: function () {},
+      decorateAll: function () {}
+    };
+    return;
+  }
+
   // —————————————— Configuration ——————————————
   var DISCORD_URL  = 'https://discord.gg/WWn8ZgQMjn';
   var TELEGRAM_URL = 'https://t.me/+0xNr69raiIlmYWRh';
