@@ -366,7 +366,9 @@
   // converted YouTube links are plain <a href="#" data-vid="..."> without
   // those marker classes, so they did nothing on click and looked broken.
   function onDocClick(ev){
-    if (INLINE_PLAYER_PRESENT) return; // /playlist/ handles its own clicks
+    // Skip handler only on /playlist/ (which has its own click system)
+    // Themed playlists need onDocClick to trigger token grants for watched videos
+    if (INLINE_PLAYER_PRESENT && window.location.pathname.includes('/playlist/')) return;
     var a = ev.target.closest && ev.target.closest('a[data-vid]');
     if (!a) return;
     var vid = a.getAttribute('data-vid');
