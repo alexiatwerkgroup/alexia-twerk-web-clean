@@ -816,6 +816,7 @@
               try {
                 player.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
                 player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
+                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setPlaybackQualityRange',args:['hd1440']}), '*');
                 player.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
               } catch(_){}
             }, d);

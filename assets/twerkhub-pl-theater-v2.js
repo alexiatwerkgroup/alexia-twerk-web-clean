@@ -223,6 +223,19 @@
         events: {
           onReady: function(ev){
             try { ev.target.unMute(); ev.target.setVolume(100); ev.target.playVideo(); } catch(_){}
+            // Set playback quality to 4K or best available (but not 8K)
+            try {
+              // Get available quality levels and pick the best one (excluding 8K)
+              var levels = ev.target.getAvailableQualityLevels();
+              if (levels && levels.length > 0) {
+                // Priority order: hd1440 (4K) → hd1080 → hd720 → medium
+                var targetQuality = 'medium';
+                if (levels.indexOf('hd1440') !== -1) targetQuality = 'hd1440';
+                else if (levels.indexOf('hd1080') !== -1) targetQuality = 'hd1080';
+                else if (levels.indexOf('hd720') !== -1) targetQuality = 'hd720';
+                ev.target.setPlaybackQualityRange(targetQuality);
+              }
+            } catch(_){}
             var attempts = 0;
             var iv = setInterval(function(){
               attempts++;
