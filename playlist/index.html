@@ -1224,16 +1224,19 @@
       // Defensive: some browsers cache muted state — postMessage unMute after iframe loads.
       try {
         player.onload = function(){
-          [200, 800, 1500, 2500].forEach(function(d){
+          [100, 200, 500, 1000].forEach(function(d){
             setTimeout(function(){
               try {
                 player.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
                 player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[100]}), '*');
-                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setPlaybackQualityRange',args:['hd1440']}), '*');
-                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*');
+                player.contentWindow.postMessage(JSON.stringify({event:'command',func:'setPlaybackQuality',args:['hd1440']}), '*');
               } catch(_){}
             }, d);
           });
+          // Play last, after quality is set
+          setTimeout(function(){
+            try { player.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}), '*'); } catch(_){}
+          }, 1200);
         };
       } catch(_){}
       // Mark as viewed (delegated to the global pl-theater module if loaded)
