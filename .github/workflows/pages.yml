@@ -1,0 +1,19 @@
+name: GitHub Pages - DISABLED
+
+# This workflow is intentionally disabled.
+# Deployment is handled by Cloudflare Pages instead.
+# See: https://dash.cloudflare.com
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Intentionally empty - Cloudflare Pages handles deployment
+  build:
+    name: Build (Cloudflare Pages handles this)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip - using Cloudflare Pages
+        run: echo "Deployment handled by Cloudflare Pages"
