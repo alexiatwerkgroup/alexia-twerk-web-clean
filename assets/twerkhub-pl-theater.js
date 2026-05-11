@@ -1,5 +1,5 @@
 /* â•â•â• TWERKHUB · Playlist theater (large centered window, never fullscreen) â•â•â•
- * v20260426-p8
+ * v20260510-p11 (aggressive age-gate detection)
  *
  * 2026-04-26 fix p8 — SAGRADA RULE #9: Top-5 hot ranking videos are
  * IMMUNE to the +18 paywall, no matter what YouTube returns. Heartbeat,
@@ -489,31 +489,29 @@
       // postMessage (no wrapper, no iframe destruction).
       setTimeout(subscribeInlineToEvents, 50);
 
-      // ── Black-screen heartbeat: 2.5s after load, if no PLAYING (1) or
+      // ── Black-screen heartbeat: 3s after load, if no PLAYING (1) or
       // BUFFERING (3) state has been reported, assume +18 silent block →
-      // show paywall. 2.5s gives slow connections a fair shot at buffering.
-      // CRITICAL FIX (2026-05-04): removed the !window.TwkAgeGate guard.
-      // It was preventing the paywall from firing on playlists where
-      // TwkAgeGate wasn't loaded → +18 videos showed YouTube's default
-      // cartel instead of our Discord/Telegram paywall. Now the paywall
-      // ALWAYS fires after 2.5s if no playback started, regardless of
-      // whether TwkAgeGate exists. If TwkAgeGate IS loaded and marks the
-      // video as protected (whitelisted), we honour that and skip.
-      // CRITICAL FIX (2026-05-04 v2): extended heartbeat from 2.5s → 5s.
-      // Confirmed via YouTube oEmbed API that only 2 of 50 K-pop videos
-      // are actually +18. The previous 2.5s timeout was firing false
-      // positives on clean videos that took longer to start (ads, slow
-      // network, complex initialization). 5s is the safer threshold —
-      // YouTube's own age-restriction cartel appears within 1-2s, so 5s
-      // gives a generous buffer before declaring a video blocked.
+      // show paywall. 3s gives slow connections a fair shot while being
+      // aggressive about blocking (YouTube's error appears in 1-2s).
+      // CRITICAL FIX (2026-05-10): YouTube sometimes doesn't fire onError
+      // 101/150 for +18 videos — they just sit black. The heartbeat is the
+      // ONLY reliable detection. Reduced from 5s → 3s after user reports of
+      // age-restricted videos showing YouTube's error instead of our paywall.
+      // ALWAYS show paywall when heartbeat fires, except for top-5 protected.
       if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
       window.__twkInlineHeartbeat = setTimeout(function(){
         if (window.__twkInlinePlaybackStarted) return;
         if (!vid) return;
+        // SAGRADA #9 — top-5 protected videos never show paywall
         if (window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) return;
+        // No playback after 3s → assume blocked and show paywall
         showInlinePaywall(player, wrap, vid);
+        // Mark as blocked for future reference
+        if (window.TwkAgeGate && window.TwkAgeGate.markBlocked) {
+          window.TwkAgeGate.markBlocked(vid);
+        }
         stopTimeTracker();
-      }, 5000);
+      }, 3000);
 
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
