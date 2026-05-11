@@ -680,6 +680,16 @@
     init();
   }
 
+  // Fallback: ensure HUD is created even if init() fails silently
+  // This fires after page is fully loaded (including images, etc.)
+  if (window.addEventListener) {
+    window.addEventListener('load', function() {
+      if (!document.getElementById('twk-tokens-hud-v3')) {
+        try { ensureHudElements(); renderHud(); } catch (_) {}
+      }
+    }, { once: true });
+  }
+
   // ─── Public API (backwards-compatible namespace) ─────────────────────
   window.AlexiaTokens = {
     getState: getState,
