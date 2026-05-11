@@ -243,7 +243,7 @@
     var random = Math.random().toString(36).substr(2, 9);
     var script = document.createElement('script');
     script.async = false;
-    script.src = '/assets/twerkhub-pl-theater.js?t=' + timestamp + '&r=' + random;
+    script.src = '/assets/twerkhub-pl-theater-v2.js?t=' + timestamp + '&r=' + random;
     script.id = 'theater-script-' + timestamp;
     script.onload = function() {
       // RUNTIME PATCH: Override grantViewToken to add logging even if old version loads
