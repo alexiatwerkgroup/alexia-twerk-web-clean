@@ -14,6 +14,11 @@
 /hot-models-influencers  /hot-models/                  301
 /hottest-models          /hot-models/                  301
 
+# Consolidación 2026-05-11: /cosplay-fancam-leaks/* → /hottest-cosplay-fancam/* (mismo contenido, una sola URL canónica)
+/cosplay-fancam-leaks/*  /hottest-cosplay-fancam/:splat  301
+/cosplay-fancam-leaks    /hottest-cosplay-fancam/        301
+/cosplay-fancam-leaks/   /hottest-cosplay-fancam/        301
+
 # Spanish locale variants - hide index.html
 /es/blog/index.html      /es/blog/                     301
 /es/hot-models/index.html /es/hot-models/              301

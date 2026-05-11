@@ -167,7 +167,7 @@
     },
     {
       "source": "/playlist-cosplay-fancam-leaks/(.*)",
-      "destination": "/hottest-cosplay-fancam/",
+      "destination": "/hottest-cosplay-fancam/$1",
       "permanent": true
     },
     {
@@ -182,7 +182,7 @@
     },
     {
       "source": "/cosplay-fancam-leaks/(.*)",
-      "destination": "/hottest-cosplay-fancam/",
+      "destination": "/hottest-cosplay-fancam/$1",
       "permanent": true
     },
     {
