@@ -480,7 +480,7 @@
       var host = document.createElement('div');
       host.id = 'twk-toast-host-v3';
       host.style.cssText =
-        'position:fixed;bottom:20px;right:20px;z-index:999999;' +
+        'position:fixed;top:80px;right:20px;z-index:999999;' +
         'display:flex;flex-direction:column;gap:10px;pointer-events:none;' +
         'font-family:Inter,ui-sans-serif,system-ui,sans-serif;';
       document.body.appendChild(host);
@@ -564,7 +564,7 @@
       host = document.createElement('div');
       host.id = 'twk-toast-host-v3';
       host.style.cssText =
-        'position:fixed;bottom:20px;right:20px;z-index:999999;' +
+        'position:fixed;top:80px;right:20px;z-index:999999;' +
         'display:flex;flex-direction:column;gap:10px;pointer-events:none;' +
         'font-family:Inter,ui-sans-serif,system-ui,sans-serif;';
       document.body.appendChild(host);
