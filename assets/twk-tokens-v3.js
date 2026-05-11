@@ -403,7 +403,7 @@
       'color:#1ee08f;font-family:"JetBrains Mono",ui-monospace,monospace;' +
       'font-size:10px;font-weight:800;letter-spacing:.12em;' +
       'text-transform:uppercase;flex-shrink:0;white-space:nowrap;' +
-      'flex-direction:column;margin-left:6px;';
+      'flex-direction:row;margin-left:6px;';
 
     // Count display
     var countEl = document.createElement('span');
@@ -414,7 +414,7 @@
     // Tier display
     var tierEl = document.createElement('span');
     tierEl.id = 'twk-tokens-tier';
-    tierEl.style.cssText = 'font-size:8px;opacity:.85;letter-spacing:.15em;margin-top:1px;';
+    tierEl.style.cssText = 'font-size:8px;opacity:.85;letter-spacing:.15em;margin-left:4px;';
     tierEl.textContent = 'BASIC';
 
     hud.appendChild(countEl);
@@ -422,17 +422,35 @@
 
     // Try to inject into navbar
     var navInner = document.querySelector('.twk-nav-v1 .twk-nav-v1-inner');
+    var injected = false;
     if (navInner) {
       // Insert before LIVE pill if it exists
       var livePill = navInner.querySelector('.twk-nav-v1-live');
       if (livePill) {
         navInner.insertBefore(hud, livePill);
+        injected = true;
       } else {
         navInner.appendChild(hud);
+        injected = true;
       }
-    } else {
-      // Fallback: put at end of body
+    }
+
+    if (!injected) {
+      // Fallback: put at end of body, but use MutationObserver to move it to navbar once ready
       document.body.appendChild(hud);
+      // Try again shortly in case navbar loads later
+      setTimeout(function() {
+        if (!document.getElementById('twk-tokens-hud-v3').parentElement.querySelector('.twk-nav-v1')) {
+          var navInner2 = document.querySelector('.twk-nav-v1 .twk-nav-v1-inner');
+          if (navInner2) {
+            var livePill2 = navInner2.querySelector('.twk-nav-v1-live');
+            var hud2 = document.getElementById('twk-tokens-hud-v3');
+            if (hud2 && livePill2) {
+              navInner2.insertBefore(hud2, livePill2);
+            }
+          }
+        }
+      }, 500);
     }
 
     // Create toast host
