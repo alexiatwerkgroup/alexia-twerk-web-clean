@@ -218,7 +218,7 @@
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
           autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1,
-          enablejsapi: 1, origin: window.location.origin, quality: 'hd1080'
+          enablejsapi: 1, origin: window.location.origin
         },
         events: {
           onReady: function(ev){
