@@ -1,44 +1,20 @@
-# wrangler.toml â€” Cloudflare Pages config for alexia-twerk-web-clean
-# Esto le dice a Cloudflare que el Pages Function /api/subscribe necesita
-# una D1 binding llamada "DB" apuntando a la database "twerkhub-subscribers".
-#
-# Cuando hagas git push, Cloudflare Pages lee este archivo y bindea automÃ¡ticamente
-# la D1 sin que tengas que tocar el dashboard. âš¡
+# wrangler.toml - Cloudflare Pages configuration
+# Auto-binds D1 database when this file is pushed to GitHub
 
 name = "alexia-twerk-web-clean"
-compatibility_date = "2025-05-01"
+compatibility_date = "2026-05-11"
 pages_build_output_dir = "."
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-# D1 binding for /functions/api/subscribe.js
-# El database_id se llena DESPUES de correr:
-#   wrangler d1 create twerkhub-subscribers
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# D1 database binding for twerkhub-subscribers
 [[d1_databases]]
 binding = "DB"
 database_name = "twerkhub-subscribers"
 database_id = "a9203ef0-3f9d-4a1d-bd44-4a9748504afd"
 
-# R2 binding for avatar storage. Create the bucket first:
-#   wrangler r2 bucket create twerkhub-avatars
-# (Re-comment if you disable R2 in the dashboard.)
+# R2 bucket binding for avatar storage
 [[r2_buckets]]
 binding = "AVATARS"
 bucket_name = "twerkhub-avatars"
 
-# ═════════════════════════════════════════════════════════════════════════
-# Required environment variables (set via Cloudflare Pages dashboard, NOT here):
-#
-#   JWT_SECRET   ← random 48+ byte string. Used to sign auth JWTs.
-#                  Set under: Pages project → Settings → Environment variables
-#                  → add "JWT_SECRET" (encrypted) for Production AND Preview.
-#                  Generate with:
-#                    [System.Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(48))
-#
-# Tables expected (apply via _d1/schema-auth-tokens.sql):
-#   users, profiles, video_comments, comment_reports,
-#   video_heatmap, user_video_views
-#
-# Apply schema:
-#   wrangler d1 execute twerkhub-subscribers --remote --file=_d1/schema-auth-tokens.sql
-# ═════════════════════════════════════════════════════════════════════════
+# Environment variables must be set in Cloudflare Pages dashboard:
+# JWT_SECRET - random 48+ byte string for signing auth JWTs
