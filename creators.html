@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;bottom:20px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
 <script src="/assets/twk-guardian.js?v=20260509-g1"></script>
 <script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
 <style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
@@ -594,6 +594,6 @@ footer a{color:#c7c7d3}
 <!-- twk-related-auto:END -->
 
 <!-- Toast host container (guaranteed rendering) -->
-<div id="twk-toast-host-v3" style="position:fixed;bottom:20px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;"></div>
+<div id="twk-toast-host-v3" style="position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;"></div>
 </body>
 </html>

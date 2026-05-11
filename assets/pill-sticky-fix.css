@@ -29,8 +29,8 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud.twk-tk-hud--in-nav {
 @media (max-width: 768px) {
   body.twerkhub-ph-theme .twerkhub-tokens-hud {
     position: fixed !important;
-    top: auto !important;
-    bottom: 20px !important;
+    top: 20px !important;
+    bottom: auto !important;
     right: 20px !important;
     transform: none !important;
   }
