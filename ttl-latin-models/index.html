@@ -694,7 +694,7 @@
       if (!player) return;
       showLoader();
       var url = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid) +
-                '?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+                '?autoplay=1?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1rel=0?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1modestbranding=1?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1playsinline=1?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1enablejsapi=1&quality=hd1080';
       player.src = url;
       if (title && number) title.textContent = 'Playing ' + number;
       try {
