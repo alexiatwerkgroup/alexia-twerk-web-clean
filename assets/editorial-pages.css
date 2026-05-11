@@ -13,8 +13,8 @@
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 /* container */
-body.elite-defensive .wrap,
-body.elite-defensive main.main{
+body.has-final-nav.elite-defensive .wrap,
+body.has-final-nav.elite-defensive main.main{
   max-width: 1100px !important;
   margin: 0 auto !important;
   padding: 56px 28px 80px !important;
@@ -22,8 +22,8 @@ body.elite-defensive main.main{
   box-sizing: border-box !important;
 }
 @media(max-width: 720px){
-  body.elite-defensive .wrap,
-  body.elite-defensive main.main{
+  body.has-final-nav.elite-defensive .wrap,
+  body.has-final-nav.elite-defensive main.main{
     padding: 36px 18px 56px !important;
   }
 }
