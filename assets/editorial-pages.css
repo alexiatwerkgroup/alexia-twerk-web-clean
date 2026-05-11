@@ -15,27 +15,27 @@
 /* container */
 body.elite-defensive .wrap,
 body.elite-defensive main.main{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 56px 28px 80px;
-  display: block;
-  box-sizing: border-box;
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+  padding: 56px 28px 80px !important;
+  display: block !important;
+  box-sizing: border-box !important;
 }
 @media(max-width: 720px){
   body.elite-defensive .wrap,
   body.elite-defensive main.main{
-    padding: 36px 18px 56px;
+    padding: 36px 18px 56px !important;
   }
 }
 
 /* masthead y heroCard — inherit parent width/centering */
 body.elite-defensive .masthead,
 body.elite-defensive .heroCard {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* hero */
