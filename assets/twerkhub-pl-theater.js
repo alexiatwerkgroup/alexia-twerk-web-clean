@@ -649,7 +649,11 @@
     installInlineErrorListener();
     patchInlinePlayer();
     applyViewedClasses();
-    document.addEventListener('click', onDocClick, true);
+    // Only add click listener if there's NO inline player on this page
+    // (Pages like /playlist/ have their own swap() handler and don't need the modal)
+    if (!INLINE_PLAYER_PRESENT) {
+      document.addEventListener('click', onDocClick, true);
+    }
     if (typeof MutationObserver !== 'undefined') {
       new MutationObserver(function(muts){
         var added = false;
