@@ -388,19 +388,82 @@
   }
 
   // ─── HUD (badge top-right) ───────────────────────────────────────────
+  function ensureHudElements() {
+    // Create HUD HTML structure if it doesn't exist
+    if (document.getElementById('twk-tokens-hud-v3')) return true;
+
+    // Create main HUD container with class for pill-into-nav.js to find
+    var hud = document.createElement('div');
+    hud.id = 'twk-tokens-hud-v3';
+    hud.className = 'twerkhub-tokens-hud twk-tk-hud';
+    hud.style.cssText =
+      'display:inline-flex;align-items:center;gap:6px;' +
+      'padding:6px 12px;border-radius:999px;' +
+      'background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);' +
+      'color:#1ee08f;font-family:"JetBrains Mono",ui-monospace,monospace;' +
+      'font-size:10px;font-weight:800;letter-spacing:.12em;' +
+      'text-transform:uppercase;flex-shrink:0;white-space:nowrap;' +
+      'flex-direction:column;margin-left:6px;';
+
+    // Count display
+    var countEl = document.createElement('span');
+    countEl.id = 'twk-tokens-count';
+    countEl.style.cssText = 'font-size:12px;font-weight:900;';
+    countEl.textContent = '0';
+
+    // Tier display
+    var tierEl = document.createElement('span');
+    tierEl.id = 'twk-tokens-tier';
+    tierEl.style.cssText = 'font-size:8px;opacity:.85;letter-spacing:.15em;margin-top:1px;';
+    tierEl.textContent = 'BASIC';
+
+    hud.appendChild(countEl);
+    hud.appendChild(tierEl);
+
+    // Try to inject into navbar
+    var navInner = document.querySelector('.twk-nav-v1 .twk-nav-v1-inner');
+    if (navInner) {
+      // Insert before LIVE pill if it exists
+      var livePill = navInner.querySelector('.twk-nav-v1-live');
+      if (livePill) {
+        navInner.insertBefore(hud, livePill);
+      } else {
+        navInner.appendChild(hud);
+      }
+    } else {
+      // Fallback: put at end of body
+      document.body.appendChild(hud);
+    }
+
+    // Create toast host
+    if (!document.getElementById('twk-toast-host-v3')) {
+      var host = document.createElement('div');
+      host.id = 'twk-toast-host-v3';
+      host.style.cssText =
+        'position:fixed;bottom:20px;right:20px;z-index:999999;' +
+        'display:flex;flex-direction:column;gap:10px;pointer-events:none;' +
+        'font-family:Inter,ui-sans-serif,system-ui,sans-serif;';
+      document.body.appendChild(host);
+    }
+
+    return true;
+  }
+
   function renderHud() {
-    // SIMPLEST POSSIBLE: just find and update the HTML elements directly
+    // Ensure elements exist before rendering
+    ensureHudElements();
+
     var countEl = document.getElementById('twk-tokens-count');
     var tierEl = document.getElementById('twk-tokens-tier');
 
-    if (!countEl || !tierEl) return; // Exit if elements don't exist
+    if (!countEl || !tierEl) return;
 
     var s = getState();
     countEl.textContent = (s.balance | 0).toLocaleString('en-US');
     tierEl.textContent = tierLabel(s.tier);
   }
   function buildHud() {
-    // Just render - that's it. No HUD building needed.
+    ensureHudElements();
     renderHud();
   }
 
@@ -512,6 +575,7 @@
     }, 3200);
 
     // Also flash the badge balance
+    var hudBalance = document.getElementById('twk-tokens-count');
     if (hudBalance) {
       hudBalance.style.transition = 'color .3s,transform .3s';
       hudBalance.style.color     = '#ffd69a';
