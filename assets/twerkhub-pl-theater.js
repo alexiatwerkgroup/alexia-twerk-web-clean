@@ -1,5 +1,5 @@
 /* â•â•â• TWERKHUB · Playlist theater (large centered window, never fullscreen) â•â•â•
- * v20260510-p13 (1.5s heartbeat on both inline + modal)
+ * v20260510-p15-LOGGING-FIX (1.5s heartbeat on both inline + modal, WITH GRANT LOGGING)
  *
  * 2026-04-26 fix p8 — SAGRADA RULE #9: Top-5 hot ranking videos are
  * IMMUNE to the +18 paywall, no matter what YouTube returns. Heartbeat,
@@ -352,12 +352,27 @@
   // â”€â”€ Token grant â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function grantViewToken(vid){
     try {
-      if (window.AlexiaTokens && typeof window.AlexiaTokens.watchClip === 'function') {
-        window.AlexiaTokens.watchClip(vid);
-      } else if (window.AlexiaTokens && typeof window.AlexiaTokens.grant === 'function') {
-        window.AlexiaTokens.grant(15, 'watch_clip');
+      if (!window.AlexiaTokens) {
+        console.warn('[TwkTheater] window.AlexiaTokens not found. Token system may not be loaded.');
+        return;
       }
-    } catch(_){}
+
+      // Try watchClip (preferred) with detailed error checking
+      if (typeof window.AlexiaTokens.watchClip === 'function') {
+        console.log('[TwkTheater] Calling watchClip with vid:', vid);
+        window.AlexiaTokens.watchClip(vid);
+      }
+      // Fallback: direct grant if watchClip not available
+      else if (typeof window.AlexiaTokens.grant === 'function') {
+        console.log('[TwkTheater] watchClip not available, using direct grant for vid:', vid);
+        window.AlexiaTokens.grant(15, 'watch_clip_fallback');
+      }
+      else {
+        console.warn('[TwkTheater] Neither watchClip nor grant available on window.AlexiaTokens');
+      }
+    } catch(err){
+      console.error('[TwkTheater] grantViewToken error:', err, 'vid:', vid);
+    }
   }
 
   // â”€â”€ Click delegation (only when there's no inline player on the page) â”€â”€

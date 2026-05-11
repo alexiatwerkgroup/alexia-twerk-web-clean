@@ -255,7 +255,15 @@
   // FOUNDER_FLOOR (set by ensureFounderFloor on init). Each grant adds
   // on top, and getState returns max(FOUNDER_FLOOR, localBalance).
   function grant(amount, reason) {
-    if (!isLoggedIn() || amount <= 0) return;
+    if (amount <= 0) {
+      console.warn('[TwkTokens] grant: invalid amount', amount);
+      return;
+    }
+    if (!isLoggedIn()) {
+      console.warn('[TwkTokens] grant: user not logged in, cannot grant');
+      return;
+    }
+    console.log('[TwkTokens] grant: +' + amount + ' ' + reason);
     var founder = isFounder();
     if (founder) {
       // Ensure the local floor is set so accumulation is visible.
@@ -354,13 +362,27 @@
   // +15 watch + +30 finish, once per video, for everyone (founder included
   // = same as normal user). No bypasses, no multi-fire.
   function onVideoStart(vid) {
-    if (!isLoggedIn() || !vid) return;
+    if (!vid) {
+      console.warn('[TwkTokens] onVideoStart: no vid provided');
+      return;
+    }
+    if (!isLoggedIn()) {
+      console.warn('[TwkTokens] onVideoStart: user not logged in');
+      return;
+    }
     var videos = read(KEYS.videos, {});
-    if (videos[vid] && videos[vid].started) return;
-    if (!consumeDaily('watches', DAILY_CAPS.watches)) return;
+    if (videos[vid] && videos[vid].started) {
+      console.log('[TwkTokens] onVideoStart: video already marked as started:', vid);
+      return;
+    }
+    if (!consumeDaily('watches', DAILY_CAPS.watches)) {
+      console.warn('[TwkTokens] onVideoStart: daily watch cap reached (20 per day)');
+      return;
+    }
     videos[vid] = videos[vid] || {};
     videos[vid].started = Date.now();
     write(KEYS.videos, videos);
+    console.log('[TwkTokens] onVideoStart: granting +15 tokens for vid:', vid);
     grant(REWARDS.videoWatch, 'Video watched');
   }
 
@@ -390,70 +412,70 @@
   // ─── HUD (badge top-right) ───────────────────────────────────────────
   function ensureHudElements() {
     // Create HUD HTML structure if it doesn't exist
-    if (document.getElementById('twk-tokens-hud-v3')) return true;
+    if (!document.getElementById('twk-tokens-hud-v3')) {
+      // Create main HUD container with class for pill-into-nav.js to find
+      var hud = document.createElement('div');
+      hud.id = 'twk-tokens-hud-v3';
+      hud.className = 'twerkhub-tokens-hud twk-tk-hud';
+      hud.style.cssText =
+        'display:inline-flex;align-items:center;gap:6px;' +
+        'padding:6px 12px;border-radius:999px;' +
+        'background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);' +
+        'color:#1ee08f;font-family:"JetBrains Mono",ui-monospace,monospace;' +
+        'font-size:10px;font-weight:800;letter-spacing:.12em;' +
+        'text-transform:uppercase;flex-shrink:0;white-space:nowrap;' +
+        'flex-direction:row;margin-left:6px;';
 
-    // Create main HUD container with class for pill-into-nav.js to find
-    var hud = document.createElement('div');
-    hud.id = 'twk-tokens-hud-v3';
-    hud.className = 'twerkhub-tokens-hud twk-tk-hud';
-    hud.style.cssText =
-      'display:inline-flex;align-items:center;gap:6px;' +
-      'padding:6px 12px;border-radius:999px;' +
-      'background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);' +
-      'color:#1ee08f;font-family:"JetBrains Mono",ui-monospace,monospace;' +
-      'font-size:10px;font-weight:800;letter-spacing:.12em;' +
-      'text-transform:uppercase;flex-shrink:0;white-space:nowrap;' +
-      'flex-direction:row;margin-left:6px;';
+      // Count display
+      var countEl = document.createElement('span');
+      countEl.id = 'twk-tokens-count';
+      countEl.style.cssText = 'font-size:12px;font-weight:900;';
+      countEl.textContent = '0';
 
-    // Count display
-    var countEl = document.createElement('span');
-    countEl.id = 'twk-tokens-count';
-    countEl.style.cssText = 'font-size:12px;font-weight:900;';
-    countEl.textContent = '0';
+      // Tier display
+      var tierEl = document.createElement('span');
+      tierEl.id = 'twk-tokens-tier';
+      tierEl.style.cssText = 'font-size:8px;opacity:.85;letter-spacing:.15em;margin-left:4px;';
+      tierEl.textContent = 'BASIC';
 
-    // Tier display
-    var tierEl = document.createElement('span');
-    tierEl.id = 'twk-tokens-tier';
-    tierEl.style.cssText = 'font-size:8px;opacity:.85;letter-spacing:.15em;margin-left:4px;';
-    tierEl.textContent = 'BASIC';
+      hud.appendChild(countEl);
+      hud.appendChild(tierEl);
 
-    hud.appendChild(countEl);
-    hud.appendChild(tierEl);
+      // Try to inject into navbar
+      var navInner = document.querySelector('.twk-nav-v1 .twk-nav-v1-inner');
+      var injected = false;
+      if (navInner) {
+        // Insert before LIVE pill if it exists
+        var livePill = navInner.querySelector('.twk-nav-v1-live');
+        if (livePill) {
+          navInner.insertBefore(hud, livePill);
+          injected = true;
+        } else {
+          navInner.appendChild(hud);
+          injected = true;
+        }
+      }
 
-    // Try to inject into navbar
-    var navInner = document.querySelector('.twk-nav-v1 .twk-nav-v1-inner');
-    var injected = false;
-    if (navInner) {
-      // Insert before LIVE pill if it exists
-      var livePill = navInner.querySelector('.twk-nav-v1-live');
-      if (livePill) {
-        navInner.insertBefore(hud, livePill);
-        injected = true;
-      } else {
-        navInner.appendChild(hud);
-        injected = true;
+      if (!injected) {
+        // Fallback: put at end of body, but use MutationObserver to move it to navbar once ready
+        document.body.appendChild(hud);
+        // Try again shortly in case navbar loads later
+        setTimeout(function() {
+          if (!document.getElementById('twk-tokens-hud-v3').parentElement.querySelector('.twk-nav-v1')) {
+            var navInner2 = document.querySelector('.twk-nav-v1 .twk-nav-v1-inner');
+            if (navInner2) {
+              var livePill2 = navInner2.querySelector('.twk-nav-v1-live');
+              var hud2 = document.getElementById('twk-tokens-hud-v3');
+              if (hud2 && livePill2) {
+                navInner2.insertBefore(hud2, livePill2);
+              }
+            }
+          }
+        }, 500);
       }
     }
 
-    if (!injected) {
-      // Fallback: put at end of body, but use MutationObserver to move it to navbar once ready
-      document.body.appendChild(hud);
-      // Try again shortly in case navbar loads later
-      setTimeout(function() {
-        if (!document.getElementById('twk-tokens-hud-v3').parentElement.querySelector('.twk-nav-v1')) {
-          var navInner2 = document.querySelector('.twk-nav-v1 .twk-nav-v1-inner');
-          if (navInner2) {
-            var livePill2 = navInner2.querySelector('.twk-nav-v1-live');
-            var hud2 = document.getElementById('twk-tokens-hud-v3');
-            if (hud2 && livePill2) {
-              navInner2.insertBefore(hud2, livePill2);
-            }
-          }
-        }
-      }, 500);
-    }
-
-    // Create toast host
+    // Create toast host ALWAYS, regardless of whether HUD existed
     if (!document.getElementById('twk-toast-host-v3')) {
       var host = document.createElement('div');
       host.id = 'twk-toast-host-v3';
@@ -698,6 +720,31 @@
     }, { once: true });
   }
 
+  // ─── Debug diagnostics ──────────────────────────────────────────────────
+  function debugStatus() {
+    var auth = getAuth();
+    var state = getState();
+    console.log('=== TWERKHUB TOKENS DEBUG ===');
+    console.log('Logged in:', !!auth);
+    if (auth) {
+      console.log('User email:', auth.user ? auth.user.email : 'unknown');
+      console.log('Auth token exists:', !!auth.token);
+    }
+    console.log('Balance:', state.balance);
+    console.log('Tier:', state.tier);
+    console.log('Total earned:', state.total);
+    console.log('Daily stats:', read(KEYS.daily, null));
+    console.log('Videos watched:', Object.keys(state.videos).length);
+    return {
+      loggedIn: !!auth,
+      balance: state.balance,
+      tier: state.tier,
+      totalEarned: state.total,
+      videosWatched: Object.keys(state.videos).length,
+      auth: !!auth
+    };
+  }
+
   // ─── Public API (backwards-compatible namespace) ─────────────────────
   window.AlexiaTokens = {
     getState: getState,
@@ -714,5 +761,6 @@
     isLoggedIn: isLoggedIn,
     REWARDS: REWARDS,
     UNLOCK_THRESHOLD: TIERS.medium, // legacy field used by some pages
+    debug: debugStatus, // diagnostic helper
   };
 })();

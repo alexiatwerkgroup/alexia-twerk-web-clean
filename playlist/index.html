@@ -193,23 +193,39 @@
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
   loadOnce('/assets/twk-tokens-v3.js?v=20260510-p11','twk-loader-token-system');
   loadOnce('/assets/twerkhub-age-gate.js?v=20260426-p8','twk-loader-age-gate');
-
-  // CRITICAL FIX: Bypass Cloudflare cache - use nonce to force fresh load
+  // Load theater - accept whatever Cloudflare serves, but patch it at runtime
   (function(){
-    // Remove ALL old theater scripts
-    document.querySelectorAll('script[id*="theater"]').forEach(function(el) {
-      el.remove();
-    });
-    document.querySelectorAll('script[src*="twerkhub-pl-theater"]').forEach(function(el) {
-      el.remove();
-    });
-
-    // Load the fixed version with unique nonce
-    var now = Math.random().toString(36).substr(2, 9);
+    var timestamp = Date.now();
+    var random = Math.random().toString(36).substr(2, 9);
     var script = document.createElement('script');
-    script.src = '/assets/twerkhub-pl-theater-fixed.js?v=20260511-p2&t=' + now;
-    script.id = 'twk-loader-pl-theater-fresh-' + now;
     script.async = false;
+    script.src = '/assets/twerkhub-pl-theater.js?t=' + timestamp + '&r=' + random;
+    script.id = 'theater-script-' + timestamp;
+    script.onload = function() {
+      // RUNTIME PATCH: Override grantViewToken to add logging even if old version loads
+      if (window.TwerkubPlTheater || window.grantViewToken) {
+        var original = window.grantViewToken || function() {};
+        window.grantViewToken = function(vid) {
+          try {
+            console.log('[PLAYLIST-PATCH] grantViewToken called with vid:', vid);
+            if (!window.AlexiaTokens) {
+              console.warn('[PLAYLIST-PATCH] window.AlexiaTokens not found');
+              return;
+            }
+            if (typeof window.AlexiaTokens.watchClip === 'function') {
+              console.log('[PLAYLIST-PATCH] Calling watchClip');
+              window.AlexiaTokens.watchClip(vid);
+            } else {
+              console.log('[PLAYLIST-PATCH] watchClip not available, using grant fallback');
+              window.AlexiaTokens.grant(15, 'watch_clip_fallback');
+            }
+          } catch(err) {
+            console.error('[PLAYLIST-PATCH] Error in grantViewToken:', err);
+          }
+        };
+        console.log('[PLAYLIST-PATCH] Successfully patched grantViewToken');
+      }
+    };
     document.head.appendChild(script);
   })();
 
