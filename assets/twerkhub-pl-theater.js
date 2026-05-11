@@ -157,6 +157,17 @@
 
   function open(vid){
     if (!vid) return;
+
+    // CRITICAL FIX (2026-05-11): If this page has an inline player, DO NOT open modal.
+    // Instead, delegate to the page's own swap() function (defined in playlist HTML).
+    // This prevents popup on /playlist/ and other pages with main players.
+    var inlinePlayer = document.getElementById('twerkhub-pl-player');
+    if (inlinePlayer && typeof window.swap === 'function') {
+      console.log('[TwkTheater] Inline player detected. Using swap() instead of modal.');
+      window.swap(vid);
+      return;
+    }
+
     ensureModal();
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
