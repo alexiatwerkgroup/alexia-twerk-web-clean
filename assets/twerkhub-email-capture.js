@@ -18,11 +18,29 @@
   var STORAGE_KEY = 'twkEmailCaptureDismissed_v1';
   var SUBSCRIBED_KEY = 'twkEmailCaptureSubscribed_v1';
 
-  // 2026-05-09: popup KEPT on home (it's the main lead-capture).
-  // Fix was: removed the backdrop-filter blur from .twk-ec-overlay so when
-  // the modal opens it just dims the page (solid dark), no blur. Plus we
-  // already skip for signed-in users below — so the founder + returning
-  // logged-in users never see it.
+  // 2026-05-11: LESS INVASIVE MODE
+  //   - Only shows on landing-style pages (home, membership, blog index,
+  //     community, creators index). Skip individual creator/playlist/article
+  //     pages where users are actively consuming content.
+  //   - Once per browser session ONLY (sessionStorage flag).
+  //   - Removed the time-based 35s timer (was annoying).
+  //   - Removed exit-intent trigger (was firing on tab-switch in some browsers).
+  //   - Now only triggers on genuine scroll past 60% — explicit engagement signal.
+  //   - Backdrop is now MORE OPAQUE so it's visually obvious the modal opened,
+  //     not invisible. Card has shadow + scale animation to draw attention.
+
+  // Skip the popup entirely on content/detail pages
+  var path = (location.pathname || '/').toLowerCase();
+  var LANDING_PATHS = [
+    '/', '/index.html',
+    '/membership.html', '/membership',
+    '/community.html', '/community',
+    '/about.html', '/about',
+    '/creators.html', '/creators',
+    '/blog/', '/blog/index.html',
+  ];
+  var isLanding = LANDING_PATHS.indexOf(path) !== -1;
+  if (!isLanding) return;
 
   // Already dismissed/subscribed in this session? Don't re-show.
   if (
@@ -46,7 +64,7 @@
     var st = document.createElement('style');
     st.id = 'twk-email-capture-css';
     st.textContent = [
-      '.twk-ec-overlay{position:fixed;inset:0;background:rgba(5,5,12,.86);z-index:99998;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease}',
+      '.twk-ec-overlay{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:99998;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}',
       '.twk-ec-overlay.is-open{opacity:1;pointer-events:auto}',
       '.twk-ec-card{position:relative;width:min(440px,100%);background:linear-gradient(180deg,rgba(20,20,32,.98),rgba(10,10,20,.99));border:1px solid rgba(255,45,135,.35);border-radius:22px;padding:34px 30px 28px;box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 60px rgba(255,45,135,.18);color:#f5f5fb;font-family:"Inter",ui-sans-serif,system-ui,sans-serif;transform:translateY(20px) scale(.96);transition:transform .35s cubic-bezier(.2,1.2,.3,1)}',
       '.twk-ec-overlay.is-open .twk-ec-card{transform:translateY(0) scale(1)}',
@@ -197,34 +215,18 @@
     });
   }
 
-  // ─── Trigger logic ──────────────────────────────────────────────────────
+  // ─── Trigger logic (LESS INVASIVE — 2026-05-11) ───────────────────────
+  // Only ONE trigger: scroll past 60%. Removed time-based + exit-intent.
+  // Single show per session enforced by hasShown + STORAGE_KEY.
 
-  // Time-based: 35 seconds
-  var timeTimer = setTimeout(show, 35000);
-
-  // Scroll-based: past 50% of viewport
   function checkScroll() {
     var doc = document.documentElement;
     var scrolled = doc.scrollTop || document.body.scrollTop;
     var max = doc.scrollHeight - doc.clientHeight;
-    if (max > 0 && scrolled / max > 0.5) {
+    if (max > 0 && scrolled / max > 0.6) {
       window.removeEventListener('scroll', checkScroll);
       show();
     }
   }
   window.addEventListener('scroll', checkScroll, { passive: true });
-
-  // Exit-intent: mouse leaves through the top of the viewport
-  function onMouseOut(e) {
-    if (e.clientY <= 0 && e.relatedTarget === null) {
-      document.removeEventListener('mouseout', onMouseOut);
-      show();
-    }
-  }
-  document.addEventListener('mouseout', onMouseOut);
-
-  // Cleanup if user navigates away
-  window.addEventListener('beforeunload', function () {
-    clearTimeout(timeTimer);
-  });
 })();
