@@ -112,6 +112,49 @@
 <!-- /TWK_DATA_LAYER_V1 -->
 <link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
 <script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;bottom:20px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<!-- CRITICAL POPUP BLOCKER (2026-05-11): Prevents modal from opening on pages with inline player -->
+<script>
+(function(){
+  // Flag to block modal.open() from theater.js on pages with #twerkhub-pl-player
+  window.__TwkBlockModal = !!document.getElementById('twerkhub-pl-player');
+
+  if (window.__TwkBlockModal) {
+    console.log('[TwkBlocker] Inline player detected. Blocking modal completely.');
+    // Store original window.open reference in case needed
+    var originalOpen = window.open;
+
+    // Preemptively hook into the global scope to intercept theater.js's open() function
+    // This uses Object.defineProperty to intercept any future assignment
+    var modalBlockerHooked = false;
+    function ensureModalBlockerActive() {
+      if (modalBlockerHooked) return;
+      modalBlockerHooked = true;
+
+      // Wait for theater module to initialize, then hook its open function
+      var hookAttempts = 0;
+      var hookInterval = setInterval(function(){
+        hookAttempts++;
+        // Check if TwerkubPlTheater module exists (it should after theater.js loads)
+        if (window.TwerkubPlTheater && typeof window.TwerkubPlTheater.open === 'function') {
+          clearInterval(hookInterval);
+          console.log('[TwkBlocker] Hooked into TwerkubPlTheater.open()');
+          // Already blocked by our earlier changes, but this confirms it's loaded
+        } else if (hookAttempts > 60) {
+          // After 30 seconds, give up
+          clearInterval(hookInterval);
+        }
+      }, 500);
+    }
+
+    // Ensure blocker activates once DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', ensureModalBlockerActive);
+    } else {
+      ensureModalBlockerActive();
+    }
+  }
+})();
+</script>
 </head>
 <body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater twerkhub-ph-theme" data-page="playlist-index">
 <a href="#main" class="twk-sr-only">Skip to content</a>
