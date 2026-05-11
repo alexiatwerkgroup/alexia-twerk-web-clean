@@ -410,12 +410,6 @@
   function patchInlinePlayer(){
     var player = document.getElementById('twerkhub-pl-player');
     if (!player) return false;
-    // CRITICAL FIX 2026-05-10: INLINE_PLAYER_PRESENT should ONLY be true for
-    // /playlist/ pages that have their own swap() click handler. Themed playlists
-    // (ttl-latin-models, try-on-hot-leaks, etc.) have the player DOM element but
-    // use onDocClick to open videos in a modal. Check if we're on /playlist/ path.
-    var isPlaylistPage = location.pathname.indexOf('/playlist/') === 0 || location.pathname === '/playlist';
-    if (!isPlaylistPage) return false; // Not a /playlist/ page, don't claim inline player
     INLINE_PLAYER_PRESENT = true;
     var wrap = player.closest('.twerkhub-pl-player-wrap') || player.parentNode;
     var inlineLoadStart = 0;
