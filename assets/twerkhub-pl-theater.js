@@ -174,7 +174,7 @@
 
     frameContainer.innerHTML = '<div id="twk-pl-theater-target"></div>';
     markViewed(vid);
-    grantViewToken();
+    grantViewToken(vid);
 
     loadYTApi().then(function(YT){
       if (ytPlayer && typeof ytPlayer.destroy === 'function') {
@@ -350,10 +350,10 @@
   }
 
   // â”€â”€ Token grant â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  function grantViewToken(){
+  function grantViewToken(vid){
     try {
       if (window.AlexiaTokens && typeof window.AlexiaTokens.watchClip === 'function') {
-        window.AlexiaTokens.watchClip();
+        window.AlexiaTokens.watchClip(vid);
       } else if (window.AlexiaTokens && typeof window.AlexiaTokens.grant === 'function') {
         window.AlexiaTokens.grant(15, 'watch_clip');
       }
