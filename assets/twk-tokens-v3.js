@@ -623,53 +623,49 @@
 
   // ─── Init ────────────────────────────────────────────────────────────
   function init() {
+    // Remove duplicate tokens pills (efficient selector)
     try {
-      // NUCLEAR: Remove ALL duplicate token pills, including any not in navbar
-      var allElements = document.querySelectorAll('*');
-      var mainPill = document.getElementById('twk-tokens-hud-v3');
-      for (var i = 0; i < allElements.length; i++) {
-        var el = allElements[i];
-        if (el === mainPill) continue; // Keep the main one
-        if (el.className && el.className.indexOf('twerkhub-tokens-hud') !== -1) {
-          try { el.remove(); } catch (_) {}
-        }
-        if (el.textContent && el.textContent.indexOf('TOKENS') > -1 &&
-            el.textContent.length < 100 && el !== mainPill &&
-            (el.textContent.indexOf('BASIC') > -1 || el.textContent.indexOf('VIP') > -1)) {
-          // Check if it's a duplicate pill element
-          if (el.textContent.indexOf('tokens') > -1 && el.tagName !== 'A' && el.tagName !== 'SPAN') {
-            try { el.remove(); } catch (_) {}
-          }
-        }
+      var duplicates = document.querySelectorAll('.twerkhub-tokens-hud:not(#twk-tokens-hud-v3)');
+      for (var i = 0; i < duplicates.length; i++) {
+        try { duplicates[i].remove(); } catch (_) {}
       }
+    } catch (_) {}
 
-      buildHud();
-      // Listen for state changes from elsewhere (auth, sync, etc.)
+    // Build HUD - ALWAYS DO THIS regardless of errors
+    buildHud();
+
+    // Listen for state changes
+    try {
       window.addEventListener('alexia-tokens-changed', renderHud);
       renderHud();
+    } catch (_) {}
 
-      if (isLoggedIn()) {
-        // Bootstrap rewards
-        welcome();
-        dailyCheck();
-        onPageVisit();
-        // 2026-05-09: if this page contains a video player (.vd-player[data-vid]),
-        // count it as a video watched. Single-page video pages need this since
-        // there's no iframe-click event to instrument.
-        try {
-          var vp = document.querySelector('.vd-player[data-vid], [data-vid]');
-          if (vp) {
-            var vid = vp.getAttribute('data-vid');
-            if (vid) {
-              // +15 watch once per video, +30 finish once per video.
-              setTimeout(function () { onVideoStart(vid); }, 1200);
-              setTimeout(function () { onVideoComplete(vid); }, 25000);
-            }
+    // CRITICAL: Token earning functions - ALWAYS CALL IF LOGGED IN
+    if (isLoggedIn()) {
+      try { welcome(); } catch (_) {}
+      try { dailyCheck(); } catch (_) {}
+      try { onPageVisit(); } catch (_) {}
+
+      // Video tracking - if page has video player
+      try {
+        var vp = document.querySelector('.vd-player[data-vid], [data-vid]');
+        if (vp) {
+          var vid = vp.getAttribute('data-vid');
+          if (vid) {
+            setTimeout(function () { try { onVideoStart(vid); } catch (_) {} }, 1200);
+            setTimeout(function () { try { onVideoComplete(vid); } catch (_) {} }, 25000);
           }
-        } catch (_) {}
-        // Drift reconcile after critical path
+        }
+      } catch (_) {}
+
+      // Drift reconcile
+      try {
         setTimeout(reconcileWithServer, 1500);
-      }
+      } catch (_) {}
+    }
+
+    // Auto-click instrumentation
+    try {
       instrumentClicks();
     } catch (_) {}
   }
