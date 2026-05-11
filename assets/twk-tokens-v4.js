@@ -476,8 +476,8 @@
       }
     }
 
-    // Create toast host ALWAYS, regardless of whether HUD existed
-        'position:fixed;top:80px;right:20px;z-index:999999;' + // FIXED 2026-05-11
+    // Create toast host if it doesn't already exist (may be created by inline script)
+    if (!document.getElementById('twk-toast-host-v3')) {
       var host = document.createElement('div');
       host.id = 'twk-toast-host-v3';
       host.style.cssText =
