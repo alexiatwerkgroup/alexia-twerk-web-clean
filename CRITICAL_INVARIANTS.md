@@ -197,3 +197,8 @@ DO NOT remove the guardian or any of its embedded `INVARIANTS`.
 Toast and coin-cascade sound are fully functional in `assets/twk-tokens-v3.js`.
 They're just fast (3.2s lifecycle). Do NOT change `playLoudPing()` or `toast()`
 without testing on real page.
+
+**2026-05-11 FIX:** Toast host (`#twk-toast-host-v3`) was NOT created on pages
+with pre-built HUD in HTML (e.g., `/creators-taipei`). Root cause: `ensureHudElements()`
+returned early if HUD existed, skipping toast-host creation. Fixed by moving
+toast-host creation OUTSIDE the HUD existence check. Now always created.
