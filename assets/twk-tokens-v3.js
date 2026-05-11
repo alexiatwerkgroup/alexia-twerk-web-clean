@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
- * TWERKHUB · Token System v3.0 · 2026-05-09
+ * TWERKHUB · Token System v3.0 · 2026-05-10 (dynamic HUD creation)
  * ───────────────────────────────────────────────────────────────────
  * Single-file replacement for both token-system.js AND twerkhub-tokens.js.
  * Self-contained. Zero external CSS dependency. D1-synced.
