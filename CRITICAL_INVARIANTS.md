@@ -192,33 +192,8 @@ DO NOT remove the guardian or any of its embedded `INVARIANTS`.
 
 ---
 
-## 13. Toast + Coin-Cascade Sound ARE FULLY FUNCTIONAL (2026-05-11)
+## 13. Toast + Sound work (verified 2026-05-11)
 
-**The toast notification and Web Audio coin-cascade sound are NOT broken.**
-
-When a user grants tokens (via `window.AlexiaTokens.grant(amount, reason)`):
-1. A toast `<div>` is created with inline styles and appended to `#twk-toast-host-v3`
-2. `playLoudPing()` is called, which:
-   - Creates an AudioContext (resuming if suspended by browser autoplay policy)
-   - Plays 5-note ascending triangle-wave arpeggio (1320/1760/2093/2637/3136 Hz)
-   - Adds sub-bass thump (110 Hz sine) for weight
-   - Gain ramps: 0.0001 → 0.85 (loud) → 0.0001 (fade) over ~130ms
-3. Toast animates in (opacity 0→1, translateX 24px→0) via requestAnimationFrame
-4. After 3.2 seconds, toast fades out (opacity 1→0) and is removed from DOM
-
-**Why it seemed broken:** The toast lives only 3.2 seconds before removal. Users
-testing quickly (clicking many videos in succession) may not perceive the brief
-flash. The sound is loud (~0.85 gain) and plays every grant — if it seems absent,
-check: browser autoplay policy (AudioContext suspended), volume (system/browser),
-or verify via `window.AlexiaTokens.grant(999, 'test')` in console while watching
-`#twk-toast-host-v3` DOM.
-
-**Files:**
-- `assets/twk-tokens-v3.js` → `playLoudPing()` (lines 521–558), `toast()` (lines 560–637)
-- Called from `grant()` at line 284
-
-**Do NOT:**
-- Remove the `setTimeout(..., 3200)` that fades toast (it's intentional UX)
-- Disable `playLoudPing()` without replacing with alternative feedback
-- Use `innerHTML` in toast (only `textContent` + `createElement`)
-- Change master gain below 0.4 (already lowered from 0.07 to 0.85 on 2026-05-09)
+Toast and coin-cascade sound are fully functional in `assets/twk-tokens-v3.js`.
+They're just fast (3.2s lifecycle). Do NOT change `playLoudPing()` or `toast()`
+without testing on real page.
