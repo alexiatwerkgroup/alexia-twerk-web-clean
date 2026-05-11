@@ -28,6 +28,16 @@ body.elite-defensive main.main{
   }
 }
 
+/* masthead y heroCard — inherit parent width/centering */
+body.elite-defensive .masthead,
+body.elite-defensive .heroCard {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 /* hero */
 body.elite-defensive .hero{
   display: block;
