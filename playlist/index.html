@@ -196,31 +196,6 @@
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 
-  /* PH Playlist Theater · 3-second heartbeat for +18 age-gate detection */
-  (function(){
-    var hbId=null,lastVid=null;
-    function getVid(){
-      var p=document.querySelector('[data-current-video]');
-      if(p)return p.getAttribute('data-current-video');
-      var i=document.querySelectorAll('iframe[src*="youtube.com/embed"]');
-      if(i.length>0){var m=i[0].src.match(/embed\/([a-zA-Z0-9_-]+)/);if(m&&m[1])return m[1];}
-      return null;
-    }
-    function start(){
-      if(hbId)return;
-      hbId=setInterval(function(){
-        var v=getVid();
-        if(!v||v===lastVid)return;
-        lastVid=v;
-        if(window.TwkAgeGate&&window.TwkAgeGate.isBlocked(v)){
-          var c=document.querySelector('.twerkhub-pl-hero')||document.querySelector('[data-player-container]');
-          if(c&&window.TwkAgeGate.show)window.TwkAgeGate.show(c,v);
-        }
-      },3000);
-    }
-    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',start);}else{start();}
-  })();
-
   /* PH theme · token pill relocator → moved to external file
      /assets/twerkhub-pill-into-nav.js so it loads on every page (not just
      the home). Inline duplicate removed 2026-05-05. */
