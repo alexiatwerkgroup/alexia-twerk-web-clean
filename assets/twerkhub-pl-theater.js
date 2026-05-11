@@ -1,4 +1,4 @@
-/* TWERKHUB Playlist Theater v20260510-p11 */
+/* TWERKHUB Playlist Theater v20260510-p12 - 3-second heartbeat detection */
 (function () {
   'use strict';
   if (window.TwkAgeGate) return;
