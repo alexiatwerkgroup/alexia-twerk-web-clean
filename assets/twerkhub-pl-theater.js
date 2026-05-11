@@ -1,5 +1,5 @@
 /* â•â•â• TWERKHUB · Playlist theater (large centered window, never fullscreen) â•â•â•
- * v20260510-p11 (aggressive age-gate detection)
+ * v20260510-p13 (1.5s heartbeat on both inline + modal)
  *
  * 2026-04-26 fix p8 — SAGRADA RULE #9: Top-5 hot ranking videos are
  * IMMUNE to the +18 paywall, no matter what YouTube returns. Heartbeat,
@@ -218,9 +218,9 @@
               try { ev.target.unMute(); ev.target.setVolume(100); } catch(_){}
               if (attempts >= 6) clearInterval(iv);
             }, 500);
-            // Start the 6s silent-block heartbeat
+            // Start the 1.5s silent-block heartbeat (ultra-aggressive for modal)
             killHeartbeat();
-            blockHeartbeat = setTimeout(triggerSilentBlock, 2000);
+            blockHeartbeat = setTimeout(triggerSilentBlock, 1500);
             // Hook heatmap: track watched buckets while this video plays
             try {
               if (window.TwkHeatmap) {
@@ -489,13 +489,13 @@
       // postMessage (no wrapper, no iframe destruction).
       setTimeout(subscribeInlineToEvents, 50);
 
-      // ── Black-screen heartbeat: 3s after load, if no PLAYING (1) or
+      // ── Black-screen heartbeat: 1.5s after load, if no PLAYING (1) or
       // BUFFERING (3) state has been reported, assume +18 silent block →
-      // show paywall. 3s gives slow connections a fair shot while being
-      // aggressive about blocking (YouTube's error appears in 1-2s).
-      // CRITICAL FIX (2026-05-10): YouTube sometimes doesn't fire onError
+      // show paywall. 1.5s is ultra-aggressive and fires BEFORE YouTube's
+      // error message appears (YouTube error appears in 1-2s).
+      // CRITICAL FIX (2026-05-10 p12): YouTube sometimes doesn't fire onError
       // 101/150 for +18 videos — they just sit black. The heartbeat is the
-      // ONLY reliable detection. Reduced from 5s → 3s after user reports of
+      // ONLY reliable detection. Reduced from 5s → 3s → 1.5s after user reports of
       // age-restricted videos showing YouTube's error instead of our paywall.
       // ALWAYS show paywall when heartbeat fires, except for top-5 protected.
       if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
@@ -504,14 +504,14 @@
         if (!vid) return;
         // SAGRADA #9 — top-5 protected videos never show paywall
         if (window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) return;
-        // No playback after 3s → assume blocked and show paywall
+        // No playback after 1.5s → assume blocked and show paywall
         showInlinePaywall(player, wrap, vid);
         // Mark as blocked for future reference
         if (window.TwkAgeGate && window.TwkAgeGate.markBlocked) {
           window.TwkAgeGate.markBlocked(vid);
         }
         stopTimeTracker();
-      }, 3000);
+      }, 1500);
 
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
