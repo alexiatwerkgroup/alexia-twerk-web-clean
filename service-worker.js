@@ -15,8 +15,9 @@
 // to guarantee no stale rewritten HTML survives.
 // ─────────────────────────────────────────────────────────────────────────
 // 2026-05-09: bumped to v2.1.0 → forces activate event → nukes old caches.
-const CACHE_NAME = 'alexia-pwa-v2.1.0';
-const RUNTIME_CACHE = 'alexia-runtime-v2.1.0';
+// 2026-05-11: bumped to v2.2.0 → forces fresh fetch on deindexed pages after /twerk-hub-leaks + /cosplay-fancam-leaks restoration.
+const CACHE_NAME = 'alexia-pwa-v2.2.0';
+const RUNTIME_CACHE = 'alexia-runtime-v2.2.0';
 const OFFLINE_URL = '/';
 
 // Files that are part of the app shell and should be pre-cached on install.
