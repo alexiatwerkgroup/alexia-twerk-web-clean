@@ -277,6 +277,7 @@
 
   // ─── 4. Build & inject Continue Watching strip ───────────────────────
   function injectResumeStrip(){
+    return; // DISABLED 2026-05-11: user requested no "continue watching"
     if (lsGet(DISMISS_KEY, false)) return;
     var history = lsGet(HISTORY_KEY, []);
     if (!history.length) return;
