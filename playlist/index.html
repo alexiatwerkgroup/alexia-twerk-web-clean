@@ -194,13 +194,21 @@
   loadOnce('/assets/twk-tokens-v3.js?v=20260510-p11','twk-loader-token-system');
   loadOnce('/assets/twerkhub-age-gate.js?v=20260426-p8','twk-loader-age-gate');
 
-  // CRITICAL FIX: Remove old theater script if it exists, then load the fixed version
+  // CRITICAL FIX: Bypass Cloudflare cache - use nonce to force fresh load
   (function(){
-    var old = document.getElementById('twk-loader-pl-theater');
-    if (old) old.remove();
+    // Remove ALL old theater scripts
+    document.querySelectorAll('script[id*="theater"]').forEach(function(el) {
+      el.remove();
+    });
+    document.querySelectorAll('script[src*="twerkhub-pl-theater"]').forEach(function(el) {
+      el.remove();
+    });
+
+    // Load the fixed version with unique nonce
+    var now = Math.random().toString(36).substr(2, 9);
     var script = document.createElement('script');
-    script.src = '/assets/twerkhub-pl-theater-fixed.js?v=20260511-p2';
-    script.id = 'twk-loader-pl-theater-v2';
+    script.src = '/assets/twerkhub-pl-theater-fixed.js?v=20260511-p2&t=' + now;
+    script.id = 'twk-loader-pl-theater-fresh-' + now;
     script.async = false;
     document.head.appendChild(script);
   })();
