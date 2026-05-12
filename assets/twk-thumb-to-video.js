@@ -16,7 +16,7 @@
     var link = document.createElement('link');
     link.id = 'twk-blindaje-style-link';
     link.rel = 'stylesheet';
-    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v57';
+    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v58';
     (document.head || document.documentElement).appendChild(link);
   })();
 
@@ -91,11 +91,11 @@
   }
 
   function lockedHTML(vid) {
-    return '<div class="vd-player vd-locked" data-vid="' + vid + '" style="position:absolute;inset:0;background:#000;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff;"><div><div style="font-size:64px;line-height:1;">&#128286;</div><div style="font-size:22px;font-weight:900;margin:12px 0 8px;letter-spacing:0.5px;">+18 LOCKED</div><div style="font-size:13px;opacity:.85;margin-bottom:14px;">Contact Alexia on Discord or Telegram for invite.</div><a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#5865F2,#7289DA);color:#fff;padding:10px 22px;border-radius:24px;text-decoration:none;font-weight:800;font-size:12px;letter-spacing:0.5px;display:inline-block;margin:4px;">DISCORD</a><a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#0088cc,#33b5e5);color:#fff;padding:10px 22px;border-radius:24px;text-decoration:none;font-weight:800;font-size:12px;letter-spacing:0.5px;display:inline-block;margin:4px;">TELEGRAM</a></div></div>';
+    return '<a href="/membership" data-vid="' + vid + '" class="vd-player vd-locked" style="position:absolute;inset:0;background:linear-gradient(135deg,#1a0a14 0%,#3d0a1f 50%,#85113f 100%);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff;text-decoration:none;cursor:pointer;"><div><div style="font-size:64px;line-height:1;">&#128286;</div><div style="font-size:22px;font-weight:900;margin:12px 0 8px;letter-spacing:0.5px;color:#fff;">+18 LOCKED</div><div style="font-size:13px;opacity:.9;margin-bottom:16px;color:#fff;">Premium membership unlocks the full archive.</div><span style="background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;padding:12px 28px;border-radius:24px;text-decoration:none;font-weight:900;font-size:13px;letter-spacing:0.5px;display:inline-block;box-shadow:0 6px 20px rgba(255,45,135,.4);">UNLOCK MEMBERSHIP &rarr;</span></div></a>';
   }
 
   function iframeHTML(vid) {
-    return '<iframe id="twkVidIframe_' + vid + '" data-vid="' + vid + '" data-blindaje="v5" src="https://www.youtube.com/embed/' + vid + '?' + buildBlindaje(vid) + '" title="Twerkhub" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:auto;"></iframe>' +
+    return '<iframe id="twkVidIframe_' + vid + '" data-vid="' + vid + '" data-blindaje="v5" src="https://www.youtube.com/embed/' + vid + '?' + buildBlindaje(vid) + '" title="Twerkhub" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position:absolute;top:50%;left:50%;width:100%;height:100%;border:0;display:block;transform:translate(-50%,-50%) scale(1.4);transform-origin:center center;pointer-events:auto;"></iframe>' +
       '<button class="twk-unmute-btn" type="button" aria-label="Unmute" style="position:absolute;bottom:14px;right:14px;z-index:20;width:44px;height:44px;border-radius:50%;background:rgba(255,28,142,0.92);border:0;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.5);" onclick="var f=this.parentNode.querySelector(\'iframe\');try{f.contentWindow.postMessage(JSON.stringify({event:\'command\',func:\'unMute\'}),\'*\');f.contentWindow.postMessage(JSON.stringify({event:\'command\',func:\'setVolume\',args:[80]}),\'*\');this.style.display=\'none\';}catch(e){}"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg></button>';
   }
 
@@ -284,20 +284,12 @@
   }
 
   // ============================================================
-  // 4) Click handler para cards en grids (igual que antes)
+  // 4) Click handler: NO interceptar. Click natural al <a href> del card.
+  //    Esto deja que cada card en /creators o /creators-*.html navegue
+  //    a su /creator/[name] o /playlist/[slug] según el href original.
   // ============================================================
   function attachClickHandler() {
-    document.addEventListener('click', function (e) {
-      var card = findContainer(e.target);
-      if (!card) return;
-      var vid = getVidFromCard(card);
-      if (!vid) return;
-      if (card.dataset.twkPlayed) return;
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      swapToVideo(card);
-    }, true);
+    // intencionalmente vacío: ya no hacemos swap-to-iframe on click
   }
 
   function addPlayBadge() {
@@ -350,17 +342,25 @@
     wrap.className = 'vd-player twk-creator-thumb';
     wrap.setAttribute('data-vid', vid);
     wrap.setAttribute('data-protected', '1');
-    wrap.style.cssText = 'position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;display:block;pointer-events:none;';
+    // wrap llena 100% del contenedor, aspect 16:9 fijo, overflow hidden para tapar letterbox
+    wrap.style.cssText = 'position:relative;width:100%;height:auto;aspect-ratio:16/9;background:#000;overflow:hidden;display:block;border-radius:inherit;';
     var iframe = document.createElement('iframe');
     iframe.setAttribute('data-vid', vid);
     iframe.setAttribute('data-blindaje', 'v5');
     iframe.setAttribute('loading', 'lazy');
     iframe.src = 'https://www.youtube.com/embed/' + vid + '?' + buildBlindaje(vid);
     iframe.title = 'Preview';
-    iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+    iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
     iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-    iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;pointer-events:none;';
+    iframe.setAttribute('allowfullscreen', '');
+    // Sobre-dimensionar iframe para eliminar el letterbox negro de YouTube.
+    // YT siempre tiene padding interno; con scale:1.4 y center origin queda zoom cropped sin bordes.
+    iframe.style.cssText = 'position:absolute;top:50%;left:50%;width:100%;height:100%;border:0;display:block;transform:translate(-50%,-50%) scale(1.4);transform-origin:center center;pointer-events:none;';
     wrap.appendChild(iframe);
+    // Overlay click capturador para mantener navegación al <a> parent (cuando lo tiene)
+    var clickShield = document.createElement('div');
+    clickShield.style.cssText = 'position:absolute;inset:0;z-index:5;pointer-events:auto;cursor:pointer;background:transparent;';
+    wrap.appendChild(clickShield);
     return wrap;
   }
 
@@ -393,7 +393,13 @@
   }
 
   function autoConvertCreatorPage() {
-    if (!/\/creator\//.test(location.pathname)) return;
+    var path = location.pathname || '';
+    // Excluir páginas con hero propio ya hardcoded
+    if (path.indexOf('/playlist/') === 0) return;
+    // Excluir admin / account pages
+    if (/\/(account|profile|membership|community|auth)/.test(path)) return;
+    // Excluir si la página NO tiene ninguna img de ytimg
+    if (!document.querySelector('img[src*="ytimg"], img[src*="img.youtube"]')) return;
     replaceHeroBlockPlaceholder();
     // recoger TODAS las imgs de YouTube (incluso fuera de <a>)
     var imgs = document.querySelectorAll('img[src*="ytimg"], img[src*="img.youtube"]');
