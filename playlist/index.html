@@ -190,6 +190,9 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
   }
 })();
 </script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,.twk-hero-affiliate-overlay,[class*="video-shield-cta"],[class*="hero-affiliate-overlay"]{display:none !important;visibility:hidden !important;pointer-events:none !important;}
+</style>
 </head>
 <body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater twerkhub-ph-theme" data-page="playlist-index">
 <a href="#main" class="twk-sr-only">Skip to content</a>
@@ -1339,6 +1342,66 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
 <p><strong>For Members:</strong> Premium members unlock exclusive behind-the-scenes cuts, creator interviews, and early access to newly added content. Join our community to support independent creators and access unlimited streaming.</p>
 </section>
 
+<script data-twk="paywall-popunder-fix">
+(function(){
+  if(window.__twkPaywallPopFix)return;window.__twkPaywallPopFix=true;
+
+  // BLOCK POPUNDERS (livejasmin / cams / affiliate)
+  var origOpen=window.open;
+  window.open=function(url,target,features){
+    if(typeof url==='string'&&/livejasmin|stripchat|chaturbate|popunder|jumpReferrer|pstool=|psprogram=/i.test(url)){
+      console.warn('[TWK] blocked popunder:',url.substring(0,80));return null;
+    }
+    return origOpen.apply(this,arguments);
+  };
+
+  // Tambien bloquear el handler click->popunder en cualquier elemento
+  document.addEventListener('click',function(e){
+    var a=e.target&&e.target.closest?e.target.closest('a[href*="livejasmin"],a[href*="stripchat"],a[href*="chaturbate"]'):null;
+    if(a){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();return false;}
+  },true);
+
+  var currentVid='DwJQZt7TaTM',swapTime=Date.now(),lastPlaybackEvent=0;
+  function isPremium(){try{if(window.__twkGuardian&&window.__twkGuardian.selfTest){var t=window.__twkGuardian.selfTest();if(t.isFounder||t.tier==='vip'||t.tier==='premium')return true;}}catch(e){}return false;}
+  function clearPaywall(){var w=document.getElementById('twkHeroWrap');if(!w)return;var o=w.querySelector('.twk-paywall-overlay');if(o)o.remove();}
+  function showPaywall(){if(isPremium())return;var w=document.getElementById('twkHeroWrap');if(!w||w.querySelector('.twk-paywall-overlay'))return;var o=document.createElement('div');o.className='twk-paywall-overlay';o.style.cssText='position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.96),rgba(40,0,40,0.96));z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:30px;backdrop-filter:blur(8px);';o.innerHTML='<div style="font-size:64px;line-height:1;">&#128286;</div><div style="font-size:28px;font-weight:900;margin:14px 0 8px;letter-spacing:1px;">+18 PREMIUM CONTENT</div><div style="font-size:14px;opacity:0.75;margin-bottom:24px;max-width:480px;">This video is marked as age-restricted &mdash; unlock to watch on Twerkhub.</div><a href="/membership/" style="background:linear-gradient(135deg,#ff1c8e,#aa3cff);color:#fff;padding:16px 40px;border-radius:32px;text-decoration:none;font-weight:900;font-size:16px;letter-spacing:1px;box-shadow:0 8px 32px rgba(255,28,142,0.5);">UNLOCK PREMIUM</a>';w.appendChild(o);}
+  function startListening(){var f=document.getElementById('twkHeroIframe');if(!f||!f.contentWindow)return;try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:'twkHero',channel:'widget'}),'*');f.contentWindow.postMessage(JSON.stringify({event:'command',func:'addEventListener',args:['onStateChange'],id:'twkHero'}),'*');f.contentWindow.postMessage(JSON.stringify({event:'command',func:'addEventListener',args:['onError'],id:'twkHero'}),'*');}catch(e){}}
+
+  window.addEventListener('message',function(e){
+    if(!/youtube(?:-nocookie)?\.com/.test(e.origin))return;
+    try{
+      var d=typeof e.data==='string'?JSON.parse(e.data):e.data;
+      if(d.event==='onError'){showPaywall();return;}
+      if(d.event==='onStateChange'||d.event==='infoDelivery'||d.event==='onReady'){
+        var info=d.info;var state=null;
+        if(typeof info==='object'&&info){state=info.playerState!==undefined?info.playerState:null;}
+        else if(typeof info==='number'){state=info;}
+        if(state===1||state===3||state===2){lastPlaybackEvent=Date.now();clearPaywall();}
+      }
+    }catch(_){}
+  });
+
+  function watchIframe(){
+    var iframe=document.getElementById('twkHeroIframe');
+    if(!iframe)return;
+    var lastSrc=iframe.src;
+    function onSrcChange(){
+      var m=iframe.src.match(/embed\/([\w-]{11})/);
+      if(!m)return;
+      currentVid=m[1];swapTime=Date.now();lastPlaybackEvent=0;
+      clearPaywall();
+      setTimeout(startListening,800);setTimeout(startListening,2000);
+      setTimeout(function(){if(currentVid===m[1]&&lastPlaybackEvent<swapTime)showPaywall();},5500);
+    }
+    var mo=new MutationObserver(function(){if(iframe.src!==lastSrc){lastSrc=iframe.src;onSrcChange();}});
+    mo.observe(iframe,{attributes:true,attributeFilter:['src']});
+    onSrcChange(); // disparar para el load inicial
+  }
+
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',watchIframe);}else{watchIframe();}
+  setTimeout(watchIframe,500);
+})();
+</script>
 </body>
 </html>
 
