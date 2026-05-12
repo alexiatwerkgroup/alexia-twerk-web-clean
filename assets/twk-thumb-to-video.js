@@ -16,7 +16,7 @@
     var link = document.createElement('link');
     link.id = 'twk-blindaje-style-link';
     link.rel = 'stylesheet';
-    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v53';
+    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v54';
     (document.head || document.documentElement).appendChild(link);
   })();
 
@@ -338,12 +338,82 @@
     }
   });
 
+  // ============================================================
+  // 5) AUTO-CONVERT en /creator/* — TODAS las <a><img ytimg></a>
+  //    se convierten en wraps con iframe blindado autoplay+mute.
+  //    El iframe es pointer-events:none → el click sigue yendo al <a> link.
+  //    Usa IntersectionObserver para activar cuando entran al viewport
+  //    (evita 15+ iframes simultáneos colgando la página).
+  // ============================================================
+  function buildThumbWrap(vid) {
+    var wrap = document.createElement('div');
+    wrap.className = 'vd-player twk-creator-thumb';
+    wrap.setAttribute('data-vid', vid);
+    wrap.setAttribute('data-protected', '1');
+    wrap.style.cssText = 'position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;display:block;pointer-events:none;';
+    var iframe = document.createElement('iframe');
+    iframe.setAttribute('data-vid', vid);
+    iframe.setAttribute('data-blindaje', 'v5');
+    iframe.setAttribute('loading', 'lazy');
+    iframe.src = 'https://www.youtube.com/embed/' + vid + '?' + buildBlindaje(vid);
+    iframe.title = 'Preview';
+    iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;pointer-events:none;';
+    wrap.appendChild(iframe);
+    return wrap;
+  }
+
+  function autoConvertCreatorPage() {
+    if (!/\/creator\//.test(location.pathname)) return;
+    var anchors = document.querySelectorAll('a[href]');
+    var pending = [];
+    Array.prototype.forEach.call(anchors, function (a) {
+      if (a.dataset.twkAutoConvert === '1') return;
+      var img = a.querySelector('img[src*="ytimg"], img[src*="img.youtube"]');
+      if (!img) return;
+      var vid = extractVid(img.src) || extractVid(a.href);
+      if (!vid) return;
+      pending.push({ a: a, img: img, vid: vid });
+    });
+
+    if (!pending.length) return;
+
+    // Usar IntersectionObserver para activar en viewport
+    if (!window.IntersectionObserver) {
+      // fallback: convertir todos al toque
+      pending.forEach(function (p) {
+        p.a.dataset.twkAutoConvert = '1';
+        var wrap = buildThumbWrap(p.vid);
+        p.img.parentNode.replaceChild(wrap, p.img);
+      });
+      return;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var a = entry.target;
+        if (a.dataset.twkAutoConvert === '1') { io.unobserve(a); return; }
+        var p = pending.filter(function (x) { return x.a === a; })[0];
+        if (!p) { io.unobserve(a); return; }
+        a.dataset.twkAutoConvert = '1';
+        var wrap = buildThumbWrap(p.vid);
+        if (p.img.parentNode) p.img.parentNode.replaceChild(wrap, p.img);
+        io.unobserve(a);
+      });
+    }, { rootMargin: '200px' });
+
+    pending.forEach(function (p) { io.observe(p.a); });
+  }
+
   function init() {
     attachClickHandler();
     addPlayBadge();
     sweepIframes(document);
     sweepThumbs(document);
     autoHero();
+    autoConvertCreatorPage();
 
     if (window.MutationObserver) {
       var mo = new MutationObserver(function () {
