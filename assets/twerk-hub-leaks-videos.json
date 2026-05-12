@@ -2,50 +2,50 @@
   "playlist": "twerk-hub-leaks",
   "source_youtube_list": "PLMzWifnZnpVJ7sAR9STyDXbTjd3x0ITmR",
   "curated_by": "Anti (firestarter)",
-  "updated": "2026-04-20",
-  "notes": "Signature twerk hub · top 5 free · rest paywall-gated (Discord handoff).",
+  "updated": "2026-05-12",
+  "notes": "Signature twerk hub · top 5 free · rest paywall-gated (Discord handoff). | 2026-05-12: top 5 updated from user's YouTube playlist screenshot. 2 IDs TBD: Remenea, Munna Rain.",
   "hot_ranking": [
+    {
+      "id": "qmHxNAwhShY",
+      "title": "EL JOVARD - Remenea (Official Video) | Material",
+      "channel": "EL JOVA RD",
+      "duration": "2:58",
+      "rank": 1,
+      "free": true,
+      "badge": "gold"
+    },
     {
       "id": "8yAG7toqnCM",
       "title": "Gwen Stefani - Hollaback Girl / Nix Choreography",
       "channel": "iDance Studio",
       "duration": "1:44",
-      "rank": 1,
+      "rank": 2,
       "free": true,
-      "badge": "gold"
+      "badge": "purple"
+    },
+    {
+      "id": "WHEELIE_LATTO_TBD",
+      "title": "Wheelie - Latto | Twerking",
+      "channel": "Kato Dance Studio",
+      "duration": "4:23",
+      "rank": 3,
+      "free": true,
+      "badge": "pink"
+    },
+    {
+      "id": "pWs3Mt1Deyw",
+      "title": "♡ LET DA MUNNA RAIN ♡ PROD. XANGANG | LILY DIOR",
+      "channel": "Lily Dior Official",
+      "duration": "2:38",
+      "rank": 4,
+      "free": true,
+      "badge": "monochrome"
     },
     {
       "id": "X-lPzSuvf3k",
       "title": "Лада Гоцци // High-Heels // Pharaoh - Пломбир",
       "channel": "Школа Танцев MDC NRG Moscow Dance Centre",
       "duration": "1:26",
-      "rank": 2,
-      "free": true,
-      "badge": "purple"
-    },
-    {
-      "id": "rJQedlVdCCU",
-      "title": "TWERK CHOREO BY ABASHEVA YANA | #TWERKITSTUDIO | begginers | Rihanna – Needed Me",
-      "channel": "Abramova Iana",
-      "duration": "2:20",
-      "rank": 3,
-      "free": true,
-      "badge": "pink"
-    },
-    {
-      "id": "3D71UgdBwI0",
-      "title": "Nicki Minaj - Barbie World | Twerk Dance | Ciri",
-      "channel": "Kato Dance Studio",
-      "duration": "3:24",
-      "rank": 4,
-      "free": true,
-      "badge": "monochrome"
-    },
-    {
-      "id": "i8IPSA7lAfQ",
-      "title": "Nicki Minaj - Yikes (twerk)",
-      "channel": "Dasha Kolesnikova",
-      "duration": "1:16",
       "rank": 5,
       "free": true,
       "badge": "monochrome"
