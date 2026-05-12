@@ -129,8 +129,4 @@ self.addEventListener('fetch', event => {
 });
 
 // Allow pages to request an immediate SW update without a hard reload.
-self.addEventListener('message', event => {
-  if (event.data === 'skip-waiting' || (event.data && event.data.type === 'skip-waiting')) {
-    self.skipWaiting();
-  }
-});
+self.addEventListener('message', ev

@@ -139,48 +139,4 @@
     tiles.forEach(function (el) {
       var vid = el.getAttribute('data-vid');
       if (vid && classif[vid] === 'blocked') {
-        applyThumbBadge(el);
-        blockedTiles++;
-      }
-    });
-
-    // 3. Anchor links to YouTube watch pages
-    var links = document.querySelectorAll('a[href*="youtube.com/watch"], a[href*="youtu.be/"]');
-    links.forEach(function (a) {
-      var vid = extractVideoId(a.getAttribute('href'));
-      if (vid && classif[vid] === 'blocked') {
-        var parent = a.closest('.vd-card, .thumb, .vd-thumb, [data-vid], .twk-card');
-        if (parent) applyThumbBadge(parent);
-      }
-    });
-
-    if (blockedIframes || blockedTiles) {
-      try { console.log('[twk-paywall-guard] blocked', blockedIframes, 'iframe(s) and', blockedTiles, 'tile(s)'); } catch (_) {}
-    }
-  }
-
-  function run() {
-    if (isMember()) {
-      try { console.log('[twk-paywall-guard] member detected — paywall skipped'); } catch (_) {}
-      return;
-    }
-    fetch(CLASSIFICATION_URL, { cache: 'force-cache' })
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-      .then(function (classif) {
-        processPage(classif);
-
-        // Re-run on mutations (lazy-loaded grids, infinite scroll)
-        var mo = new MutationObserver(function () { processPage(classif); });
-        mo.observe(document.body, { childList: true, subtree: true });
-      })
-      .catch(function (err) {
-        try { console.warn('[twk-paywall-guard] classification load failed', err); } catch (_) {}
-      });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', run, { once: true });
-  } else {
-    run();
-  }
-})();
+        applyThumb

@@ -217,16 +217,4 @@
 
   // ─── Trigger logic (LESS INVASIVE — 2026-05-11) ───────────────────────
   // Only ONE trigger: scroll past 60%. Removed time-based + exit-intent.
-  // Single show per session enforced by hasShown + STORAGE_KEY.
-
-  function checkScroll() {
-    var doc = document.documentElement;
-    var scrolled = doc.scrollTop || document.body.scrollTop;
-    var max = doc.scrollHeight - doc.clientHeight;
-    if (max > 0 && scrolled / max > 0.6) {
-      window.removeEventListener('scroll', checkScroll);
-      show();
-    }
-  }
-  window.addEventListener('scroll', checkScroll, { passive: true });
-})();
+  // Single show per session enforced by hasShow

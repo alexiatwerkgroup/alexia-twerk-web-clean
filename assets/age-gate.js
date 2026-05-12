@@ -153,15 +153,4 @@
       setTimeout(function(){
         root.remove();
         document.documentElement.style.overflow = prevOverflow;
-        // Al salir del modal, asegurar que el usuario quede arriba de todo
-        try { window.scrollTo(0, 0); } catch(_){}
-      }, 400);
-    });
-
-    // Focus primary action for accessibility
-    setTimeout(function(){ enterBtn.focus(); }, 300);
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
-  else mount();
-})();
+        // Al salir del modal, asegurar qu
