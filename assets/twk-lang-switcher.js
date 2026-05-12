@@ -16,13 +16,14 @@
   if (window.__twkLangSwitcherInit) return;
   window.__twkLangSwitcherInit = true;
 
-  var LANGS = ['en','es','ru'];
+  var LANGS = ['en','es','ru','pt'];
   var GTRANS_COOKIE = 'googtrans';
 
   function currentLang(){
     var p = location.pathname;
     if (p.indexOf('/es/') === 0) return 'es';
     if (p.indexOf('/ru/') === 0) return 'ru';
+    if (p.indexOf('/pt/') === 0) return 'pt';
     // Also detect translated state via cookie (in-place fallback)
     var raw = readCookie(GTRANS_COOKIE);
     var m = raw && raw.match(/^\/[a-z]+\/([a-z]{2,3})$/);
@@ -34,10 +35,12 @@
     var p = location.pathname;
     var cur = (location.pathname.indexOf('/es/') === 0) ? 'es'
             : (location.pathname.indexOf('/ru/') === 0) ? 'ru'
+            : (location.pathname.indexOf('/pt/') === 0) ? 'pt'
             : 'en';
     var stripped = p;
     if (cur === 'es') stripped = p.replace(/^\/es/, '') || '/';
     if (cur === 'ru') stripped = p.replace(/^\/ru/, '') || '/';
+    if (cur === 'pt') stripped = p.replace(/^\/pt/, '') || '/';
     if (lang === 'en') return stripped;
     return '/' + lang + (stripped === '/' ? '/' : stripped);
   }
