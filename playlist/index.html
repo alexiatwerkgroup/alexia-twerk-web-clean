@@ -337,21 +337,35 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
 (function(){
   function swapHero(vid){
     var iframe=document.getElementById('twkHeroIframe');
-    if(!iframe)return;
-    iframe.src='https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+    if(iframe){iframe.src='https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';}
     var wrap=document.getElementById('twkHeroWrap');
     if(wrap)wrap.setAttribute('data-vid',vid);
-    var titleEl=document.querySelector('.now-playing-title, [class*=now-playing]');
     window.scrollTo({top:0,behavior:'smooth'});
   }
-  document.addEventListener('click',function(e){
-    var a=e.target.closest('.rk-item');
-    if(!a)return;
-    e.preventDefault();
-    e.stopPropagation();
-    var vid=a.dataset.vid;
-    if(vid){swapHero(vid);}
-  },true);
+  function rebind(){
+    document.querySelectorAll('aside .rk-item').forEach(function(item){
+      // Clonar el item para STRIPEAR todos los listeners (incluidos los del theater script)
+      var fresh=item.cloneNode(true);
+      // Sacar href para que no navegue
+      fresh.removeAttribute('href');
+      fresh.removeAttribute('target');
+      fresh.style.cursor='pointer';
+      // Asignar nuestro onclick limpio
+      fresh.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        var vid=this.dataset.vid;
+        if(vid)swapHero(vid);
+        return false;
+      },true);
+      item.parentNode.replaceChild(fresh,item);
+    });
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',rebind);}else{rebind();}
+  setTimeout(rebind,500);
+  setTimeout(rebind,1500);
+  setTimeout(rebind,4000);
 })();
 </script>
     </div>
