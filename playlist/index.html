@@ -1426,6 +1426,80 @@ Browse the <a href="#hot-ranking" style="color:#ff8acd;">weekly Top 5</a>, explo
   setTimeout(rebind,500);setTimeout(rebind,1500);setTimeout(rebind,4000);
 })();
 </script>
+<script data-twk="hero-swap-paywall">
+(function(){
+  if(window.__twkHeroSwapPaywall)return;window.__twkHeroSwapPaywall=true;
+
+  var classification = null;
+  var classificationReady = false;
+
+  fetch('/assets/youtube-age-classification.json')
+    .then(function(r){return r.json();})
+    .then(function(j){classification=j;classificationReady=true;console.log('[TWK] classification loaded:',Object.keys(j).length,'entries');})
+    .catch(function(e){console.warn('[TWK] classification fetch failed:',e);});
+
+  function isBlocked(vid){
+    return classificationReady && classification && classification[vid] === 'blocked';
+  }
+
+  function lockedHTML(vid){
+    return '<div class="vd-player vd-locked" data-vid="'+vid+'" id="twkHeroWrap" style="position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:12px;"><div class="vd-lock-modal"><div class="vd-lock-padlock" aria-hidden="true"><svg viewBox="0 0 64 64" width="80" height="80" fill="none"><rect x="14" y="28" width="36" height="28" rx="6" fill="#ffb454" stroke="#a06624" stroke-width="2"/><path d="M22 28 V20 a10 10 0 0 1 20 0 V28" stroke="#9d9d9d" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="32" cy="42" r="3" fill="#1a0f00"/><rect x="31" y="42" width="2" height="6" fill="#1a0f00"/></svg></div><div class="vd-lock-kicker">+18 &middot; Locked content</div><h2 class="vd-lock-title">This video is <em>locked</em>.</h2><p class="vd-lock-body"><strong>To unlock, contact Alexia on Discord or Telegram.</strong> YouTube blocks this video from playing outside their platform because it is age-restricted. The uncensored version comes from Alexia directly, in private.</p><div class="vd-lock-cta"><a class="vd-lock-btn discord" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Contact on Discord</a><a class="vd-lock-btn telegram" href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Contact on Telegram</a></div><div class="vd-lock-footer">Free invite &middot; 18+ only &middot; Private</div></div></div>';
+  }
+  function iframeHTML(vid){
+    return '<div class="vd-player twk-hero-wrap" id="twkHeroWrap" data-vid="'+vid+'" style="position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:12px;"><iframe id="vd-player-iframe" data-vid="'+vid+'" src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&origin=https%3A%2F%2Falexiatwerkgroup.com" title="Twerkhub" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy" style="width:100%;height:100%;border:0;display:block;"></iframe></div>';
+  }
+
+  function doSwap(vid){
+    var current = document.getElementById('twkHeroWrap');
+    if(!current) return;
+    var html = isBlocked(vid) ? lockedHTML(vid) : iframeHTML(vid);
+    current.outerHTML = html;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function swap(vid){
+    if(classificationReady){doSwap(vid);return;}
+    // Esperar hasta 2s a que cargue classification, despues swap igual
+    var elapsed = 0;
+    var iv = setInterval(function(){
+      elapsed += 100;
+      if(classificationReady || elapsed >= 2000){
+        clearInterval(iv);
+        doSwap(vid);
+      }
+    },100);
+  }
+
+  function block(e){
+    var a = e.target && e.target.closest ? e.target.closest('.rk-item,.vcard') : null;
+    if(!a) return;
+    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+    if(e.type==='click'){
+      var vid = a.dataset.vid;
+      if(vid) swap(vid);
+    }
+    return false;
+  }
+  ['mousedown','pointerdown','click','touchstart','auxclick'].forEach(function(t){
+    document.addEventListener(t, block, true);
+  });
+
+  function rebind(){
+    document.querySelectorAll('.rk-item,.vcard').forEach(function(it){
+      if(it.dataset.twkBound) return;
+      it.dataset.twkBound='1';
+      var fresh = it.cloneNode(true);
+      fresh.removeAttribute('href');fresh.removeAttribute('target');
+      fresh.style.cursor='pointer';
+      fresh.dataset.twkBound='1';
+      it.parentNode.replaceChild(fresh, it);
+    });
+  }
+
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',rebind);}else{rebind();}
+  setTimeout(rebind,500);setTimeout(rebind,1500);setTimeout(rebind,4000);
+})();
+</script>
 </body>
 </html>
 
