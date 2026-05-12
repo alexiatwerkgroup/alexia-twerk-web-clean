@@ -23,22 +23,35 @@
   var FOUNDER_EMAIL = 'alexiatwerkoficial@gmail.com';
 
   // ─────────────────────────────────────────────────────────────────
-  // ⚠️ PAYWALL TEMPORARILY DISABLED — 2026-05-11
+  // ⚠️ PAYWALL · PATH-SCOPED — 2026-05-12
   //
-  // Reason: Google needs to (re)index 162 age-restricted pages without
-  // seeing the paywall overlay (otherwise risk: cloaking flag / soft-404
-  // classification / thin content penalty).
+  // The paywall is ACTIVE only on the 5 canonical playlist directories
+  // (and their child individual-video pages under /playlist/*). Every
+  // other surface — the 162 recently-created pages we still want Google
+  // to (re)index cleanly (the /pt/ tree, blog, creator profiles, recovered
+  // legacy pages, etc.) — has the paywall disabled to avoid cloaking/soft-404
+  // signals during the indexing window.
   //
-  // TO RE-ENABLE PAYWALL after Google has indexed:
-  //   1) Verify in GSC that the 162 pages are indexed (Coverage → Indexed)
-  //   2) Change PAYWALL_ENABLED below from `false` to `true`
-  //   3) Bump cache buster, commit, push.
+  // Once GSC confirms the 162 pages are indexed, expand PAYWALL_PATHS to
+  // include those surfaces too (or set PAYWALL_GLOBAL = true to enable
+  // everywhere).
   // ─────────────────────────────────────────────────────────────────
-  var PAYWALL_ENABLED = false;
+  var PAYWALL_GLOBAL = false;           // set true to force-enable everywhere
+  var PAYWALL_PATHS = [
+    '/twerk-hub-leaks/',
+    '/hottest-cosplay-fancam/',
+    '/korean-girls-kpop-twerk/',
+    '/try-on-hot-leaks/',
+    '/sav-twerk-playlist/',
+    '/playlist/'                        // individual video pages inside the 5 main playlists
+  ];
+  var __path = (typeof location !== 'undefined' && location.pathname) ? location.pathname : '/';
+  var PAYWALL_ENABLED = PAYWALL_GLOBAL || PAYWALL_PATHS.some(function (p) { return __path.indexOf(p) === 0; });
   if (!PAYWALL_ENABLED) {
-    try { console.log('[twk-paywall-guard] paywall disabled (indexing window) — re-enable after GSC confirms 162 pages indexed'); } catch (_) {}
+    try { console.log('[twk-paywall-guard] paywall off for this path (' + __path + ') — only active on 5 main playlists + /playlist/*'); } catch (_) {}
     return;
   }
+  try { console.log('[twk-paywall-guard] paywall ACTIVE on ' + __path); } catch (_) {}
 
   // ⚡ Googlebot / search crawler whitelist (defense in depth)
   // Even when paywall is enabled, bots should never see the overlay.
@@ -117,26 +130,4 @@
       'position:absolute;top:6px;right:6px;background:rgba(0,0,0,.85);color:#ffd700;' +
       'padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;' +
       'z-index:9;pointer-events:none;font-family:system-ui,-apple-system,sans-serif;';
-    badge.textContent = '🔒 18+';
-    el.appendChild(badge);
-  }
-
-  function processPage(classif) {
-    // 1. Iframes embeds
-    var iframes = document.querySelectorAll('iframe[src*="youtube.com/embed/"], iframe[src*="youtube-nocookie.com/embed/"]');
-    var blockedIframes = 0;
-    iframes.forEach(function (f) {
-      var vid = extractVideoId(f.getAttribute('src'));
-      if (vid && classif[vid] === 'blocked') {
-        applyIframePaywall(f, vid);
-        blockedIframes++;
-      }
-    });
-
-    // 2. Thumbnail tiles with data-vid attribute (grid pages)
-    var tiles = document.querySelectorAll('[data-vid]');
-    var blockedTiles = 0;
-    tiles.forEach(function (el) {
-      var vid = el.getAttribute('data-vid');
-      if (vid && classif[vid] === 'blocked') {
-        applyThumb
+    badge.textContent
