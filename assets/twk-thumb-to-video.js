@@ -34,18 +34,38 @@
       "fs=0",
       "iv_load_policy=3",
       "showinfo=0",
-      "loop=1",
-      "playlist=" + vid,
       "widget_referrer=" + encodeURIComponent(ORIGIN),
       "origin=" + encodeURIComponent(ORIGIN)
     ].join("&");
   }
-  // legacy var para sweepIframes (sin vid context) - usa loop sin playlist (YT lo manejara)
   var BLINDAJE_NO_VID = [
     "autoplay=1","mute=1","controls=0","rel=0","modestbranding=1","playsinline=1",
     "enablejsapi=1","disablekb=1","fs=0","iv_load_policy=3","showinfo=0",
     "widget_referrer=" + encodeURIComponent(ORIGIN),"origin=" + encodeURIComponent(ORIGIN)
   ].join("&");
+
+  // Listener global de YT API postMessage: detecta state=0 (ended) y reinicia el video
+  window.addEventListener('message', function (e) {
+    if (!e.data) return;
+    var data = e.data;
+    try {
+      if (typeof data === 'string' && data.indexOf('"event":"infoDelivery"') === -1) data = JSON.parse(data);
+    } catch (_) { return; }
+    if (!data || typeof data !== 'object') return;
+    // YT manda { event: "onStateChange", info: 0 } cuando termina
+    if (data.event === 'onStateChange' && data.info === 0) {
+      // buscar el iframe de origen via source
+      var ifrs = document.querySelectorAll('iframe[data-blindaje="v5"]');
+      Array.prototype.forEach.call(ifrs, function (ifr) {
+        if (ifr.contentWindow === e.source) {
+          try {
+            ifr.contentWindow.postMessage(JSON.stringify({ event: "command", func: "seekTo", args: [0, true] }), "*");
+            ifr.contentWindow.postMessage(JSON.stringify({ event: "command", func: "playVideo", args: "" }), "*");
+          } catch (_) {}
+        }
+      });
+    }
+  });
 
   var classification = null, classReady = false;
   fetch('/assets/youtube-age-classification.json')
@@ -90,6 +110,11 @@
     var iframe = wrap.querySelector("iframe");
     if (!iframe) return;
     iframe.addEventListener("load", function () {
+      // suscribirse a eventos de YT para detectar end y reiniciar
+      try {
+        iframe.contentWindow.postMessage(JSON.stringify({ event: "listening", id: iframe.id || "twkVid" }), "*");
+        iframe.contentWindow.postMessage(JSON.stringify({ event: "command", func: "addEventListener", args: ["onStateChange"] }), "*");
+      } catch (_) {}
       // varios intentos para vencer el bloqueo de autoplay
       forcePlay(iframe);
       setTimeout(function () { forcePlay(iframe); }, 250);

@@ -7,19 +7,18 @@
   display: block !important;
 }
 
-/* OVERLAY: tapa esquina inferior derecha (watermark "YouTube" + "More videos" end card area)
-   El overlay esta detras del boton de unmute (z-index menor) pero encima del iframe. */
+/* OVERLAY 1: tapa franja inferior completa donde aparece "More videos" overlay + watermark YT.
+   Pointer-events:none para no bloquear interacción con el video. */
 .vd-player::before, .twk-creator-hero::before, .twk-vid-wrap::before {
   content: "";
   position: absolute;
+  left: 0;
   right: 0;
   bottom: 0;
-  width: 130px;
-  height: 38px;
-  background: #000;
+  height: 60px;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0) 100%);
   z-index: 10;
   pointer-events: none;
-  border-top-left-radius: 6px;
 }
 /* Tambien tapar la esquina superior derecha donde aparece el titulo en algunos modos */
 .vd-player::after, .twk-creator-hero::after, .twk-vid-wrap::after {
