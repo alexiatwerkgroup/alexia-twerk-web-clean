@@ -8,31 +8,34 @@
 }
 
 /* OVERLAY 1: tapa franja inferior completa donde aparece "More videos" overlay + watermark YT.
-   Pointer-events:none para no bloquear interacción con el video. */
+   Sólido negro 100% en la parte donde aparecen los elementos UI. */
 .vd-player::before, .twk-creator-hero::before, .twk-vid-wrap::before {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 60px;
-  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0) 100%);
+  height: 70px;
+  background: #000;
   z-index: 10;
   pointer-events: none;
 }
-/* Tambien tapar la esquina superior derecha donde aparece el titulo en algunos modos */
+/* OVERLAY 2: tapa franja superior (donde a veces aparece título + share button al hover) */
+.vd-player > .twk-top-mask, .twk-creator-hero > .twk-top-mask, .twk-vid-wrap > .twk-top-mask {
+  position: absolute; left: 0; right: 0; top: 0; height: 56px;
+  background: #000; z-index: 10; pointer-events: none;
+}
+/* Tapa franja superior (titulo + share + watch later) */
 .vd-player::after, .twk-creator-hero::after, .twk-vid-wrap::after {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 50px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
-  z-index: 9;
+  height: 56px;
+  background: #000;
+  z-index: 10;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity .2s;
 }
 
 /* El boton de unmute custom siempre encima del overlay */
