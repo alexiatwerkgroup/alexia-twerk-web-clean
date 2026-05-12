@@ -16,7 +16,7 @@
     var link = document.createElement('link');
     link.id = 'twk-blindaje-style-link';
     link.rel = 'stylesheet';
-    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v55';
+    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v56';
     (document.head || document.documentElement).appendChild(link);
   })();
 
@@ -400,9 +400,28 @@
         if (p) doConvert(p);
         io.unobserve(entry.target);
       });
-    }, { rootMargin: '300px' });
+    }, { rootMargin: '600px' });
 
     pending.forEach(function (p) { io.observe(p.target); });
+
+    // Fallback: después de 3s, convertir cualquier img residual aunque NO esté en viewport.
+    // Esto asegura que TODA la página tiene videos (no fotos) sin importar el scroll.
+    setTimeout(function () {
+      pending.forEach(function (p) {
+        if (p.img.dataset.twkAutoConverted !== '1') doConvert(p);
+      });
+      // Re-sweep para pillar imágenes nuevas que aparezcan después
+      var leftover = document.querySelectorAll('img[src*="ytimg"], img[src*="img.youtube"]');
+      Array.prototype.forEach.call(leftover, function (img) {
+        if (img.dataset.twkAutoConverted === '1') return;
+        var anchor = img.closest('a[href]');
+        var vid = extractVid(img.src) || (anchor ? extractVid(anchor.href) : null);
+        if (!vid) return;
+        img.dataset.twkAutoConverted = '1';
+        var wrap = buildThumbWrap(vid);
+        if (img.parentNode) img.parentNode.replaceChild(wrap, img);
+      });
+    }, 3000);
   }
 
   function init() {
