@@ -41,6 +41,39 @@ body{background:#05050a;color:#f5f5fb;font-family:'Inter',sans-serif;padding-bot
 </style>
 </head>
 <body>
+<style>
+.pt-nav{position:sticky;top:0;z-index:50;background:rgba(5,5,10,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.pt-nav .pt-brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff;text-decoration:none;letter-spacing:.04em}
+.pt-nav .pt-brand em{color:#ff9000;font-style:normal}
+.pt-nav-links{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.pt-nav-links a{color:#c7c7d3;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.04em;transition:color .2s}
+.pt-nav-links a:hover{color:#ff9000}
+.pt-nav-links a.pt-cta{background:#ff2d87;color:#fff;padding:8px 16px;border-radius:6px;font-weight:800}
+.pt-nav-links a.pt-cta:hover{background:#ff4090;color:#fff}
+.pt-nav-lang{display:flex;gap:6px;align-items:center;font-size:11px;color:#666;letter-spacing:.1em}
+.pt-nav-lang a{color:#888;text-decoration:none;padding:3px 7px;border-radius:4px}
+.pt-nav-lang a:hover{color:#fff;background:rgba(255,255,255,.06)}
+.pt-nav-lang a.active{color:#ff9000;font-weight:800}
+@media (max-width:760px){.pt-nav{padding:12px 16px}.pt-nav-links a{font-size:12px}.pt-nav-links{gap:12px}}
+</style>
+<nav class="pt-nav" aria-label="Menu principal">
+  <a href="/pt/" class="pt-brand">Twerk<em>hub</em> <span style="font-size:11px;font-weight:700;letter-spacing:.18em;color:#888;text-transform:uppercase">· Brasil</span></a>
+  <div class="pt-nav-links">
+    <a href="/pt/">Início</a>
+    <a href="/pt/playlist/">Playlists</a>
+    <a href="/creators-russia.html">Criadoras</a>
+    <a href="/pt/blog/">Blog</a>
+    <a href="/pt/community.html">Comunidade</a>
+    <a href="/pt/membership.html" class="pt-cta">Assinar</a>
+  </div>
+  <div class="pt-nav-lang">
+    <a href="/creator/debii-abreu.html">EN</a>
+    <a href="/es/creator/debii-abreu.html">ES</a>
+    <a href="/ru/creator/debii-abreu.html">RU</a>
+    <a class="active">PT</a>
+  </div>
+</nav>
+
 <div class="pt-wrap">
   <span class="kicker">Criadora · Twerkhub Brasil</span>
   <h1><em>Debii Abreu</em></h1>
