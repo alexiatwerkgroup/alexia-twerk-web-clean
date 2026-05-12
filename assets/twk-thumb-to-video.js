@@ -6,9 +6,13 @@
 
   function lockedHTML(vid){return '<div class="vd-player vd-locked" data-vid="'+vid+'" style="position:absolute;inset:0;background:#000;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff;"><div><div style="font-size:64px;line-height:1;">&#128286;</div><div style="font-size:22px;font-weight:900;margin:12px 0 8px;letter-spacing:0.5px;">+18 LOCKED</div><a href="/membership/" style="background:linear-gradient(135deg,#ff1c8e,#aa3cff);color:#fff;padding:12px 28px;border-radius:24px;text-decoration:none;font-weight:800;font-size:13px;letter-spacing:0.5px;display:inline-block;margin-top:6px;">UNLOCK PREMIUM</a></div></div>';}
 
+  // EXACT params como /playlist/ hero
   function iframeHTML(vid){
-    // Params para minimizar branding YT: controls=1 (usuario puede pausar), modestbranding, rel=0, showinfo=0, iv_load_policy=3, fs=1
-    return '<iframe data-vid="'+vid+'" src="https://www.youtube-nocookie.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&showinfo=0&iv_load_policy=3&disablekb=0&fs=1&controls=1&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&origin=https%3A%2F%2Falexiatwerkgroup.com" title="Video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;"></iframe><div class="twk-yt-cover" style="position:absolute;bottom:0;right:0;width:90px;height:36px;background:#000;z-index:3;pointer-events:auto;cursor:default;" title="" onclick="event.preventDefault();event.stopPropagation();return false;"></div>';
+    return '<iframe data-vid="'+vid+'" src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&origin=https%3A%2F%2Falexiatwerkgroup.com" title="Twerkhub" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;"></iframe>'+
+    // Cover sobre el logo de YT (esquina inferior derecha) - blindaje contra escape
+    '<div style="position:absolute;bottom:8px;right:8px;width:100px;height:32px;background:#000;border-radius:4px;z-index:10;cursor:default;" onclick="event.preventDefault();event.stopPropagation();return false;"></div>'+
+    // Cover sobre el title overlay (esquina superior) - bloquea "Watch on YouTube" link
+    '<div style="position:absolute;top:0;left:0;right:0;height:50px;background:linear-gradient(180deg,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 100%);z-index:9;pointer-events:auto;" onclick="event.preventDefault();event.stopPropagation();return false;"></div>';
   }
 
   function findContainer(el){var p=el;while(p&&p!==document.body){if(p.matches&&p.matches('a[data-vid],.vcard,.rk-item,.creator-card,[data-vid]')){return p;}p=p.parentElement;}return null;}
@@ -24,10 +28,10 @@
       for(var i=0;i<imgs.length;i++){var rect=imgs[i].getBoundingClientRect();if(rect.width>80&&rect.height>80){target=imgs[i];break;}}
       if(target){
         var html=isBlocked(vid)?lockedHTML(vid):iframeHTML(vid);
-        // Crear contenedor con aspect-ratio:16/9 FORZADO y full width
+        // Container CENTRADO max 900px (matchea /playlist/ hero)
         var wrap=document.createElement('div');
         wrap.className='twk-vid-wrap';
-        wrap.style.cssText='position:relative;width:100%;max-width:1100px;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin:16px auto;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+        wrap.style.cssText='position:relative;width:100%;max-width:900px;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin:24px auto;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
         wrap.innerHTML=html;
         target.parentNode.replaceChild(wrap,target);
       }
