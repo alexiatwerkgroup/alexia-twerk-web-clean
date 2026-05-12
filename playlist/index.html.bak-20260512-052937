@@ -40,7 +40,7 @@ if(/\/playlist\//i.test(location.pathname) && location.hash && /^#v?\d+$/i.test(
      (video id X-lPzSuvf3k from the curated playlist). YouTube's maxresdefault
      serves 1280×720 which is the ideal OG card ratio. Fallback to hqdefault
      (480×360) is handled by platforms that fail to fetch maxres. -->
-<meta property="og:image" content="https://i.ytimg.com/vi/8yAG7toqnCM/hqdefault.jpg"/>
+<meta property="og:image" content="https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg"/>
 <meta property="og:image:secure_url" content="https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg"/>
 <meta property="og:image:type" content="image/jpeg"/>
 <meta property="og:image:width" content="480"/>
@@ -49,7 +49,7 @@ if(/\/playlist\//i.test(location.pathname) && location.hash && /^#v?\d+$/i.test(
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Best Twerk Videos on YouTube — Viral Dance Playlist"/>
 <meta name="twitter:description" content="Pick of the week · updated every Friday · by Twerkhub"/>
-<meta name="twitter:image" content="https://i.ytimg.com/vi/8yAG7toqnCM/hqdefault.jpg"/>
+<meta name="twitter:image" content="https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg"/>
 <meta name="twitter:image:alt" content="Лада Гоцци · High-Heels · Pharaoh Pharaoh · Twerkhub playlist"/>
 <!-- Additional Discord / WhatsApp previewer compatibility hints -->
 <link rel="image_src" href="https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg"/>
@@ -58,7 +58,7 @@ if(/\/playlist\//i.test(location.pathname) && location.hash && /^#v?\d+$/i.test(
      uses this exact thumbnail in SERP rich results, Google Discover feeds,
      and image search. Also sets up a cover-hero that can be read by any
      crawler that looks at <link rel="preload as=image">. -->
-<link rel="preload" as="image" href="https://i.ytimg.com/vi/8yAG7toqnCM/hqdefault.jpg" fetchpriority="high"/>
+<link rel="preload" as="image" href="https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg" fetchpriority="high"/>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ImageObject","contentUrl":"https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg","url":"https://i.ytimg.com/vi/X-lPzSuvf3k/hqdefault.jpg","width":480,"height":360,"caption":"Лада Гоцци · High-Heels · Pharaoh — featured Twerkhub playlist thumbnail","representativeOfPage":true,"creditText":"Twerkhub / Лада Гоцци","encodingFormat":"image/jpeg"}</script>
 <meta name="rating" content="mature"/>
 <meta name="theme-color" content="#05050a"/>
@@ -305,7 +305,7 @@ if(/\/playlist\//i.test(location.pathname) && location.hash && /^#v?\d+$/i.test(
   <div class="twerkhub-pl-player-col">
     <div class="twerkhub-pl-player-wrap">
       <iframe id="twerkhub-pl-player"
-              src="https://www.youtube.com/embed/8yAG7toqnCM?autoplay=1&amp;mute=1&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;controls=0&amp;fs=0&amp;iv_load_policy=3&amp;disablekb=1"
+              src="https://www.youtube.com/embed/X-lPzSuvf3k?autoplay=1&amp;mute=1&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;controls=0&amp;fs=0&amp;iv_load_policy=3&amp;disablekb=1"
               title="Twerk Hub · now playing"
               loading="eager"
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
