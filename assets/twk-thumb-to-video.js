@@ -16,7 +16,7 @@
     var link = document.createElement('link');
     link.id = 'twk-blindaje-style-link';
     link.rel = 'stylesheet';
-    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v52c';
+    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v53';
     (document.head || document.documentElement).appendChild(link);
   })();
 
@@ -263,19 +263,20 @@
   }
 
   // ============================================================
-  // 3) Sweep thumbnails sueltos: <img> con ytimg fuera de cards
+  // 3) Sweep thumbnails sueltos: SOLO <img> con ytimg que NO esten dentro
+  //    de un <a> link (cards y catalog grids no se tocan — solo click handler).
   // ============================================================
   function sweepThumbs(root) {
     root = root || document;
     var imgs = root.querySelectorAll('img[src*="ytimg.com"], img[src*="img.youtube"]');
     Array.prototype.forEach.call(imgs, function (img) {
-      // si esta dentro de un creator-card / vcard / rk-item, lo maneja el click handler
-      if (img.closest('.creator-card, .vcard, .rk-item, a[data-vid], [data-twk-keepthumb]')) return;
-      // si tiene data-twk-keepthumb explicito, no tocar
+      // SKIP si esta dentro de cualquier <a> link (cards, catalogos, related, etc.)
+      if (img.closest('a')) return;
+      // si esta dentro de creator-card / vcard / rk-item, lo maneja el click handler
+      if (img.closest('.creator-card, .vcard, .rk-item, [data-vid], [data-twk-keepthumb]')) return;
       if (img.hasAttribute('data-twk-keepthumb')) return;
       var vid = extractVid(img.src);
       if (!vid) return;
-      // reemplazar img por wrap con iframe blindado
       var wrap = buildWrap(vid, false);
       img.parentNode.replaceChild(wrap, img);
       attachLoadPlay(wrap);
