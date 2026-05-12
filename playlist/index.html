@@ -1402,6 +1402,58 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
   setTimeout(watchIframe,500);
 })();
 </script>
+<script data-twk="muted-handshake">
+(function(){
+  if(window.__twkMutedHs)return;window.__twkMutedHs=true;
+  var transitionTimer=null,listenTimer=null;
+
+  function postMsg(obj){var f=document.getElementById('twkHeroIframe');if(!f||!f.contentWindow)return;try{f.contentWindow.postMessage(JSON.stringify(obj),'*');}catch(e){}}
+  function sendListen(){postMsg({event:'listening',id:'twkHero',channel:'widget'});postMsg({event:'command',func:'addEventListener',args:['onStateChange'],id:'twkHero'});postMsg({event:'command',func:'addEventListener',args:['onError'],id:'twkHero'});}
+
+  function loadAndUnmute(vid){
+    if(transitionTimer)clearTimeout(transitionTimer);
+    if(listenTimer)clearTimeout(listenTimer);
+    var iframe=document.getElementById('twkHeroIframe');
+    if(!iframe)return;
+    // PHASE 1: handshake muted segundo 1-2 (sin bot challenge porque es mute)
+    iframe.src='https://www.youtube.com/embed/'+vid+'?start=1&end=2&autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin='+encodeURIComponent(location.origin);
+    var w=document.getElementById('twkHeroWrap');if(w)w.setAttribute('data-vid',vid);
+    window.scrollTo({top:0,behavior:'smooth'});
+    listenTimer=setTimeout(sendListen,400);
+    setTimeout(sendListen,1000);
+    // PHASE 2: a los 1.5s -> unmute + seek(0) + play -> video completo con sonido
+    transitionTimer=setTimeout(function(){
+      postMsg({event:'command',func:'seekTo',args:[0,true],id:'twkHero'});
+      postMsg({event:'command',func:'unMute',id:'twkHero'});
+      postMsg({event:'command',func:'setVolume',args:[80],id:'twkHero'});
+      postMsg({event:'command',func:'playVideo',id:'twkHero'});
+      // Mostrar controles tambien
+      var iframe2=document.getElementById('twkHeroIframe');
+      if(iframe2&&iframe2.src.indexOf('controls=0')>-1){
+        iframe2.src=iframe2.src.replace('controls=0','controls=1').replace('start=1','start=0').replace('end=2','');
+      }
+    },1500);
+  }
+
+  function block(e){
+    var a=(e.target&&e.target.closest)?e.target.closest('.rk-item,.vcard'):null;
+    if(!a)return;
+    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+    if(e.type==='click'){var vid=a.dataset.vid;if(vid)loadAndUnmute(vid);}
+    return false;
+  }
+  ['mousedown','pointerdown','click','touchstart','auxclick'].forEach(function(t){document.addEventListener(t,block,true);});
+
+  // Hero inicial: aplicar handshake muted -> unmute
+  function init(){
+    var iframe=document.getElementById('twkHeroIframe');
+    if(!iframe)return;
+    var m=iframe.src.match(/embed\/([\w-]{11})/);
+    if(m){loadAndUnmute(m[1]);}
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+})();
+</script>
 </body>
 </html>
 
