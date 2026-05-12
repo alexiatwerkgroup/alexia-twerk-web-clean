@@ -16,7 +16,7 @@
     var link = document.createElement('link');
     link.id = 'twk-blindaje-style-link';
     link.rel = 'stylesheet';
-    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v56';
+    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v57';
     (document.head || document.documentElement).appendChild(link);
   })();
 
@@ -364,8 +364,37 @@
     return wrap;
   }
 
+  // Convertir placeholder .hero-block (con .name de iniciales) a iframe blindado
+  // usando el VID extraído del meta og:image de la página.
+  function replaceHeroBlockPlaceholder() {
+    if (!/\/creator\//.test(location.pathname)) return;
+    var hero = document.querySelector('.hero-block');
+    if (!hero) return;
+    if (hero.dataset.twkReplaced === '1') return;
+    var ogImg = document.querySelector('meta[property="og:image"]');
+    var vid = null;
+    if (ogImg) vid = extractVid(ogImg.getAttribute('content') || '');
+    if (!vid) {
+      var twImg = document.querySelector('meta[name="twitter:image"]');
+      if (twImg) vid = extractVid(twImg.getAttribute('content') || '');
+    }
+    if (!vid) return;
+    hero.dataset.twkReplaced = '1';
+    var box = document.createElement('div');
+    box.style.cssText = 'margin:28px 0;border-radius:20px;overflow:hidden;border:1px solid rgba(253,216,53,.2);box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+    var wrap = buildThumbWrap(vid);
+    // permitir click en el wrap (no es link, está suelto)
+    wrap.style.cssText = wrap.style.cssText.replace('pointer-events:none;', '');
+    var iframe = wrap.querySelector('iframe');
+    if (iframe) iframe.style.cssText = iframe.style.cssText.replace('pointer-events:none;', 'pointer-events:auto;');
+    box.appendChild(wrap);
+    hero.parentNode.replaceChild(box, hero);
+    attachLoadPlay(wrap);
+  }
+
   function autoConvertCreatorPage() {
     if (!/\/creator\//.test(location.pathname)) return;
+    replaceHeroBlockPlaceholder();
     // recoger TODAS las imgs de YouTube (incluso fuera de <a>)
     var imgs = document.querySelectorAll('img[src*="ytimg"], img[src*="img.youtube"]');
     var pending = [];
