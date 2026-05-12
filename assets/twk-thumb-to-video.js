@@ -16,7 +16,7 @@
     var link = document.createElement('link');
     link.id = 'twk-blindaje-style-link';
     link.rel = 'stylesheet';
-    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v59';
+    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v60';
     (document.head || document.documentElement).appendChild(link);
   })();
 
@@ -203,6 +203,9 @@
   function autoHero() {
     var path = location.pathname || '';
     if (path.indexOf('/playlist') === 0) return; // /playlist/ ya tiene hero propio
+    // DESHABILITADO en listings de creators — Anti pidió que se vea solo thumb estático
+    // con redirect a /playlist/. Sin auto-hero iframe que se ve "horrible random grotesco".
+    if (path === '/creators' || path === '/creators.html' || /^\/creators-[\w-]+/.test(path)) return;
     if (document.getElementById('twkHeroIframe')) return; // ya hay hero hardcoded
     if (document.querySelector('iframe[data-blindaje]')) return; // ya hay un iframe blindado
 
@@ -420,11 +423,11 @@
 
   function autoConvertCreatorPage() {
     var path = location.pathname || '';
-    // Excluir páginas con hero propio ya hardcoded
-    if (path.indexOf('/playlist/') === 0) return;
-    // Excluir admin / account pages
-    if (/\/(account|profile|membership|community|auth)/.test(path)) return;
-    // Excluir si la página NO tiene ninguna img de ytimg
+    // SOLO aplicar en /creator/[name] (singular) — perfiles individuales.
+    // NUNCA aplicar en /creators (listing), /creators-* (city rosters), /playlist/, etc.
+    // Esos son listing pages que deben tener thumbs estáticos con click → href natural.
+    var isCreatorProfile = /^\/creator\/[^\/]+/.test(path);
+    if (!isCreatorProfile) return;
     if (!document.querySelector('img[src*="ytimg"], img[src*="img.youtube"]')) return;
     replaceHeroBlockPlaceholder();
     // recoger TODAS las imgs de YouTube (incluso fuera de <a>)
@@ -485,6 +488,30 @@
     }, 3000);
   }
 
+  // Redirect cards en /creators y /creators-*.html a /playlist/ (hub principal)
+  // (Anti: "tienen que redirigirse a /playlist/ nada mas")
+  function redirectCreatorCardsToPlaylist() {
+    var path = location.pathname || '';
+    var isListingPage = path === '/creators' || path === '/creators.html' || /^\/creators-[\w-]+/.test(path);
+    if (!isListingPage) return;
+    var cards = document.querySelectorAll('a.creator-card[href], a.c[href]');
+    Array.prototype.forEach.call(cards, function (a) {
+      var href = a.getAttribute('href') || '';
+      // Si el href apunta a /creator/[name] o /creators, redirigirlo al hub /playlist/
+      if (/\/creator\//.test(href) || href === '/creators' || href === '/creators.html') {
+        // Si la card tiene un thumb con VID, pasar el VID como querystring
+        var img = a.querySelector('img[src*="ytimg"], img[src*="img.youtube"]');
+        var vid = null;
+        if (img) {
+          var m = img.src.match(/\/vi\/([\w-]{11})/);
+          if (m) vid = m[1];
+        }
+        a.setAttribute('href', vid ? '/playlist/?v=' + vid : '/playlist/');
+        a.setAttribute('data-twk-redirected', '1');
+      }
+    });
+  }
+
   function init() {
     attachClickHandler();
     addPlayBadge();
@@ -492,6 +519,7 @@
     sweepThumbs(document);
     autoHero();
     autoConvertCreatorPage();
+    redirectCreatorCardsToPlaylist();
 
     if (window.MutationObserver) {
       var mo = new MutationObserver(function () {
