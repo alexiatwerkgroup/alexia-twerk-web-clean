@@ -546,6 +546,18 @@ body::before{
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Profile · Twerkhub","description":"","url":"https://alexiatwerkgroup.com/profile.html","isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"},{"@type":"ListItem","position":2,"name":"Profile · Twerkhub","item":"https://alexiatwerkgroup.com/profile.html"}]}</script>
 <link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
 </head>
 <body class="profile-page twerkhub-ph-theme">
 <a href="#main" class="twk-sr-only">Skip to content</a>
@@ -615,7 +627,7 @@ body::before{
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260512-hover-preview','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260512-hide-cta','twk-loader-token-system');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
@@ -1087,7 +1099,7 @@ body::before{
      at line 218 that was breaking the script chain). Not critical for profile UX. -->
 <!-- <script defer src="/assets/enter-now-widget.js?v=20260508-d1-p1"></script> -->
 <!-- Legacy global-brand / global-i18n / online-count-global were duplicating widgets. -->
-<script src="/assets/twk-tokens-v3.js?v=20260512-hover-preview" defer></script>
+<script src="/assets/twk-tokens-v3.js?v=20260512-hide-cta" defer></script>
 <script defer src="/assets/profile-stats-live.js?v=20260509-p3-deltacap"></script>
 <script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
 
@@ -1365,7 +1377,7 @@ body::before{
 
 
 above (avoids FOUC). Only scripts below. -->
-<script defer src="/assets/twk-tokens-v3.js?v=20260512-hover-preview"></script>
+<script defer src="/assets/twk-tokens-v3.js?v=20260512-hide-cta"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p7"></script>
 <script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p6"></script>
 <script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>

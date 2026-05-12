@@ -88,6 +88,18 @@ p{color:#d8d8e2;font-size:16.5px;margin-bottom:14px}strong{color:#fff;font-weigh
 <link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260507-b5-no-pink-lines">
 <link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
 <script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
 </head>
 <body class="twerkhub-page twerkhub-ph-theme">
 <a href="#main" class="twk-sr-only">Skip to content</a>
@@ -157,7 +169,7 @@ p{color:#d8d8e2;font-size:16.5px;margin-bottom:14px}strong{color:#fff;font-weigh
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260512-hover-preview','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260512-hide-cta','twk-loader-token-system');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
 })();
 </script>
