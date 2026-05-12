@@ -1,0 +1,10 @@
+/* === KILL pink/magenta glowing pills (Anti, 2026-05-13) === */
+.pill-paid-unlock,
+.paid-content-unlock,
+.cta-pill-pink,
+[data-twk-pill="paid-unlock"],
+a[href*="paid-content-unlock"],
+button[data-pill="paid-unlock"]{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;}
+.pill[style*="ff1c8e"],
+.pill[style*="ff2d95"],
+.pill[style*="ff0066"]{display:none!important;}
