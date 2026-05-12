@@ -1,4 +1,4 @@
-/* twk-blindaje-style v5 - oculta UI residual de YouTube en iframes blindados */
+/* twk-blindaje-style v5.1 - oculta UI residual de YouTube en iframes blindados */
 .vd-player, .twk-creator-hero, .twk-vid-wrap { position: relative; }
 .vd-player iframe, .twk-creator-hero iframe, .twk-vid-wrap iframe {
   width: 100% !important;
@@ -6,7 +6,40 @@
   border: 0 !important;
   display: block !important;
 }
-/* mata watermark / cards / show-cards en cualquier overlay residual */
+
+/* OVERLAY: tapa esquina inferior derecha (watermark "YouTube" + "More videos" end card area)
+   El overlay esta detras del boton de unmute (z-index menor) pero encima del iframe. */
+.vd-player::before, .twk-creator-hero::before, .twk-vid-wrap::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 130px;
+  height: 38px;
+  background: #000;
+  z-index: 10;
+  pointer-events: none;
+  border-top-left-radius: 6px;
+}
+/* Tambien tapar la esquina superior derecha donde aparece el titulo en algunos modos */
+.vd-player::after, .twk-creator-hero::after, .twk-vid-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+  z-index: 9;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+/* El boton de unmute custom siempre encima del overlay */
+.twk-unmute-btn { z-index: 20 !important; }
+
+/* mata watermark / cards (por si quedo alguno en el DOM padre) */
 .ytp-watermark,
 .ytp-show-cards-title,
 .ytp-cards-button,
@@ -14,7 +47,9 @@
 .ytp-pause-overlay,
 .ytp-share-button,
 .ytp-watch-later-button,
-.ytp-spinner { display: none !important; }
+.ytp-spinner,
+.ytp-endscreen-content,
+.ytp-ce-element { display: none !important; }
 
 /* ocultar pill "Paid content unlocks" residual si volvio */
 .paid-content-pill, .paywall-pill, [class*="paid-content"], [class*="paywall-pill"] {

@@ -21,20 +21,30 @@
   })();
 
   var ORIGIN = "https://alexiatwerkgroup.com";
-  var BLINDAJE = [
-    "autoplay=1",
-    "mute=1",
-    "controls=0",
-    "rel=0",
-    "modestbranding=1",
-    "playsinline=1",
-    "enablejsapi=1",
-    "disablekb=1",
-    "fs=0",
-    "iv_load_policy=3",
-    "showinfo=0",
-    "widget_referrer=" + encodeURIComponent(ORIGIN),
-    "origin=" + encodeURIComponent(ORIGIN)
+  function buildBlindaje(vid) {
+    return [
+      "autoplay=1",
+      "mute=1",
+      "controls=0",
+      "rel=0",
+      "modestbranding=1",
+      "playsinline=1",
+      "enablejsapi=1",
+      "disablekb=1",
+      "fs=0",
+      "iv_load_policy=3",
+      "showinfo=0",
+      "loop=1",
+      "playlist=" + vid,
+      "widget_referrer=" + encodeURIComponent(ORIGIN),
+      "origin=" + encodeURIComponent(ORIGIN)
+    ].join("&");
+  }
+  // legacy var para sweepIframes (sin vid context) - usa loop sin playlist (YT lo manejara)
+  var BLINDAJE_NO_VID = [
+    "autoplay=1","mute=1","controls=0","rel=0","modestbranding=1","playsinline=1",
+    "enablejsapi=1","disablekb=1","fs=0","iv_load_policy=3","showinfo=0",
+    "widget_referrer=" + encodeURIComponent(ORIGIN),"origin=" + encodeURIComponent(ORIGIN)
   ].join("&");
 
   var classification = null, classReady = false;
@@ -65,7 +75,7 @@
   }
 
   function iframeHTML(vid) {
-    return '<iframe id="twkVidIframe_' + vid + '" data-vid="' + vid + '" data-blindaje="v5" src="https://www.youtube.com/embed/' + vid + '?' + BLINDAJE + '" title="Twerkhub" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:auto;"></iframe>' +
+    return '<iframe id="twkVidIframe_' + vid + '" data-vid="' + vid + '" data-blindaje="v5" src="https://www.youtube.com/embed/' + vid + '?' + buildBlindaje(vid) + '" title="Twerkhub" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:auto;"></iframe>' +
       '<button class="twk-unmute-btn" type="button" aria-label="Unmute" style="position:absolute;bottom:14px;right:14px;z-index:20;width:44px;height:44px;border-radius:50%;background:rgba(255,28,142,0.92);border:0;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.5);" onclick="var f=this.parentNode.querySelector(\'iframe\');try{f.contentWindow.postMessage(JSON.stringify({event:\'command\',func:\'unMute\'}),\'*\');f.contentWindow.postMessage(JSON.stringify({event:\'command\',func:\'setVolume\',args:[80]}),\'*\');this.style.display=\'none\';}catch(e){}"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg></button>';
   }
 
@@ -211,7 +221,7 @@
         return;
       }
       // reescribir
-      ifr.src = "https://www.youtube.com/embed/" + vid + "?" + BLINDAJE;
+      ifr.src = "https://www.youtube.com/embed/" + vid + "?" + buildBlindaje(vid);
       ifr.setAttribute("data-blindaje", "v5");
       ifr.setAttribute("data-vid", vid);
       ifr.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture; fullscreen");
@@ -326,5 +336,5 @@
     init();
   }
 
-  window.TWK_BLINDAJE_V5 = { sweep: sweepIframes, params: BLINDAJE, force: forcePlay };
+  window.TWK_BLINDAJE_V5 = { sweep: sweepIframes, params: BLINDAJE_NO_VID, force: forcePlay };
 })();
