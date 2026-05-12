@@ -64,8 +64,8 @@
     var css = document.createElement('style');
     css.id = 'alexia-enter-now-style';
     css.textContent = [
-      '#alexia-enter-now{position:fixed;z-index:2147483640;bottom:28px;right:28px;width:340px;pointer-events:auto;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;animation:aenSlideIn .6s cubic-bezier(.2,.8,.2,1) both .5s;}',
-      '@keyframes aenSlideIn{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}',
+      '#alexia-enter-now{position:fixed;z-index:2147483640;top:84px;right:28px;width:280px;pointer-events:auto;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;animation:aenSlideIn .6s cubic-bezier(.2,.8,.2,1) both .5s;}',
+      '@keyframes aenSlideIn{from{opacity:0;transform:translateY(-24px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}',
       '#alexia-enter-now .aen-card{display:block;position:relative;text-decoration:none;color:#fff;background:linear-gradient(145deg,#1a0b24 0%,#0a0a0f 100%);border-radius:14px;overflow:hidden;aspect-ratio:9/16;box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 1px rgba(255,45,135,.25),0 0 40px rgba(255,45,135,.12);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s;will-change:transform}',
       '#alexia-enter-now .aen-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 16px 45px rgba(0,0,0,.65),0 0 0 1px rgba(255,45,135,.55),0 0 60px rgba(255,45,135,.3)}',
       '#alexia-enter-now .aen-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(255,45,135,.35),transparent 55%);opacity:.7;mix-blend-mode:screen;pointer-events:none;z-index:1;transition:opacity .35s}',
@@ -87,7 +87,7 @@
       '#alexia-enter-now:hover .aen-close{opacity:1;transform:scale(1)}',
       '#alexia-enter-now .aen-close:hover{background:#ef4444}',
       '@media (max-width: 600px){',
-        '#alexia-enter-now{bottom:12px;right:12px;left:12px;width:auto;max-width:none}',
+        '#alexia-enter-now{top:78px;right:12px;left:12px;width:auto;max-width:none}',
         '#alexia-enter-now .aen-card{aspect-ratio:auto;display:grid;grid-template-columns:88px 1fr;height:90px}',
         '#alexia-enter-now .aen-video{position:relative;width:88px;height:90px}',
         '#alexia-enter-now .aen-glow{display:none}',
@@ -214,3 +214,4 @@
   }
 })();
 // END
+  
