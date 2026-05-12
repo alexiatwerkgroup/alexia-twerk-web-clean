@@ -16,7 +16,7 @@
     var link = document.createElement('link');
     link.id = 'twk-blindaje-style-link';
     link.rel = 'stylesheet';
-    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v5';
+    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v52b';
     (document.head || document.documentElement).appendChild(link);
   })();
 
