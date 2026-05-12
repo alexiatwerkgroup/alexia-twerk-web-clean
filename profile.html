@@ -627,7 +627,7 @@ a.twk-hero-affiliate-overlay,
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260512-customs-renamed','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260512-revert','twk-loader-token-system');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
@@ -1099,7 +1099,7 @@ a.twk-hero-affiliate-overlay,
      at line 218 that was breaking the script chain). Not critical for profile UX. -->
 <!-- <script defer src="/assets/enter-now-widget.js?v=20260508-d1-p1"></script> -->
 <!-- Legacy global-brand / global-i18n / online-count-global were duplicating widgets. -->
-<script src="/assets/twk-tokens-v3.js?v=20260512-customs-renamed" defer></script>
+<script src="/assets/twk-tokens-v3.js?v=20260512-revert" defer></script>
 <script defer src="/assets/profile-stats-live.js?v=20260509-p3-deltacap"></script>
 <script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
 
@@ -1377,7 +1377,7 @@ a.twk-hero-affiliate-overlay,
 
 
 above (avoids FOUC). Only scripts below. -->
-<script defer src="/assets/twk-tokens-v3.js?v=20260512-customs-renamed"></script>
+<script defer src="/assets/twk-tokens-v3.js?v=20260512-revert"></script>
 <script defer src="/assets/twerkhub-sound-on-interaction.js?v=20260424-p7"></script>
 <script defer src="/assets/twerkhub-topbar-enhance.js?v=20260424-p6"></script>
 <script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
