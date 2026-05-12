@@ -16,7 +16,7 @@
     var link = document.createElement('link');
     link.id = 'twk-blindaje-style-link';
     link.rel = 'stylesheet';
-    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v58';
+    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v59';
     (document.head || document.documentElement).appendChild(link);
   })();
 
@@ -342,8 +342,12 @@
     wrap.className = 'vd-player twk-creator-thumb';
     wrap.setAttribute('data-vid', vid);
     wrap.setAttribute('data-protected', '1');
-    // wrap llena 100% del contenedor, aspect 16:9 fijo, overflow hidden para tapar letterbox
     wrap.style.cssText = 'position:relative;width:100%;height:auto;aspect-ratio:16/9;background:#000;overflow:hidden;display:block;border-radius:inherit;';
+    // Si el video está marcado como bloqueado en la clasificación, mostrar paywall a /membership
+    if (isBlocked(vid)) {
+      wrap.innerHTML = lockedHTML(vid);
+      return wrap;
+    }
     var iframe = document.createElement('iframe');
     iframe.setAttribute('data-vid', vid);
     iframe.setAttribute('data-blindaje', 'v5');
@@ -353,16 +357,38 @@
     iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
     iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
     iframe.setAttribute('allowfullscreen', '');
-    // Sobre-dimensionar iframe para eliminar el letterbox negro de YouTube.
-    // YT siempre tiene padding interno; con scale:1.4 y center origin queda zoom cropped sin bordes.
     iframe.style.cssText = 'position:absolute;top:50%;left:50%;width:100%;height:100%;border:0;display:block;transform:translate(-50%,-50%) scale(1.4);transform-origin:center center;pointer-events:none;';
     wrap.appendChild(iframe);
-    // Overlay click capturador para mantener navegación al <a> parent (cuando lo tiene)
+    // Detectar onError: si el video resulta bloqueado (age-restricted), reemplazar por paywall.
+    iframe.addEventListener('load', function () {
+      try {
+        iframe.contentWindow.postMessage(JSON.stringify({ event: "listening", id: iframe.id || "twkVid" }), "*");
+        iframe.contentWindow.postMessage(JSON.stringify({ event: "command", func: "addEventListener", args: ["onError"] }), "*");
+      } catch (_) {}
+    });
     var clickShield = document.createElement('div');
     clickShield.style.cssText = 'position:absolute;inset:0;z-index:5;pointer-events:auto;cursor:pointer;background:transparent;';
     wrap.appendChild(clickShield);
     return wrap;
   }
+
+  // Listener global para onError de YT (video bloqueado / age-restricted) → swap a paywall
+  window.addEventListener('message', function (e) {
+    if (!/youtube(?:-nocookie)?\.com/.test(e.origin)) return;
+    try {
+      var d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+      if (!d || d.event !== 'onError') return;
+      // Encontrar el iframe que disparó el error y swappear a paywall
+      var iframes = document.querySelectorAll('iframe[data-blindaje="v5"]');
+      Array.prototype.forEach.call(iframes, function (ifr) {
+        if (ifr.contentWindow !== e.source) return;
+        var vid = ifr.getAttribute('data-vid');
+        var parent = ifr.parentElement;
+        if (!parent) return;
+        parent.innerHTML = lockedHTML(vid);
+      });
+    } catch (_) {}
+  });
 
   // Convertir placeholder .hero-block (con .name de iniciales) a iframe blindado
   // usando el VID extraído del meta og:image de la página.
