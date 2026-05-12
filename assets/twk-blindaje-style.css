@@ -1,0 +1,34 @@
+/* twk-blindaje-style v5 - oculta UI residual de YouTube en iframes blindados */
+.vd-player, .twk-creator-hero, .twk-vid-wrap { position: relative; }
+.vd-player iframe, .twk-creator-hero iframe, .twk-vid-wrap iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  display: block !important;
+}
+/* mata watermark / cards / show-cards en cualquier overlay residual */
+.ytp-watermark,
+.ytp-show-cards-title,
+.ytp-cards-button,
+.ytp-cards-teaser-label,
+.ytp-pause-overlay,
+.ytp-share-button,
+.ytp-watch-later-button,
+.ytp-spinner { display: none !important; }
+
+/* ocultar pill "Paid content unlocks" residual si volvio */
+.paid-content-pill, .paywall-pill, [class*="paid-content"], [class*="paywall-pill"] {
+  display: none !important;
+}
+
+/* play-badge solo aparece sobre thumbnail no swap-eado */
+.twk-play-badge { transition: opacity .2s; }
+.twk-vid-wrap .twk-play-badge,
+.twk-creator-hero .twk-play-badge { display: none !important; }
+
+/* auto-hero box */
+.twk-auto-hero { animation: twkHeroIn .35s ease-out; }
+@keyframes twkHeroIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
