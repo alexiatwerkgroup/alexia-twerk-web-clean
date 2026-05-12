@@ -336,10 +336,10 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
 (function(){
   if(window.__twkHeroSwapInstalled)return;window.__twkHeroSwapInstalled=true;
   function swap(vid){var f=document.getElementById('twkHeroIframe');if(f){f.src='https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';}var w=document.getElementById('twkHeroWrap');if(w)w.setAttribute('data-vid',vid);window.scrollTo({top:0,behavior:'smooth'});}
-  function block(e){var a=(e.target&&e.target.closest)?e.target.closest('.rk-item'):null;if(!a)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(e.type==='click'){var vid=a.dataset.vid;if(vid)swap(vid);}return false;}
+  function block(e){var a=(e.target&&e.target.closest)?e.target.closest('.rk-item,.vcard'):null;if(!a)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(e.type==='click'){var vid=a.dataset.vid;if(vid)swap(vid);}return false;}
   ['mousedown','pointerdown','click','touchstart','auxclick'].forEach(function(t){document.addEventListener(t,block,true);});
   // Tambien clonar para sacar listeners directos
-  function rebind(){document.querySelectorAll('aside .rk-item').forEach(function(it){var fresh=it.cloneNode(true);fresh.removeAttribute('href');fresh.removeAttribute('target');fresh.style.cursor='pointer';it.parentNode.replaceChild(fresh,it);});}
+  function rebind(){document.querySelectorAll('.rk-item, .vcard').forEach(function(it){var fresh=it.cloneNode(true);fresh.removeAttribute('href');fresh.removeAttribute('target');fresh.style.cursor='pointer';it.parentNode.replaceChild(fresh,it);});}
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',rebind);}else{rebind();}
   setTimeout(rebind,300);setTimeout(rebind,1500);setTimeout(rebind,4000);
 })();
@@ -354,7 +354,7 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
     window.scrollTo({top:0,behavior:'smooth'});
   }
   function rebind(){
-    document.querySelectorAll('aside .rk-item').forEach(function(item){
+    document.querySelectorAll('.rk-item, .vcard').forEach(function(item){
       // Clonar el item para STRIPEAR todos los listeners (incluidos los del theater script)
       var fresh=item.cloneNode(true);
       // Sacar href para que no navegue
