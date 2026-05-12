@@ -16,7 +16,7 @@
     var link = document.createElement('link');
     link.id = 'twk-blindaje-style-link';
     link.rel = 'stylesheet';
-    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v54';
+    link.href = '/assets/twk-blindaje-style.css?v=20260513-blindaje-v55';
     (document.head || document.documentElement).appendChild(link);
   })();
 
@@ -366,45 +366,43 @@
 
   function autoConvertCreatorPage() {
     if (!/\/creator\//.test(location.pathname)) return;
-    var anchors = document.querySelectorAll('a[href]');
+    // recoger TODAS las imgs de YouTube (incluso fuera de <a>)
+    var imgs = document.querySelectorAll('img[src*="ytimg"], img[src*="img.youtube"]');
     var pending = [];
-    Array.prototype.forEach.call(anchors, function (a) {
-      if (a.dataset.twkAutoConvert === '1') return;
-      var img = a.querySelector('img[src*="ytimg"], img[src*="img.youtube"]');
-      if (!img) return;
-      var vid = extractVid(img.src) || extractVid(a.href);
+    Array.prototype.forEach.call(imgs, function (img) {
+      if (img.dataset.twkAutoConverted === '1') return;
+      var anchor = img.closest('a[href]');
+      var vid = extractVid(img.src) || (anchor ? extractVid(anchor.href) : null) || img.getAttribute('data-vid');
       if (!vid) return;
-      pending.push({ a: a, img: img, vid: vid });
+      // observer target: si tiene <a> usar el <a>, sino el img
+      var target = anchor || img;
+      pending.push({ target: target, img: img, vid: vid });
     });
 
     if (!pending.length) return;
 
-    // Usar IntersectionObserver para activar en viewport
+    function doConvert(p) {
+      if (p.img.dataset.twkAutoConverted === '1') return;
+      p.img.dataset.twkAutoConverted = '1';
+      var wrap = buildThumbWrap(p.vid);
+      if (p.img.parentNode) p.img.parentNode.replaceChild(wrap, p.img);
+    }
+
     if (!window.IntersectionObserver) {
-      // fallback: convertir todos al toque
-      pending.forEach(function (p) {
-        p.a.dataset.twkAutoConvert = '1';
-        var wrap = buildThumbWrap(p.vid);
-        p.img.parentNode.replaceChild(wrap, p.img);
-      });
+      pending.forEach(doConvert);
       return;
     }
 
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
-        var a = entry.target;
-        if (a.dataset.twkAutoConvert === '1') { io.unobserve(a); return; }
-        var p = pending.filter(function (x) { return x.a === a; })[0];
-        if (!p) { io.unobserve(a); return; }
-        a.dataset.twkAutoConvert = '1';
-        var wrap = buildThumbWrap(p.vid);
-        if (p.img.parentNode) p.img.parentNode.replaceChild(wrap, p.img);
-        io.unobserve(a);
+        var p = pending.filter(function (x) { return x.target === entry.target; })[0];
+        if (p) doConvert(p);
+        io.unobserve(entry.target);
       });
-    }, { rootMargin: '200px' });
+    }, { rootMargin: '300px' });
 
-    pending.forEach(function (p) { io.observe(p.a); });
+    pending.forEach(function (p) { io.observe(p.target); });
   }
 
   function init() {
