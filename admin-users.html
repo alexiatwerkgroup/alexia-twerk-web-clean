@@ -116,7 +116,7 @@ a.twk-hero-affiliate-overlay,
 <nav class="twk-nav-v1" id="twk-nav-container">
   <div class="twk-nav-v1-inner">
     <a href="/" class="twk-nav-v1-logo" aria-label="Twerkhub home"><img src="/assets/logo-twerkhub.svg" alt="Twerkhub" width="32" height="32"></a>
-    <div class="twk-nav-v1-links"><a href="/" class="twk-nav-link" data-nav="home">HOME</a><a href="/exclusive.html" class="twk-nav-link" data-nav="exclusive">EXCLUSIVE</a><a href="/playlists.html" class="twk-nav-link" data-nav="playlists">PLAYLISTS</a><a href="/creators.html" class="twk-nav-link" data-nav="creators">CREATORS</a><a href="/alexia-video-packs.html" class="twk-nav-link" data-nav="hotpacks">HOT PACKS</a><a href="/community.html" class="twk-nav-link" data-nav="community">COMMUNITY</a><a href="/membership.html" class="twk-nav-link" data-nav="membership">MEMBERSHIP</a><a href="/account.html" class="twk-nav-link" data-nav="account">MY ACCOUNT</a><a href="/profile.html" class="twk-nav-link" data-nav="profile">PROFILE</a></div>
+    <div class="twk-nav-v1-links"><a href="/" class="twk-nav-link" data-nav="home">HOME</a><a href="/exclusive.html" class="twk-nav-link" data-nav="exclusive">EXCLUSIVE</a><a href="/playlists.html" class="twk-nav-link" data-nav="playlists">PLAYLISTS</a><a href="/creators" class="twk-nav-link" data-nav="creators">CREATORS</a><a href="/alexia-video-packs" class="twk-nav-link" data-nav="hotpacks">HOT PACKS</a><a href="/community.html" class="twk-nav-link" data-nav="community">COMMUNITY</a><a href="/membership" class="twk-nav-link" data-nav="membership">MEMBERSHIP</a><a href="/account" class="twk-nav-link" data-nav="account">MY ACCOUNT</a><a href="/profile" class="twk-nav-link" data-nav="profile">PROFILE</a></div>
     <div class="twk-nav-v1-lang" role="group" aria-label="Language"><a href="/en/" data-lang="en" class="is-active" title="English">EN</a><a href="/es/" data-lang="es" title="Español">ES</a><a href="/ru/" data-lang="ru" title="Русский">RU</a>
       <a href="/pt/" data-lang="pt" title="Português">PT</a></div>
     <div class="twerkhub-tokens-hud twk-tk-hud--in-nav" id="twk-tokens-hud-v3" style="display:inline-flex;align-items:center;height:28px;margin-right:6px;flex-shrink:0;pointer-events:auto;"><button type="button" style="pointer-events:auto;display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(255,180,84,.16));border:1px solid rgba(30,224,143,.55);box-shadow:0 6px 20px rgba(30,224,143,.18),0 2px 6px rgba(0,0,0,.4);color:#f5f5fb;font-weight:800;letter-spacing:.06em;cursor:pointer;font-family:Inter,ui-sans-serif,system-ui;font-size:13px;" id="twk-tokens-badge" aria-label="Token balance"><span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#1ee08f,#30ff9f);box-shadow:0 0 12px rgba(30,224,143,.6);" aria-hidden="true"></span><span id="twk-tokens-count" style="font-variant-numeric:tabular-nums;">0</span> <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;">tokens</span> <span id="twk-tokens-tier" style="font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:#1ee08f;">BASIC</span></button></div>
@@ -131,7 +131,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
 function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
 loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
-loadOnce('/assets/twk-tokens-v3.js?v=20260512-pagerank-fix','twk-loader-token-system');
+loadOnce('/assets/twk-tokens-v3.js?v=20260512-pr-leaks','twk-loader-token-system');
 loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
 loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
@@ -496,7 +496,7 @@ loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
         <a href="/blog/how-to-earn-tokens-twerkhub.html">Full earn guide →</a>
       </div>
       <div class="twk-mf-earn-grid">
-        <a class="twk-mf-rule" href="/account.html">
+        <a class="twk-mf-rule" href="/account">
           <div class="twk-mf-rule-act">Daily login</div>
           <div class="twk-mf-rule-tk">+<b>30</b></div>
         </a>
@@ -542,13 +542,13 @@ loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
       <div>
         <h5>Subscribe &amp; account</h5>
         <ul>
-          <li><a href="/membership.html"><b style="color:#ff6fa8">Membership · tiers</b></a></li>
+          <li><a href="/membership"><b style="color:#ff6fa8">Membership · tiers</b></a></li>
           <li><a href="/hottest-cosplay-fancam/">Premium cosplay vault</a></li>
           <li><a href="/paid-content.html">Paid content unlocks</a></li>
-          <li><a href="/alexia-video-packs.html">Custom video packs</a></li>
+          <li><a href="/alexia-video-packs">Custom video packs</a></li>
           <li><a href="/">Alexia exclusives</a></li>
-          <li><a href="/account.html">Your account</a></li>
-          <li><a href="/profile.html">Your profile</a></li>
+          <li><a href="/account">Your account</a></li>
+          <li><a href="/profile">Your profile</a></li>
           <li><a href="/creator-dashboard.html">Creator dashboard</a></li>
           <li><a href="/blog/the-4-tiers-explained.html">The 4 tiers explained</a></li>
         </ul>
@@ -604,7 +604,7 @@ loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
         <h5>Models · creators</h5>
         <ul>
           <li><a href="/models-catalog.html">Models catalog</a></li>
-          <li><a href="/creators.html">All creators</a></li>
+          <li><a href="/creators">All creators</a></li>
           <li><a href="/creators-colombia.html">Colombia</a></li>
           <li><a href="/creators-seoul.html">Seoul</a></li>
           <li><a href="/creators-moscow.html">Moscow</a></li>
