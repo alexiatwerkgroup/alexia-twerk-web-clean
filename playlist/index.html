@@ -335,80 +335,80 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
 (function(){
   if(window.__twkHeroSwapInstalled)return;window.__twkHeroSwapInstalled=true;
 
-  function isPremium(){
-    try{
-      if(window.__twkGuardian&&window.__twkGuardian.selfTest){
-        var t=window.__twkGuardian.selfTest();
-        if(t.isFounder||t.tier==='vip'||t.tier==='premium')return true;
-      }
-    }catch(e){}
-    return false;
-  }
+  var currentVid=null,swapTime=0,lastPlaybackEvent=0;
+
+  function isPremium(){try{if(window.__twkGuardian&&window.__twkGuardian.selfTest){var t=window.__twkGuardian.selfTest();if(t.isFounder||t.tier==='vip'||t.tier==='premium')return true;}}catch(e){}return false;}
 
   function clearPaywall(){var w=document.getElementById('twkHeroWrap');if(!w)return;var o=w.querySelector('.twk-paywall-overlay');if(o)o.remove();}
 
-  function showPaywall(vid){
+  function showPaywall(){
     if(isPremium())return;
     var w=document.getElementById('twkHeroWrap');if(!w||w.querySelector('.twk-paywall-overlay'))return;
     var o=document.createElement('div');
     o.className='twk-paywall-overlay';
-    o.style.cssText='position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.94),rgba(40,0,40,0.94));z-index:99;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:30px;backdrop-filter:blur(8px);';
-    o.innerHTML='<div style="font-size:64px;">&#128286;</div><div style="font-size:28px;font-weight:900;margin:12px 0 8px;letter-spacing:1px;">+18 PREMIUM CONTENT</div><div style="font-size:15px;opacity:0.75;margin-bottom:28px;">YouTube marked this as age-restricted &mdash; unlock to watch on Twerkhub.</div><a href="/membership/" style="background:linear-gradient(135deg,#ff1c8e,#aa3cff);color:#fff;padding:16px 40px;border-radius:32px;text-decoration:none;font-weight:900;font-size:16px;letter-spacing:1px;box-shadow:0 8px 32px rgba(255,28,142,0.5);">UNLOCK PREMIUM</a>';
+    o.style.cssText='position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.96),rgba(40,0,40,0.96));z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:30px;backdrop-filter:blur(8px);';
+    o.innerHTML='<div style="font-size:64px;line-height:1;">&#128286;</div><div style="font-size:28px;font-weight:900;margin:14px 0 8px;letter-spacing:1px;">+18 PREMIUM CONTENT</div><div style="font-size:14px;opacity:0.75;margin-bottom:24px;max-width:480px;">YouTube marked this as age-restricted &mdash; unlock to watch the uncut cut on Twerkhub.</div><a href="/membership/" style="background:linear-gradient(135deg,#ff1c8e,#aa3cff);color:#fff;padding:16px 40px;border-radius:32px;text-decoration:none;font-weight:900;font-size:16px;letter-spacing:1px;box-shadow:0 8px 32px rgba(255,28,142,0.5);">UNLOCK PREMIUM</a>';
     w.appendChild(o);
   }
 
-  function hookYT(){
-    if(window.__twkYTHooked)return;window.__twkYTHooked=true;
-    window.addEventListener('message',function(e){
-      if(!/youtube(?:-nocookie)?\.com/.test(e.origin))return;
-      try{
-        var d=typeof e.data==='string'?JSON.parse(e.data):e.data;
-        if(d.event==='onError'||(d.info&&typeof d.info==='number')){
-          var code=typeof d.info==='number'?d.info:(d.info&&d.info.errorCode);
-          if(code===100||code===101||code===150||code===153){
-            var w=document.getElementById('twkHeroWrap');
-            showPaywall(w?w.getAttribute('data-vid'):null);
-          }
-        }
-      }catch(_){}
-    });
-    setTimeout(function(){
-      var f=document.getElementById('twkHeroIframe');
-      if(!f||!f.contentWindow)return;
-      try{
-        f.contentWindow.postMessage('{"event":"listening","id":1}','*');
-        f.contentWindow.postMessage('{"event":"command","func":"addEventListener","args":["onError"]}','*');
-      }catch(_){}
-    },1500);
+  function startListening(){var f=document.getElementById('twkHeroIframe');if(!f||!f.contentWindow)return;try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:'twkHero',channel:'widget'}),'*');f.contentWindow.postMessage(JSON.stringify({event:'command',func:'addEventListener',args:['onError'],id:'twkHero'}),'*');f.contentWindow.postMessage(JSON.stringify({event:'command',func:'addEventListener',args:['onStateChange'],id:'twkHero'}),'*');}catch(e){}}
+
+  window.addEventListener('message',function(e){
+    if(!/youtube(?:-nocookie)?\.com/.test(e.origin))return;
+    try{
+      var d=typeof e.data==='string'?JSON.parse(e.data):e.data;
+      if(d.event==='onError'){showPaywall();return;}
+      if(d.event==='onStateChange'||d.event==='infoDelivery'||d.event==='onReady'){
+        var info=d.info;var state=null;
+        if(typeof info==='object'&&info){state=info.playerState!==undefined?info.playerState:null;}
+        else if(typeof info==='number'){state=info;}
+        // -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+        if(state===1||state===3||state===2){lastPlaybackEvent=Date.now();clearPaywall();}
+      }
+    }catch(_){}
+  });
+
+  function checkBlocked(vid){
+    // Si pasaron 5s y no hubo NINGUN evento de playback -> esta bloqueado
+    if(vid!==currentVid)return;
+    if(lastPlaybackEvent>swapTime)return; // hubo playback OK
+    showPaywall();
   }
 
   function swap(vid){
     clearPaywall();
+    currentVid=vid;
+    swapTime=Date.now();
     var f=document.getElementById('twkHeroIframe');
-    if(f){f.src='https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin='+encodeURIComponent(location.origin);}
+    if(f){f.src='https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin='+encodeURIComponent(location.origin);f.addEventListener('load',startListening,{once:true});}
     var w=document.getElementById('twkHeroWrap');if(w)w.setAttribute('data-vid',vid);
     window.scrollTo({top:0,behavior:'smooth'});
-    setTimeout(hookYT,500);
+    setTimeout(startListening,800);
+    setTimeout(startListening,2000);
+    // Failsafe: si en 5.5s no hubo playback event, asumi bloqueado
+    setTimeout(function(){checkBlocked(vid);},5500);
   }
 
   function block(e){var a=(e.target&&e.target.closest)?e.target.closest('.rk-item,.vcard'):null;if(!a)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(e.type==='click'){var vid=a.dataset.vid;if(vid)swap(vid);}return false;}
 
   ['mousedown','pointerdown','click','touchstart','auxclick'].forEach(function(t){document.addEventListener(t,block,true);});
 
-  function rebind(){
-    document.querySelectorAll('.rk-item,.vcard').forEach(function(it){
-      if(it.dataset.twkBound)return;
-      it.dataset.twkBound='1';
-      var fresh=it.cloneNode(true);
-      fresh.removeAttribute('href');fresh.removeAttribute('target');
-      fresh.style.cursor='pointer';
-      fresh.dataset.twkBound='1';
-      it.parentNode.replaceChild(fresh,it);
-    });
-  }
+  function rebind(){document.querySelectorAll('.rk-item,.vcard').forEach(function(it){if(it.dataset.twkBound)return;it.dataset.twkBound='1';var fresh=it.cloneNode(true);fresh.removeAttribute('href');fresh.removeAttribute('target');fresh.style.cursor='pointer';fresh.dataset.twkBound='1';it.parentNode.replaceChild(fresh,it);});}
 
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){rebind();hookYT();});}
-  else{rebind();hookYT();}
+  // Init para video inicial
+  function init(){
+    var w=document.getElementById('twkHeroWrap');
+    var initialVid=w?w.getAttribute('data-vid'):null;
+    if(initialVid){
+      currentVid=initialVid;swapTime=Date.now();
+      setTimeout(startListening,800);
+      setTimeout(startListening,2000);
+      // Failsafe inicial
+      setTimeout(function(){checkBlocked(initialVid);},5500);
+    }
+    rebind();
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
   setTimeout(rebind,500);setTimeout(rebind,1500);setTimeout(rebind,4000);
 })();
 </script>
