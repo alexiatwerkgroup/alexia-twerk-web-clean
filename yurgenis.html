@@ -6,6 +6,31 @@
 <script src="/assets/twk-guardian.js?v=20260509-g1"></script>
 <script defer src="/assets/twk-paywall-guard.js?v=20260512-pg3"></script>
 <script defer src="/assets/twerkhub-age-gate.js?v=20260509-ag3-scrolltop"></script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
 <script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
 <style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
 <style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
@@ -117,7 +142,7 @@
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260512-fix1','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260512-final','twk-loader-token-system');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
@@ -221,7 +246,7 @@
 <script defer src="/assets/premium-polish-v10.js"></script>
 <script defer src="/assets/global-i18n.js?v=20260417-01"></script>
   <script defer src="/assets/enter-now-widget.js?v=20260508-d1-p1"></script>
-<script src="/assets/twk-tokens-v3.js?v=20260512-fix1" defer></script>
+<script src="/assets/twk-tokens-v3.js?v=20260512-final" defer></script>
 
 <style id="twk-related-css">.twk-related,.twk-mf{grid-column:1/-1!important}
 .twk-related{max-width:1200px;margin:60px auto 40px;padding:24px 26px;border-top:1px solid rgba(255,255,255,.08);font-family:'Inter',ui-sans-serif,system-ui,sans-serif}
