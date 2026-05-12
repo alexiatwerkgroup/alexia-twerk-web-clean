@@ -43,66 +43,105 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;700;800;900&family=Anton&family=JetBrains+Mono:wght@500;700&display=swap">
 
 <style>
-body{background:#05050a;color:#f5f5fb;margin:0;font-family:'Inter',sans-serif}
-.pt-nav{position:sticky;top:0;z-index:50;background:rgba(5,5,10,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+/* ═══ TWERKHUB BLACK + ORANGE PALETTE ═══
+   Brand colors:
+   - Background black: #05050a
+   - Card dark: #0a0a14 / #13131e
+   - Primary accent: #ff9000 (orange)
+   - Gold (VIP): #ffd700
+   - Off-white text: #f5f5fb
+   - Muted text: #c7c7d3 / #888
+   - Pink #ff2d87 ONLY used inside MOST POPULAR ribbon (sparingly) */
+body{background:#05050a;color:#f5f5fb;margin:0;font-family:'Inter',sans-serif;line-height:1.6}
+
+/* ─── Top nav (consistent across PT site) ─── */
+.pt-nav{position:sticky;top:0;z-index:50;background:rgba(5,5,10,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,144,0,.15);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
 .pt-nav .pt-brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff;text-decoration:none;letter-spacing:.04em}
 .pt-nav .pt-brand em{color:#ff9000;font-style:normal}
 .pt-nav-links{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 .pt-nav-links a{color:#c7c7d3;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.04em;transition:color .2s}
 .pt-nav-links a:hover{color:#ff9000}
-.pt-nav-links a.pt-cta{background:#ff2d87;color:#fff;padding:8px 16px;border-radius:6px;font-weight:800}
+.pt-nav-links a.pt-cta{background:#ff9000;color:#000;padding:8px 16px;border-radius:6px;font-weight:800}
+.pt-nav-links a.pt-cta:hover{background:#ffa520;color:#000}
 .pt-nav-lang{display:flex;gap:6px;align-items:center;font-size:11px;color:#666;letter-spacing:.1em}
 .pt-nav-lang a{color:#888;text-decoration:none;padding:3px 7px;border-radius:4px}
+.pt-nav-lang a:hover{color:#fff}
 .pt-nav-lang a.active{color:#ff9000;font-weight:800}
 @media (max-width:760px){.pt-nav{padding:12px 16px}.pt-nav-links a{font-size:12px}.pt-nav-links{gap:12px}}
 
-.pt-hero{padding:80px 24px 50px;text-align:center;background:linear-gradient(180deg,#0a0a14 0%,#1a0a2a 100%);color:#f5f5fb}
+/* ─── Hero (pure black with subtle orange-radial glow) ─── */
+.pt-hero{padding:80px 24px 50px;text-align:center;background:radial-gradient(ellipse at center top,rgba(255,144,0,.06),transparent 60%),#05050a;color:#f5f5fb}
+.pt-hero .kicker{display:inline-block;padding:6px 16px;background:rgba(255,144,0,.10);border:1px solid rgba(255,144,0,.30);border-radius:20px;font-size:11px;color:#ff9000;letter-spacing:.22em;text-transform:uppercase;margin-bottom:18px;font-weight:800;font-family:'JetBrains Mono',monospace}
 .pt-hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,64px);font-weight:900;line-height:1.05;margin:0 0 18px;letter-spacing:-.02em}
-.pt-hero h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ff9000);-webkit-background-clip:text;background-clip:text;color:transparent}
-.pt-hero p{font-size:clamp(16px,2.5vw,20px);max-width:720px;margin:0 auto 28px;opacity:.9;line-height:1.55}
-.pt-hero .cta{display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#ff2d87,#ff9000);color:#fff;border-radius:8px;font-weight:800;text-decoration:none;font-size:15px;letter-spacing:.05em;text-transform:uppercase}
+.pt-hero h1 em{font-style:italic;color:#ff9000}
+.pt-hero p{font-size:clamp(16px,2.5vw,20px);max-width:720px;margin:0 auto 28px;opacity:.9;line-height:1.55;color:#c7c7d3}
+.pt-hero .cta{display:inline-block;padding:14px 36px;background:#ff9000;color:#000;border-radius:8px;font-weight:800;text-decoration:none;font-size:15px;letter-spacing:.05em;text-transform:uppercase;transition:all .2s;box-shadow:0 6px 24px rgba(255,144,0,.30)}
+.pt-hero .cta:hover{background:#ffa520;transform:translateY(-2px);box-shadow:0 10px 32px rgba(255,144,0,.40)}
 
-/* ───── TIER CARDS (same look as EN home) ───── */
+/* ─── Stats grid ─── */
+.pt-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;max-width:980px;margin:0 auto;padding:40px 24px;text-align:center}
+.pt-stat{background:#0a0a14;padding:24px 16px;border-radius:12px;border:1px solid rgba(255,144,0,.12)}
+.pt-stat .num{font-family:'Anton','Playfair Display',serif;font-size:38px;font-weight:900;color:#ff9000;display:block;letter-spacing:.02em}
+.pt-stat .lbl{font-size:12px;color:#888;letter-spacing:.12em;text-transform:uppercase;margin-top:6px;display:block;font-weight:700}
+
+/* ─── Section intro ─── */
+.pt-section{padding:40px 24px;max-width:1100px;margin:0 auto;color:#c7c7d3}
+.pt-section h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;margin:0 0 16px;color:#fff}
+.pt-section h2 em{color:#ff9000;font-style:italic}
+.pt-section p{font-size:15px;line-height:1.75;margin-bottom:14px}
+.pt-section p strong{color:#fff}
+
+/* ─── TIER CARDS (BLACK + ORANGE — no pink) ─── */
 .twerkhub-tiers{max-width:1480px;margin:0 auto;padding:60px 32px}
-.twerkhub-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:14px}
+.twerkhub-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:14px}
 .twerkhub-tiers-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-bottom:40px}
 .twerkhub-tiers-head h2{font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,52px);font-weight:900;color:#fff;line-height:1.1;margin:0 0 12px}
-.twerkhub-tiers-head h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ff9000);-webkit-background-clip:text;background-clip:text;color:transparent}
+.twerkhub-tiers-head h2 em{font-style:italic;color:#ff9000}
 .twerkhub-tiers-head p{color:#c7c7d3;font-size:15px;max-width:680px;line-height:1.55;margin:0}
 .twerkhub-tiers-grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-.twerkhub-tier4-card{position:relative;background:radial-gradient(ellipse at top,rgba(20,20,30,.9),rgba(10,10,18,.7));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:38px 28px 28px;display:flex;flex-direction:column}
-.twerkhub-tier4-card-featured{border-color:#ff2d87;box-shadow:0 0 48px rgba(255,45,135,.25);background:radial-gradient(ellipse at top,rgba(60,15,40,.7),rgba(10,10,18,.85))}
-.twerkhub-tier4-card-vip{border-color:#ff9000;box-shadow:0 0 56px rgba(255,144,0,.22);background:radial-gradient(ellipse at top,rgba(60,40,5,.6),rgba(10,10,18,.85))}
-.twerkhub-tier4-ribbon{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;font-size:10px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;padding:6px 16px;border-radius:14px;white-space:nowrap}
-.twerkhub-tier4-ribbon-gold{background:linear-gradient(135deg,#ffd700,#ff9000);color:#000}
-.twerkhub-tier4-label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#9d4edd;margin-bottom:8px}
+
+.twerkhub-tier4-card{position:relative;background:#0a0a14;border:1px solid rgba(255,144,0,.08);border-radius:18px;padding:38px 28px 28px;display:flex;flex-direction:column;transition:transform .25s,border-color .25s,box-shadow .25s}
+.twerkhub-tier4-card:hover{transform:translateY(-4px);border-color:rgba(255,144,0,.30)}
+.twerkhub-tier4-card-featured{border-color:#ff9000;box-shadow:0 0 48px rgba(255,144,0,.22);background:linear-gradient(180deg,rgba(40,20,0,.4),#0a0a14 60%)}
+.twerkhub-tier4-card-vip{border-color:#ffd700;box-shadow:0 0 56px rgba(255,215,0,.20);background:linear-gradient(180deg,rgba(40,30,0,.5),#0a0a14 60%)}
+
+/* Ribbon: pink ONLY for MOST POPULAR (kept for visual hierarchy) */
+.twerkhub-tier4-ribbon{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#ff2d87;color:#fff;font-size:10px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;padding:6px 16px;border-radius:14px;white-space:nowrap;box-shadow:0 4px 14px rgba(255,45,135,.40)}
+.twerkhub-tier4-ribbon-gold{background:#ffd700;color:#000;box-shadow:0 4px 14px rgba(255,215,0,.40)}
+
+.twerkhub-tier4-label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#666;margin-bottom:8px}
 .twerkhub-tier4-card h3{font-family:'Anton','Playfair Display',serif;font-size:42px;font-weight:900;color:#fff;margin:0 0 18px;letter-spacing:.02em;line-height:1}
 .twerkhub-tier4-price{font-family:'Anton','Playfair Display',serif;font-size:48px;font-weight:900;color:#ff9000;line-height:1;margin-bottom:4px}
-.twerkhub-tier4-price span{font-size:14px;color:#888;font-weight:400;font-family:'Inter',sans-serif}
+.twerkhub-tier4-card-vip .twerkhub-tier4-price{color:#ffd700}
+.twerkhub-tier4-price span{font-size:14px;color:#888;font-weight:400;font-family:'Inter',sans-serif;margin-left:4px}
 .twerkhub-tier4-price-free{color:#ff9000}
-.twerkhub-tier4-alt{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:#5ec3ff;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:22px}
+.twerkhub-tier4-alt{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:#888;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:22px}
 .twerkhub-tier-list{list-style:none;padding:0;margin:0 0 24px;flex:1}
-.twerkhub-tier-list li{font-size:14px;line-height:1.5;color:#d8d8e2;margin-bottom:10px}
-.twerkhub-btn{display:block;text-align:center;padding:13px 24px;border-radius:10px;font-weight:800;text-decoration:none;font-size:13px;letter-spacing:.06em;text-transform:uppercase;transition:transform .15s}
+.twerkhub-tier-list li{font-size:14px;line-height:1.5;color:#c7c7d3;margin-bottom:10px;padding-left:0}
+.twerkhub-tier-list li::first-letter{color:#ff9000;font-weight:900}
+
+/* Buttons — black + orange only */
+.twerkhub-btn{display:block;text-align:center;padding:13px 24px;border-radius:10px;font-weight:800;text-decoration:none;font-size:13px;letter-spacing:.06em;text-transform:uppercase;transition:all .2s}
 .twerkhub-btn:hover{transform:translateY(-1px)}
 .twerkhub-btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.18);color:#c7c7d3}
 .twerkhub-btn-ghost:hover{border-color:#ff9000;color:#ff9000}
-.twerkhub-btn-primary{background:linear-gradient(135deg,#ff9000,#ff6f00);color:#000}
-.twerkhub-btn-gold{background:linear-gradient(135deg,#ffd700,#ff9000);color:#000}
+.twerkhub-btn-primary{background:#ff9000;color:#000;box-shadow:0 6px 20px rgba(255,144,0,.25)}
+.twerkhub-btn-primary:hover{background:#ffa520;box-shadow:0 10px 28px rgba(255,144,0,.40)}
+.twerkhub-btn-gold{background:#ffd700;color:#000;box-shadow:0 6px 20px rgba(255,215,0,.25)}
+.twerkhub-btn-gold:hover{background:#ffe040;box-shadow:0 10px 28px rgba(255,215,0,.40)}
 
-/* ───── FAQ ───── */
-.pt-section{padding:40px 32px;max-width:1100px;margin:0 auto}
-.pt-section h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;margin:0 0 16px;color:#fff}
-.pt-section p{font-size:15px;line-height:1.7;opacity:.85;margin-bottom:12px;color:#d8d8e2}
-.pt-faq dl{margin-top:20px}
-.pt-faq dt{font-weight:800;margin-top:16px;color:#ff9000;font-size:16px}
-.pt-faq dd{margin-left:0;margin-top:6px;line-height:1.6;opacity:.85;color:#d8d8e2}
+/* ─── FAQ ─── */
+.pt-faq{max-width:880px;margin:60px auto;padding:0 24px}
+.pt-faq h2{text-align:center;font-family:'Playfair Display',serif;font-size:32px;color:#fff;margin-bottom:24px}
+.pt-faq h2 em{font-style:italic;color:#ff9000}
+.pt-faq dl{display:grid;gap:18px}
+.pt-faq dt{font-weight:800;color:#ff9000;font-size:16px;font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
+.pt-faq dd{margin-left:0;margin-top:6px;line-height:1.65;color:#c7c7d3;font-size:15px}
 
-/* ───── STATS ───── */
-.pt-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;max-width:980px;margin:0 auto;padding:30px 24px 0;text-align:center}
-.pt-stat{background:rgba(255,255,255,.04);padding:24px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
-.pt-stat .num{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#ff9000;display:block}
-.pt-stat .lbl{font-size:13px;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-top:6px;display:block}
+/* ─── Footer ─── */
+footer.pt-footer{text-align:center;padding:50px 24px 40px;color:#666;font-size:13px;border-top:1px solid rgba(255,144,0,.10);margin-top:60px;background:#05050a}
+footer.pt-footer a{color:#888;text-decoration:none}
+footer.pt-footer a:hover{color:#ff9000}
 </style>
 </head>
 <body>
@@ -126,7 +165,8 @@ body{background:#05050a;color:#f5f5fb;margin:0;font-family:'Inter',sans-serif}
 </nav>
 
 <section class="pt-hero">
-  <h1>Quatro níveis. <em>Duas formas de entrar.</em></h1>
+  <span class="kicker">membership · 4 níveis · cancele a qualquer hora</span>
+  <h1>Quatro níveis. <em>Duas portas pra entrar.</em></h1>
   <p>Ganhe tokens assistindo, indicando e compartilhando — ou pula a fila e compra o nível direto. Assinaturas renovam mensalmente. Cancele quando quiser.</p>
   <a href="#planos" class="cta">Ver os 4 planos</a>
 </section>
@@ -138,20 +178,26 @@ body{background:#05050a;color:#f5f5fb;margin:0;font-family:'Inter',sans-serif}
   <div class="pt-stat"><span class="num">1 clique</span><span class="lbl">pra cancelar</span></div>
 </div>
 
-<!-- ═══ FOUR TIERS pricing — mesmo design da home EN ═══ -->
+<section class="pt-section">
+  <h2>O que tá <em>incluso</em></h2>
+  <p><strong>Acesso ao arquivo curado de twerk, funk e dança em 4K</strong> — coreografia profissional, novinhas dançando, paredão, fancam de cosplay e drops semanais direto do estúdio. Quanto mais alto o nível, mais conteúdo destranca.</p>
+  <p>Curado à mão desde 2018 por Anti (firestarter). Mais de 50 horas de YouTube filtradas por semana — só sobe o que vale a pena.</p>
+</section>
+
 <section class="twerkhub-tiers" id="planos" aria-label="Quatro níveis">
   <div class="twerkhub-kicker">/ Recompensas · ganhe ou compra · backend Supabase</div>
   <div class="twerkhub-tiers-head">
     <div>
-      <h2>Quatro níveis. <em>Duas portas pra entrar.</em></h2>
-      <p>Ganhe tokens assistindo, indicando e compartilhando — ou pula a fila e compra direto. Assinaturas renovam mensalmente. Cancele quando quiser.</p>
+      <h2>Escolha seu <em>nível</em></h2>
+      <p>Comece grátis com Basic ou sobe pra VIP Top e desbloqueia conteúdo custom direto comigo. Cancele em 1 clique, sem letra miúda.</p>
     </div>
     <a class="twerkhub-btn twerkhub-btn-ghost" href="/profile.html">Seu perfil →</a>
   </div>
+
   <div class="twerkhub-tiers-grid-4">
     <article class="twerkhub-tier4-card">
       <div class="twerkhub-tier4-label">/ NÍVEL 01</div><h3>Basic</h3>
-      <div class="twerkhub-tier4-price twerkhub-tier4-price-free">GRÁTIS <span>· registra</span></div>
+      <div class="twerkhub-tier4-price twerkhub-tier4-price-free">GRÁTIS<span>· registra</span></div>
       <div class="twerkhub-tier4-alt">ou 300 tokens</div>
       <ul class="twerkhub-tier-list">
         <li>✓ 590+ vídeos gratuitos</li>
@@ -164,11 +210,11 @@ body{background:#05050a;color:#f5f5fb;margin:0;font-family:'Inter',sans-serif}
 
     <article class="twerkhub-tier4-card">
       <div class="twerkhub-tier4-label">/ NÍVEL 02</div><h3>Medium</h3>
-      <div class="twerkhub-tier4-price">R$ 49 <span>/ mês</span></div>
+      <div class="twerkhub-tier4-price">R$ 49<span>/ mês</span></div>
       <div class="twerkhub-tier4-alt">ou 3.000 tokens</div>
       <ul class="twerkhub-tier-list">
         <li>✓ Drops antecipados (48h head start)</li>
-        <li>✓ 1 custom request por ano</li>
+        <li>✓ 1 custom request/ano</li>
         <li>✓ Canais VIP no Discord</li>
         <li>✓ Multiplicador de tokens ×1,5</li>
       </ul>
@@ -178,7 +224,7 @@ body{background:#05050a;color:#f5f5fb;margin:0;font-family:'Inter',sans-serif}
     <article class="twerkhub-tier4-card twerkhub-tier4-card-featured">
       <div class="twerkhub-tier4-ribbon">MAIS POPULAR</div>
       <div class="twerkhub-tier4-label">/ NÍVEL 03</div><h3>Premium</h3>
-      <div class="twerkhub-tier4-price">R$ 149 <span>/ mês</span></div>
+      <div class="twerkhub-tier4-price">R$ 149<span>/ mês</span></div>
       <div class="twerkhub-tier4-alt">ou 9.000 tokens</div>
       <ul class="twerkhub-tier-list">
         <li>✓ TODAS as criadoras privadas</li>
@@ -193,10 +239,10 @@ body{background:#05050a;color:#f5f5fb;margin:0;font-family:'Inter',sans-serif}
     <article class="twerkhub-tier4-card twerkhub-tier4-card-vip">
       <div class="twerkhub-tier4-ribbon twerkhub-tier4-ribbon-gold">★ NÍVEL TOPO</div>
       <div class="twerkhub-tier4-label">/ NÍVEL 04</div><h3>VIP Top</h3>
-      <div class="twerkhub-tier4-price">R$ 499 <span>/ mês</span></div>
+      <div class="twerkhub-tier4-price">R$ 499<span>/ mês</span></div>
       <div class="twerkhub-tier4-alt">ou 50.000 tokens</div>
       <ul class="twerkhub-tier-list">
-        <li>★ Meet &amp; Greet de 1 dia · qualquer criadora</li>
+        <li>★ Meet &amp; Greet 1 dia · qualquer criadora</li>
         <li>★ 6 customs/ano · entrega instantânea</li>
         <li>★ Concierge pessoal no Discord</li>
         <li>★ Acesso antecipado a VR vídeos</li>
@@ -207,8 +253,8 @@ body{background:#05050a;color:#f5f5fb;margin:0;font-family:'Inter',sans-serif}
   </div>
 </section>
 
-<section class="pt-section pt-faq">
-  <h2>Perguntas frequentes</h2>
+<section class="pt-faq">
+  <h2>Perguntas <em>frequentes</em></h2>
   <dl>
     <dt>Posso cancelar quando quiser?</dt>
     <dd>Sim. Sem fidelidade, sem multa, sem ligação de retenção. Cancela em 1 clique no painel. Seu conteúdo gratuito (Basic) fica intacto.</dd>
@@ -225,9 +271,9 @@ body{background:#05050a;color:#f5f5fb;margin:0;font-family:'Inter',sans-serif}
   </dl>
 </section>
 
-<footer style="text-align:center;padding:40px 24px;color:#666;font-size:13px;border-top:1px solid #1a1a2a;margin-top:40px">
-  <p>Twerkhub Brasil · <a href="/pt/" style="color:#aaa">Início</a> · <a href="/pt/about.html" style="color:#aaa">Sobre</a> · <a href="/pt/membership.html" style="color:#aaa">Membership</a> · <a href="/pt/blog/" style="color:#aaa">Blog</a></p>
-  <p style="margin-top:8px"><a href="/" style="color:#aaa">English</a> · <a href="/es/" style="color:#aaa">Español</a> · <a href="/ru/" style="color:#aaa">Русский</a></p>
+<footer class="pt-footer">
+  <p>Twerkhub Brasil · <a href="/pt/">Início</a> · <a href="/pt/about.html">Sobre</a> · <a href="/pt/membership.html">Membership</a> · <a href="/pt/blog/">Blog</a></p>
+  <p style="margin-top:8px"><a href="/">English</a> · <a href="/es/">Español</a> · <a href="/ru/">Русский</a></p>
 </footer>
 
 </body>
