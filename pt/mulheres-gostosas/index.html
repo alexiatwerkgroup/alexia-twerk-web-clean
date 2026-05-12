@@ -46,12 +46,12 @@ body{background:#05050a;color:#f5f5fb;font-family:'Inter',sans-serif;line-height
 .pt-hero{padding:80px 24px 50px;text-align:center;background:linear-gradient(180deg,#0a0a14 0%,#1a0a2a 100%);color:#f5f5fb}
 .pt-hero .kicker{display:inline-block;padding:6px 16px;background:rgba(255,144,0,.12);border:1px solid rgba(255,144,0,.4);border-radius:20px;font-size:11px;color:#ff9000;letter-spacing:.22em;text-transform:uppercase;margin-bottom:18px;font-weight:800}
 .pt-hero h1{font-family:'Playfair Display',serif;font-size:clamp(36px,7vw,72px);font-weight:900;line-height:1.05;margin:0 0 18px;letter-spacing:-.02em}
-.pt-hero h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ff9000);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pt-hero h1 em{font-style:italic;background:#ff9000;-webkit-background-clip:text;background-clip:text;color:transparent}
 .pt-hero p{font-size:clamp(16px,2.5vw,20px);max-width:780px;margin:0 auto 28px;opacity:.9;line-height:1.55}
 .pt-hero p strong{color:#fff;font-weight:800}
 .pt-hero .cta-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
 .pt-hero .cta{display:inline-block;padding:14px 32px;border-radius:8px;font-weight:800;text-decoration:none;font-size:14px;letter-spacing:.05em;text-transform:uppercase}
-.pt-hero .cta.primary{background:linear-gradient(135deg,#ff2d87,#ff9000);color:#fff;box-shadow:0 8px 28px rgba(255,45,135,.4)}
+.pt-hero .cta.primary{background:#ff9000;color:#fff;box-shadow:0 8px 28px rgba(255,144,0,.35)}
 .pt-hero .cta.outline{border:1px solid rgba(255,255,255,.2);color:#fff}
 
 .pt-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;max-width:980px;margin:0 auto;padding:30px 24px;text-align:center}
@@ -70,14 +70,14 @@ body{background:#05050a;color:#f5f5fb;font-family:'Inter',sans-serif;line-height
 
 .pt-vp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;max-width:1180px;margin:40px auto;padding:0 24px}
 .vp-card{background:rgba(20,20,32,.7);border:1px solid rgba(255,255,255,.06);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s;display:flex;flex-direction:column}
-.vp-card:hover{transform:translateY(-3px);border-color:#ff2d87}
+.vp-card:hover{transform:translateY(-3px);border-color:#ff9000}
 .vp-thumb{aspect-ratio:16/10;overflow:hidden;background:#000}
 .vp-thumb img{width:100%;height:100%;object-fit:cover}
 .vp-meta{padding:14px}
-.vp-tag{font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px}
+.vp-tag{font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:6px}
 .vp-title{font-size:15px;font-weight:800;color:#fff;line-height:1.3}
 
-.pt-section-title{text-align:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin:60px 0 18px}
+.pt-section-title{text-align:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin:60px 0 18px}
 .pt-cross-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:1180px;margin:0 auto;padding:0 24px}
 
 .pt-faq{max-width:880px;margin:60px auto;padding:0 24px}
@@ -86,9 +86,9 @@ body{background:#05050a;color:#f5f5fb;font-family:'Inter',sans-serif;line-height
 .pt-faq dt{font-weight:800;color:#ff9000;font-size:16px}
 .pt-faq dd{margin-left:0;margin-top:6px;line-height:1.65;color:#c7c7d3;font-size:15px}
 
-.pt-cta-final{background:linear-gradient(180deg,transparent,rgba(255,45,135,.04),transparent);padding:60px 24px;text-align:center;max-width:780px;margin:60px auto 0}
+.pt-cta-final{background:linear-gradient(180deg,transparent,rgba(255,144,0,.04),transparent);padding:60px 24px;text-align:center;max-width:780px;margin:60px auto 0}
 .pt-cta-final h2{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,42px);margin:0 0 24px;color:#fff}
-.pt-cta-final h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ff9000);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pt-cta-final h2 em{font-style:italic;background:#ff9000;-webkit-background-clip:text;background-clip:text;color:transparent}
 .pt-cta-final .cta-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
 </style>
 </head>
@@ -100,7 +100,7 @@ body{background:#05050a;color:#f5f5fb;font-family:'Inter',sans-serif;line-height
 .pt-nav-links{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 .pt-nav-links a{color:#c7c7d3;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.04em}
 .pt-nav-links a:hover{color:#ff9000}
-.pt-nav-links a.pt-cta{background:#ff2d87;color:#fff;padding:8px 16px;border-radius:6px;font-weight:800}
+.pt-nav-links a.pt-cta{background:#ff9000;color:#000;padding:8px 16px;border-radius:6px;font-weight:800}
 .pt-nav-lang{display:flex;gap:6px;align-items:center;font-size:11px;color:#666}
 .pt-nav-lang a{color:#888;text-decoration:none;padding:3px 7px;border-radius:4px}
 .pt-nav-lang a.active{color:#ff9000;font-weight:800}
@@ -197,19 +197,19 @@ body{background:#05050a;color:#f5f5fb;font-family:'Inter',sans-serif;line-height
 <div class="pt-cross-grid">
     <a href="/pt/mulherao/" data-no-dead style="display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.7);text-decoration:none;color:inherit">
       <div style="aspect-ratio:16/10;background:linear-gradient(135deg,#1a0a2a,#2a0f3d);display:flex;align-items:center;justify-content:center;color:#ff9000;font-family:'Anton',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase">Mulherão</div>
-      <div style="padding:14px"><div style="font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px">Brasil · 673.000/mês</div><h3 style="font-size:16px;font-weight:900;color:#fff;margin:0 0 4px">Mulherão</h3><p style="font-size:12px;color:#c7c7d3;margin:0;line-height:1.4">Mulherão tem 673 mil buscas por mês no Brasil. Não é por acaso …</p></div>
+      <div style="padding:14px"><div style="font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:6px">Brasil · 673.000/mês</div><h3 style="font-size:16px;font-weight:900;color:#fff;margin:0 0 4px">Mulherão</h3><p style="font-size:12px;color:#c7c7d3;margin:0;line-height:1.4">Mulherão tem 673 mil buscas por mês no Brasil. Não é por acaso …</p></div>
     </a>
     <a href="/pt/piranhas/" data-no-dead style="display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.7);text-decoration:none;color:inherit">
       <div style="aspect-ratio:16/10;background:linear-gradient(135deg,#1a0a2a,#2a0f3d);display:flex;align-items:center;justify-content:center;color:#ff9000;font-family:'Anton',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase">Piranhas</div>
-      <div style="padding:14px"><div style="font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px">Brasil · 90.500/mês</div><h3 style="font-size:16px;font-weight:900;color:#fff;margin:0 0 4px">Piranhas</h3><p style="font-size:12px;color:#c7c7d3;margin:0;line-height:1.4">No slang brasileiro, piranha é a mulher dona da própria sexuali…</p></div>
+      <div style="padding:14px"><div style="font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:6px">Brasil · 90.500/mês</div><h3 style="font-size:16px;font-weight:900;color:#fff;margin:0 0 4px">Piranhas</h3><p style="font-size:12px;color:#c7c7d3;margin:0;line-height:1.4">No slang brasileiro, piranha é a mulher dona da própria sexuali…</p></div>
     </a>
     <a href="/pt/favela/" data-no-dead style="display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.7);text-decoration:none;color:inherit">
       <div style="aspect-ratio:16/10;background:linear-gradient(135deg,#1a0a2a,#2a0f3d);display:flex;align-items:center;justify-content:center;color:#ff9000;font-family:'Anton',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase">Favela</div>
-      <div style="padding:14px"><div style="font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px">Brasil · 49.500/mês</div><h3 style="font-size:16px;font-weight:900;color:#fff;margin:0 0 4px">Favela</h3><p style="font-size:12px;color:#c7c7d3;margin:0;line-height:1.4">A favela é onde nasceu o funk carioca. É o território do paredã…</p></div>
+      <div style="padding:14px"><div style="font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:6px">Brasil · 49.500/mês</div><h3 style="font-size:16px;font-weight:900;color:#fff;margin:0 0 4px">Favela</h3><p style="font-size:12px;color:#c7c7d3;margin:0;line-height:1.4">A favela é onde nasceu o funk carioca. É o território do paredã…</p></div>
     </a>
     <a href="/pt/playlist/" data-no-dead style="display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid #ff9000;background:rgba(20,20,32,.85);text-decoration:none;color:inherit">
       <div style="aspect-ratio:16/10;background:linear-gradient(135deg,#2a0f3d,#5a1a2d);display:flex;align-items:center;justify-content:center;color:#ff9000;font-family:'Anton',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase">100 Playlists</div>
-      <div style="padding:14px"><div style="font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px">Twerk · Cofre</div><h3 style="font-size:16px;font-weight:900;color:#fff;margin:0 0 4px">Todas as Playlists</h3><p style="font-size:12px;color:#c7c7d3;margin:0;line-height:1.4">100+ playlists curadas · 1.500+ vídeos 4K</p></div>
+      <div style="padding:14px"><div style="font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:6px">Twerk · Cofre</div><h3 style="font-size:16px;font-weight:900;color:#fff;margin:0 0 4px">Todas as Playlists</h3><p style="font-size:12px;color:#c7c7d3;margin:0;line-height:1.4">100+ playlists curadas · 1.500+ vídeos 4K</p></div>
     </a>
 </div>
 
@@ -231,7 +231,7 @@ body{background:#05050a;color:#f5f5fb;font-family:'Inter',sans-serif;line-height
   <h2>Entra no <em>cofre</em> brasileiro</h2>
   <p style="opacity:.85;max-width:560px;margin:0 auto 24px">Basic é grátis. Sobe a Premium quando quiser. Cancela em 1 clique.</p>
   <div class="cta-row">
-    <a href="/pt/membership.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#ff2d87,#ff9000);color:#fff;border-radius:8px;font-weight:800;text-decoration:none;text-transform:uppercase;font-size:14px;letter-spacing:.05em">Ver assinaturas</a>
+    <a href="/pt/membership.html" style="display:inline-block;padding:14px 32px;background:#ff9000;color:#fff;border-radius:8px;font-weight:800;text-decoration:none;text-transform:uppercase;font-size:14px;letter-spacing:.05em">Ver assinaturas</a>
     <a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener" style="display:inline-block;padding:14px 32px;background:#5865f2;color:#fff;border-radius:8px;font-weight:800;text-decoration:none;text-transform:uppercase;font-size:14px;letter-spacing:.05em">Discord</a>
   </div>
 </section>
