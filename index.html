@@ -258,7 +258,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
     </div>
   </div>
   <!-- Featured video · live YouTube embed · silenced by default · hover unmutes -->
-  <aside class="twerkhub-home-hero-media" aria-label="Featured cut" data-hero-video-id="">
+  <aside class="twerkhub-home-hero-media" aria-label="Featured cut" data-hero-video-id="" data-twk-affiliate-url="https://goloveai.com/?ref=7XQFGR">
     <div class="twerkhub-hh-media-inner">
       <iframe class="twerkhub-hh-iframe" id="twerkhub-hh-iframe"
               src="about:blank"
@@ -267,6 +267,9 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
               allow="autoplay; encrypted-media; picture-in-picture"
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
+      <!-- Affiliate click-through overlay: any of the 4 rotator videos → goloveai.com/?ref=7XQFGR -->
+      <a class="twk-hero-affiliate-overlay" href="https://goloveai.com/?ref=7XQFGR" target="_blank" rel="noopener sponsored" aria-label="Try GoLoveAI" style="position:absolute;inset:0;z-index:13;cursor:pointer;display:block;background:transparent" data-no-dead="1"></a>
+      <style>.twk-hero-affiliate-overlay:hover{background:radial-gradient(circle at center,transparent 35%,rgba(255,45,135,.10) 100%)!important}</style>
       <style>
         /* Zoom on the hero iframe to crop YouTube's pause-state title overlay,
            bottom watermarks and any logo flash. Same treatment as twk-video-shield. */
