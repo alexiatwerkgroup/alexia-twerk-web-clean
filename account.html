@@ -411,7 +411,14 @@ a.twk-hero-affiliate-overlay,
       s = {
         balance: fAccBal,
         total: fAccTot,
-        streak: (d1 && d1.streak) || (localState && localState.streak) || 1,
+        streak: (function(){
+          // Lee streak del localStorage alexia_streak_v1 (canonical), MAX con d1/legacy
+          var lsRaw=null;try{lsRaw=JSON.parse(localStorage.getItem('alexia_streak_v1')||'{}');}catch(_){lsRaw={};}
+          var lsDays=(lsRaw&&parseInt(lsRaw.days,10))||0;
+          var fromState=(localState&&parseInt(localState.streak,10))||0;
+          var fromD1=(d1&&parseInt(d1.streak,10))||0;
+          return Math.max(lsDays,fromState,fromD1,1);
+        })(),
         tier: 'vip',
         registered: FOUNDER_REGISTERED,
         welcomed: true,
