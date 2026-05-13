@@ -187,4 +187,57 @@
       'position:absolute;top:6px;right:6px;background:rgba(0,0,0,.85);color:#ffd700;' +
       'padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;' +
       'z-index:9;pointer-events:none;font-family:system-ui,-apple-system,sans-serif;';
-    badge.textContent
+    badge.textContent = '🔒 18+';
+    el.appendChild(badge);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // Main: scan iframes + thumbs, apply paywall to blocked ones
+  // ─────────────────────────────────────────────────────────────────
+  function scan() {
+    if (isMember()) return;
+    // Iframes de YouTube
+    var iframes = document.querySelectorAll('iframe[src*="youtube.com/embed/"], iframe[src*="youtube-nocookie.com/embed/"]');
+    Array.prototype.forEach.call(iframes, function (ifr) {
+      var vid = extractVideoId(ifr.getAttribute('src'));
+      if (!vid || !classification) return;
+      if (classification[vid] === 'blocked') {
+        applyIframePaywall(ifr, vid);
+      }
+    });
+    // Thumbnails con data-vid
+    var thumbs = document.querySelectorAll('[data-vid]');
+    Array.prototype.forEach.call(thumbs, function (el) {
+      var vid = el.getAttribute('data-vid');
+      if (!vid || !classification) return;
+      if (classification[vid] === 'blocked') {
+        applyThumbBadge(el);
+      }
+    });
+  }
+
+  function loadClassification() {
+    return fetch(CLASSIFICATION_URL)
+      .then(function (r) { return r.json(); })
+      .then(function (j) { classification = j; })
+      .catch(function () { classification = {}; });
+  }
+
+  function init() {
+    loadClassification().then(function () {
+      scan();
+      if (window.MutationObserver) {
+        var mo = new MutationObserver(function () { scan(); });
+        mo.observe(document.body, { childList: true, subtree: true });
+      }
+      setTimeout(scan, 1500);
+      setTimeout(scan, 4000);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

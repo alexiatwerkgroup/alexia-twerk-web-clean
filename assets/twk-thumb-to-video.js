@@ -20,6 +20,17 @@
     (document.head || document.documentElement).appendChild(link);
   })();
 
+  // auto-load self-heal guardian (defensiva, recupera bugs comunes)
+  (function injectSelfHeal() {
+    if (document.getElementById('twk-self-heal-script')) return;
+    if (window.__twkSelfHeal) return;
+    var s = document.createElement('script');
+    s.id = 'twk-self-heal-script';
+    s.src = '/assets/twk-self-heal.js?v=20260513-blindaje-v62';
+    s.async = false;
+    (document.head || document.documentElement).appendChild(s);
+  })();
+
   var ORIGIN = "https://alexiatwerkgroup.com";
   function buildBlindaje(vid) {
     return [
