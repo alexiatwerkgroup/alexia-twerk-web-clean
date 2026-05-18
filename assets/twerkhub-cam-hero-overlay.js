@@ -32,12 +32,10 @@
       '}',
 
       /* CRITICAL FIX: el iframe tenia scale(1.22) original (crop top de YT
-         chrome). Combinado con nuestro header negro arriba = se duplicaba
-         el corte y no se veian las caras. Bajamos el scale a 1.05 →
-         minimo zoom, caras visibles, header sigue tapando solo el title
-         overlay de YT (no las caras). */
+         chrome). Bajamos el scale a 1.0 → sin zoom, videos completos sin corte.
+         La barra negra está dentro del contenedor ahora, no come espacio. */
       '.twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-iframe{',
-        'transform:scale(1.05) !important;',
+        'transform:scale(1.0) !important;',
       '}',
 
       /* HIDE elementos viejos que duplican o no van.
@@ -88,10 +86,10 @@
         'background:transparent !important;padding:0 !important;line-height:1.1 !important;',
       '}',
 
-      /* Re-style el botón Next existente (.twerkhub-hh-next) → bottom-right */
+      /* Re-style el botón Next existente (.twerkhub-hh-next) → top-left, debajo de la barra negra */
       '.twk-cam-styled .twerkhub-hh-next{',
-        'top:auto !important;left:auto !important;',
-        'bottom:12px !important;right:12px !important;',
+        'top:60px !important;left:14px !important;',
+        'bottom:auto !important;right:auto !important;',
         'background:rgba(0,0,0,.7) !important;color:#ff9000 !important;',
         'border:1px solid rgba(255,144,0,.55) !important;',
         'font-family:"Anton","Bebas Neue",sans-serif !important;',
