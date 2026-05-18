@@ -23,10 +23,10 @@
     var st = document.createElement('style');
     st.id = 'twk-cam-hero-v3-css';
     st.textContent = [
-      /* Border + glow naranja en el player rotativo */
+      /* Border naranja en el player rotativo (sin sombra) */
       '.twerkhub-home-hero-media.twk-cam-styled{',
         'border:2px solid #ff9000 !important;',
-        'box-shadow:0 0 24px rgba(255,144,0,.32),0 0 60px rgba(255,144,0,.14) !important;',
+        'box-shadow:none !important;',
         'border-radius:14px !important;overflow:hidden !important;',
         'position:relative !important;',
       '}',
