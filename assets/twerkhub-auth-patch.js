@@ -1,7 +1,9 @@
 /*!
- * TWERKHUB · Auth + paywall patch (2026-04-20-p7)
+ * TWERKHUB · Auth + paywall patch (2026-05-18-age-rating)
  * --------------------------------------------------------------
- * Per Anti's directive: payment isn't implemented yet, so:
+ * Per Anti's directive (2026-05-18): paywall applies ONLY to videos
+ * classified as +18 by YouTube. Videos without data-age-rating="18"
+ * are ALWAYS free. Payment isn't implemented yet, so:
  *   1) The "Ya soy miembro" shortcut inside /assets/twerkhub-paywall.js
  *      MUST NOT subscribe the user. It currently flips
  *      twerkhub_auth.subscribed = true — a free unlock bug. We
@@ -141,31 +143,24 @@
     requestAnimationFrame(function(){ back.classList.add('is-open'); });
   }
 
-  // ── 2b. Block clicks on ANY gated video card (Anti 2026-04-20-p7) ──
-  // Per Anti's directive: until payment is live, ONLY the top 5 hot
-  // ranking (emitted by the renderer with data-hot="1") can open a
-  // video. Every other .vcard / .rk-item click is routed to the
-  // Discord handoff with the gated-video copy. Also blocks the
-  // paywall.js auto-open of its subscribe modal.
+  // ── 2b. Block clicks on +18 rated videos (Anti 2026-05-18-age-rating) ──
+  // Per Anti's directive: ONLY videos classified as +18 by YouTube are
+  // gated. Videos without data-age-rating="18" are ALWAYS free, regardless
+  // of any other property. This applies to both .vcard cards (grid) and
+  // .rk-item ranking items (sidebar).
   function interceptGatedCard(ev){
     var target = ev.target;
     if (!target || !target.closest) return;
-    // Free hot-ranking items are explicitly whitelisted
-    var hot = target.closest('[data-hot="1"]');
-    if (hot) return;
-    // Sidebar ranking item (rk-item) — allow only when it has data-hot="1",
-    // which the renderer sets on the Top 5. Anything else = gated.
-    var rkHot = target.closest('.rk-item[data-hot="1"]');
-    if (rkHot) return;
-    // Gated candidates: .vcard without data-hot, or .rk-item without data-hot
-    var gatedCard = target.closest('.vcard:not([data-hot="1"])');
-    var gatedRk   = target.closest('.rk-item:not([data-hot="1"])');
+    // Check if target is inside a +18 video card
+    var gatedCard = target.closest('.vcard[data-age-rating="18"]');
+    var gatedRk   = target.closest('.rk-item[data-age-rating="18"]');
     // Also catch the paywall's own "subscribe" CTAs
     var payCta    = target.closest('[data-twk-action="unlock"], [data-twk-subscribe], .twk-gated-cta');
+    // If it's NOT a +18 video and NOT a paywall CTA, allow it (free access)
     if (!gatedCard && !gatedRk && !payCta) return;
     ev.stopImmediatePropagation();
     ev.preventDefault();
-    console.info('[twerkhub-auth-patch] gated video click → Discord handoff');
+    console.info('[twerkhub-auth-patch] +18 video click → Discord handoff');
     showDiscordHandoff('gated-video');
   }
   document.addEventListener('click', interceptGatedCard, true);  // capture phase
