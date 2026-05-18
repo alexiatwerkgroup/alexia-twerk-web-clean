@@ -1,0 +1,13 @@
+# Twerkhub Scripts — Python Dependencies
+# v20260511
+#
+# These scripts use Python stdlib only (Python 3.8+).
+# No external dependencies required.
+#
+# To validate Python version:
+#   python --version   # Should be 3.8+
+#
+# To run scripts:
+#   python scripts/bump-cache-unified.py --help
+#   python scripts/generate-playlists-unified.py --help
+#   python scripts/workflow.py --help

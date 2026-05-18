@@ -1,0 +1,16 @@
+# FORCE CLOUDFLARE PAGES DEPLOY
+# Generated: 2026-05-11 (Current timestamp)
+# This file is intentionally created to force a deployment
+
+Last commit hashes:
+- a405a0a28: Modal blocker in theater.js
+- 0f67241a4: Inline blocker in HTML
+- 4289cd10f: GitHub Actions workflow
+
+ISSUE: Popup appearing on /playlist/ pages despite fixes.
+SOLUTION: These fixes prevent modal from opening by:
+1. Detecting inline player (#twerkhub-pl-player)
+2. Delegating to swap() instead of modal.open()
+3. Blocking all three code paths
+
+Deployment status: WAITING FOR CLOUDFLARE PAGES TO PICK UP COMMITS

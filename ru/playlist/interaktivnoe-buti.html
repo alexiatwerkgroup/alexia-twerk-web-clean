@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
+<script src="/assets/twk-guardian.js?v=20260509-g1"></script>
+<script defer src="/assets/twk-paywall-guard.js?v=20260512-pg3"></script>
+<script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
+<script defer src="/assets/twk-video-shield.js?v=20260503-p13"></script>
+<script defer src="/assets/twerkhub-pl-theater.js?v=20260510-p15"></script>
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/twerkhub-age-gate.js?v=20260509-ag3-scrolltop"></script>
+<script>(function(){try{
+['twk_playlist_idx','twk_playlist_resume','playlistIndex','lastVideoIndex','currentVideoIndex','playlist_current','twk_last_video','resumeIndex']
+.forEach(function(k){try{localStorage.removeItem(k);sessionStorage.removeItem(k);}catch(e){}});
+if(/\/playlist\//i.test(location.pathname) && location.hash && /^#v?\d+$/i.test(location.hash)){
+  history.replaceState(null,'',location.pathname+location.search);
+}
+}catch(e){}})();</script>
+<script src="/assets/thumb-fallback.js?v=20260512-fix2"></script>
+<script>(function(){function fix(){var imgs=document.querySelectorAll('img[data-vid],img.video-thumb,.video-card img');imgs.forEach(function(i){if(i.loading==='lazy')i.loading='eager';var p=i.closest('a[data-vid],[data-vid]');var vid=i.dataset.vid||(p?p.dataset.vid:null);if(vid){var bad=!i.src||i.src.indexOf('thumb-unavailable')>-1||i.src.endsWith('default.jpg')||i.naturalWidth<50;if(bad){i.src='https://i.ytimg.com/vi/'+vid+'/hqdefault.jpg';}i.onerror=function(){this.src='https://i.ytimg.com/vi/'+vid+'/mqdefault.jpg';this.onerror=function(){this.src='https://i.ytimg.com/vi/'+vid+'/0.jpg';this.onerror=null;};};}});}fix();setTimeout(fix,500);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
+<script data-twk="thumb-v4">(function(){function tryNext(i,vid,arr,idx){if(idx>=arr.length){i.style.display='none';return;}i.onerror=function(){tryNext(i,vid,arr,idx+1);};i.onload=function(){if(i.naturalWidth<=120){tryNext(i,vid,arr,idx+1);}};i.src='https://i.ytimg.com/vi/'+vid+'/'+arr[idx];}function fix(){document.querySelectorAll('img').forEach(function(i){var m=(i.src||'').match(/ytimg\.com\/vi\/([\w-]{11})/);var vid=i.dataset.vid||(m?m[1]:null);if(!vid)return;if(i.loading==='lazy')i.loading='eager';if(!i.complete||i.naturalWidth<=120){tryNext(i,vid,['maxresdefault.jpg','hqdefault.jpg','mqdefault.jpg','sddefault.jpg','0.jpg'],0);}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+<style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
+<script>(function(){function force(){try{var imgs=document.querySelectorAll('img[src*="i.ytimg.com"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];im.setAttribute('loading','eager');im.style.opacity='1';im.style.visibility='visible';im.style.display='block';if(!im.dataset.twkOrigSrc){im.dataset.twkOrigSrc=im.getAttribute('src')||'';}var s=im.getAttribute('src');if(s)im.src=s;}}catch(_){}}function recover(){try{var bad=document.querySelectorAll('img[src*="thumb-unavailable"]');for(var i=0;i<bad.length;i++){var im=bad[i];if(im.dataset.twkOrigSrc){im.src=im.dataset.twkOrigSrc;}}}catch(_){}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){force();recover();});}else{force();recover();}setTimeout(function(){force();recover();},500);setTimeout(function(){force();recover();},2000);})();</script>
+<style id="twk-sr-only-seo">.twk-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Интерактивное буте · Dina8879 · твёрк класс · Twerkhub</title>
+<meta name="description" content="Интерактивное буте — длинный твёрк-класс от Dina8879. 6:08 в 4K с подробным разбором движений.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="canonical" href="https://alexiatwerkgroup.com/ru/playlist/interaktivnoe-buti">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/playlist/interaktivnoe-buti.html">
+<link rel="alternate" hreflang="ru" href="https://alexiatwerkgroup.com/ru/playlist/interaktivnoe-buti.html">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/playlist/interaktivnoe-buti.html">
+
+<meta property="og:type" content="video.other">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="uk_UA">
+<meta property="og:site_name" content="Twerkhub">
+<meta property="og:title" content="Интерактивное буте · Dina8879 · твёрк класс">
+<meta property="og:description" content="Dina8879 · 6:08 интерактивный твёрк-класс · 4K.">
+<meta property="og:url" content="https://alexiatwerkgroup.com/ru/playlist/interaktivnoe-buti">
+<meta property="og:image" content="https://i.ytimg.com/vi/1cv9BUIFVek/hqdefault.jpg">
+<meta property="og:video" content="https://www.youtube.com/embed/1cv9BUIFVek">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Интерактивное буте · Dina8879 · твёрк класс">
+<meta name="twitter:image" content="https://i.ytimg.com/vi/1cv9BUIFVek/hqdefault.jpg">
+<meta name="rating" content="mature">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com" crossorigin>
+<link rel="preconnect" href="https://www.youtube.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap&family=Anton">
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoObject","name":"Интерактивное буте · Dina8879","alternateName":"Interactive booty class · Dina8879","description":"Длительный твёрк-класс от Dina8879 «Интерактивное буте». 6:08 разбора техники booty-движений с интерактивным форматом подачи. Кураторский клип архива Twerkhub.","thumbnailUrl":["https://i.ytimg.com/vi/1cv9BUIFVek/hqdefault.jpg","https://i.ytimg.com/vi/1cv9BUIFVek/maxresdefault.jpg"],"contentUrl":"https://www.youtube.com/watch?v=1cv9BUIFVek","embedUrl":"https://www.youtube.com/embed/1cv9BUIFVek","duration":"PT6M8S","inLanguage":"ru","isFamilyFriendly":false,"author":{"@type":"Person","name":"Dina8879","alternateName":"Dina8879"},"isPartOf":{"@type":"CollectionPage","name":"Главный архив · Twerkhub","url":"https://alexiatwerkgroup.com/ru/playlist/","inLanguage":"ru"},"publisher":{"@type":"Organization","name":"Twerkhub","url":"https://alexiatwerkgroup.com/","logo":{"@type":"ImageObject","url":"https://alexiatwerkgroup.com/logo-twerkhub.png"}},"url":"https://alexiatwerkgroup.com/ru/playlist/interaktivnoe-buti.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://alexiatwerkgroup.com/ru/playlist/interaktivnoe-buti.html"},"uploadDate":"2026-04-20T12:00:00Z"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://alexiatwerkgroup.com/ru/"},{"@type":"ListItem","position":2,"name":"Плейлист","item":"https://alexiatwerkgroup.com/ru/playlist/"},{"@type":"ListItem","position":3,"name":"Интерактивное буте · Dina8879","item":"https://alexiatwerkgroup.com/ru/playlist/interaktivnoe-buti.html"}]}</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-YSFR7FHCLS',{send_page_view:true});</script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.65;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.ru-wrap{max-width:980px;margin:0 auto;padding:54px 26px 0}
+.ru-locale{display:inline-flex;gap:0;padding:5px;border-radius:999px;background:rgba(20,20,32,.7);border:1px solid rgba(255,255,255,.08);margin-bottom:24px}
+.ru-locale a{padding:7px 14px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#9a9aab}
+.ru-locale a.active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff}
+.ru-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:#ff2d87;margin-bottom:12px}
+.ru-h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(34px,5vw,54px);font-weight:900;line-height:1.08;letter-spacing:-.022em;margin-bottom:14px;color:#fff}
+.ru-h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ru-meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:#a8a8b8;letter-spacing:.14em;text-transform:uppercase}
+.ru-meta b{color:#ffd78a;font-weight:700}
+.ru-player{aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#0a0a14;border:1px solid rgba(255,255,255,.08);margin-bottom:30px}
+.ru-player iframe{width:100%;height:100%;border:0;display:block}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:900;color:#fff;letter-spacing:-.012em;margin:38px 0 12px;line-height:1.2}
+h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+p{color:#d8d8e2;font-size:16px;margin-bottom:14px;max-width:760px}
+p strong{color:#fff;font-weight:700}
+p a{color:#ff7eb0;border-bottom:1px solid rgba(255,126,176,.4)}
+p a:hover{color:#fff;border-color:#fff}
+ul{padding-left:22px;margin-bottom:16px;list-style:none}
+ul li{position:relative;color:#d8d8e2;margin-bottom:8px;padding-left:14px;font-size:15.5px}
+ul li::before{content:'·';position:absolute;left:0;color:#ff6fa8;font-weight:900;font-size:18px;top:-2px}
+.ru-back{display:inline-flex;align-items:center;gap:8px;margin-top:34px;padding:12px 22px;border-radius:999px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.18);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.ru-back:hover{background:rgba(255,255,255,.05);border-color:rgba(255,180,84,.45)}
+</style>
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
+<link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+</head>
+<body class="twerkhub-ph-theme">
+<nav class="twk-nav-v1" id="twk-nav-container">
+  <div class="twk-nav-v1-inner">
+    <a href="/" class="twk-nav-v1-logo" aria-label="Twerkhub home"><img src="/assets/logo-twerkhub.svg" alt="Twerkhub" width="32" height="32"></a>
+    <div class="twk-nav-v1-links"><a href="/" class="twk-nav-link" data-nav="home">HOME</a><a href="/exclusive.html" class="twk-nav-link" data-nav="exclusive">EXCLUSIVE</a><a href="/playlists.html" class="twk-nav-link" data-nav="playlists">PLAYLISTS</a><a href="/creators" class="twk-nav-link" data-nav="creators">CREATORS</a><a href="/alexia-video-packs" class="twk-nav-link" data-nav="hotpacks">HOT PACKS</a><a href="/community.html" class="twk-nav-link" data-nav="community">COMMUNITY</a><a href="/membership" class="twk-nav-link" data-nav="membership">MEMBERSHIP</a><a href="/account" class="twk-nav-link" data-nav="account">MY ACCOUNT</a><a href="/profile" class="twk-nav-link" data-nav="profile">PROFILE</a></div>
+    <div class="twk-nav-v1-lang" role="group" aria-label="Language"><a href="/en/" data-lang="en" class="is-active" title="English">EN</a><a href="/es/" data-lang="es" title="Español">ES</a><a href="/ru/" data-lang="ru" title="Русский">RU</a>
+      <a href="/pt/" data-lang="pt" title="Português">PT</a></div>
+    <div class="twerkhub-tokens-hud twk-tk-hud--in-nav" id="twk-tokens-hud-v3" style="display:inline-flex;align-items:center;height:28px;margin-right:6px;flex-shrink:0;pointer-events:auto;"><button type="button" style="pointer-events:auto;display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(255,180,84,.16));border:1px solid rgba(30,224,143,.55);box-shadow:0 6px 20px rgba(30,224,143,.18),0 2px 6px rgba(0,0,0,.4);color:#f5f5fb;font-weight:800;letter-spacing:.06em;cursor:pointer;font-family:Inter,ui-sans-serif,system-ui;font-size:13px;" id="twk-tokens-badge" aria-label="Token balance"><span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#1ee08f,#30ff9f);box-shadow:0 0 12px rgba(30,224,143,.6);" aria-hidden="true"></span><span id="twk-tokens-count" style="font-variant-numeric:tabular-nums;">0</span> <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;">tokens</span> <span id="twk-tokens-tier" style="font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:#1ee08f;">BASIC</span></button></div>
+    <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
+  </div>
+</nav>
+<script>
+(function(){try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
+function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
+setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
+function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
+loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
+loadOnce('/assets/twk-tokens-v3.js?v=20260513-blindaje-v62','twk-loader-token-system');
+loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
+loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
+})();
+</script>
+<a href="#main" class="twk-sr-only">Skip to content</a>
+
+<main class="ru-wrap">
+
+  <div class="ru-locale">
+    <a href="/playlist/interaktivnoe-buti.html" hreflang="en">EN</a>
+    <a href="/ru/playlist/interaktivnoe-buti.html" hreflang="ru" class="active">RU</a>
+  </div>
+
+  <div class="ru-kicker">/ Twerk Hub Leaks · обучающий клип</div>
+  <h1 class="ru-h1">Интерактивное.<br><em>Booty-сессия от Dina8879.</em></h1>
+
+  <div class="ru-meta"><span>Канал · <b>Dina8879</b></span> <span>Формат · <b>интерактивный класс</b></span> <span>Длительность · <b>6:08</b></span> <span>Качество · <b>4K HD</b></span></div>
+
+  <div class="ru-player">
+    <iframe
+      src="https://www.youtube.com/embed/1cv9BUIFVek?rel=0&amp;modestbranding=1&amp;playsinline=1&amp;controls=0&amp;fs=0&amp;iv_load_policy=3&amp;disablekb=1&amp;enablejsapi=1"
+      title="Интерактивное буте · Dina8879"
+      loading="lazy"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>
+  </div>
+
+  <h2>О <em>клипе</em>.</h2>
+  <p>Это <strong>не сольный перформанс</strong>, а <strong>интерактивный твёрк-класс</strong> длительностью более 6 минут — формат, который редко встречается в архиве. <strong>Dina8879</strong> разбирает технику booty-движений с подачей, рассчитанной на повтор за камерой: разбивка на сегменты, объяснение акцентов, повторы в замедленном темпе.</p>
+  <p>Уникальность клипа — в <strong>длительности и формате</strong>. Большинство твёрк-видео в YouTube — короткие 1-2 минуты. Здесь же — полноценный мини-урок. Поэтому клип появляется в Google по запросам «твёрк класс», «обучающий тверк», «интерактивное буте» — и удерживает позицию 6 даже без специальной оптимизации.</p>
+
+  <h2>Почему этот клип <em>уникален</em>.</h2>
+  <ul>
+    <li><strong>Длительность 6:08</strong> — нестандартный формат для твёрк-архива, в основном тут короткие клипы</li>
+    <li><strong>Интерактивный разбор</strong> — Dina объясняет, как повторять движения, а не просто показывает</li>
+    <li><strong>Высокая retention rate</strong> — обучающий контент удерживает зрителя дольше, чем перформансы</li>
+    <li><strong>Низкая конкуренция в нише</strong> — обучающих твёрк-классов на 4K качестве в YouTube очень мало</li>
+  </ul>
+
+  <h2>Куда <em>дальше</em>.</h2>
+  <ul>
+    <li><a href="/ru/style-heels-choreo.html">Гайд по стилю Heels Choreo</a></li>
+    <li><a href="/ru/blog/heels-choreo-beginner-guide.html">Хилс-чорео · гайд для начинающих</a></li>
+    <li><a href="/ru/playlist/aneli-team-jah-khalib-mamasita.html">ANELi TEAM · Jah Khalib — Мамасита</a></li>
+    <li><a href="/ru/playlist/choreography-by-shoshina-katerina-pashatynestoizhivesh.html">Шошина Катерина · #пашатынестойживешь</a></li>
+    <li><a href="/ru/playlist/">Главный архив · 577 кураторских видео</a></li>
+  </ul>
+
+  <a href="/ru/playlist/" class="ru-back">← Назад в плейлист</a>
+
+</main>
+<!--twk-seo-hidden-block-->
+<aside class="twk-sr-only" aria-hidden="true" lang="ru">
+  <p>Кураторский choreo collection на TWERKHUB — 4K танцевальные клипы, обновляется еженедельно.</p>
+  <p>Откройте для себя choreo collection и похожий премиум-контент в нашем закрытом архиве 4K танцев, фанкамов и авторских клипов.</p>
+  <p>Просмотрите полный каталог TWERKHUB: choreo collection, редкие полные версии для проверенных участников.</p>
+</aside>
+<!--/twk-seo-hidden-block-->
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p6"></script>
+
+<!-- twk-email-capture:START -->
+<script defer src="/assets/twerkhub-email-capture.js?v=20260509-ec3-noblur-keep-home" data-twk-email-capture></script>
+<!-- twk-email-capture:END -->
+
+<!-- twk-related-auto:START -->
+<style id="twk-rel-auto-css">.twk-rel-auto{max-width:1320px;margin:50px auto 30px;padding:0 26px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif}.twk-rel-auto-head{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:18px;display:block}.twk-rel-auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:880px){.twk-rel-auto-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.twk-rel-auto-grid{grid-template-columns:1fr}}.twk-rel-auto-card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.5);text-decoration:none;color:#f5f5fb;transition:transform .25s,border-color .25s,background .25s}.twk-rel-auto-card:hover{transform:translateY(-2px);border-color:rgba(255,45,135,.45);background:rgba(30,20,40,.7)}.twk-rel-auto-cat{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff6fa8}.twk-rel-auto-title{font-family:"Inter",sans-serif;font-size:14px;font-weight:600;line-height:1.35;color:#e9e9f0}</style>
+<aside class="twk-rel-auto" aria-label="Related pages">
+  <span class="twk-rel-auto-head">★ More from the archive</span>
+  <div class="twk-rel-auto-grid">
+    <a href="/playlist/interaktivnoe-buti.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">Interaktivnoe Buti</span>
+    </a>
+    <a href="/playlist/booty-dance-twerk-cheboksary-tantseval-naia-studiia-213-obuchenie-buti-dens-tverk-zapakh-zhivanshi.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">BOOTY DANCE. TWERK. Чебоксары. Танцевальная Студия 213. Обучение Бути Денс, Твер…</span>
+    </a>
+    <a href="/playlist/booty-dance-twerk-cheboksary-tantsevalnaia-studiia-213-obuchenie-buti-dens-tverk-zapakh-zhivanshi.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">BOOTY DANCE. TWERK. Чебоксары. Танцевальная Студия 213. Обучение Бути Денс, Твер…</span>
+    </a>
+    <a href="/playlist/buti-dens-booty-dance-buti-sheik-booty-shake-tverk-twerk-cheboksary-elena-studentsova.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">Бути дэнс (Booty Dance) Бути шейк (Booty shake) Тверк (Twerk) Чебоксары Елена Ст…</span>
+    </a>
+    <a href="/playlist/twerk-booty-dance-cheboksary-obuchenie-buti-dens-tverk-janelle-monae-jidenna-yoga.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">TWERK. BOOTY DANCE. Чебоксары. Обучение Бути Денс, Тверк. Janelle Monáe, Jidenna…</span>
+    </a>
+    <a href="/playlist/twerk-booty-dance-cheboksary-tantseval-naia-studiia-213-obuchenie-buti-dens-tverk.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">TWERK. BOOTY DANCE. Чебоксары. Танцевальная Студия 213. Обучение Бути Денс, Твер…</span>
+    </a>
+  </div>
+</aside>
+<!-- twk-related-auto:END -->
+
+<section class="seo-content-expansion" style="margin:20px 0;padding:20px;background:rgba(255,255,255,.03);border-radius:8px;font-size:14px;line-height:1.6;color:rgba(255,255,255,.85)">
+<p><strong>Collection Overview:</strong> This carefully curated playlist features the finest twerk, dance choreography, and entertainment content from talented creators. Experience premium 4K videos, weekly drops, and exclusive content from the Twerkhub vault.</p>
+<p><strong>Quality Standards:</strong> Every video in this collection meets our high standards for production quality, artistic expression, and technical skill. We prioritize 4K resolution and professional curation to ensure the best viewing experience.</p>
+<p><strong>Access & Support:</strong> Premium members get exclusive extended cuts, creator insights, and early access to new releases. Your membership directly supports independent artists and creators in the dance community.</p>
+</section>
+
+<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
+<script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
+</body>
+</html>
+

@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
+<script src="/assets/twk-guardian.js?v=20260509-g1"></script>
+<script defer src="/assets/twk-paywall-guard.js?v=20260512-pg3"></script>
+<script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
+<script defer src="/assets/twk-video-shield.js?v=20260503-p13"></script>
+<script defer src="/assets/twerkhub-pl-theater.js?v=20260510-p15"></script>
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/twerkhub-age-gate.js?v=20260509-ag3-scrolltop"></script>
+<script>(function(){try{
+['twk_playlist_idx','twk_playlist_resume','playlistIndex','lastVideoIndex','currentVideoIndex','playlist_current','twk_last_video','resumeIndex']
+.forEach(function(k){try{localStorage.removeItem(k);sessionStorage.removeItem(k);}catch(e){}});
+if(/\/playlist\//i.test(location.pathname) && location.hash && /^#v?\d+$/i.test(location.hash)){
+  history.replaceState(null,'',location.pathname+location.search);
+}
+}catch(e){}})();</script>
+<script src="/assets/thumb-fallback.js?v=20260512-fix2"></script>
+<script>(function(){function fix(){var imgs=document.querySelectorAll('img[data-vid],img.video-thumb,.video-card img');imgs.forEach(function(i){if(i.loading==='lazy')i.loading='eager';var p=i.closest('a[data-vid],[data-vid]');var vid=i.dataset.vid||(p?p.dataset.vid:null);if(vid){var bad=!i.src||i.src.indexOf('thumb-unavailable')>-1||i.src.endsWith('default.jpg')||i.naturalWidth<50;if(bad){i.src='https://i.ytimg.com/vi/'+vid+'/hqdefault.jpg';}i.onerror=function(){this.src='https://i.ytimg.com/vi/'+vid+'/mqdefault.jpg';this.onerror=function(){this.src='https://i.ytimg.com/vi/'+vid+'/0.jpg';this.onerror=null;};};}});}fix();setTimeout(fix,500);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
+<script data-twk="thumb-v4">(function(){function tryNext(i,vid,arr,idx){if(idx>=arr.length){i.style.display='none';return;}i.onerror=function(){tryNext(i,vid,arr,idx+1);};i.onload=function(){if(i.naturalWidth<=120){tryNext(i,vid,arr,idx+1);}};i.src='https://i.ytimg.com/vi/'+vid+'/'+arr[idx];}function fix(){document.querySelectorAll('img').forEach(function(i){var m=(i.src||'').match(/ytimg\.com\/vi\/([\w-]{11})/);var vid=i.dataset.vid||(m?m[1]:null);if(!vid)return;if(i.loading==='lazy')i.loading='eager';if(!i.complete||i.naturalWidth<=120){tryNext(i,vid,['maxresdefault.jpg','hqdefault.jpg','mqdefault.jpg','sddefault.jpg','0.jpg'],0);}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+<style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
+<script>(function(){function force(){try{var imgs=document.querySelectorAll('img[src*="i.ytimg.com"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];im.setAttribute('loading','eager');im.style.opacity='1';im.style.visibility='visible';im.style.display='block';if(!im.dataset.twkOrigSrc){im.dataset.twkOrigSrc=im.getAttribute('src')||'';}var s=im.getAttribute('src');if(s)im.src=s;}}catch(_){}}function recover(){try{var bad=document.querySelectorAll('img[src*="thumb-unavailable"]');for(var i=0;i<bad.length;i++){var im=bad[i];if(im.dataset.twkOrigSrc){im.src=im.dataset.twkOrigSrc;}}}catch(_){}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){force();recover();});}else{force();recover();}setTimeout(function(){force();recover();},500);setTimeout(function(){force();recover();},2000);})();</script>
+<style id="twk-sr-only-seo">.twk-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Лучшие тверк видео 2026 · Twerkhub</title>
+<meta name="description" content="Главный архив Twerkhub на русском — 577 кураторских твёрк-видео в 4K. Лада Гоцци, школа танцев Street Project, MDC, Kate Knaubl, Indica, Fraules.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="canonical" href="https://alexiatwerkgroup.com/ru/playlist/">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/playlist/">
+<link rel="alternate" hreflang="es" href="https://alexiatwerkgroup.com/es/playlist/">
+<link rel="alternate" hreflang="ru" href="https://alexiatwerkgroup.com/ru/playlist/">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/playlist/">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="uk_UA">
+<meta property="og:site_name" content="Twerkhub">
+<meta property="og:title" content="Лучшие тверк видео 2026 · YouTube плейлист · Twerkhub">
+<meta property="og:description" content="577 кураторских твёрк-клипов в одном плейлисте. Russian heels-choreo сцена, школы танцев и виральные дропы каждую пятницу.">
+<meta property="og:url" content="https://alexiatwerkgroup.com/ru/playlist/">
+<meta property="og:image" content="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg">
+<meta property="og:image:alt" content="Лада Гоцци · High-Heels · Pharaoh Pharaoh — обложка плейлиста Twerkhub">
+<meta property="og:image:width" content="480">
+<meta property="og:image:height" content="360">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Лучшие тверк видео 2026 · кураторский плейлист">
+<meta name="twitter:description" content="Pick of the week · обновляется каждую пятницу · Twerkhub">
+<meta name="twitter:image" content="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg">
+
+<meta name="rating" content="mature">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com" crossorigin>
+<link rel="preconnect" href="https://www.youtube.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap&family=Anton">
+
+<!-- Schema.org · Russian playlist hub -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Главный архив тверк-видео · Twerkhub","alternateName":"Лучшие твёрк видео 2026","url":"https://alexiatwerkgroup.com/ru/playlist/","description":"Кураторский плейлист с 577 твёрк-видео в 4K. Россия, СНГ и мировая сцена. Обновляется каждую пятницу.","inLanguage":"ru","isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/","inLanguage":["ru","en","es"]},"about":[{"@type":"Thing","name":"Тверк"},{"@type":"Thing","name":"Twerk dance"},{"@type":"Thing","name":"Heels choreography"},{"@type":"Thing","name":"Booty dance"}],"hasPart":[{"@type":"VideoObject","name":"Лада Гоцци · High-Heels · Pharaoh Pharaoh","contentUrl":"https://www.youtube.com/watch?v=DwJQZt7TaTM","thumbnailUrl":"https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg","inLanguage":"ru","isFamilyFriendly":false,"duration":"PT2M","uploadDate":"2026-04-20T12:00:00Z"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://alexiatwerkgroup.com/ru/"},{"@type":"ListItem","position":2,"name":"Плейлист","item":"https://alexiatwerkgroup.com/ru/playlist/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Сколько видео в плейлисте Twerkhub?","acceptedAnswer":{"@type":"Answer","text":"В главном архиве Twerkhub собрано 577 кураторских твёрк-видео в 4K. Архив пополняется каждую пятницу новыми кадрами от русских школ танцев и мировых криэйторов."}},{"@type":"Question","name":"Кто такая Лада Гоцци?","acceptedAnswer":{"@type":"Answer","text":"Лада Гоцци — одна из самых узнаваемых танцовщиц heels-choreo сцены. Её клипы в High-Heels стиле под Pharaoh, Cardi B и Doja Cat входят в топ просматриваемых видео архива Twerkhub."}},{"@type":"Question","name":"Бесплатный ли доступ к плейлисту?","acceptedAnswer":{"@type":"Answer","text":"Большая часть плейлиста — открытые превью с YouTube, доступные без регистрации. Полный архив с приватным контентом, кастомными видео и закулисными материалами требует подписки или токенов Twerkhub."}},{"@type":"Question","name":"Как часто обновляется архив?","acceptedAnswer":{"@type":"Answer","text":"Каждую пятницу выходит pick of the week — несколько новых клипов добавляются в плейлист после ручной курации командой Twerkhub. Подпишитесь на Telegram-канал, чтобы получать уведомления."}}]}</script>
+
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-YSFR7FHCLS',{send_page_view:true});</script>
+
+<link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260507-b5-no-pink-lines">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.7;min-height:100vh;padding-bottom:60px;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  .ru-wrap{max-width:1100px;margin:0 auto;padding:64px 28px 40px}
+
+  .ru-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff2d87;margin-bottom:14px}
+  .ru-h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,6vw,72px);font-weight:900;line-height:1.05;letter-spacing:-.022em;margin-bottom:18px;color:#fff}
+  .ru-h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ru-lede{font-size:18px;color:#c7c7d3;max-width:740px;margin-bottom:30px}
+
+  .ru-locale{display:inline-flex;gap:0;padding:5px;border-radius:999px;background:rgba(20,20,32,.7);border:1px solid rgba(255,255,255,.08);margin-bottom:24px}
+  .ru-locale a{padding:7px 14px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#9a9aab;transition:all .2s}
+  .ru-locale a.active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff}
+  .ru-locale a:hover:not(.active){color:#fff}
+
+  .ru-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:32px 0 48px}
+  .ru-stat{padding:18px 20px;border-radius:14px;background:linear-gradient(165deg,rgba(255,45,135,.06),rgba(255,255,255,.015));border:1px solid rgba(255,45,135,.18)}
+  .ru-stat-n{font-family:'Playfair Display',Georgia,serif;font-size:34px;font-weight:900;color:#fff;line-height:1}
+  .ru-stat-l{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#ff6fa8;margin-top:8px}
+
+  h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(26px,3.4vw,38px);font-weight:900;color:#fff;letter-spacing:-.012em;margin:54px 0 16px;line-height:1.15}
+  h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h3{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:800;color:#fff;margin:24px 0 8px}
+  p{color:#d8d8e2;font-size:16px;margin-bottom:14px;max-width:780px}
+  p strong{color:#fff;font-weight:700}
+  p a{color:#ff7eb0;border-bottom:1px solid rgba(255,126,176,.4);transition:color .2s,border-color .2s}
+  p a:hover{color:#fff;border-color:#fff}
+
+  ul{padding-left:22px;margin:0 0 18px;list-style:none}
+  ul li{position:relative;color:#d8d8e2;margin-bottom:8px;padding-left:14px;font-size:16px}
+  ul li::before{content:'·';position:absolute;left:0;color:#ff6fa8;font-weight:900;font-size:18px;top:-1px}
+
+  .ru-creators{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:24px 0 30px}
+  .ru-creator{padding:16px 18px;border-radius:14px;background:rgba(20,20,32,.55);border:1px solid rgba(255,255,255,.07);transition:all .3s}
+  .ru-creator:hover{transform:translateY(-3px);border-color:rgba(255,45,135,.45);box-shadow:0 16px 36px rgba(255,45,135,.15)}
+  .ru-creator b{display:block;font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:800;color:#fff;margin-bottom:4px}
+  .ru-creator span{font-size:13px;color:#a8a8b8;line-height:1.4;display:block}
+  .ru-creator-tag{display:inline-block;margin-top:8px;padding:3px 9px;border-radius:999px;background:rgba(255,45,135,.12);border:1px solid rgba(255,45,135,.32);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff7eb0}
+
+  .ru-faq{margin-top:30px}
+  .ru-faq details{padding:14px 18px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);margin-bottom:8px}
+  .ru-faq summary{cursor:pointer;font-weight:700;color:#fff;font-size:15px;list-style:none;padding-right:24px;position:relative}
+  .ru-faq summary::after{content:'+';position:absolute;right:0;top:-2px;color:#ff6fa8;font-size:22px;font-weight:300;transition:transform .25s}
+  .ru-faq details[open] summary::after{transform:rotate(45deg)}
+  .ru-faq details p{margin-top:10px;font-size:14.5px;color:#c7c7d3}
+
+  .ru-cta{display:flex;flex-wrap:wrap;gap:12px;margin:38px 0 0}
+  .ru-cta a{display:inline-flex;align-items:center;justify-content:center;padding:13px 26px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;transition:transform .2s,box-shadow .2s}
+  .ru-cta a.primary{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;box-shadow:0 12px 28px rgba(255,45,135,.32)}
+  .ru-cta a.primary:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(255,45,135,.45)}
+  .ru-cta a.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.18)}
+  .ru-cta a.ghost:hover{background:rgba(255,255,255,.05);border-color:rgba(255,180,84,.45)}
+
+  .ru-note{display:block;margin-top:30px;padding:14px 18px;border-left:2px solid rgba(255,180,84,.5);background:rgba(255,180,84,.04);border-radius:0 10px 10px 0;font-size:13.5px;color:#c7c7d3;line-height:1.6}
+  .ru-note b{color:#ffd78a}
+</style>
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
+<link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+</head>
+<body class="twerkhub-page twerkhub-ph-theme">
+<a href="#main" class="twk-sr-only">Skip to content</a>
+
+
+<!-- TWK_NAV_V1 -->
+<style id="twk-nav-v1-css">
+.twk-nav-v1{position:sticky!important;top:0!important;z-index:9999!important;background:rgba(5,5,10,.94)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)!important;margin:0!important;width:100%!important;display:block!important}
+.twk-nav-v1-inner{max-width:1480px!important;margin:0 auto!important;padding:14px 26px!important;display:flex!important;align-items:center!important;gap:14px!important;flex-wrap:nowrap!important}
+.twk-nav-v1-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;flex-shrink:0}
+.twk-nav-v1-brand img{width:auto;height:34px;max-width:140px;border-radius:6px;display:block}
+.twk-nav-v1-links{display:flex;align-items:center;gap:2px;flex-wrap:nowrap;margin-left:auto;white-space:nowrap}
+.twk-nav-v1-links a{position:relative;padding:10px 14px;border-radius:8px;color:rgba(230,230,240,.82);font-family:'Inter',sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;line-height:1;transition:.22s}
+.twk-nav-v1-links a:hover{background:rgba(255,255,255,.05);color:#fff}
+.twk-nav-v1-links a.is-active{color:#fff}
+.twk-nav-v1-links a.twk-nav-v1-hot{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(255,180,84,.18));color:#ff7eb0;border:1px solid rgba(255,45,135,.45)}
+@media(max-width:1024px){.twk-nav-v1-links a{padding:8px 8px;font-size:10px;letter-spacing:.06em}}
+@media(max-width:880px){.twk-nav-v1-inner{padding:10px 14px;gap:8px}.twk-nav-v1-brand span{display:none}}
+</style>
+<nav class="twk-nav-v1" aria-label="Главная навигация">
+  <div class="twk-nav-v1-inner">
+    <a class="twk-nav-v1-brand" href="/ru/" aria-label="Twerkhub · главная">
+      <img src="/logo-twerkhub.png" alt="Twerkhub" width="120" height="34">
+      <span>TWERKHUB · С 2018</span>
+    </a>
+    <div class="twk-nav-v1-links">
+      <a href="/ru/">Главная</a>
+      <a href="/ru/playlist/" class="is-active">Плейлист</a>
+      <a href="/ru/style-cosplay-fancam.html">Косплей</a>
+      <a href="/ru/style-heels-choreo.html">Хилс</a>
+      <a href="/ru/style-reggaeton-floor.html">Реггетон</a>
+      <a href="/membership" class="twk-nav-v1-hot">Подписка</a>
+    </div>
+  </div>
+</nav>
+
+<main class="ru-wrap">
+
+  <div class="ru-locale" role="group" aria-label="Язык / Language">
+    <a href="/playlist/" hreflang="en">EN</a>
+    <a href="/es/playlist/" hreflang="es">ES</a>
+    <a href="/ru/playlist/" hreflang="ru" class="active">RU</a>
+  </div>
+
+  <div class="ru-kicker">/ Главный архив · 577 видео</div>
+  <h1 class="ru-h1">Лучшие <em>тверк-видео</em> 2026.</h1>
+  <p class="ru-lede">
+    Кураторский плейлист Twerkhub — 577 клипов в 4K, отобранных вручную с YouTube и приватных дропов.
+    Россия, СНГ, Латинская Америка и Азия в одной ленте. Обновляется каждую пятницу — никаких алгоритмов,
+    только pick of the week от команды.
+  </p>
+
+  <div class="ru-stats">
+    <div class="ru-stat"><div class="ru-stat-n">577</div><div class="ru-stat-l">видео в архиве</div></div>
+    <div class="ru-stat"><div class="ru-stat-n">12+</div><div class="ru-stat-l">русских школ</div></div>
+    <div class="ru-stat"><div class="ru-stat-n">4K</div><div class="ru-stat-l">основной формат</div></div>
+    <div class="ru-stat"><div class="ru-stat-n">Пт</div><div class="ru-stat-l">день дропа</div></div>
+  </div>
+
+  <h2>Что внутри <em>главного архива</em>.</h2>
+  <p>
+    Twerkhub — это приватная платформа, которую <a href="/ru/">мы</a> начали в 2018-м, потому что
+    нормальной курации твёрка в YouTube попросту не существовало. Алгоритм закапывал лучшие
+    клипы под бесконечной прокруткой случайного контента, а каналы школ танцев пропадали из
+    рекомендаций после первой пары роликов. Решение — собрать вручную всё, что реально стоит
+    пересматривать, и держать в одном плейлисте без рекламы и без фильтров.
+  </p>
+  <p>
+    Архив строится вокруг двух больших сцен. <strong>Русская heels-choreo сцена</strong> — это
+    Лада Гоцци, Kate Knaubl, Indica, школа танцев Street Project (Волжский), MDC и десяток
+    других школ из Москвы, Питера, Казани и Минска. <strong>Мировая twerk-сцена</strong> — Lexy
+    Panterra, Nastya Nass (украинско-американская волна), Fraules, бразильский фанк и колумбийский
+    реггетон. Эти два мира редко пересекаются в YouTube-рекомендациях, но в нашем плейлисте
+    они идут плечом к плечу.
+  </p>
+
+  <h2>Топ <em>криэйторов</em> в архиве.</h2>
+  <div class="ru-creators">
+    <div class="ru-creator">
+      <b>Лада Гоцци</b>
+      <span>High-Heels чорео под Pharaoh, Doja Cat, Cardi B. Один из самых узнаваемых стилей в RU-сегменте.</span>
+      <span class="ru-creator-tag">Heels · Москва</span>
+    </div>
+    <div class="ru-creator">
+      <b>Школа танцев Street Project</b>
+      <span>Волжский. Групповые твёрк-номера с самой выраженной хореографической точностью на RU-сцене.</span>
+      <span class="ru-creator-tag">Школа · Волжский</span>
+    </div>
+    <div class="ru-creator">
+      <b>Kate Knaubl</b>
+      <span>Сольные клипы и батлы. Один из главных голосов современной русской твёрк-сцены.</span>
+      <span class="ru-creator-tag">Соло · батлы</span>
+    </div>
+    <div class="ru-creator">
+      <b>Indica · Lena Indica</b>
+      <span>Команда Indica и сольные кадры Лены — heels-choreo с акцентом на динамику и панчи.</span>
+      <span class="ru-creator-tag">Heels · команда</span>
+    </div>
+    <div class="ru-creator">
+      <b>MDC школа танцев</b>
+      <span>Многоуровневая школа с серией показательных номеров от начинающих до продвинутого уровня.</span>
+      <span class="ru-creator-tag">Школа · уровни</span>
+    </div>
+    <div class="ru-creator">
+      <b>Fraules</b>
+      <span>Sibirian dance studio · Новосибирск. Высокий продакшн и фирменный визуальный стиль.</span>
+      <span class="ru-creator-tag">Студия · Новосибирск</span>
+    </div>
+    <div class="ru-creator">
+      <b>Lexy Panterra</b>
+      <span>Мировая звезда twerk-cenери. DIVE feat. Naji и Chica Mala — обязательный минимум.</span>
+      <span class="ru-creator-tag">USA · мировой</span>
+    </div>
+    <div class="ru-creator">
+      <b>Nastya Nass</b>
+      <span>Украинско-американская волна. Студийные записи с чистейшим саунд-дизайном.</span>
+      <span class="ru-creator-tag">UA · USA</span>
+    </div>
+  </div>
+
+  <h2>Как <em>устроен плейлист</em>.</h2>
+  <ul>
+    <li><strong>Pick of the week</strong> — 1-2 новых клипа каждую пятницу. То, что стоит посмотреть в первую очередь.</li>
+    <li><strong>Топ-100</strong> — самые пересматриваемые видео архива. <a href="/top-100-twerk-videos.html">Отдельный список</a> с обновлением раз в месяц.</li>
+    <li><strong>Дискавери</strong> — клипы с менее чем 50 тыс. просмотров на YouTube, но с реальным потенциалом. Помогаем заметить недооценённые школы.</li>
+    <li><strong>Архив сезонов</strong> — клипы 2018-2025 годов, отсортированные по году дропа.</li>
+  </ul>
+
+  <h2>Зачем <em>заходить</em> в Twerkhub.</h2>
+  <p>
+    Открытая часть плейлиста — это превью с YouTube без регистрации. Всё, что нужно для
+    разогрева. <strong>Приватный архив</strong> начинается там, где заканчивается публичный
+    YouTube: эксклюзивные дропы от школ, кастомные видео под VIP-подписку, расширенные
+    оригиналы клипов до монтажа, behind-the-scenes материалы и архив прошлых лет, который
+    создатели сами уже удалили со своих каналов.
+  </p>
+  <p>
+    Подписка <a href="/membership">Twerkhub</a> построена на четырёх уровнях: <strong>Basic</strong>,
+    <strong>Medium</strong>, <strong>Premium</strong> и <strong>VIP Top</strong>. Можно платить
+    деньгами или зарабатывать <a href="/blog/how-to-earn-tokens-twerkhub.html">токены</a>
+    активностью на платформе — без рекламы, без алгоритмов, без шейминга.
+  </p>
+
+  <h2>Частые <em>вопросы</em>.</h2>
+  <div class="ru-faq">
+    <details>
+      <summary>Сколько видео в плейлисте Twerkhub?</summary>
+      <p>В главном архиве — 577 кураторских твёрк-видео в 4K. Цифра растёт каждую пятницу: команда добавляет новые клипы и убирает удалённые с YouTube. Полный список доступен в публичной версии, расширенная версия с приватными дропами — для подписчиков.</p>
+    </details>
+    <details>
+      <summary>Кто такая Лада Гоцци?</summary>
+      <p>Лада Гоцци — одна из самых узнаваемых танцовщиц российской heels-choreo сцены. Её клипы под Pharaoh, Cardi B, Doja Cat и других входят в топ-10 самых просматриваемых видео архива Twerkhub. Стилистически — выверенный технический хилс с акцентом на работу таза, без перегруженной хореографии.</p>
+    </details>
+    <details>
+      <summary>Чем Twerkhub отличается от YouTube?</summary>
+      <p>YouTube алгоритмически закапывает твёрк под 18+ ограничения, переключает рекомендации на случайный контент после двух-трёх просмотров и регулярно удаляет каналы школ танцев за нарушение нечётких правил. Twerkhub — ручная курация, плейлист без алгоритма, бэкап клипов которые YouTube потерял, плюс приватный слой с эксклюзивами.</p>
+    </details>
+    <details>
+      <summary>Как часто обновляется архив?</summary>
+      <p>Каждую пятницу выходит pick of the week — несколько новых клипов добавляются после ручной курации. Подпишитесь на Telegram-канал, чтобы получать уведомления о дропах. Ежемесячные обзоры — в нашем <a href="/blog/">блоге</a>.</p>
+    </details>
+    <details>
+      <summary>Есть ли русскоязычная поддержка?</summary>
+      <p>Да. Платформа доступна на трёх языках: английский, испанский и русский. Discord-сообщество включает русскоязычные каналы для обсуждения школ, дропов и индустрии. Все приватные дропы дублируются с описаниями на русском.</p>
+    </details>
+  </div>
+
+  <h2>Куда <em>дальше</em>.</h2>
+  <ul>
+    <li><a href="/ru/style-heels-choreo.html">Гайд по стилю Heels Choreo</a> — что это, какие саундтреки работают, с чего начать</li>
+    <li><a href="/ru/style-cosplay-fancam.html">Cosplay fancam</a> — пересечение твёрка с косплей-сценой</li>
+    <li><a href="/ru/style-reggaeton-floor.html">Reggaeton floor</a> — латиноамериканская волна на русской сцене</li>
+    <li><a href="/ru/blog/best-twerk-creators-2026.html">Лучшие криэйторы 2026</a> — годовой топ от редакции</li>
+    <li><a href="/ru/blog/moscow-dance-centre-nrg-history.html">История Moscow Dance Centre NRG</a> — лонгрид о школе</li>
+    <li><a href="/ru/blog/black-sea-dance-scene.html">Сцена Чёрного моря</a> — Сочи, Одесса, Батуми</li>
+  </ul>
+
+  <div class="ru-cta">
+    <a class="primary" href="/membership">Открыть подписку →</a>
+    <a class="ghost" href="/ru/">← Главная Twerkhub</a>
+    <a class="ghost" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Discord комьюнити</a>
+  </div>
+
+  <div class="ru-note">
+    <b>18+.</b> Twerkhub — приватная платформа для криэйторов и зрителей старше 18 лет.
+    Используя сайт, вы подтверждаете возраст. Видео в плейлисте — оригинальные YouTube-эмбеды
+    с указанием авторства; никаких пиратских копий, никаких репостов без согласия исполнителей.
+  </div>
+
+</main>
+
+<script>
+/* Locale switcher hooks — let the topnav RU/EN/ES buttons cross-link cleanly */
+(function(){
+  try{
+    var langLinks = document.querySelectorAll('[data-lang]');
+    var here = location.pathname;
+    var enHref = '/playlist/';
+    var esHref = '/es/playlist/';
+    var ruHref = '/ru/playlist/';
+    langLinks.forEach(function(a){
+      var lang = a.getAttribute('data-lang');
+      if (lang === 'en') a.href = enHref;
+      else if (lang === 'es') a.href = esHref;
+      else if (lang === 'ru') a.href = ruHref;
+    });
+  }catch(e){}
+})();
+</script>
+<!--twk-seo-hidden-block-->
+<aside class="twk-sr-only" aria-hidden="true" lang="en">
+  <p>Curated dance video archive on TWERKHUB — Subscriber-only library updated weekly.</p>
+  <p>Discover index and similar premium content in our private archive of 4K dance, fancam and creator cuts.</p>
+  <p>Browse the full TWERKHUB catalog: dance video archive, twerk playlist, and rare uncut releases reserved for verified members.</p>
+</aside>
+<!--/twk-seo-hidden-block-->
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p6"></script>
+
+<!-- twk-email-capture:START -->
+<script defer src="/assets/twerkhub-email-capture.js?v=20260509-ec3-noblur-keep-home" data-twk-email-capture></script>
+<!-- twk-email-capture:END -->
+
+<!-- twk-related-auto:START -->
+<style id="twk-rel-auto-css">.twk-rel-auto{max-width:1320px;margin:50px auto 30px;padding:0 26px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif}.twk-rel-auto-head{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:18px;display:block}.twk-rel-auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:880px){.twk-rel-auto-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.twk-rel-auto-grid{grid-template-columns:1fr}}.twk-rel-auto-card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.5);text-decoration:none;color:#f5f5fb;transition:transform .25s,border-color .25s,background .25s}.twk-rel-auto-card:hover{transform:translateY(-2px);border-color:rgba(255,45,135,.45);background:rgba(30,20,40,.7)}.twk-rel-auto-cat{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff6fa8}.twk-rel-auto-title{font-family:"Inter",sans-serif;font-size:14px;font-weight:600;line-height:1.35;color:#e9e9f0}</style>
+<aside class="twk-rel-auto" aria-label="Related pages">
+  <span class="twk-rel-auto-head">★ More from the archive</span>
+  <div class="twk-rel-auto-grid">
+    <a href="/blog/best-twerk-creators-2026.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">The 12 best twerk creators on YouTube in 2026.</span>
+    </a>
+    <a href="/blog/buenos-aires-reggaeton-scene-2026.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">Buenos Aires reggaetón scene · 2026.</span>
+    </a>
+    <a href="/blog/fancam-etiquette-2026.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">Fancam etiquette. 2026 edition.</span>
+    </a>
+    <a href="/blog/how-to-pitch-twerkhub-creator.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">How to pitch Twerkhub as a creator.</span>
+    </a>
+    <a href="/blog/studios-shaping-2026.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">The 6 dance studios shaping 2026.</span>
+    </a>
+    <a href="/blog/weekly-drop-calendar-2026.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">Weekly drop calendar 2026.</span>
+    </a>
+  </div>
+</aside>
+<!-- twk-related-auto:END -->
+
+
+<section class="seo-content-expansion" style="margin:20px 0;padding:20px;background:rgba(255,255,255,.03);border-radius:8px;font-size:14px;line-height:1.6;color:rgba(255,255,255,.85)">
+<p><strong>Collection Overview:</strong> This carefully curated playlist features the finest twerk, dance choreography, and entertainment content from talented creators. Experience premium 4K videos, weekly drops, and exclusive content from the Twerkhub vault.</p>
+<p><strong>Quality Standards:</strong> Every video in this collection meets our high standards for production quality, artistic expression, and technical skill. We prioritize 4K resolution and professional curation to ensure the best viewing experience.</p>
+<p><strong>Access & Support:</strong> Premium members get exclusive extended cuts, creator insights, and early access to new releases. Your membership directly supports independent artists and creators in the dance community.</p>
+</section>
+
+<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
+<script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
+</body>
+</html>
+
+
+
+

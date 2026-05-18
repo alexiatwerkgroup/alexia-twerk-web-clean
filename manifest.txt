@@ -1,0 +1,18 @@
+{
+  "patched_at": "2026-04-07 16:25:35 UTC",
+  "source_zip": "server final funcional.zip",
+  "changes": [
+    "Replaced all remaining wrong Supabase project references with the production project.",
+    "Removed duplicate inline vote-rebuild blocks that were using the wrong Supabase project and causing conflicts.",
+    "Heatmap runtime rebuilt to stay dormant until real user interaction/play, with no auto-drawing on load.",
+    "Vote/view refresh functions now wait for activation; page visits are tracked once per page per session.",
+    "Added shared live-fixes runtime for optimistic Vote Hot UI, slug normalization on weird-character pages, and activation callbacks.",
+    "ONLINE NOW now uses recent real visitors from Supabase page_visits instead of fake random numbers.",
+    "Playlist hero badges row is forced into one horizontal line with internal overflow only, avoiding layout expansion."
+  ],
+  "notes": [
+    "Up Next was not touched.",
+    "Comments runtime was not touched.",
+    "GA4 exact realtime backend was not fully wired because required backend credentials/property ID were not present in the ZIP; a worker template and setup note are included."
+  ]
+}

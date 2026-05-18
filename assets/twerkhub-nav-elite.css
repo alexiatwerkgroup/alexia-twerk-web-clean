@@ -1,0 +1,152 @@
+/* ═══ TWERKHUB · Nav elite hover · v1 (2026-04-26) ═══
+ * 5-layer luxury hover effect for the topbar nav links.
+ *   1. Gradient underline that draws from center outward
+ *   2. Radial glow halo behind the text
+ *   3. Letter-spacing breathing (text expands slightly)
+ *   4. Glass background with backdrop-filter blur
+ *   5. Magnetic lift + multi-layer text-shadow halo
+ *
+ * Designed for the .twk-nav-v1 global topbar. Overrides the basic inline
+ * styles already in each page. Cubic-bezier easing for buttery feel.
+ */
+
+/* Smoother base transitions on every nav link */
+.twk-nav-v1-links a {
+  transition:
+    color .38s cubic-bezier(.4, 0, .2, 1),
+    background .38s cubic-bezier(.4, 0, .2, 1),
+    transform .42s cubic-bezier(.34, 1.56, .64, 1),
+    letter-spacing .38s cubic-bezier(.4, 0, .2, 1),
+    text-shadow .38s cubic-bezier(.4, 0, .2, 1),
+    box-shadow .38s cubic-bezier(.4, 0, .2, 1) !important;
+  isolation: isolate; /* contain ::after glow within link */
+}
+
+/* ── Layer 1: gradient underline drawing from center outward ── */
+.twk-nav-v1-links a::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #ff2d87 18%,
+    #ffb454 50%,
+    #ff2d87 82%,
+    transparent 100%);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: width .55s cubic-bezier(.4, 0, .2, 1),
+              opacity .35s ease;
+  box-shadow:
+    0 0 12px rgba(255, 45, 135, .6),
+    0 0 26px rgba(255, 180, 84, .38),
+    0 0 40px rgba(255, 45, 135, .25);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 1;
+}
+.twk-nav-v1-links a:hover::before,
+.twk-nav-v1-links a:focus-visible::before {
+  width: 80%;
+  opacity: 1;
+}
+
+/* ── Layer 2: radial glow halo behind the text ── */
+.twk-nav-v1-links a::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 45, 135, .35) 0%,
+    rgba(255, 180, 84, .14) 40%,
+    transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width .55s cubic-bezier(.4, 0, .2, 1),
+              height .55s cubic-bezier(.4, 0, .2, 1),
+              opacity .45s ease;
+  pointer-events: none;
+  opacity: 0;
+  z-index: -1;
+  filter: blur(10px);
+}
+.twk-nav-v1-links a:hover::after,
+.twk-nav-v1-links a:focus-visible::after {
+  width: 140%;
+  height: 220%;
+  opacity: 1;
+}
+
+/* ── Layer 3 + 4 + 5: glass bg + lift + halo + breathing letters ── */
+.twk-nav-v1-links a:hover,
+.twk-nav-v1-links a:focus-visible {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, .07),
+    rgba(255, 255, 255, .015)) !important;
+  color: #fff !important;
+  transform: translateY(-2px) !important;
+  letter-spacing: .15em !important;
+  text-shadow:
+    0 0 18px rgba(255, 45, 135, .55),
+    0 0 38px rgba(255, 180, 84, .28),
+    0 1px 0 rgba(255, 255, 255, .18) !important;
+  backdrop-filter: blur(10px) saturate(1.4);
+  -webkit-backdrop-filter: blur(10px) saturate(1.4);
+  border-radius: 8px;
+}
+
+/* Active page: subtle persistent underline (gradient solid, no glow halo) */
+.twk-nav-v1-links a.is-active::before {
+  width: 56%;
+  opacity: 1;
+  background: linear-gradient(90deg, #ff2d87, #ffb454);
+  box-shadow: 0 0 12px rgba(255, 45, 135, .5);
+}
+
+/* HOT PACKS button gets the full red carpet treatment on hover */
+.twk-nav-v1-links a.twk-nav-v1-hot:hover,
+.twk-nav-v1-links a.twk-nav-v1-hot:focus-visible {
+  background: linear-gradient(135deg, #ff2d87, #ffb454) !important;
+  color: #1a0a14 !important;
+  border-color: transparent !important;
+  box-shadow:
+    0 10px 36px rgba(255, 45, 135, .55),
+    0 0 0 1px rgba(255, 255, 255, .15) inset,
+    0 16px 48px rgba(255, 180, 84, .32) !important;
+  transform: translateY(-3px) scale(1.04) !important;
+  letter-spacing: .14em !important;
+  text-shadow: none !important;
+}
+.twk-nav-v1-links a.twk-nav-v1-hot::before { display: none; }
+.twk-nav-v1-links a.twk-nav-v1-hot::after { display: none; }
+
+/* Brand logo hover: subtle gold glow */
+.twk-nav-v1-brand {
+  transition: filter .35s cubic-bezier(.4, 0, .2, 1),
+              transform .35s cubic-bezier(.34, 1.56, .64, 1) !important;
+}
+.twk-nav-v1-brand:hover {
+  filter: drop-shadow(0 4px 14px rgba(255, 180, 84, .45))
+          drop-shadow(0 0 8px rgba(255, 45, 135, .35));
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .twk-nav-v1-links a,
+  .twk-nav-v1-links a::before,
+  .twk-nav-v1-links a::after,
+  .twk-nav-v1-brand {
+    transition: none !important;
+  }
+  .twk-nav-v1-links a:hover {
+    transform: none !important;
+    letter-spacing: inherit !important;
+  }
+}

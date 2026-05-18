@@ -1,0 +1,37 @@
+.site-nav-final{max-width:1088px;margin:30px auto 28px;padding:0 18px;box-sizing:border-box;position:relative;z-index:50}
+.site-nav-final__inner{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 20px;border-radius:20px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(255,255,255,.040),rgba(255,255,255,.018));box-shadow:0 18px 44px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.04)}
+.site-nav-final__links{display:flex;align-items:center;gap:0;flex-wrap:wrap;min-width:0}
+.site-nav-final__links a{display:inline-flex;align-items:center;justify-content:center;padding:0 14px;color:#f3f3f8;text-decoration:none;font-size:14px;line-height:1.1;font-weight:600;letter-spacing:0;text-transform:none;opacity:.92;position:relative;transition:color .18s ease,opacity .18s ease,text-shadow .18s ease,font-weight .18s ease}
+.site-nav-final__links a + a::before{content:"|";color:rgba(255,255,255,.4);position:absolute;left:-2px;top:50%;transform:translateY(-50%);font-weight:400}
+.site-nav-final__links a:hover,
+.site-nav-final__links a:focus-visible{color:#ff47c7 !important;font-weight:800 !important;opacity:1 !important;text-shadow:0 0 18px rgba(255,71,199,.30)}
+.site-nav-final__links a.is-active{font-weight:800;opacity:1;color:#fff !important;text-shadow:none !important}
+.site-nav-final__online{display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.020));color:#fff;font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;flex:0 0 auto;box-shadow:0 12px 28px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.04)}
+.site-nav-final__dot{width:10px;height:10px;border-radius:999px;background:#43e091;box-shadow:0 0 0 4px rgba(67,224,145,.12);display:inline-block}
+body.site-nav-final--playlist .site-nav-final{margin-top:34px;margin-bottom:34px}
+body.site-nav-final--playlist{transform:none!important;animation:none!important}
+body.site-nav-final--playlist > *{animation:none!important}
+@media (max-width:900px){.site-nav-final{padding:0 14px}.site-nav-final__inner{flex-direction:column;align-items:flex-start}.site-nav-final__links a{padding:6px 12px}.site-nav-final__links a + a::before{display:none}.site-nav-final__links{gap:2px 0}.site-nav-final__online{align-self:flex-start}}
+
+/* hide legacy injected nav when final nav is present */
+.site-nav-final ~ .alexia-global-nav{display:none !important;}
+body:has(.site-nav-final) .alexia-global-nav{display:none !important;}
+body:has(.site-nav-final) .alexia-hide-duplicate-nav{display:none !important;}
+
+/* unified frame sizing for the main shells */
+.site-nav-final{--ax-nav-frame-width:1184px;width:min(var(--ax-nav-frame-width), calc(100% - 80px)) !important;max-width:none !important;padding:0 !important;margin:22px auto 24px !important;box-sizing:border-box !important;}
+.site-nav-final__inner{width:100% !important;box-sizing:border-box !important;padding:14px 18px !important;gap:16px !important;overflow:hidden !important;}
+.site-nav-final__links{flex:1 1 auto !important;min-width:0 !important;overflow:hidden !important;}
+.site-nav-final__links a{white-space:nowrap !important;}
+.site-nav-final__online{margin-left:auto !important;flex:0 0 auto !important;max-width:100% !important;}
+
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/home.html"].is-active){--ax-nav-frame-width:944px;}
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/profile.html"].is-active){--ax-nav-frame-width:1004px;}
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/community.html"].is-active),
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/top-100-twerk-videos.html"].is-active),
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/best-twerk-dancers.html"].is-active),
+body.has-final-nav .site-nav-final:has(.site-nav-final__links a[href="/alexia-video-packs.html"].is-active),
+body.site-nav-final--playlist .site-nav-final{--ax-nav-frame-width:1184px;}
+
+@media (max-width:1100px){.site-nav-final{width:min(var(--ax-nav-frame-width), calc(100% - 56px)) !important;}.site-nav-final__inner{gap:12px !important;padding:12px 14px !important;}}
+@media (max-width:900px){.site-nav-final{width:min(var(--ax-nav-frame-width), calc(100% - 28px)) !important;}.site-nav-final__inner{overflow:hidden !important;}}

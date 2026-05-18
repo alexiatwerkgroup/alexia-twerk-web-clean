@@ -1,0 +1,71 @@
+/* twk-blindaje-style v5.1 - oculta UI residual de YouTube en iframes blindados */
+.vd-player, .twk-creator-hero, .twk-vid-wrap { position: relative; }
+.vd-player iframe, .twk-creator-hero iframe, .twk-vid-wrap iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  display: block !important;
+}
+
+/* OVERLAY 1: tapa franja inferior completa donde aparece "More videos" overlay + watermark YT.
+   Sólido negro 100% en la parte donde aparecen los elementos UI. */
+.vd-player::before, .twk-creator-hero::before, .twk-vid-wrap::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 70px;
+  background: #000;
+  z-index: 10;
+  pointer-events: none;
+}
+/* OVERLAY 2: tapa franja superior (donde a veces aparece título + share button al hover) */
+.vd-player > .twk-top-mask, .twk-creator-hero > .twk-top-mask, .twk-vid-wrap > .twk-top-mask {
+  position: absolute; left: 0; right: 0; top: 0; height: 56px;
+  background: #000; z-index: 10; pointer-events: none;
+}
+/* Tapa franja superior (titulo + share + watch later) */
+.vd-player::after, .twk-creator-hero::after, .twk-vid-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #000;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* El boton de unmute custom siempre encima del overlay */
+.twk-unmute-btn { z-index: 20 !important; }
+
+/* mata watermark / cards (por si quedo alguno en el DOM padre) */
+.ytp-watermark,
+.ytp-show-cards-title,
+.ytp-cards-button,
+.ytp-cards-teaser-label,
+.ytp-pause-overlay,
+.ytp-share-button,
+.ytp-watch-later-button,
+.ytp-spinner,
+.ytp-endscreen-content,
+.ytp-ce-element { display: none !important; }
+
+/* ocultar pill "Paid content unlocks" residual si volvio */
+.paid-content-pill, .paywall-pill, [class*="paid-content"], [class*="paywall-pill"] {
+  display: none !important;
+}
+
+/* play-badge solo aparece sobre thumbnail no swap-eado */
+.twk-play-badge { transition: opacity .2s; }
+.twk-vid-wrap .twk-play-badge,
+.twk-creator-hero .twk-play-badge { display: none !important; }
+
+/* auto-hero box */
+.twk-auto-hero { animation: twkHeroIn .35s ease-out; }
+@keyframes twkHeroIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

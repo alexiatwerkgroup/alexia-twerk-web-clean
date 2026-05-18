@@ -1,0 +1,34 @@
+User-agent: *
+Allow: /
+
+# Keep user-auth and account utilities out of the index
+Disallow: /account.html
+Disallow: /profile.html
+Disallow: /auth-callback.html
+Disallow: /admin-users.html
+Disallow: /api/
+
+# Note: /membership.html and /404.html removed from disallow on 2026-04-25.
+# /membership.html is a public commercial page (4-tier subscription pricing)
+# with Product schema — must be indexable for SEO.
+
+# Block test / debug / internal artifacts
+Disallow: /test-
+Disallow: /debug-
+Disallow: /_
+
+# Block internal tools (UTM builder, etc.) — owner-only utilities
+Disallow: /tools/
+
+# Block infinite-variant URLs (search queries) — keep crawl budget for content
+Disallow: /search.html?q=
+Disallow: /es/search.html?q=
+Disallow: /ru/search.html?q=
+
+# Sitemaps (index + main + blog + video + image + RU locale sitemaps registered)
+Sitemap: https://alexiatwerkgroup.com/sitemap-index.xml
+Sitemap: https://alexiatwerkgroup.com/sitemap.xml
+Sitemap: https://alexiatwerkgroup.com/sitemap-blog.xml
+Sitemap: https://alexiatwerkgroup.com/sitemap-videos.xml
+Sitemap: https://alexiatwerkgroup.com/sitemap-images.xml
+Sitemap: https://alexiatwerkgroup.com/sitemap-ru.xml

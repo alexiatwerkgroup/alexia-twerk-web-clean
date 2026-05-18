@@ -1,0 +1,2258 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
+<script src="/assets/twk-guardian.js?v=20260509-g1"></script>
+<script defer src="/assets/twk-paywall-guard.js?v=20260513-fix4"></script>
+<script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
+<script defer src="/assets/twk-video-shield.js?v=20260503-p13"></script>
+<script defer src="/assets/twerkhub-pl-theater.js?v=20260510-p15"></script>
+<script defer src="/assets/twerkhub-age-gate.js?v=20260513-fix6"></script>
+<script src="/assets/thumb-fallback.js?v=20260512-fix2"></script>
+<script>(function(){function fix(){var imgs=document.querySelectorAll('img[data-vid],img.video-thumb,.video-card img');imgs.forEach(function(i){if(i.loading==='lazy')i.loading='eager';var p=i.closest('a[data-vid],[data-vid]');var vid=i.dataset.vid||(p?p.dataset.vid:null);if(vid){var bad=!i.src||i.src.indexOf('thumb-unavailable')>-1||i.src.endsWith('default.jpg')||i.naturalWidth<50;if(bad){i.src='https://i.ytimg.com/vi/'+vid+'/hqdefault.jpg';}i.onerror=function(){this.src='https://i.ytimg.com/vi/'+vid+'/mqdefault.jpg';this.onerror=function(){this.src='https://i.ytimg.com/vi/'+vid+'/0.jpg';this.onerror=null;};};}});}fix();setTimeout(fix,500);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
+<script data-twk="thumb-v4">(function(){function tryNext(i,vid,arr,idx){if(idx>=arr.length){i.style.display='none';return;}i.onerror=function(){tryNext(i,vid,arr,idx+1);};i.onload=function(){if(i.naturalWidth<=120){tryNext(i,vid,arr,idx+1);}};i.src='https://i.ytimg.com/vi/'+vid+'/'+arr[idx];}function fix(){document.querySelectorAll('img').forEach(function(i){var m=(i.src||'').match(/ytimg\.com\/vi\/([\w-]{11})/);var vid=i.dataset.vid||(m?m[1]:null);if(!vid)return;if(i.loading==='lazy')i.loading='eager';if(!i.complete||i.naturalWidth<=120){tryNext(i,vid,['maxresdefault.jpg','hqdefault.jpg','mqdefault.jpg','sddefault.jpg','0.jpg'],0);}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+<style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
+<script>(function(){function force(){try{var imgs=document.querySelectorAll('img[src*="i.ytimg.com"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];im.setAttribute('loading','eager');im.style.opacity='1';im.style.visibility='visible';im.style.display='block';if(!im.dataset.twkOrigSrc){im.dataset.twkOrigSrc=im.getAttribute('src')||'';}var s=im.getAttribute('src');if(s)im.src=s;}}catch(_){}}function recover(){try{var bad=document.querySelectorAll('img[src*="thumb-unavailable"]');for(var i=0;i<bad.length;i++){var im=bad[i];if(im.dataset.twkOrigSrc){im.src=im.dataset.twkOrigSrc;}}}catch(_){}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){force();recover();});}else{force();recover();}setTimeout(function(){force();recover();},500);setTimeout(function(){force();recover();},2000);})();</script>
+<style id="twk-sr-only-seo">.twk-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
+<!-- SW v2 register: opt-in via ?enable_sw=v2 ; kill-switch via ?disable_sw=1 -->
+<script src="/assets/twerkhub-sw-register-v2.js?v=20260506-p1"></script>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TWERKHUB · Private creator archive · 1,500+ 4K cuts</title>
+<meta name="description" content="Twerkhub · Alexia's private creator platform. 1,500+ 4K archive · 7 curated playlists · weekly drops · 4-tier token access. 18+.">
+<meta name="author" content="Anti · Twerkhub">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="yandex-verification" content="aa42fcc2c214395c">
+<meta name="googlebot" content="index,follow,max-image-preview:large">
+<meta name="rating" content="adult">
+<link rel="canonical" href="https://alexiatwerkgroup.com/">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/">
+<link rel="alternate" hreflang="pt-BR" href="https://alexiatwerkgroup.com/pt/index.html">
+<link rel="alternate" hreflang="es" href="https://alexiatwerkgroup.com/es/">
+<link rel="alternate" hreflang="ru" href="https://alexiatwerkgroup.com/ru/">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/">
+<!-- hreflang: English primary with x-default. Add ES/RU variants when those
+     localized pages ship. Signals to Google we serve a single locale now. -->
+<!-- Performance hints: tell browsers to resolve DNS for third-party origins
+     early (YouTube thumbs, fonts, analytics) so the first paint lands faster.
+     preconnect is stronger than dns-prefetch — opens TLS in parallel. -->
+<link rel="dns-prefetch" href="//www.youtube-nocookie.com">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="preconnect" href="//i.ytimg.com" crossorigin>
+<link rel="preload" as="image" href="/logo-twerkhub.png" fetchpriority="high">
+<link rel="preload" as="image" href="/hero_alexia_local.webp" type="image/webp">
+<!-- Font preload: Playfair Display 700 is the hero display type, loading it
+     eagerly avoids FOIT on the H1 during first paint. Subset=latin to keep
+     payload tiny (Playfair has many optional scripts). -->
+<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvXDQpA.woff2" crossorigin>
+<meta property="og:type" content="website">
+<meta property="og:title" content="TWERKHUB · The platform for the uncut ones">
+<meta property="og:description" content="Private models, weekly drops, custom videos, token-gated premium wall. 7 curated playlists. 1,500+ 4K archive.">
+<meta property="og:url" content="https://alexiatwerkgroup.com/">
+<meta property="og:image" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
+<meta property="og:image:secure_url" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Twerkhub · private creator archive logo">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="es_AR">
+<meta property="og:locale:alternate" content="ru_RU">
+<meta property="og:locale:alternate" content="uk_UA">
+<meta property="og:site_name" content="Twerkhub">
+<meta property="og:video" content="https://www.youtube.com/embed/bDfPfmpUPmw">
+<meta property="og:video:url" content="https://www.youtube.com/embed/bDfPfmpUPmw">
+<meta property="og:video:type" content="text/html">
+<meta property="og:video:width" content="1280">
+<meta property="og:video:height" content="720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@alexiatwerkofic">
+<meta name="twitter:creator" content="@alexiatwerkofic">
+<meta name="twitter:title" content="TWERKHUB · The platform for the uncut ones">
+<meta name="twitter:description" content="Private models · weekly drops · 1,500+ 4K archive · If you know, you know.">
+<meta name="twitter:image" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
+<meta name="twitter:image:alt" content="Twerkhub · private creator archive">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Anton&display=swap">
+<link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260507-b5-no-pink-lines">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Twerkhub","alternateName":"Alexia Twerk Group","url":"https://alexiatwerkgroup.com/","inLanguage":"en","potentialAction":{"@type":"SearchAction","target":"https://alexiatwerkgroup.com/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGallery","name":"Twerkhub · curated twerk and reggaetón choreography archive","url":"https://alexiatwerkgroup.com/playlist/","description":"A curated editorial archive of 526 twerk and reggaetón floor work choreographies, organized by scene (Latin reggaetón, Russian heels, K-dance Taipei, Brazilian funk, Sav Maine roster). Editorial-first, not algorithmic. Each video is annotated with technique notes and lineage tagging.","inLanguage":["en","es","pt","ru"],"isFamilyFriendly":false,"audience":{"@type":"Audience","audienceType":"dance students, choreographers, scene historians, age 18+"},"keywords":"twerk choreography, reggaeton floor, K-dance, perreo, heels choreo, dance archive, fancam","publisher":{"@type":"Organization","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"},"numberOfItems":526}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Twerkhub choreography reference catalog","description":"Editorial catalog of 526 indexed twerk and reggaetón choreography videos with per-video annotations: scene tag, dancer profile, lineage notes, technique signature. Cross-scene coverage of Caribbean perreo, Russian heels-choreo, Latin reggaetón floor, K-dance Taipei/Seoul, Brazilian funk.","url":"https://alexiatwerkgroup.com/playlist/","license":"https://alexiatwerkgroup.com/terms","keywords":["twerk","reggaeton","perreo","heels choreo","K-dance","K-pop fancam","Brazilian funk","dance reference","choreography archive"],"creator":{"@type":"Organization","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"},"inLanguage":["en","es","pt","ru"],"isAccessibleForFree":true,"distribution":[{"@type":"DataDownload","contentUrl":"https://alexiatwerkgroup.com/playlist/","encodingFormat":"text/html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoObject","name":"Twerkhub featured preview · fancam cut","description":"Live featured preview on the Twerkhub home hero. Private archive · weekly drops · 18+.","thumbnailUrl":"https://i.ytimg.com/vi/bDfPfmpUPmw/hqdefault.jpg","uploadDate":"2026-04-24T12:00:00Z","contentUrl":"https://www.youtube.com/watch?v=bDfPfmpUPmw","embedUrl":"https://www.youtube.com/embed/bDfPfmpUPmw","inLanguage":"en","isFamilyFriendly":false,"publisher":{"@type":"Organization","name":"Twerkhub","logo":{"@type":"ImageObject","url":"https://alexiatwerkgroup.com/logo-twerkhub.png"},"url":"https://alexiatwerkgroup.com/"},"duration":"PT2M"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Twerkhub?","acceptedAnswer":{"@type":"Answer","text":"Twerkhub is a private creator archive with 1,500+ curated 4K videos, private models, weekly drops, custom content for VIPs, and a 4-tier token economy (Basic · Medium · Premium · VIP). 18+ only."}},{"@type":"Question","name":"How does the token economy work?","acceptedAnswer":{"@type":"Answer","text":"Every action on Twerkhub earns tokens. Tiers unlock at: Basic (0-299), Medium (300+ or $9.99/mo), Premium (3,000+ or $29.99/mo), VIP Top (50,000+ or $99.99/mo). Premium unlocks the full archive, VIP unlocks custom content."}},{"@type":"Question","name":"What playlists are available?","acceptedAnswer":{"@type":"Answer","text":"Six curated playlists: the signature main archive, Korean / K-dance, cosplay fancam, Latina model, try-on haul, and the Twerk Hub leaks. All updated weekly."}},{"@type":"Question","name":"Is the content free?","acceptedAnswer":{"@type":"Answer","text":"Free previews are visible on all six playlist pages. Full archive access and custom content require token tier Premium or VIP."}},{"@type":"Question","name":"Who runs Twerkhub?","acceptedAnswer":{"@type":"Answer","text":"Twerkhub is run by Anti (firestarter), founder of the Alexia Twerk Group. Founded 2018."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Twerkhub","alternateName":"Alexia Twerk Group","url":"https://alexiatwerkgroup.com/","logo":"https://alexiatwerkgroup.com/logo-twerkhub.png","foundingDate":"2018","founder":{"@type":"Person","name":"Anti","alternateName":"firestarter"},"sameAs":["https://x.com/alexiatwerkofic","https://t.me/+0xNr69raiIlmYWRh","https://onlyfans.com/alexiatwerkoficial","https://discord.gg/WWn8ZgQMjn"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Twerkhub Private Archive","provider":{"@type":"Organization","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"},"serviceType":"Subscription · Curated private video archive","description":"Private models, weekly drops, custom videos for VIPs, token-gated premium wall, 4K archive with 1,500+ exclusive cuts.","areaServed":"Worldwide","audience":{"@type":"Audience","audienceType":"Adults 18+"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Alexia","alternateName":"Alexia Twerk Oficial","url":"https://alexiatwerkgroup.com/","image":"https://alexiatwerkgroup.com/hero_alexia_local.png","jobTitle":"Founder & Lead Creator","worksFor":{"@type":"Organization","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"},"sameAs":["https://x.com/alexiatwerkofic","https://t.me/+0xNr69raiIlmYWRh","https://onlyfans.com/alexiatwerkoficial","https://instagram.com/alexiatwerkoficial"],"knowsLanguage":["es","en","pt"],"description":"Founder of Alexia Twerk Group and lead creator on Twerkhub. Curating 1,500+ private 4K videos across 7 playlists since 2018."}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Anti","alternateName":"firestarter","url":"https://alexiatwerkgroup.com/","jobTitle":"Founder · Platform Architect","worksFor":{"@type":"Organization","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"},"description":"Founder & platform architect of Twerkhub. Built the 4-tier token economy and the curated archive model."}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Twerkhub","applicationCategory":"EntertainmentApplication","operatingSystem":"Web, iOS, Android (PWA)","url":"https://alexiatwerkgroup.com/"}</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag("js",new Date());
+
+/* INTERNAL TRAFFIC FALLBACK (2026-05-08)
+ * Si Anti tiene localStorage[twk_internal_traffic]='1' o cookie twk_internal=1
+ * en su browser de testing, agregamos traffic_type=internal a GA4 → la rule
+ * "My Internal Traffic" lo captura como interno → el Data Filter lo excluye.
+ * Funciona aunque su IP cambie (ISP dynamic). Se setea via bookmarklet.
+ * NO afecta a usuarios externos (default value omitido = traffic externa). */
+var twkIsInternal = false;
+try {
+  if (localStorage.getItem('twk_internal_traffic') === '1' ||
+      document.cookie.indexOf('twk_internal=1') !== -1) {
+    twkIsInternal = true;
+  }
+} catch(_){}
+gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
+</script>
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
+<script>
+(function(){
+  function eager(img){
+    if (!img || img.dataset.twkEager) return;
+    img.dataset.twkEager = '1';
+    if (img.loading !== 'eager') img.loading = 'eager';
+    if (!img.fetchPriority || img.fetchPriority === 'auto') img.fetchPriority = 'high';
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.vthumb img, .rk-thumb img, .twerkhub-fp-thumb img, .twerkhub-club-card img, .twerkhub-coming-card img').forEach(eager);
+  });
+  if (typeof MutationObserver !== 'undefined'){
+    new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        m.addedNodes && m.addedNodes.forEach(function(n){
+          if (n.nodeType !== 1) return;
+          var sel = '.vthumb img, .rk-thumb img, .twerkhub-fp-thumb img, .twerkhub-club-card img, .twerkhub-coming-card img';
+          if (n.matches && n.matches(sel)) eager(n);
+          if (n.querySelectorAll) n.querySelectorAll(sel).forEach(eager);
+        });
+      });
+    }).observe(document.documentElement, { childList:true, subtree:true });
+  }
+})();
+</script>
+<script type="application/ld+json" data-seo-only-homepage>{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://alexiatwerkgroup.com/#webpage","url":"https://alexiatwerkgroup.com/","name":"TWERKHUB Private Creator Archive","description":"Premium creator archive for twerk playlists, cosplay fancam collections, private models, token access and exclusive creator pages.","isPartOf":{"@id":"https://alexiatwerkgroup.com/#website"},"inLanguage":"en"},{"@type":"WebSite","@id":"https://alexiatwerkgroup.com/#website","url":"https://alexiatwerkgroup.com/","name":"TWERKHUB","publisher":{"@id":"https://alexiatwerkgroup.com/#organization"}},{"@type":"Organization","@id":"https://alexiatwerkgroup.com/#organization","name":"TWERKHUB","url":"https://alexiatwerkgroup.com/"},{"@type":"BreadcrumbList","@id":"https://alexiatwerkgroup.com/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://alexiatwerkgroup.com/"}]}]}</script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
+<link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+</head>
+<body class="twerkhub-page twerkhub-home twerkhub-ph-theme">
+<a href="#main" class="twk-sr-only">Skip to content</a>
+
+<!-- TWK_NAV_V1 -->
+<style id="twk-nav-v1-css">
+.twk-nav-v1{position:sticky!important;top:0!important;z-index:9999!important;background:rgba(5,5,10,.94)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)!important;margin:0!important;width:100%!important;display:block!important}
+.twk-nav-v1-inner{max-width:1480px!important;margin:0 auto!important;padding:14px 26px!important;display:flex!important;align-items:center!important;gap:14px!important;flex-wrap:nowrap!important;grid-template-columns:none!important}
+.twk-nav-v1-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;flex-shrink:0}
+.twk-nav-v1-brand img{width:auto;height:34px;max-width:140px;border-radius:6px;display:block;object-fit:contain}
+.twk-nav-v1-links{display:flex;align-items:center;gap:2px;flex-wrap:nowrap;margin-left:auto;white-space:nowrap}
+.twk-nav-v1-links a{position:relative;padding:10px 14px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;line-height:1;transition:color .22s ease,background .22s ease,transform .2s ease;white-space:nowrap}
+.twk-nav-v1-links a:hover{background:rgba(255,255,255,.05);color:#fff;transform:translateY(-1px)}
+.twk-nav-v1-links a.is-active{color:#fff;background:transparent}
+.twk-nav-v1-links a.is-active::after{content:"";position:absolute;left:18%;right:18%;bottom:2px;height:2px;border-radius:2px;background:linear-gradient(90deg,#ff2d87,#ffb454);box-shadow:0 0 10px rgba(255,45,135,.55)}
+.twk-nav-v1-links a.twk-nav-v1-hot{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(255,180,84,.18));color:#ff7eb0;border:1px solid rgba(255,45,135,.45);padding-left:14px}
+.twk-nav-v1-links a.twk-nav-v1-hot:hover{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;border-color:transparent;box-shadow:0 6px 18px rgba(255,45,135,.4)}
+.twk-nav-v1-live{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);color:#1ee08f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;margin-left:6px}
+.twk-nav-v1-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;animation:twkLivePulse 2s ease-in-out infinite}
+@keyframes twkLivePulse{0%,100%{opacity:1}50%{opacity:.4}}
+.twk-nav-v1-lang{display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:3px;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.twk-nav-v1-lang a{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;color:rgba(230,230,240,.55);text-decoration:none;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.18em;line-height:1;text-transform:uppercase;transition:color .15s,background .15s,box-shadow .25s,transform .2s}
+.twk-nav-v1-lang a:hover{color:#fff;background:rgba(255,255,255,.06);transform:translateY(-1px)}
+.twk-nav-v1-lang a.is-active{color:#fff;padding:6px 12px;background:linear-gradient(135deg,#ff2d87,#ff9000);box-shadow:0 4px 12px rgba(255,45,135,.4);letter-spacing:.22em;border:0}
+.twk-nav-v1-lang a.is-active::before{content:"";display:inline-block;width:11px;height:11px;margin-right:5px;margin-top:-2px;vertical-align:middle;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231ee08f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 15 12 9 18 15'/></svg>");background-repeat:no-repeat;background-size:contain;filter:drop-shadow(0 0 5px rgba(30,224,143,.85)) drop-shadow(0 0 10px rgba(30,224,143,.45));animation:twk-lang-pulse 1.3s ease-in-out infinite;will-change:transform,opacity}
+@keyframes twk-lang-pulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-3px);opacity:.5}}
+@media(max-width:880px){.twk-nav-v1-lang{display:none}}
+@media(max-width:1180px){.twk-nav-v1-links a{padding:8px 10px;font-size:10.5px;letter-spacing:.08em}}
+@media(max-width:1024px){.twk-nav-v1-links{gap:0}.twk-nav-v1-links a{padding:8px 8px;font-size:10px;letter-spacing:.06em}.twk-nav-v1-live{font-size:9px;padding:5px 9px}}
+@media(max-width:880px){.twk-nav-v1-inner{padding:10px 14px;gap:8px}.twk-nav-v1-links{gap:1px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:2px}.twk-nav-v1-links a{padding:7px 8px;font-size:10px}.twk-nav-v1-brand span{display:none}.twk-nav-v1-live{display:none}}
+.twerkhub-pl-thumb,.vthumb,.rk-thumb,.twerkhub-fp-thumb,.twerkhub-club-thumb{background:linear-gradient(135deg,#1a0a1f 0%,#2a0f3d 50%,#0a0a14 100%)!important}
+.twerkhub-pl-thumb img,.vthumb img,.rk-thumb img,.twerkhub-fp-thumb img,.twerkhub-club-thumb img{background:transparent}
+</style>
+<nav class="twk-nav-v1" aria-label="Primary" data-twk-nav-v1>
+  <div class="twk-nav-v1-inner">
+    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub · home">
+      <img src="/logo-twerkhub.png" alt="Twerkhub" width="120" height="34" decoding="async">
+      <span>TWERKHUB · DEPLOY OK · 20260510</span>
+    </a>
+    <div class="twk-nav-v1-links">
+      <a href="/" data-nav="home">HOME</a>
+      <a href="/#private-models" data-nav="exclusive">EXCLUSIVE</a>
+      <a href="/#playlists" data-nav="playlists">PLAYLISTS</a>
+      <a href="/creators" data-nav="creators">CREATORS</a>
+      <a href="/alexia-video-packs" class="twk-nav-v1-hot" data-nav="hotpacks">HOT PACKS</a>
+      <a href="/community.html" data-nav="community">COMMUNITY</a>
+      <a href="/membership" data-nav="membership">MEMBERSHIP</a>
+      <a href="/account" data-nav="account">MY ACCOUNT</a>
+      <a href="/profile" data-nav="profile">PROFILE</a>
+    </div>
+    <div class="twk-nav-v1-lang" role="group" aria-label="Language">
+      <a href="/en/" data-lang="en" class="is-active" title="English">EN</a>
+      <a href="/es/" data-lang="es" title="Español">ES</a>
+      <a href="/ru/" data-lang="ru" title="Русский">RU</a>
+      <a href="/pt/" data-lang="pt" title="Português">PT</a>
+    </div>
+    <div class="twerkhub-tokens-hud twk-tk-hud--in-nav" id="twk-tokens-hud-v3" style="display:inline-flex;align-items:center;height:28px;margin-right:6px;flex-shrink:0;pointer-events:auto;"><button type="button" style="pointer-events:auto;display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(255,180,84,.16));border:1px solid rgba(30,224,143,.55);box-shadow:0 6px 20px rgba(30,224,143,.18),0 2px 6px rgba(0,0,0,.4);color:#f5f5fb;font-weight:800;letter-spacing:.06em;cursor:pointer;font-family:Inter,ui-sans-serif,system-ui;font-size:13px;" id="twk-tokens-badge" aria-label="Token balance"><span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#1ee08f,#30ff9f);box-shadow:0 0 12px rgba(30,224,143,.6);" aria-hidden="true"></span><span id="twk-tokens-count" style="font-variant-numeric:tabular-nums;">0</span> <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;">tokens</span> <span id="twk-tokens-tier" style="font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:#1ee08f;">BASIC</span></button></div>
+    <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
+  </div>
+</nav>
+<script>
+(function(){
+  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
+  function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
+  setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
+  function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
+  loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260513-fix4','twk-loader-token-system');
+  loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
+  loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
+
+  /* PH theme · token pill relocator → moved to external file
+     /assets/twerkhub-pill-into-nav.js so it loads on every page (not just
+     the home). Inline duplicate removed 2026-05-05. */
+})();
+</script>
+
+
+<!-- ═══ TICKER ═══ -->
+<div class="twerkhub-ticker" aria-label="Live status">
+  <div class="twerkhub-ticker-track">
+    <span>💥 Just added a custom video · 2 min ago</span>
+    <span>💎 48 new subscribers in the last 7 days</span>
+    <span>⚡ Custom queue · 3 slots left this month</span>
+    <span>🎁 Weekly winner · @k***_liv — 1 day with Loly</span>
+    <span>● Live now — online</span>
+    <span>✨ This week: 12 new drops</span>
+    <span>💥 Just added a custom video · 2 min ago</span>
+    <span>💎 48 new subscribers in the last 7 days</span>
+    <span>⚡ Custom queue · 3 slots left this month</span>
+  </div>
+</div>
+
+<!-- ═══ TOPBAR · 6 items sagrada ═══ -->
+<!-- ═══ HERO · split layout ═══ -->
+<header class="twerkhub-home-hero">
+
+
+<div class="twerkhub-home-hero-copy">
+    <div class="twerkhub-kicker">● Platform · live · growing daily</div>
+    <h1>The Platform for the <em>uncut</em> ones.</h1>
+    <div class="twerkhub-home-hero-sub">TWERKHUB · If you know, you know</div>
+    <p class="twerkhub-home-hero-body">Private models · new drops every week · custom videos for VIPs · token-gated premium wall. You've seen enough — now imagine the full experience.</p>
+    <div class="twerkhub-home-hero-ctas">
+      <a class="twerkhub-btn twerkhub-btn-primary" href="#private-models">See private models →</a>
+      <a class="twerkhub-btn twerkhub-btn-gold" href="#tokens">Earn free tokens</a>
+      <a class="twerkhub-btn twerkhub-btn-ghost" href="#stack">How it works</a>
+    </div>
+    <div class="twerkhub-home-hero-stats" data-twk-reveal-stagger>
+      <div class="twerkhub-hh-stat"><strong data-twk-count="20" data-twk-count-sep="none">0</strong><span>Private</span></div>
+      <div class="twerkhub-hh-stat"><strong data-twk-count="5000" data-twk-count-prefix="+">+0</strong><span>Hot videos</span></div>
+      <div class="twerkhub-hh-stat"><strong data-twk-count="1500">0</strong><span>4K · TTL</span></div>
+      <div class="twerkhub-hh-stat"><strong>24/7</strong><span>DM · VIP</span></div>
+    </div>
+  </div>
+  <!-- Featured video · live YouTube embed · silenced by default · hover unmutes -->
+  <aside class="twerkhub-home-hero-media" aria-label="Featured cut" data-hero-video-id="" data-twk-affiliate-url="https://goloveai.com/?ref=7XQFGR">
+    <div class="twerkhub-hh-media-inner">
+      <iframe class="twerkhub-hh-iframe" id="twerkhub-hh-iframe"
+              src="about:blank"
+              title="Fancam · featured preview"
+              loading="eager"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen></iframe>
+      <!-- Affiliate click-through overlay: any of the 4 rotator videos → goloveai.com/?ref=7XQFGR -->
+      <a class="twk-hero-affiliate-overlay" href="https://goloveai.com/?ref=7XQFGR" target="_blank" rel="noopener sponsored" aria-label="Try GoLoveAI" style="position:absolute;inset:0;z-index:13;cursor:pointer;display:block;background:transparent" data-no-dead="1"></a>
+      <style>.twk-hero-affiliate-overlay:hover{background:radial-gradient(circle at center,transparent 35%,rgba(255,45,135,.10) 100%)!important}</style>
+      <style>
+        /* Zoom on the hero iframe to crop YouTube's pause-state title overlay,
+           bottom watermarks and any logo flash. Same treatment as twk-video-shield. */
+        .twerkhub-hh-media-inner{overflow:hidden!important}
+        .twerkhub-hh-iframe{transform:scale(1.22)!important;transform-origin:center center!important}
+        .twerkhub-hh-next{position:absolute;top:14px;left:14px;z-index:14;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s cubic-bezier(.3,1.2,.4,1),background .2s,border-color .2s;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+        .twerkhub-hh-next:hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(255,45,135,.22),rgba(255,180,84,.10));border-color:rgba(255,45,135,.4)}
+        .twerkhub-hh-next svg{width:14px;height:14px;flex-shrink:0}
+      </style>
+      <button type="button" class="twerkhub-hh-next" id="twerkhub-hh-next" aria-label="Next video">
+        Next
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <script>
+      /* Hero video rotator
+         · On page load: weighted pick (40/20/20/20)
+         · On Next click: cycles through the pool in fixed order (no repeats,
+           no randomness — each click goes to the next in the array, wrapping
+           back to the start at the end). */
+      (function(){
+        var pool=[
+          {i:'v9zzf8elj_w', s:0,  w:40, m:75 },  // 1h 15m
+          {i:'mpZ4-dQFmqo', s:18, w:20, m:95 },  // 1h 35m  (+20)
+          {i:'JGxxoMNscmc', s:19, w:20, m:110},  // 1h 50m  (+15)
+          {i:'XDkH0yaocJ8', s:16, w:20, m:130}   // 2h 10m  (+20)
+        ];
+        var f=document.getElementById('twerkhub-hh-iframe');
+        var a=document.querySelector('.twerkhub-home-hero-media');
+        if(!f||!a) return;
+        var currentIdx = 0;  // index into `pool` of the currently-playing video
+
+        function weightedPick(){
+          // Used ONLY on initial page load. Pure random by weights.
+          var totalW=0; for (var k=0;k<pool.length;k++) totalW+=pool[k].w;
+          var roll=Math.random()*totalW, acc=0, idx=0;
+          for (var k=0;k<pool.length;k++){
+            acc+=pool[k].w;
+            if (roll < acc){ idx=k; break; }
+          }
+          return idx;
+        }
+
+        // applyVideo: every call sets f.src directly. No dependency on
+        // TwkYTGate (which can be in cool-off and silently drop commands).
+        // Direct src swap proven to work in all states.
+        function applyVideo(p){
+          // Reset countdown to THIS video's duration (was random — caused all
+          // 4 videos to share the same timer regardless of which was playing).
+          rotatorCurrentMinutes = p.m;
+          rotatorEndStamp = Date.now() + p.m * 60 * 1000;
+          var _cd = document.getElementById('twk-rotator-countdown');
+          if (_cd) _cd.setAttribute('data-remaining-minutes', String(p.m));
+          a.setAttribute('data-hero-video-id', p.i);
+          f.src = 'https://www.youtube-nocookie.com/embed/' + p.i +
+                  '?autoplay=1&mute=1&loop=1&playlist=' + p.i +
+                  '&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&start=' + p.s;
+          // 2026-05-06: AUTO-UNMUTE REMOVED. Previously this set f.onload to
+          // unmute after 800ms regardless of user intent — that overrode any
+          // mouseleave-mute the user fired. Now: video stays MUTED by default;
+          // only hover (mouseenter) or explicit click toggles audio on.
+          // Reset the mute button label to "muted" since new video starts muted.
+          var muteBtn = document.querySelector('.twerkhub-hh-mute');
+          if (muteBtn) {
+            muteBtn.setAttribute('aria-pressed','true');
+            muteBtn.classList.add('is-muted');
+            muteBtn.setAttribute('aria-label','Tap to unmute');
+            var lbl = muteBtn.querySelector('.twerkhub-hh-mute-label');
+            if (lbl) lbl.textContent = 'Sound off';
+            var ico = muteBtn.querySelector('.twerkhub-hh-mute-ico');
+            if (ico) ico.textContent = '🔈';
+          }
+        }
+
+        // ── GLOBAL countdown — independent of which video is active.
+        // Starts ONCE on page load. Next clicks change the video but DON'T
+        // reset the countdown (it keeps ticking). When it reaches 0, it
+        // restarts with a new duration picked from the pool, AND auto-
+        // advances to the next video in the rotation.
+        var rotatorTickInterval = null;
+        var rotatorEndStamp = 0;
+        var rotatorCurrentMinutes = 0;
+        function pickRandomMinutes(){
+          // Randomly pick one of the pool's m values for variety on each cycle
+          return pool[Math.floor(Math.random() * pool.length)].m;
+        }
+        function startGlobalCountdown(minutes){
+          rotatorCurrentMinutes = minutes;
+          rotatorEndStamp = Date.now() + minutes * 60 * 1000;
+          if (rotatorTickInterval) clearInterval(rotatorTickInterval);
+          function pad(n){ return String(n).padStart(2,'0'); }
+          function rotatorTick(){
+            // Lazy-resolve DOM elements each tick (the timer span lives
+            // below this script tag in the source order, so t/cd are null
+            // when the function is first called).
+            var t = document.getElementById('twk-rotator-cd-timer');
+            var cd = document.getElementById('twk-rotator-countdown');
+            var rem = rotatorEndStamp - Date.now();
+            if (rem <= 0) {
+              currentIdx = (currentIdx + 1) % pool.length;
+              applyVideo(pool[currentIdx]); // applyVideo now resets countdown to the new video's m
+              rem = rotatorEndStamp - Date.now();
+            }
+            var s = Math.floor(rem / 1000);
+            if (t) t.textContent = pad(Math.floor(s/3600)) + ':' + pad(Math.floor((s%3600)/60)) + ':' + pad(s%60);
+            if (cd && !cd.getAttribute('data-remaining-minutes')) cd.setAttribute('data-remaining-minutes', String(rotatorCurrentMinutes));
+          }
+          rotatorTick();
+          rotatorTickInterval = setInterval(rotatorTick, 1000);
+        }
+
+        // Initial pick — weighted random ONLY on page load
+        currentIdx = weightedPick();
+        applyVideo(pool[currentIdx]);
+        // Start the GLOBAL countdown ONCE with the initial video's minutes.
+        // From here on it ticks down continuously regardless of Next clicks.
+        startGlobalCountdown(pool[currentIdx].m);
+
+        // Next button → cycle to the next in fixed order, wrap at end.
+        // No randomness here — strict 1→2→3→4→1 sequence, no repeats.
+        var nextBtn = document.getElementById('twerkhub-hh-next');
+        if (nextBtn) {
+          nextBtn.addEventListener('click', function(ev){
+            ev.preventDefault();
+            ev.stopPropagation();
+            currentIdx = (currentIdx + 1) % pool.length;
+            applyVideo(pool[currentIdx]);
+          });
+        }
+
+        // Mute button click handler is delegated to the bottom hero controller
+        // (line ~1346) which already routes through TwkYTGate + claims audio
+        // from other videos via TwerkhubSound. We don't add a duplicate here.
+      })();
+      </script>
+      <div class="twerkhub-hh-media-scrim"></div>
+      <button type="button" class="twerkhub-hh-mute is-muted" data-twerkhub-hero-mute aria-pressed="true" aria-label="Tap to unmute">
+        <span class="twerkhub-hh-mute-ico" aria-hidden="true">🔈</span>
+        <span class="twerkhub-hh-mute-label">Sound off</span>
+      </button>
+      <div class="twerkhub-hh-media-meta">
+        <span class="twerkhub-hh-live" id="twerkhub-hh-status"><span class="twerkhub-hh-status-dot" aria-hidden="true"></span><span class="twerkhub-hh-status-label">online</span></span>
+        <h2 id="twk-rotator-countdown" data-remaining-minutes="75"><span class="twerkhub-hh-cd-kicker">Private · ends in</span> <span class="twerkhub-hh-cd-timer" id="twk-rotator-cd-timer">01:15:00</span></h2>
+      </div>
+    </div>
+  </aside>
+</header>
+
+<!-- ═══ STACK · TWERKHUB 2.0 ═══ -->
+<section class="twerkhub-stack" id="stack" aria-label="The stack">
+  <div class="twerkhub-stack-head">
+    <div class="twerkhub-kicker" style="justify-content:center">/ Twerkhub 2.0 · the stack</div>
+    <h2>YouTube discovery <span class="twerkhub-plus">+</span> Netflix streaming <span class="twerkhub-plus">+</span><br>the private archive.</h2>
+  </div>
+  <div class="twerkhub-stack-grid">
+    <article class="twerkhub-stack-card">
+      <div class="twerkhub-stack-ico">▶</div>
+      <h3>YouTube layer</h3>
+      <p>Open, searchable, SEO-ranked. Millions of users find us before knowing they needed us.</p>
+    </article>
+    <article class="twerkhub-stack-card">
+      <div class="twerkhub-stack-ico">🎬</div>
+      <h3>Netflix layer</h3>
+      <p>Rows, previews, continue-watching. Binge-style UX applied to adult content.</p>
+    </article>
+    <article class="twerkhub-stack-card">
+      <div class="twerkhub-stack-ico">🔒</div>
+      <h3>Private archive layer</h3>
+      <p>Private roster · custom videos · VIP tiers. The depth that open platforms can't hold.</p>
+    </article>
+    <article class="twerkhub-stack-card twerkhub-stack-card-accent">
+      <div class="twerkhub-stack-ico">🤖</div>
+      <h3>AI curation</h3>
+      <p>Smart feed · auto-tagging · personalized drops. The engine behind the platform.</p>
+    </article>
+    <article class="twerkhub-stack-card twerkhub-stack-card-accent2">
+      <div class="twerkhub-stack-ico">🪙</div>
+      <h3>Token economy</h3>
+      <p>Earn free · or buy your way in. Watch, refer, share — everything stacks.</p>
+    </article>
+  </div>
+  <div class="twerkhub-stack-foot">· A revolutionary concept that never stops updating ·</div>
+</section>
+
+<!-- ═══ BIO · Alexia Twerk + timeline ═══ -->
+<section class="twerkhub-bio-home" id="bio" aria-label="About Alexia Twerk">
+  <div class="twerkhub-kicker">★ Alexia Twerk · the face of Twerkhub</div>
+  <h2><em>Alexia Twerk.</em> The face that defined a generation.</h2>
+  <!-- TODO: awaiting new bio video from Anti — keep copy-only for now -->
+  <div class="twerkhub-bio-home-text">
+    <p><strong>Alexia Twerk</strong> is the <strong>#1 twerk creator in LATAM</strong>. Since <strong>2015</strong> she's been setting the standard every other creator chases — the aesthetic, the energy, the confidence. When you think TWERKHUB, you think her face first.</p>
+    <p>She drops <strong>customs weekly</strong>, answers her own DMs, handpicks every model that joins the verified roster. TWERKHUB is <strong>her platform and her models</strong> — every creator here was brought in, mentored, or co-signed by Alexia herself. The duo of Alexia + <strong>The Wild Project Models Agency</strong> is the house that built this archive.</p>
+    <p>Behind the curtain, <strong>Anti (firestarter)</strong> is the brain that architected the platform in <strong>2013</strong> — a subscriber model <strong>3 years before OnlyFans</strong>. He stays out of frame on purpose.</p>
+    <p>Here, the focus is Alexia, her roster, her drops, her standard. <strong>TWERKHUB 2.0</strong> is just a sharper stage for her and the creators she's bringing with her.</p>
+  </div>
+  <div class="twerkhub-bio-flag">Alexia leads · the roster follows · the archive grows. 🔥</div>
+
+  <div class="twerkhub-timeline">
+    <div class="twerkhub-timeline-kicker">/ The journey · 2013 → 2026</div>
+    <div class="twerkhub-timeline-grid">
+      <div class="twerkhub-tl-node"><div class="twerkhub-tl-ico">🏗</div><div class="twerkhub-tl-year">2013</div><div class="twerkhub-tl-label">Foundation</div><div class="twerkhub-tl-body">The platform is born. <strong>3 years before OnlyFans.</strong></div></div>
+      <div class="twerkhub-tl-arrow">→</div>
+      <div class="twerkhub-tl-node"><div class="twerkhub-tl-ico">💎</div><div class="twerkhub-tl-year">2015</div><div class="twerkhub-tl-label">Alexia Era</div><div class="twerkhub-tl-body">Alexia joins &amp; explodes. 10M+ views. The face of the platform.</div></div>
+      <div class="twerkhub-tl-arrow">→</div>
+      <div class="twerkhub-tl-node"><div class="twerkhub-tl-ico">🏛</div><div class="twerkhub-tl-year">2018</div><div class="twerkhub-tl-label">Launch</div><div class="twerkhub-tl-body">TWERKHUB opens. Public archive live. Platform is born.</div></div>
+      <div class="twerkhub-tl-arrow">→</div>
+      <div class="twerkhub-tl-node twerkhub-tl-active"><div class="twerkhub-tl-badge">LIVE NOW</div><div class="twerkhub-tl-ico">🚀</div><div class="twerkhub-tl-year">2026</div><div class="twerkhub-tl-label">AI · Tokens</div><div class="twerkhub-tl-body">TWERKHUB 2.0. AI feed. Token economy. Binge UX.</div></div>
+    </div>
+  </div>
+
+  <div class="twerkhub-bio-ctas">
+    <a class="twerkhub-btn twerkhub-btn-gold" href="https://onlyfans.com/alexiatwerkoficial" target="_blank" rel="noopener">Alexia OnlyFans →</a>
+    <a class="twerkhub-btn twerkhub-btn-primary" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">DM the team</a>
+    <a class="twerkhub-btn twerkhub-btn-ghost" href="https://www.patreon.com/Alexia_Twerk" target="_blank" rel="noopener">Patreon</a>
+    <a class="twerkhub-btn twerkhub-btn-primary" href="https://t.me/+q1cooFnvQctlNjRh" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#229ED9,#28a8e0);">Telegram channel →</a>
+  </div>
+</section>
+
+<!-- ═══ PLAYLISTS · featured · 6 cards ═══ -->
+<section class="twerkhub-featured-playlists" id="playlists" aria-label="Featured playlists">
+  <style>
+    .twerkhub-featured-playlists{max-width:1320px;margin:70px auto;padding:0 26px}
+    .twerkhub-fp-head{text-align:center;margin-bottom:32px}
+    .twerkhub-fp-head h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(32px,4vw,52px);font-weight:900;line-height:1.05;letter-spacing:-.02em;margin:14px 0 14px}
+    .twerkhub-fp-head h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .twerkhub-fp-head p{color:#c7c7d3;font-size:16px;max-width:640px;margin:0 auto}
+    .twerkhub-fp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:30px}
+    @media (max-width:1100px){.twerkhub-fp-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:680px){.twerkhub-fp-grid{grid-template-columns:1fr}}
+    .twerkhub-fp-card{position:relative;display:block;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.7);transition:transform .4s cubic-bezier(.2,1.2,.3,1),border-color .3s,box-shadow .3s;isolation:isolate;min-height:320px}
+    .twerkhub-fp-card:hover{transform:translateY(-6px);border-color:rgba(255,45,135,.55);box-shadow:0 24px 55px rgba(255,45,135,.22)}
+    .twerkhub-fp-card-featured{grid-column:span 2;min-height:420px;border-color:rgba(30,224,143,.35);background:linear-gradient(135deg,rgba(30,224,143,.06),rgba(255,45,135,.06),rgba(157,78,221,.06))}
+    .twerkhub-fp-card-featured:hover{border-color:rgba(30,224,143,.75);box-shadow:0 26px 60px rgba(30,224,143,.28)}
+    @media (max-width:1100px){.twerkhub-fp-card-featured{grid-column:span 2}}
+    @media (max-width:680px){.twerkhub-fp-card-featured{grid-column:span 1;min-height:360px}}
+    .twerkhub-fp-thumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+    .twerkhub-fp-card-featured .twerkhub-fp-thumb{aspect-ratio:16/8}
+    .twerkhub-fp-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease;will-change:transform}
+    .twerkhub-fp-card:hover .twerkhub-fp-thumb img{transform:scale(1.06)}
+    .twerkhub-fp-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.9) 100%)}
+    .twerkhub-fp-badge{position:absolute;top:14px;left:14px;padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#fff;z-index:3}
+    .twerkhub-fp-badge-signature{background:linear-gradient(135deg,#1ee08f,#ffb454);color:#031a11;box-shadow:0 6px 18px rgba(30,224,143,.4)}
+    .twerkhub-fp-badge-pink{background:linear-gradient(135deg,#ff2d87,#9d4edd);box-shadow:0 4px 12px rgba(255,45,135,.4)}
+    .twerkhub-fp-badge-gold{background:linear-gradient(135deg,#ffb454,#ff9500);color:#2a1400;box-shadow:0 4px 12px rgba(255,180,84,.4)}
+    .twerkhub-fp-badge-purple{background:linear-gradient(135deg,#9d4edd,#ff2d87);box-shadow:0 4px 12px rgba(157,78,221,.4)}
+    .twerkhub-fp-badge-vip{background:linear-gradient(135deg,#ffb454,#ff2d87);color:#fff;box-shadow:0 4px 12px rgba(255,180,84,.4)}
+    /* IDENTICAL inline rendering to .twerkhub-fp-badge — same line-height, same default display.
+       NO inline-flex (that compressed the height vs the badges). */
+    .twerkhub-fp-live{position:absolute;top:14px;right:14px;padding:6px 12px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#ff9000);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;z-index:3;box-shadow:0 4px 12px rgba(255,45,135,.4);white-space:nowrap}
+    /* Pro chevron-up SVG — green, growth-pulse, aligned with text baseline */
+    .twerkhub-fp-live__arrow{display:inline-block;width:11px;height:11px;vertical-align:middle;margin-right:5px;margin-top:-2px;color:#1ee08f;filter:drop-shadow(0 0 5px rgba(30,224,143,.85)) drop-shadow(0 0 10px rgba(30,224,143,.45));animation:twerkhub-fp-live-grow 1.3s ease-in-out infinite;will-change:transform,opacity}
+    @keyframes twerkhub-fp-live-grow{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-3px);opacity:.5}}
+    .twerkhub-fp-body{padding:20px 22px 22px;position:relative;z-index:2}
+    .twerkhub-fp-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:8px}
+    .twerkhub-fp-card-featured .twerkhub-fp-kicker{color:#1ee08f}
+    .twerkhub-fp-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;line-height:1.15;letter-spacing:-.01em;margin-bottom:8px;color:#fff}
+    .twerkhub-fp-card-featured .twerkhub-fp-title{font-size:clamp(26px,3vw,38px)}
+    .twerkhub-fp-title em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .twerkhub-fp-card-featured .twerkhub-fp-title em{background:linear-gradient(135deg,#1ee08f,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .twerkhub-fp-desc{color:#c7c7d3;font-size:14px;line-height:1.55;margin-bottom:14px}
+    .twerkhub-fp-card-featured .twerkhub-fp-desc{font-size:16px;max-width:620px}
+    .twerkhub-fp-meta{display:flex;gap:10px;flex-wrap:wrap;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#9a9aab;margin-bottom:14px}
+    .twerkhub-fp-meta span{padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+    .twerkhub-fp-cta{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 8px 22px rgba(255,45,135,.35);transition:transform .25s,box-shadow .25s}
+    .twerkhub-fp-card:hover .twerkhub-fp-cta{transform:translateX(4px);box-shadow:0 10px 28px rgba(255,45,135,.5)}
+    .twerkhub-fp-card-featured .twerkhub-fp-cta{background:linear-gradient(135deg,#1ee08f,#ffb454);color:#031a11;box-shadow:0 10px 28px rgba(30,224,143,.45)}
+    .twerkhub-fp-card-featured:hover .twerkhub-fp-cta{box-shadow:0 14px 36px rgba(30,224,143,.65)}
+    /* Hero video preview: iframe sits over poster, scaled to cover */
+    .twerkhub-fp-hero-video{position:relative}
+    .twerkhub-fp-hero-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+    .twerkhub-fp-hero-iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .35s ease;background:#000;
+      transform:scale(1.42);transform-origin:center center}
+    .twerkhub-fp-hero-iframe.is-ready{opacity:1}
+    /* GPU hint para todos los hero iframes — evita render thrashing al
+       hacer scale transform mientras YT sirve frames. */
+    .twerkhub-fp-hero-iframe{
+      will-change:transform;
+      backface-visibility:hidden;
+      -webkit-backface-visibility:hidden;
+    }
+    /* Card #2 (try-on, phlPRrYpmz0) — zoom moderado para tapar watermark. */
+    .twerkhub-fp-hero-video[data-yt-id="phlPRrYpmz0"] .twerkhub-fp-hero-iframe{
+      transform:scale(1.50)!important;transform-origin:center center!important;
+    }
+    /* Card #1 (Lada High-Heels) — tapar branding del canal. */
+    .twerkhub-fp-hero-video[data-yt-id="DwJQZt7TaTM"] .twerkhub-fp-hero-iframe{
+      transform:scale(1.50)!important;transform-origin:center center!important;
+    }
+    /* Card #5 (Premium Latin Models) — tapar logo YouTube + title overlay. */
+    .twerkhub-fp-hero-video[data-yt-id="AE9HqjQfqA8"] .twerkhub-fp-hero-iframe{
+      transform:scale(1.55)!important;transform-origin:center center!important;
+    }
+    /* Freeze frame poster (preloaded ~thumb 1.jpg ≈ first quarter): instant swap on stop */
+    .twerkhub-fp-hero-freeze{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;display:none}
+    .twerkhub-fp-hero-freeze.is-shown{display:block}
+  </style>
+
+  <div class="twerkhub-fp-head">
+    <div class="twerkhub-kicker" style="justify-content:center">/ Six playlists · one signature archive</div>
+    <h2>Pick your <em>playlist.</em></h2>
+    <p>Curated weekly. Inline player, free previews, token rewards on every watch.</p>
+  </div>
+
+  <div class="twerkhub-fp-grid">
+
+    <!-- 1 · FEATURED · /playlist/ · signature archive, updated weekly, infinite list -->
+    <a class="twerkhub-fp-card twerkhub-fp-card-featured" href="/playlist/">
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
+           data-yt-id="DwJQZt7TaTM" data-yt-start="18" data-yt-stop="25" data-yt-freeze="20" data-yt-chain-order="1">
+        <!-- Poster shown until YT iframe loads (zero-flicker fallback) -->
+        <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/DwJQZt7TaTM/sddefault.jpg" alt="Hottest twerk videos — the signature archive · Лада Гоцци High-Heels · Moscow Dance Centre NRG" loading="eager" fetchpriority="high" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg';}">
+        <!-- Freeze frame: SD quality (640x480) — exists for ALL videos (maxresdefault often 404) -->
+        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/DwJQZt7TaTM/sddefault.jpg" alt="" aria-hidden="true" loading="eager" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg';}">
+        <!-- 18-34s preview, instant freeze on stop -->
+        <iframe id="twerkhub-fp-hero-yt-1"
+                class="twerkhub-fp-hero-iframe"
+                data-src="https://www.youtube-nocookie.com/embed/DwJQZt7TaTM?autoplay=1&amp;mute=1&amp;controls=0&amp;showinfo=0&amp;modestbranding=1&amp;playsinline=1&amp;rel=0&amp;iv_load_policy=3&amp;disablekb=1&amp;enablejsapi=1&amp;vq=hd720&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;fs=0"
+                title="Hottest twerk videos — preview"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"></iframe>
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-signature">✦ Signature</span>
+        <span class="twerkhub-fp-live"><svg class="twerkhub-fp-live__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 14 12 8 18 14"></polyline><polyline points="6 19 12 13 18 19"></polyline></svg>Infinite list</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">/ The main archive · flagship</div>
+        <h3 class="twerkhub-fp-title">Hottest <em>twerk videos</em> ever, not public.</h3>
+        <p class="twerkhub-fp-desc">The signature playlist. Hand-picked by the house — replay favorites, hottest openers, the ones that built the archive. <strong>Updated every week · infinite list.</strong></p>
+        <div class="twerkhub-fp-meta">
+          <span>★ Pick of the week</span>
+          <span>♾ Infinite list</span>
+          <span>⚡ Weekly drops</span>
+        </div>
+        <span class="twerkhub-fp-cta">Enter the archive →</span>
+      </div>
+    </a>
+
+    <!-- 2 · Try-on hot leaks — AUTO after card #1 finishes (sequential queue) -->
+    <a class="twerkhub-fp-card" href="/try-on-hot-leaks/" data-no-dead="1">
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
+           data-yt-id="phlPRrYpmz0" data-yt-start="25" data-yt-stop="38.6" data-yt-freeze="17" data-yt-freeze-mode="frame" data-yt-preload="1" data-yt-chain-order="2">
+        <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/phlPRrYpmz0/maxresdefault.jpg" alt="Try-on hot leaks · exclusive haul cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
+        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/phlPRrYpmz0/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg';}">
+        <!-- Card #2: data-src instead of src — only loads when Card #1 finishes -->
+        <iframe id="twerkhub-fp-hero-yt-2"
+                class="twerkhub-fp-hero-iframe"
+                data-src="https://www.youtube-nocookie.com/embed/phlPRrYpmz0?autoplay=1&amp;mute=1&amp;controls=0&amp;showinfo=0&amp;modestbranding=1&amp;playsinline=1&amp;rel=0&amp;iv_load_policy=3&amp;disablekb=1&amp;enablejsapi=1&amp;vq=hd720&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;fs=0"
+                title="Try-on hot leaks — preview"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"></iframe>
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-pink">Try-on</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">Try-on · leaks</div>
+        <h3 class="twerkhub-fp-title">Try-on <em>hot leaks.</em></h3>
+        <p class="twerkhub-fp-desc">Exclusive haul and try-on cuts from private creators. New drops every Friday. Uncut, unfiltered.</p>
+        <div class="twerkhub-fp-meta">
+          <span>18 cuts · weekly</span>
+          <span>⚡ Drops Friday</span>
+        </div>
+        <span class="twerkhub-fp-cta">Open playlist →</span>
+      </div>
+    </a>
+
+    <!-- 3 · Hottest cosplay fancam — HOVER triggered preview 3:15-3:27 -->
+    <a class="twerkhub-fp-card" href="/hottest-cosplay-fancam/" data-no-dead="1">
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
+           data-yt-id="qoho-dzADrc" data-yt-start="195" data-yt-stop="207" data-yt-chain-order="4">
+        <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/qoho-dzADrc/sddefault.jpg" alt="Hottest cosplay and fancam · verified cuts" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg';}">
+        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/qoho-dzADrc/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg';}">
+        <iframe id="twerkhub-fp-hero-yt-3"
+                class="twerkhub-fp-hero-iframe"
+                data-src="https://www.youtube-nocookie.com/embed/qoho-dzADrc?autoplay=1&amp;mute=1&amp;controls=0&amp;showinfo=0&amp;modestbranding=1&amp;playsinline=1&amp;rel=0&amp;iv_load_policy=3&amp;disablekb=1&amp;enablejsapi=1&amp;vq=hd720&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;fs=0"
+                title="Hottest cosplay fancam — preview"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"></iframe>
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-purple">Cosplay</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">Cosplay · fancam</div>
+        <h3 class="twerkhub-fp-title">Hottest <em>cosplay & fancam.</em></h3>
+        <p class="twerkhub-fp-desc">Verified cosplay creators and fancam specialists. 53 carefully curated drops, updated weekly with fresh content.</p>
+        <div class="twerkhub-fp-meta">
+          <span>53 cuts · cosplay</span>
+          <span>⚡ Weekly refresh</span>
+        </div>
+        <span class="twerkhub-fp-cta">Open playlist →</span>
+      </div>
+    </a>
+
+    <!-- 4 · Korean girls K-pop twerk -->
+    <a class="twerkhub-fp-card" href="/korean-girls-kpop-twerk/" data-no-dead="1">
+      <!-- SCROLL preview: triggers when card enters viewport (vid #2 of top 5) 2:44-3:01 -->
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
+           data-yt-id="bDfPfmpUPmw" data-yt-start="164" data-yt-stop="181" data-yt-chain-order="3">
+        <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/bDfPfmpUPmw/sddefault.jpg" alt="Korean girls K-pop and twerk · Seoul choreography" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/bDfPfmpUPmw/hqdefault.jpg';}">
+        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/bDfPfmpUPmw/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/bDfPfmpUPmw/hqdefault.jpg';}">
+        <iframe id="twerkhub-fp-hero-yt-4"
+                class="twerkhub-fp-hero-iframe"
+                data-src="https://www.youtube-nocookie.com/embed/bDfPfmpUPmw?autoplay=1&amp;mute=1&amp;controls=0&amp;showinfo=0&amp;modestbranding=1&amp;playsinline=1&amp;rel=0&amp;iv_load_policy=3&amp;disablekb=1&amp;enablejsapi=1&amp;vq=hd720&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;fs=0"
+                title="Korean K-pop twerk — preview"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"></iframe>
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-gold">K-pop</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">K-pop · twerk</div>
+        <h3 class="twerkhub-fp-title">Korean girls · <em>K-pop & Twerk.</em></h3>
+        <p class="twerkhub-fp-desc">Seoul dance studios and K-pop crews. 50 verified choreography cuts with professional production. Updated every Tuesday.</p>
+        <div class="twerkhub-fp-meta">
+          <span>50 cuts · K-pop</span>
+          <span>⚡ Tuesday drops</span>
+        </div>
+        <span class="twerkhub-fp-cta">Open playlist →</span>
+      </div>
+    </a>
+
+    <!-- 5 · TTL Latin models VIP — HOVER preview: video #021 from 2:55 to 3:10 -->
+    <a class="twerkhub-fp-card" href="/ttl-latin-models/" data-no-dead="1">
+      <div class="twerkhub-fp-thumb twerkhub-fp-hero-video"
+           data-yt-id="AE9HqjQfqA8" data-yt-start="175" data-yt-stop="185" data-yt-trigger="hover">
+        <img class="twerkhub-fp-hero-poster" height="360" width="480" src="https://i.ytimg.com/vi/AE9HqjQfqA8/sddefault.jpg" alt="Premium Latin models · 1500+ VIP · premium content" loading="lazy" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/AE9HqjQfqA8/hqdefault.jpg';}">
+        <img class="twerkhub-fp-hero-freeze" src="https://i.ytimg.com/vi/AE9HqjQfqA8/sddefault.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://i.ytimg.com/vi/AE9HqjQfqA8/hqdefault.jpg';}">
+        <iframe id="twerkhub-fp-hero-yt-5"
+                class="twerkhub-fp-hero-iframe"
+                data-src="https://www.youtube-nocookie.com/embed/AE9HqjQfqA8?autoplay=1&amp;mute=1&amp;controls=0&amp;showinfo=0&amp;modestbranding=1&amp;playsinline=1&amp;rel=0&amp;iv_load_policy=3&amp;disablekb=1&amp;enablejsapi=1&amp;vq=hd720&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;fs=0"
+                title="Premium Latin Models — preview"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"></iframe>
+        <div class="twerkhub-fp-scrim"></div>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-vip">🔒 VIP</span>
+      </div>
+      <div class="twerkhub-fp-body">
+        <div class="twerkhub-fp-kicker">Latin · VIP only</div>
+        <h3 class="twerkhub-fp-title">PREMIUM LATIN MODELS <em>+1500 4K VIDEOS</em></h3>
+        <p class="twerkhub-fp-desc">Premium exclusive content from LATAM creators. VIP members only. 18 preview cuts, 1,500+ full archive with customs.</p>
+        <div class="twerkhub-fp-meta">
+          <span>1,500+ · VIP only</span>
+          <span>💎 Customs open</span>
+        </div>
+        <span class="twerkhub-fp-cta">Unlock VIP →</span>
+      </div>
+    </a>
+
+    <!-- 6 · Twerk Hub leaks -->
+
+
+  </div>
+
+  <!-- Hero video previews: configurable via data-yt-* attrs on .twerkhub-fp-hero-video -->
+  <script>
+  (function(){
+    if (window.__twkFpHeroInit) return;
+    window.__twkFpHeroInit = true;
+
+    var iframes = document.querySelectorAll('.twerkhub-fp-hero-iframe');
+    if (!iframes.length) return;
+
+    // Fade-in each iframe over its poster when it loads
+    iframes.forEach(function(f){
+      f.addEventListener('load', function(){ f.classList.add('is-ready'); });
+    });
+
+    function loadYTApi(cb){
+      if (window.YT && window.YT.Player) { cb(); return; }
+      var existing = document.getElementById('twk-yt-iframe-api');
+      if (!existing) {
+        var s = document.createElement('script');
+        s.id = 'twk-yt-iframe-api';
+        s.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(s);
+      }
+      var prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function(){
+        if (typeof prev === 'function') { try { prev(); } catch(_){} }
+        cb();
+      };
+    }
+
+    // Global state: how many cards are currently playing (or about to play).
+    // Used by scroll-trigger cards to wait until everything is idle.
+    var activeCount = 0;
+    var pendingScrollFires = [];
+    var drainTimer = null;
+    var DRAIN_GRACE_MS = 350; // gap to allow chained auto-queue to bump active
+
+    function bumpActive(){
+      activeCount++;
+      // Cancel any pending drain — something just became active
+      if (drainTimer) {
+        clearTimeout(drainTimer);
+        drainTimer = null;
+      }
+    }
+    function dropActive(){
+      activeCount = Math.max(0, activeCount - 1);
+      if (activeCount === 0 && pendingScrollFires.length) {
+        // Wait DRAIN_GRACE_MS — if the auto queue chains a new card during
+        // that grace window, bumpActive() will cancel this drain.
+        if (drainTimer) clearTimeout(drainTimer);
+        drainTimer = setTimeout(function(){
+          drainTimer = null;
+          if (activeCount === 0 && pendingScrollFires.length) {
+            var next = pendingScrollFires.shift();
+            try { next(); } catch(_){}
+          }
+        }, DRAIN_GRACE_MS);
+      }
+    }
+
+    // Each hero card has its own controller. First trigger creates the
+    // YT.Player + auto-plays; subsequent triggers seek+play (replay).
+    // Supports onFinish callbacks for queue chaining (auto sequential).
+    function buildController(iframe){
+      var parent = iframe.closest('.twerkhub-fp-hero-video');
+      if (!parent) return null;
+      var START = parseFloat(parent.getAttribute('data-yt-start')) || 0;
+      var STOP  = parseFloat(parent.getAttribute('data-yt-stop'))  || 999999;
+      var freezeImg = parent.querySelector('.twerkhub-fp-hero-freeze');
+
+      var player = null;
+      var stopped = false;
+      var watchdog = null;
+      var inited = false;
+      var finishCallbacks = [];
+
+      var hardStopTimer = null;  // controller-level: cleared between startWatchdog calls
+
+      function clearWatchdog(){
+        if (watchdog) { clearInterval(watchdog); watchdog = null; }
+        if (hardStopTimer) { clearTimeout(hardStopTimer); hardStopTimer = null; }
+      }
+
+      // Per-card freeze mode: "frame" = freeze on actual last frame (iframe
+      // visible, paused at STOP). Default = "thumbnail" = swap to static YT
+      // thumbnail (original behavior). Set via data-yt-freeze-mode="frame"
+      // on the .twerkhub-fp-hero-video parent.
+      var FREEZE_MODE = (parent.getAttribute('data-yt-freeze-mode') || 'thumbnail').toLowerCase();
+
+      function freezeNow(){
+        if (stopped) return;
+        stopped = true;
+        if (FREEZE_MODE === 'frame') {
+          // Card #2 (try-on): freeze on the EXACT STOP frame.
+          // Sequence (robust against YT IFrame API quirks):
+          //   1. pauseVideo()   → stop playback NOW (current frame held)
+          //   2. seekTo(STOP)   → jump player head to the precise STOP timestamp
+          //                       while paused → loads + displays that frame
+          //   3. setTimeout pauseVideo x2 → defensive re-pauses to override any
+          //                       YT auto-resume after seek (some browsers do this)
+          try {
+            if (player) {
+              try { player.pauseVideo(); } catch(_){}
+              try { player.seekTo(STOP, true); } catch(_){}
+              // Defensive re-pauses ONLY if still stopped — si el usuario
+              // re-triggerea card #2 (via hover/scroll), no queremos pausar
+              // la nueva reproduccion.
+              setTimeout(function(){
+                if (stopped && player) { try { player.pauseVideo(); } catch(_){} }
+              }, 120);
+              setTimeout(function(){
+                if (stopped && player) { try { player.pauseVideo(); } catch(_){} }
+              }, 350);
+            }
+          } catch(_){}
+          // Iframe stays visible (no thumbnail swap, no display:none)
+        } else {
+          // Default for all other cards: original thumbnail behavior
+          try { if (player) player.pauseVideo(); } catch(_){}
+          if (freezeImg) freezeImg.classList.add('is-shown');
+          iframe.style.display = 'none';
+        }
+        clearWatchdog();
+        dropActive();
+        // Notify queue (and any other listeners) that we finished
+        finishCallbacks.forEach(function(cb){
+          try { setTimeout(cb, 100); } catch(_){}
+        });
+        finishCallbacks = []; // one-shot per natural finish
+      }
+
+      function startWatchdog(){
+        clearWatchdog();  // also clears any stale hardStopTimer
+        var maxDurationMs = ((STOP - START) + 3) * 1000;
+        hardStopTimer = setTimeout(function(){
+          if (!stopped) freezeNow();
+        }, maxDurationMs);
+        // CRITICAL FIX (2026-05-08): wait for the seekTo(START) to take
+        // effect BEFORE starting to check for STOP. Otherwise, on a re-trigger
+        // after a previous freezeNow (which seek'd to STOP=38.6), the
+        // first watchdog tick reads currentTime=38.6 and IMMEDIATELY
+        // fires freezeNow again → "loop salta al final" bug.
+        // We require currentTime to drop BELOW (STOP - 1) at least once
+        // before we trust subsequent reads.
+        var seekedToStart = false;
+        watchdog = setInterval(function(){
+          if (stopped) { clearWatchdog(); return; }
+          try {
+            var t = player.getCurrentTime();
+            if (typeof t !== 'number' || t < 0 || isNaN(t)) return;
+            if (!seekedToStart) {
+              // Waiting for playback to actually be at START (or near it).
+              // Once currentTime drops well below STOP, we know the seek
+              // landed and playback is heading toward STOP from below.
+              if (t < (STOP - 1)) seekedToStart = true;
+              return;
+            }
+            if (t >= STOP) freezeNow();
+          } catch(_){}
+        }, 100);
+      }
+
+      function startPlay(){
+        if (!player) return;
+        // If we were stopped/frozen, count as a fresh play (bump active).
+        // If we were already playing (re-trigger mid-playback), don't double-count.
+        if (stopped) bumpActive();
+        stopped = false;
+        if (freezeImg) freezeImg.classList.remove('is-shown');
+        iframe.style.display = '';
+        try {
+          player.mute();
+          player.seekTo(START, true);
+          player.playVideo();
+        } catch(_){}
+        startWatchdog();
+      }
+
+      // PRELOAD: inits YT.Player + buffers video at START in background while
+      // OTHER cards play. Subsequent trigger() finds buffer ready → smooth
+      // playback. Activated explicitly via ctl.preBuffer() from outer init —
+      // NOT from data-yt-preload attribute alone (that's just outer-loop hint).
+      var preloadRequested = false;
+      var prebuffered = false;
+
+      function init(){
+        if (inited) return;
+        inited = true;
+        bumpActive();
+        stopped = true;
+        if (iframe.dataset && iframe.dataset.src && !iframe.getAttribute('src')) {
+          iframe.src = iframe.dataset.src;
+        }
+        try {
+          new YT.Player(iframe.id, {
+            events: {
+              'onReady': function(e){
+                player = e.target;
+                if (preloadRequested && !prebuffered) {
+                  // PRELOAD: buffer the video at START + then pause immediately.
+                  // The video doesn't visibly play (iframe stays hidden until
+                  // first real trigger), but the buffer fetches in background.
+                  try {
+                    player.mute();
+                    try { player.setPlaybackQuality('hd720'); } catch(_){}
+                    player.seekTo(START, true);
+                    player.playVideo();           // kicks buffer fetch
+                    setTimeout(function(){
+                      try { player.pauseVideo(); } catch(_){}
+                    }, 200);                       // pause shortly after = buffer kept
+                  } catch(_){}
+                  prebuffered = true;
+                  // We're not really playing → release the active slot so
+                  // other auto-queue cards aren't blocked by us.
+                  dropActive();
+                  // Stay "stopped" so next trigger() does a clean startPlay.
+                  stopped = true;
+                  return;
+                }
+                stopped = false;
+                if (freezeImg) freezeImg.classList.remove('is-shown');
+                iframe.style.display = '';
+                try {
+                  player.mute();
+                  try { player.setPlaybackQuality('hd720'); } catch(_){}
+                  player.seekTo(START, true);
+                  player.playVideo();
+                } catch(_){}
+                startWatchdog();
+              },
+              // 2026-05-08 v3: AGGRESSIVE 720p lock. YT auto-quality picks
+              // 1080p/1440p/4K on fast connections + zoomed iframes. That
+              // saturates bandwidth → playback stutters. Force 720p ALWAYS
+              // (unless it goes lower for slow connections). Cap at 720 hard.
+              'onPlaybackQualityChange': function(e){
+                try {
+                  var q = e.data;
+                  // Allow lower (small/medium/large) — those are auto-degrade
+                  // for slow connections, leave them alone.
+                  // Block higher (1080+) — force back to 720.
+                  if (q === 'hd1080' || q === 'hd1440' || q === 'hd2160' || q === 'highres') {
+                    e.target.setPlaybackQuality('hd720');
+                  }
+                } catch(_){}
+              },
+              'onStateChange': function(e){
+                if (e.data === 0 && !stopped) freezeNow();
+              }
+            }
+          });
+        } catch(_){
+          // If YT.Player ctor throws, undo the pre-bump
+          dropActive();
+        }
+      }
+
+      return {
+        trigger: function(){
+          if (!inited) init();
+          else startPlay();
+        },
+        // Pre-buffer this card silently. Creates YT.Player + loads buffer at
+        // START + immediately pauses. Subsequent trigger() reuses the buffered
+        // player → smooth playback when this card's chain turn arrives.
+        // No-op if already inited (someone called trigger() first).
+        preBuffer: function(){
+          if (inited) return;
+          preloadRequested = true;
+          init();
+        },
+        // Register a one-shot callback for next natural finish (used by queue)
+        onFinish: function(cb){
+          if (typeof cb === 'function') finishCallbacks.push(cb);
+        }
+      };
+    }
+
+    // Hover-intent (≥350ms) — attached to ALL cards regardless of trigger type
+    // so users can replay any preview by hovering, even after auto-playback.
+    function attachHoverReplay(parent, ctl){
+      var hoverTimer = null;
+      var HOVER_INTENT_MS = 350;
+      var arm = function(){
+        if (hoverTimer) clearTimeout(hoverTimer);
+        hoverTimer = setTimeout(function(){ ctl.trigger(); }, HOVER_INTENT_MS);
+      };
+      var disarm = function(){
+        if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+      };
+      parent.addEventListener('mouseenter', arm);
+      parent.addEventListener('mouseleave', disarm);
+      parent.addEventListener('focusin', arm);
+      parent.addEventListener('focusout', disarm);
+      parent.addEventListener('touchstart', function(){ ctl.trigger(); }, { passive: true });
+    }
+
+    // Scroll-into-view trigger (intersection observer, fires once when ≥50% visible).
+    // CRITICAL: if any other card is currently playing/initializing, this card
+    // QUEUES its trigger and waits — only fires when activeCount drops to 0.
+    function attachScrollTrigger(parent, ctl){
+      if (!('IntersectionObserver' in window)) {
+        if (activeCount > 0) {
+          pendingScrollFires.push(function(){ ctl.trigger(); });
+        } else {
+          ctl.trigger();
+        }
+        return;
+      }
+      var fired = false;
+      var obs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting && !fired) {
+            fired = true;
+            obs.disconnect();
+            if (activeCount > 0) {
+              // Something else is playing — queue this for later
+              pendingScrollFires.push(function(){ ctl.trigger(); });
+            } else {
+              ctl.trigger();
+            }
+          }
+        });
+      }, { threshold: 0.5 });
+      obs.observe(parent);
+    }
+
+    function init(){
+      var list = Array.prototype.slice.call(iframes);
+      var autoBucket = [];   // {ctl, order} for auto-trigger cards
+      var preloadCards = [];
+
+      list.forEach(function(iframe){
+        var parent = iframe.closest('.twerkhub-fp-hero-video');
+        if (!parent) return;
+        var ctl = buildController(iframe);
+        if (!ctl) return;
+        var trigger = (parent.getAttribute('data-yt-trigger') || 'auto').toLowerCase();
+        var preload = parent.getAttribute('data-yt-preload') === '1';
+        // Optional explicit chain order (lower number = earlier in queue).
+        // Cards without the attribute fall back to DOM-order placement.
+        var chainOrderAttr = parent.getAttribute('data-yt-chain-order');
+        var chainOrder = chainOrderAttr !== null ? parseFloat(chainOrderAttr) : null;
+
+        // Hover replay is ALWAYS available, regardless of initial trigger type.
+        attachHoverReplay(parent, ctl);
+
+        if (trigger === 'hover') {
+          // Hover-only: hover replay (above) is the only trigger.
+        } else if (trigger === 'scroll') {
+          // Auto-fire when card scrolls into viewport.
+          attachScrollTrigger(parent, ctl);
+        } else {
+          // Auto sequential queue. If data-yt-chain-order set, use it.
+          // Otherwise use DOM index as tie-breaker (autoBucket.length).
+          autoBucket.push({ ctl: ctl, order: chainOrder !== null ? chainOrder : autoBucket.length });
+        }
+
+        // PRELOAD: kick preBuffer ASAP (in background) so the YT.Player loads +
+        // buffer fills BEFORE this card's chain turn. Critical for high-bitrate
+        // videos (VR180 3D, 4K) that lag without pre-buffer.
+        if (preload) preloadCards.push(ctl);
+      });
+
+      // Sort auto-queue by explicit chain order (stable sort)
+      autoBucket.sort(function(a, b){ return a.order - b.order; });
+      var autoQueue = autoBucket.map(function(x){ return x.ctl; });
+
+      // Sequential auto queue: each card chains onFinish to the next.
+      function nextAuto(i){
+        if (i >= autoQueue.length) return;
+        autoQueue[i].onFinish(function(){ nextAuto(i + 1); });
+        autoQueue[i].trigger();
+      }
+      nextAuto(0);
+
+      // Fire preload right after the auto-queue starts. Stagger by 200ms each
+      // so we don't slam YT with 5 simultaneous iframe loads (bandwidth +
+      // browser perf). Skip autoQueue[0] — it plays immediately, preload is
+      // redundant for the first card.
+      var firstAuto = autoQueue[0];
+      var toPreload = preloadCards.filter(function(c){ return c !== firstAuto; });
+      toPreload.forEach(function(ctl, i){
+        setTimeout(function(){
+          try { ctl.preBuffer(); } catch(_){}
+        }, 250 + i * 200);
+      });
+    }
+
+    loadYTApi(init);
+  })();
+  </script>
+</section>
+
+<!-- ═══ CLUB MEMBERS · sponsored tier 2 ═══ -->
+<section class="twerkhub-club" id="private-models" aria-label="Club members">
+  <div class="twerkhub-kicker">/ Sponsored · tier 2</div>
+  <div class="twerkhub-club-head">
+    <h2>The <em>club members.</em></h2>
+    <a class="twerkhub-btn twerkhub-btn-ghost" href="#">See all models →</a>
+  </div>
+  <p class="twerkhub-club-sub">Semi-private. Open to select club members. <strong>What comes next is not for everyone.</strong></p>
+  <div class="twerkhub-club-grid">
+    <a class="twerkhub-club-card" href="#">
+      <div class="twerkhub-club-pill">SEMI-PRIVATE</div>
+      <div class="twerkhub-club-thumb twerkhub-club-thumb-fullbody"><img height="1252" width="701" src="/tainara.jpg?v=20260424-p1" alt="Tainara · Brasilian pro dancer" loading="lazy" decoding="async" onerror="this.src='/hero_alexia_local.webp'"></div>
+      <div class="twerkhub-club-meta">
+        <span class="twerkhub-club-handle">@TAINARA · BR</span>
+        <h3>Tainara</h3>
+        <div class="twerkhub-club-sub2">BRASIL · 23 · PRO DANCER</div>
+        <div class="twerkhub-club-foot">500+ videos · Customs open · Club Members only</div>
+      </div>
+    </a>
+    <a class="twerkhub-club-card" href="#">
+      <div class="twerkhub-club-pill">SEMI-PRIVATE</div>
+      <div class="twerkhub-club-thumb"><img height="1169" width="658" src="/velvet.webp" alt="Velvet · cosplay creator" loading="lazy" decoding="async" onerror="this.src='/hero_alexia_local.webp'"></div>
+      <div class="twerkhub-club-meta">
+        <span class="twerkhub-club-handle">@VELVET · COSPLAY</span>
+        <h3>Velvet</h3>
+        <div class="twerkhub-club-sub2">20 · COSPLAY · OF MEMBERS ONLY</div>
+        <div class="twerkhub-club-foot">600+ videos · Customs open · Club Members only</div>
+      </div>
+    </a>
+    <a class="twerkhub-club-card twerkhub-club-card-slot" href="#">
+      <div class="twerkhub-club-pill twerkhub-club-pill-new">NEW THIS WEEK</div>
+      <div class="twerkhub-club-thumb twerkhub-club-thumb-empty"></div>
+      <div class="twerkhub-club-meta">
+        <h3>Slot Available</h3>
+        <div class="twerkhub-club-sub2">UP TO 5 DROPS WEEKLY</div>
+        <div class="twerkhub-club-foot">Recruiting now · DM Alexia</div>
+      </div>
+    </a>
+    <a class="twerkhub-club-card twerkhub-club-card-slot" href="#">
+      <div class="twerkhub-club-pill twerkhub-club-pill-new">NEW THIS WEEK</div>
+      <div class="twerkhub-club-thumb twerkhub-club-thumb-empty twerkhub-club-thumb-green"></div>
+      <div class="twerkhub-club-meta">
+        <h3>Slot Available</h3>
+        <div class="twerkhub-club-sub2">VERIFIED CREATORS ONLY</div>
+        <div class="twerkhub-club-foot">Apply via Discord</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══ COMING SOON · Colombian drop ═══ -->
+<section class="twerkhub-coming" id="coming-soon" aria-label="Coming soon · Colombian drop">
+  <div class="twerkhub-kicker">/ Coming soon · 🇨🇴 Colombian drop</div>
+  <div class="twerkhub-coming-head">
+    <div>
+      <h2>Twelve new girls. <em>All private.</em></h2>
+      <p>LATAM models · 18–20 years · OnlyFans private only or VIP members. Joining in waves over the next three months. <strong>If this caught you — you're not ready for what's next.</strong></p>
+    </div>
+    <a class="twerkhub-btn twerkhub-btn-primary" href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram notify me →</a>
+  </div>
+  <style>
+    /* Video card arch: the frame's aspect ratio now MATCHES the source videos
+       (9:16 portrait) so the full clip is visible edge-to-edge, no letterbox
+       bars and no cover-crop. Pops big on hover so the viewer can see the clip
+       properly without leaving the grid. */
+    .twerkhub-coming-arch-video{
+      width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:inherit;background:#000;
+      display:block;cursor:pointer;
+      position:relative;z-index:1;
+      transform-origin:center center;
+      transition:transform .45s cubic-bezier(.2,1.2,.3,1),
+                 box-shadow .35s ease,
+                 border-radius .35s ease;
+    }
+    .twerkhub-coming-card{position:relative;isolation:isolate;overflow:visible}
+    .twerkhub-coming-card .twerkhub-coming-meta{position:relative;z-index:2}
+    /* The whole card needs overflow:visible so the scaled video isn't clipped. */
+    .twerkhub-coming-card:has(.twerkhub-coming-arch-video){overflow:visible}
+    /* Hover state · video expands ×1.55, float on top of everything, adds ring */
+    .twerkhub-coming-card:hover{z-index:60}
+    .twerkhub-coming-card:hover .twerkhub-coming-arch-video{
+      transform:scale(1.55);
+      z-index:100;
+      border-radius:18px;
+      box-shadow:
+        0 40px 100px rgba(255,45,135,.45),
+        0 20px 60px rgba(0,0,0,.75),
+        0 0 0 2px rgba(255,45,135,.5) inset;
+    }
+    /* Hover ring on the card that persists while the video's floating. */
+    .twerkhub-coming-card:hover::before{
+      content:"";position:absolute;inset:-2px;border-radius:inherit;z-index:0;
+      background:linear-gradient(135deg,rgba(255,45,135,.25),rgba(157,78,221,.15),rgba(30,224,143,.15));
+      pointer-events:none;
+    }
+    /* At viewport < 680px keep the zoom modest so the video doesn't overflow. */
+    @media (max-width:680px){
+      .twerkhub-coming-card:hover .twerkhub-coming-arch-video{transform:scale(1.12);border-radius:14px;}
+    }
+    .twerkhub-coming-live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;margin-right:6px;animation:twerkhub-coming-live-pulse 1.6s ease-in-out infinite}
+    @keyframes twerkhub-coming-live-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .twerkhub-coming-drop strong{font-variant-numeric:tabular-nums;color:#1ee08f;letter-spacing:.04em}
+    /* Chips row · tiny pills with feature tags (Twerk / Custom / Explicit / slot count) */
+    .twerkhub-coming-chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 8px}
+    .twerkhub-coming-chip{
+      display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;
+      font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:800;
+      letter-spacing:.14em;text-transform:uppercase;line-height:1;white-space:nowrap;
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#e8e8ef;
+    }
+    .twerkhub-coming-chip-pink{color:#ffbfd5;border-color:rgba(255,45,135,.45);background:rgba(255,45,135,.1)}
+    .twerkhub-coming-chip-gold{color:#ffd69a;border-color:rgba(255,180,84,.45);background:rgba(255,180,84,.1)}
+    .twerkhub-coming-chip-red{color:#ffb3b3;border-color:rgba(220,70,70,.5);background:rgba(220,70,70,.12)}
+    .twerkhub-coming-chip-scarce{
+      color:#0a0a10;border:1px solid rgba(255,215,135,.8);
+      background:linear-gradient(135deg,#ffd693,#ffae4b);
+      box-shadow:0 2px 8px rgba(255,180,84,.35);
+    }
+    .twerkhub-coming-chip-vip{
+      color:#fff;border:1px solid rgba(157,78,221,.7);
+      background:linear-gradient(135deg,#9d4edd,#ff2d87);
+      box-shadow:0 2px 10px rgba(157,78,221,.45);
+      letter-spacing:.18em;
+    }
+    /* Live/Available-now pill — stands out from the "Very Soon" pink gradient */
+    .twerkhub-coming-pill-live{
+      background:linear-gradient(135deg,#1ee08f,#16a362)!important;
+      color:#031a11!important;box-shadow:0 4px 14px rgba(30,224,143,.55)!important;
+      animation:twerkhub-pill-live-pulse 2s ease-in-out infinite;
+    }
+    @keyframes twerkhub-pill-live-pulse{
+      0%,100%{box-shadow:0 4px 14px rgba(30,224,143,.55)}
+      50%{box-shadow:0 4px 24px rgba(30,224,143,.85),0 0 0 4px rgba(30,224,143,.18)}
+    }
+    .twerkhub-coming-drop-live strong{color:#1ee08f!important;letter-spacing:.08em!important}
+    /* Fallback: when a <video> can't load its source, show the poster via bg */
+    .twerkhub-coming-arch-video{background:#0a0a14 center/cover no-repeat}
+    /* Inline-SVG poster variant (Isabella until MP4 ships): div wrapper needs
+       explicit overflow:hidden to clip the scaled svg to the rounded corners,
+       and the child svg must fill the box exactly. */
+    .twerkhub-coming-arch-svg{overflow:hidden;padding:0;}
+    .twerkhub-coming-arch-svg > svg{width:100%;height:100%;display:block;}
+    /* (removed .twerkhub-coming-arch-contain: the card aspect is now 9:16
+       matching the source videos, so cover fills the frame edge-to-edge with
+       no bars — no letterbox needed.) */
+    /* Placeholder variant for the 9 Coming-Soon cards without an MP4 yet.
+       Same dimensions as the video frame (9:16 + full width) so the row is
+       visually homogeneous. Shows the model's initials in a gradient, plus
+       a subtle glow — reads as "photo loading, drop pending". */
+    .twerkhub-coming-arch-placeholder{
+      width:100%;aspect-ratio:9/16;border-radius:inherit;
+      display:flex;align-items:center;justify-content:center;
+      position:relative;z-index:1;overflow:hidden;
+      transform-origin:center center;
+      transition:transform .45s cubic-bezier(.2,1.2,.3,1),
+                 box-shadow .35s ease, border-radius .35s ease;
+      background:
+        radial-gradient(ellipse at 50% 25%, rgba(255,45,135,.30), transparent 55%),
+        radial-gradient(ellipse at 50% 100%, rgba(157,78,221,.22), transparent 55%),
+        linear-gradient(180deg, #1a0718 0%, #0a0a14 100%);
+      cursor:default;
+    }
+    .twerkhub-coming-card-c2 .twerkhub-coming-arch-placeholder{background:radial-gradient(ellipse at 50% 25%, rgba(255,180,84,.24), transparent 55%),radial-gradient(ellipse at 50% 100%, rgba(255,45,135,.20), transparent 55%),linear-gradient(180deg, #1a1008 0%, #0a0a14 100%);}
+    .twerkhub-coming-card-c3 .twerkhub-coming-arch-placeholder{background:radial-gradient(ellipse at 50% 25%, rgba(157,78,221,.26), transparent 55%),radial-gradient(ellipse at 50% 100%, rgba(30,224,143,.14), transparent 55%),linear-gradient(180deg, #140d1f 0%, #0a0a14 100%);}
+    .twerkhub-coming-card-c4 .twerkhub-coming-arch-placeholder{background:radial-gradient(ellipse at 50% 25%, rgba(30,224,143,.18), transparent 55%),radial-gradient(ellipse at 50% 100%, rgba(157,78,221,.22), transparent 55%),linear-gradient(180deg, #081614 0%, #0a0a14 100%);}
+    .twerkhub-coming-arch-placeholder::before{
+      content:""; position:absolute; inset:14px; border-radius:inherit;
+      border:1px solid rgba(255,255,255,.06); pointer-events:none;
+    }
+    .twerkhub-coming-arch-init{
+      font-family:'Playfair Display',Georgia,serif;
+      font-size:clamp(72px, 11vw, 150px);
+      font-weight:900; line-height:1; letter-spacing:-6px;
+      background:linear-gradient(135deg,#ff6fa8 0%,#ffb454 55%,#ffd693 100%);
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent;
+      filter:drop-shadow(0 6px 22px rgba(255,45,135,.35));
+      position:relative; z-index:2;
+    }
+    /* Optional "PREVIEW PENDING" line under the initials */
+    .twerkhub-coming-arch-pending{
+      position:absolute; bottom:22px; left:0; right:0; text-align:center;
+      font-family:'JetBrains Mono',ui-monospace,monospace;
+      font-size:11px; font-weight:800; letter-spacing:4px;
+      color:rgba(255,111,168,.85); z-index:2;
+    }
+    .twerkhub-coming-arch-pending::before{
+      content:""; display:block; width:42px; height:2px;
+      background:rgba(255,111,168,.45); margin:0 auto 10px; border-radius:2px;
+    }
+    /* Hover zoom mirrors the video variant so the grid feels uniform. */
+    .twerkhub-coming-card:hover .twerkhub-coming-arch-placeholder{
+      transform:scale(1.55); z-index:100; border-radius:18px;
+      box-shadow:
+        0 40px 100px rgba(255,45,135,.45),
+        0 20px 60px rgba(0,0,0,.75),
+        0 0 0 2px rgba(255,45,135,.5) inset;
+    }
+    @media (max-width:680px){
+      .twerkhub-coming-card:hover .twerkhub-coming-arch-placeholder{transform:scale(1.12); border-radius:14px;}
+    }
+  </style>
+  <div class="twerkhub-coming-grid">
+    <!-- 1 · Jenny (AVAILABLE NOW, CO 18, autoplay MP4, hover-unmute). Uses .twerkhub-coming-arch-contain so the full portrait frame is visible (no cover crop). -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c1">
+      <div class="twerkhub-coming-pill twerkhub-coming-pill-live">AVAILABLE NOW</div>
+      <video class="twerkhub-coming-arch-video" autoplay muted loop playsinline preload="metadata"
+             poster="/assets/models/jenny-poster.jpg"
+             onmouseenter="try{this.muted=false;this.currentTime=0;this.play();}catch(_){}"
+             onmouseleave="try{this.muted=true;this.pause();}catch(_){}"
+             ontouchstart="try{this.muted=!this.muted;this.play();}catch(_){}">
+        <source src="/assets/models/jenny.mp4" type="video/mp4">
+      </video>
+      <div class="twerkhub-coming-meta">
+        <span class="twerkhub-coming-handle">@JENNY · CO</span>
+        <h3>Jenny</h3>
+        <div class="twerkhub-coming-tag">COL · 18 · OF VIP</div>
+        <div class="twerkhub-coming-chips">
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-pink">Twerk</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-gold">Custom</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-red">Explicit</span>
+        </div>
+        <div class="twerkhub-coming-drop twerkhub-coming-drop-live"><span class="twerkhub-coming-live-dot"></span><strong>Live now · tap to meet</strong></div>
+      </div>
+    </div>
+    <!-- 2 · Camila (2 weeks, AR 18, autoplay MP4, hover-unmute, VIP-only chip). Uses .twerkhub-coming-arch-contain so the full portrait frame is visible (no cover crop). -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c2">
+      <div class="twerkhub-coming-pill">VERY SOON</div>
+      <video class="twerkhub-coming-arch-video" autoplay muted loop playsinline preload="metadata"
+             poster="/assets/models/camila-poster.jpg"
+             onmouseenter="try{this.muted=false;this.currentTime=0;this.play();}catch(_){}"
+             onmouseleave="try{this.muted=true;this.pause();}catch(_){}"
+             ontouchstart="try{this.muted=!this.muted;this.play();}catch(_){}">
+        <source src="/assets/models/camila.mp4" type="video/mp4">
+      </video>
+      <div class="twerkhub-coming-meta">
+        <span class="twerkhub-coming-handle">@CAMIBABY · AR</span>
+        <h3>Camila</h3>
+        <div class="twerkhub-coming-tag">ARG · 18 · OF VIP</div>
+        <div class="twerkhub-coming-chips">
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-gold">Custom</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-scarce">Only 10 slots/mo</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-vip">VIPs only</span>
+        </div>
+        <div class="twerkhub-coming-drop" data-drop-days="14"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div>
+      </div>
+    </div>
+    <!-- 3 · Isabella (3 weeks, BRA 23, autoplay MP4, hover-unmute, try-on custom VIP-only).
+         Video is 9:16 portrait (304x540) — narrower than the 3:4 card aspect. Default
+         object-fit:cover would zoom in and crop. We use .twerkhub-coming-arch-contain to
+         switch to object-fit:contain so the whole frame is visible, letterboxed with a
+         subtle gradient background that matches the card palette. -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c3">
+      <div class="twerkhub-coming-pill">VERY SOON</div>
+      <video class="twerkhub-coming-arch-video" autoplay muted loop playsinline preload="metadata"
+             poster="/assets/models/isabella-poster.svg"
+             onmouseenter="try{this.muted=false;this.currentTime=0;this.play();}catch(_){}"
+             onmouseleave="try{this.muted=true;this.pause();}catch(_){}"
+             ontouchstart="try{this.muted=!this.muted;this.play();}catch(_){}">
+        <source src="/assets/models/isabella.mp4" type="video/mp4">
+      </video>
+      <div class="twerkhub-coming-meta">
+        <span class="twerkhub-coming-handle">@BELLA_BR · BR</span>
+        <h3>Isabella</h3>
+        <div class="twerkhub-coming-tag">BRA · 23 · OF VIP</div>
+        <div class="twerkhub-coming-chips">
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-gold">Custom</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-pink">Try-on</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-scarce">Only 10 slots/mo</span>
+          <span class="twerkhub-coming-chip twerkhub-coming-chip-vip">VIPs only</span>
+        </div>
+        <div class="twerkhub-coming-drop" data-drop-days="21"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div>
+      </div>
+    </div>
+    <!-- 4 · Mariana (4 weeks) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">MA</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@MARI.COL · CO</span><h3>Mariana</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="28"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <!-- 5 · Salomé (5 weeks) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c1"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">SA</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@SALMO · CO</span><h3>Salomé</h3><div class="twerkhub-coming-tag">COL · 18 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="35"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <!-- 6 · Antonella (6 weeks) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c2"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">AN</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@ANTU · CO</span><h3>Antonella</h3><div class="twerkhub-coming-tag">COL · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="42"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <!-- 7 · Emilia (7 weeks) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c3"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">EM</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@EMILIAXX · CO</span><h3>Emilia</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="49"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <!-- 8 · Luciana (8 weeks) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">LU</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@LULU_COL · CO</span><h3>Luciana</h3><div class="twerkhub-coming-tag">COL · 18 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="56"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <!-- 9 · Julianna (9 weeks) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c1"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">JU</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@JULI_VIP · CO</span><h3>Julianna</h3><div class="twerkhub-coming-tag">COL · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="63"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <!-- 10 · Gabriela (10 weeks) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c2"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">GA</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@GABYCOL · CO</span><h3>Gabriela</h3><div class="twerkhub-coming-tag">COL · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="70"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <!-- 11 · Martina (11 weeks) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c3"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">MT</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@MARTIX · AR</span><h3>Martina</h3><div class="twerkhub-coming-tag">ARG · 19 · OF VIP</div><div class="twerkhub-coming-drop" data-drop-days="77"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+    <!-- 12 · Sofía (12 weeks) -->
+    <div class="twerkhub-coming-card twerkhub-coming-card-c4"><div class="twerkhub-coming-pill">VERY SOON</div><div class="twerkhub-coming-arch-placeholder" aria-hidden="true"><span class="twerkhub-coming-arch-init">SO</span><span class="twerkhub-coming-arch-pending">PREVIEW PENDING</span></div><div class="twerkhub-coming-meta"><span class="twerkhub-coming-handle">@SOFIVIP · AR</span><h3>Sofía</h3><div class="twerkhub-coming-tag">ARG · 20 · OF PRIVATE</div><div class="twerkhub-coming-drop" data-drop-days="84"><span class="twerkhub-coming-live-dot"></span>Drop in <strong>—</strong></div></div></div>
+  </div>
+  <div class="twerkhub-coming-foot">· Don't stay here · Move forward ·</div>
+</section>
+
+<!-- ═══ FOUR TIERS pricing · matches /membership/ design ═══ -->
+<style id="membership-tiers-css">
+  .tiers{max-width:1320px;margin:70px auto;padding:32px 26px 64px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  @media(max-width:1200px){.tiers{grid-template-columns:repeat(2,1fr);max-width:900px}}
+  @media(max-width:680px){.tiers{grid-template-columns:1fr;max-width:480px}}
+  .tier{position:relative;background:linear-gradient(170deg,rgba(30,20,40,.5) 0%,rgba(20,10,30,.7) 100%);
+    border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:36px 28px 32px;display:flex;flex-direction:column;
+    transition:all .35s cubic-bezier(.22,.9,.38,1)}
+  .tier:hover{border-color:rgba(255,180,84,.35);transform:translateY(-4px)}
+  .tier--featured{border-color:rgba(232,200,128,.38);box-shadow:0 28px 60px rgba(0,0,0,.4),0 0 0 1px rgba(232,200,128,.2)}
+  .tier--featured::before{content:"MOST REQUESTED";position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    background:linear-gradient(180deg,#e8c880,#d4a850);color:#0a0a0d;
+    padding:5px 14px;border-radius:999px;font:800 9px/1 'Inter',sans-serif;letter-spacing:.24em;
+    box-shadow:0 8px 20px rgba(232,200,128,.35)}
+  .tier__badge{font:700 10px/1 'Inter',sans-serif;letter-spacing:.28em;text-transform:uppercase;
+    color:rgba(168,166,180,.8);margin-bottom:12px}
+  .tier--vip .tier__badge{color:#e8c880}
+  .tier--elite .tier__badge{color:#ff2d87}
+  .tier__name{font:700 30px/1 'Playfair Display',Georgia,serif;color:#fff;margin-bottom:14px;letter-spacing:-.01em}
+  .tier__pitch{font:400 14px/1.55 'Inter',sans-serif;color:rgba(230,230,240,.65);margin-bottom:22px;min-height:66px}
+  .tier__price{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
+  .tier__price .cur{font:500 20px/1 'Playfair Display',Georgia,serif;color:rgba(230,230,240,.6);margin-top:6px}
+  .tier__price .amt{font:700 52px/1 'Playfair Display',Georgia,serif;color:#fff;letter-spacing:-.02em}
+  .tier__price .per{font:500 14px/1 'Inter',sans-serif;color:rgba(168,166,180,.7);margin-left:4px}
+  .tier__alt{font:500 12px/1 'Inter',sans-serif;color:#e8c880;margin-bottom:24px}
+  .tier__alt strong{font-weight:800}
+  .tier__feats{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:26px;flex:1;padding:0}
+  .tier__feats li{display:flex;align-items:flex-start;gap:10px;font:500 13.5px/1.5 'Inter',sans-serif;color:rgba(230,230,240,.85)}
+  .tier__feats li::before{content:"";display:block;width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px;
+    background:rgba(232,200,128,.16);border:1.5px solid #e8c880;
+    background-image:radial-gradient(circle,#e8c880 2.5px,transparent 3px)}
+  .tier--basic .tier__feats li::before{background:rgba(168,166,180,.14);border-color:rgba(168,166,180,.7);
+    background-image:radial-gradient(circle,rgba(168,166,180,.7) 2.5px,transparent 3px)}
+  .tier--elite .tier__feats li::before{background:rgba(255,45,126,.14);border-color:#ff2d87;
+    background-image:radial-gradient(circle,#ff2d87 2.5px,transparent 3px)}
+  .tier__feats .em{color:#e8c880;font-weight:700}
+  .tier--elite .tier__feats .em{color:#ff2d87}
+  .tier__cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;
+    border-radius:10px;font:800 12px/1 'Inter',sans-serif;letter-spacing:.14em;text-transform:uppercase;
+    border:none;cursor:pointer;transition:.25s;text-decoration:none;text-align:center;width:100%}
+  .tier__cta--basic{background:rgba(255,255,255,.04);color:rgba(230,230,240,.85);border:1px solid rgba(255,255,255,.14)}
+  .tier__cta--basic:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3)}
+  .tier__cta--vip{background:linear-gradient(180deg,#e8c880,#d4a850);color:#0a0a0d;
+    box-shadow:0 10px 28px rgba(232,200,128,.3)}
+  .tier__cta--vip:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(232,200,128,.45);filter:brightness(1.08)}
+  .tier__cta--elite{background:linear-gradient(180deg,#ff2d87,#ff6fa8);color:#fff;
+    box-shadow:0 10px 28px rgba(255,45,126,.3)}
+  .tier__cta--elite:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,45,126,.45)}
+  /* Ensure all 4 tiers are visible, including VIP (TIER 03) */
+  .tier{display:flex !important;visibility:visible !important}
+  .tier--vip-mid{display:flex !important}
+  .tiers{display:grid !important;grid-template-columns:repeat(4,1fr) !important}
+</style>
+<section class="tiers" id="tokens" aria-label="Membership tiers">
+  <!-- TIER 01 · BASIC -->
+  <article class="tier tier--basic">
+    <span class="tier__badge">Tier 01 · Basic</span>
+    <h2 class="tier__name">Basic</h2>
+    <p class="tier__pitch">Free to join. Access the public archive and start earning tokens from day one.</p>
+    <div class="tier__price">
+      <span class="cur"></span><span class="amt">FREE</span><span class="per">· register</span>
+    </div>
+    <p class="tier__alt">or <strong>300 tokens</strong></p>
+    <ul class="tier__feats">
+      <li>590+ free videos</li>
+      <li>4 public playlists</li>
+      <li>Discord general</li>
+      <li>Basic token earning</li>
+    </ul>
+    <a class="tier__cta tier__cta--basic" href="/profile">Register free</a>
+  </article>
+
+  <!-- TIER 02 · MEDIUM -->
+  <article class="tier tier--basic">
+    <span class="tier__badge">Tier 02 · Medium</span>
+    <h2 class="tier__name">Medium</h2>
+    <p class="tier__pitch">Early drops, priority queue on customs, VIP Discord access — the starter upgrade.</p>
+    <div class="tier__price">
+      <span class="cur">$</span><span class="amt">9.99</span><span class="per">/ month</span>
+    </div>
+    <p class="tier__alt">or <strong>3,000 tokens</strong></p>
+    <ul class="tier__feats">
+      <li>Early drops (48h head start)</li>
+      <li>Download all videos</li>
+      <li>VIP Discord channels</li>
+      <li><span class="em">Token multiplier ×1.5</span></li>
+    </ul>
+    <a class="tier__cta tier__cta--basic" href="https://discord.gg/WWn8ZgQMjn" data-tier="medium" data-price="9.99" target="_blank" rel="noopener nofollow ugc">Get Medium →</a>
+  </article>
+
+  <!-- TIER 03 · VIP -->
+  <article class="tier tier--vip-mid">
+    <span class="tier__badge">Tier 03 · VIP</span>
+    <h2 class="tier__name">VIP</h2>
+    <p class="tier__pitch">All private models, full 4K vault, personal concierge on Discord — the serious upgrade.</p>
+    <div class="tier__price">
+      <span class="cur">$</span><span class="amt">39.99</span><span class="per">/ month</span>
+    </div>
+    <p class="tier__alt">or <strong>15,000 tokens</strong></p>
+    <ul class="tier__feats">
+      <li>All private models · full archive</li>
+      <li>Download all videos · instant delivery</li>
+      <li>4K vault · 1,500+ cuts</li>
+      <li><span class="em">★ Personal concierge on Discord</span></li>
+      <li><span class="em">★ VIP Discord channels</span></li>
+      <li><span class="em">★ Token multiplier ×2</span></li>
+    </ul>
+    <a class="tier__cta tier__cta--vip" href="https://discord.gg/WWn8ZgQMjn" data-tier="vip" data-price="39.99" target="_blank" rel="noopener nofollow ugc">Get VIP →</a>
+  </article>
+
+  <!-- TIER 04 · PREMIUM · featured "MOST REQUESTED" -->
+  <article class="tier tier--vip tier--featured">
+    <span class="tier__badge">Tier 04 · Premium</span>
+    <h2 class="tier__name">Premium</h2>
+    <p class="tier__pitch">All private models, Download all videos, the 1,500-video 4K vault, token multiplier ×3.</p>
+    <div class="tier__price">
+      <span class="cur">$</span><span class="amt">99.99</span><span class="per">/ month</span>
+    </div>
+    <p class="tier__alt">or <strong>50,000 tokens</strong></p>
+    <ul class="tier__feats">
+      <li>★ 1-day Meet &amp; Greet · any model</li>
+      <li>★ Download all videos · instant delivery</li>
+      <li>★ Personal concierge on Discord</li>
+      <li>★ VR videos early access</li>
+      <li><span class="em">★ Token multiplier ×3</span></li>
+    </ul>
+    <a class="tier__cta tier__cta--elite" href="https://discord.gg/WWn8ZgQMjn" data-tier="vip-top" data-price="99.99" target="_blank" rel="noopener nofollow ugc">Become Premium →</a>
+  </article>
+</section>
+
+<!-- ═══ FARM TOKENS · limited 30 days ═══ -->
+<section class="twerkhub-farm" id="farm-tokens" aria-label="Farm tokens">
+  <div class="twerkhub-farm-ribbon">👑 Limited · 30 days only</div>
+  <h2>Farm tokens like <em>a maniac.</em></h2>
+  <p>Every referral = <strong class="twerkhub-farm-hot">+200 tokens</strong>. Every social share = <strong class="twerkhub-farm-gold">+50 tokens</strong>. No cap, unlimited referrals. <strong>Top farmers unlock up to 10 custom videos per week.</strong> After 30 days this offer ends — don't sleep on it.</p>
+  <div class="twerkhub-farm-countdown" aria-label="Countdown" id="twerkhub-farm-countdown" data-initial-days="30">
+    <div class="twerkhub-farm-cd"><strong id="farm-cd-d">30</strong><span>days</span></div>
+    <div class="twerkhub-farm-cd-sep">:</div>
+    <div class="twerkhub-farm-cd"><strong id="farm-cd-h">00</strong><span>hours</span></div>
+    <div class="twerkhub-farm-cd-sep">:</div>
+    <div class="twerkhub-farm-cd"><strong id="farm-cd-m">00</strong><span>minutes</span></div>
+    <div class="twerkhub-farm-cd-sep">:</div>
+    <div class="twerkhub-farm-cd"><strong id="farm-cd-s">00</strong><span>seconds</span></div>
+  </div>
+  <div class="twerkhub-farm-grid">
+    <article class="twerkhub-farm-card twerkhub-farm-card-gold">
+      <div class="twerkhub-farm-ico">🚀</div><strong>+200 tkn</strong>
+      <p>per referral signup</p>
+      <div class="twerkhub-farm-note">15 friends = 3,000 tkn = Medium tier<br>45 friends = 9,000 tkn = Premium tier</div>
+    </article>
+    <article class="twerkhub-farm-card twerkhub-farm-card-purple">
+      <div class="twerkhub-farm-ico">📱</div><strong>+50 tkn</strong>
+      <p>per social share</p>
+      <div class="twerkhub-farm-note">#twerkhub tag on X · IG · TikTok · Discord<br>3 shares/day = 150 tkn passive</div>
+    </article>
+    <article class="twerkhub-farm-card twerkhub-farm-card-violet">
+      <div class="twerkhub-farm-ico">🎬</div><strong>10 customs</strong>
+      <p>max per week · top farmers</p>
+      <div class="twerkhub-farm-note">Cash in tokens for custom videos<br>Top 10 weekly leaderboard = priority</div>
+    </article>
+  </div>
+  <div class="twerkhub-farm-ctas">
+    <a class="twerkhub-btn twerkhub-btn-gold" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener nofollow ugc">Get your referral link →</a>
+    <a class="twerkhub-btn twerkhub-btn-ghost" href="https://x.com/alexiatwerkofic" target="_blank" rel="noopener">Share on X</a>
+    <a class="twerkhub-btn twerkhub-btn-ghost" href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Share on Telegram</a>
+  </div>
+  <div class="twerkhub-farm-foot">· Don't stay here · Farm forward ·</div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<section class="twk-geo-discover" aria-label="Discover by region">
+  <style id="twk-geo-discover-css">
+    .twk-geo-discover{max-width:1200px;margin:60px auto 30px;padding:30px 26px;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;border-top:1px solid rgba(255,255,255,.08)}
+    .twk-geo-discover .kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px}
+    .twk-geo-discover h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,4vw,40px);font-weight:900;line-height:1.05;margin-bottom:8px;color:#fff}
+    .twk-geo-discover h2 em{font-style:italic;background:linear-gradient(135deg,#fdd835,#ff2d87);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .twk-geo-discover p.lede{color:rgba(230,230,240,.72);font-size:15px;margin-bottom:24px;max-width:720px}
+    .twk-geo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+    .twk-geo-grid a{display:block;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:#fff;text-decoration:none;transition:all .2s}
+    .twk-geo-grid a:hover{background:rgba(255,46,135,.12);border-color:rgba(255,46,135,.35);transform:translateY(-2px)}
+    .twk-geo-grid .name{font-weight:700;font-size:13px;letter-spacing:.02em;margin-bottom:2px}
+    .twk-geo-grid .blurb{font-size:11px;color:rgba(230,230,240,.55);line-height:1.4}
+    @media(max-width:760px){.twk-geo-discover{margin:40px auto 20px;padding:22px 16px}.twk-geo-grid{grid-template-columns:1fr 1fr;gap:8px}}
+  </style>
+  <div class="kicker">/ Discover by region</div>
+  <h2>USA <em>twerk</em> + Japan <em>cosplay</em>.</h2>
+  <p class="lede">The two strongest scenes on the platform — country hubs and city pages, curated by content type.</p>
+  <div class="twk-geo-grid">
+    <a href="/"><div class="name">USA Twerk</div><div class="blurb">Country hub · NYC + LA + Miami + Atlanta</div></a>
+    <a href="/"><div class="name">New York Twerk</div><div class="blurb">NYC studio circuit</div></a>
+    <a href="/"><div class="name">Los Angeles Twerk</div><div class="blurb">LA fancam capital</div></a>
+    <a href="/"><div class="name">Miami Twerk</div><div class="blurb">Reggaetón floor</div></a>
+    <a href="/"><div class="name">California Twerk</div><div class="blurb">West Coast scene</div></a>
+    <a href="/"><div class="name">Atlanta Twerk</div><div class="blurb">Strip-dance heritage</div></a>
+    <a href="/japan-cosplay-fancam.html"><div class="name">Japan Cosplay</div><div class="blurb">Country hub · 4K fancam</div></a>
+    <a href="/tokyo-cosplay-fancam.html"><div class="name">Tokyo Cosplay</div><div class="blurb">Comiket · TGS</div></a>
+    <a href="/osaka-cosplay-fancam.html"><div class="name">Osaka Cosplay</div><div class="blurb">Den-Den Town · Kansai</div></a>
+    <a href="/"><div class="name">UK Twerk</div><div class="blurb">Country hub · London + Manchester</div></a>
+    <a href="/"><div class="name">London Twerk</div><div class="blurb">UK studio circuit</div></a>
+    <a href="/"><div class="name">Manchester Twerk</div><div class="blurb">Northern underground</div></a>
+    <a href="/akihabara-cosplay-fancam.html"><div class="name">Akihabara Cosplay</div><div class="blurb">Otaku district</div></a>
+  </div>
+</section>
+<style id="twk-related-css">.twk-related,.twk-mf{grid-column:1/-1!important}
+.twk-related{max-width:1200px;margin:60px auto 40px;padding:24px 26px;border-top:1px solid rgba(255,255,255,.08);font-family:'Inter',ui-sans-serif,system-ui,sans-serif}
+.twk-related-head{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px}
+.twk-related ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px}
+.twk-related a{display:block;padding:9px 12px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-size:13px;line-height:1.35;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .15s,color .15s,transform .15s}
+.twk-related a:hover{background:rgba(255,46,135,.12);color:#fff;border-color:rgba(255,46,135,.3);transform:translateY(-1px)}
+@media(max-width:760px){.twk-related{margin:36px auto 24px;padding:18px 16px}.twk-related ul{grid-template-columns:1fr 1fr;gap:6px 10px}.twk-related a{padding:8px 10px;font-size:12px}}
+</style>
+<section class="twk-related" data-twk="related" aria-label="Related pages">
+  <div class="twk-related-head">Related on Twerkhub</div>
+  <ul>
+    <li><a href="/creators">All Creators</a></li>
+    <li><a href="/about">Built for the uncut ones.</a></li>
+    <li><a href="/glossary.html">Every word in the scene, explained.</a></li>
+    <li><a href="/community.html">The inside conversation.</a></li>
+    <li><a href="/top-100-twerk-videos.html">Top 100 Twerk Videos</a></li>
+    <li><a href="/">Best Twerk Dancers &amp; Studios</a></li>
+  </ul>
+</section>
+
+<!-- TWK_MEGA_FOOTER_V1 -->
+<style>
+.twk-mf{
+  background:#05050a;color:#c7c7d3;font-family:'Inter',-apple-system,sans-serif;font-size:13.5px;line-height:1.55;
+  border-top:1px solid rgba(255,255,255,.06);padding:64px 0 28px;margin-top:80px;position:relative;z-index:1;
+}
+.twk-mf *{box-sizing:border-box}
+.twk-mf-wrap{max-width:1480px;margin:0 auto;padding:0 32px}
+/* secondary: earn tokens free */
+.twk-mf-earn{
+  background:rgba(255,255,255,.018);border:1px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px 24px;margin-bottom:54px;
+}
+.twk-mf-earn-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:14px;margin-bottom:18px}
+.twk-mf-earn-head h4{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#fff;
+}
+.twk-mf-earn-head h4 b{color:#ffd78a}
+.twk-mf-earn-head p{font-size:12px;color:#8a8a99}
+.twk-mf-earn-head a{
+  color:#c7c7d3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:2px;transition:color .25s,border-color .25s;
+}
+.twk-mf-earn-head a:hover{color:#ffd78a;border-color:#ffd78a}
+.twk-mf-earn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.twk-mf-rule{
+  background:transparent;border:1px solid rgba(255,255,255,.08);padding:14px 12px;border-radius:8px;text-align:center;text-decoration:none;color:inherit;display:block;
+  transition:border-color .2s;
+}
+.twk-mf-rule:hover{border-color:rgba(255,180,84,.4)}
+.twk-mf-rule-act{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#8a8a99;margin-bottom:6px;
+}
+.twk-mf-rule-tk{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:18px;font-weight:700;color:#ffd78a;
+}
+.twk-mf-rule-tk b{font-weight:900}
+
+.twk-mf-row{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:42px;padding-bottom:42px;margin-bottom:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.twk-mf-row+.twk-mf-row{padding-top:42px;padding-bottom:42px}
+.twk-mf-brand{display:block;line-height:1;margin-bottom:14px}
+.twk-mf-brand img{display:block;width:auto;max-width:200px;height:auto;}
+.twk-mf-row p{color:#8a8a99;font-size:13px;line-height:1.7;max-width:340px}
+.twk-mf-row h5{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ffd78a;margin:0 0 18px;
+}
+.twk-mf-row ul{list-style:none;padding:0;margin:0}
+.twk-mf-row ul li{margin-bottom:8px;line-height:1.4}
+.twk-mf-row ul a{
+  color:#c7c7d3;font-size:13.5px;text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;
+}
+.twk-mf-row ul a:hover{color:#ff6fa8;padding-left:5px}
+.twk-mf-bottom{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:24px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#5a5a68;
+}
+.twk-mf-bottom a{color:#8a8a99;text-decoration:none;margin:0 4px}
+.twk-mf-bottom a:hover{color:#ff6fa8}
+@media(max-width:1100px){
+  .twk-mf-earn-grid{grid-template-columns:repeat(2,1fr)}
+  .twk-mf-row{grid-template-columns:1fr 1fr;gap:28px}
+}
+@media(max-width:720px){
+  .twk-mf-wrap{padding:0 18px}
+  .twk-mf-earn-grid{grid-template-columns:1fr}
+  .twk-mf-row{grid-template-columns:1fr;gap:24px}
+}
+</style>
+<footer class="twk-mf" role="contentinfo">
+  <div class="twk-mf-wrap">
+
+    <!-- secondary path: earn tokens free -->
+    <div class="twk-mf-earn">
+      <div class="twk-mf-earn-head">
+        <h4>Earn tokens · <b>climb tiers without paying</b></h4>
+        <a href="/blog/how-to-earn-tokens-twerkhub.html">Full earn guide →</a>
+      </div>
+      <div class="twk-mf-earn-grid">
+        <a class="twk-mf-rule" href="/account">
+          <div class="twk-mf-rule-act">Daily login</div>
+          <div class="twk-mf-rule-tk">+<b>30</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/recent.html">
+          <div class="twk-mf-rule-act">Watch a cut</div>
+          <div class="twk-mf-rule-tk">+<b>10</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/blog/">
+          <div class="twk-mf-rule-act">Field note read</div>
+          <div class="twk-mf-rule-tk">+<b>90</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/blog/discord-community-playbook.html">
+          <div class="twk-mf-rule-act">Refer friend</div>
+          <div class="twk-mf-rule-tk">+<b>200</b></div>
+        </a>
+        <a class="twk-mf-rule" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">
+          <div class="twk-mf-rule-act">Discord weekly</div>
+          <div class="twk-mf-rule-tk">+<b>300</b></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ROW 1 -->
+    <div class="twk-mf-row">
+      <div>
+        <div class="twk-mf-brand"><img src="/logo-twerkhub.png" alt="TWERKHUB" width="200" height="57" decoding="async" loading="lazy"></div>
+        <p>The platform for private custom videos, verified models and the premium archive you can't find anywhere else. Founded by Anti (firestarter) in 2018. Buenos Aires · served worldwide. 18+.</p>
+      </div>
+      <div>
+        <h5>Vaults · 7 playlists</h5>
+        <ul>
+          <li><a href="/hottest-cosplay-fancam/">Cosplay &amp; fancam</a></li>
+          <li><a href="/korean-girls-kpop-twerk/">K-pop &amp; twerk</a></li>
+          <li></li>
+          <li><a href="/alexia-video-packs">Custom video packs</a></li>
+          <li><a href="/">Alexia exclusives</a></li>
+          <li><a href="/account">Your account</a></li>
+          <li><a href="/profile">Your profile</a></li>
+          <li><a href="/creator-dashboard.html">Creator dashboard</a></li>
+          <li><a href="/blog/the-4-tiers-explained.html">The 4 tiers explained</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Why pay · what you unlock</h5>
+        <ul>
+          <li><a href="/blog/twerkhub-vs-onlyfans-fanvue-comparison.html">vs. OF &amp; Fanvue</a></li>
+          <li><a href="/blog/why-i-built-twerkhub.html">Why I built Twerkhub</a></li>
+          <li><a href="/blog/why-twerkhub-has-no-algorithm-feed.html">No algorithm feed</a></li>
+          <li><a href="/blog/best-twerk-creators-2026.html">Best creators · 2026</a></li>
+          <li><a href="/blog/4k-vs-1080p-vs-vr-fancam.html">4K · 1080p · VR</a></li>
+          <li><a href="/blog/weekly-drop-calendar-2026.html">Drop calendar 2026</a></li>
+          <li><a href="/blog/fancam-etiquette-2026.html">Fancam etiquette</a></li>
+          <li><a href="/blog/heels-choreo-beginner-guide.html">Heels choreo · guide</a></li>
+          <li><a href="/blog/">All field notes →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Channels &amp; press</h5>
+        <ul>
+          <li><a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Discord</a></li>
+          <li><a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://x.com/alexiatwerkofic" target="_blank" rel="noopener">X / Twitter</a></li>
+          <li><a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Discord</a></li>
+          <li><a href="https://onlyfans.com/alexiatwerkoficial" target="_blank" rel="noopener">OnlyFans</a></li>
+          <li><a href="https://www.patreon.com/Alexia_Twerk" target="_blank" rel="noopener">Patreon</a></li>
+          <li><a href="mailto:alexiatwerkoficial@gmail.com">Email · press</a></li>
+          <li><a href="/community.html">Community</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="twk-mf-row">
+      <div>
+        <h5>Discovery &amp; search</h5>
+        <ul>
+          <li><a href="/recent.html">Recent · last 200</a></li>
+          <li><a href="/trending.html">Trending · live board</a></li>
+          <li><a href="/search.html">Search the archive</a></li>
+          <li><a href="/glossary.html">Glossary · jargon</a></li>
+          <li><a href="/recommend.html">Get a recommendation</a></li>
+          <li><a href="/variants-showcase.html">Variants showcase</a></li>
+          <li><a href="/variety-catalog.html">Variety catalog</a></li>
+          <li><a href="/">Best dancers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Models · creators</h5>
+        <ul>
+          <li><a href="/models-catalog.html">Models catalog</a></li>
+          <li><a href="/creators">All creators</a></li>
+          <li><a href="/creators-colombia.html">Colombia</a></li>
+          <li><a href="/creators-seoul.html">Seoul</a></li>
+          <li><a href="/creators-moscow.html">Moscow</a></li>
+          <li><a href="/creators-taipei.html">Taipei</a></li>
+          <li><a href="/creators-greece.html">Greece</a></li>
+          <li><a href="/creators-russia.html">Russia</a></li>
+          <li><a href="/creators-latam.html">LATAM</a></li>
+          <li><a href="/creators-usa.html">USA</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Featured talent</h5>
+        <ul>
+          <li><a href="/velvet-young.html">Velvet Young</a></li>
+          <li><a href="/nastya-nass.html">Nastya Nass</a></li>
+          <li><a href="/shoshina-katherina.html">Shoshina Katherina</a></li>
+          <li><a href="/yurgenis.html">Yurgenis</a></li>
+          <li><a href="/group-emiliano-ferrari-villalobo.html">Emiliano Ferrari Villalobo</a></li>
+          <li><a href="/group-kate-knaubl.html">Kate Knaubl</a></li>
+          <li><a href="/group-kelvin-deejay.html">Kelvin DeeJay</a></li>
+          <li><a href="/group-lexy-panterra.html">Lexy Panterra</a></li>
+          <li><a href="/group-monika-99-percent.html">Monika 99%</a></li>
+          <li><a href="/group-street-project-monika.html">Street Project Monika</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Cities &amp; styles</h5>
+        <ul>
+          <li><a href="/style-cosplay-fancam.html">Style · Cosplay</a></li>
+          <li><a href="/style-heels-choreo.html">Style · Heels</a></li>
+          <li><a href="/style-reggaeton-floor.html">Style · Reggaeton</a></li>
+          <li><a href="/japan-cosplay-fancam.html">Japan</a></li>
+          <li><a href="/tokyo-cosplay-fancam.html">Tokyo</a></li>
+          <li><a href="/osaka-cosplay-fancam.html">Osaka</a></li>
+          <li><a href="/akihabara-cosplay-fancam.html">Akihabara</a></li>
+          <li><a href="/">USA</a></li>
+          <li><a href="/">UK</a></li>
+          <li><a href="/">London</a></li>
+          <li><a href="/">New York</a></li>
+          <li><a href="/">Los Angeles</a></li>
+          <li><a href="/">Miami</a></li>
+          <li><a href="/">Atlanta</a></li>
+          <li><a href="/">California</a></li>
+          <li><a href="/">Manchester</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Studios &amp; tutorials</h5>
+        <ul>
+          <li><a href="/twerk-studios.html">Twerk studios</a></li>
+          <li><a href="/kato-dance-studio.html">Kato Dance Studio</a></li>
+          <li><a href="/twerk-tutorials.html">Tutorials</a></li>
+          <li><a href="/twerk-dance-tutorial.html">Dance tutorial</a></li>
+          <li><a href="/twerk-workout-glutes.html">Workout · glutes</a></li>
+          <li><a href="/twerk-dance-4k.html">4K dance edits</a></li>
+          <li><a href="/twerk-dance-battle.html">Dance battle</a></li>
+          <li><a href="/twerk-dance-compilation.html">Compilations</a></li>
+          <li><a href="/twerk-dance-shorts.html">Shorts</a></li>
+          <li><a href="/twerk-dance-music.html">Music edits</a></li>
+          <li><a href="/twerk-dance-video.html">Dance videos</a></li>
+          <li><a href="/">Alexia · leaks</a></li>
+          <li><a href="/alexia-video-packs">Video packs</a></li>
+          <li><a href="/hottest-cosplay-fancam/">Premium · cosplay</a></li>
+          <li><a href="/paid-content.html">Paid content</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- bottom -->
+    <div class="twk-mf-bottom">
+      <span>© 2026 TWERKHUB · Founded by <em style="color:#ff6fa8;font-style:normal">Anti</em> (firestarter) · The Wild Project Models Agency</span>
+      <span>
+        <a href="/about">About</a> ·
+        <a href="/contact.html">Contact</a> ·
+        <a href="/privacy.html">Privacy</a> ·
+        <a href="/terms.html">Terms</a> ·
+        <a href="/glossary.html">Glossary</a> ·
+        <a href="/search.html">Search</a>
+      </span>
+      <span>If you know — you already know</span>
+    </div>
+
+  </div>
+</footer>
+<!-- /TWK_MEGA_FOOTER_V1 -->
+
+<!-- Hero featured-video controller · silenced by default · hover/click unmutes via YT postMessage -->
+<script>
+(function(){
+  'use strict';
+  if (window.__twerkhubHeroVideoInit) return;
+  window.__twerkhubHeroVideoInit = true;
+  function send(iframe, fn, args){
+    if (!iframe || !window.TwkYTGate) return;
+    window.TwkYTGate.send(iframe, {event:'command', func:fn, args: args || []});
+  }
+  function init(){
+    try {
+      var aside = document.querySelector('.twerkhub-home-hero-media[data-hero-video-id]');
+      if (!aside) return;
+      var iframe = aside.querySelector('.twerkhub-hh-iframe');
+      var btn    = aside.querySelector('[data-twerkhub-hero-mute]');
+      var muted  = true;
+      function setMuted(state){
+        muted = !!state;
+        if (!muted) {
+          // Before un-muting the hero, ask the global sound manager to silence
+          // every other video/iframe on the page — only one audible source at
+          // a time, so background MP4s don't layer over the hero track.
+          try { window.TwerkhubSound && window.TwerkhubSound.claim(iframe); } catch(_){}
+        }
+        send(iframe, muted ? 'mute' : 'unMute');
+        // Firefox bug (2026-04-24): calling `unMute` via postMessage without
+        // a prior user-gesture pauses the video silently. Chromium doesn't.
+        // Fire `playVideo` right after, unconditionally, so playback stays
+        // running on mouseenter regardless of the mute state change.
+        send(iframe, 'playVideo');
+        if (btn){
+          btn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+          btn.classList.toggle('is-muted', muted);
+          var label = btn.querySelector('.twerkhub-hh-mute-label');
+          var ico   = btn.querySelector('.twerkhub-hh-mute-ico');
+          if (label) label.textContent = muted ? 'Tap to unmute' : 'Sound on';
+          if (ico)   ico.textContent   = muted ? '🔈' : '🔊';
+        }
+      }
+      // 2026-05-05: hover-mute behavior removed by user request — sound now
+      // stays at the user's chosen state regardless of mouse position. Only
+      // the explicit click toggle controls mute.
+      // Direct postMessage fallback: if TwkYTGate is unavailable / in
+      // cool-off, send commands straight to the iframe so the click never
+      // silently no-ops.
+      function sendDirect(fn, args){
+        try { iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}), '*'); } catch(_){}
+      }
+      function toggleMute(){
+        muted = !muted;
+        if (!muted) {
+          try { window.TwerkhubSound && window.TwerkhubSound.claim(iframe); } catch(_){}
+          send(iframe, 'unMute');
+          sendDirect('unMute');
+          sendDirect('setVolume', [100]);
+        } else {
+          send(iframe, 'mute');
+          sendDirect('mute');
+        }
+        send(iframe, 'playVideo');
+        sendDirect('playVideo');
+        if (btn){
+          btn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+          btn.classList.toggle('is-muted', muted);
+          var label = btn.querySelector('.twerkhub-hh-mute-label');
+          var ico   = btn.querySelector('.twerkhub-hh-mute-ico');
+          if (label) label.textContent = muted ? 'Sound off' : 'Sound on';
+          if (ico)   ico.textContent   = muted ? '🔈' : '🔊';
+        }
+      }
+      // Tap toggles (mobile + click)
+      if (btn) btn.addEventListener('click', function(ev){
+        ev.preventDefault(); ev.stopPropagation();
+        toggleMute();
+      });
+      // 2026-05-06 (3rd time): hover unmutes, mouseleave silences.
+      // - Mouse enters video area → audio plays
+      // - Mouse leaves video area → audio mutes IMMEDIATELY
+      // - The auto-unmute that used to fire 800ms after iframe load is gone,
+      //   so the muted state set here is no longer overridden.
+      aside.addEventListener('mouseenter', function(){
+        muted = false;
+        send(iframe, 'unMute');
+        sendDirect('unMute');
+        sendDirect('setVolume', [100]);
+        send(iframe, 'playVideo');
+        sendDirect('playVideo');
+        try { window.TwerkhubSound && window.TwerkhubSound.claim(iframe); } catch(_){}
+        if (btn){
+          btn.setAttribute('aria-pressed', 'false');
+          btn.classList.remove('is-muted');
+          var lbl = btn.querySelector('.twerkhub-hh-mute-label');
+          var ico = btn.querySelector('.twerkhub-hh-mute-ico');
+          if (lbl) lbl.textContent = 'Sound on';
+          if (ico) ico.textContent = '🔊';
+        }
+      });
+      aside.addEventListener('mouseleave', function(){
+        muted = true;
+        send(iframe, 'mute');
+        sendDirect('mute');
+        if (btn){
+          btn.setAttribute('aria-pressed', 'true');
+          btn.classList.add('is-muted');
+          var lbl = btn.querySelector('.twerkhub-hh-mute-label');
+          var ico = btn.querySelector('.twerkhub-hh-mute-ico');
+          if (lbl) lbl.textContent = 'Sound off';
+          if (ico) ico.textContent = '🔈';
+        }
+      });
+      // Page hide → silence (don't keep audio if user tabs away)
+      document.addEventListener('visibilitychange', function(){
+        if (document.hidden) setMuted(true);
+      });
+    } catch(e){ console.warn('[twerkhub-hero-video] init failed', e); }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+</script>
+
+<!-- Hero countdown REMOVED inline — now solely driven by
+     /assets/twerkhub-countdowns.js (which listens to 'twk-hh-countdown-set')
+     so there's a SINGLE source of truth and no duplicate intervals.
+     The hero rotator above dispatches the event with per-video minutes. -->
+
+
+
+
+<script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
+<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
+
+<!-- Countdowns moved to /assets/twerkhub-countdowns.js (was inline, got truncated). -->
+<script defer src="/assets/twerkhub-countdowns.js?v=20260503-p2"></script>
+<script>
+/* Legacy inline countdowns driver — DISABLED. The dedicated file above handles it now. */
+(function(){
+  'use strict';
+  if (window.__twerkhubCountdownsV1Init) return;
+  window.__twerkhubCountdownsV1Init=true;
+  if(true)return;
+})();
+</script>
+
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
+<script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
+<script defer src="/assets/profile-stats-live.js?v=20260509-p3-deltacap">
+<script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
+<!--twk-seo-hidden-block-->
+<aside class="twk-sr-only" aria-hidden="true" lang="ja">
+  <p>TWERKHUBのメンバー専用アーカイブ — 厳選されたpremium dance cutsを毎週配信。</p>
+  <p>プライベートアーカイブでpremium dance cutsや類似のプレミアムコンテンツをお楽しみください。4Kダンス・ファンカム・クリエイターカット。</p>
+  <p>TWERKHUB全カタログを閲覧:premium dance cuts、認証メンバー限定の希少な完全版リリース。</p>
+</aside>
+<!--/twk-seo-hidden-block-->
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p7"></script>
+
+<!-- twk-age-gate:START -->
+<!-- 18+ age verification modal — portal-only (skips for signed-in users + 30-day cookie) -->
+<script src="/assets/age-gate.js?v=20260509-ag3-scrolltop"></script>
+<!-- twk-age-gate:END -->
+
+<!-- twk-email-capture:START -->
+<script defer src="/assets/twerkhub-email-capture.js?v=20260509-ec3-noblur-keep-home" data-twk-email-capture></script>
+<!-- twk-email-capture:END -->
+
+<!-- Cam-style overlay on the home HERO video rotator (top of page, NOT the playlist cards) -->
+<script defer src="/assets/twerkhub-cam-hero-overlay.js?v=20260508-d1-p2"></script>
+
+<!-- Home retention engine: continue watching + smart quick nav + first-visit funnel + hover prefetch -->
+<script defer src="/assets/twerkhub-home-retention.js?v=20260508-ret2-distribution"></script>
+
+
+<!-- twk-related-auto:START -->
+<style id="twk-rel-auto-css">.twk-rel-auto{max-width:1320px;margin:50px auto 30px;padding:0 26px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif}.twk-rel-auto-head{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:18px;display:block}.twk-rel-auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:880px){.twk-rel-auto-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.twk-rel-auto-grid{grid-template-columns:1fr}}.twk-rel-auto-card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.5);text-decoration:none;color:#f5f5fb;transition:transform .25s,border-color .25s,background .25s}.twk-rel-auto-card:hover{transform:translateY(-2px);border-color:rgba(255,45,135,.45);background:rgba(30,20,40,.7)}.twk-rel-auto-cat{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff6fa8}.twk-rel-auto-title{font-family:"Inter",sans-serif;font-size:14px;font-weight:600;line-height:1.35;color:#e9e9f0}</style>
+<aside class="twk-rel-auto" aria-label="Related pages">
+  <span class="twk-rel-auto-head">★ More from the archive</span>
+  <div class="twk-rel-auto-grid">
+    <a href="/about" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Built for the uncut ones.</span>
+    </a>
+    <a href="/akihabara-cosplay-fancam.html" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Akihabara Cosplay · Otaku District</span>
+    </a>
+    <a href="/" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Alexia Twerk Group Official Archive</span>
+    </a>
+    <a href="/alexia-video-packs" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Pick how deep you go.</span>
+    </a>
+    <a href="/blog/" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">Notes from the archive.</span>
+    </a>
+    <a href="/hottest-cosplay-fancam/" class="twk-rel-auto-card" data-cat="cosplay">
+      <span class="twk-rel-auto-cat">cosplay</span>
+      <span class="twk-rel-auto-title">Hottest cosplay fancam.</span>
+    </a>
+  </div>
+</aside>
+<!-- twk-related-auto:END -->
+
+<!-- Toast host container (guaranteed rendering) -->
+<div id="twk-toast-host-v3" style="position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;"></div>
+<script data-twk="fp-flagship-preview">
+(function(){
+  if(window.__twkFlagshipPreviewInstalled)return;window.__twkFlagshipPreviewInstalled=true;
+  function activate(){
+    var hero=document.querySelector('.twerkhub-fp-hero-video');
+    if(!hero||hero.dataset.twkActivated)return;
+    hero.dataset.twkActivated='1';
+    var img=hero.querySelector('img.twerkhub-fp-hero-poster')||hero.querySelector('img[src*="ytimg.com"]');
+    if(!img)return;
+    var m=img.src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=m?m[1]:null;
+    if(!vid)return;
+    if(getComputedStyle(hero).position==='static')hero.style.position='relative';
+    var iframe=document.createElement('iframe');
+    iframe.className='twk-flagship-preview';
+    iframe.setAttribute('allow','autoplay; encrypted-media');
+    iframe.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;z-index:6;pointer-events:none;background:#000;';
+    // 24-28s en LOOP (mute es obligatorio para autoplay sin gesto)
+    iframe.src='https://www.youtube.com/embed/'+vid+'?start=24&end=28&autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist='+vid+'&disablekb=1&fs=0';
+    hero.appendChild(iframe);
+    var poster=hero.querySelector('.twerkhub-fp-hero-poster');if(poster)poster.style.opacity='0';
+    var freeze=hero.querySelector('.twerkhub-fp-hero-freeze');if(freeze)freeze.style.opacity='0';
+    var scrim=hero.querySelector('.twerkhub-fp-scrim');if(scrim)scrim.style.opacity='0';
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',activate);}else{activate();}
+  setTimeout(activate,500);setTimeout(activate,1500);
+})();
+</script>
+<script src="/assets/twk-thumb-to-video.js?v=20260513-fix4" defer></script>
+<script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
+
+<script defer>
+(function() {
+  const tierData = {
+    'medium': { name: 'MEDIUM', price: 5, currency: '
+</html>
+, period: 'month', tokens: '50K' },
+    'vip': { name: 'VIP', price: 15, currency: '
+</html>
+, period: 'month', tokens: '250K' },
+    'vip-top': { name: 'PREMIUM', price: 50, currency: '
+</html>
+, period: 'month', tokens: '1M' }
+  };
+  function showModal(tierKey) {
+    const tier = tierData[tierKey];
+    if (!tier) return;
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:10000;';
+    const modal = document.createElement('div');
+    modal.style.cssText = 'background:linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);border:3px solid #ffb454;border-radius:15px;padding:40px;max-width:500px;text-align:center;color:#fff;font-family:Arial,sans-serif;';
+    const header = document.createElement('h2');
+    header.textContent = 'ACTIVATE ' + tier.name + '.';
+    header.style.cssText = 'color:#ffb454;font-size:64px;font-weight:bold;margin:0 0 30px 0;';
+    const priceInfo = document.createElement('p');
+    priceInfo.textContent = tier.price + tier.currency + ' / ' + tier.period + ' · ' + tier.tokens + ' tokens';
+    priceInfo.style.cssText = 'font-size:18px;margin:0 0 30px 0;color:#aaa;';
+    const btnContainer = document.createElement('div');
+    btnContainer.style.cssText = 'display:flex;gap:15px;margin:30px 0;';
+    ['Discord', 'Telegram'].forEach(platform => {
+      const btn = document.createElement('button');
+      btn.textContent = 'Activate via ' + platform;
+      btn.style.cssText = 'flex:1;padding:12px 20px;border:none;border-radius:8px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:#fff;font-size:16px;font-weight:bold;cursor:pointer;transition:all 0.3s;';
+      btn.onmouseover = () => { btn.style.transform = 'scale(1.05)'; };
+      btn.onmouseout = () => { btn.style.transform = 'scale(1)'; };
+      btnContainer.appendChild(btn);
+    });
+    const footer = document.createElement('p');
+    footer.textContent = 'Auto-renews monthly · cancel anytime · 100% private';
+    footer.style.cssText = 'font-size:12px;margin:20px 0 0 0;color:#888;';
+    modal.appendChild(header);
+    modal.appendChild(priceInfo);
+    modal.appendChild(btnContainer);
+    modal.appendChild(footer);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  }
+  document.addEventListener('click', (e) => {
+    const tierBtn = e.target.closest('.tier__cta[data-tier]');
+    if (tierBtn && tierBtn.dataset.tier) {
+      e.preventDefault();
+      showModal(tierBtn.dataset.tier);
+    }
+  });
+})();
+</script>
+</body>
+</html>
+

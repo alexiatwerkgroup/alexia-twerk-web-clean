@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="es">
+<head>
+<script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
+<script src="/assets/twk-guardian.js?v=20260509-g1"></script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
+<script data-twk="thumb-v4">(function(){function tryNext(i,vid,arr,idx){if(idx>=arr.length){i.style.display='none';return;}i.onerror=function(){tryNext(i,vid,arr,idx+1);};i.onload=function(){if(i.naturalWidth<=120){tryNext(i,vid,arr,idx+1);}};i.src='https://i.ytimg.com/vi/'+vid+'/'+arr[idx];}function fix(){document.querySelectorAll('img').forEach(function(i){var m=(i.src||'').match(/ytimg\.com\/vi\/([\w-]{11})/);var vid=i.dataset.vid||(m?m[1]:null);if(!vid)return;if(i.loading==='lazy')i.loading='eager';if(!i.complete||i.naturalWidth<=120){tryNext(i,vid,['maxresdefault.jpg','hqdefault.jpg','mqdefault.jpg','sddefault.jpg','0.jpg'],0);}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+<style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
+<script>(function(){function force(){try{var imgs=document.querySelectorAll('img[src*="i.ytimg.com"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];im.setAttribute('loading','eager');im.style.opacity='1';im.style.visibility='visible';im.style.display='block';if(!im.dataset.twkOrigSrc){im.dataset.twkOrigSrc=im.getAttribute('src')||'';}var s=im.getAttribute('src');if(s)im.src=s;}}catch(_){}}function recover(){try{var bad=document.querySelectorAll('img[src*="thumb-unavailable"]');for(var i=0;i<bad.length;i++){var im=bad[i];if(im.dataset.twkOrigSrc){im.src=im.dataset.twkOrigSrc;}}}catch(_){}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){force();recover();});}else{force();recover();}setTimeout(function(){force();recover();},500);setTimeout(function(){force();recover();},2000);})();</script>
+<style id="twk-sr-only-seo">.twk-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Glosario twerk · Twerkhub</title>
+<meta name="description" content="21 términos de twerk explicados en español: fancam, dembow, K-dance, perreo, heels choreo, bounce, floor work, stripdance, jazz-funk, reggaetón, stage cut.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://alexiatwerkgroup.com/es/glossary">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/glossary.html">
+<link rel="alternate" hreflang="es" href="https://alexiatwerkgroup.com/es/glossary.html">
+<link rel="alternate" hreflang="ru" href="https://alexiatwerkgroup.com/ru/glossary.html">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/glossary.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Glosario twerk · 21 términos · ES">
+<meta property="og:description" content="Cada palabra de la escena explicada — fancam, dembow, perreo, K-dance, heels choreo.">
+<meta property="og:url" content="https://alexiatwerkgroup.com/es/glossary">
+<meta property="og:image" content="https://alexiatwerkgroup.com/logo-twerkhub.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap&family=Anton">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTermSet","name":"Glosario Twerkhub · español","url":"https://alexiatwerkgroup.com/es/glossary.html","inLanguage":"es","publisher":{"@type":"Organization","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"},"hasDefinedTerm":[{"@type":"DefinedTerm","name":"Fancam","description":"Grabación con cámara de teléfono de un dancer o performer desde el público, usualmente en evento o concierto."},{"@type":"DefinedTerm","name":"Perreo","description":"Baile en pareja de contacto cercano originado en Puerto Rico y el Caribe, caracterizado por sentadilla baja y movimiento de cadera al ritmo del reggaetón."},{"@type":"DefinedTerm","name":"Dembow","description":"Patrón rítmico base del reggaetón — boom-ch-boom-chick — nombrado por el track de Shabba Ranks de 1990."},{"@type":"DefinedTerm","name":"K-dance","description":"Coreografía de estudio coreana/taiwanesa — entrenada por conteos, ensemble, plano fijo wide."},{"@type":"DefinedTerm","name":"Heels choreo","description":"Coreografía ejecutada en tacos altos, enfatiza línea de pierna, aislamiento de cadera y trabajo de piso."}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://alexiatwerkgroup.com/es/"},{"@type":"ListItem","position":2,"name":"Glosario","item":"https://alexiatwerkgroup.com/es/glossary.html"}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.72;min-height:100vh;padding-bottom:120px}
+a{color:#ff6fa8;text-decoration:none}
+a:hover{color:#ffb454}
+.wrap{max-width:780px;margin:0 auto;padding:110px 28px 40px}
+.kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:14px}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(42px,6vw,72px);font-weight:900;line-height:1.05;letter-spacing:-.025em;margin-bottom:20px}
+h1 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:18px;color:#c7c7d3;margin-bottom:40px;max-width:600px}
+.az{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:36px;padding:14px 18px;border-radius:18px;background:rgba(20,20,32,.5);border:1px solid rgba(255,255,255,.06)}
+.az a{padding:6px 11px;border-radius:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:800;color:#c7c7d3;font-size:13px;letter-spacing:.08em;transition:all .2s}
+.az a:hover{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff}
+.term{padding:22px;margin-bottom:14px;border-radius:18px;background:rgba(20,20,32,.4);border:1px solid rgba(255,255,255,.06);transition:all .35s cubic-bezier(.22,.9,.38,1)}
+.term:hover{border-color:rgba(255,45,135,.35);transform:translateX(4px);background:rgba(20,20,32,.7)}
+.term h2{font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:900;color:#fff;margin-bottom:8px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.term h2 .kin{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#ffb454;font-family:'JetBrains Mono',ui-monospace,monospace}
+.term p{color:#d8d8e2;font-size:15.5px;margin-bottom:6px}
+.term .ex{display:block;font-size:13.5px;color:#9a9aab;font-style:italic;margin-top:6px}
+.locale-bar{display:inline-flex;gap:8px;margin-bottom:24px;padding:6px;border-radius:999px;background:rgba(20,20,32,.7);border:1px solid rgba(255,255,255,.08)}
+.locale-bar a{padding:6px 14px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#9a9aab}
+.locale-bar a.active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff}
+.back{display:inline-block;margin-top:44px;padding:12px 26px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff;font-weight:800;letter-spacing:.04em;text-transform:uppercase;font-size:13px}
+</style>
+<!-- twk-schema-v2 -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Glosario twerk · 21 términos · fancam, dembow, K-dance, perreo, heels choreo","description":"21 términos de twerk explicados en español: fancam, dembow, K-dance, perreo, heels choreo, bounce, floor work, stripdance, jazz-funk, reggaetón, stage cut. Glosario Twerkhub · 2026.","url":"https://alexiatwerkgroup.com/es/glossary.html","isPartOf":{"@type":"WebSite","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"}}</script>
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YSFR7FHCLS', { send_page_view: true });
+</script>
+<link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260507-b5-no-pink-lines">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
+<link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+</head>
+<body class="twerkhub-page twerkhub-ph-theme">
+<a href="#main" class="twk-sr-only">Skip to content</a>
+
+<!-- TWK_NAV_V1 -->
+<style id="twk-nav-v1-css">
+.twk-nav-v1{position:sticky!important;top:0!important;z-index:9999!important;background:rgba(5,5,10,.94)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)!important;margin:0!important;width:100%!important;display:block!important}
+.twk-nav-v1-inner{max-width:1480px!important;margin:0 auto!important;padding:14px 26px!important;display:flex!important;align-items:center!important;gap:14px!important;flex-wrap:nowrap!important;grid-template-columns:none!important}
+.twk-nav-v1-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;flex-shrink:0}
+.twk-nav-v1-brand img{width:auto;height:34px;max-width:140px;border-radius:6px;display:block;object-fit:contain}
+.twk-nav-v1-links{display:flex;align-items:center;gap:2px;flex-wrap:nowrap;margin-left:auto;white-space:nowrap}
+.twk-nav-v1-links a{position:relative;padding:10px 14px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;line-height:1;transition:color .22s ease,background .22s ease,transform .2s ease;white-space:nowrap}
+.twk-nav-v1-links a:hover{background:rgba(255,255,255,.05);color:#fff;transform:translateY(-1px)}
+.twk-nav-v1-links a.is-active{color:#fff;background:transparent}
+.twk-nav-v1-links a.is-active::after{content:"";position:absolute;left:18%;right:18%;bottom:2px;height:2px;border-radius:2px;background:linear-gradient(90deg,#ff2d87,#ffb454);box-shadow:0 0 10px rgba(255,45,135,.55)}
+.twk-nav-v1-links a.twk-nav-v1-hot{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(255,180,84,.18));color:#ff7eb0;border:1px solid rgba(255,45,135,.45);padding-left:14px}
+.twk-nav-v1-links a.twk-nav-v1-hot:hover{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;border-color:transparent;box-shadow:0 6px 18px rgba(255,45,135,.4)}
+.twk-nav-v1-live{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);color:#1ee08f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;margin-left:6px}
+.twk-nav-v1-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;animation:twkLivePulse 2s ease-in-out infinite}
+@keyframes twkLivePulse{0%,100%{opacity:1}50%{opacity:.4}}
+.twk-nav-v1-lang{display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:3px;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.twk-nav-v1-lang a{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;color:rgba(230,230,240,.55);text-decoration:none;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.18em;line-height:1;text-transform:uppercase;transition:color .15s,background .15s,box-shadow .25s,transform .2s}
+.twk-nav-v1-lang a:hover{color:#fff;background:rgba(255,255,255,.06);transform:translateY(-1px)}
+.twk-nav-v1-lang a.is-active{color:#fff;padding:6px 12px;background:linear-gradient(135deg,#ff2d87,#ff9000);box-shadow:0 4px 12px rgba(255,45,135,.4);letter-spacing:.22em;border:0}
+.twk-nav-v1-lang a.is-active::before{content:"";display:inline-block;width:11px;height:11px;margin-right:5px;margin-top:-2px;vertical-align:middle;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231ee08f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 15 12 9 18 15'/></svg>");background-repeat:no-repeat;background-size:contain;filter:drop-shadow(0 0 5px rgba(30,224,143,.85)) drop-shadow(0 0 10px rgba(30,224,143,.45));animation:twk-lang-pulse 1.3s ease-in-out infinite;will-change:transform,opacity}
+@keyframes twk-lang-pulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-3px);opacity:.5}}
+@media(max-width:880px){.twk-nav-v1-lang{display:none}}
+@media(max-width:1180px){.twk-nav-v1-links a{padding:8px 10px;font-size:10.5px;letter-spacing:.08em}}
+@media(max-width:1024px){.twk-nav-v1-links{gap:0}.twk-nav-v1-links a{padding:8px 8px;font-size:10px;letter-spacing:.06em}.twk-nav-v1-live{font-size:9px;padding:5px 9px}}
+@media(max-width:880px){.twk-nav-v1-inner{padding:10px 14px;gap:8px}.twk-nav-v1-links{gap:1px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:2px}.twk-nav-v1-links a{padding:7px 8px;font-size:10px}.twk-nav-v1-brand span{display:none}.twk-nav-v1-live{display:none}}
+.twerkhub-pl-thumb,.vthumb,.rk-thumb,.twerkhub-fp-thumb,.twerkhub-club-thumb{background:linear-gradient(135deg,#1a0a1f 0%,#2a0f3d 50%,#0a0a14 100%)!important}
+.twerkhub-pl-thumb img,.vthumb img,.rk-thumb img,.twerkhub-fp-thumb img,.twerkhub-club-thumb img{background:transparent}
+</style>
+<nav class="twk-nav-v1" aria-label="Primary" data-twk-nav-v1>
+  <div class="twk-nav-v1-inner">
+    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub · home">
+      <img src="/logo-twerkhub.png" alt="Twerkhub" width="120" height="34" decoding="async">
+      <span>TWERKHUB · EST. 2018</span>
+    </a>
+    <div class="twk-nav-v1-links">
+      <a href="/" data-nav="home">HOME</a>
+      <a href="/#private-models" data-nav="exclusive">EXCLUSIVE</a>
+      <a href="/#playlists" data-nav="playlists">PLAYLISTS</a>
+      <a href="/creators" data-nav="creators">CREATORS</a>
+      <a href="/alexia-video-packs" class="twk-nav-v1-hot" data-nav="hotpacks">HOT PACKS</a>
+      <a href="/community.html" data-nav="community">COMMUNITY</a>
+      <a href="/membership" data-nav="membership">MEMBERSHIP</a>
+      <a href="/account" data-nav="account">MY ACCOUNT</a>
+      <a href="/profile" data-nav="profile">PROFILE</a>
+    </div>
+    <div class="twk-nav-v1-lang" role="group" aria-label="Language">
+      <a href="/en/" data-lang="en" title="English">EN</a>
+      <a href="/es/" data-lang="es" class="is-active" title="Español">ES</a>
+      <a href="/ru/" data-lang="ru" title="Русский">RU</a>
+      <a href="/pt/" data-lang="pt" title="Português">PT</a>
+    </div>
+    <div class="twerkhub-tokens-hud twk-tk-hud--in-nav" id="twk-tokens-hud-v3" style="display:inline-flex;align-items:center;height:28px;margin-right:6px;flex-shrink:0;pointer-events:auto;"><button type="button" style="pointer-events:auto;display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(255,180,84,.16));border:1px solid rgba(30,224,143,.55);box-shadow:0 6px 20px rgba(30,224,143,.18),0 2px 6px rgba(0,0,0,.4);color:#f5f5fb;font-weight:800;letter-spacing:.06em;cursor:pointer;font-family:Inter,ui-sans-serif,system-ui;font-size:13px;" id="twk-tokens-badge" aria-label="Token balance"><span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#1ee08f,#30ff9f);box-shadow:0 0 12px rgba(30,224,143,.6);" aria-hidden="true"></span><span id="twk-tokens-count" style="font-variant-numeric:tabular-nums;">0</span> <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;">tokens</span> <span id="twk-tokens-tier" style="font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:#1ee08f;">BASIC</span></button></div>
+    <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
+  </div>
+</nav>
+<script>
+(function(){
+  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
+  function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
+  setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
+  function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
+  loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260513-blindaje-v62','twk-loader-token-system');
+  loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
+})();
+</script>
+
+
+<div class="wrap">
+  <div class="kicker">/ Glosario · 21 términos · ES</div>
+  <div class="locale-bar"><a href="/glossary.html">EN</a><a href="/es/glossary.html" class="active">ES</a></div>
+  <h1>Cada palabra de la <em>escena,</em> explicada.</h1>
+  <p class="lede">Si caíste en Twerkhub y la mitad de los captions parecen otro idioma — esta página es la respuesta. 21 términos de historia del baile, ritmo del reggaetón, técnica K-dance y economía de creadores.</p>
+
+  <div class="az">
+    <a href="#bounce">B</a> <a href="#booty-dance">D</a> <a href="#fancam">F</a> <a href="#heels">H</a>
+    <a href="#idance">I</a> <a href="#jazz-funk">J</a> <a href="#kdance">K</a> <a href="#perreo">P</a>
+    <a href="#reggaeton">R</a> <a href="#stripdance">S</a> <a href="#twerk">T</a>
+  </div>
+
+  <section id="bounce" class="term"><h2>Bounce <span class="kin">· baile · Nueva Orleans 1990s</span></h2><p>Subgénero original americano del rap + baile del que desciende el twerk. BPM rápido (~95), voces de llamada-y-respuesta, movimiento de cadera continuo. Big Freedia y los Hot Boys lo llevaron al mainstream.</p><span class="ex">ej. "el momento twerk de Miley en 2013 fue una versión diluida de un movimiento de bounce"</span></section>
+
+  <section id="booty-dance" class="term"><h2>Booty dance <span class="kin">· término paraguas</span></h2><p>Cualquier estilo de baile centrado en aislamiento de glúteos y cadera. El twerk es un subset. El perreo del reggaetón es otro. El K-dance lo cruza a veces.</p><span class="ex">ej. "su canal hace booty dance en general, no twerk puro"</span></section>
+
+  <section id="dembow" class="term"><h2>Dembow <span class="kin">· ritmo · Panamá / PR 1990</span></h2><p>El beat fundacional del reggaetón — un patrón de cuatro tiempos sincopado sampleado del track "Dem Bow" de Shabba Ranks de 1990. Desde Daddy Yankee hasta Bad Bunny todo cabalga este ritmo.</p><span class="ex">ej. "el drop pega en el compás del dembow, ahí cae el twerk"</span></section>
+
+  <section id="fancam" class="term"><h2>Fancam <span class="kin">· formato de video · origen K-pop</span></h2><p>Video grabado por un fan (usualmente con teléfono) enfocado en una sola performer durante una rutina entera. Originado en la cultura de conciertos de K-pop. Ahora formato estándar para contenido twerk porque preserva la frase completa.</p><span class="ex">ej. "su fancam de Busan tiene 200K vistas en 48h"</span></section>
+
+  <section id="floor-work" class="term"><h2>Floor work <span class="kin">· técnica</span></h2><p>Cualquier coreografía ejecutada en manos y rodillas o totalmente en el piso. Movimiento característico del reggaetón y stripdance. Raro en K-dance puro.</p><span class="ex">ej. "la segunda mitad es todo floor work, es la parte más difícil"</span></section>
+
+  <section id="heels" class="term"><h2>Heels choreo <span class="kin">· sub-estilo</span></h2><p>Coreografía ejecutada en tacos altos. Enfatiza línea de pierna, aislamiento controlado de cadera y timing sensual lento. Лада Гоцци y Lena Indica son las referencias.</p><span class="ex">ej. "pasó de chatas a heels choreo — otro juego completo"</span></section>
+
+  <section id="idance" class="term"><h2>iDance Studio <span class="kin">· estudio · Taipei</span></h2><p>Estudio de baile basado en Taipei, entre los canales de contenido twerk más productivos globalmente. Angela, FOXYEN, WanGong Lin y otros instructores nombrados comparten el paraguas iDance.</p></section>
+
+  <section id="jazz-funk" class="term"><h2>Jazz-funk <span class="kin">· base técnica</span></h2><p>Estilo de danza de estudio que mezcla técnica jazz, ritmo funk y vocabulario callejero. La mayoría de las dancers K-dance twerk arrancan en jazz-funk antes de especializarse.</p></section>
+
+  <section id="kdance" class="term"><h2>K-dance <span class="kin">· escuela · Corea/Taiwán 2010s</span></h2><p>Metodología coreana + taiwanesa de baile en estudio: frase de 8 tiempos, formaciones ensemble, plano fijo wide, coreografía sobre improvisación. El twerk K-dance es el twerk interpretado a través de esta metodología.</p><span class="ex">ej. "leé nuestra nota <a href='/blog/k-dance-vs-reggaeton-twerk.html'>K-dance vs reggaetón</a>"</span></section>
+
+  <section id="kicker" class="term"><h2>Kicker <span class="kin">· tipografía / UI</span></h2><p>La etiqueta corta en mayúsculas arriba de un heading que te dice en qué sección estás. Twerkhub los usa en todos lados (ej. "/ The story · Est. 2018").</p></section>
+
+  <section id="lock-pill" class="term"><h2>Lock pill <span class="kin">· UI · paywall</span></h2><p>El badge flotante "🔒 USD 9.99" que aparece en cards no-top-5 para no-suscriptores. Twerkhub lo usa con suavidad — la mayoría de las cards son gratis.</p></section>
+
+  <section id="perreo" class="term"><h2>Perreo <span class="kin">· baile · PR / Caribe</span></h2><p>Baile en pareja de contacto cercano originado en Puerto Rico y el Caribe en general. Sentadilla baja, grindeo apretado, frente-espalda entre partners. El primo social del reggaetón.</p><span class="ex">ej. "Yurgenis hace perreo estilizado — solo, no en pareja"</span></section>
+
+  <section id="playlist" class="term"><h2>Playlist <span class="kin">· unidad de curaduría Twerkhub</span></h2><p>En Twerkhub un "playlist" no es un link de YouTube — es un archivo temático (Korean, Cosplay fancam, Latina model, Try-on haul, TTL principal, etc) con su propio ranking hot, landing page y drop semanal.</p></section>
+
+  <section id="reggaeton" class="term"><h2>Reggaetón <span class="kin">· género · PR 1990s</span></h2><p>Género puertorriqueño construido sobre el ritmo dembow. Nos dio a Daddy Yankee, J Balvin, Bad Bunny, Karol G. La música a la que el twerk de escuela reggaetón le baila.</p></section>
+
+  <section id="stripdance" class="term"><h2>Stripdance <span class="kin">· sub-estilo</span></h2><p>Coreografía de estudio que toma vocabulario del burlesque y del trabajo de piso del strip club. Tacos, body rolls, timing sensual lento. BEFOX Dance Studio es la referencia.</p></section>
+
+  <section id="studio" class="term"><h2>Studio cut <span class="kin">· formato</span></h2><p>Video grabado dentro de un estudio de baile con luz y cámara controladas. Distinto del fancam (público) o del live cut (escenario). La forma más limpia de estudiar técnica.</p></section>
+
+  <section id="tnum" class="term"><h2>Token <span class="kin">· economía Twerkhub</span></h2><p>La moneda interna de la plataforma. Se gana navegando, mirando, completando clips, streaks de login diario y referidos. Los thresholds desbloquean los tiers Medium / Premium / VIP Top.</p><span class="ex">ej. ver <a href='/blog/how-to-earn-tokens-twerkhub.html'>cómo ganar 10,000 tokens en 3 semanas</a></span></section>
+
+  <section id="ttl" class="term"><h2>Premium · "Top The List" <span class="kin">· interno Twerkhub</span></h2><p>Nuestro nombre interno para el #1 semanal de todos los playlists — el cut más replayed de la semana. Se publica jueves 00:00 ART.</p></section>
+
+  <section id="try-on" class="term"><h2>Try-on haul <span class="kin">· formato de contenido</span></h2><p>Formato donde la creadora se prueba múltiples outfits (bikini, lencería, swim, costume). En Twerkhub, el playlist de try-on captura la versión adyacente a baile — outfits ajustados ejecutando coreografía corta entre cambios.</p></section>
+
+  <section id="twerk" class="term"><h2>Twerk <span class="kin">· el movimiento · Nueva Orleans ~1993</span></h2><p>Movimiento aislado rápido de glúteos y cadera, típicamente en sentadilla baja. Nombrado en "Do The Jubilee All" de DJ Jubilee (1993). El movimiento que une a cada creadora de esta plataforma.</p></section>
+
+  <section id="vip" class="term"><h2>VIP Top <span class="kin">· tier 4 Twerkhub</span></h2><p>Tier más alto de la membresía Twerkhub. Desbloquea archivo privado completo, línea directa de Discord con Alexia, clips exclusivos mensuales, prioridad de contenido custom. Threshold: 50.000 tokens o USD 99,99/mes.</p></section>
+
+  <a class="back" href="/es/">← Volver al inicio</a>
+</div>
+<style id="twk-related-css">.twk-related,.twk-mf{grid-column:1/-1!important}
+.twk-related{max-width:1200px;margin:60px auto 40px;padding:24px 26px;border-top:1px solid rgba(255,255,255,.08);font-family:'Inter',ui-sans-serif,system-ui,sans-serif}
+.twk-related-head{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px}
+.twk-related ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px}
+.twk-related a{display:block;padding:9px 12px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-size:13px;line-height:1.35;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .15s,color .15s,transform .15s}
+.twk-related a:hover{background:rgba(255,46,135,.12);color:#fff;border-color:rgba(255,46,135,.3);transform:translateY(-1px)}
+@media(max-width:760px){.twk-related{margin:36px auto 24px;padding:18px 16px}.twk-related ul{grid-template-columns:1fr 1fr;gap:6px 10px}.twk-related a{padding:8px 10px;font-size:12px}}
+</style>
+<section class="twk-related" data-twk="related" aria-label="Relacionados en Twerkhub">
+  <div class="twk-related-head">Relacionados en Twerkhub</div>
+  <ul>
+    <li><a href="/es/style-reggaeton-floor.html">Reggaetón floor work. La regla del dembow.</a></li>
+    <li><a href="/es/style-heels-choreo.html">Heels choreo, decodificado.</a></li>
+    <li><a href="/es/style-cosplay-fancam.html">Cosplay fancam. El estilo del piso de convención.</a></li>
+    <li><a href="/es/search.html">Encontrá cualquier cosa en el archivo.</a></li>
+    <li><a href="/es/about.html">Construída para las que no se cortan.</a></li>
+    <li><a href="/es/contact.html">Decí hola.</a></li>
+  </ul>
+</section>
+
+<!-- TWK_MEGA_FOOTER_V1 -->
+<style>
+.twk-mf{
+  background:#05050a;color:#c7c7d3;font-family:'Inter',-apple-system,sans-serif;font-size:13.5px;line-height:1.55;
+  border-top:1px solid rgba(255,255,255,.06);padding:64px 0 28px;margin-top:80px;position:relative;z-index:1;
+}
+.twk-mf *{box-sizing:border-box}
+.twk-mf-wrap{max-width:1480px;margin:0 auto;padding:0 32px}
+/* secondary: earn tokens free */
+.twk-mf-earn{
+  background:rgba(255,255,255,.018);border:1px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px 24px;margin-bottom:54px;
+}
+.twk-mf-earn-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:14px;margin-bottom:18px}
+.twk-mf-earn-head h4{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#fff;
+}
+.twk-mf-earn-head h4 b{color:#ffd78a}
+.twk-mf-earn-head p{font-size:12px;color:#8a8a99}
+.twk-mf-earn-head a{
+  color:#c7c7d3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:2px;transition:color .25s,border-color .25s;
+}
+.twk-mf-earn-head a:hover{color:#ffd78a;border-color:#ffd78a}
+.twk-mf-earn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.twk-mf-rule{
+  background:transparent;border:1px solid rgba(255,255,255,.08);padding:14px 12px;border-radius:8px;text-align:center;text-decoration:none;color:inherit;display:block;
+  transition:border-color .2s;
+}
+.twk-mf-rule:hover{border-color:rgba(255,180,84,.4)}
+.twk-mf-rule-act{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#8a8a99;margin-bottom:6px;
+}
+.twk-mf-rule-tk{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:18px;font-weight:700;color:#ffd78a;
+}
+.twk-mf-rule-tk b{font-weight:900}
+
+.twk-mf-row{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:42px;padding-bottom:42px;margin-bottom:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.twk-mf-row+.twk-mf-row{padding-top:42px;padding-bottom:42px}
+.twk-mf-brand{display:block;line-height:1;margin-bottom:14px}
+.twk-mf-brand img{display:block;width:auto;max-width:200px;height:auto;}
+.twk-mf-row p{color:#8a8a99;font-size:13px;line-height:1.7;max-width:340px}
+.twk-mf-row h5{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ffd78a;margin:0 0 18px;
+}
+.twk-mf-row ul{list-style:none;padding:0;margin:0}
+.twk-mf-row ul li{margin-bottom:8px;line-height:1.4}
+.twk-mf-row ul a{
+  color:#c7c7d3;font-size:13.5px;text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;
+}
+.twk-mf-row ul a:hover{color:#ff6fa8;padding-left:5px}
+.twk-mf-bottom{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:24px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#5a5a68;
+}
+.twk-mf-bottom a{color:#8a8a99;text-decoration:none;margin:0 4px}
+.twk-mf-bottom a:hover{color:#ff6fa8}
+@media(max-width:1100px){
+  .twk-mf-earn-grid{grid-template-columns:repeat(2,1fr)}
+  .twk-mf-row{grid-template-columns:1fr 1fr;gap:28px}
+}
+@media(max-width:720px){
+  .twk-mf-wrap{padding:0 18px}
+  .twk-mf-earn-grid{grid-template-columns:1fr}
+  .twk-mf-row{grid-template-columns:1fr;gap:24px}
+}
+</style>
+<footer class="twk-mf" role="contentinfo">
+  <div class="twk-mf-wrap">
+
+    <!-- secondary path: earn tokens free -->
+    <div class="twk-mf-earn">
+      <div class="twk-mf-earn-head">
+        <h4>Earn tokens · <b>climb tiers without paying</b></h4>
+        <a href="/blog/how-to-earn-tokens-twerkhub.html">Full earn guide →</a>
+      </div>
+      <div class="twk-mf-earn-grid">
+        <a class="twk-mf-rule" href="/account">
+          <div class="twk-mf-rule-act">Daily login</div>
+          <div class="twk-mf-rule-tk">+<b>30</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/recent.html">
+          <div class="twk-mf-rule-act">Watch a cut</div>
+          <div class="twk-mf-rule-tk">+<b>10</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/blog/">
+          <div class="twk-mf-rule-act">Field note read</div>
+          <div class="twk-mf-rule-tk">+<b>90</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/blog/discord-community-playbook.html">
+          <div class="twk-mf-rule-act">Refer friend</div>
+          <div class="twk-mf-rule-tk">+<b>200</b></div>
+        </a>
+        <a class="twk-mf-rule" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">
+          <div class="twk-mf-rule-act">Discord weekly</div>
+          <div class="twk-mf-rule-tk">+<b>300</b></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ROW 1 -->
+    <div class="twk-mf-row">
+      <div>
+        <div class="twk-mf-brand"><img src="/logo-twerkhub.png" alt="TWERKHUB" width="200" height="57" decoding="async" loading="lazy"></div>
+        <p>The platform for private custom videos, verified models and the premium archive you can't find anywhere else. Founded by Anti (firestarter) in 2018. Buenos Aires · served worldwide. 18+.</p>
+      </div>
+      <div>
+        <h5>Vaults · 7 playlists</h5>
+        <ul>
+          <li><a href="/hottest-cosplay-fancam/">Cosplay &amp; fancam</a></li>
+          <li><a href="/korean-girls-kpop-twerk/">K-pop &amp; twerk</a></li>
+          <li></li>
+          <li><a href="/alexia-video-packs">Custom video packs</a></li>
+          <li><a href="/">Alexia exclusives</a></li>
+          <li><a href="/account">Your account</a></li>
+          <li><a href="/profile">Your profile</a></li>
+          <li><a href="/creator-dashboard.html">Creator dashboard</a></li>
+          <li><a href="/blog/the-4-tiers-explained.html">The 4 tiers explained</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Why pay · what you unlock</h5>
+        <ul>
+          <li><a href="/blog/twerkhub-vs-onlyfans-fanvue-comparison.html">vs. OF &amp; Fanvue</a></li>
+          <li><a href="/blog/why-i-built-twerkhub.html">Why I built Twerkhub</a></li>
+          <li><a href="/blog/why-twerkhub-has-no-algorithm-feed.html">No algorithm feed</a></li>
+          <li><a href="/blog/best-twerk-creators-2026.html">Best creators · 2026</a></li>
+          <li><a href="/blog/4k-vs-1080p-vs-vr-fancam.html">4K · 1080p · VR</a></li>
+          <li><a href="/blog/weekly-drop-calendar-2026.html">Drop calendar 2026</a></li>
+          <li><a href="/blog/fancam-etiquette-2026.html">Fancam etiquette</a></li>
+          <li><a href="/blog/heels-choreo-beginner-guide.html">Heels choreo · guide</a></li>
+          <li><a href="/blog/">All field notes →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Channels &amp; press</h5>
+        <ul>
+          <li><a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/+q1cooFnvQctlNjRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://x.com/alexiatwerkofic" target="_blank" rel="noopener">X / Twitter</a></li>
+          <li><a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Discord</a></li>
+          <li><a href="https://onlyfans.com/alexiatwerkoficial" target="_blank" rel="noopener">OnlyFans</a></li>
+          <li><a href="https://www.patreon.com/Alexia_Twerk" target="_blank" rel="noopener">Patreon</a></li>
+          <li><a href="mailto:alexiatwerkoficial@gmail.com">Email · press</a></li>
+          <li><a href="/community.html">Community</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="twk-mf-row">
+      <div>
+        <h5>Discovery &amp; search</h5>
+        <ul>
+          <li><a href="/recent.html">Recent · last 200</a></li>
+          <li><a href="/trending.html">Trending · live board</a></li>
+          <li><a href="/search.html">Search the archive</a></li>
+          <li><a href="/glossary.html">Glossary · jargon</a></li>
+          <li><a href="/recommend.html">Get a recommendation</a></li>
+          <li><a href="/variants-showcase.html">Variants showcase</a></li>
+          <li><a href="/variety-catalog.html">Variety catalog</a></li>
+          <li><a href="/">Best dancers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Models · creators</h5>
+        <ul>
+          <li><a href="/models-catalog.html">Models catalog</a></li>
+          <li><a href="/creators">All creators</a></li>
+          <li><a href="/creators-colombia.html">Colombia</a></li>
+          <li><a href="/creators-seoul.html">Seoul</a></li>
+          <li><a href="/creators-moscow.html">Moscow</a></li>
+          <li><a href="/creators-taipei.html">Taipei</a></li>
+          <li><a href="/creators-greece.html">Greece</a></li>
+          <li><a href="/creators-russia.html">Russia</a></li>
+          <li><a href="/creators-latam.html">LATAM</a></li>
+          <li><a href="/creators-usa.html">USA</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Featured talent</h5>
+        <ul>
+          <li><a href="/velvet-young.html">Velvet Young</a></li>
+          <li><a href="/nastya-nass.html">Nastya Nass</a></li>
+          <li><a href="/shoshina-katherina.html">Shoshina Katherina</a></li>
+          <li><a href="/yurgenis.html">Yurgenis</a></li>
+          <li><a href="/group-emiliano-ferrari-villalobo.html">Emiliano Ferrari Villalobo</a></li>
+          <li><a href="/group-kate-knaubl.html">Kate Knaubl</a></li>
+          <li><a href="/group-kelvin-deejay.html">Kelvin DeeJay</a></li>
+          <li><a href="/group-lexy-panterra.html">Lexy Panterra</a></li>
+          <li><a href="/group-monika-99-percent.html">Monika 99%</a></li>
+          <li><a href="/group-street-project-monika.html">Street Project Monika</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Cities &amp; styles</h5>
+        <ul>
+          <li><a href="/style-cosplay-fancam.html">Style · Cosplay</a></li>
+          <li><a href="/style-heels-choreo.html">Style · Heels</a></li>
+          <li><a href="/style-reggaeton-floor.html">Style · Reggaeton</a></li>
+          <li><a href="/japan-cosplay-fancam.html">Japan</a></li>
+          <li><a href="/tokyo-cosplay-fancam.html">Tokyo</a></li>
+          <li><a href="/osaka-cosplay-fancam.html">Osaka</a></li>
+          <li><a href="/akihabara-cosplay-fancam.html">Akihabara</a></li>
+          <li><a href="/">USA</a></li>
+          <li><a href="/">UK</a></li>
+          <li><a href="/">London</a></li>
+          <li><a href="/">New York</a></li>
+          <li><a href="/">Los Angeles</a></li>
+          <li><a href="/">Miami</a></li>
+          <li><a href="/">Atlanta</a></li>
+          <li><a href="/">California</a></li>
+          <li><a href="/">Manchester</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Studios &amp; tutorials</h5>
+        <ul>
+          <li><a href="/twerk-studios.html">Twerk studios</a></li>
+          <li><a href="/kato-dance-studio.html">Kato Dance Studio</a></li>
+          <li><a href="/twerk-tutorials.html">Tutorials</a></li>
+          <li><a href="/twerk-dance-tutorial.html">Dance tutorial</a></li>
+          <li><a href="/twerk-workout-glutes.html">Workout · glutes</a></li>
+          <li><a href="/twerk-dance-4k.html">4K dance edits</a></li>
+          <li><a href="/twerk-dance-battle.html">Dance battle</a></li>
+          <li><a href="/twerk-dance-compilation.html">Compilations</a></li>
+          <li><a href="/twerk-dance-shorts.html">Shorts</a></li>
+          <li><a href="/twerk-dance-music.html">Music edits</a></li>
+          <li><a href="/twerk-dance-video.html">Dance videos</a></li>
+          <li><a href="/">Alexia · leaks</a></li>
+          <li><a href="/alexia-video-packs">Video packs</a></li>
+          <li><a href="/hottest-cosplay-fancam/">Premium · cosplay</a></li>
+          <li><a href="/paid-content.html">Paid content</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- bottom -->
+    <div class="twk-mf-bottom">
+      <span>© 2026 TWERKHUB · Founded by <em style="color:#ff6fa8;font-style:normal">Anti</em> (firestarter) · The Wild Project Models Agency</span>
+      <span>
+        <a href="/about">About</a> ·
+        <a href="/contact.html">Contact</a> ·
+        <a href="/privacy.html">Privacy</a> ·
+        <a href="/terms.html">Terms</a> ·
+        <a href="/glossary.html">Glossary</a> ·
+        <a href="/search.html">Search</a>
+      </span>
+      <span>If you know — you already know</span>
+    </div>
+
+  </div>
+</footer>
+<!-- /TWK_MEGA_FOOTER_V1 -->
+
+<script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
+<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
+<script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
+<script src="/assets/js/image-seo-engine.js" defer></script>
+  <script src="/assets/thumb-fallback.js?v=20260512-fix2" defer></script>
+<script defer src="/assets/profile-stats-live.js?v=20260509-p3-deltacap"></script>
+<script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
+<!--twk-seo-hidden-block-->
+<aside class="twk-sr-only" aria-hidden="true" lang="ja">
+  <p>TWERKHUBの限定4Kコレクション — 厳選されたpremium dance cutsを毎週配信。</p>
+  <p>プライベートアーカイブでpremium dance cutsや類似のプレミアムコンテンツをお楽しみください。4Kダンス・ファンカム・クリエイターカット。</p>
+  <p>TWERKHUB全カタログを閲覧:premium dance cuts、認証メンバー限定の希少な完全版リリース。</p>
+</aside>
+<!--/twk-seo-hidden-block-->
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p6"></script>
+
+<!-- twk-email-capture:START -->
+<script defer src="/assets/twerkhub-email-capture.js?v=20260509-ec3-noblur-keep-home" data-twk-email-capture></script>
+<!-- twk-email-capture:END -->
+
+<!-- twk-related-auto:START -->
+<style id="twk-rel-auto-css">.twk-rel-auto{max-width:1320px;margin:50px auto 30px;padding:0 26px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif}.twk-rel-auto-head{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:18px;display:block}.twk-rel-auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:880px){.twk-rel-auto-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.twk-rel-auto-grid{grid-template-columns:1fr}}.twk-rel-auto-card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.5);text-decoration:none;color:#f5f5fb;transition:transform .25s,border-color .25s,background .25s}.twk-rel-auto-card:hover{transform:translateY(-2px);border-color:rgba(255,45,135,.45);background:rgba(30,20,40,.7)}.twk-rel-auto-cat{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff6fa8}.twk-rel-auto-title{font-family:"Inter",sans-serif;font-size:14px;font-weight:600;line-height:1.35;color:#e9e9f0}</style>
+<aside class="twk-rel-auto" aria-label="Related pages">
+  <span class="twk-rel-auto-head">★ More from the archive</span>
+  <div class="twk-rel-auto-grid">
+    <a href="/glossary.html" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Every word in the scene, explained.</span>
+    </a>
+    <a href="/ru/glossary.html" class="twk-rel-auto-card" data-cat="translated">
+      <span class="twk-rel-auto-cat">translated</span>
+      <span class="twk-rel-auto-title">Каждое слово сцены, объяснено.</span>
+    </a>
+    <a href="/es/blog/black-sea-dance-scene.html" class="twk-rel-auto-card" data-cat="translated">
+      <span class="twk-rel-auto-cat">translated</span>
+      <span class="twk-rel-auto-title">La escena de baile del Mar Negro.</span>
+    </a>
+    <a href="/es/blog/buenos-aires-reggaeton-scene-2026.html" class="twk-rel-auto-card" data-cat="translated">
+      <span class="twk-rel-auto-cat">translated</span>
+      <span class="twk-rel-auto-title">Escena reggaetón Buenos Aires · 2026.</span>
+    </a>
+    <a href="/" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">The Platform for the uncut ones.</span>
+    </a>
+    <a href="/about" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Built for the uncut ones.</span>
+    </a>
+  </div>
+</aside>
+<!-- twk-related-auto:END -->
+<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
+<script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "alexia-twerk-web-clean",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TWERKHUB static site + Cloudflare Pages",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0"
+  }
+}

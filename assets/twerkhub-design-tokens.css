@@ -1,0 +1,288 @@
+/* ═══ TWERKHUB · DESIGN TOKENS + ELEVATED VISUAL LAYER ═══
+ * v20260424-p1
+ *
+ * Establishes a strict system so every surface of the platform feels like
+ * it was made by the same hand. Loads AFTER twerkhub-page.css so it can
+ * layer on top without refactoring the legacy rules.
+ *
+ *   · Type scale: modular (1.25) from 11px → 96px, 9 steps
+ *   · Spacing grid: 4px base, 9 steps
+ *   · Radius scale: 4 steps (sm / md / lg / full)
+ *   · Elevation: 5 shadow depths, gradient-aware
+ *   · Color tokens: neutral + brand aligned with the gradient palette
+ *   · Easing: 4 curves for different motion intents
+ *
+ * Contract: these variables are the source of truth. Any new component
+ * should reference them via var(--twk-*). Old hardcoded hex values still
+ * work; new code should migrate. Zero breaking changes.
+ */
+
+:root {
+  /* ── Typography scale (modular 1.25) ──────────────────────────────── */
+  --twk-fs-11: 0.6875rem;    /* 11px — legal, license */
+  --twk-fs-12: 0.75rem;      /* 12px — eyebrows, metadata */
+  --twk-fs-14: 0.875rem;     /* 14px — body small */
+  --twk-fs-16: 1rem;         /* 16px — body default */
+  --twk-fs-20: 1.25rem;      /* 20px — body large */
+  --twk-fs-24: 1.5rem;       /* 24px — h4 */
+  --twk-fs-32: 2rem;         /* 32px — h3 */
+  --twk-fs-42: 2.625rem;     /* 42px — h2 */
+  --twk-fs-56: 3.5rem;       /* 56px — h1 */
+  --twk-fs-80: 5rem;         /* 80px — display */
+  --twk-fs-96: 6rem;         /* 96px — hero display */
+
+  /* Line-heights tuned per scale — tighter at top, looser at bottom */
+  --twk-lh-tight:   1.05;
+  --twk-lh-snug:    1.18;
+  --twk-lh-normal:  1.5;
+  --twk-lh-loose:   1.65;
+
+  /* Letter-spacing — negative for display, positive for uppercase metadata */
+  --twk-ls-tighter: -0.03em;
+  --twk-ls-tight:   -0.015em;
+  --twk-ls-normal:  0;
+  --twk-ls-wide:    0.08em;
+  --twk-ls-wider:   0.18em;
+  --twk-ls-widest:  0.28em;
+
+  /* ── Spacing grid (4px base) ──────────────────────────────────────── */
+  --twk-sp-1:  0.25rem;   /*  4px */
+  --twk-sp-2:  0.5rem;    /*  8px */
+  --twk-sp-3:  0.75rem;   /* 12px */
+  --twk-sp-4:  1rem;      /* 16px */
+  --twk-sp-5:  1.5rem;    /* 24px */
+  --twk-sp-6:  2rem;      /* 32px */
+  --twk-sp-7:  3rem;      /* 48px */
+  --twk-sp-8:  4rem;      /* 64px */
+  --twk-sp-9:  6rem;      /* 96px */
+  --twk-sp-10: 8rem;      /* 128px */
+
+  /* ── Radius ───────────────────────────────────────────────────────── */
+  --twk-r-sm:    6px;
+  --twk-r-md:    12px;
+  --twk-r-lg:    18px;
+  --twk-r-xl:    24px;
+  --twk-r-2xl:   32px;
+  --twk-r-full:  999px;
+
+  /* ── Elevation (5 tiers, all with subtle inset highlight for depth) ─ */
+  --twk-elev-0: 0 1px 2px rgba(0,0,0,.35);
+  --twk-elev-1: 0 4px 14px rgba(0,0,0,.32), 0 1px 0 rgba(255,255,255,.03) inset;
+  --twk-elev-2: 0 10px 28px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.04) inset;
+  --twk-elev-3: 0 20px 48px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.05) inset;
+  --twk-elev-4: 0 40px 90px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.06) inset;
+  --twk-elev-glow-pink: 0 14px 40px rgba(255,45,135,.35), 0 0 0 1px rgba(255,45,135,.15) inset;
+  --twk-elev-glow-gold: 0 14px 40px rgba(255,180,84,.30), 0 0 0 1px rgba(255,180,84,.18) inset;
+
+  /* ── Color tokens (layered over the legacy palette) ───────────────── */
+  --twk-c-bg-0:    #05050a;
+  --twk-c-bg-1:    #0a0a14;
+  --twk-c-bg-2:    #13131c;
+  --twk-c-surface: rgba(255,255,255,.04);
+  --twk-c-border:  rgba(255,255,255,.08);
+  --twk-c-border-hi: rgba(255,255,255,.16);
+  --twk-c-text:    #f5f5fb;
+  --twk-c-text-dim:#a8a8b8;
+  --twk-c-text-mute:#6b6b7b;
+  --twk-c-pink:    #ff2d87;
+  --twk-c-pink-soft:#ff6fa8;
+  --twk-c-purple:  #9d4edd;
+  --twk-c-purple-soft:#c084fc;
+  --twk-c-gold:    #ffb454;
+  --twk-c-gold-soft:#ffd693;
+  --twk-c-green:   #1ee08f;
+  --twk-c-green-soft:#83ffc0;
+
+  /* Signature brand gradients — use via background: var(--twk-grad-pink) */
+  --twk-grad-pink:   linear-gradient(135deg, #ff2d87 0%, #9d4edd 100%);
+  --twk-grad-gold:   linear-gradient(135deg, #ff6fa8 0%, #ffb454 55%, #ffd693 100%);
+  --twk-grad-vip:    linear-gradient(135deg, #ffd693 0%, #ff2d87 50%, #9d4edd 100%);
+  --twk-grad-ambient:
+    radial-gradient(ellipse at 18% 12%, rgba(255,45,135,.14), transparent 48%),
+    radial-gradient(ellipse at 86% 22%, rgba(157,78,221,.12), transparent 52%),
+    radial-gradient(ellipse at 50% 88%, rgba(255,180,84,.08), transparent 58%);
+
+  /* ── Motion curves ────────────────────────────────────────────────── */
+  --twk-ease-out:     cubic-bezier(.22, .9, .38, 1);
+  --twk-ease-spring:  cubic-bezier(.2, 1.12, .32, 1);
+  --twk-ease-snap:    cubic-bezier(.2, .8, .2, 1);
+  --twk-ease-smooth:  cubic-bezier(.4, 0, .2, 1);
+
+  /* ── Layout constraints ───────────────────────────────────────────── */
+  --twk-max-w:        1400px;
+  --twk-max-w-read:   760px;
+  --twk-max-w-narrow: 640px;
+  --twk-gutter:       clamp(16px, 3vw, 28px);
+}
+
+/* ═══ Refined base ═══
+   Overrides a few legacy defaults with tokenized versions. Safe because the
+   legacy rules still win on specific selectors — these only touch the
+   document root / body. */
+html {
+  color-scheme: dark;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+  font-feature-settings: "kern","liga","ss01";
+}
+
+body {
+  font-variation-settings: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optical-size headings — Playfair looks denser at display sizes */
+.twerkhub-page h1,
+.twerkhub-page h2,
+.twerkhub-home-hero h1,
+.twerkhub-comm-hero h1 {
+  letter-spacing: var(--twk-ls-tight);
+  text-wrap: balance;
+}
+
+.twerkhub-page h3,
+.twerkhub-page h4 { text-wrap: balance; }
+
+/* Inline code / keyboard */
+code, kbd, samp {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.92em;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--twk-c-surface);
+  border: 1px solid var(--twk-c-border);
+}
+
+/* ═══ Premium hover system ═══
+   Every interactive surface gets a consistent 2-step motion signature:
+   · rest → hover: translateY(-1px) + shadow bump
+   · hover → active: translateY(0) + slight scale(.98)
+   Cards inherit the same signature so the whole site feels coherent. */
+.twerkhub-btn,
+.twerkhub-btn-primary,
+.twerkhub-btn-gold,
+.twerkhub-btn-ghost,
+button[class*="-btn"],
+a[class*="-btn"]:not(.twerkhub-nav a) {
+  transition:
+    transform .22s var(--twk-ease-spring),
+    box-shadow .3s var(--twk-ease-smooth),
+    filter .22s var(--twk-ease-smooth),
+    background-color .22s var(--twk-ease-smooth),
+    border-color .22s var(--twk-ease-smooth);
+}
+
+/* Card micro-interaction: barely-there lift. Applied to every card pattern
+   across the platform so hover feels unified. */
+.twerkhub-pl-card,
+.twerkhub-coming-card,
+.twerkhub-club-card,
+.twerkhub-tl-node,
+.twerkhub-stack-card,
+.twerkhub-thread,
+.twerkhub-member-card {
+  transition:
+    transform .35s var(--twk-ease-spring),
+    box-shadow .3s var(--twk-ease-smooth),
+    border-color .22s var(--twk-ease-smooth);
+}
+
+/* ═══ Typography refinement — display scale ═══ */
+.twerkhub-home-hero h1 {
+  font-size: clamp(42px, 6.5vw, var(--twk-fs-96));
+  line-height: var(--twk-lh-tight);
+  font-weight: 900;
+  letter-spacing: var(--twk-ls-tighter);
+}
+
+.twerkhub-stack-head h2,
+.twerkhub-tiers h2,
+.twerkhub-comm-hero h1 {
+  font-size: clamp(32px, 4.8vw, var(--twk-fs-56));
+  line-height: var(--twk-lh-snug);
+  font-weight: 900;
+  letter-spacing: var(--twk-ls-tight);
+}
+
+/* Section kickers: stronger visual grammar across the site */
+.twerkhub-kicker {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: var(--twk-fs-11);
+  font-weight: 700;
+  letter-spacing: var(--twk-ls-widest);
+  text-transform: uppercase;
+  color: var(--twk-c-pink-soft);
+  margin-bottom: var(--twk-sp-3);
+  display: inline-block;
+}
+
+/* ═══ Content polish ═══ */
+.twerkhub-page p { text-wrap: pretty; }
+.twerkhub-page strong { font-weight: 700; color: var(--twk-c-text); }
+.twerkhub-page em { font-style: italic; }
+
+/* Better link underline — subtle gradient that thickens on hover */
+.twerkhub-page a:not(.twerkhub-btn):not(.twerkhub-brand):not(.twerkhub-nav a):not(.twerkhub-coming-card a):not(.vcard):not(.rk-item) {
+  text-decoration: none;
+  background-image: linear-gradient(90deg, currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  transition: background-size .32s var(--twk-ease-smooth);
+}
+.twerkhub-page a:not(.twerkhub-btn):not(.twerkhub-brand):not(.twerkhub-nav a):not(.twerkhub-coming-card a):not(.vcard):not(.rk-item):hover {
+  background-size: 100% 1px;
+}
+
+/* ═══ Scroll snap on horizontal galleries (subtle premium feel) ═══ */
+.twerkhub-timeline-grid,
+.twerkhub-coming-grid,
+.twerkhub-playlists-grid {
+  scroll-snap-type: x proximity;
+  scroll-padding: var(--twk-sp-4);
+}
+.twerkhub-timeline-grid > *,
+.twerkhub-coming-grid > *,
+.twerkhub-playlists-grid > * {
+  scroll-snap-align: start;
+}
+
+/* ═══ Section vertical rhythm ═══ */
+.twerkhub-page > section,
+.twerkhub-page > main > section {
+  padding-block: clamp(48px, 6vw, 88px);
+}
+
+/* ═══ Accessibility polish ═══ */
+:focus-visible {
+  outline: 2px solid var(--twk-c-gold-soft);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Reduce motion respect — stronger than before */
+@media (prefers-reduced-motion: reduce) {
+  .twerkhub-page *,
+  .twerkhub-page *::before,
+  .twerkhub-page *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ═══ Print stylesheet — let the platform still look refined on paper ═══ */
+@media print {
+  body { background: #fff; color: #000; }
+  .twerkhub-topbar,
+  .twerkhub-tokens-hud,
+  .twerkhub-mobile-hamburger,
+  [class*="paywall"],
+  [class*="modal"],
+  [class*="drawer"],
+  .twk-auth-signup,
+  .twk-auth-logout { display: none !important; }
+  a { color: #000; text-decoration: underline; }
+}

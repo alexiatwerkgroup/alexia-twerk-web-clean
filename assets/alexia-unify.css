@@ -1,0 +1,73 @@
+:root{
+  --alexia-radius:999px;
+  --alexia-btn-bg:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.05));
+  --alexia-btn-border:rgba(255,255,255,.16);
+  --alexia-btn-text:#f7f7fb;
+  --alexia-btn-shadow:0 14px 36px rgba(0,0,0,.22);
+}
+.alexia-seo-h1{position:absolute!important;left:-9999px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.alexia-global-nav{position:sticky;top:0;z-index:9999;padding:12px 14px;background:linear-gradient(180deg,rgba(6,7,12,.94),rgba(6,7,12,.82));backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.alexia-global-nav__inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.alexia-global-brand{color:#fff;text-decoration:none;font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.92;margin-right:auto;white-space:nowrap}
+.alexia-global-links{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.alexia-global-links a,.alexia-online-pill,
+.topbar .nav a,.nav a,.pill,.topicBtn,.quick-link,.chip,.btn,
+.buttonRow a,.buttonRow button,.toolbar a,.toolbar button,.jump-row a,
+.actions a,.actions button,.pills .pill,.topicRow a{
+  display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid var(--alexia-btn-border);background:var(--alexia-btn-bg);color:var(--alexia-btn-text)!important;text-decoration:none!important;font-weight:800;letter-spacing:.08em;text-transform:uppercase;line-height:1.1;box-shadow:var(--alexia-btn-shadow);white-space:nowrap;transition:transform .16s ease,background .16s ease,border-color .16s ease,opacity .16s ease;
+}
+.topbar .nav a:hover,.nav a:hover,.pill:hover,.topicBtn:hover,.quick-link:hover,.chip:hover,.btn:hover,
+.buttonRow a:hover,.buttonRow button:hover,.toolbar a:hover,.toolbar button:hover,.jump-row a:hover,
+.actions a:hover,.actions button:hover,.pills .pill:hover,.topicRow a:hover,
+.alexia-global-links a:hover{transform:translateY(-1px);background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));border-color:rgba(255,255,255,.24)}
+.alexia-online-pill{gap:10px;padding-right:16px}
+.alexia-online-dot{width:10px;height:10px;border-radius:50%;background:#52e18d;box-shadow:0 0 0 4px rgba(82,225,141,.14)}
+.alexia-global-links a,.topbar .nav a,.nav a,.pill,.topicBtn,.quick-link,.chip{font-size:13px!important}
+.btn strong{font-size:14px!important}
+.btn small{font-size:11px!important;opacity:.82}
+.stats .stat,.filter-chips .chip,.quick-links .quick-link,.toolbar .chip{opacity:.96!important}
+.stats .stat,.quick-links .quick-link{background:rgba(255,255,255,.04)!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:999px;padding:11px 16px;display:inline-flex;align-items:center}
+.pills,.nav,.topicRow,.quick-links,.jump-row,.filter-chips,.actions,.buttonRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.quick-links,.jump-row,.filter-chips,.stats{row-gap:10px}
+[class*="action"],[class*="button"],[class*="quick"],.topicRow,.jump-row,.filter-chips{max-width:100%}
+.stats{display:flex;flex-wrap:wrap;gap:10px}
+.playlist-route-strip,.playlist-hero-subcopy,.alexia-quick-routes,.quick-routes,.route-strip{display:none!important}
+#playlist-hero-badges .badge,#playlist-hero-badges .badge-btn{min-height:42px!important;padding:0 16px!important;border-radius:999px!important}
+.relatedGrid .relatedItem,.grid .item,.grid .card,.rank-card,.item,.card{border-radius:22px}
+.search input,input[type="search"]{min-height:46px;border-radius:18px}
+@media (max-width:860px){
+  .alexia-global-nav{padding:10px 12px}
+  .alexia-global-brand{width:100%;margin-right:0}
+  .alexia-global-links{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none}
+  .alexia-global-links::-webkit-scrollbar{display:none}
+  .alexia-global-links a,.alexia-online-pill{flex:0 0 auto}
+}
+
+
+/* === Header pills unified across site === */
+.topbar .nav a,
+.topbar-static .nav a,
+.nav-row.nav-main a,
+.alexia-global-links a,
+header .nav a{
+  min-height:48px!important;
+  padding:0 20px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.028))!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.04)!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  letter-spacing:.11em!important;
+  text-transform:uppercase!important;
+}
+.topbar .nav a:hover,
+.topbar-static .nav a:hover,
+.nav-row.nav-main a:hover,
+.alexia-global-links a:hover,
+header .nav a:hover{
+  transform:translateY(-1px)!important;
+  border-color:rgba(255,255,255,.18)!important;
+  background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04))!important;
+  box-shadow:0 16px 34px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
