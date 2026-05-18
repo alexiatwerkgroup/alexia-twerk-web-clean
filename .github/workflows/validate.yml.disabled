@@ -1,0 +1,102 @@
+name: Validate
+
+on:
+  push:
+    branches: [main, staging, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Code Quality & Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check BOM in HTML files
+        run: |
+          echo "Checking for UTF-8 BOM in HTML files..."
+          find . -name "*.html" -type f ! -path "./.git/*" ! -path "./node_modules/*" | while read f; do
+            if [ "$(head -c 3 "$f" | od -A n -t x1 | tr -d ' ')" = "efbbbf" ]; then
+              echo "❌ BOM found in $f"
+              exit 1
+            fi
+          done
+          echo "✓ No BOM found"
+
+      - name: Check for CRLF line endings
+        run: |
+          echo "Checking for CRLF line endings..."
+          find . -name "*.js" -o -name "*.json" | grep -v node_modules | while read f; do
+            if file "$f" | grep -q CRLF; then
+              echo "⚠ CRLF in $f (will convert to LF)"
+            fi
+          done
+
+      - name: Run tests
+        run: npm test
+
+      - name: Check for console.log in production code
+        run: |
+          echo "Checking for debug statements..."
+          ! grep -r "console\.\(log\|warn\|error\)(" functions/ --include="*.js" | grep -v "// debug" | grep -v "console.error.*rate limit"
+          echo "✓ No debug statements found"
+
+      - name: Verify critical files
+        run: |
+          echo "Checking critical files exist..."
+          test -f wrangler.toml || (echo "❌ Missing wrangler.toml"; exit 1)
+          test -f package.json || (echo "❌ Missing package.json"; exit 1)
+          test -f CRITICAL_INVARIANTS.md || (echo "❌ Missing CRITICAL_INVARIANTS.md"; exit 1)
+          echo "✓ All critical files present"
+
+      - name: Lint JSON files
+        run: |
+          echo "Validating JSON files..."
+          find . -name "*.json" ! -path "./node_modules/*" ! -path "./.git/*" | while read f; do
+            node -e "JSON.parse(require('fs').readFileSync('$f'))" || exit 1
+          done
+          echo "✓ All JSON valid"
+
+      - name: Check git config
+        run: |
+          git config --global user.email "ci@twerkhub.local" || true
+          git config --global user.name "CI Bot" || true
+
+  deploy-check:
+    name: Deploy Readiness
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Verify Cloudflare config
+        run: |
+          echo "Checking wrangler.toml..."
+          grep "database_id" wrangler.toml || (echo "⚠ Warning: D1 database_id not set"; true)
+          grep "JWT_SECRET" . -r --include="*.toml" || echo "⚠ JWT_SECRET must be set in Cloudflare dashboard"
+
+      - name: Summary
+        run: |
+          echo "✅ All validations passed"
+          echo "Ready for deployment to Cloudflare Pages"

@@ -1,0 +1,417 @@
+{
+  "playlist": "corean",
+  "source_youtube_list": "PLMzWifnZnpVLrsd-cnuP5oPWv5xwWwRGm",
+  "curated_by": "Anti (firestarter)",
+  "updated": "2026-04-20",
+  "notes": "Top 5 hot-ranking are free previews with real title/id exposed. Grid items are paywall-gated with anti-piracy: hidden_id is base64 of the real id plus a sha256 tag; real id/title are kept in fields prefixed with \"_\" so the client can avoid rendering them in the initial DOM for non-subscribers. On successful subscription, the client re-renders grid using _id/_title.",
+  "hot_ranking": [
+    {
+      "id": "v9zzf8elj_w",
+      "title": "狗兰 고라니율 golaniyule0 2026.01.16 红白学生服",
+      "channel": "闻风而起",
+      "duration": "8:45",
+      "badge": "gold",
+      "rank": 1,
+      "note": "top pick",
+      "free": true
+    },
+    {
+      "id": "bDfPfmpUPmw",
+      "title": "오빠는 하윤이 믿지~",
+      "channel": "FCam",
+      "duration": "3:26",
+      "badge": "purple",
+      "rank": 2,
+      "free": true
+    },
+    {
+      "id": "i9L3Ee1h3As",
+      "title": "2025 2 16cosfans04舞台活動 苔苔舞蹈秀",
+      "channel": "MABB4K CHANNEL3",
+      "duration": "3:41",
+      "badge": "pink",
+      "rank": 3,
+      "free": true
+    },
+    {
+      "id": "m5XzupGtbrU",
+      "title": "[flywithme] 2023 KXF 공연fullver 플윗미 샤사 231210",
+      "channel": "CandyRed",
+      "duration": "13:19",
+      "badge": "monochrome",
+      "rank": 4,
+      "free": true
+    },
+    {
+      "id": "g8dhc64M0fo",
+      "title": "おしりフリフリ バーレスク東京 さら Burlesque Tokyo Sara [4K]",
+      "channel": "GALsChannel",
+      "duration": "3:01",
+      "badge": "monochrome",
+      "rank": 5,
+      "free": true
+    }
+  ],
+  "grid": [
+    {
+      "hidden_id": "dzVXa1pQWXp3bGs.16eaadcd",
+      "number": "#006",
+      "channel": "Mobius Dance舞動青春",
+      "duration": "3:51",
+      "_id": "w5WkZPYzwlk",
+      "_title": "2024 颶風春季街頭舞蹈展演 ─ LION老師表演班"
+    },
+    {
+      "hidden_id": "SFJCRkZRNzRGUm8.b9aada74",
+      "number": "#007",
+      "channel": "CornyHornet9994",
+      "duration": "2:52",
+      "_id": "HRBFFQ74FRo",
+      "_title": "[Cadina Dance Party] High School Dance Group # 6 Taipei Broadway theaters precinct"
+    },
+    {
+      "hidden_id": "X2FPd28tOERXRTg.210fd08b",
+      "number": "#008",
+      "channel": "MIKI DANCE",
+      "duration": "3:12",
+      "_id": "_aOwo-8DWE8",
+      "_title": "高中校對校排舞賽02 關西高中 PINK HOT｜2024 新竹市風城竹塹盃街舞大賽"
+    },
+    {
+      "hidden_id": "emNPSndFaG9rbGs.a36f7858",
+      "number": "#009",
+      "channel": "桃竹苗高中職聯合舞展第二十一屆《ETERNITY》",
+      "duration": "0:00",
+      "_id": "zcOJwEhoklk",
+      "_title": "【8K】關西熱舞"
+    },
+    {
+      "hidden_id": "RlJ5cW1xekphWXc.f8ae4a5f",
+      "number": "#010",
+      "channel": "WanGong Lin_林碗公",
+      "duration": "3:36",
+      "_id": "FRyqmqzJaYw",
+      "_title": "Watch Your Step｜WanGong Lin & Phoebe Yeh Choreography｜2023 Taiwan Twerk Family Workshop Vol.4"
+    },
+    {
+      "hidden_id": "QkMxeVczYy1hVnM.61d38bac",
+      "number": "#011",
+      "channel": "Denise Blue藍妹",
+      "duration": "10:07",
+      "_id": "BC1yW3c-aVs",
+      "_title": "Meck it clap - Konshens Cyclone Epikjones/ Denise Blue藍妹/台中屁屁排舞班/twerk/booty dance/female dancehall"
+    },
+    {
+      "hidden_id": "YWpXbjJmOUhrQ00.3b5f4306",
+      "number": "#012",
+      "channel": "플윗미 샤사 퍼퍼먼스 23.12.10 SOOTV 촬영본",
+      "duration": "0:00",
+      "_id": "ajWn2f9HkCM",
+      "_title": "FLY WITH ME SHASA"
+    },
+    {
+      "hidden_id": "Q2NLYmd4QWd0UGM.82905398",
+      "number": "#013",
+      "channel": "THE INFLUENCER",
+      "duration": "2:50",
+      "_id": "CcKbgxAgtPc",
+      "_title": "[4K] Fly With Me's celebratory performance Fancam @ METABOXX launch party"
+    },
+    {
+      "hidden_id": "UjhTMkZ5T2VGcWs.948e3058",
+      "number": "#014",
+      "channel": "EPOXYPIX 직캠동네",
+      "duration": "9:31",
+      "_id": "R8S2FyOeFqk",
+      "_title": "[직캠]4k 오토살롱 레이싱모델 민한나 #모델#레이싱모델#직캠 by epoxypix"
+    },
+    {
+      "hidden_id": "TzEtbVZFZDVmaWc.5b41f374",
+      "number": "#015",
+      "channel": "chulwoo 2017철우",
+      "duration": "5:24",
+      "_id": "O1-mVEd5fig",
+      "_title": "민한나 MinHanna 레이싱 모델 - AUTO SALON WEEK Model chulwoo 직캠(Fancam)"
+    },
+    {
+      "hidden_id": "WjdvbGRxUUJzZDQ.7f7186dd",
+      "number": "#016",
+      "channel": "MiQri _TWERK",
+      "duration": "1:41",
+      "_id": "Z7oldqQBsd4",
+      "_title": "THROW IT BACK  /  トゥワーク みくり/ MiQri TWERK CHOREO"
+    },
+    {
+      "hidden_id": "WXBrdENqSjhmQkU.ee8bd75c",
+      "number": "#017",
+      "channel": "MiQri _TWERK",
+      "duration": "8:36",
+      "_id": "YpktCjJ8fBE",
+      "_title": "Throw it back/ みくり トゥワーク レッスン/MiQri Twerk choreo with my student"
+    },
+    {
+      "hidden_id": "ekZpODhaamRzQTA.97dda415",
+      "number": "#018",
+      "channel": "Jung Lauren",
+      "duration": "3:10",
+      "_id": "zFi88ZjdsA0",
+      "_title": "KPOP Dance 8K VR 180 MMD - Teddy Bear"
+    },
+    {
+      "hidden_id": "S2dqSy1CbXlHLXM.20a06c3e",
+      "number": "#019",
+      "channel": "고라니율 Golaniyule",
+      "duration": "18:58",
+      "_id": "KgjK-BmyG-s",
+      "_title": "I unleashed my sexiness while learning heel dancing. / Gorani's Uproar EP.13"
+    },
+    {
+      "hidden_id": "a1pYUld6X2JTTXM.6e4c3e9e",
+      "number": "#020",
+      "channel": "色彩的绯闻",
+      "duration": "21:10",
+      "_id": "kZXRWz_bSMs",
+      "_title": "4K高清 魔镜街拍 China street shot  Beautiful Girl！street 白色超短牛仔 热裤 漫步泰国美功铁道市场 模拍"
+    },
+    {
+      "hidden_id": "NnB2c3N6Ymo5Mk0.39ea1f36",
+      "number": "#021",
+      "channel": "天下布萌",
+      "duration": "3:49",
+      "_id": "6pvsszbj92M",
+      "_title": "CosFANS 04-Coser:苔苔 & 魔藥商會 AKANE & 魔藥商會 EMOKO"
+    },
+    {
+      "hidden_id": "Y2pqa0pKcVNhSm8.35600486",
+      "number": "#022",
+      "channel": "waveya 2011",
+      "duration": "1:49",
+      "_id": "cjjkJJqSaJo",
+      "_title": "더위를 날려줄 탱탱한 댄스 🍉Doja Cat, Tyga - Juicy 🍒 dance cover 도자캣 Waveya"
+    },
+    {
+      "hidden_id": "TUNSeWM3VzNSajg.4178f382",
+      "number": "#023",
+      "channel": "waveya 2011",
+      "duration": "2:29",
+      "_id": "MCRyc7W3Rj8",
+      "_title": "역대급 트월킹 퍼포먼스👅 Kim Petras XXX 웨이브야 Waveya"
+    },
+    {
+      "hidden_id": "b09lLVpDd0tiNjQ.19b27666",
+      "number": "#024",
+      "channel": "FCam",
+      "duration": "3:26",
+      "_id": "oOe-ZCwKb64",
+      "_title": "대기업 딸래미 하윤이 등장 UMC X FANCOO 모터쇼 7차"
+    },
+    {
+      "hidden_id": "U3FPVlVJNWx4Qm8.9accd837",
+      "number": "#025",
+      "channel": "FCam",
+      "duration": "1:46",
+      "_id": "SqOVUI5lxBo",
+      "_title": "하윤이 ,, 좋을지도 ,,?"
+    },
+    {
+      "hidden_id": "bTk5X2pzQTFsdWM.1a8f0d62",
+      "number": "#026",
+      "channel": "A.C.E. Lee",
+      "duration": "3:16",
+      "_id": "m99_jsA1luc",
+      "_title": "걸크러쉬 하윤 오빠 나 믿지?직캠 GIRLCRUSH  HaYun Oppa,Do you trust Me? by 230305 Fancam A.C.E.Lee"
+    },
+    {
+      "hidden_id": "S3N1SmpERndmd1U.b419f251",
+      "number": "#027",
+      "channel": "맥심엄 / Maximum8K",
+      "duration": "2:08",
+      "_id": "KsuJjDFwfwU",
+      "_title": "8K 걸크러쉬 하윤 Hayun \"Cha Cha 레인보우블랙\" UMC MOTORSHOW 7TH \"GIRL CRUSH PLUS\" (2023.3.25) @ 맥심엄/Maximum"
+    },
+    {
+      "hidden_id": "OUlhWmp0U2dHY1k.420d4f87",
+      "number": "#028",
+      "channel": "waveya 2011",
+      "duration": "1:32",
+      "_id": "9IaZjtSgGcY",
+      "_title": "[입덕직캠] Luísa Sonza, - sentaDONA (remix) s2 Dance Cover Waveya Ari 웨이브야 아리 트월킹 Twerk"
+    },
+    {
+      "hidden_id": "QVVFdktuNVhGZnM.fa91d0c0",
+      "number": "#029",
+      "channel": "waveya 2011",
+      "duration": "2:02",
+      "_id": "AUEvKn5XFfs",
+      "_title": "Sabrina Carpenter - Tears 🥵Dance Cover Waveya 웨이브야"
+    },
+    {
+      "hidden_id": "cU9SbHhRSlRMYVk.09953afe",
+      "number": "#030",
+      "channel": "waveya 2011",
+      "duration": "1:10",
+      "_id": "qORlxQJTLaY",
+      "_title": "[입덕직캠] 빡센 트월킹 🍑 Luísa Sonza - CACHORRINHAS Waveya MiU 웨이브야 미유"
+    },
+    {
+      "hidden_id": "WFlUOVhSMkJIdTg.8e8b17ea",
+      "number": "#031",
+      "channel": "Peso Pluma, Anitta 👅Dance Cover Waveya",
+      "duration": "0:00",
+      "_id": "XYT9XR2BHu8",
+      "_title": "BELLAKEO"
+    },
+    {
+      "hidden_id": "ZTlRT0I1RDk2dEU.6e63ad22",
+      "number": "#032",
+      "channel": "waveya 2011",
+      "duration": "2:20",
+      "_id": "e9QOB5D96tE",
+      "_title": "챤미나 - B級(B-List) CHANMINA 💋Dance Cover Waveya 웨이브야"
+    },
+    {
+      "hidden_id": "T3JhaVFGbkV1b2M.7e30fa00",
+      "number": "#033",
+      "channel": "waveya 2011",
+      "duration": "2:01",
+      "_id": "OraiQFnEuoc",
+      "_title": "[입덕직캠] Coconuts 💋Kim Petras dance cover Waveya Ari 웨이브야 아리"
+    },
+    {
+      "hidden_id": "S2M2OUQzTGtOdzg.bab45df7",
+      "number": "#034",
+      "channel": "z a m",
+      "duration": "2:16",
+      "_id": "Kc69D3LkNw8",
+      "_title": "걸크러쉬 Girl Crush 하윤 - I'm So Sexy 암쏘섹시 @옥련1동 달빛음악축제 (22.09.01)"
+    },
+    {
+      "hidden_id": "czJ6NG9xZWJRc28.2f94b88f",
+      "number": "#035",
+      "channel": "STRAW official",
+      "duration": "3:27",
+      "_id": "s2z4oqebQso",
+      "_title": "걸크러쉬(GIRL-CRUSH) - '오빠 나 믿지?(Oppa, Do you trust me?)' DANCE MUSIC VIDEO"
+    },
+    {
+      "hidden_id": "M0ppTExsejdPNkU.7b724f7f",
+      "number": "#036",
+      "channel": "LIKEY",
+      "duration": "3:23",
+      "_id": "3JiLLlz7O6E",
+      "_title": "[아이컨택] 걸크러쉬 보미 '오빠, 나 믿지?' 직캠 #8k60p"
+    },
+    {
+      "hidden_id": "NmY0dU5TT0FwNDQ.4c6e1cf6",
+      "number": "#037",
+      "channel": "브라운스톤B. Stone",
+      "duration": "2:57",
+      "_id": "6f4uNSOAp44",
+      "_title": "걸크러쉬(Girl Crush) - 스텔라_떨려요 -보미(BOMI)직캠- 영등포 아트코리아방송 [보미쇼]- by 브라운스톤 [200704]"
+    },
+    {
+      "hidden_id": "UDBVeHpCQm5Sb1U.1abb2fc6",
+      "number": "#038",
+      "channel": "JINRICP   PandaClass",
+      "duration": "1:12",
+      "_id": "P0UxzBBnRoU",
+      "_title": "熱舞"
+    },
+    {
+      "hidden_id": "YVZPTzNUQVFJV0E.fa88a965",
+      "number": "#039",
+      "channel": "험하게컸다 HumCUT",
+      "duration": "2:31",
+      "_id": "aVOO3TAQIWA",
+      "_title": "[Cover] 20160724 걸크러쉬(Girl Crush) 엉덩이(HIP SONG) @신발콘서트 in 동대문 밀리오레 직캠 by 험하게컸다"
+    },
+    {
+      "hidden_id": "ZWJSU3dweGgydEE.374efee6",
+      "number": "#040",
+      "channel": "waveya 2011",
+      "duration": "1:59",
+      "_id": "ebRSwpxh2tA",
+      "_title": "NewJeans (뉴진스) 'Hype Boy' Dance Cover Waveya 웨이브야"
+    },
+    {
+      "hidden_id": "dkxkM2FRbjdOY2M.98787b4b",
+      "number": "#041",
+      "channel": "Nymph",
+      "duration": "3:24",
+      "_id": "vLd3aQn7Ncc",
+      "_title": "211211 걸크러쉬(Girl Crush) 보미 - 야시시 [크리스마스 특집 걸크러쉬 쇼] 직캠"
+    },
+    {
+      "hidden_id": "Mnd5d3JUQk9mSE0.96622d68",
+      "number": "#042",
+      "channel": "Nymph",
+      "duration": "2:40",
+      "_id": "2wywrTBOfHM",
+      "_title": "230520 걸크러쉬(Girl Crush) - 오빠 나 믿지? [2023 대구스트리트모터페스티벌] 직캠"
+    },
+    {
+      "hidden_id": "YXdQQlJfa0F6dG8.d20a2c87",
+      "number": "#043",
+      "channel": "z a m",
+      "duration": "2:22",
+      "_id": "awPBR_kAzto",
+      "_title": "걸크러쉬 Girl Crush 하윤 - I'll be yours @옥련1동 달빛음악축제 (22.09.01)"
+    },
+    {
+      "hidden_id": "SHZCWDNMUENFaUE.eeb6bd2d",
+      "number": "#044",
+      "channel": "z a m",
+      "duration": "3:19",
+      "_id": "HvBX3LPCEiA",
+      "_title": "걸크러쉬 지아 태리 보미 - Oh Oh Ah Ah & 이머전시 & 아나콘다 @신촌거리노래방 (22.01.15)"
+    },
+    {
+      "hidden_id": "MlZzMzlCNGI5TVE.b81c4efe",
+      "number": "#045",
+      "channel": "waveya 2011",
+      "duration": "2:49",
+      "_id": "2Vs39B4b9MQ",
+      "_title": "역주행 열풍 브레이브걸스 (Brave Girls) - 롤린 (Rollin') Dance Cover Waveya 웨이브야"
+    },
+    {
+      "hidden_id": "ZzhEbktlMDRqalE.ff4a6139",
+      "number": "#046",
+      "channel": "z a m",
+      "duration": "3:10",
+      "_id": "g8DnKe04jjQ",
+      "_title": "걸크러쉬 보미 -  Memories 메모리즈 @행복은기본e지 찾아가는버스킹공연 (22.01.27)"
+    },
+    {
+      "hidden_id": "Nmxkb0pUblBNMVE.c6a89707",
+      "number": "#047",
+      "channel": "FCam",
+      "duration": "1:59",
+      "_id": "6ldoJTnPM1Q",
+      "_title": "걸크러쉬 하윤 차차 UMC X FANCOO 모터쇼 7차"
+    },
+    {
+      "hidden_id": "bnp5MzVxMDNac1k.d03596ab",
+      "number": "#048",
+      "channel": "FCam",
+      "duration": "4:13",
+      "_id": "nzy35q03ZsY",
+      "_title": "니가 반한 엉덩이 5만감사"
+    },
+    {
+      "hidden_id": "eTF0T043eF9ISW8.cc7b6529",
+      "number": "#049",
+      "channel": "pharkil 2015",
+      "duration": "3:28",
+      "_id": "y1tON7x_HIo",
+      "_title": "걸크러쉬(𝐆𝐢𝐫𝐥 𝐂𝐫𝐮𝐬𝐡) (보미) 난 예술이야 / 상서면 작은음악회 [231020][직캠] @pharkil2015"
+    },
+    {
+      "hidden_id": "MXhrTEc4U3lLUlU.42694c7a",
+      "number": "#050",
+      "channel": "FCam",
+      "duration": "0:36",
+      "_id": "1xkLG8SyKRU",
+      "_title": "걸크러쉬 지아 CLIP _ 치명적인"
+    }
+  ]
+}

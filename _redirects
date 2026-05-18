@@ -1,0 +1,269 @@
+# Redirects for URL structure consistency
+# Format: source destination [status]
+
+# Hide .html extensions (301 permanent redirects)
+/account.html           /account/                      301
+/admin-users.html       /admin-users/                  301
+/auth-callback.html     /auth-callback/                301
+/profile.html           /profile/                      301
+/creators-taipei.html   /creators-taipei/              301
+/creators-bangkok.html  /creators-bangkok/             301
+/creators-moscow.html   /creators-moscow/              301
+
+# Fix inconsistent URLs in GSC (maintain trailing slash)
+/hot-models-influencers  /hot-models/                  301
+/hottest-models          /hot-models/                  301
+
+# Consolidación 2026-05-11: /cosplay-fancam-leaks/* → /hottest-cosplay-fancam/* (mismo contenido, una sola URL canónica)
+/cosplay-fancam-leaks/*  /hottest-cosplay-fancam/:splat  301
+/cosplay-fancam-leaks    /hottest-cosplay-fancam/        301
+/cosplay-fancam-leaks/   /hottest-cosplay-fancam/        301
+
+# Spanish locale variants - hide index.html
+/es/blog/index.html      /es/blog/                     301
+/es/hot-models/index.html /es/hot-models/              301
+
+# Russian locale variants - hide index.html
+/ru/blog/index.html      /ru/blog/                     301
+/ru/hot-models/index.html /ru/hot-models/              301
+
+# Ensure all routes without trailing slash redirect to with trailing slash
+# (This is handled by Cloudflare Pages default behavior, but can be explicit)
+
+# Slug SEO upgrade 2026-05-11: weak slugs renamed to descriptive ones
+# (preserves rank from old URLs, 301 to new descriptive slugs)
+/playlist/1-dance.html                      /playlist/1-dance-twerk-choreography-pqp0uxe.html  301
+/playlist/2-dance.html                      /playlist/2-dance-twerk-choreography-cujvk0k.html  301
+/playlist/2.html                            /playlist/tverk-sochi-2-twerk-choreography-nfogq7q.html  301
+/playlist/twerk-10.html                     /playlist/kalarashchuk-diana-twerk-dance-performance-russia-bvzblpg.html  301
+/playlist/twerk-11.html                     /playlist/oksi-russia-twerk-choreographer-btqqt1a.html  301
+/playlist/twerk-12.html                     /playlist/diana-kalarashchuk-twerk-freestyle-russia-7o4ocuq.html  301
+/playlist/twerk-13.html                     /playlist/diana-kalarashchuk-russia-twerk-choreographer-zcm1imk.html  301
+/playlist/twerk-14.html                     /playlist/liuba-russian-twerk-pro-skp9izk.html  301
+/playlist/twerk-15.html                     /playlist/sonia-twerk-rehearsal-moscow-pzibuao.html  301
+/playlist/twerk-16.html                     /playlist/anait-kirakosian-russian-girl-twerking-routine-ex8q-nq.html  301
+/playlist/twerk-17.html                     /playlist/kirakosian-anait-twerking-tutorial-russia-6wmlnme.html  301
+/playlist/twerk-18.html                     /playlist/liza-vavilkina-twerk-class-mdc-nrg-moscow-olcrn-i.html  301
+/playlist/twerk-19.html                     /playlist/liuba-russian-female-twerk-artist-rnzqsza.html  301
+/playlist/twerk-20.html                     /playlist/anait-kirakosian-russia-twerk-choreographer-cwk1am0.html  301
+/playlist/twerk-21.html                     /playlist/sonia-twerking-show-russia-rzbnztm.html  301
+/playlist/twerk-22.html                     /playlist/diana-kalarashchuk-russian-twerk-pro-y-iauku.html  301
+/playlist/twerk-23.html                     /playlist/diana-kalarashchuk-russian-twerk-pro-wagjfdk.html  301
+/playlist/twerk-24.html                     /playlist/liuba-choreo-twerk-russia-dumgwla.html  301
+/playlist/twerk-25.html                     /playlist/liuba-twerk-dance-performance-russia-lldleei.html  301
+/playlist/twerk-26.html                     /playlist/ketrin-russian-twerk-dancer-vx7uaw8.html  301
+/playlist/twerk-27.html                     /playlist/ketrin-russian-girl-twerking-routine-oq-cl-c.html  301
+/playlist/twerk-28.html                     /playlist/liuba-russian-twerk-dancer-qxpmhei.html  301
+/playlist/twerk-29.html                     /playlist/liuba-twerk-workshop-moscow-h6aq8pe.html  301
+/playlist/twerk-30.html                     /playlist/anait-twerk-class-mdc-nrg-moscow-eacswnc.html  301
+/playlist/twerk-31.html                     /playlist/diana-kalarashchuk-twerk-class-mdc-nrg-moscow-z9wjxsq.html  301
+/playlist/twerk-32.html                     /playlist/liuba-russian-female-twerk-artist-aqb-t7s.html  301
+/playlist/twerk-33.html                     /playlist/diana-kalarashchuk-russia-twerk-choreographer-nu5bums.html  301
+/playlist/twerk-34.html                     /playlist/ketrin-choreo-twerk-russia-l5k5tko.html  301
+/playlist/twerk-35.html                     /playlist/anait-kirakosian-street-dance-twerk-russia-iudbl7y.html  301
+/playlist/twerk-36.html                     /playlist/ketrin-proletarskaia-twerk-freestyle-russia-nvr0b-g.html  301
+/playlist/twerk-37.html                     /playlist/liuba-proletarskaia-twerking-tutorial-russia-dtzzeta.html  301
+/playlist/twerk-38.html                     /playlist/ketrin-sokol-choreo-twerk-russia-qw2eb1g.html  301
+/playlist/twerk-39.html                     /playlist/ketrin-proletarskaia-twerking-tutorial-russia-ljukcq0.html  301
+/playlist/twerk-40.html                     /playlist/start-gruppy-tania-kembo-novokuznetskaia-russian-girl-twerking-routine-wf0bj-a.html  301
+/playlist/twerk-41.html                     /playlist/liuba-proletarskaia-street-dance-twerk-russia-sjxnjo8.html  301
+/playlist/twerk-42.html                     /playlist/ketrin-proletarskaia-russia-twerk-choreographer-ttl4j-o.html  301
+/playlist/twerk-43.html                     /playlist/dasha-gurova-novokuznetskaia-street-dance-twerk-russia-adjbzqi.html  301
+/playlist/twerk-44.html                     /playlist/ketrin-sokol-russian-girl-twerking-routine-lqg028c.html  301
+/playlist/twerk-45.html                     /playlist/ketrin-proletarskaia-moscow-twerk-class-qowntce.html  301
+/playlist/twerk-46.html                     /playlist/liuba-novokuznetskaia-twerk-workshop-moscow-w6ga-ym.html  301
+/playlist/twerk-47.html                     /playlist/ketrin-proletarskaia-moscow-twerk-class-7qmoyq.html  301
+/playlist/twerk-48.html                     /playlist/dasha-gurova-novokuznetskaia-twerking-show-russia-zswp1z0.html  301
+/playlist/twerk-49.html                     /playlist/ksiu-proletarskaia-twerking-show-russia-vzkgn9i.html  301
+/playlist/twerk-5.html                      /playlist/iana-kopylova-twerk-dance-performance-russia-3yfvoyy.html  301
+/playlist/twerk-50.html                     /playlist/liuba-proletarskaia-moscow-twerk-class-qppis5e.html  301
+/playlist/twerk-51.html                     /playlist/dvizhenie-po-ulitse-komsomol-skaia-v-mogiliove-otkryto-twerk-nina-savel-eva-x7evrvy.html  301
+/playlist/twerk-6.html                      /playlist/alina-pavliuchenko-russian-twerk-pro-qhijxeo.html  301
+/playlist/twerk-7.html                      /playlist/vika-kirillova-russian-twerk-dancer-gqf9z34.html  301
+/playlist/twerk-8.html                      /playlist/alina-pavliuchenko-moscow-twerk-class-1dh7eys.html  301
+/playlist/twerk-9.html                      /playlist/pavliuchenko-alina-russian-female-twerk-artist-a7mfzey.html  301
+
+# Slug variety pass 2026-05-11: intermediate → final (descriptors varied)
+/playlist/alina-pavliuchenko-twerk-twerk-choreography-1dh7eys.html               /playlist/alina-pavliuchenko-moscow-twerk-class-1dh7eys.html  301
+/playlist/alina-pavliuchenko-twerk-twerk-choreography-qhijxeo.html               /playlist/alina-pavliuchenko-russian-twerk-pro-qhijxeo.html  301
+/playlist/anait-kirakosian-twerk-twerk-choreography-cwk1am0.html                 /playlist/anait-kirakosian-russia-twerk-choreographer-cwk1am0.html  301
+/playlist/anait-kirakosian-twerk-twerk-choreography-ex8q-nq.html                 /playlist/anait-kirakosian-russian-girl-twerking-routine-ex8q-nq.html  301
+/playlist/anait-kirakosian-twerk-twerk-choreography-iudbl7y.html                 /playlist/anait-kirakosian-street-dance-twerk-russia-iudbl7y.html  301
+/playlist/anait-twerk-twerk-choreography-eacswnc.html                            /playlist/anait-twerk-class-mdc-nrg-moscow-eacswnc.html  301
+/playlist/dasha-gurova-twerk-novokuznetskaia-twerk-choreography-adjbzqi.html     /playlist/dasha-gurova-novokuznetskaia-street-dance-twerk-russia-adjbzqi.html  301
+/playlist/dasha-gurova-twerk-novokuznetskaia-twerk-choreography-zswp1z0.html     /playlist/dasha-gurova-novokuznetskaia-twerking-show-russia-zswp1z0.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-7o4ocuq.html               /playlist/diana-kalarashchuk-twerk-freestyle-russia-7o4ocuq.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-nu5bums.html               /playlist/diana-kalarashchuk-russia-twerk-choreographer-nu5bums.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-wagjfdk.html               /playlist/diana-kalarashchuk-russian-twerk-pro-wagjfdk.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-y-iauku.html               /playlist/diana-kalarashchuk-russian-twerk-pro-y-iauku.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-z9wjxsq.html               /playlist/diana-kalarashchuk-twerk-class-mdc-nrg-moscow-z9wjxsq.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-zcm1imk.html               /playlist/diana-kalarashchuk-russia-twerk-choreographer-zcm1imk.html  301
+/playlist/iana-kopylova-twerk-twerk-choreography-3yfvoyy.html                    /playlist/iana-kopylova-twerk-dance-performance-russia-3yfvoyy.html  301
+/playlist/kalarashchuk-diana-twerk-twerk-choreography-bvzblpg.html               /playlist/kalarashchuk-diana-twerk-dance-performance-russia-bvzblpg.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-7qmoyq.html              /playlist/ketrin-proletarskaia-moscow-twerk-class-7qmoyq.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-ljukcq0.html             /playlist/ketrin-proletarskaia-twerking-tutorial-russia-ljukcq0.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-nvr0b-g.html             /playlist/ketrin-proletarskaia-twerk-freestyle-russia-nvr0b-g.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-qowntce.html             /playlist/ketrin-proletarskaia-moscow-twerk-class-qowntce.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-ttl4j-o.html             /playlist/ketrin-proletarskaia-russia-twerk-choreographer-ttl4j-o.html  301
+/playlist/ketrin-twerk-sokol-twerk-choreography-lqg028c.html                     /playlist/ketrin-sokol-russian-girl-twerking-routine-lqg028c.html  301
+/playlist/ketrin-twerk-sokol-twerk-choreography-qw2eb1g.html                     /playlist/ketrin-sokol-choreo-twerk-russia-qw2eb1g.html  301
+/playlist/ketrin-twerk-twerk-choreography-l5k5tko.html                           /playlist/ketrin-choreo-twerk-russia-l5k5tko.html  301
+/playlist/ketrin-twerk-twerk-choreography-oq-cl-c.html                           /playlist/ketrin-russian-girl-twerking-routine-oq-cl-c.html  301
+/playlist/ketrin-twerk-twerk-choreography-vx7uaw8.html                           /playlist/ketrin-russian-twerk-dancer-vx7uaw8.html  301
+/playlist/kirakosian-anait-twerk-twerk-choreography-6wmlnme.html                 /playlist/kirakosian-anait-twerking-tutorial-russia-6wmlnme.html  301
+/playlist/ksiu-twerk-proletarskaia-twerk-choreography-vzkgn9i.html               /playlist/ksiu-proletarskaia-twerking-show-russia-vzkgn9i.html  301
+/playlist/liuba-twerk-novokuznetskaia-twerk-choreography-w6ga-ym.html            /playlist/liuba-novokuznetskaia-twerk-workshop-moscow-w6ga-ym.html  301
+/playlist/liuba-twerk-proletarskaia-twerk-choreography-dtzzeta.html              /playlist/liuba-proletarskaia-twerking-tutorial-russia-dtzzeta.html  301
+/playlist/liuba-twerk-proletarskaia-twerk-choreography-qppis5e.html              /playlist/liuba-proletarskaia-moscow-twerk-class-qppis5e.html  301
+/playlist/liuba-twerk-proletarskaia-twerk-choreography-sjxnjo8.html              /playlist/liuba-proletarskaia-street-dance-twerk-russia-sjxnjo8.html  301
+/playlist/liuba-twerk-twerk-choreography-aqb-t7s.html                            /playlist/liuba-russian-female-twerk-artist-aqb-t7s.html  301
+/playlist/liuba-twerk-twerk-choreography-dumgwla.html                            /playlist/liuba-choreo-twerk-russia-dumgwla.html  301
+/playlist/liuba-twerk-twerk-choreography-h6aq8pe.html                            /playlist/liuba-twerk-workshop-moscow-h6aq8pe.html  301
+/playlist/liuba-twerk-twerk-choreography-lldleei.html                            /playlist/liuba-twerk-dance-performance-russia-lldleei.html  301
+/playlist/liuba-twerk-twerk-choreography-qxpmhei.html                            /playlist/liuba-russian-twerk-dancer-qxpmhei.html  301
+/playlist/liuba-twerk-twerk-choreography-rnzqsza.html                            /playlist/liuba-russian-female-twerk-artist-rnzqsza.html  301
+/playlist/liuba-twerk-twerk-choreography-skp9izk.html                            /playlist/liuba-russian-twerk-pro-skp9izk.html  301
+/playlist/liza-vavilkina-twerk-twerk-choreography-olcrn-i.html                   /playlist/liza-vavilkina-twerk-class-mdc-nrg-moscow-olcrn-i.html  301
+/playlist/oksi-twerk-twerk-choreography-btqqt1a.html                             /playlist/oksi-russia-twerk-choreographer-btqqt1a.html  301
+/playlist/pavliuchenko-alina-twerk-twerk-choreography-a7mfzey.html               /playlist/pavliuchenko-alina-russian-female-twerk-artist-a7mfzey.html  301
+/playlist/sonia-twerk-twerk-choreography-pzibuao.html                            /playlist/sonia-twerk-rehearsal-moscow-pzibuao.html  301
+/playlist/sonia-twerk-twerk-choreography-rzbnztm.html                            /playlist/sonia-twerking-show-russia-rzbnztm.html  301
+/playlist/start-gruppy-tania-kembo-twerk-novokuznetskaia-twerk-choreography-wf0bj-a.html /playlist/start-gruppy-tania-kembo-novokuznetskaia-russian-girl-twerking-routine-wf0bj-a.html  301
+/playlist/vika-kirillova-twerk-twerk-choreography-gqf9z34.html                   /playlist/vika-kirillova-russian-twerk-dancer-gqf9z34.html  301
+
+# Slug SEO upgrade (sin .html version) — for users hitting Pretty URLs
+/playlist/1-dance  /playlist/1-dance-twerk-choreography-pqp0uxe.html  301
+/playlist/2-dance  /playlist/2-dance-twerk-choreography-cujvk0k.html  301
+/playlist/2  /playlist/tverk-sochi-2-twerk-choreography-nfogq7q.html  301
+/playlist/twerk-10  /playlist/kalarashchuk-diana-twerk-dance-performance-russia-bvzblpg.html  301
+/playlist/twerk-11  /playlist/oksi-russia-twerk-choreographer-btqqt1a.html  301
+/playlist/twerk-12  /playlist/diana-kalarashchuk-twerk-freestyle-russia-7o4ocuq.html  301
+/playlist/twerk-13  /playlist/diana-kalarashchuk-russia-twerk-choreographer-zcm1imk.html  301
+/playlist/twerk-14  /playlist/liuba-russian-twerk-pro-skp9izk.html  301
+/playlist/twerk-15  /playlist/sonia-twerk-rehearsal-moscow-pzibuao.html  301
+/playlist/twerk-16  /playlist/anait-kirakosian-russian-girl-twerking-routine-ex8q-nq.html  301
+/playlist/twerk-17  /playlist/kirakosian-anait-twerking-tutorial-russia-6wmlnme.html  301
+/playlist/twerk-18  /playlist/liza-vavilkina-twerk-class-mdc-nrg-moscow-olcrn-i.html  301
+/playlist/twerk-19  /playlist/liuba-russian-female-twerk-artist-rnzqsza.html  301
+/playlist/twerk-20  /playlist/anait-kirakosian-russia-twerk-choreographer-cwk1am0.html  301
+/playlist/twerk-21  /playlist/sonia-twerking-show-russia-rzbnztm.html  301
+/playlist/twerk-22  /playlist/diana-kalarashchuk-russian-twerk-pro-y-iauku.html  301
+/playlist/twerk-23  /playlist/diana-kalarashchuk-russian-twerk-pro-wagjfdk.html  301
+/playlist/twerk-24  /playlist/liuba-choreo-twerk-russia-dumgwla.html  301
+/playlist/twerk-25  /playlist/liuba-twerk-dance-performance-russia-lldleei.html  301
+/playlist/twerk-26  /playlist/ketrin-russian-twerk-dancer-vx7uaw8.html  301
+/playlist/twerk-27  /playlist/ketrin-russian-girl-twerking-routine-oq-cl-c.html  301
+/playlist/twerk-28  /playlist/liuba-russian-twerk-dancer-qxpmhei.html  301
+/playlist/twerk-29  /playlist/liuba-twerk-workshop-moscow-h6aq8pe.html  301
+/playlist/twerk-30  /playlist/anait-twerk-class-mdc-nrg-moscow-eacswnc.html  301
+/playlist/twerk-31  /playlist/diana-kalarashchuk-twerk-class-mdc-nrg-moscow-z9wjxsq.html  301
+/playlist/twerk-32  /playlist/liuba-russian-female-twerk-artist-aqb-t7s.html  301
+/playlist/twerk-33  /playlist/diana-kalarashchuk-russia-twerk-choreographer-nu5bums.html  301
+/playlist/twerk-34  /playlist/ketrin-choreo-twerk-russia-l5k5tko.html  301
+/playlist/twerk-35  /playlist/anait-kirakosian-street-dance-twerk-russia-iudbl7y.html  301
+/playlist/twerk-36  /playlist/ketrin-proletarskaia-twerk-freestyle-russia-nvr0b-g.html  301
+/playlist/twerk-37  /playlist/liuba-proletarskaia-twerking-tutorial-russia-dtzzeta.html  301
+/playlist/twerk-38  /playlist/ketrin-sokol-choreo-twerk-russia-qw2eb1g.html  301
+/playlist/twerk-39  /playlist/ketrin-proletarskaia-twerking-tutorial-russia-ljukcq0.html  301
+/playlist/twerk-40  /playlist/start-gruppy-tania-kembo-novokuznetskaia-russian-girl-twerking-routine-wf0bj-a.html  301
+/playlist/twerk-41  /playlist/liuba-proletarskaia-street-dance-twerk-russia-sjxnjo8.html  301
+/playlist/twerk-42  /playlist/ketrin-proletarskaia-russia-twerk-choreographer-ttl4j-o.html  301
+/playlist/twerk-43  /playlist/dasha-gurova-novokuznetskaia-street-dance-twerk-russia-adjbzqi.html  301
+/playlist/twerk-44  /playlist/ketrin-sokol-russian-girl-twerking-routine-lqg028c.html  301
+/playlist/twerk-45  /playlist/ketrin-proletarskaia-moscow-twerk-class-qowntce.html  301
+/playlist/twerk-46  /playlist/liuba-novokuznetskaia-twerk-workshop-moscow-w6ga-ym.html  301
+/playlist/twerk-47  /playlist/ketrin-proletarskaia-moscow-twerk-class-7qmoyq.html  301
+/playlist/twerk-48  /playlist/dasha-gurova-novokuznetskaia-twerking-show-russia-zswp1z0.html  301
+/playlist/twerk-49  /playlist/ksiu-proletarskaia-twerking-show-russia-vzkgn9i.html  301
+/playlist/twerk-5  /playlist/iana-kopylova-twerk-dance-performance-russia-3yfvoyy.html  301
+/playlist/twerk-50  /playlist/liuba-proletarskaia-moscow-twerk-class-qppis5e.html  301
+/playlist/twerk-51  /playlist/dvizhenie-po-ulitse-komsomol-skaia-v-mogiliove-otkryto-twerk-nina-savel-eva-x7evrvy.html  301
+/playlist/twerk-6  /playlist/alina-pavliuchenko-russian-twerk-pro-qhijxeo.html  301
+/playlist/twerk-7  /playlist/vika-kirillova-russian-twerk-dancer-gqf9z34.html  301
+/playlist/twerk-8  /playlist/alina-pavliuchenko-moscow-twerk-class-1dh7eys.html  301
+/playlist/twerk-9  /playlist/pavliuchenko-alina-russian-female-twerk-artist-a7mfzey.html  301
+/playlist/alina-pavliuchenko-twerk-twerk-choreography-1dh7eys  /playlist/alina-pavliuchenko-moscow-twerk-class-1dh7eys.html  301
+/playlist/alina-pavliuchenko-twerk-twerk-choreography-qhijxeo  /playlist/alina-pavliuchenko-russian-twerk-pro-qhijxeo.html  301
+/playlist/anait-kirakosian-twerk-twerk-choreography-cwk1am0  /playlist/anait-kirakosian-russia-twerk-choreographer-cwk1am0.html  301
+/playlist/anait-kirakosian-twerk-twerk-choreography-ex8q-nq  /playlist/anait-kirakosian-russian-girl-twerking-routine-ex8q-nq.html  301
+/playlist/anait-kirakosian-twerk-twerk-choreography-iudbl7y  /playlist/anait-kirakosian-street-dance-twerk-russia-iudbl7y.html  301
+/playlist/anait-twerk-twerk-choreography-eacswnc  /playlist/anait-twerk-class-mdc-nrg-moscow-eacswnc.html  301
+/playlist/dasha-gurova-twerk-novokuznetskaia-twerk-choreography-adjbzqi  /playlist/dasha-gurova-novokuznetskaia-street-dance-twerk-russia-adjbzqi.html  301
+/playlist/dasha-gurova-twerk-novokuznetskaia-twerk-choreography-zswp1z0  /playlist/dasha-gurova-novokuznetskaia-twerking-show-russia-zswp1z0.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-7o4ocuq  /playlist/diana-kalarashchuk-twerk-freestyle-russia-7o4ocuq.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-nu5bums  /playlist/diana-kalarashchuk-russia-twerk-choreographer-nu5bums.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-wagjfdk  /playlist/diana-kalarashchuk-russian-twerk-pro-wagjfdk.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-y-iauku  /playlist/diana-kalarashchuk-russian-twerk-pro-y-iauku.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-z9wjxsq  /playlist/diana-kalarashchuk-twerk-class-mdc-nrg-moscow-z9wjxsq.html  301
+/playlist/diana-kalarashchuk-twerk-twerk-choreography-zcm1imk  /playlist/diana-kalarashchuk-russia-twerk-choreographer-zcm1imk.html  301
+/playlist/iana-kopylova-twerk-twerk-choreography-3yfvoyy  /playlist/iana-kopylova-twerk-dance-performance-russia-3yfvoyy.html  301
+/playlist/kalarashchuk-diana-twerk-twerk-choreography-bvzblpg  /playlist/kalarashchuk-diana-twerk-dance-performance-russia-bvzblpg.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-7qmoyq  /playlist/ketrin-proletarskaia-moscow-twerk-class-7qmoyq.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-ljukcq0  /playlist/ketrin-proletarskaia-twerking-tutorial-russia-ljukcq0.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-nvr0b-g  /playlist/ketrin-proletarskaia-twerk-freestyle-russia-nvr0b-g.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-qowntce  /playlist/ketrin-proletarskaia-moscow-twerk-class-qowntce.html  301
+/playlist/ketrin-twerk-proletarskaia-twerk-choreography-ttl4j-o  /playlist/ketrin-proletarskaia-russia-twerk-choreographer-ttl4j-o.html  301
+/playlist/ketrin-twerk-sokol-twerk-choreography-lqg028c  /playlist/ketrin-sokol-russian-girl-twerking-routine-lqg028c.html  301
+/playlist/ketrin-twerk-sokol-twerk-choreography-qw2eb1g  /playlist/ketrin-sokol-choreo-twerk-russia-qw2eb1g.html  301
+/playlist/ketrin-twerk-twerk-choreography-l5k5tko  /playlist/ketrin-choreo-twerk-russia-l5k5tko.html  301
+/playlist/ketrin-twerk-twerk-choreography-oq-cl-c  /playlist/ketrin-russian-girl-twerking-routine-oq-cl-c.html  301
+/playlist/ketrin-twerk-twerk-choreography-vx7uaw8  /playlist/ketrin-russian-twerk-dancer-vx7uaw8.html  301
+/playlist/kirakosian-anait-twerk-twerk-choreography-6wmlnme  /playlist/kirakosian-anait-twerking-tutorial-russia-6wmlnme.html  301
+/playlist/ksiu-twerk-proletarskaia-twerk-choreography-vzkgn9i  /playlist/ksiu-proletarskaia-twerking-show-russia-vzkgn9i.html  301
+/playlist/liuba-twerk-novokuznetskaia-twerk-choreography-w6ga-ym  /playlist/liuba-novokuznetskaia-twerk-workshop-moscow-w6ga-ym.html  301
+/playlist/liuba-twerk-proletarskaia-twerk-choreography-dtzzeta  /playlist/liuba-proletarskaia-twerking-tutorial-russia-dtzzeta.html  301
+/playlist/liuba-twerk-proletarskaia-twerk-choreography-qppis5e  /playlist/liuba-proletarskaia-moscow-twerk-class-qppis5e.html  301
+/playlist/liuba-twerk-proletarskaia-twerk-choreography-sjxnjo8  /playlist/liuba-proletarskaia-street-dance-twerk-russia-sjxnjo8.html  301
+/playlist/liuba-twerk-twerk-choreography-aqb-t7s  /playlist/liuba-russian-female-twerk-artist-aqb-t7s.html  301
+/playlist/liuba-twerk-twerk-choreography-dumgwla  /playlist/liuba-choreo-twerk-russia-dumgwla.html  301
+/playlist/liuba-twerk-twerk-choreography-h6aq8pe  /playlist/liuba-twerk-workshop-moscow-h6aq8pe.html  301
+/playlist/liuba-twerk-twerk-choreography-lldleei  /playlist/liuba-twerk-dance-performance-russia-lldleei.html  301
+/playlist/liuba-twerk-twerk-choreography-qxpmhei  /playlist/liuba-russian-twerk-dancer-qxpmhei.html  301
+/playlist/liuba-twerk-twerk-choreography-rnzqsza  /playlist/liuba-russian-female-twerk-artist-rnzqsza.html  301
+/playlist/liuba-twerk-twerk-choreography-skp9izk  /playlist/liuba-russian-twerk-pro-skp9izk.html  301
+/playlist/liza-vavilkina-twerk-twerk-choreography-olcrn-i  /playlist/liza-vavilkina-twerk-class-mdc-nrg-moscow-olcrn-i.html  301
+/playlist/oksi-twerk-twerk-choreography-btqqt1a  /playlist/oksi-russia-twerk-choreographer-btqqt1a.html  301
+/playlist/pavliuchenko-alina-twerk-twerk-choreography-a7mfzey  /playlist/pavliuchenko-alina-russian-female-twerk-artist-a7mfzey.html  301
+/playlist/sonia-twerk-twerk-choreography-pzibuao  /playlist/sonia-twerk-rehearsal-moscow-pzibuao.html  301
+/playlist/sonia-twerk-twerk-choreography-rzbnztm  /playlist/sonia-twerking-show-russia-rzbnztm.html  301
+/playlist/start-gruppy-tania-kembo-twerk-novokuznetskaia-twerk-choreography-wf0bj-a  /playlist/start-gruppy-tania-kembo-novokuznetskaia-russian-girl-twerking-routine-wf0bj-a.html  301
+/playlist/vika-kirillova-twerk-twerk-choreography-gqf9z34  /playlist/vika-kirillova-russian-twerk-dancer-gqf9z34.html  301
+
+# Slug fix 2026-05-11 — broken slugs (mojibake artifacts) renamed to descriptive
+/playlist/-twerk--10age.html                                            /playlist/twerk-10age-twerkhub-vault-r8uzin4.html  301
+/playlist/-twerk--10age                                                 /playlist/twerk-10age-twerkhub-vault-r8uzin4.html  301
+/playlist/choreo-by-shoshina-katerina-hucci-house-party--shot-films.html /playlist/choreo-by-shoshina-katerina-hucci-house-party-pashatynestoizhivesh-eqo1iiu.html  301
+/playlist/choreo-by-shoshina-katerina-hucci-house-party--shot-films     /playlist/choreo-by-shoshina-katerina-hucci-house-party-pashatynestoizhivesh-eqo1iiu.html  301
+/playlist/allj--feduk---twerk-dance-makeeva-veronika.html               /playlist/allj-eldzhei-amp-amp-feduk-rozovoe-vino-twerk-dance-makeeva-veronika-dxfpuzw.html  301
+/playlist/allj--feduk---twerk-dance-makeeva-veronika                    /playlist/allj-eldzhei-amp-amp-feduk-rozovoe-vino-twerk-dance-makeeva-veronika-dxfpuzw.html  301
+/playlist/indica-twerk-choreo--.html                                    /playlist/indica-twerk-choreo-mk-v-omske-replay-highlights-related-videos-amp-uqbj7fg.html  301
+/playlist/indica-twerk-choreo--                                         /playlist/indica-twerk-choreo-mk-v-omske-replay-highlights-related-videos-amp-uqbj7fg.html  301
+/playlist/jazz-funk-kids-animal---street-project-.html                  /playlist/jazz-funk-kids-animal-shkola-tantsev-street-project-volzhskii-replay-ldz0xm0.html  301
+/playlist/jazz-funk-kids-animal---street-project-                       /playlist/jazz-funk-kids-animal-shkola-tantsev-street-project-volzhskii-replay-ldz0xm0.html  301
+/playlist/twerkchoppa-dunks---street-project.html                       /playlist/twerk-choppa-dunks-shk-tantsev-amp-quot-street-project-amp-quot-r2bxoma.html  301
+/playlist/twerkchoppa-dunks---street-project                            /playlist/twerk-choppa-dunks-shk-tantsev-amp-quot-street-project-amp-quot-r2bxoma.html  301
+/playlist/choreo-by-shoshina-katerina-miyagi--i-got-love.html           /playlist/choreo-by-shoshina-katerina-miyagi-amp-amp-endshpil-i-got-love-replay-aptiwca.html  301
+/playlist/choreo-by-shoshina-katerina-miyagi--i-got-love                /playlist/choreo-by-shoshina-katerina-miyagi-amp-amp-endshpil-i-got-love-replay-aptiwca.html  301
+/playlist/twerk-booty-dance------janelle-monae-jidenna-yoga.html        /playlist/twerk-booty-dance-cheboksary-obuchenie-buti-dens-tverk-janelle-monae-qv2jsri.html  301
+/playlist/twerk-booty-dance------janelle-monae-jidenna-yoga             /playlist/twerk-booty-dance-cheboksary-obuchenie-buti-dens-tverk-janelle-monae-qv2jsri.html  301
+/playlist/twerk---kvartal-dance.html                                    /playlist/twerk-ksiusha-giria-kvartal-dance-replay-highlights-related-videos-ac2qjru.html  301
+/playlist/twerk---kvartal-dance                                         /playlist/twerk-ksiusha-giria-kvartal-dance-replay-highlights-related-videos-ac2qjru.html  301
+/playlist/twerk--.html                                                  /playlist/twerk-vol-02-twerkhub-vault-ecnjxw4.html  301
+/playlist/twerk--                                                       /playlist/twerk-vol-02-twerkhub-vault-ecnjxw4.html  301
+/playlist/-dacheng-sluttish-ftanba-una-choreographyidance.html          /playlist/dacheng-sluttish-ftanba-una-choreographyidance-twerkhub-ifrn3gs.html  301
+/playlist/-dacheng-sluttish-ftanba-una-choreographyidance               /playlist/dacheng-sluttish-ftanba-una-choreographyidance-twerkhub-ifrn3gs.html  301
+/playlist/choreography-by-zhenya-volkova-model-357-lab-2.html           /playlist/choreography-by-zhenya-volkova-model-357-lab-twerk-choreography-5wp0xc4.html  301
+/playlist/choreography-by-zhenya-volkova-model-357-lab-2                /playlist/choreography-by-zhenya-volkova-model-357-lab-twerk-choreography-5wp0xc4.html  301
+
+# 2026-05-12: Audit-fix broken legacy links
+/best-twerk-dancers/                                                                          /best-twerk-dancers.html              301
+/twerk-dancer/                                                                                /creators.html                        301
+/creators/                                                                                    /creators.html                        301
+/auth/signin.html                                                                             /account.html                         301
+/playlist/ksu-twerk-3.html                                                                    /playlist/                            301
+/playlist/ksu-twerk-4.html                                                                    /playlist/                            301
+/playlist/ksiu-twerk-zoopark-10age.html                                                       /playlist/twerk-10age-twerkhub-vault-r8uzin4.html  301
+/playlist/angelina-muliukina-twerk-2.html                                                     /playlist/                            301
+/playlist/da-cheng-dacheng-shui-xing-yang-hua-sluttish-ftanba-una-choreographyidance.html     /playlist/dacheng-sluttish-ftanba-una-choreographyidance-twerkhub-ifrn3gs.html  301
+/hottest-cosplay-fancam/comic-market-106-4k-neowiz-ブラウンダスト2ジュアさん-c106-mobuo.html   /hottest-cosplay-fancam/                301
+/es/playlist/                                                                                  /es/                                  301

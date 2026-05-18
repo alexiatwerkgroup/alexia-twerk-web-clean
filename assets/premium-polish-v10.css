@@ -1,0 +1,184 @@
+
+/* Alexia premium polish v10 */
+:root{
+  --ax-glow-1: rgba(255,46,99,.16);
+  --ax-glow-2: rgba(104,89,255,.14);
+  --ax-surface: rgba(255,255,255,.035);
+  --ax-surface-2: rgba(255,255,255,.022);
+  --ax-line-2: rgba(255,255,255,.14);
+  --ax-line-3: rgba(255,255,255,.22);
+  --ax-muted-2: rgba(255,255,255,.72);
+  --ax-shadow-2: 0 22px 64px rgba(0,0,0,.30);
+}
+html{scroll-behavior:smooth}
+body{
+  position:relative;
+  background:
+    radial-gradient(1100px 640px at 14% 6%, var(--ax-glow-1), transparent 58%),
+    radial-gradient(900px 620px at 86% 10%, var(--ax-glow-2), transparent 56%),
+    linear-gradient(180deg,#050508 0%,#090a11 46%,#0b0b12 100%) !important;
+  color:#f6f6fb;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0; pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%, transparent 82%, rgba(255,255,255,.02)),
+    radial-gradient(650px 300px at 50% -10%, rgba(255,255,255,.06), transparent 58%);
+  mix-blend-mode:screen;
+  opacity:.55;
+}
+.btn,.nav-btn,.nav-btn-strong,.recommend-btn,.vote-btn,.watch-clip-btn,.autoplay-btn,.action-btn,.mini-cta,.yt-btn-lite,.yt-btn-post,.surgical-link-pill{
+  font-weight:700 !important;
+  letter-spacing:.04em !important;
+  text-transform:none !important;
+  border-color: rgba(255,255,255,.14) !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+  transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.btn:hover,.nav-btn:hover,.nav-btn-strong:hover,.recommend-btn:hover,.vote-btn:hover,.watch-clip-btn:hover,.autoplay-btn:hover,.action-btn:hover,.mini-cta:hover,.yt-btn-lite:hover,.yt-btn-post:hover,.surgical-link-pill:hover{
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,.24) !important;
+  box-shadow: 0 14px 28px rgba(0,0,0,.24);
+}
+.wrap,.page,.content{position:relative; z-index:1}
+.panel,.vote-box,.alexia-clean-vote-box,.alexia-hm-box,.autoplay-card,.small-card,.card,.small-body,.seo-block,.page-faq,.recommend-cta,.admin-panel,.admin-box,.related,.notice,.mini-card,.box{
+  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.022)) !important;
+  box-shadow: var(--ax-shadow-2) !important;
+}
+.card,.small-card,.mini-card,.autoplay-card,.recommend-cta,.page-faq,.seo-block,.vote-box,.alexia-hm-box,.admin-panel,.admin-box,.related{
+  border-color: rgba(255,255,255,.10) !important;
+}
+.card:hover,.small-card:hover,.mini-card:hover,.autoplay-card:hover{
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,.18) !important;
+}
+.alexia-seo-h1,h1{
+  letter-spacing:-.03em !important;
+  line-height: .94 !important;
+  text-shadow: 0 10px 36px rgba(0,0,0,.38);
+}
+.section-title,.recommend-title,.vote-box-title,.alexia-hm-title{
+  letter-spacing:-.02em !important;
+}
+.section-sub,.recommend-sub,.seo-intro,.video-desc,.lede,.meta,.small-body .meta,.footer-note,.notice,.alexia-hm-note,.yt-comments-meta-line{
+  color: rgba(255,255,255,.72) !important;
+}
+.thumb img,.autoplay-thumb img,.embed iframe,.player iframe{
+  filter:saturate(1.03) contrast(1.02);
+}
+.video-shell,.panel,.recommend-cta,.related,.seo-block,.page-faq{overflow:hidden}
+.page-top-actions{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:18px}
+.streak-pill,.replay-chip,.heat-chip,.badge,.pill,.seo-pill,.card-tag,.play-badge{
+  border-color: rgba(255,255,255,.14) !important;
+  background: rgba(255,255,255,.05) !important;
+}
+.video-meta-line,.meta,.count{
+  font-variant-numeric: tabular-nums;
+}
+.ax-eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 12px; border-radius:999px;
+  margin-bottom:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:#f4f4fb; font-size:12px; letter-spacing:.08em; text-transform:uppercase; font-weight:800;
+}
+.ax-eyebrow::before{
+  content:""; width:8px; height:8px; border-radius:50%;
+  background:linear-gradient(180deg,#ff4f8f,#796cff);
+  box-shadow:0 0 0 6px rgba(255,255,255,.04);
+}
+.ax-soft-hidden{display:none !important}
+.ax-stat-muted{opacity:.74}
+.ax-stats-live{
+  color:#dfe2ff !important;
+}
+@media (max-width:900px){
+  body::before{opacity:.42}
+  .btn,.nav-btn,.nav-btn-strong,.recommend-btn,.vote-btn,.watch-clip-btn,.autoplay-btn,.action-btn,.mini-cta,.yt-btn-lite,.yt-btn-post,.surgical-link-pill{
+    letter-spacing:.03em !important;
+  }
+}
+
+
+
+/* ===== SURGICAL PILL COLOR RESTORE ===== */
+/* Restores the original colored category/status pills without touching top nav or profile */
+.playlist-page .play-badge,
+.play-badge{
+  background:rgba(10,10,14,.58)!important;
+  color:#ffffff!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+  backdrop-filter:blur(8px)!important;
+}
+.card[data-category="solo"] .play-badge{
+  background:linear-gradient(180deg, rgba(110,86,255,.44), rgba(28,18,76,.72))!important;
+  border-color:rgba(177,158,255,.42)!important;
+}
+.card[data-category="studios"] .play-badge{
+  background:linear-gradient(180deg, rgba(255,186,78,.34), rgba(88,46,10,.74))!important;
+  border-color:rgba(255,207,123,.42)!important;
+}
+.card[data-category="group"] .play-badge{
+  background:linear-gradient(180deg, rgba(255,95,137,.34), rgba(82,17,37,.74))!important;
+  border-color:rgba(255,156,184,.42)!important;
+}
+.card[data-category="workout"] .play-badge{
+  background:linear-gradient(180deg, rgba(73,224,157,.30), rgba(10,66,43,.74))!important;
+  border-color:rgba(125,245,194,.38)!important;
+}
+.card[data-category="battles"] .play-badge,
+.card[data-category="battle"] .play-badge{
+  background:linear-gradient(180deg, rgba(255,108,63,.34), rgba(88,28,8,.76))!important;
+  border-color:rgba(255,166,135,.40)!important;
+}
+
+.heat-chip{
+  border:1px solid rgba(255,255,255,.16)!important;
+  color:#ffffff!important;
+  text-shadow:0 1px 1px rgba(0,0,0,.20)!important;
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.24),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+.card.heat-hot .heat-chip{
+  display:inline-flex!important;
+  background:linear-gradient(180deg, #ffb15a 0%, #ff6a2f 100%)!important;
+  border-color:rgba(255,202,140,.48)!important;
+}
+.card.heat-warm .heat-chip{
+  display:inline-flex!important;
+  background:linear-gradient(180deg, #ff77bb 0%, #7d67ff 100%)!important;
+  border-color:rgba(219,183,255,.46)!important;
+}
+.card.heat-moving .heat-chip{
+  display:inline-flex!important;
+  background:linear-gradient(180deg, #44e1ff 0%, #2b7fff 100%)!important;
+  border-color:rgba(159,217,255,.46)!important;
+}
+
+/* restore small pills in carousels / rails */
+.pro-chip,
+.badge,
+.pill,
+.seo-pill,
+.card-tag,
+.rank,
+.chip,
+.meta-pill{
+  background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05))!important;
+  color:#f5f6fb!important;
+  border-color:rgba(255,255,255,.14)!important;
+}
+
+/* restore home/category pills if present */
+.badges .badge:nth-child(1){background:linear-gradient(180deg, rgba(116,88,255,.34), rgba(35,22,77,.72))!important;border-color:rgba(173,157,255,.42)!important;}
+.badges .badge:nth-child(2){background:linear-gradient(180deg, rgba(72,220,156,.28), rgba(11,63,43,.74))!important;border-color:rgba(135,245,199,.34)!important;}
+.badges .badge:nth-child(3){background:linear-gradient(180deg, rgba(255,111,66,.30), rgba(82,28,12,.76))!important;border-color:rgba(255,170,139,.36)!important;}
+.badges .badge:nth-child(4){background:linear-gradient(180deg, rgba(255,194,86,.28), rgba(78,48,12,.76))!important;border-color:rgba(255,213,132,.34)!important;}
+

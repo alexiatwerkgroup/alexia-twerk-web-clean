@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
+<script src="/assets/twk-guardian.js?v=20260509-g1"></script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
+<script data-twk="thumb-v4">(function(){function tryNext(i,vid,arr,idx){if(idx>=arr.length){i.style.display='none';return;}i.onerror=function(){tryNext(i,vid,arr,idx+1);};i.onload=function(){if(i.naturalWidth<=120){tryNext(i,vid,arr,idx+1);}};i.src='https://i.ytimg.com/vi/'+vid+'/'+arr[idx];}function fix(){document.querySelectorAll('img').forEach(function(i){var m=(i.src||'').match(/ytimg\.com\/vi\/([\w-]{11})/);var vid=i.dataset.vid||(m?m[1]:null);if(!vid)return;if(i.loading==='lazy')i.loading='eager';if(!i.complete||i.naturalWidth<=120){tryNext(i,vid,['maxresdefault.jpg','hqdefault.jpg','mqdefault.jpg','sddefault.jpg','0.jpg'],0);}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+<style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
+<script>(function(){function force(){try{var imgs=document.querySelectorAll('img[src*="i.ytimg.com"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];im.setAttribute('loading','eager');im.style.opacity='1';im.style.visibility='visible';im.style.display='block';if(!im.dataset.twkOrigSrc){im.dataset.twkOrigSrc=im.getAttribute('src')||'';}var s=im.getAttribute('src');if(s)im.src=s;}}catch(_){}}function recover(){try{var bad=document.querySelectorAll('img[src*="thumb-unavailable"]');for(var i=0;i<bad.length;i++){var im=bad[i];if(im.dataset.twkOrigSrc){im.src=im.dataset.twkOrigSrc;}}}catch(_){}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){force();recover();});}else{force();recover();}setTimeout(function(){force();recover();},500);setTimeout(function(){force();recover();},2000);})();</script>
+<style id="twk-sr-only-seo">.twk-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>6 танцевальных студий, формирующих 2026 · Twerkhub</title>
+<meta name="description" content="Шесть танцевальных институтов, определяющих twerk, K-dance и heels choreo в 2026: iDance Тайбэй, MDC NRG Москва, BEFOX Сеул, Kato Dance Studio Германия, VR…">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="Anti · Twerkhub">
+<link rel="canonical" href="https://alexiatwerkgroup.com/ru/blog/studios-shaping-2026">
+<link rel="alternate" hreflang="ru" href="https://alexiatwerkgroup.com/ru/blog/studios-shaping-2026.html">
+<link rel="alternate" hreflang="pt-BR" href="https://alexiatwerkgroup.com/pt/blog/studios-shaping-2026.html">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/blog/studios-shaping-2026.html">
+<link rel="alternate" hreflang="es" href="https://alexiatwerkgroup.com/es/blog/studios-shaping-2026.html">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/blog/studios-shaping-2026.html">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:locale:alternate" content="uk_UA">
+<meta property="og:title" content="6 танцевальных студий, формирующих 2026 · глобальные институты twerk">
+<meta property="og:description" content="iDance Тайбэй, MDC NRG Москва, BEFOX Сеул, Kato Германия, VR KINGS, TWERKIT — что вкладывает каждый и почему они важны вместе.">
+<meta property="og:url" content="https://alexiatwerkgroup.com/ru/blog/studios-shaping-2026">
+<meta property="og:image" content="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg">
+<meta property="article:published_time" content="2026-04-24T13:00:00Z">
+<meta property="article:modified_time" content="2026-04-24T13:00:00Z">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap&family=Anton">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"6 танцевальных студий, формирующих 2026 · Тайбэй, Москва, Сеул, Германия","url":"https://alexiatwerkgroup.com/ru/blog/studios-shaping-2026.html","datePublished":"2026-04-24","dateModified":"2026-04-24","inLanguage":"ru","author":{"@type":"Person","name":"Anti","alternateName":"firestarter","url":"https://alexiatwerkgroup.com/ru/about.html"},"publisher":{"@type":"Organization","name":"Twerkhub","logo":{"@type":"ImageObject","url":"https://alexiatwerkgroup.com/logo-twerkhub.png"},"url":"https://alexiatwerkgroup.com/"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://alexiatwerkgroup.com/ru/blog/studios-shaping-2026.html"},"image":"https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg","wordCount":"1820","articleSection":"Индустрия"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://alexiatwerkgroup.com/ru/"},{"@type":"ListItem","position":2,"name":"Блог","item":"https://alexiatwerkgroup.com/ru/blog/"},{"@type":"ListItem","position":3,"name":"6 студий, формирующих 2026","item":"https://alexiatwerkgroup.com/ru/blog/studios-shaping-2026.html"}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.74;min-height:100vh;padding-bottom:120px}
+a{color:#ff6fa8;text-decoration:none}a:hover{color:#ffb454}
+.wrap{max-width:760px;margin:0 auto;padding:110px 28px 40px}
+.kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#9d4edd;margin-bottom:14px}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,5.5vw,64px);font-weight:900;line-height:1.05;letter-spacing:-.022em;margin-bottom:22px}
+h1 em{font-style:italic;background:linear-gradient(135deg,#9d4edd,#ff2d87);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:900;line-height:1.18;margin:54px 0 14px;color:#fff;letter-spacing:-.012em}
+h3{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:800;margin:30px 0 10px;color:#ffb454}
+p,li{color:#d8d8e2;font-size:17.5px;margin-bottom:18px}
+ul,ol{padding-left:26px;margin-bottom:20px}
+strong{color:#fff;font-weight:700}em{color:#ff9ec4;font-style:italic}
+.locale-bar{display:inline-flex;gap:8px;margin-bottom:24px;padding:6px;border-radius:999px;background:rgba(20,20,32,.7);border:1px solid rgba(255,255,255,.08)}
+.locale-bar a{padding:6px 14px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#9a9aab}
+.locale-bar a.active{background:linear-gradient(135deg,#ff2d87,#9d4edd);color:#fff}
+.meta{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:48px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a8a96}
+.studio-card{margin:38px 0;padding:28px;border-radius:22px;background:linear-gradient(135deg,rgba(157,78,221,.06),rgba(20,20,32,.55));border:1px solid rgba(157,78,221,.18);position:relative}
+.studio-card::before{content:attr(data-num);position:absolute;top:-14px;left:24px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;background:linear-gradient(135deg,#9d4edd,#ff2d87);color:#fff;padding:5px 12px;border-radius:999px}
+.studio-card h2{margin:8px 0 6px;font-size:28px}
+.studio-card .place{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c39bff;margin-bottom:14px}
+.studio-card .key{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.studio-card .key span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:rgba(255,180,84,.1);color:#ffb454;border:1px solid rgba(255,180,84,.25)}
+.thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin:14px 0 6px;border:1px solid rgba(255,255,255,.08)}
+.shared{margin:42px 0;padding:28px;border-radius:22px;background:linear-gradient(135deg,rgba(255,180,84,.05),rgba(255,45,135,.05));border:1px solid rgba(255,180,84,.18)}
+.shared h3{color:#ffb454;margin-top:0}
+.related{margin-top:52px;padding:26px 28px;border-radius:18px;background:linear-gradient(135deg,rgba(255,45,135,.08),rgba(157,78,221,.08));border:1px solid rgba(255,45,135,.2)}
+.related strong{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#ffb454;margin-bottom:10px}
+.back{display:inline-block;margin-top:44px;padding:11px 22px;border-radius:999px;background:rgba(255,255,255,.06);color:#ff6fa8;border:1px solid rgba(255,255,255,.12);font-weight:700;font-size:13px}
+</style>
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YSFR7FHCLS', { send_page_view: true });
+</script>
+<link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260507-b5-no-pink-lines">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
+<link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+</head>
+<body class="twerkhub-page twerkhub-ph-theme">
+<a href="#main" class="twk-sr-only">Skip to content</a>
+
+<!-- TWK_NAV_V1 -->
+<style id="twk-nav-v1-css">
+.twk-nav-v1{position:sticky!important;top:0!important;z-index:9999!important;background:rgba(5,5,10,.94)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)!important;margin:0!important;width:100%!important;display:block!important}
+.twk-nav-v1-inner{max-width:1480px!important;margin:0 auto!important;padding:14px 26px!important;display:flex!important;align-items:center!important;gap:14px!important;flex-wrap:nowrap!important;grid-template-columns:none!important}
+.twk-nav-v1-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;flex-shrink:0}
+.twk-nav-v1-brand img{width:auto;height:34px;max-width:140px;border-radius:6px;display:block;object-fit:contain}
+.twk-nav-v1-links{display:flex;align-items:center;gap:2px;flex-wrap:nowrap;margin-left:auto;white-space:nowrap}
+.twk-nav-v1-links a{position:relative;padding:10px 14px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;line-height:1;transition:color .22s ease,background .22s ease,transform .2s ease;white-space:nowrap}
+.twk-nav-v1-links a:hover{background:rgba(255,255,255,.05);color:#fff;transform:translateY(-1px)}
+.twk-nav-v1-links a.is-active{color:#fff;background:transparent}
+.twk-nav-v1-links a.is-active::after{content:"";position:absolute;left:18%;right:18%;bottom:2px;height:2px;border-radius:2px;background:linear-gradient(90deg,#ff2d87,#ffb454);box-shadow:0 0 10px rgba(255,45,135,.55)}
+.twk-nav-v1-links a.twk-nav-v1-hot{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(255,180,84,.18));color:#ff7eb0;border:1px solid rgba(255,45,135,.45);padding-left:14px}
+.twk-nav-v1-links a.twk-nav-v1-hot:hover{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;border-color:transparent;box-shadow:0 6px 18px rgba(255,45,135,.4)}
+.twk-nav-v1-live{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);color:#1ee08f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;margin-left:6px}
+.twk-nav-v1-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;animation:twkLivePulse 2s ease-in-out infinite}
+@keyframes twkLivePulse{0%,100%{opacity:1}50%{opacity:.4}}
+.twk-nav-v1-lang{display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:3px;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.twk-nav-v1-lang a{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;color:rgba(230,230,240,.55);text-decoration:none;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.18em;line-height:1;text-transform:uppercase;transition:color .15s,background .15s,box-shadow .25s,transform .2s}
+.twk-nav-v1-lang a:hover{color:#fff;background:rgba(255,255,255,.06);transform:translateY(-1px)}
+.twk-nav-v1-lang a.is-active{color:#fff;padding:6px 12px;background:linear-gradient(135deg,#ff2d87,#ff9000);box-shadow:0 4px 12px rgba(255,45,135,.4);letter-spacing:.22em;border:0}
+.twk-nav-v1-lang a.is-active::before{content:"";display:inline-block;width:11px;height:11px;margin-right:5px;margin-top:-2px;vertical-align:middle;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231ee08f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 15 12 9 18 15'/></svg>");background-repeat:no-repeat;background-size:contain;filter:drop-shadow(0 0 5px rgba(30,224,143,.85)) drop-shadow(0 0 10px rgba(30,224,143,.45));animation:twk-lang-pulse 1.3s ease-in-out infinite;will-change:transform,opacity}
+@keyframes twk-lang-pulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-3px);opacity:.5}}
+@media(max-width:880px){.twk-nav-v1-lang{display:none}}
+@media(max-width:1180px){.twk-nav-v1-links a{padding:8px 10px;font-size:10.5px;letter-spacing:.08em}}
+@media(max-width:1024px){.twk-nav-v1-links{gap:0}.twk-nav-v1-links a{padding:8px 8px;font-size:10px;letter-spacing:.06em}.twk-nav-v1-live{font-size:9px;padding:5px 9px}}
+@media(max-width:880px){.twk-nav-v1-inner{padding:10px 14px;gap:8px}.twk-nav-v1-links{gap:1px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:2px}.twk-nav-v1-links a{padding:7px 8px;font-size:10px}.twk-nav-v1-brand span{display:none}.twk-nav-v1-live{display:none}}
+.twerkhub-pl-thumb,.vthumb,.rk-thumb,.twerkhub-fp-thumb,.twerkhub-club-thumb{background:linear-gradient(135deg,#1a0a1f 0%,#2a0f3d 50%,#0a0a14 100%)!important}
+.twerkhub-pl-thumb img,.vthumb img,.rk-thumb img,.twerkhub-fp-thumb img,.twerkhub-club-thumb img{background:transparent}
+</style>
+<nav class="twk-nav-v1" aria-label="Primary" data-twk-nav-v1>
+  <div class="twk-nav-v1-inner">
+    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub · home">
+      <img src="/logo-twerkhub.png" alt="Twerkhub" width="120" height="34" decoding="async">
+      <span>TWERKHUB · EST. 2018</span>
+    </a>
+    <div class="twk-nav-v1-links">
+      <a href="/" data-nav="home">HOME</a>
+      <a href="/#private-models" data-nav="exclusive">EXCLUSIVE</a>
+      <a href="/#playlists" data-nav="playlists">PLAYLISTS</a>
+      <a href="/creators" data-nav="creators">CREATORS</a>
+      <a href="/alexia-video-packs" class="twk-nav-v1-hot" data-nav="hotpacks">HOT PACKS</a>
+      <a href="/community.html" data-nav="community">COMMUNITY</a>
+      <a href="/membership" data-nav="membership">MEMBERSHIP</a>
+      <a href="/account" data-nav="account">MY ACCOUNT</a>
+      <a href="/profile" data-nav="profile">PROFILE</a>
+    </div>
+    <div class="twk-nav-v1-lang" role="group" aria-label="Language">
+      <a href="/en/" data-lang="en" title="English">EN</a>
+      <a href="/es/" data-lang="es" title="Español">ES</a>
+      <a href="/ru/" data-lang="ru" class="is-active" title="Русский">RU</a>
+      <a href="/pt/" data-lang="pt" title="Português">PT</a>
+    </div>
+    <div class="twerkhub-tokens-hud twk-tk-hud--in-nav" id="twk-tokens-hud-v3" style="display:inline-flex;align-items:center;height:28px;margin-right:6px;flex-shrink:0;pointer-events:auto;"><button type="button" style="pointer-events:auto;display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(255,180,84,.16));border:1px solid rgba(30,224,143,.55);box-shadow:0 6px 20px rgba(30,224,143,.18),0 2px 6px rgba(0,0,0,.4);color:#f5f5fb;font-weight:800;letter-spacing:.06em;cursor:pointer;font-family:Inter,ui-sans-serif,system-ui;font-size:13px;" id="twk-tokens-badge" aria-label="Token balance"><span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#1ee08f,#30ff9f);box-shadow:0 0 12px rgba(30,224,143,.6);" aria-hidden="true"></span><span id="twk-tokens-count" style="font-variant-numeric:tabular-nums;">0</span> <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;">tokens</span> <span id="twk-tokens-tier" style="font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:#1ee08f;">BASIC</span></button></div>
+    <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
+  </div>
+</nav>
+<script>
+(function(){
+  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
+  function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
+  setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
+  function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
+  loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260513-blindaje-v62','twk-loader-token-system');
+  loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
+})();
+</script>
+
+
+<article class="wrap">
+  <div class="kicker">/ Индустрия · Институты</div>
+  <div class="locale-bar"><a href="/blog/studios-shaping-2026.html">EN</a><a href="/es/blog/studios-shaping-2026.html">ES</a><a href="/ru/blog/studios-shaping-2026.html" class="active">RU</a></div>
+  <h1>6 танцевальных студий, <em>формирующих 2026.</em></h1>
+  <div class="meta">
+    <span>Anti · firestarter</span>
+    <span>24 апр 2026</span>
+    <span>11 мин чтения</span>
+    <span>Индустрия · pillar</span>
+  </div>
+
+  <p>Можно отобразить всю глобальную сцену twerk и heels-choreo на шесть институтов. Шесть залов, шесть методологий, шесть разных пайплайнов превращения людей, любящих танец, в людей, которые умеют танцевать. Некоторые на противоположных сторонах планеты и никогда не были в одном здании. Делятся они большим, чем ты подумал бы.</p>
+
+  <p>Это рабочий список на апрель 2026. Не «лучшие» — Twerkhub не ранжирует студии. Просто <strong>самые влиятельные</strong> по метрике, которая нам важна: когда несвязанная танцовщица в третьей стране перенимает фразу — откуда она пришла? В девяти случаях из десяти — отсюда.</p>
+
+  <div class="studio-card" data-num="01 · Азия">
+    <h2>iDance Studio · Тайбэй</h2>
+    <div class="place">Тайвань · est. 2018 · K-dance ансамбль</div>
+    <p>Причина, почему K-dance twerk выглядит так, как выглядит в 2026. iDance Тайбэй относится к каждому классу как к видеосъёмке — широкая камера, зеркальная формация, полная фраза в одном дубле. В их ростере <a href="/creator/wangong-lin.html">WanGong Lin</a>, <a href="/creator/angela-idance.html">Angela</a> и <a href="/creator/foxyen.html">FOXYEN</a> — мы их освещаем индивидуально.</p>
+    <img height="360" width="480" class="thumb" src="https://i.ytimg.com/vi/Ba8udR5zP3g/hqdefault.jpg" alt="iDance Тайбэй · Taiwan Twerk Family Workshop reference cut" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/Ba8udR5zP3g/default.jpg';}">
+    <div class="key"><span>Широкая камера</span><span>Ансамбль</span><span>K-dance</span><span>Workshop пайплайн</span></div>
+    <p><strong>Что они экспортировали.</strong> В основном две вещи: конвенция широкой камеры (без handheld, без склеек) и фразирование с приклеенными ступнями (стопы стоят, всё движение в бёдрах и upper body). Студии в Сеуле, Тайчжуне и Бангкоке запускают пайплайны, видимо нисходящие от их.</p>
+    <p><strong>Что держат запатентованным.</strong> Структуру классов — они прокатывают шесть хореографов через 12-недельный интенсив, который ни одна другая студия в Азии не превосходит по объёму. <a href="/creators-taipei.html">Подробнее о ростере Тайбэя.</a></p>
+  </div>
+
+  <div class="studio-card" data-num="02 · Европа">
+    <h2>Moscow Dance Centre NRG · Москва</h2>
+    <div class="place">Россия · est. 2011 · ПЛАНЕТАЛЕТО · curriculum heels</div>
+    <p>Если iDance Тайбэй определил K-dance ансамбль, MDC NRG кодифицировал современный curriculum heels-хореографии. Третий этаж торгового центра ПЛАНЕТАЛЕТО, классы круглый год, 30+ преподавателей. <a href="/creator/lada-gozzi.html">Лада Гоцци</a> — ведущий преподаватель heels, чей Pharaoh «Пломбир» — самый replayed-cut в нашем архиве.</p>
+    <img height="360" width="480" class="thumb" src="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg" alt="MDC NRG · Лада Гоцци · Pharaoh Пломбир reference cut" loading="lazy" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/DwJQZt7TaTM/default.jpg';}">
+    <div class="key"><span>12-недельные блоки</span><span>Curriculum heels</span><span>Статичный wide</span><span>Hip-pop на «и»</span></div>
+    <p><strong>Что они экспортировали.</strong> 12-недельная блочная прогрессия (изоляция → комбинации → хореография → видеосъёмка) была московским изобретением, которое теперь стандарт в студиях ЕС. Конкретная конвенция фразирования — попадание на off-beat вместо downbeat — тоже отслеживается сюда.</p>
+    <p><strong>За что они борются.</strong> Непрерывность. То же здание, те же часы, тот же ритм публикации больше десяти лет. <a href="/ru/blog/moscow-dance-centre-nrg-history.html">Полная история MDC NRG на русском.</a></p>
+  </div>
+
+  <div class="studio-card" data-num="03 · Азия">
+    <h2>BEFOX Dance Studio · Сеул</h2>
+    <div class="place">Корея · Каннам · est. 2019 · K-pop × stripdance</div>
+    <p>Студия, которая разобралась, как привить методологию K-pop хореографии словарю stripdance. Хореография <a href="/creator/befox-dance-studio.html">FOX</a> на Sam Smith «Unholy» — золотой стандарт этого гибрида. Классы с открытой записью в Каннаме, премиум цены, около-нулевая текучка среди преподавателей.</p>
+    <img height="360" width="480" class="thumb" src="https://i.ytimg.com/vi/Kj9T74htwrA/hqdefault.jpg" alt="BEFOX Dance Studio · FOX · Sam Smith Unholy" loading="lazy" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/Kj9T74htwrA/default.jpg';}">
+    <div class="key"><span>K-pop × stripdance</span><span>Каннам</span><span>FOX хореография</span><span>Готово к сцене</span></div>
+    <p><strong>Что они экспортировали.</strong> Кроссоверный язык. До BEFOX K-pop танец и stripdance жили в разных комнатах. Они доказали, что можно построить curriculum, использующий дисциплину счёта K-pop, плавность пола stripdance и twerk-изоляции бёдер — всё в одной пьесе. Другие студии Сеула последовали.</p>
+    <p><strong>Что дальше.</strong> Расширительный блок классов в Токио на конец 2026 — впервые BEFOX преподаёт за пределами Кореи.</p>
+  </div>
+
+  <div class="studio-card" data-num="04 · Европа">
+    <h2>Kato Dance Studio · Германия</h2>
+    <div class="place">Германия · est. 2020 · европейская студия, отшлифованная для сцены</div>
+    <p>Самые чистые продакшн-значения европейской сцены. <a href="/creator/kato-dance-studio.html">Kato Dance Studio</a> снимает каждую загрузку как телевизионный deliverable. Две резидентные хореографа — Ciri (Nicki Minaj «Barbie World») и Mira (Latto «Wheelie») — обрабатывают большую часть каталога.</p>
+    <img height="360" width="480" class="thumb" src="https://i.ytimg.com/vi/8yAG7toqnCM/hqdefault.jpg" alt="Kato Dance Studio · Ciri · Barbie World" loading="lazy" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/8yAG7toqnCM/default.jpg';}">
+    <div class="key"><span>Готово к сцене</span><span>Ансамбль 4-6 dancers</span><span>Дисциплина продакшна</span><span>Color grading</span></div>
+    <p><strong>Что они экспортировали.</strong> Стандарт продакшна. KDS сделали в Европе нормой выдавать многокамерное, color-graded, audio-mixed танцевальное видео как формат по умолчанию, а не исключение. Немецкая базовая линия подняла европейскую базовую линию между 2022-2025.</p>
+    <p><strong>От чего отказываются.</strong> Вертикальный контент. KDS до сих пор грузит только горизонтальный 4K. Reels Instagram и cuts TikTok приходят от третьих сторон, обрезающих их работу.</p>
+  </div>
+
+  <div class="studio-card" data-num="05 · Азия">
+    <h2>VR KINGS · Сеул</h2>
+    <div class="place">Корея · est. 2022 · команда VR fancam 180°</div>
+    <p>Не учительская студия — съёмочная студия. <a href="/creator/vr-kings.html">VR KINGS</a> — референсная команда 180° VR fancam для K-dance. Два оператора, кастомные 8K стереоскопические риги, sync пространственного аудио. Их работа — причина, почему VR fancam перестал быть категорией-новинкой и стал реальной.</p>
+    <div class="key"><span>180° / 8K стерео</span><span>Пространственный 3D звук</span><span>Статичное правило 3 метров</span><span>Headset-first</span></div>
+    <p><strong>Что они экспортировали.</strong> Сам формат, по сути. До VR KINGS «VR dance» означал хобби-запись на одном риге. После VR KINGS это означает захват иммерсии broadcast-уровня. У пользователей Quest и Vision Pro наконец есть причина установить YouTube VR.</p>
+    <p><strong>От чего отказываются.</strong> Хореографическая работа. Они продюсеры fancam-only по выбору — задача команды записывать работу других танцовщиц, а не выступать.</p>
+  </div>
+
+  <div class="studio-card" data-num="06 · Европа">
+    <h2>TWERKIT Studio · Россия</h2>
+    <div class="place">Россия · est. 2018 · пайплайн для начинающих</div>
+    <p>Противоположный конец спектра от престижных студий. TWERKIT — пайплайн для начинающих, который научил половину русской сцены, как стартовать. Основан <a href="/creator/abasheva-yana.html">Абашевой Яной</a>, чья хореография Rihanna «Needed Me» сидит на 904K просмотров и служит приветственной пьесой для поколения танцовщиц.</p>
+    <img height="360" width="480" class="thumb" src="https://i.ytimg.com/vi/qmHxNAwhShY/hqdefault.jpg" alt="TWERKIT Studio · Abasheva Yana · Rihanna Needed Me" loading="lazy" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/qmHxNAwhShY/default.jpg';}">
+    <div class="key"><span>Пайплайн начинающих</span><span>6-недельные воркшопы</span><span>Открытая запись</span><span>Фидер русской сцены</span></div>
+    <p><strong>Что они экспортировали.</strong> Доступность. Пока MDC NRG строил престижный curriculum, TWERKIT строил on-ramp. Танцовщица, которая никогда не брала класс, может закончить 6-недельный TWERKIT-блок и опубликовать свой первый cut. Большинство соло-креаторш Москвы и Санкт-Петербурга на YouTube — выпускницы TWERKIT.</p>
+    <p><strong>Что им важно.</strong> Body-positive культура класса. TWERKIT всегда делал зал безопасным для новичков таким образом, который престижным студиям может даваться с трудом.</p>
+  </div>
+
+  <div class="shared">
+    <h3>Что объединяет шестерых</h3>
+    <p>Шесть студий на трёх континентах с очень разными ценами, престижем и клиентурой. Общая нить — не эстетика. Это <strong>дисциплина публикации</strong>: каждая из них относится к видео как к deliverable, а не побочному продукту. Каждый блок класса заканчивается материалом, который идёт онлайн. Поэтому их работа компаундирует и поэтому студии, не снимающие последовательно — даже отличные — оказываются невидимыми для глобальных аудиторий.</p>
+    <p>Другая вещь, которую они разделяют — <strong>география преподавания, не студентов.</strong> Все шестеро преподают внутри домашнего города; студенты ездят к ним, не наоборот. Без франчайзинга, без удалённых программ, без лицензионных копий. Зал — это продукт.</p>
+  </div>
+
+  <h2>Чего нет в этом списке.</h2>
+  <p>Три категории, которые не попали — намеренно.</p>
+  <ul>
+    <li><strong>Американская уличная линия.</strong> Bounce в Новом Орлеане, atlanta strip-club crews, оригинальная twerk-сцена — все фундаментальные, ни одна не институционализирована в студийном смысле. Формат «студия, формирующая 2026» не подходит к тому, как они на самом деле работают.</li>
+    <li><strong>Латинские piso-сцены.</strong> Медельин, Каракас, Буэнос-Айрес имеют студии, но сцена строится вокруг <a href="/creator/yurgenis.html">отдельных преподавателей</a> больше, чем вокруг домов. Мы освещаем людей на странице <a href="/creators-colombia.html">ростер Колумбия</a>.</li>
+    <li><strong>Команды конвенционно-косплейного круга.</strong> Реальная институциональная структура, но на уровне события (CosForce, Comicup), а не на уровне студии. Другая категория.</li>
+  </ul>
+
+  <h2>Как пользоваться этим списком.</h2>
+  <p>Если ты танцовщица, пытающаяся понять, где учиться — шесть залов выше — самые защитимые ставки в 2026. Если ты зритель, пытающийся понять, почему некоторые пьесы выглядят так по-разному — ответ обычно «другая студия». А если ты изучаешь глобальную сцену извне — это позвоночник.</p>
+
+  <p>Ни один из этих институтов не для массового рынка. Они обслуживают по нескольку сотен студентов каждый максимум. Работа путешествует, потому что её публикуют, а не потому что они масштабируются. Это модель, которой стоит уделить внимание в эпоху, когда все остальные несутся к синтетическому контенту и алгоритмической дистрибуции.</p>
+
+  <p>Шесть залов. Три континента. Одна общая дисциплина публикации. Это вся история.</p>
+
+  <div class="related">
+    <strong>Связанное чтение</strong>
+    <a href="/ru/blog/moscow-dance-centre-nrg-history.html">MDC NRG · полная история студии</a> · <a href="/blog/k-dance-vs-reggaeton-twerk.html">K-dance vs реггетон twerk</a> · <a href="/blog/best-twerk-creators-2026.html">12 лучших twerk-креаторов 2026</a> · <a href="/creators-taipei.html">Ростер Тайбэя</a> · <a href="/creators-moscow.html">Ростер Москвы</a> · <a href="/creators-seoul.html">Ростер Сеула</a>
+  </div>
+
+  <a class="back" href="/ru/blog/">← Все посты</a>
+</article>
+<style id="twk-related-css">.twk-related,.twk-mf{grid-column:1/-1!important}
+.twk-related{max-width:1200px;margin:60px auto 40px;padding:24px 26px;border-top:1px solid rgba(255,255,255,.08);font-family:'Inter',ui-sans-serif,system-ui,sans-serif}
+.twk-related-head{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px}
+.twk-related ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px}
+.twk-related a{display:block;padding:9px 12px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-size:13px;line-height:1.35;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .15s,color .15s,transform .15s}
+.twk-related a:hover{background:rgba(255,46,135,.12);color:#fff;border-color:rgba(255,46,135,.3);transform:translateY(-1px)}
+@media(max-width:760px){.twk-related{margin:36px auto 24px;padding:18px 16px}.twk-related ul{grid-template-columns:1fr 1fr;gap:6px 10px}.twk-related a{padding:8px 10px;font-size:12px}}
+</style>
+<section class="twk-related" data-twk="related" aria-label="Похожее на Twerkhub">
+  <div class="twk-related-head">Похожее на Twerkhub</div>
+  <ul>
+    <li><a href="/ru/blog/fancam-etiquette-2026.html">Этикет fancam. Издание 2026.</a></li>
+    <li><a href="/ru/blog/best-twerk-creators-2026.html">12 лучших twerk-креаторов на YouTube в 2026.</a></li>
+    <li><a href="/ru/blog/weekly-drop-calendar-2026.html">Календарь еженедельных дропов 2026.</a></li>
+    <li><a href="/ru/blog/buenos-aires-reggaeton-scene-2026.html">Реггетон-сцена Буэнос-Айреса · 2026.</a></li>
+    <li><a href="/ru/about.html">Платформа для тех, кто не стесняется.</a></li>
+    <li><a href="/ru/contact.html">Привет — пишите.</a></li>
+  </ul>
+</section>
+
+<!-- TWK_MEGA_FOOTER_V1 -->
+<style>
+.twk-mf{
+  background:#05050a;color:#c7c7d3;font-family:'Inter',-apple-system,sans-serif;font-size:13.5px;line-height:1.55;
+  border-top:1px solid rgba(255,255,255,.06);padding:64px 0 28px;margin-top:80px;position:relative;z-index:1;
+}
+.twk-mf *{box-sizing:border-box}
+.twk-mf-wrap{max-width:1480px;margin:0 auto;padding:0 32px}
+/* secondary: earn tokens free */
+.twk-mf-earn{
+  background:rgba(255,255,255,.018);border:1px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px 24px;margin-bottom:54px;
+}
+.twk-mf-earn-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:14px;margin-bottom:18px}
+.twk-mf-earn-head h4{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#fff;
+}
+.twk-mf-earn-head h4 b{color:#ffd78a}
+.twk-mf-earn-head p{font-size:12px;color:#8a8a99}
+.twk-mf-earn-head a{
+  color:#c7c7d3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:2px;transition:color .25s,border-color .25s;
+}
+.twk-mf-earn-head a:hover{color:#ffd78a;border-color:#ffd78a}
+.twk-mf-earn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.twk-mf-rule{
+  background:transparent;border:1px solid rgba(255,255,255,.08);padding:14px 12px;border-radius:8px;text-align:center;text-decoration:none;color:inherit;display:block;
+  transition:border-color .2s;
+}
+.twk-mf-rule:hover{border-color:rgba(255,180,84,.4)}
+.twk-mf-rule-act{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#8a8a99;margin-bottom:6px;
+}
+.twk-mf-rule-tk{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:18px;font-weight:700;color:#ffd78a;
+}
+.twk-mf-rule-tk b{font-weight:900}
+
+.twk-mf-row{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:42px;padding-bottom:42px;margin-bottom:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.twk-mf-row+.twk-mf-row{padding-top:42px;padding-bottom:42px}
+.twk-mf-brand{display:block;line-height:1;margin-bottom:14px}
+.twk-mf-brand img{display:block;width:auto;max-width:200px;height:auto;}
+.twk-mf-row p{color:#8a8a99;font-size:13px;line-height:1.7;max-width:340px}
+.twk-mf-row h5{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ffd78a;margin:0 0 18px;
+}
+.twk-mf-row ul{list-style:none;padding:0;margin:0}
+.twk-mf-row ul li{margin-bottom:8px;line-height:1.4}
+.twk-mf-row ul a{
+  color:#c7c7d3;font-size:13.5px;text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;
+}
+.twk-mf-row ul a:hover{color:#ff6fa8;padding-left:5px}
+.twk-mf-bottom{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:24px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#5a5a68;
+}
+.twk-mf-bottom a{color:#8a8a99;text-decoration:none;margin:0 4px}
+.twk-mf-bottom a:hover{color:#ff6fa8}
+@media(max-width:1100px){
+  .twk-mf-earn-grid{grid-template-columns:repeat(2,1fr)}
+  .twk-mf-row{grid-template-columns:1fr 1fr;gap:28px}
+}
+@media(max-width:720px){
+  .twk-mf-wrap{padding:0 18px}
+  .twk-mf-earn-grid{grid-template-columns:1fr}
+  .twk-mf-row{grid-template-columns:1fr;gap:24px}
+}
+</style>
+<footer class="twk-mf" role="contentinfo">
+  <div class="twk-mf-wrap">
+
+    <!-- secondary path: earn tokens free -->
+    <div class="twk-mf-earn">
+      <div class="twk-mf-earn-head">
+        <h4>Earn tokens · <b>climb tiers without paying</b></h4>
+        <a href="/blog/how-to-earn-tokens-twerkhub.html">Full earn guide →</a>
+      </div>
+      <div class="twk-mf-earn-grid">
+        <a class="twk-mf-rule" href="/account">
+          <div class="twk-mf-rule-act">Daily login</div>
+          <div class="twk-mf-rule-tk">+<b>30</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/recent.html">
+          <div class="twk-mf-rule-act">Watch a cut</div>
+          <div class="twk-mf-rule-tk">+<b>10</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/blog/">
+          <div class="twk-mf-rule-act">Field note read</div>
+          <div class="twk-mf-rule-tk">+<b>90</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/blog/discord-community-playbook.html">
+          <div class="twk-mf-rule-act">Refer friend</div>
+          <div class="twk-mf-rule-tk">+<b>200</b></div>
+        </a>
+        <a class="twk-mf-rule" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">
+          <div class="twk-mf-rule-act">Discord weekly</div>
+          <div class="twk-mf-rule-tk">+<b>300</b></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ROW 1 -->
+    <div class="twk-mf-row">
+      <div>
+        <div class="twk-mf-brand"><img src="/logo-twerkhub.png" alt="TWERKHUB" width="200" height="57" decoding="async" loading="lazy"></div>
+        <p>The platform for private custom videos, verified models and the premium archive you can't find anywhere else. Founded by Anti (firestarter) in 2018. Buenos Aires · served worldwide. 18+.</p>
+      </div>
+      <div>
+        <h5>Vaults · 7 playlists</h5>
+        <ul>
+          <li><a href="/hottest-cosplay-fancam/">Cosplay &amp; fancam</a></li>
+          <li><a href="/korean-girls-kpop-twerk/">K-pop &amp; twerk</a></li>
+          <li></li>
+          <li><a href="/alexia-video-packs">Custom video packs</a></li>
+          <li><a href="/">Alexia exclusives</a></li>
+          <li><a href="/account">Your account</a></li>
+          <li><a href="/profile">Your profile</a></li>
+          <li><a href="/creator-dashboard.html">Creator dashboard</a></li>
+          <li><a href="/blog/the-4-tiers-explained.html">The 4 tiers explained</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Why pay · what you unlock</h5>
+        <ul>
+          <li><a href="/blog/twerkhub-vs-onlyfans-fanvue-comparison.html">vs. OF &amp; Fanvue</a></li>
+          <li><a href="/blog/why-i-built-twerkhub.html">Why I built Twerkhub</a></li>
+          <li><a href="/blog/why-twerkhub-has-no-algorithm-feed.html">No algorithm feed</a></li>
+          <li><a href="/blog/best-twerk-creators-2026.html">Best creators · 2026</a></li>
+          <li><a href="/blog/4k-vs-1080p-vs-vr-fancam.html">4K · 1080p · VR</a></li>
+          <li><a href="/blog/weekly-drop-calendar-2026.html">Drop calendar 2026</a></li>
+          <li><a href="/blog/fancam-etiquette-2026.html">Fancam etiquette</a></li>
+          <li><a href="/blog/heels-choreo-beginner-guide.html">Heels choreo · guide</a></li>
+          <li><a href="/blog/">All field notes →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Channels &amp; press</h5>
+        <ul>
+          <li><a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/+q1cooFnvQctlNjRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://x.com/alexiatwerkofic" target="_blank" rel="noopener">X / Twitter</a></li>
+          <li><a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Discord</a></li>
+          <li><a href="https://onlyfans.com/alexiatwerkoficial" target="_blank" rel="noopener">OnlyFans</a></li>
+          <li><a href="https://www.patreon.com/Alexia_Twerk" target="_blank" rel="noopener">Patreon</a></li>
+          <li><a href="mailto:alexiatwerkoficial@gmail.com">Email · press</a></li>
+          <li><a href="/community.html">Community</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="twk-mf-row">
+      <div>
+        <h5>Discovery &amp; search</h5>
+        <ul>
+          <li><a href="/recent.html">Recent · last 200</a></li>
+          <li><a href="/trending.html">Trending · live board</a></li>
+          <li><a href="/search.html">Search the archive</a></li>
+          <li><a href="/glossary.html">Glossary · jargon</a></li>
+          <li><a href="/recommend.html">Get a recommendation</a></li>
+          <li><a href="/variants-showcase.html">Variants showcase</a></li>
+          <li><a href="/variety-catalog.html">Variety catalog</a></li>
+          <li><a href="/">Best dancers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Models · creators</h5>
+        <ul>
+          <li><a href="/models-catalog.html">Models catalog</a></li>
+          <li><a href="/creators">All creators</a></li>
+          <li><a href="/creators-colombia.html">Colombia</a></li>
+          <li><a href="/creators-seoul.html">Seoul</a></li>
+          <li><a href="/creators-moscow.html">Moscow</a></li>
+          <li><a href="/creators-taipei.html">Taipei</a></li>
+          <li><a href="/creators-greece.html">Greece</a></li>
+          <li><a href="/creators-russia.html">Russia</a></li>
+          <li><a href="/creators-latam.html">LATAM</a></li>
+          <li><a href="/creators-usa.html">USA</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Featured talent</h5>
+        <ul>
+          <li><a href="/velvet-young.html">Velvet Young</a></li>
+          <li><a href="/nastya-nass.html">Nastya Nass</a></li>
+          <li><a href="/shoshina-katherina.html">Shoshina Katherina</a></li>
+          <li><a href="/yurgenis.html">Yurgenis</a></li>
+          <li><a href="/group-emiliano-ferrari-villalobo.html">Emiliano Ferrari Villalobo</a></li>
+          <li><a href="/group-kate-knaubl.html">Kate Knaubl</a></li>
+          <li><a href="/group-kelvin-deejay.html">Kelvin DeeJay</a></li>
+          <li><a href="/group-lexy-panterra.html">Lexy Panterra</a></li>
+          <li><a href="/group-monika-99-percent.html">Monika 99%</a></li>
+          <li><a href="/group-street-project-monika.html">Street Project Monika</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Cities &amp; styles</h5>
+        <ul>
+          <li><a href="/style-cosplay-fancam.html">Style · Cosplay</a></li>
+          <li><a href="/style-heels-choreo.html">Style · Heels</a></li>
+          <li><a href="/style-reggaeton-floor.html">Style · Reggaeton</a></li>
+          <li><a href="/japan-cosplay-fancam.html">Japan</a></li>
+          <li><a href="/tokyo-cosplay-fancam.html">Tokyo</a></li>
+          <li><a href="/osaka-cosplay-fancam.html">Osaka</a></li>
+          <li><a href="/akihabara-cosplay-fancam.html">Akihabara</a></li>
+          <li><a href="/">USA</a></li>
+          <li><a href="/">UK</a></li>
+          <li><a href="/">London</a></li>
+          <li><a href="/">New York</a></li>
+          <li><a href="/">Los Angeles</a></li>
+          <li><a href="/">Miami</a></li>
+          <li><a href="/">Atlanta</a></li>
+          <li><a href="/">California</a></li>
+          <li><a href="/">Manchester</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Studios &amp; tutorials</h5>
+        <ul>
+          <li><a href="/twerk-studios.html">Twerk studios</a></li>
+          <li><a href="/kato-dance-studio.html">Kato Dance Studio</a></li>
+          <li><a href="/twerk-tutorials.html">Tutorials</a></li>
+          <li><a href="/twerk-dance-tutorial.html">Dance tutorial</a></li>
+          <li><a href="/twerk-workout-glutes.html">Workout · glutes</a></li>
+          <li><a href="/twerk-dance-4k.html">4K dance edits</a></li>
+          <li><a href="/twerk-dance-battle.html">Dance battle</a></li>
+          <li><a href="/twerk-dance-compilation.html">Compilations</a></li>
+          <li><a href="/twerk-dance-shorts.html">Shorts</a></li>
+          <li><a href="/twerk-dance-music.html">Music edits</a></li>
+          <li><a href="/twerk-dance-video.html">Dance videos</a></li>
+          <li><a href="/">Alexia · leaks</a></li>
+          <li><a href="/alexia-video-packs">Video packs</a></li>
+          <li><a href="/hottest-cosplay-fancam/">Premium · cosplay</a></li>
+          <li><a href="/paid-content.html">Paid content</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- bottom -->
+    <div class="twk-mf-bottom">
+      <span>© 2026 TWERKHUB · Founded by <em style="color:#ff6fa8;font-style:normal">Anti</em> (firestarter) · The Wild Project Models Agency</span>
+      <span>
+        <a href="/about">About</a> ·
+        <a href="/contact.html">Contact</a> ·
+        <a href="/privacy.html">Privacy</a> ·
+        <a href="/terms.html">Terms</a> ·
+        <a href="/glossary.html">Glossary</a> ·
+        <a href="/search.html">Search</a>
+      </span>
+      <span>If you know — you already know</span>
+    </div>
+
+  </div>
+</footer>
+<!-- /TWK_MEGA_FOOTER_V1 -->
+
+<script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
+<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
+<script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
+<script src="/assets/js/image-seo-engine.js" defer></script>
+  <script src="/assets/thumb-fallback.js?v=20260512-fix2" defer></script>
+<script defer src="/assets/profile-stats-live.js?v=20260509-p3-deltacap"></script>
+<script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
+<!--twk-seo-hidden-block-->
+<aside class="twk-sr-only" aria-hidden="true" lang="ko">
+  <p>TWERKHUB 4K 댄스 모음 — 매주 업데이트되는 엄선된 creator collection.</p>
+  <p>프라이빗 아카이브에서 creator collection 및 유사한 프리미엄 콘텐츠를 만나보세요. 4K 댄스, 팬캠, 크리에이터 컷.</p>
+  <p>TWERKHUB 전체 카탈로그 탐색: creator collection, 인증된 회원 전용 희귀 무삭제 릴리스.</p>
+</aside>
+<!--/twk-seo-hidden-block-->
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p6"></script>
+
+<!-- twk-email-capture:START -->
+<script defer src="/assets/twerkhub-email-capture.js?v=20260509-ec3-noblur-keep-home" data-twk-email-capture></script>
+<!-- twk-email-capture:END -->
+
+<!-- twk-related-auto:START -->
+<style id="twk-rel-auto-css">.twk-rel-auto{max-width:1320px;margin:50px auto 30px;padding:0 26px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif}.twk-rel-auto-head{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:18px;display:block}.twk-rel-auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:880px){.twk-rel-auto-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.twk-rel-auto-grid{grid-template-columns:1fr}}.twk-rel-auto-card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.5);text-decoration:none;color:#f5f5fb;transition:transform .25s,border-color .25s,background .25s}.twk-rel-auto-card:hover{transform:translateY(-2px);border-color:rgba(255,45,135,.45);background:rgba(30,20,40,.7)}.twk-rel-auto-cat{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff6fa8}.twk-rel-auto-title{font-family:"Inter",sans-serif;font-size:14px;font-weight:600;line-height:1.35;color:#e9e9f0}</style>
+<aside class="twk-rel-auto" aria-label="Related pages">
+  <span class="twk-rel-auto-head">★ More from the archive</span>
+  <div class="twk-rel-auto-grid">
+    <a href="/blog/studios-shaping-2026.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">The 6 dance studios shaping 2026.</span>
+    </a>
+    <a href="/es/blog/studios-shaping-2026.html" class="twk-rel-auto-card" data-cat="translated">
+      <span class="twk-rel-auto-cat">translated</span>
+      <span class="twk-rel-auto-title">Los 6 estudios de baile definiendo 2026.</span>
+    </a>
+    <a href="/twerk-studios.html" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Featured Dancers & Studio Routes</span>
+    </a>
+    <a href="/blog/best-twerk-creators-2026.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">The 12 best twerk creators on YouTube in 2026.</span>
+    </a>
+    <a href="/blog/buenos-aires-reggaeton-scene-2026.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">Buenos Aires reggaetón scene · 2026.</span>
+    </a>
+    <a href="/blog/fancam-etiquette-2026.html" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">Fancam etiquette. 2026 edition.</span>
+    </a>
+  </div>
+</aside>
+<!-- twk-related-auto:END -->
+<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
+<script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
+</body></html>

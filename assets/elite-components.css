@@ -1,0 +1,372 @@
+/* =========================================================================
+   ELITE COMPONENTS — shared primitives used across the platform.
+   Load AFTER elite-tokens.css.
+   All classes are prefixed `.elite-*` so they never collide with legacy CSS.
+   ========================================================================= */
+
+/* ── Layout container ────────────────────────────────────────────────────── */
+.elite-container{
+  width: min(100%, var(--elite-max));
+  margin-inline: auto;
+  padding-inline: var(--elite-gutter);
+}
+.elite-container--narrow{ max-width: var(--elite-max-narrow); }
+
+/* ── Eyebrow (small uppercased label) ────────────────────────────────────── */
+.elite-eyebrow{
+  display: inline-block;
+  font-family: var(--elite-font-sans);
+  font-size: var(--elite-fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--elite-tracking-wide);
+  text-transform: uppercase;
+  color: var(--elite-gold);
+  padding: 6px 12px;
+  border: 1px solid var(--elite-line-strong);
+  border-radius: var(--elite-r-pill);
+  background: rgba(232,200,128,.04);
+}
+.elite-eyebrow--pink{ color: var(--elite-primary); background: rgba(255,46,126,.05); }
+.elite-eyebrow--plain{ border: 0; padding: 0; background: transparent; color: var(--elite-text-mute); }
+
+/* ── Display headings ────────────────────────────────────────────────────── */
+.elite-display{
+  font-family: var(--elite-font-serif);
+  font-weight: 800;
+  font-size: var(--elite-fs-display);
+  line-height: var(--elite-leading-tight);
+  letter-spacing: -.02em;
+  color: var(--elite-text);
+}
+.elite-display em{
+  font-style: italic;
+  font-weight: 700;
+  background: linear-gradient(110deg, var(--elite-primary), var(--elite-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.elite-h1{ font-family: var(--elite-font-serif); font-weight: 700; font-size: var(--elite-fs-h1); line-height: var(--elite-leading-tight); letter-spacing: -.015em; }
+.elite-h2{ font-family: var(--elite-font-serif); font-weight: 700; font-size: var(--elite-fs-h2); line-height: var(--elite-leading-snug); letter-spacing: -.01em; }
+.elite-h3{ font-family: var(--elite-font-serif); font-weight: 600; font-size: var(--elite-fs-h3); line-height: var(--elite-leading-snug); }
+.elite-lede{ font-size: var(--elite-fs-lg); color: var(--elite-text-dim); max-width: 62ch; line-height: 1.5; }
+
+/* ── Gold hairline divider ───────────────────────────────────────────────── */
+.elite-hr{
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--elite-gold) 30%, var(--elite-gold) 70%, transparent);
+  opacity: .7;
+  margin: var(--elite-s-6) 0;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.elite-btn{
+  display: inline-flex; align-items: center; gap: var(--elite-s-2);
+  padding: 14px 26px;
+  font-family: var(--elite-font-sans);
+  font-size: var(--elite-fs-sm);
+  font-weight: 600;
+  letter-spacing: var(--elite-tracking-mid);
+  text-transform: uppercase;
+  border-radius: var(--elite-r-pill);
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: transform var(--elite-dur-fast) var(--elite-ease), box-shadow var(--elite-dur) var(--elite-ease), background var(--elite-dur) var(--elite-ease), color var(--elite-dur) var(--elite-ease);
+  color: var(--elite-text);
+  background: var(--elite-bg-soft);
+  border-color: var(--elite-line-strong);
+  text-decoration: none;
+}
+.elite-btn:hover{ transform: translateY(-1px); }
+.elite-btn--primary{
+  background: linear-gradient(180deg, var(--elite-primary), var(--elite-primary-ink));
+  color: #fff; border-color: transparent;
+  box-shadow: 0 10px 30px var(--elite-primary-glow);
+}
+.elite-btn--primary:hover{ box-shadow: 0 14px 40px var(--elite-primary-glow), 0 0 0 1px var(--elite-primary); }
+.elite-btn--gold{
+  background: linear-gradient(180deg, var(--elite-gold), var(--elite-gold-ink));
+  color: #1a1408; border-color: transparent;
+  box-shadow: 0 10px 30px var(--elite-gold-glow);
+}
+.elite-btn--gold:hover{ box-shadow: 0 14px 40px var(--elite-gold-glow), 0 0 0 1px var(--elite-gold); }
+.elite-btn--ghost{ background: transparent; }
+.elite-btn--ghost:hover{ background: rgba(255,255,255,.04); border-color: var(--elite-primary); }
+.elite-btn--sm{ padding: 9px 18px; font-size: var(--elite-fs-xs); }
+
+/* ── Pill / tag ──────────────────────────────────────────────────────────── */
+.elite-pill{
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  font-size: var(--elite-fs-xs);
+  font-weight: 500;
+  border-radius: var(--elite-r-pill);
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--elite-line);
+  color: var(--elite-text-dim);
+}
+.elite-pill--pink{ color: var(--elite-primary); border-color: rgba(255,46,126,.35); background: rgba(255,46,126,.06); }
+.elite-pill--gold{ color: var(--elite-gold); border-color: rgba(232,200,128,.35); background: rgba(232,200,128,.06); }
+.elite-pill--live::before{ content:''; width:7px; height:7px; border-radius:50%; background: var(--elite-ok); box-shadow: 0 0 8px var(--elite-ok); }
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.elite-card{
+  position: relative;
+  background: var(--elite-bg-card);
+  border: 1px solid var(--elite-line);
+  border-radius: var(--elite-r-lg);
+  overflow: hidden;
+  transition: transform var(--elite-dur) var(--elite-ease-out), box-shadow var(--elite-dur) var(--elite-ease), border-color var(--elite-dur) var(--elite-ease);
+}
+.elite-card:hover{
+  transform: translateY(-4px);
+  border-color: var(--elite-primary);
+  box-shadow: var(--elite-glow-primary);
+}
+.elite-card__media{ aspect-ratio: 4/5; background: #000; position: relative; overflow: hidden; }
+.elite-card__media > img,
+.elite-card__media > video{ width:100%; height:100%; object-fit:cover; transition: transform var(--elite-dur-slow) var(--elite-ease); }
+.elite-card:hover .elite-card__media > img,
+.elite-card:hover .elite-card__media > video{ transform: scale(1.04); }
+.elite-card__body{ padding: var(--elite-s-5); }
+.elite-card__title{ font-family: var(--elite-font-serif); font-size: var(--elite-fs-lg); font-weight: 600; color: var(--elite-text); margin: 0 0 4px; letter-spacing: -.005em; }
+.elite-card__meta{ font-size: var(--elite-fs-xs); color: var(--elite-text-mute); letter-spacing: var(--elite-tracking-mid); text-transform: uppercase; }
+.elite-card__foot{ display:flex; align-items:center; justify-content:space-between; padding: 0 var(--elite-s-5) var(--elite-s-5); gap: var(--elite-s-3); flex-wrap: wrap; }
+
+/* ── Nav ─────────────────────────────────────────────────────────────────── */
+.elite-nav{
+  position: sticky; top: 0; z-index: 40;
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  background: rgba(8,8,11,.72);
+  border-bottom: 1px solid var(--elite-line);
+}
+.elite-nav__inner{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px var(--elite-gutter);
+  gap: var(--elite-s-4);
+  max-width: var(--elite-max);
+  margin: 0 auto;
+}
+.elite-nav__brand{
+  font-family: var(--elite-font-serif);
+  font-weight: 700;
+  font-size: var(--elite-fs-lg);
+  letter-spacing: .01em;
+  color: var(--elite-text);
+  display:flex; align-items:center; gap: 10px;
+}
+.elite-nav__brand small{
+  font-family: var(--elite-font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--elite-gold);
+  border-left: 1px solid var(--elite-line-strong);
+  padding-left: 10px;
+}
+.elite-nav__links{ display:flex; gap: var(--elite-s-5); align-items: center; }
+.elite-nav__links a{
+  font-size: var(--elite-fs-xs); letter-spacing: var(--elite-tracking-mid);
+  text-transform: uppercase; font-weight: 500;
+  color: var(--elite-text-dim);
+  transition: color var(--elite-dur-fast) var(--elite-ease);
+}
+.elite-nav__links a:hover{ color: var(--elite-text); }
+.elite-nav__links a.is-active{ color: var(--elite-primary); }
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+.elite-hero{
+  position: relative;
+  padding: clamp(80px, 14vh, 180px) 0 clamp(60px, 10vh, 140px);
+  text-align: center;
+  overflow: hidden;
+}
+.elite-hero::before{
+  content:''; position:absolute; inset:0; z-index:-1;
+  background:
+    radial-gradient(60% 50% at 50% 0%, var(--elite-primary-glow), transparent 60%),
+    radial-gradient(60% 60% at 80% 70%, var(--elite-gold-glow), transparent 60%),
+    linear-gradient(180deg, var(--elite-bg), var(--elite-bg-soft));
+  pointer-events: none;
+}
+
+/* ── Section ─────────────────────────────────────────────────────────────── */
+.elite-section{ padding: clamp(56px, 9vh, 120px) 0; }
+.elite-section--tight{ padding: clamp(36px, 6vh, 80px) 0; }
+.elite-section__head{ display:flex; align-items:end; justify-content:space-between; gap: var(--elite-s-5); margin-bottom: var(--elite-s-6); flex-wrap: wrap; }
+
+/* ── Grid ────────────────────────────────────────────────────────────────── */
+.elite-grid{ display:grid; gap: clamp(16px, 2vw, 24px); }
+.elite-grid--2{ grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+.elite-grid--3{ grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.elite-grid--4{ grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.elite-footer{
+  border-top: 1px solid var(--elite-line);
+  background: var(--elite-bg);
+  padding: var(--elite-s-7) 0 var(--elite-s-5);
+  margin-top: var(--elite-s-8);
+}
+.elite-footer__row{ display:flex; justify-content:space-between; align-items:center; gap: var(--elite-s-5); flex-wrap: wrap; max-width: var(--elite-max); margin: 0 auto; padding: 0 var(--elite-gutter); }
+.elite-footer__brand{ font-family: var(--elite-font-serif); font-size: var(--elite-fs-lg); font-weight:700; }
+.elite-footer__meta{ font-size: var(--elite-fs-xs); color: var(--elite-text-mute); letter-spacing: var(--elite-tracking-mid); text-transform: uppercase; }
+.elite-footer__meta a{ color: var(--elite-gold); }
+
+/* ── Modal (private club gate etc.) ──────────────────────────────────────── */
+.elite-modal__backdrop{
+  position: fixed; inset:0; z-index: 80;
+  background: rgba(3,3,6,.72);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  display:none; align-items:center; justify-content:center; padding: var(--elite-gutter);
+}
+.elite-modal__backdrop.is-open{ display:flex; animation: elite-fade var(--elite-dur) var(--elite-ease); }
+.elite-modal{
+  max-width: 760px; width:100%;
+  background: linear-gradient(180deg, var(--elite-bg-soft), var(--elite-bg-card));
+  border: 1px solid var(--elite-line-strong);
+  border-radius: var(--elite-r-xl);
+  padding: clamp(28px, 4vw, 48px);
+  box-shadow: var(--elite-shadow-lg);
+  position: relative;
+}
+.elite-modal::before{
+  content:''; position:absolute; inset:-1px; z-index:-1;
+  border-radius: inherit;
+  background: conic-gradient(from 220deg, var(--elite-primary), var(--elite-gold), var(--elite-primary));
+  opacity: .6; filter: blur(22px);
+}
+.elite-modal__close{
+  position:absolute; top:14px; right:14px;
+  width:38px; height:38px; border-radius: 999px;
+  border:1px solid var(--elite-line-strong); background: var(--elite-bg);
+  color: var(--elite-text-dim); cursor:pointer; font-size:18px;
+}
+.elite-modal__close:hover{ color: var(--elite-text); border-color: var(--elite-primary); }
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+@keyframes elite-fade{ from{ opacity:0 } to{ opacity:1 } }
+@keyframes elite-rise{ from{ opacity:0; transform: translateY(12px) } to{ opacity:1; transform:none } }
+.elite-rise{ animation: elite-rise var(--elite-dur) var(--elite-ease-out) both; }
+
+/* ── Utilities ───────────────────────────────────────────────────────────── */
+.elite-muted{ color: var(--elite-text-mute); }
+.elite-dim{ color: var(--elite-text-dim); }
+.elite-center{ text-align:center; }
+.elite-mt-5{ margin-top: var(--elite-s-5); }
+.elite-mt-6{ margin-top: var(--elite-s-6); }
+.elite-mt-7{ margin-top: var(--elite-s-7); }
+.elite-gold-text{ color: var(--elite-gold); }
+.elite-pink-text{ color: var(--elite-primary); }
+.elite-caps{ text-transform: uppercase; letter-spacing: var(--elite-tracking-wide); font-size: var(--elite-fs-eyebrow); font-weight:600; }
+
+/* =========================================================================
+   DEFENSIVE PASS
+   When <body> has class `elite-defensive`, we re-theme legacy pages to the
+   elite palette + typography without rewriting their markup. Uses !important
+   deliberately to win against inline <style> blocks on each legacy page.
+   Keep this block SAFE — only touch colors, typography, spacing nudges.
+   Do NOT break layouts (avoid display/position/float overrides).
+   ========================================================================= */
+body.elite-defensive{
+  background: var(--elite-bg) !important;
+  color: var(--elite-text) !important;
+  font-family: var(--elite-font-sans) !important;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* Headings → editorial serif, elite text color */
+body.elite-defensive h1,
+body.elite-defensive h2,
+body.elite-defensive h3,
+body.elite-defensive h4{
+  font-family: var(--elite-font-serif) !important;
+  color: var(--elite-text) !important;
+  letter-spacing: -.01em !important;
+  line-height: var(--elite-leading-snug) !important;
+}
+
+/* Small meta labels in caps — if pages use these classes, align them */
+body.elite-defensive .eyebrow,
+body.elite-defensive .kicker,
+body.elite-defensive .section-banner,
+body.elite-defensive .neon-label{
+  letter-spacing: var(--elite-tracking-wide) !important;
+}
+
+/* Primary accent text classes used in many legacy pages */
+body.elite-defensive .accent,
+body.elite-defensive .text-pink,
+body.elite-defensive [data-accent="pink"]{ color: var(--elite-primary) !important; }
+body.elite-defensive .text-gold,
+body.elite-defensive [data-accent="gold"]{ color: var(--elite-gold) !important; }
+
+/* Links — unify to subtle on hover */
+body.elite-defensive a{
+  color: inherit;
+  transition: color var(--elite-dur-fast) var(--elite-ease);
+}
+body.elite-defensive a:hover{ color: var(--elite-primary); }
+
+/* Scrollbar */
+body.elite-defensive{
+  scrollbar-width: thin;
+  scrollbar-color: var(--elite-line-strong) transparent;
+}
+body.elite-defensive::-webkit-scrollbar{ width: 8px; height: 8px; }
+body.elite-defensive::-webkit-scrollbar-thumb{
+  background: var(--elite-line-strong); border-radius: 999px;
+}
+
+/* Selection */
+body.elite-defensive ::selection{ background: var(--elite-primary); color:#fff; }
+
+/* Common card-like backgrounds — align to elite surface when they use these
+   semi-transparent white overlays the site reuses a lot. */
+body.elite-defensive [class*="card"]:not([class*="elite-card"]){
+  border-radius: var(--elite-r) ;
+}
+
+/* The shared top nav (`.site-nav-final`) — elevate it to elite quality */
+body.elite-defensive .site-nav-final{
+  background: rgba(8,8,11,.72) !important;
+  backdrop-filter: saturate(1.4) blur(14px) !important;
+  -webkit-backdrop-filter: saturate(1.4) blur(14px) !important;
+  border-bottom: 1px solid var(--elite-line) !important;
+}
+body.elite-defensive .snf-brand-sub{
+  color: var(--elite-gold) !important;
+  letter-spacing: .28em !important;
+  font-weight: 600 !important;
+}
+
+/* Soft global image polish — reduce over-saturated legacy filters */
+body.elite-defensive img{ image-rendering: auto; }
+
+/* Reusable "pill"-like button upgrade */
+body.elite-defensive .alexia-online-pill,
+body.elite-defensive .pill,
+body.elite-defensive .chip{
+  border-color: var(--elite-line-strong) !important;
+  background: rgba(255,255,255,.035) !important;
+}
+
+/* ── Editorial utility wrapper — wrap any legacy section in
+     <div class="elite-scope">…</div> to opt-in to full elite typography. */
+body.elite-defensive .elite-scope h1{ font-size: var(--elite-fs-h1) !important; }
+body.elite-defensive .elite-scope h2{ font-size: var(--elite-fs-h2) !important; }
+body.elite-defensive .elite-scope h3{ font-size: var(--elite-fs-h3) !important; }
+body.elite-defensive .elite-scope p{ color: var(--elite-text-dim) !important; max-width: 68ch; line-height: 1.6; }
+
+/* Defensive: if a legacy page uses a solid bright background that clashes,
+   fade it into the elite canvas by tinting the body layer. */
+body.elite-defensive > *{ position: relative; }
+
+/* Nice print reset so screenshots of pages look elite */
+@media print{
+  body.elite-defensive{ background:#fff !important; color:#111 !important; }
+}

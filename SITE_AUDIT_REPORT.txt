@@ -1,0 +1,22 @@
+Alexia Site v21 – Safe polish audit
+Applied safe fixes:
+- Fixed broken playlist links in top-100-twerk-videos.html (../playlist/... -> playlist/...)
+- Added legacy placeholder files to stop 404s: /premium.css and /assets/alexia-premium-refine.css
+- Added alias copies for wrong asset paths used by some pages:
+  - /playlist/playlist/assets/pro-extras.css
+  - /playlist/playlist/assets/pro-extras.js
+  - /playlist/studios/assets/alexia-video-fixes.js
+  - /playlist/models/assets/alexia-video-fixes.js
+- Removed non-deploy leftovers:
+  - /playlist/index.before.html
+  - /limpiar_texto_robot.bat
+
+Notes:
+- I intentionally did NOT remove tiny alias pages with weird slugs because many look like safety aliases for broken URLs and could still protect indexing / legacy links.
+- I intentionally did NOT rip out old JS/CSS aggressively to avoid breaking layouts or site logic.
+
+Recommended next safe cleanup pass:
+1) Consolidate nav-related CSS/JS into one final pair.
+2) Replace alias copies with corrected source paths in templates.
+3) Review duplicate/variant playlist slugs and map them with canonicals/redirects instead of multiple stub pages.
+4) Trim heavy live scripts on video pages only after verifying current playback remains stable.
