@@ -23,12 +23,18 @@
     var st = document.createElement('style');
     st.id = 'twk-cam-hero-v3-css';
     st.textContent = [
-      /* Border naranja en el player rotativo (sin sombra) */
+      /* Border naranja en el player rotativo (sin sombra) — SUPER AGGRESSIVE */
       '.twerkhub-home-hero-media.twk-cam-styled{',
         'border:2px solid #ff9000 !important;',
         'box-shadow:none !important;',
+        'filter:drop-shadow(0 0 0) !important;',
         'border-radius:14px !important;overflow:hidden !important;',
         'position:relative !important;',
+        '-webkit-box-shadow:none !important;',
+      '}',
+      '.twerkhub-home-hero-media.twk-cam-styled *{',
+        'box-shadow:none !important;',
+        '-webkit-box-shadow:none !important;',
       '}',
 
       /* Scale del iframe: mantener 1.22 para preservar altura original sin corte.
