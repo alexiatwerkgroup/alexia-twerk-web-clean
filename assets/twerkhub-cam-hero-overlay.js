@@ -31,11 +31,11 @@
         'position:relative !important;',
       '}',
 
-      /* CRITICAL FIX: el iframe tenia scale(1.22) original (crop top de YT
-         chrome). Bajamos el scale a 1.0 → sin zoom, videos completos sin corte.
-         La barra negra está dentro del contenedor ahora, no come espacio. */
+      /* Scale del iframe: mantener 1.22 para preservar altura original sin corte.
+         La barra negra es PURA overlay (position:absolute + pointer-events:none),
+         así que NO afecta el layout del video ni su tamaño visible. */
       '.twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-iframe{',
-        'transform:scale(1.0) !important;',
+        'transform:scale(1.22) !important;',  // preserva altura original
       '}',
 
       /* HIDE elementos viejos que duplican o no van.
@@ -54,6 +54,13 @@
       'body.twerkhub-ph-theme .twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-live,',
       'body.twerkhub-ph-theme .twerkhub-home-hero-media.twk-cam-styled #twerkhub-hh-status{',
         'display:none !important;visibility:hidden !important;opacity:0 !important;',
+      '}',
+      /* REEMPLAZAR overlay afiliado viejo con el nuevo .twk-cam-cta-link
+         que tiene nuestra URL de LiveJasmin. El viejo .twk-hero-affiliate-overlay
+         se oculta porque ahora usamos el nuevo overlay con mejor z-index. */
+      '.twerkhub-home-hero-media.twk-cam-styled .twk-hero-affiliate-overlay{',
+        'display:none !important;visibility:hidden !important;opacity:0 !important;',
+        'pointer-events:none !important;z-index:-1 !important;',
       '}',
       /* El countdown viejo lo reposicionamos abajo izquierda y re-estilamos */
       '.twk-cam-styled .twerkhub-hh-media-meta{',
@@ -105,24 +112,28 @@
       '}',
       '.twk-cam-styled .twerkhub-hh-next svg{width:11px !important;height:11px !important}',
 
-      /* CLICK-OUT overlay → LiveJasmin afiliado.
-         z-index 12 = arriba del iframe pero debajo de los controles (header,
-         mute, next, countdown que estan en z-index 14-15). */
+      /* CLICK-OUT overlay → BLOQUEO ANTI-YOUTUBE (LiveJasmin afiliado).
+         z-index 13 = arriba del iframe, DEBAJO de los botones de control pero ARRIBA del contenido.
+         CRITICAL: este overlay PREVIENE que los usuarios clickeen en el iframe y vayan a YouTube.
+         Solo los botones (NEXT, mute, barra negra) están ARRIBA con z-index 14-15. */
       '.twk-cam-cta-link{',
-        'position:absolute;inset:0;z-index:12;display:block;',
+        'position:absolute;inset:0;z-index:13;display:block;',
         'cursor:pointer;text-decoration:none;',
-        'background:transparent;',  // invisible pero captura clicks
+        'background:transparent;',  // invisible pero captura clicks en el video
+        'pointer-events:auto;',  // CRITICAL: debe aceptar clicks
       '}',
 
-      /* HEADER STRIP — black bar arriba (NO gradient, sólido como banner) */
+      /* HEADER STRIP — black bar arriba (NO gradient, sólido como banner)
+         CRITICAL: position:absolute + pointer-events:none = NO impact on video layout */
       '.twk-cam-hero-header{',
         'position:absolute;top:0;left:0;right:0;z-index:15;',
         'display:flex;align-items:center;gap:12px;',
         'padding:10px 14px;',
         'background:#000;',  // black bar SOLIDA
         'border-bottom:1px solid rgba(255,144,0,.15);',
-        'pointer-events:none;',
+        'pointer-events:none;',  // CRITICAL: no interfiere con clicks en video
         'font-family:"Inter",ui-sans-serif,system-ui,sans-serif;',
+        'height:auto;margin:0;padding-bottom:10px;',  // no margin bleeding
       '}',
       /* ONLINE [CAMS] top-LEFT — Inter Black 900 (NEGRITA, no condensado) */
       '.twk-cam-brand{',
