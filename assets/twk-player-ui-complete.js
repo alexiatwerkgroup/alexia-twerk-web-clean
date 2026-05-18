@@ -378,32 +378,4 @@
 
   // ─────────────────────────────────────────────────────────────────
   // INITIALIZATION
-  // ─────────────────────────────────────────────────────────────────
-  var iframeWatcherStarted = false;
-
-  function init() {
-    lockViewport();
-    addYouTubeExitShield();
-    protectAndTrackIframes();
-    enhanceThumbnails();
-  }
-
-  // Initialize once DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-
-  // Watch for dynamically added content (only start once)
-  if (!iframeWatcherStarted && window.MutationObserver) {
-    iframeWatcherStarted = true;
-    new MutationObserver(function(mutations) {
-      protectAndTrackIframes();
-      enhanceThumbnails();
-    }).observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-})();
+  // ────────────────────────────────────────────────────�
