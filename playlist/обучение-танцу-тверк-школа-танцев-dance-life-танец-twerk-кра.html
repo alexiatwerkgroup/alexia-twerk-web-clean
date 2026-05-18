@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
+<script src="/assets/twk-guardian.js?v=20260509-g1"></script>
+<script defer src="/assets/twk-paywall-guard.js?v=20260512-pg3"></script>
+<script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
+<script defer src="/assets/twk-video-shield.js?v=20260503-p13"></script>
+<script defer src="/assets/twerkhub-pl-theater.js?v=20260510-p15"></script>
+<script defer src="/assets/twerkhub-age-gate.js?v=20260509-ag3-scrolltop"></script>
+<script>(function(){try{
+['twk_playlist_idx','twk_playlist_resume','playlistIndex','lastVideoIndex','currentVideoIndex','playlist_current','twk_last_video','resumeIndex']
+.forEach(function(k){try{localStorage.removeItem(k);sessionStorage.removeItem(k);}catch(e){}});
+if(/\/playlist\//i.test(location.pathname) && location.hash && /^#v?\d+$/i.test(location.hash)){
+  history.replaceState(null,'',location.pathname+location.search);
+}
+}catch(e){}})();</script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
+<script data-twk="thumb-v4">(function(){function tryNext(i,vid,arr,idx){if(idx>=arr.length){i.style.display='none';return;}i.onerror=function(){tryNext(i,vid,arr,idx+1);};i.onload=function(){if(i.naturalWidth<=120){tryNext(i,vid,arr,idx+1);}};i.src='https://i.ytimg.com/vi/'+vid+'/'+arr[idx];}function fix(){document.querySelectorAll('img').forEach(function(i){var m=(i.src||'').match(/ytimg\.com\/vi\/([\w-]{11})/);var vid=i.dataset.vid||(m?m[1]:null);if(!vid)return;if(i.loading==='lazy')i.loading='eager';if(!i.complete||i.naturalWidth<=120){tryNext(i,vid,['maxresdefault.jpg','hqdefault.jpg','mqdefault.jpg','sddefault.jpg','0.jpg'],0);}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+<style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
+<script>(function(){function force(){try{var imgs=document.querySelectorAll('img[src*="i.ytimg.com"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];im.setAttribute('loading','eager');im.style.opacity='1';im.style.visibility='visible';im.style.display='block';if(!im.dataset.twkOrigSrc){im.dataset.twkOrigSrc=im.getAttribute('src')||'';}var s=im.getAttribute('src');if(s)im.src=s;}}catch(_){}}function recover(){try{var bad=document.querySelectorAll('img[src*="thumb-unavailable"]');for(var i=0;i<bad.length;i++){var im=bad[i];if(im.dataset.twkOrigSrc){im.src=im.dataset.twkOrigSrc;}}}catch(_){}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){force();recover();});}else{force();recover();}setTimeout(function(){force();recover();},500);setTimeout(function(){force();recover();},2000);})();</script>
+<style id="twk-sr-only-seo">.twk-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<title>Обучение танцу Тверк. Школа танцев Dance Life, танец Twerk. Красивые девушки. Тверк видео · Twerkhub - Curated 4K Twerk Videos · Twerkhub</title>
+<meta name="description" content="Обучение танцу Тверк. Школа танцев Dance Life, танец Twerk. Красивые девушки. Тверк видео · curated twerk video in the Twerkhub archive. Embedded YouTube clip + related videos + creator context."/>
+<link rel="canonical" href="https://alexiatwerkgroup.com/playlist/обучение-танцу-тверк-школа-танцев-dance-life-танец-twerk-кра">
+<link rel="alternate" hreflang="en" href="https://alexiatwerkgroup.com/playlist/обучение-танцу-тверк-школа-танцев-dance-life-танец-twerk-кра">
+<link rel="alternate" hreflang="pt-BR" href="https://alexiatwerkgroup.com/pt/playlist/обучение-танцу-тверк-школа-танцев-dance-life-танец-twerk-кра.html">
+<link rel="alternate" hreflang="es" href="https://alexiatwerkgroup.com/es/playlist/обучение-танцу-тверк-школа-танцев-dance-life-танец-twerk-кра">
+<link rel="alternate" hreflang="ru" href="https://alexiatwerkgroup.com/ru/playlist/обучение-танцу-тверк-школа-танцев-dance-life-танец-twerk-кра">
+<link rel="alternate" hreflang="x-default" href="https://alexiatwerkgroup.com/playlist/обучение-танцу-тверк-школа-танцев-dance-life-танец-twerk-кра">
+<meta property="og:type" content="video.other"/>
+<meta property="og:site_name" content="Alexia Twerk Group"/>
+<meta property="og:title" content="Обучение танцу Тверк. Школа танцев Dance Life, танец Twerk. Красивые девушки. Тверк видео | Twerk | Replay Highlights, Related Videos &amp; Playlist Route"/>
+<meta property="og:description" content="Обучение танцу Тверк. Школа танцев Dance Life, танец Twerk. Красивые девушки. Тверк видео · curated twerk video in the Twerkhub archive. Embedded YouTube clip + related videos + creator context."/>
+<meta property="og:url" content="https://alexiatwerkgroup.com/playlist/обучение-танцу-тверк-школа-танцев-dance-life-танец-twerk-кра"/>
+<meta property="og:image" content="https://i.ytimg.com/vi/BE3MrMFIzaQ/hqdefault.jpg"/>
+<meta property="og:video" content="https://www.youtube.com/embed/BE3MrMFIzaQ"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Обучение танцу Тверк. Школа танцев Dance Life, танец Twerk. Красивые девушки. Тверк видео | Twerk | Replay Highlights, Related Videos &amp; Playlist Route"/>
+<meta name="twitter:image" content="https://i.ytimg.com/vi/BE3MrMFIzaQ/hqdefault.jpg"/>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoObject", "name": "\u041e\u0431\u0443\u0447\u0435\u043d\u0438\u0435 \u0442\u0430\u043d\u0446\u0443 \u0422\u0432\u0435\u0440\u043a. \u0428\u043a\u043e\u043b\u0430 \u0442\u0430\u043d\u0446\u0435\u0432 Dance Life, \u0442\u0430\u043d\u0435\u0446 Twerk. \u041a\u0440\u0430\u0441\u0438\u0432\u044b\u0435 \u0434\u0435\u0432\u0443\u0448\u043a\u0438. \u0422\u0432\u0435\u0440\u043a \u0432\u0438\u0434\u0435\u043e", "description": "\u041e\u0431\u0443\u0447\u0435\u043d\u0438\u0435 \u0442\u0430\u043d\u0446\u0443 \u0422\u0432\u0435\u0440\u043a. \u0428\u043a\u043e\u043b\u0430 \u0442\u0430\u043d\u0446\u0435\u0432 Dance Life, \u0442\u0430\u043d\u0435\u0446 Twerk. \u041a\u0440\u0430\u0441\u0438\u0432\u044b\u0435 \u0434\u0435\u0432\u0443\u0448\u043a\u0438. \u0422\u0432\u0435\u0440\u043a \u0432\u0438\u0434\u0435\u043e \u00b7 curated twerk video in the Twerkhub archive. Embedded YouTube clip + related videos + creator context.", "thumbnailUrl": "https://i.ytimg.com/vi/BE3MrMFIzaQ/hqdefault.jpg", "uploadDate": "2026-05-18T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=BE3MrMFIzaQ", "embedUrl": "https://www.youtube.com/embed/BE3MrMFIzaQ", "url": "https://alexiatwerkgroup.com/playlist/\u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0435-\u0442\u0430\u043d\u0446\u0443-\u0442\u0432\u0435\u0440\u043a-\u0448\u043a\u043e\u043b\u0430-\u0442\u0430\u043d\u0446\u0435\u0432-dance-life-\u0442\u0430\u043d\u0435\u0446-twerk-\u043a\u0440\u0430.html", "inLanguage": "en", "isFamilyFriendly": false, "isPartOf": {"@type": "CollectionPage", "name": "Best Twerk Videos on YouTube", "url": "https://alexiatwerkgroup.com/playlist/"}, "duration": "PT2M"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://alexiatwerkgroup.com/"}, {"@type": "ListItem", "position": 2, "name": "Playlist", "item": "https://alexiatwerkgroup.com/playlist/"}, {"@type": "ListItem", "position": 3, "name": "\u041e\u0431\u0443\u0447\u0435\u043d\u0438\u0435 \u0442\u0430\u043d\u0446\u0443 \u0422\u0432\u0435\u0440\u043a. \u0428\u043a\u043e\u043b\u0430 \u0442\u0430\u043d\u0446\u0435\u0432 Dance Life, \u0442\u0430\u043d\u0435\u0446 Twerk. \u041a\u0440\u0430\u0441\u0438\u0432\u044b\u0435 \u0434\u0435\u0432\u0443\u0448\u043a\u0438. \u0422\u0432\u0435\u0440\u043a \u0432\u0438\u0434\u0435\u043e", "item": "https://alexiatwerkgroup.com/playlist/\u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0435-\u0442\u0430\u043d\u0446\u0443-\u0442\u0432\u0435\u0440\u043a-\u0448\u043a\u043e\u043b\u0430-\u0442\u0430\u043d\u0446\u0435\u0432-dance-life-\u0442\u0430\u043d\u0435\u0446-twerk-\u043a\u0440\u0430.html"}]}</script>
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"/>
+<meta name="rating" content="mature"/>
+<meta name="theme-color" content="#05050a"/>
+<link rel="icon" href="/favicon-32.png" sizes="32x32"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com" crossorigin>
+<link rel="preconnect" href="https://www.youtube.com" crossorigin>
+<link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260507-b5-no-pink-lines">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap&family=Anton">
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YSFR7FHCLS', { send_page_view: true });
+</script>
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
+<link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+</head>
+<body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater twerkhub-ph-theme" data-page="playlist-video">
+<a href="#main" class="twk-sr-only">Skip to content</a>
+<a class="twerkhub-pl-skip" href="#twerkhub-pl-main">Skip to main content</a>
+<!-- Video page content will be rendered by JavaScript -->
+</body>
+</html>
