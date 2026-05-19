@@ -1,7 +1,6 @@
 <head>
 <script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
 <script src="/assets/twk-guardian.js?v=20260509-g1"></script>
-<script defer src="/assets/twk-paywall-guard.js?v=20260512-pg3"></script>
 <script>(function(){try{
 ['twk_playlist_idx','twk_playlist_resume','playlistIndex','lastVideoIndex','currentVideoIndex','playlist_current','twk_last_video','resumeIndex']
 .forEach(function(k){try{localStorage.removeItem(k);sessionStorage.removeItem(k);}catch(e){}});
@@ -273,7 +272,6 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
   loadOnce('/assets/twk-tokens-v5.js?v=20260511-p1','twk-loader-token-system');
-  loadOnce('/assets/twerkhub-age-gate.js?v=20260426-p8','twk-loader-age-gate');
   // Load theater - accept whatever Cloudflare serves, but patch it at runtime
   (function(){
     var timestamp = Date.now();
@@ -2332,4 +2330,6 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
     </div>
   </a>
 </div>
-<script src="/assets
+<script src="/assets/twk-lock-badges.js?v=20260519-lock-badges" defer></script>
+<link rel="stylesheet" href="/assets/paywall-styles.css?v=20260519-paywall-styles" />
+<script 
