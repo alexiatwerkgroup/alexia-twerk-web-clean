@@ -38,6 +38,32 @@ Orden de arriba hacia abajo = orden de prioridad. Si una regla choca con otra co
 
 ---
 
+## 🔐 REGLA 11 SAGRADA: Auditoría Completa Antes de Deployment (Videos & Playlists Nuevas)
+
+**OBLIGATORIO verificar en la página en vivo antes de publicar. Si falta CUALQUIER elemento → NO PUBLICAR. Rebuild from 0.**
+
+### Checklist de 8 elementos:
+
+1. ✓ **Controles YouTube** — play, pause, volumen, CC, settings, fullscreen visibles y funcionales
+2. ✓ **Paywall/Modal Discord** — modal bloquea videos gateados; muestra "DM Alexia on Discord" + links Discord/Telegram
+3. ✓ **Escudo anti-YouTube** — logo de YouTube 100% tapado por modal overlay (z-index: 99999); no fugue branding
+4. ✓ **Candados 🔒 en +18** — icono 🔒 VISIBLE en esquina superior derecha de TODAS las miniaturas de videos +18 (usando clase `.twk-restricted-18` + script `twk-lock-badges.js`)
+5. ✓ **Pill "✓ VIEWED"** — etiqueta verde/cyan "✓ VIEWED" visible en videos reproducidos
+6. ✓ **Sombreado para vistos** — videos vistos: 55% opacity + 45% grayscale (visualmente oscurecidos)
+7. ✓ **Zoom modal 100%** — thumbnail zoom modal cubre 100% del viewport; YouTube branding NO sale en background
+8. ✓ **Auto-play inmediato** — videos comienzan autoplay al abrir modal (unmute + volume 100)
+
+### Implementación técnica (videoadd/playlist nuevo):
+
+- **Candados:** Automáticos vía `twk-lock-badges.js` (compara `data-vid` con lista de 70 IDs restringidos en `paywall-system.js`)
+- **Videos restringidos:** Stored en `CONFIG.videoIds` array (línea 11 de paywall-system.js)
+- **CSS:** Bloque `<style id="twk-lock-badges">` crea `::after` pseudo-elemento con emoji 🔒
+- **Script load:** Cargado al final de `</body>` con tag `<script src="/assets/twk-lock-badges.js?v=YYYYMMDD-label">`
+
+**Verificación automática:** Ejecutar en DevTools: `window.twkLockBadges.markedCount()` → debe ser > 0
+
+---
+
 ## 🔒 Paywall / Auth (orden firme)
 
 - Bloqueo total de videos gated hasta que el pago esté live. Solo top 5 hot ranking accesibles.

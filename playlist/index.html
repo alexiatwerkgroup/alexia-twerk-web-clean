@@ -190,6 +190,21 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
 <style id="twk-hide-collection-cta">
 .twk-video-shield-cta,.twk-hero-affiliate-overlay,[class*="video-shield-cta"],[class*="hero-affiliate-overlay"]{display:none !important;visibility:hidden !important;pointer-events:none !important;}
 </style>
+<style id="twk-lock-badges">
+.vthumb { position: relative; }
+.rk-thumb { position: relative; }
+.twk-restricted-18 .vthumb::after,
+.twk-restricted-18 .rk-thumb::after {
+  content: '🔒';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 20px;
+  line-height: 1;
+  z-index: 10;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+</style>
 <link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
 </head>
 <body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater twerkhub-ph-theme" data-page="playlist-index">
@@ -2332,6 +2347,7 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
     </div>
   </a>
 </div>
+<script src="/assets/twk-lock-badges.js?v=20260519-lock-badges" defer></script>
 </body>
 </html>
 
