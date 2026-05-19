@@ -34,6 +34,7 @@ Orden de arriba hacia abajo = orden de prioridad. Si una regla choca con otra co
 20. **Nav 6 reafirmado** — ni Twerk Hub ni Del Otro Lado en topbar.
 21. **Del Otro Lado eliminada completa** + 410 Gone en `_redirects`.
 22. **🔔 Campanita** — cuando Anti necesita acción manual en el repo (push, guardar archivo, renombrar), se crea un task con icono 🔔 visible en el widget Cowork.
+23. **Verificación obligatoria hot ranking (videos y playlists nuevas)** — antes de publicar/deployer, extraer manualmente los 5 video IDs correctos de YouTube playlist, comparar con HTML (`data-vid` attributes en hot ranking sidebar), y verificar coincidencia EXACTA. Si hay discrepancia = rebuild from 0. Guardar video IDs verificados como comentario en commit.
 
 ---
 
