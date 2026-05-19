@@ -5,7 +5,7 @@ Orden de arriba hacia abajo = orden de prioridad. Si una regla choca con otra co
 
 ---
 
-## 14 SAGRADAS (core)
+## 15 SAGRADAS (core)
 
 1. **English only** — cero español en copy / UI / meta / JSON-LD.
 2. **No "Anti" dentro de la playlist** (nav, hero, cards, sidebar, CTA). Excepción: footer + bio del home.
@@ -15,24 +15,25 @@ Orden de arriba hacia abajo = orden de prioridad. Si una regla choca con otra co
 6. **Hot ranking header literal** = "Hot ranking this week".
 7. **Intro alusiva corta inglés** — formato `Curated [theme] cuts · updated every week · handpicked by the hub.`. Sin info-dumps, sin reveal early del paywall.
 8. **Sin reveal del paywall anticipado** — la ilusión se rompe SOLO en el click.
-9. **Aplica a TODA playlist** — sin excepciones.
-10. **Rebuild from scratch** si la playlist ya existe.
-11. **No tocar otras playlists** sin luz verde explícita.
-12. **Home = visual de /alexia-twerk-test#playlists** — bio text only, video pendiente.
-13. **Nav = 6 botones exactos:** `Home · Exclusive · Playlists · Tokens · VR · Profile`.
-14. **Memorizar como "reglas básicas playlist"** — set sagrado inmutable.
+9. **Thumbnail accuracy (top 5 hot ranking)** — las miniaturas de los 5 videos en "Hot ranking this week" DEBEN coincidir exactamente con los IDs de la playlist de YouTube fuente; verificar antes de publicar.
+10. **Aplica a TODA playlist** — sin excepciones.
+11. **Rebuild from scratch** si la playlist ya existe.
+12. **No tocar otras playlists** sin luz verde explícita.
+13. **Home = visual de /alexia-twerk-test#playlists** — bio text only, video pendiente.
+14. **Nav = 6 botones exactos:** `Home · Exclusive · Playlists · Tokens · VR · Profile`.
+15. **Memorizar como "reglas básicas playlist"** — set sagrado inmutable.
 
 ---
 
-## ⚡ Reglas adicionales 15–21
+## ⚡ Reglas adicionales 16–22
 
-15. **No "not on YouTube"** — los videos SÍ están en YouTube.
-16. **No "exclusive" descriptivo** — solo como label del nav. Insinuar, no afirmar.
-17. **Title format único:** `Hottest [theme] videos on YouTube · many +18 only` aplicado a `<title>`, H1, OG, Twitter, JSON-LD.
-18. **Nombres de modelos NO** en DOM visible de cards. Solo en JSON-LD para Google.
-19. **Nav 6 reafirmado** — ni Twerk Hub ni Del Otro Lado en topbar.
-20. **Del Otro Lado eliminada completa** + 410 Gone en `_redirects`.
-21. **🔔 Campanita** — cuando Anti necesita acción manual en el repo (push, guardar archivo, renombrar), se crea un task con icono 🔔 visible en el widget Cowork.
+16. **No "not on YouTube"** — los videos SÍ están en YouTube.
+17. **No "exclusive" descriptivo** — solo como label del nav. Insinuar, no afirmar.
+18. **Title format único:** `Hottest [theme] videos on YouTube · many +18 only` aplicado a `<title>`, H1, OG, Twitter, JSON-LD.
+19. **Nombres de modelos NO** en DOM visible de cards. Solo en JSON-LD para Google.
+20. **Nav 6 reafirmado** — ni Twerk Hub ni Del Otro Lado en topbar.
+21. **Del Otro Lado eliminada completa** + 410 Gone en `_redirects`.
+22. **🔔 Campanita** — cuando Anti necesita acción manual en el repo (push, guardar archivo, renombrar), se crea un task con icono 🔔 visible en el widget Cowork.
 
 ---
 
@@ -90,9 +91,4 @@ CSP meta · referrer policy · skip-link · grid-error boundary 8s watchdog · `
 - [ ] Intro ≤ 80 chars · sagrada shape
 - [ ] 0 paywall-reveal en body (no "DM", "Discord", "lives inside", "real archive")
 - [ ] 0 model names visible (DOM no-script)
-- [ ] Cero "Del Otro Lado"
-- [ ] Cache-bust `?v=YYYYMMDD-pN`
-- [ ] CSS brace balance par
-- [ ] JSON-LD válido (`CollectionPage` + `ItemList`)
-- [ ] HTML balance OK
-- [ ] `data-playlist` o pre-rendered cards (theater layout)
+- [ ] Cero "D
