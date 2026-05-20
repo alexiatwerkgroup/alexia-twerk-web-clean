@@ -56,7 +56,7 @@
     welcomeBonus:  200,
   };
   var DAILY_CAPS = { pages: 50, watches: 20, finishes: 10, shares: 3 };
-  var TIERS = { medium: 3000, premium: 9000, vip: 50000 };
+  var TIERS = { medium: 3000, premium: 12000, vip: 50000 };
   var FOUNDER_EMAILS = { 'alexiatwerkoficial@gmail.com': true };
   var FOUNDER_FLOOR  = 1000009;
 

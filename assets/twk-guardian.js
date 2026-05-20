@@ -13,7 +13,7 @@
  *  - Toast notifications collapsing into a single inline blob
  *  - "VIDEO UNAVAILABLE" overlay covering alive videos
  *  - Random logout on hard refresh
- *  - Wrong tier thresholds (1500 instead of 9000 for Premium)
+ *  - Wrong tier thresholds (1500 instead of 12000 for Premium)
  *  - Founder showing as basic/0 tokens
  *  - Stale Service Worker serving old cached JS
  *  - Locked videos hiding the iframe instead of overlaying paywall
@@ -32,7 +32,7 @@
   var INVARIANTS = Object.freeze({
     FOUNDER_EMAILS: Object.freeze(['alexiatwerkoficial@gmail.com']),
     FOUNDER_FLOOR: 1000009,
-    TIERS: Object.freeze({ medium: 3000, premium: 9000, vip: 50000 }),
+    TIERS: Object.freeze({ medium: 3000, premium: 12000, vip: 50000 }),
     REWARDS: Object.freeze({
       pageVisit: 5,
       videoWatch: 15,

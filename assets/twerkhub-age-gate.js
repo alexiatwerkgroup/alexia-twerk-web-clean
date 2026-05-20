@@ -45,38 +45,6 @@
   'use strict';
   if (window.TwkAgeGate) return;
 
-  // ─────────────────────────────────────────────────────────────────
-  // ⚠️ AGE-GATE PAYWALL TEMPORARILY DISABLED — 2026-05-11
-  //
-  // Reason: Google needs to (re)index 162 age-restricted pages without
-  // seeing the paywall (otherwise risk: cloaking / soft-404 / thin content).
-  //
-  // TO RE-ENABLE after Google has indexed:
-  //   1) Verify in GSC that the 162 pages are indexed
-  //   2) Change AGE_GATE_ENABLED below from `false` to `true`
-  //   3) Bump cache buster, commit, push.
-  // ─────────────────────────────────────────────────────────────────
-  var AGE_GATE_ENABLED = false;
-
-  // ⚡ Stub the API when disabled OR when bot detected
-  // window.__twkIsBot is set by /assets/twk-bot-detect.js (must load FIRST)
-  var isBot = (typeof window !== 'undefined' && window.__twkIsBot);
-  if (!AGE_GATE_ENABLED || isBot) {
-    try {
-      if (!AGE_GATE_ENABLED) console.log('[twerkhub-age-gate] disabled (indexing window) — re-enable after GSC confirms');
-      else console.log('[twerkhub-age-gate] bot detected (' + (window.__twkBotName || '?') + ') — age gate skipped');
-    } catch (_) {}
-    // Stub the API so callers don't crash
-    window.TwkAgeGate = {
-      isBlocked: function () { return false; },
-      markBlocked: function () {},
-      show: function () {},
-      handleYTError: function () {},
-      decorateAll: function () {}
-    };
-    return;
-  }
-
   // —————————————— Configuration ——————————————
   var DISCORD_URL  = 'https://discord.gg/WWn8ZgQMjn';
   var TELEGRAM_URL = 'https://t.me/+0xNr69raiIlmYWRh';
@@ -119,6 +87,36 @@
     if (!vid) return false;
     return !!getProtectedVids()[vid];
   }
+
+  // ── data-free="1" whitelist ─────────────────────────────────────────
+  // Any vcard/element with data-free="1" is explicitly free — never blocked,
+  // never paywalled, and purged from localStorage on init.
+  var _freeVids = null;
+  function getFreeVids(){
+    if (_freeVids) return _freeVids;
+    _freeVids = Object.create(null);
+    try {
+      var els = document.querySelectorAll('[data-vid][data-free="1"]');
+      for (var i = 0; i < els.length; i++) {
+        var v = els[i].getAttribute('data-vid');
+        if (v) _freeVids[v] = true;
+      }
+    } catch(_){}
+    return _freeVids;
+  }
+  function isFree(vid){
+    if (!vid) return false;
+    return !!getFreeVids()[vid];
+  }
+  function purgeFreeFromBlocked(){
+    var b = readBlocked();
+    var freeSet = getFreeVids();
+    var changed = false;
+    for (var k in freeSet) {
+      if (b[k]) { delete b[k]; changed = true; }
+    }
+    if (changed) writeBlocked(b);
+  }
   // Purge any protected vid that was previously memoized as blocked from
   // earlier sessions. One-shot cleanup on init.
   function purgeProtectedFromBlocked(){
@@ -134,12 +132,14 @@
   function isBlocked(vid){
     if (!vid) return false;
     if (isProtected(vid)) return false; // SAGRADA #9 — top 5 never blocked
+    if (isFree(vid)) return false;      // data-free="1" — explicitly free
     var b = readBlocked();
     return !!b[vid];
   }
   function markBlocked(vid){
     if (!vid) return;
     if (isProtected(vid)) return; // SAGRADA #9 — never persist a top-5 vid
+    if (isFree(vid)) return;      // data-free="1" — never persist a free vid
     var b = readBlocked();
     if (!b[vid]) {
       b[vid] = Date.now();
@@ -171,11 +171,9 @@
       '.twk-age-gate-btn svg{width:18px;height:18px;}',
       '.twk-age-gate-foot{font-size:11px;color:rgba(255,255,255,.45);margin-top:4px;}',
       // Card decorations (cards with vid that are blocked)
-      // Pill goes top-RIGHT to avoid overlap with the VIEWED badge (top-left)
       '.twk-blocked{position:relative;}',
-      '.twk-blocked-badge{position:absolute;top:6px;right:6px;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#ff5f5f);color:#fff;font:800 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;z-index:6;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);pointer-events:none;box-shadow:0 4px 14px rgba(255,45,135,.4);}',
-      // Big center lock overlay so the card READS as locked from a distance
-      '.twk-blocked-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:42px;color:rgba(255,255,255,.92);text-shadow:0 4px 20px rgba(0,0,0,.7),0 0 30px rgba(255,45,135,.5);pointer-events:none;z-index:5;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));}',
+      // Center lock icon — 54px emoji centered over the thumbnail
+      '.twk-blocked-center-lock{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:54px;line-height:1;pointer-events:none;z-index:7;filter:drop-shadow(0 4px 16px rgba(0,0,0,.8));}',
       // Strong filter on the thumbnail so users SEE the difference instantly
       '.twk-blocked img,.twk-blocked .vcard-thumb,.twk-blocked picture{filter:brightness(.4) saturate(.5) contrast(1.05);}',
       '.twk-blocked:hover img,.twk-blocked:hover .vcard-thumb,.twk-blocked:hover picture{filter:brightness(.5) saturate(.6);}',
@@ -269,14 +267,66 @@
   function addBlockedDecoration(el){
     if (!el || el.classList.contains('twk-blocked')) return;
     if (el.matches && el.matches('.rk-item')) return; // SAGRADA #9 belt+suspenders
+    // Solo decorar tarjetas de miniatura (.vcard), NUNCA el elemento del player
+    // (#twkHeroWrap, .twk-hero-wrap, .twerkhub-pl-player-wrap, etc. tienen data-vid
+    // pero no deben recibir el badge ni el candado — solo sus cards en la grid).
+    if (!el.classList.contains('vcard')) return;
     el.classList.add('twk-blocked');
-    if (!el.querySelector(':scope > .twk-blocked-badge')) {
-      var b = document.createElement('span');
-      b.className = 'twk-blocked-badge';
-      b.textContent = '🔒 +18';
-      el.appendChild(b);
+    // Center lock icon
+    if (!el.querySelector(':scope > .twk-blocked-center-lock')) {
+      var lk = document.createElement('div');
+      lk.className = 'twk-blocked-center-lock';
+      lk.setAttribute('aria-hidden', 'true');
+      lk.textContent = '🔒';
+      var thumb = el.querySelector('.vthumb') || el;
+      thumb.appendChild(lk);
     }
-    // Big center lock — overlays the thumbnail so users see it from a distance
-    if (!el.querySelector(':scope > .twk-blocked-lock')) {
-      var lock = document.createElement('span');
-      lock.className =
+  }
+  function decorateAll(){
+    injectStyle();
+    var b = readBlocked();
+    var keys = Object.keys(b);
+    if (!keys.length) return;
+    var els = document.querySelectorAll('[data-vid]');
+    for (var i = 0; i < els.length; i++) {
+      var vid = els[i].getAttribute('data-vid');
+      if (!vid || !b[vid]) continue;
+      if (isProtected(vid)) continue;             // SAGRADA #9
+      if (els[i].matches && els[i].matches('.rk-item')) continue; // SAGRADA #9
+      addBlockedDecoration(els[i]);
+    }
+  }
+
+  // Auto-decorate on load + on DOM mutations (filters re-render cards)
+  function init(){
+    purgeProtectedFromBlocked();   // SAGRADA #9: clean legacy stale entries
+    purgeFreeFromBlocked();        // data-free="1": purge manually whitelisted vids
+    decorateAll();
+    if (typeof MutationObserver !== 'undefined') {
+      new MutationObserver(function(muts){
+        var any = false;
+        muts.forEach(function(m){ if (m.addedNodes && m.addedNodes.length) any = true; });
+        if (any) decorateAll();
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+
+  window.TwkAgeGate = {
+    isBlocked: isBlocked,
+    isProtected: isProtected,
+    markBlocked: markBlocked,
+    show: show,
+    showOverlay: showOverlay,
+    hideOverlay: hideOverlay,
+    handleYTError: handleYTError,
+    decorateAll: decorateAll,
+    DISCORD_URL: DISCORD_URL,
+    TELEGRAM_URL: TELEGRAM_URL,
+    BLOCK_CODES: BLOCK_CODES
+  };
+})();

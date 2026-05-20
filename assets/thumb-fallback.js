@@ -18,99 +18,7 @@
   if (window.__twerkhubThumbFallback) return;
   window.__twerkhubThumbFallback = true;
 
-  // 2026-05-09 v5 NUKE: clean up stale dead-state AND force-eager-load
-  // every YouTube thumbnail. Lazy loading was unreliable on /recent and
-  // playlist pages — many cards stayed black below the fold. We now:
-  //   1. Remove `loading="lazy"` from every i.ytimg.com img
-  //   2. If src was hijacked to thumb-unavailable.svg, recover via data-vid
-  //      (if available) or the closest <a href> URL pattern
-  //   3. Strip stale .twk-thumb-dead classes and restore original hrefs
-  //   4. NEVER hide any image — broken thumb is better than black void
-  function recoverYouTubeId(img) {
-    // Try data-vid on closest ancestor
-    var card = img.closest && img.closest('[data-vid]');
-    if (card) {
-      var v = card.getAttribute('data-vid');
-      if (v) return v;
-    }
-    // Try a stored original
-    if (img.dataset && img.dataset.twkOriginalVid) return img.dataset.twkOriginalVid;
-    // Try parent <a href> — extract from /playlist/, /korean-girls.../, etc.
-    var anchor = img.closest && img.closest('a[href]');
-    if (anchor) {
-      var h = anchor.getAttribute('href') || '';
-      // Match a known YouTube-id-like substring at end of URL
-      var m = h.match(/\/([A-Za-z0-9_-]{11})(?:[/.]|$)/);
-      if (m) return m[1];
-    }
-    return null;
-  }
-  // Preserve original src on first observation (so if hijacked later we recover).
-  function preserveOriginal() {
-    try {
-      var fresh = document.querySelectorAll('img[src*="i.ytimg.com"]:not([data-twk-orig-src])');
-      for (var i = 0; i < fresh.length; i++) {
-        var img = fresh[i];
-        img.dataset.twkOrigSrc = img.getAttribute('src') || '';
-        var m = (img.dataset.twkOrigSrc || '').match(/\/vi\/([^\/]+)\//);
-        if (m) img.dataset.twkOriginalVid = m[1];
-      }
-    } catch (_) {}
-  }
-  function unmarkDead() {
-    try {
-      preserveOriginal();
-      // 1. Recover any imgs that got hijacked to the dead-poster SVG.
-      var bad = document.querySelectorAll('img[src*="thumb-unavailable"]');
-      for (var i = 0; i < bad.length; i++) {
-        var img = bad[i];
-        // Try original-src snapshot first (most reliable)
-        if (img.dataset.twkOrigSrc) {
-          img.src = img.dataset.twkOrigSrc;
-          delete img.dataset.twkDead;
-          continue;
-        }
-        var vid = recoverYouTubeId(img);
-        if (vid) {
-          img.src = 'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg';
-          delete img.dataset.twkDead;
-        }
-        // No fallback to opacity:0 — leave broken-img marker if no recovery.
-      }
-      // 2. Strip stale dead classes + restore original hrefs.
-      var dead = document.querySelectorAll('.twk-thumb-dead, .twk-thumb-maybe-dead');
-      for (var j = 0; j < dead.length; j++) {
-        dead[j].classList.remove('twk-thumb-dead');
-        dead[j].classList.remove('twk-thumb-maybe-dead');
-        if (dead[j].tagName === 'A' && dead[j].dataset.twkDeadHref) {
-          dead[j].setAttribute('href', dead[j].dataset.twkDeadHref);
-        }
-      }
-      // 3. Force every YouTube thumbnail to eager-load. Lazy below-fold
-      //    cards were staying black on scroll-fast.
-      var lazy = document.querySelectorAll('img[loading="lazy"][src*="i.ytimg.com"]');
-      for (var k = 0; k < lazy.length; k++) {
-        lazy[k].setAttribute('loading', 'eager');
-        // Re-trigger fetch by reassigning src (forces network).
-        var src = lazy[k].getAttribute('src');
-        if (src) lazy[k].src = src;
-      }
-    } catch (_) {}
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', unmarkDead);
-  } else {
-    unmarkDead();
-  }
-  setTimeout(unmarkDead, 500);
-  setTimeout(unmarkDead, 2000);
-
-  // 2026-05-09 v3: full cascade to ALL frame snapshots. For age-restricted
-  // YouTube videos i.ytimg.com sometimes returns 120x90 for hqdefault even
-  // though the video is alive. The /N.jpg endpoints (0,1,2,3) are
-  // auto-generated keyframes that exist for every public-but-restricted
-  // video. We try every variant before giving up.
-  var FB = ["maxresdefault", "sddefault", "hqdefault", "mqdefault", "default", "0", "1", "2", "3"];
+  var FB = ["maxresdefault", "hqdefault", "mqdefault", "default"];
   var DEAD_POSTER = "/assets/thumb-unavailable.svg";
   var DISCORD_URL = "https://discord.gg/WWn8ZgQMjn";
   var STYLE_ID = "twerkhub-dead-style";
@@ -158,22 +66,21 @@
     img.src = newSrc;
   }
 
-  // 2026-05-09: drastically softened. Old behavior: swap thumb to dead-poster
-  // SVG, replace href with javascript:void(0), block click, open modal.
-  // Problem: false positives on alive videos with quirky thumbnail availability
-  // (notably VR180 3D and some Korean fancams) made entire cards unclickable.
-  // New behavior: do NOTHING. Leave the broken/placeholder thumb visible —
-  // YouTube returns its own placeholder which is fine. The click still works
-  // and goes to the actual video. If the video IS dead, YouTube shows its
-  // own "Video unavailable" page, which is honest and accurate.
   function markDead(img) {
-    // 2026-05-09 v4: literally do nothing. The whole "mark dead" concept
-    // produced false positives on alive videos with quirky thumbnail
-    // availability, so we kill it completely. The browser will show
-    // YouTube's own placeholder for genuinely-broken thumbs, which is
-    // honest and clickable.
-    if (img && img.dataset) img.dataset.twkDead = "1";
-    return;
+    if (img.dataset.twkDead) return;
+    img.dataset.twkDead = "1";
+    img.removeAttribute("srcset");
+    img.src = DEAD_POSTER;
+    img.alt = "video unavailable";
+    var card = findCard(img);
+    if (!card) return;
+    card.classList.add("twk-thumb-dead");
+    if (card.tagName === "A") {
+      card.dataset.twkDeadHref = card.getAttribute("href") || "";
+      card.setAttribute("href", "javascript:void(0)");
+      card.setAttribute("data-twk-dead-card", "1");
+    }
+    card.addEventListener("click", deadClickHandler, true);
   }
 
   function deadClickHandler(ev) {

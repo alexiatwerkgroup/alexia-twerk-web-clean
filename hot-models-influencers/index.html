@@ -106,16 +106,24 @@ a.twk-hero-affiliate-overlay,
 </style>
 <link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
 
-<!-- TWK VIEWED THUMBNAILS PATCH v1: visual-only, no player/embed changes -->
-<style id="twk-viewed-thumbnails-v1">
-.vcard.twk-viewed,.card.twk-viewed,.mini-card.twk-viewed,.rk-item.twk-viewed{position:relative;}
-.twk-viewed .vthumb img,.twk-viewed .thumb img,.twk-viewed .smart-card-thumb img,.twk-viewed .autoplay-thumb img{filter:grayscale(1) brightness(.54) contrast(.94)!important;opacity:.72!important;transition:filter .18s ease,opacity .18s ease!important;}
-.twk-viewed .vthumb,.twk-viewed .thumb,.twk-viewed .smart-card-thumb,.twk-viewed .autoplay-thumb{position:relative!important;}
-.twk-viewed .vthumb::before,.twk-viewed .thumb::before,.twk-viewed .smart-card-thumb::before,.twk-viewed .autoplay-thumb::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.45));}
-.twk-viewed-badge{position:absolute;left:10px;top:10px;z-index:5;display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:rgba(3,5,8,.82);border:1px solid rgba(255,255,255,.18);color:#fff;font:800 10px/1 system-ui,-apple-system,Segoe UI,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 8px 22px rgba(0,0,0,.28);pointer-events:none;}
-.twk-viewed-badge::before{content:"✓";font-size:10px;color:#8affb8;}
-.twk-viewed:hover .vthumb img,.twk-viewed:hover .thumb img,.twk-viewed:hover .smart-card-thumb img,.twk-viewed:hover .autoplay-thumb img{filter:grayscale(.72) brightness(.72) contrast(.98)!important;opacity:.82!important;}
-</style>
+<script data-twk="gray-thumb-killer-v2">
+(function(){
+function kill(){
+ document.querySelectorAll('img').forEach(function(img){
+   var bad=!img.src||img.naturalWidth<=120||/data:image|thumb-unavailable|default\.jpg|gray/i.test(img.src);
+   if(!bad)return;
+   var card=img.closest('.vcard,.video-card,.card-item,.mix');
+   if(card){card.style.display='none';}
+ });
+}
+window.addEventListener('load',function(){
+ setTimeout(kill,1200);
+ setTimeout(kill,3000);
+ setTimeout(kill,6000);
+});
+})();
+</script>
+
 </head>
 <body class="twerkhub-ph-theme">
   <nav class="twk-nav-v1">
@@ -130,7 +138,7 @@ a.twk-hero-affiliate-overlay,
       <a href="/#hot-packs" class="twk-nav-v1-link">HOT PACKS</a>
       <a href="/#community" class="twk-nav-v1-link">COMMUNITY</a>
       <a href="/#membership" class="twk-nav-v1-link">MEMBERSHIP</a>
-      <a href="/auth/signin.html" class="twk-nav-v1-link">MY ACCOUNT</a>
+      <a href="/account" class="twk-nav-v1-link">MY ACCOUNT</a>
       <a href="/#profile" class="twk-nav-v1-link">PROFILE</a>
       <div class="twk-nav-v1-lang">EN / ES / RU</div>
       <div id="twk-tokens-hud-v3" class="twerkhub-tokens-hud" style="display: flex; gap: 8px; align-items: center; padding: 6px 12px; background: rgba(0,0,0,0.5); border-radius: 20px; font-size: 12px; min-width: 80px;">
@@ -239,7 +247,7 @@ a.twk-hero-affiliate-overlay,
   try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260513-blindaje-v62','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260513-fix4','twk-loader-token-system');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-pill-into-nav.js?v=20260506-p6','twk-loader-pill-into-nav');
 })();
@@ -417,46 +425,8 @@ a.twk-hero-affiliate-overlay,
 </aside>
 <!-- twk-related-auto:END -->
 
-<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
+<script src="/assets/twk-thumb-to-video.js?v=20260513-fix4" defer></script>
 <script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
-
-<!-- TWK VIEWED THUMBNAILS PATCH v1: stores only local viewed IDs/hrefs -->
-<script id="twk-viewed-thumbnails-js-v1">
-(function(){
-  if(window.__twkViewedThumbsV1)return; window.__twkViewedThumbsV1=true;
-  var KEY='twk_viewed_video_ids_v1';
-  function read(){try{var v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]}}
-  function write(v){try{localStorage.setItem(KEY,JSON.stringify(v.slice(-900)))}catch(e){}}
-  function normHref(h){try{return new URL(h,location.href).pathname.replace(/\/index\.html$/,'/')}catch(e){return h||''}}
-  function keyFor(el){
-    if(!el)return'';
-    var d=el.getAttribute&&el.getAttribute('data-vid');
-    if(d)return 'vid:'+d;
-    var child=el.querySelector&&el.querySelector('[data-vid]');
-    if(child&&child.getAttribute('data-vid'))return 'vid:'+child.getAttribute('data-vid');
-    var a=(el.matches&&el.matches('a[href]'))?el:(el.querySelector&&el.querySelector('a[href]'));
-    var h=a&&a.getAttribute('href');
-    if(h&&h!=='#')return 'href:'+normHref(h);
-    return'';
-  }
-  function thumbFor(card){return card&&(card.querySelector('.vthumb,.thumb,.smart-card-thumb,.autoplay-thumb')||card);}
-  function mark(card){
-    if(!card||card.classList.contains('twk-viewed'))return;
-    card.classList.add('twk-viewed');
-    var t=thumbFor(card);
-    if(t&&!t.querySelector('.twk-viewed-badge')){var b=document.createElement('span');b.className='twk-viewed-badge';b.textContent='Viewed';t.appendChild(b);}
-  }
-  function cards(){return Array.prototype.slice.call(document.querySelectorAll('.vcard[data-vid],.rk-item[data-vid],.card,.mini-card,a[data-vid]'));}
-  function apply(){var seen=read();cards().forEach(function(c){var k=keyFor(c);if(k&&seen.indexOf(k)>-1)mark(c);});}
-  function save(k){if(!k)return;var seen=read();if(seen.indexOf(k)===-1){seen.push(k);write(seen);}apply();}
-  document.addEventListener('click',function(ev){
-    var card=ev.target.closest&&ev.target.closest('.vcard[data-vid],.rk-item[data-vid],a[data-vid],.card,.mini-card');
-    if(card)save(keyFor(card));
-  },true);
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
-  setTimeout(apply,600);setTimeout(apply,1800);
-})();
-</script>
 </body>
 </html>
 

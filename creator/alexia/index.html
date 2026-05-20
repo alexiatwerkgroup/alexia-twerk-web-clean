@@ -49,6 +49,25 @@ p{color:#d8d8e2;font-size:16.5px;margin-bottom:14px}strong{color:#fff;font-weigh
 </style>
 <link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260507-b5-no-pink-lines">
 <link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
+
+<script data-twk="gray-thumb-killer-v2">
+(function(){
+function kill(){
+ document.querySelectorAll('img').forEach(function(img){
+   var bad=!img.src||img.naturalWidth<=120||/data:image|thumb-unavailable|default\.jpg|gray/i.test(img.src);
+   if(!bad)return;
+   var card=img.closest('.vcard,.video-card,.card-item,.mix');
+   if(card){card.style.display='none';}
+ });
+}
+window.addEventListener('load',function(){
+ setTimeout(kill,1200);
+ setTimeout(kill,3000);
+ setTimeout(kill,6000);
+});
+})();
+</script>
+
 </head>
 <body class="twerkhub-ph-theme">
   <nav class="twk-nav-v1" aria-label="Primary" data-twk-nav-v1>
@@ -178,4 +197,3 @@ p{color:#d8d8e2;font-size:16.5px;margin-bottom:14px}strong{color:#fff;font-weigh
 <script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
 </body>
 </html>
-                                                                                                                                                                                    

@@ -267,7 +267,7 @@ a.twk-hero-affiliate-overlay,
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260513-blindaje-v62','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260513-fix4','twk-loader-token-system');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 })();
@@ -285,9 +285,59 @@ a.twk-hero-affiliate-overlay,
   <div class="mbh__stat"><span class="dot"></span><span id="mbh-members">412</span> MEMBERS ONLINE · 4 DOORS BELOW</div>
 </header>
 
-<!-- â•â•â•â•â•â•â• TIERS · 4 levels, matches the home page â•â•â•â•â•â•â• -->
-<section class="tiers" aria-label="Membership tiers">
-
+<style id="membership-tiers-css">
+  .tiers{max-width:1320px;margin:70px auto;padding:32px 26px 64px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  @media(max-width:1200px){.tiers{grid-template-columns:repeat(2,1fr);max-width:900px}}
+  @media(max-width:680px){.tiers{grid-template-columns:1fr;max-width:480px}}
+  .tier{position:relative;background:linear-gradient(170deg,rgba(30,20,40,.5) 0%,rgba(20,10,30,.7) 100%);
+    border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:36px 28px 32px;display:flex;flex-direction:column;
+    transition:all .35s cubic-bezier(.22,.9,.38,1)}
+  .tier:hover{border-color:rgba(255,180,84,.35);transform:translateY(-4px)}
+  .tier--featured{border-color:rgba(232,200,128,.38);box-shadow:0 28px 60px rgba(0,0,0,.4),0 0 0 1px rgba(232,200,128,.2)}
+  .tier--featured::before{content:"MOST REQUESTED";position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    background:linear-gradient(180deg,#e8c880,#d4a850);color:#0a0a0d;
+    padding:5px 14px;border-radius:999px;font:800 9px/1 'Inter',sans-serif;letter-spacing:.24em;
+    box-shadow:0 8px 20px rgba(232,200,128,.35)}
+  .tier__badge{font:700 10px/1 'Inter',sans-serif;letter-spacing:.28em;text-transform:uppercase;
+    color:rgba(168,166,180,.8);margin-bottom:12px}
+  .tier--vip .tier__badge{color:#e8c880}
+  .tier--elite .tier__badge{color:#ff2d87}
+  .tier__name{font:700 30px/1 'Playfair Display',Georgia,serif;color:#fff;margin-bottom:14px;letter-spacing:-.01em}
+  .tier__pitch{font:400 14px/1.55 'Inter',sans-serif;color:rgba(230,230,240,.65);margin-bottom:22px;min-height:66px}
+  .tier__price{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
+  .tier__price .cur{font:500 20px/1 'Playfair Display',Georgia,serif;color:rgba(230,230,240,.6);margin-top:6px}
+  .tier__price .amt{font:700 52px/1 'Playfair Display',Georgia,serif;color:#fff;letter-spacing:-.02em}
+  .tier__price .per{font:500 14px/1 'Inter',sans-serif;color:rgba(168,166,180,.7);margin-left:4px}
+  .tier__alt{font:500 12px/1 'Inter',sans-serif;color:#e8c880;margin-bottom:24px}
+  .tier__alt strong{font-weight:800}
+  .tier__feats{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:26px;flex:1;padding:0}
+  .tier__feats li{display:flex;align-items:flex-start;gap:10px;font:500 13.5px/1.5 'Inter',sans-serif;color:rgba(230,230,240,.85)}
+  .tier__feats li::before{content:"";display:block;width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px;
+    background:rgba(232,200,128,.16);border:1.5px solid #e8c880;
+    background-image:radial-gradient(circle,#e8c880 2.5px,transparent 3px)}
+  .tier--basic .tier__feats li::before{background:rgba(168,166,180,.14);border-color:rgba(168,166,180,.7);
+    background-image:radial-gradient(circle,rgba(168,166,180,.7) 2.5px,transparent 3px)}
+  .tier--elite .tier__feats li::before{background:rgba(255,45,126,.14);border-color:#ff2d87;
+    background-image:radial-gradient(circle,#ff2d87 2.5px,transparent 3px)}
+  .tier__feats .em{color:#e8c880;font-weight:700}
+  .tier--elite .tier__feats .em{color:#ff2d87}
+  .tier__cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;
+    border-radius:10px;font:800 12px/1 'Inter',sans-serif;letter-spacing:.14em;text-transform:uppercase;
+    border:none;cursor:pointer;transition:.25s;text-decoration:none;text-align:center;width:100%}
+  .tier__cta--basic{background:rgba(255,255,255,.04);color:rgba(230,230,240,.85);border:1px solid rgba(255,255,255,.14)}
+  .tier__cta--basic:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3)}
+  .tier__cta--vip{background:linear-gradient(180deg,#e8c880,#d4a850);color:#0a0a0d;
+    box-shadow:0 10px 28px rgba(232,200,128,.3)}
+  .tier__cta--vip:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(232,200,128,.45);filter:brightness(1.08)}
+  .tier__cta--elite{background:linear-gradient(180deg,#ff2d87,#ff6fa8);color:#fff;
+    box-shadow:0 10px 28px rgba(255,45,126,.3)}
+  .tier__cta--elite:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,45,126,.45)}
+  /* Ensure all 4 tiers are visible, including VIP (TIER 03) */
+  .tier{display:flex !important;visibility:visible !important}
+  .tier--vip-mid{display:flex !important}
+  .tiers{display:grid !important;grid-template-columns:repeat(4,1fr) !important}
+</style>
+<section class="tiers" id="tokens" aria-label="Membership tiers">
   <!-- TIER 01 · BASIC -->
   <article class="tier tier--basic">
     <span class="tier__badge">Tier 01 · Basic</span>
@@ -321,15 +371,37 @@ a.twk-hero-affiliate-overlay,
       <li>VIP Discord channels</li>
       <li><span class="em">Token multiplier ×1.5</span></li>
     </ul>
-    <a class="tier__cta tier__cta--basic" href="https://discord.gg/WWn8ZgQMjn" data-tier="medium" data-price="9.99" target="_blank" rel="noopener nofollow ugc">Get Medium →</a>
+    <a class="tier__cta tier__cta--basic" href="#" data-tier="medium" data-price="9.99">Get Medium →</a>
   </article>
 
-  <!-- TIER 03 · PREMIUM · featured "MOST POPULAR" -->
+  <!-- TIER 03 · VIP -->
+  <article class="tier tier--vip-mid">
+    <span class="tier__badge">Tier 03 · VIP</span>
+    <h2 class="tier__name">VIP</h2>
+    <p class="tier__pitch">All private models, full 4K vault, personal concierge on Discord — the serious upgrade.</p>
+    <div class="tier__price">
+      <span class="cur">$</span><span class="amt">39.99</span><span class="per">/ month</span>
+    </div>
+    <p class="tier__alt">or <strong>15,000 tokens</strong></p>
+    <ul class="tier__feats">
+      <li>All private models · full archive</li>
+      <li>Download all videos · instant delivery</li>
+      <li>4K vault · 1,500+ cuts</li>
+      <li><span class="em">★ Personal concierge on Discord</span></li>
+      <li><span class="em">★ VIP Discord channels</span></li>
+      <li><span class="em">★ Token multiplier ×2</span></li>
+    </ul>
+    <a class="tier__cta tier__cta--vip" href="#" data-tier="vip" data-price="39.99">Get VIP →</a>
+  </article>
+
+  <!-- TIER 04 · VIP TOP · featured "MOST REQUESTED" -->
   <article class="tier tier--vip tier--featured">
-    <span class="tier__badge">Tier 03 · Premium</span>
-    <h2 class="tier__name">Premium</h2>
-    <p class="tier__pitch">All private models, Download all videos, the 1,500-video 4K vault, token multiplier ×2.</p>
-    
+    <span class="tier__badge">Tier 04 · VIP Top</span>
+    <h2 class="tier__name">VIP Top</h2>
+    <p class="tier__pitch">All private models, Download all videos, the 1,500-video 4K vault, token multiplier ×3.</p>
+    <div class="tier__price">
+      <span class="cur">$</span><span class="amt">99.99</span><span class="per">/ month</span>
+    </div>
     <p class="tier__alt">or <strong>50,000 tokens</strong></p>
     <ul class="tier__feats">
       <li>★ 1-day Meet &amp; Greet · any model</li>
@@ -338,9 +410,8 @@ a.twk-hero-affiliate-overlay,
       <li>★ VR videos early access</li>
       <li><span class="em">★ Token multiplier ×3</span></li>
     </ul>
-    <a class="tier__cta tier__cta--elite" href="https://discord.gg/WWn8ZgQMjn" data-tier="vip-top" data-price="99.99" target="_blank" rel="noopener nofollow ugc">Become VIP →</a>
+    <a class="tier__cta tier__cta--elite" href="#" data-tier="vip-top" data-price="99.99">Become VIP Top →</a>
   </article>
-
 </section>
 
 <!-- â•â•â•â•â•â•â• CHECKOUT MODAL · Discord + Telegram dual-channel â•â•â•â•â•â•â• -->
@@ -406,7 +477,7 @@ dialog.twk-checkout-modal::backdrop{
   'use strict';
   if (window.__twkCheckoutInit) return;
   window.__twkCheckoutInit = true;
-  var TIER_NAMES = { medium:'Medium', premium:'Premium', 'vip-top':'VIP Top', vip:'VIP Top' };
+  var TIER_NAMES = { medium:'Medium', premium:'Premium', 'vip-top':'VIP Top', vip:'VIP' };
   var DISCORD = 'https://discord.gg/WWn8ZgQMjn';
   var TELEGRAM = 'https://t.me/+0xNr69raiIlmYWRh';
   function $(id){ return document.getElementById(id); }
@@ -804,7 +875,8 @@ dialog.twk-checkout-modal::backdrop{
 
 <!-- Toast host container (guaranteed rendering) -->
 <div id="twk-toast-host-v3" style="position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;"></div>
-<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
+<script src="/assets/twk-thumb-to-video.js?v=20260513-fix4" defer></script>
 <script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
