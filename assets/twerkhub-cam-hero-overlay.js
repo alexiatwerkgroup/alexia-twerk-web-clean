@@ -23,25 +23,21 @@
     var st = document.createElement('style');
     st.id = 'twk-cam-hero-v3-css';
     st.textContent = [
-      /* Border naranja en el player rotativo (sin sombra) — SUPER AGGRESSIVE */
+      /* Border + glow naranja en el player rotativo */
       '.twerkhub-home-hero-media.twk-cam-styled{',
         'border:2px solid #ff9000 !important;',
-        'box-shadow:none !important;',
-        'filter:drop-shadow(0 0 0) !important;',
+        'box-shadow:0 0 24px rgba(255,144,0,.32),0 0 60px rgba(255,144,0,.14) !important;',
         'border-radius:14px !important;overflow:hidden !important;',
         'position:relative !important;',
-        '-webkit-box-shadow:none !important;',
-      '}',
-      '.twerkhub-home-hero-media.twk-cam-styled *{',
-        'box-shadow:none !important;',
-        '-webkit-box-shadow:none !important;',
       '}',
 
-      /* Scale del iframe: mantener 1.22 para preservar altura original sin corte.
-         La barra negra es PURA overlay (position:absolute + pointer-events:none),
-         así que NO afecta el layout del video ni su tamaño visible. */
+      /* CRITICAL FIX: el iframe tenia scale(1.22) original (crop top de YT
+         chrome). Combinado con nuestro header negro arriba = se duplicaba
+         el corte y no se veian las caras. Bajamos el scale a 1.05 →
+         minimo zoom, caras visibles, header sigue tapando solo el title
+         overlay de YT (no las caras). */
       '.twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-iframe{',
-        'transform:scale(1.22) !important;',  // preserva altura original
+        'transform:scale(1.05) !important;',
       '}',
 
       /* HIDE elementos viejos que duplican o no van.
@@ -60,13 +56,6 @@
       'body.twerkhub-ph-theme .twerkhub-home-hero-media.twk-cam-styled .twerkhub-hh-live,',
       'body.twerkhub-ph-theme .twerkhub-home-hero-media.twk-cam-styled #twerkhub-hh-status{',
         'display:none !important;visibility:hidden !important;opacity:0 !important;',
-      '}',
-      /* REEMPLAZAR overlay afiliado viejo con el nuevo .twk-cam-cta-link
-         que tiene nuestra URL de LiveJasmin. El viejo .twk-hero-affiliate-overlay
-         se oculta porque ahora usamos el nuevo overlay con mejor z-index. */
-      '.twerkhub-home-hero-media.twk-cam-styled .twk-hero-affiliate-overlay{',
-        'display:none !important;visibility:hidden !important;opacity:0 !important;',
-        'pointer-events:none !important;z-index:-1 !important;',
       '}',
       /* El countdown viejo lo reposicionamos abajo izquierda y re-estilamos */
       '.twk-cam-styled .twerkhub-hh-media-meta{',
@@ -99,10 +88,10 @@
         'background:transparent !important;padding:0 !important;line-height:1.1 !important;',
       '}',
 
-      /* Re-style el botón Next existente (.twerkhub-hh-next) → top-left, debajo de la barra negra */
+      /* Re-style el botón Next existente (.twerkhub-hh-next) → bottom-right */
       '.twk-cam-styled .twerkhub-hh-next{',
-        'top:60px !important;left:14px !important;',
-        'bottom:auto !important;right:auto !important;',
+        'top:auto !important;left:auto !important;',
+        'bottom:12px !important;right:12px !important;',
         'background:rgba(0,0,0,.7) !important;color:#ff9000 !important;',
         'border:1px solid rgba(255,144,0,.55) !important;',
         'font-family:"Anton","Bebas Neue",sans-serif !important;',
@@ -118,28 +107,24 @@
       '}',
       '.twk-cam-styled .twerkhub-hh-next svg{width:11px !important;height:11px !important}',
 
-      /* CLICK-OUT overlay → BLOQUEO ANTI-YOUTUBE (LiveJasmin afiliado).
-         z-index 13 = arriba del iframe, DEBAJO de los botones de control pero ARRIBA del contenido.
-         CRITICAL: este overlay PREVIENE que los usuarios clickeen en el iframe y vayan a YouTube.
-         Solo los botones (NEXT, mute, barra negra) están ARRIBA con z-index 14-15. */
+      /* CLICK-OUT overlay → LiveJasmin afiliado.
+         z-index 12 = arriba del iframe pero debajo de los controles (header,
+         mute, next, countdown que estan en z-index 14-15). */
       '.twk-cam-cta-link{',
-        'position:absolute;inset:0;z-index:13;display:block;',
+        'position:absolute;inset:0;z-index:12;display:block;',
         'cursor:pointer;text-decoration:none;',
-        'background:transparent;',  // invisible pero captura clicks en el video
-        'pointer-events:auto;',  // CRITICAL: debe aceptar clicks
+        'background:transparent;',  // invisible pero captura clicks
       '}',
 
-      /* HEADER STRIP — black bar arriba (NO gradient, sólido como banner)
-         CRITICAL: position:absolute + pointer-events:none = NO impact on video layout */
+      /* HEADER STRIP — black bar arriba (NO gradient, sólido como banner) */
       '.twk-cam-hero-header{',
         'position:absolute;top:0;left:0;right:0;z-index:15;',
         'display:flex;align-items:center;gap:12px;',
         'padding:10px 14px;',
         'background:#000;',  // black bar SOLIDA
         'border-bottom:1px solid rgba(255,144,0,.15);',
-        'pointer-events:none;',  // CRITICAL: no interfiere con clicks en video
+        'pointer-events:none;',
         'font-family:"Inter",ui-sans-serif,system-ui,sans-serif;',
-        'height:auto;margin:0;padding-bottom:10px;',  // no margin bleeding
       '}',
       /* ONLINE [CAMS] top-LEFT — Inter Black 900 (NEGRITA, no condensado) */
       '.twk-cam-brand{',

@@ -286,10 +286,8 @@
     }
 
     // 4. Build the controls bar (back, forward, mute, fullscreen) above overlay
-    // SKIP for home hero videos — use twerkhub-cam-hero-overlay.js controls instead
-    var isHomeHero = wrap.closest('.twerkhub-home-hero-media') !== null;
     var ctrls = wrap.querySelector('.' + CTRLS_CLASS);
-    if (!ctrls && !isHomeHero) {
+    if (!ctrls) {
       ctrls = document.createElement('div');
       ctrls.className = CTRLS_CLASS;
 

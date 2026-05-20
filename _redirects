@@ -1,6 +1,16 @@
 # Redirects for URL structure consistency
 # Format: source destination [status]
 
+# 2026-05-12 · Anti-canibalización (Dinorank report)
+# Fix #1: "twerk tutorial" — eliminar duplicado .html/sin-ext (pos 35.4 + 37.9 → 1 URL)
+/twerk-dance-tutorial.html  /twerk-dance-tutorial          301
+
+# Fix #2: "twerk hub" MOBILE — consolidar 3 URLs hacia /playlist/ (pos 7.3 es la que queremos)
+/twerk-dance-video.html     /playlist/                      301
+/twerk-dance-video          /playlist/                      301
+/playlist-twerk-hub-leaks   /playlist/                      301
+/playlist-twerk-hub-leaks.html  /playlist/                  301
+
 # Hide .html extensions (301 permanent redirects)
 /account.html           /account/                      301
 /admin-users.html       /admin-users/                  301

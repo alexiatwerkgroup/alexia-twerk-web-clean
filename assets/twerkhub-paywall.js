@@ -194,7 +194,7 @@
       '.twk-modal-close{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.4);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}',
       '.twk-modal-close:hover{background:rgba(255,45,135,.3);border-color:#ff2d87}',
       '.twk-kicker{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#ff6fa8;margin-bottom:14px;display:flex;align-items:center;gap:8px}',
-      '.twk-kicker::before{display:none}',
+      '.twk-kicker::before{content:"";width:22px;height:1px;background:#ff2d87}',
       '.twk-modal h2{font-family:"Playfair Display",Georgia,serif;font-size:28px;font-weight:900;line-height:1.1;margin-bottom:14px;letter-spacing:-.01em}',
       '.twk-modal h2 em{font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent}',
       '.twk-modal p{color:#c7c7d3;line-height:1.65;margin-bottom:14px;font-size:15px}',

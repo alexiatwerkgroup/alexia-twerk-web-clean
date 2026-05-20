@@ -6,16 +6,7 @@
 (function(){
   'use strict';
 
-  console.log('[age-gate] script loaded · path=' + location.pathname);
-
-  // ⚡ Googlebot / search crawler whitelist — bots never see the 18+ modal
-  // window.__twkIsBot is set by /assets/twk-bot-detect.js (must load FIRST).
-  if (typeof window !== 'undefined' && window.__twkIsBot) {
-    console.log('[age-gate] bot detected (' + (window.__twkBotName || '?') + ') — modal skipped');
-    return;
-  }
-
-  if (window.__alexiaAgeGateMounted) { console.log('[age-gate] already mounted, skipping'); return; }
+  if (window.__alexiaAgeGateMounted) return;
   window.__alexiaAgeGateMounted = true;
 
   var LS_KEY = 'alexia_age_verified_v1';
@@ -35,44 +26,13 @@
       return window.__alexiaAgeGateSkippedNonPortal = true;
     }
   })();
-  if (window.__alexiaAgeGateSkippedNonPortal) { console.log('[age-gate] non-portal page, skipping'); return; }
+  if (window.__alexiaAgeGateSkippedNonPortal) return;
 
   // Already verified? skip
   try {
     var until = Number(localStorage.getItem(LS_KEY) || 0);
-    if (until && Date.now() < until) { console.log('[age-gate] already verified (cookie)'); return; }
+    if (until && Date.now() < until) return;
   } catch(e){}
-
-  // 2026-05-08: skip age gate for signed-in users OR users who just came
-  // from an auth flow (email verification, OAuth signin). These users have
-  // already proven they're adults via signup.
-  function autoVerify() {
-    try {
-      localStorage.setItem(LS_KEY, String(Date.now() + EXPIRY_DAYS * 24 * 60 * 60 * 1000));
-    } catch(_){}
-  }
-  // (a) Has a signed-in session in localStorage
-  try {
-    var auth = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}');
-    if (auth && auth.user && auth.user.id) { console.log('[age-gate] signed-in user, auto-verifying'); autoVerify(); return; }
-  } catch(_){}
-  // (b) Just came from an auth/verify flow (URL params set by /api/auth/*)
-  try {
-    var u = new URL(location.href);
-    if (u.searchParams.get('verified') === '1' ||
-        u.searchParams.get('signed_in') === '1' ||
-        u.hash.indexOf('twk_oauth_done') !== -1) {
-      console.log('[age-gate] auth-flow URL param, auto-verifying');
-      autoVerify();
-      return;
-    }
-  } catch(_){}
-  console.log('[age-gate] all checks passed, will mount modal');
-  // 2026-05-09: condition (c) removed — was too lax. Other scripts write
-  // alexia_* / twk_* localStorage on page load (trackers, session IDs),
-  // making the gate skip for FRESH visitors who shouldn't be skipped.
-  // The official "I'm verified" cookie/key is alexia_age_verified_v1 which
-  // is checked at the top of this file. That's enough for legit returning users.
 
   function mount(){
     var root = document.createElement('div');
@@ -126,17 +86,6 @@
     document.head.appendChild(css);
     document.body.appendChild(root);
 
-    // 2026-05-09: forzar scroll al top antes de mostrar el modal. Chrome
-    // restaura la posición de scroll de visitas anteriores, lo que hace
-    // que el modal aparezca con la página debajo scrolleada a la mitad.
-    // Al cerrar, el usuario quedaba mid-page. Ahora siempre arranca arriba.
-    try {
-      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    } catch(_){}
-
     // Lock scroll while modal open
     var prevOverflow = document.documentElement.style.overflow;
     document.documentElement.style.overflow = 'hidden';
@@ -153,4 +102,13 @@
       setTimeout(function(){
         root.remove();
         document.documentElement.style.overflow = prevOverflow;
-        // Al salir del modal, asegurar qu
+      }, 400);
+    });
+
+    // Focus primary action for accessibility
+    setTimeout(function(){ enterBtn.focus(); }, 300);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
+  else mount();
+})();
