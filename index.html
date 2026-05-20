@@ -4,11 +4,11 @@
 <script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
 <script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
 <script src="/assets/twk-guardian.js?v=20260509-g1"></script>
-<script defer src="/assets/twk-paywall-guard.js?v=20260513-fix4"></script>
+<script defer src="/assets/twk-paywall-guard.js?v=20260512-pg3"></script>
 <script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
-<script defer src="/assets/twk-video-shield.js?v=20260503-p13"></script>
+<script defer src="/assets/twk-video-shield.js?v=20260518-p14"></script>
 <script defer src="/assets/twerkhub-pl-theater.js?v=20260510-p15"></script>
-<script defer src="/assets/twerkhub-age-gate.js?v=20260513-fix6"></script>
+<script defer src="/assets/twerkhub-age-gate.js?v=20260509-ag3-scrolltop"></script>
 <script src="/assets/thumb-fallback.js?v=20260512-fix2"></script>
 <script>(function(){function fix(){var imgs=document.querySelectorAll('img[data-vid],img.video-thumb,.video-card img');imgs.forEach(function(i){if(i.loading==='lazy')i.loading='eager';var p=i.closest('a[data-vid],[data-vid]');var vid=i.dataset.vid||(p?p.dataset.vid:null);if(vid){var bad=!i.src||i.src.indexOf('thumb-unavailable')>-1||i.src.endsWith('default.jpg')||i.naturalWidth<50;if(bad){i.src='https://i.ytimg.com/vi/'+vid+'/hqdefault.jpg';}i.onerror=function(){this.src='https://i.ytimg.com/vi/'+vid+'/mqdefault.jpg';this.onerror=function(){this.src='https://i.ytimg.com/vi/'+vid+'/0.jpg';this.onerror=null;};};}});}fix();setTimeout(fix,500);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
 <script data-twk="thumb-fallback-v3">(function(){
@@ -109,7 +109,7 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://i.ytimg.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Anton&display=swap">
-<link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260507-b5-no-pink-lines">
+<link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260518-b6-no-shadow">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Twerkhub","alternateName":"Alexia Twerk Group","url":"https://alexiatwerkgroup.com/","inLanguage":"en","potentialAction":{"@type":"SearchAction","target":"https://alexiatwerkgroup.com/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGallery","name":"Twerkhub · curated twerk and reggaetón choreography archive","url":"https://alexiatwerkgroup.com/playlist/","description":"A curated editorial archive of 526 twerk and reggaetón floor work choreographies, organized by scene (Latin reggaetón, Russian heels, K-dance Taipei, Brazilian funk, Sav Maine roster). Editorial-first, not algorithmic. Each video is annotated with technique notes and lineage tagging.","inLanguage":["en","es","pt","ru"],"isFamilyFriendly":false,"audience":{"@type":"Audience","audienceType":"dance students, choreographers, scene historians, age 18+"},"keywords":"twerk choreography, reggaeton floor, K-dance, perreo, heels choreo, dance archive, fancam","publisher":{"@type":"Organization","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"},"numberOfItems":526}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Twerkhub choreography reference catalog","description":"Editorial catalog of 526 indexed twerk and reggaetón choreography videos with per-video annotations: scene tag, dancer profile, lineage notes, technique signature. Cross-scene coverage of Caribbean perreo, Russian heels-choreo, Latin reggaetón floor, K-dance Taipei/Seoul, Brazilian funk.","url":"https://alexiatwerkgroup.com/playlist/","license":"https://alexiatwerkgroup.com/terms","keywords":["twerk","reggaeton","perreo","heels choreo","K-dance","K-pop fancam","Brazilian funk","dance reference","choreography archive"],"creator":{"@type":"Organization","name":"Twerkhub","url":"https://alexiatwerkgroup.com/"},"inLanguage":["en","es","pt","ru"],"isAccessibleForFree":true,"distribution":[{"@type":"DataDownload","contentUrl":"https://alexiatwerkgroup.com/playlist/","encodingFormat":"text/html"}]}</script>
@@ -252,7 +252,7 @@ a.twk-hero-affiliate-overlay,
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260513-fix4','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260513-blindaje-v62','twk-loader-token-system');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
   loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 
@@ -1474,134 +1474,46 @@ a.twk-hero-affiliate-overlay,
   <div class="twerkhub-coming-foot">· Don't stay here · Move forward ·</div>
 </section>
 
-<!-- ═══ FOUR TIERS pricing · matches /membership/ design ═══ -->
-<style id="membership-tiers-css">
-  .tiers{max-width:1320px;margin:70px auto;padding:32px 26px 64px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-  @media(max-width:1200px){.tiers{grid-template-columns:repeat(2,1fr);max-width:900px}}
-  @media(max-width:680px){.tiers{grid-template-columns:1fr;max-width:480px}}
-  .tier{position:relative;background:linear-gradient(170deg,rgba(30,20,40,.5) 0%,rgba(20,10,30,.7) 100%);
-    border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:36px 28px 32px;display:flex;flex-direction:column;
-    transition:all .35s cubic-bezier(.22,.9,.38,1)}
-  .tier:hover{border-color:rgba(255,180,84,.35);transform:translateY(-4px)}
-  .tier--featured{border-color:rgba(232,200,128,.38);box-shadow:0 28px 60px rgba(0,0,0,.4),0 0 0 1px rgba(232,200,128,.2)}
-  .tier--featured::before{content:"MOST REQUESTED";position:absolute;top:-11px;left:50%;transform:translateX(-50%);
-    background:linear-gradient(180deg,#e8c880,#d4a850);color:#0a0a0d;
-    padding:5px 14px;border-radius:999px;font:800 9px/1 'Inter',sans-serif;letter-spacing:.24em;
-    box-shadow:0 8px 20px rgba(232,200,128,.35)}
-  .tier__badge{font:700 10px/1 'Inter',sans-serif;letter-spacing:.28em;text-transform:uppercase;
-    color:rgba(168,166,180,.8);margin-bottom:12px}
-  .tier--vip .tier__badge{color:#e8c880}
-  .tier--elite .tier__badge{color:#ff2d87}
-  .tier__name{font:700 30px/1 'Playfair Display',Georgia,serif;color:#fff;margin-bottom:14px;letter-spacing:-.01em}
-  .tier__pitch{font:400 14px/1.55 'Inter',sans-serif;color:rgba(230,230,240,.65);margin-bottom:22px;min-height:66px}
-  .tier__price{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
-  .tier__price .cur{font:500 20px/1 'Playfair Display',Georgia,serif;color:rgba(230,230,240,.6);margin-top:6px}
-  .tier__price .amt{font:700 52px/1 'Playfair Display',Georgia,serif;color:#fff;letter-spacing:-.02em}
-  .tier__price .per{font:500 14px/1 'Inter',sans-serif;color:rgba(168,166,180,.7);margin-left:4px}
-  .tier__alt{font:500 12px/1 'Inter',sans-serif;color:#e8c880;margin-bottom:24px}
-  .tier__alt strong{font-weight:800}
-  .tier__feats{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:26px;flex:1;padding:0}
-  .tier__feats li{display:flex;align-items:flex-start;gap:10px;font:500 13.5px/1.5 'Inter',sans-serif;color:rgba(230,230,240,.85)}
-  .tier__feats li::before{content:"";display:block;width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px;
-    background:rgba(232,200,128,.16);border:1.5px solid #e8c880;
-    background-image:radial-gradient(circle,#e8c880 2.5px,transparent 3px)}
-  .tier--basic .tier__feats li::before{background:rgba(168,166,180,.14);border-color:rgba(168,166,180,.7);
-    background-image:radial-gradient(circle,rgba(168,166,180,.7) 2.5px,transparent 3px)}
-  .tier--elite .tier__feats li::before{background:rgba(255,45,126,.14);border-color:#ff2d87;
-    background-image:radial-gradient(circle,#ff2d87 2.5px,transparent 3px)}
-  .tier__feats .em{color:#e8c880;font-weight:700}
-  .tier--elite .tier__feats .em{color:#ff2d87}
-  .tier__cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;
-    border-radius:10px;font:800 12px/1 'Inter',sans-serif;letter-spacing:.14em;text-transform:uppercase;
-    border:none;cursor:pointer;transition:.25s;text-decoration:none;text-align:center;width:100%}
-  .tier__cta--basic{background:rgba(255,255,255,.04);color:rgba(230,230,240,.85);border:1px solid rgba(255,255,255,.14)}
-  .tier__cta--basic:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3)}
-  .tier__cta--vip{background:linear-gradient(180deg,#e8c880,#d4a850);color:#0a0a0d;
-    box-shadow:0 10px 28px rgba(232,200,128,.3)}
-  .tier__cta--vip:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(232,200,128,.45);filter:brightness(1.08)}
-  .tier__cta--elite{background:linear-gradient(180deg,#ff2d87,#ff6fa8);color:#fff;
-    box-shadow:0 10px 28px rgba(255,45,126,.3)}
-  .tier__cta--elite:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,45,126,.45)}
-  /* Ensure all 4 tiers are visible, including VIP (TIER 03) */
-  .tier{display:flex !important;visibility:visible !important}
-  .tier--vip-mid{display:flex !important}
-  .tiers{display:grid !important;grid-template-columns:repeat(4,1fr) !important}
-</style>
-<section class="tiers" id="tokens" aria-label="Membership tiers">
-  <!-- TIER 01 · BASIC -->
-  <article class="tier tier--basic">
-    <span class="tier__badge">Tier 01 · Basic</span>
-    <h2 class="tier__name">Basic</h2>
-    <p class="tier__pitch">Free to join. Access the public archive and start earning tokens from day one.</p>
-    <div class="tier__price">
-      <span class="cur"></span><span class="amt">FREE</span><span class="per">· register</span>
+<!-- ═══ FOUR TIERS pricing ═══ -->
+<section class="twerkhub-tiers" id="tokens" aria-label="Four tiers">
+  <div class="twerkhub-kicker">/ Rewards · earn or buy · Supabase-backed</div>
+  <div class="twerkhub-tiers-head">
+    <div>
+      <h2>Four tiers. <em>Two ways in.</em></h2>
+      <p>Earn tokens by watching, referring and sharing — or skip the grind and buy your tier directly. Subscriptions auto-renew monthly. Cancel anytime.</p>
     </div>
-    <p class="tier__alt">or <strong>300 tokens</strong></p>
-    <ul class="tier__feats">
-      <li>590+ free videos</li>
-      <li>4 public playlists</li>
-      <li>Discord general</li>
-      <li>Basic token earning</li>
-    </ul>
-    <a class="tier__cta tier__cta--basic" href="/profile">Register free</a>
-  </article>
-
-  <!-- TIER 02 · MEDIUM -->
-  <article class="tier tier--basic">
-    <span class="tier__badge">Tier 02 · Medium</span>
-    <h2 class="tier__name">Medium</h2>
-    <p class="tier__pitch">Early drops, priority queue on customs, VIP Discord access — the starter upgrade.</p>
-    <div class="tier__price">
-      <span class="cur">$</span><span class="amt">9.99</span><span class="per">/ month</span>
-    </div>
-    <p class="tier__alt">or <strong>3,000 tokens</strong></p>
-    <ul class="tier__feats">
-      <li>Early drops (48h head start)</li>
-      <li>Download all videos</li>
-      <li>VIP Discord channels</li>
-      <li><span class="em">Token multiplier ×1.5</span></li>
-    </ul>
-    <a class="tier__cta tier__cta--basic" href="#" data-tier="medium" data-price="9.99">Get Medium →</a>
-  </article>
-
-  <!-- TIER 03 · VIP -->
-  <article class="tier tier--vip-mid">
-    <span class="tier__badge">Tier 03 · VIP</span>
-    <h2 class="tier__name">VIP</h2>
-    <p class="tier__pitch">All private models, full 4K vault, personal concierge on Discord — the serious upgrade.</p>
-    <div class="tier__price">
-      <span class="cur">$</span><span class="amt">39.99</span><span class="per">/ month</span>
-    </div>
-    <p class="tier__alt">or <strong>15,000 tokens</strong></p>
-    <ul class="tier__feats">
-      <li>All private models · full archive</li>
-      <li>Download all videos · instant delivery</li>
-      <li>4K vault · 1,500+ cuts</li>
-      <li><span class="em">★ Personal concierge on Discord</span></li>
-      <li><span class="em">★ VIP Discord channels</span></li>
-      <li><span class="em">★ Token multiplier ×2</span></li>
-    </ul>
-    <a class="tier__cta tier__cta--vip" href="#" data-tier="vip" data-price="39.99">Get VIP →</a>
-  </article>
-
-  <!-- TIER 04 · VIP TOP · featured "MOST REQUESTED" -->
-  <article class="tier tier--vip tier--featured">
-    <span class="tier__badge">Tier 04 · VIP Top</span>
-    <h2 class="tier__name">VIP Top</h2>
-    <p class="tier__pitch">All private models, Download all videos, the 1,500-video 4K vault, token multiplier ×3.</p>
-    <div class="tier__price">
-      <span class="cur">$</span><span class="amt">99.99</span><span class="per">/ month</span>
-    </div>
-    <p class="tier__alt">or <strong>50,000 tokens</strong></p>
-    <ul class="tier__feats">
-      <li>★ 1-day Meet &amp; Greet · any model</li>
-      <li>★ Download all videos · instant delivery</li>
-      <li>★ Personal concierge on Discord</li>
-      <li>★ VR videos early access</li>
-      <li><span class="em">★ Token multiplier ×3</span></li>
-    </ul>
-    <a class="tier__cta tier__cta--elite" href="#" data-tier="vip-top" data-price="99.99">Become VIP Top →</a>
-  </article>
+    <a class="twerkhub-btn twerkhub-btn-ghost" href="/profile">Your profile →</a>
+  </div>
+  <div class="twerkhub-tiers-grid-4">
+    <article class="twerkhub-tier4-card">
+      <div class="twerkhub-tier4-label">/ TIER 01</div><h3>Basic</h3>
+      <div class="twerkhub-tier4-price twerkhub-tier4-price-free">FREE <span>· register</span></div>
+      <div class="twerkhub-tier4-alt">or 300 tokens</div>
+      <ul class="twerkhub-tier-list">
+        <li>✓ 590+ free videos</li><li>✓ 4 public playlists</li><li>✓ Discord general</li><li>✓ Basic token earning</li>
+      </ul>
+      <a class="twerkhub-btn twerkhub-btn-ghost" href="/profile">Register free</a>
+    </article>
+    <article class="twerkhub-tier4-card">
+      <div class="twerkhub-tier4-label">/ TIER 02</div><h3>Medium</h3>
+      <div class="twerkhub-tier4-price">$9.99 <span>/ mo</span></div>
+      <div class="twerkhub-tier4-alt">or 3,000 tokens</div>
+      <ul class="twerkhub-tier-list">
+        <li>✓ Early drops (48h head start)</li><li>✓ Download all videos</li><li>✓ VIP Discord channels</li><li>✓ Token multiplier ×1.5</li>
+      </ul>
+      
+    </article>
+    <article class="twerkhub-tier4-card twerkhub-tier4-card-vip">
+      <div class="twerkhub-tier4-ribbon twerkhub-tier4-ribbon-gold">★ TOP TIER</div>
+      <div class="twerkhub-tier4-label">/ TIER 04</div><h3>VIP Top</h3>
+      <div class="twerkhub-tier4-price">$99.99 <span>/ mo</span></div>
+      <div class="twerkhub-tier4-alt">or 50,000 tokens</div>
+      <ul class="twerkhub-tier-list">
+        <li>★ 1-day Meet &amp; Greet · any model</li><li>★ Download all videos · instant delivery</li><li>★ Personal concierge on Discord</li><li>★ VR videos early access</li><li>★ Token multiplier ×3</li>
+      </ul>
+      <a class="twerkhub-btn twerkhub-btn-gold tier__cta" data-tier="vip-top" data-price="99.99" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener nofollow ugc">Become VIP →</a>
+    </article>
+  </div>
 </section>
 
 <!-- ═══ FARM TOKENS · limited 30 days ═══ -->
@@ -2090,6 +2002,7 @@ a.twk-hero-affiliate-overlay,
 <script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
 
 <!-- Countdowns moved to /assets/twerkhub-countdowns.js (was inline, got truncated). -->
+<script defer src="/assets/twerkhub-countdowns.js?v=20260503-p2"></script>
 <script>
 /* Legacy inline countdowns driver — DISABLED. The dedicated file above handles it now. */
 (function(){
@@ -2124,7 +2037,7 @@ a.twk-hero-affiliate-overlay,
 <!-- twk-email-capture:END -->
 
 <!-- Cam-style overlay on the home HERO video rotator (top of page, NOT the playlist cards) -->
-<script defer src="/assets/twerkhub-cam-hero-overlay.js?v=20260508-d1-p2"></script>
+<script defer src="/assets/twerkhub-cam-hero-overlay.js?v=20260518-d2-p6-aggressive-shadow-removal"></script>
 
 <!-- Home retention engine: continue watching + smart quick nav + first-visit funnel + hover prefetch -->
 <script defer src="/assets/twerkhub-home-retention.js?v=20260508-ret2-distribution"></script>
@@ -2193,159 +2106,7 @@ a.twk-hero-affiliate-overlay,
   setTimeout(activate,500);setTimeout(activate,1500);
 })();
 </script>
-<script src="/assets/twk-thumb-to-video.js?v=20260513-fix4" defer></script>
+<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876541" defer></script>
 <script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
-
-<!-- ═══ CHECKOUT MODAL · Discord + Telegram dual-channel ═══ -->
-<style id="twk-checkout-modal-css">
-/* v5 NATIVE DIALOG 2026-05-06 — browser-native centering, immune to ancestor CSS */
-dialog.twk-checkout-modal{
-  /* Browser auto-centers <dialog> when opened with showModal() */
-  max-width:440px;width:calc(100vw - 48px);max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);
-  margin:auto;padding:0;overflow-y:auto;
-  background:linear-gradient(180deg,#13131c,#0a0a10);
-  border:1px solid rgba(255,255,255,.12);border-radius:18px;
-  color:#f4f4f8;box-shadow:0 30px 80px rgba(0,0,0,.7);
-  font-family:'Inter',ui-sans-serif,system-ui,sans-serif;
-}
-dialog.twk-checkout-modal::backdrop{
-  background:rgba(0,0,0,.85);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-}
-.twk-checkout-card{padding:28px 26px;text-align:center;position:relative}
-.twk-checkout-close{position:absolute;top:10px;right:14px;width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer;line-height:1}
-.twk-checkout-close:hover{background:rgba(255,255,255,.08)}
-.twk-checkout-kicker{font:800 11px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase;color:#e8c880;margin-bottom:10px}
-.twk-checkout-title{font:800 24px/1.2 'Playfair Display',serif;margin:0 0 6px;letter-spacing:-.01em}
-.twk-checkout-title em{color:#ff5fa3;font-style:italic}
-.twk-checkout-price{font:800 36px/1 'Playfair Display',serif;color:#fff;margin:14px 0 6px}
-.twk-checkout-price small{font-size:14px;color:rgba(255,255,255,.55);font-weight:400}
-.twk-checkout-body{font-size:14px;line-height:1.55;color:rgba(255,255,255,.72);margin:14px 0 20px}
-.twk-checkout-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.twk-checkout-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 22px;border-radius:14px;border:0;color:#fff;font:800 14px/1 'Inter',sans-serif;letter-spacing:.04em;text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .15s}
-.twk-checkout-btn--discord{background:linear-gradient(145deg,#5865F2,#3a44b8);box-shadow:0 12px 32px rgba(88,101,242,.35)}
-.twk-checkout-btn--discord:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(88,101,242,.45)}
-.twk-checkout-btn--telegram{background:linear-gradient(145deg,#2AABEE,#229ED9);box-shadow:0 12px 32px rgba(42,171,238,.35)}
-.twk-checkout-btn--telegram:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(42,171,238,.45)}
-.twk-checkout-foot{font-size:11px;color:rgba(255,255,255,.45);margin-top:14px;letter-spacing:.04em}
-</style>
-<dialog class="twk-checkout-modal" id="twk-checkout-modal" aria-label="Checkout">
-  <div class="twk-checkout-card">
-    <button class="twk-checkout-close" type="button" aria-label="Close">&times;</button>
-    <div class="twk-checkout-kicker" id="twk-checkout-tier-label">TIER</div>
-    <h2 class="twk-checkout-title">Activate <em id="twk-checkout-tier-name">Tier</em>.</h2>
-    <div class="twk-checkout-price"><span id="twk-checkout-price">$0</span><small>/ month</small></div>
-    <p class="twk-checkout-body">Pick your channel. Alexia activates your tier within minutes — direct line, no third party.</p>
-    <div class="twk-checkout-btns">
-      <a class="twk-checkout-btn twk-checkout-btn--discord" id="twk-checkout-discord" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener nofollow ugc">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.27 5.33A18.34 18.34 0 0 0 14.94 4l-.2.4a16.8 16.8 0 0 1 4.05 1.4 16.4 16.4 0 0 0-12.6 0A16.8 16.8 0 0 1 10.24 4.4L10.04 4a18.34 18.34 0 0 0-4.32 1.33C2.95 9.5 2.2 13.55 2.6 17.55a18.6 18.6 0 0 0 5.65 2.85l.45-.62a12.2 12.2 0 0 1-2-.97c.17-.12.34-.25.5-.38a13.16 13.16 0 0 0 11.6 0c.16.13.33.26.5.38-.62.37-1.3.7-2 .97l.45.62a18.6 18.6 0 0 0 5.65-2.85c.5-4.6-.77-8.6-3.13-12.22zM9.5 15.4c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13zm5 0c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13z"/></svg>
-        <span>Activate via Discord</span>
-      </a>
-      <a class="twk-checkout-btn twk-checkout-btn--telegram" id="twk-checkout-telegram" href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener nofollow ugc">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
-        <span>Activate via Telegram</span>
-      </a>
-    </div>
-    <div class="twk-checkout-foot">Auto-renews monthly · cancel anytime · 100% private</div>
-  </div>
-</dialog>
-<script>
-/* TWERKHUB · Tier checkout interceptor + bulletproof.
- * - Wraps the 3 paid tier CTAs (medium, premium, vip-top) so click opens a
- *   modal with Discord + Telegram options pre-filled with tier + price.
- * - The static <a href="https://discord.gg/..."> stays as a no-JS fallback.
- * - Re-runs on DOM mutations so any future re-render still gets handled. */
-(function(){
-  'use strict';
-  if (window.__twkCheckoutInit) return;
-  window.__twkCheckoutInit = true;
-  var TIER_NAMES = { medium:'Medium', premium:'Premium', 'vip-top':'VIP Top', vip:'VIP' };
-  var DISCORD = 'https://discord.gg/WWn8ZgQMjn';
-  var TELEGRAM = 'https://t.me/+0xNr69raiIlmYWRh';
-  function $(id){ return document.getElementById(id); }
-  var modal, dBtn, tBtn, labelEl, nameEl, priceEl, closeBtn;
-  function ensure(){
-    modal = $('twk-checkout-modal');
-    dBtn  = $('twk-checkout-discord');
-    tBtn  = $('twk-checkout-telegram');
-    labelEl = $('twk-checkout-tier-label');
-    nameEl  = $('twk-checkout-tier-name');
-    priceEl = $('twk-checkout-price');
-    closeBtn = modal && modal.querySelector('.twk-checkout-close');
-    if (modal && closeBtn && !closeBtn.__bound){
-      closeBtn.addEventListener('click', close);
-      // Native <dialog> ESC handling is automatic via 'cancel' event
-      modal.addEventListener('cancel', function(ev){ /* allow native ESC close */ });
-      // Click on backdrop closes (click target is the dialog itself, not children)
-      modal.addEventListener('click', function(ev){ if (ev.target === modal) close(); });
-      closeBtn.__bound = true;
-    }
-  }
-  function open(tier, price){
-    ensure();
-    if (!modal) return;
-    var name = TIER_NAMES[tier] || (tier ? tier.toUpperCase() : 'Tier');
-    if (labelEl) labelEl.textContent = 'TIER · ' + name;
-    if (nameEl)  nameEl.textContent  = name;
-    if (priceEl) priceEl.textContent = price ? ('$' + price) : 'Custom';
-    // Add tier+price as hash on Discord/Telegram (the platforms ignore it but
-    // it shows in browser history and lets Alexia see what tier they came from
-    // via URL referrer when chatting in support tools).
-    var qs = '?tier=' + encodeURIComponent(tier || '') + (price ? '&price=' + encodeURIComponent(price) : '');
-    if (dBtn) dBtn.setAttribute('href', DISCORD + qs);
-    if (tBtn) tBtn.setAttribute('href', TELEGRAM + qs);
-    // Native <dialog> showModal: browser handles centering, focus, ESC, backdrop
-    if (typeof modal.showModal === 'function' && !modal.open) {
-      try { modal.showModal(); } catch(_){}
-    } else {
-      // Fallback for ancient browsers (shouldn't be needed in 2026)
-      modal.setAttribute('open', '');
-    }
-  }
-  function close(){
-    if (!modal) return;
-    if (typeof modal.close === 'function' && modal.open) {
-      try { modal.close(); } catch(_){}
-    } else {
-      modal.removeAttribute('open');
-    }
-  }
-  function bind(el){
-    if (!el || el.__twkCheckoutBound) return;
-    var tier = el.getAttribute('data-tier');
-    var price = el.getAttribute('data-price');
-    if (!tier) return;
-    el.addEventListener('click', function(ev){
-      ev.preventDefault();
-      try { open(tier, price); } catch(_){}
-      // SAFETY: if the modal didn't actually become visible within 200ms,
-      // fall back to direct Discord navigation so the user is never stuck.
-      setTimeout(function(){
-        var m = document.getElementById('twk-checkout-modal');
-        if (!m || !m.open) {
-          window.open(DISCORD + '?tier=' + encodeURIComponent(tier), '_blank', 'noopener');
-        }
-      }, 200);
-    });
-    el.__twkCheckoutBound = true;
-  }
-  function scan(){
-    var ctas = document.querySelectorAll('.tier__cta[data-tier]');
-    for (var i = 0; i < ctas.length; i++) bind(ctas[i]);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan, { once: true });
-  else scan();
-  if (typeof MutationObserver !== 'undefined') {
-    new MutationObserver(function(muts){
-      var any = false;
-      muts.forEach(function(m){ if (m.addedNodes && m.addedNodes.length) any = true; });
-      if (any) scan();
-    }).observe(document.body, { childList: true, subtree: true });
-  }
-  window.TwkCheckout = { open: open, close: close };
-})();
-</script>
-
 </body>
 </html>
-

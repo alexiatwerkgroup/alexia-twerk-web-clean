@@ -119,25 +119,6 @@ a.twk-hero-affiliate-overlay,
 }
 </style>
 <link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
-
-<script data-twk="gray-thumb-killer-v2">
-(function(){
-function kill(){
- document.querySelectorAll('img').forEach(function(img){
-   var bad=!img.src||img.naturalWidth<=120||/data:image|thumb-unavailable|default\.jpg|gray/i.test(img.src);
-   if(!bad)return;
-   var card=img.closest('.vcard,.video-card,.card-item,.mix');
-   if(card){card.style.display='none';}
- });
-}
-window.addEventListener('load',function(){
- setTimeout(kill,1200);
- setTimeout(kill,3000);
- setTimeout(kill,6000);
-});
-})();
-</script>
-
 </head>
 <body class="twerkhub-page twerkhub-ph-theme">
 <a href="#main" class="twk-sr-only">Skip to content</a>
@@ -206,7 +187,7 @@ window.addEventListener('load',function(){
   setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
-  loadOnce('/assets/twk-tokens-v3.js?v=20260513-fix4','twk-loader-token-system');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260513-blindaje-v62','twk-loader-token-system');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
 })();
 </script>
@@ -608,7 +589,7 @@ window.addEventListener('load',function(){
 </aside>
 <!-- twk-related-auto:END -->
 
-<script src="/assets/twk-thumb-to-video.js?v=20260513-fix4" defer></script>
+<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
 <script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
 </body></html>
 

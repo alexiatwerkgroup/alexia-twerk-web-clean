@@ -7,7 +7,7 @@
 export function computeTier(tokens) {
   const t = parseInt(tokens, 10) || 0;
   if (t >= 50000) return 'vip';
-  if (t >= 12000)  return 'premium';
+  if (t >= 9000)  return 'premium';
   if (t >= 3000)  return 'medium';
   return 'basic';
 }

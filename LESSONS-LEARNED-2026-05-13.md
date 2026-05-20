@@ -257,7 +257,7 @@ Regla: el `.twk-age-overlay` siempre gana porque tiene que tapar la UI de YouTub
 | Bug | Síntoma | Root cause | Fix |
 |---|---|---|---|
 | Black screen 1s YT + black | Paywall no aparece, solo negro | `TwkAgeGate` undefined por truncamiento línea 282 | Completar `addBlockedDecoration`, `injectStyle`, `showOverlay`, `hideOverlay` y exportar API completa |
-| Tokens=0, founder no detectado | Account muestra 0 tokens, sin VIP TOP | localStorage `alexia-auth-v3` sin email o tier no se lee | Founder email match + `Math.max()` entre localStorage/D1/localState |
+| Tokens=0, founder no detectado | Account muestra 0 tokens, sin PREMIUM | localStorage `alexia-auth-v3` sin email o tier no se lee | Founder email match + `Math.max()` entre localStorage/D1/localState |
 | Streak resetea 3→1 | Día siguiente arranca en 1 en vez de 4 | Self-heal no se ejecutaba (script roto por syntax error en otro JS) | `twk-self-heal.js` corre cada 2-3s + lee múltiples sources |
 | Creators videos minúsculos | Thumbs colapsadas a tamaño chico con autoplay | `attachClickHandler` swappeaba img→iframe inline | Disable swap, redirigir cards a `/playlist/[slug]` |
 | Creators duplicados | Mismo video aparece 3-4 veces en grid | Index fuente tenía duplicados por slug/nombre | `dedupeCreatorCards()` filtra por href + VID + nombre normalizado |

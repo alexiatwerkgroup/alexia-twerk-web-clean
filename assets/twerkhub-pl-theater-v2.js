@@ -105,13 +105,7 @@
   // only runs when the modal opens, but we need badge styles immediately on
   // page load for the viewed marker to render correctly).
   function injectStyle(){
-    // v2 always wins: if a stale style tag exists WITHOUT our zoom CSS (injected
-    // by an older theater.js), nuke it and re-inject with the full v2 ruleset.
-    var _existing = document.getElementById('twk-pl-theater-style');
-    if (_existing){
-      if (_existing.textContent.indexOf('scale(1.10)') > -1) return; // already v2
-      _existing.parentNode.removeChild(_existing); // remove stale old-theater CSS
-    }
+    if (document.getElementById('twk-pl-theater-style')) return;
     var st = document.createElement('style');
     st.id = 'twk-pl-theater-style';
     st.textContent = [
@@ -126,22 +120,12 @@
       '#twk-pl-theater-close:hover{background:#ff2d87}',
       /* Viewed badge: COMPACT green pill, absolutely positioned over card top-left.
          !important on position rules so flex/grid parents can\'t push it to a new row. */
-      '.twk-viewed-badge{position:absolute!important;top:8px!important;left:8px!important;right:auto!important;bottom:auto!important;background:#1ee08f!important;color:#03200e!important;font:900 9.5px/1 ui-sans-serif,system-ui,-apple-system,sans-serif!important;letter-spacing:.06em!important;padding:4px 10px!important;border-radius:999px!important;z-index:12!important;pointer-events:none!important;text-transform:uppercase!important;white-space:nowrap!important;display:inline-block!important;line-height:1!important;width:auto!important;height:auto!important;margin:0!important;border:0!important}',
+      '.twk-viewed-badge{position:absolute!important;top:6px!important;left:6px!important;right:auto!important;bottom:auto!important;background:linear-gradient(145deg,#3ddca0,#28a877)!important;color:#06140e!important;font:800 9px/1 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto!important;letter-spacing:.16em!important;padding:4px 8px!important;border-radius:5px!important;z-index:9!important;pointer-events:none;text-transform:uppercase!important;box-shadow:0 2px 6px rgba(0,0,0,.45)!important;white-space:nowrap!important;display:inline-block!important;line-height:1!important;width:auto!important;height:auto!important;margin:0!important;border:0!important}',
+      '.twk-viewed-badge::before{content:"\\2713 ";font-weight:900}',
       /* Force parent positioning so the absolute badge anchors correctly */
       '.vcard.twk-viewed,.rk-item.twk-viewed{position:relative!important}',
-      /* Oscurecido sutil de miniaturas ya vistas */
-      '.vcard.twk-viewed .vthumb img,.rk-item.twk-viewed .rk-thumb img,.rk-item.twk-viewed img{opacity:.55!important;filter:grayscale(.45)!important;transition:opacity .25s,filter .25s}',
-      /* ── Player controls bar ─────────────────────────────────────────────── */
-      '#twk-player-controls{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:18;display:flex;gap:4px;align-items:center;padding:5px 10px;background:rgba(0,0,0,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:999px;border:1px solid rgba(255,255,255,.13);box-shadow:0 4px 18px rgba(0,0,0,.5);opacity:.85;transition:opacity .22s;pointer-events:auto}',
-      '#twkHeroWrap:hover #twk-player-controls,.twerkhub-pl-player-wrap:hover #twk-player-controls{opacity:1}',
-      '.twk-ctrl-btn{background:transparent;border:0;color:#fff;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .18s,transform .12s;-webkit-appearance:none;appearance:none;padding:0;flex-shrink:0}',
-      '.twk-ctrl-btn svg{width:18px;height:18px;display:block;pointer-events:none}',
-      '.twk-ctrl-btn:hover{background:rgba(255,255,255,.18);transform:scale(1.1)}',
-      '.twk-ctrl-btn:active{transform:scale(.93)}',
-      /* ── Iframe zoom: scale 1.10 crops corner watermarks — hero + playlist players */
-      '#twkHeroIframe,#twerkhub-pl-player{transform:scale(1.10);transform-origin:top center;width:100%!important;height:100%!important}',
-      /* Ensure wrap clips the zoomed iframe edges */
-      '#twkHeroWrap,.twerkhub-pl-player-wrap{overflow:hidden!important;position:relative!important}'
+      /* Subtle dimming of viewed content (the part the user said works fine — keeping intact) */
+      '.vcard.twk-viewed .vthumb img,.rk-item.twk-viewed .rk-thumb img,.rk-item.twk-viewed img{opacity:.55!important;filter:grayscale(.45)!important;transition:opacity .25s,filter .25s}'
     ].join('\n');
     document.head.appendChild(st);
   }
@@ -375,18 +359,18 @@
     if (!el.querySelector(':scope > .twk-viewed-badge')) {
       var b = document.createElement('span');
       b.className = 'twk-viewed-badge';
-      b.textContent = '✓VIEWED';
+      b.textContent = 'Viewed';
       el.appendChild(b);
     }
   }
   function applyViewedClasses(){
     var v = getViewed();
+    var keys = Object.keys(v);
+    if (!keys.length) return;
     var els = document.querySelectorAll('[data-vid]');
     for (var i = 0; i < els.length; i++) {
-      var el = els[i];
-      var vid = el.getAttribute('data-vid');
-      // Viewed badge only for watched vids
-      if (vid && v[vid]) addViewedDecoration(el);
+      var vid = els[i].getAttribute('data-vid');
+      if (vid && v[vid]) addViewedDecoration(els[i]);
     }
   }
 
@@ -685,144 +669,10 @@
     send(400, {event:'command', func:'addEventListener', args:['onStateChange']});
   }
 
-  // Watch #twkHeroWrap[data-vid] for SEO pages (latina-porn, gothic-porn, etc.)
-  // that use twkHeroWrap/twkHeroIframe instead of #twerkhub-pl-player
-  function watchTwkHeroWrap(){
-    var wrap = document.getElementById('twkHeroWrap');
-    if (!wrap) return;
-    var iv = wrap.getAttribute('data-vid');
-    if (iv) markViewed(iv);
-    if (typeof MutationObserver !== 'undefined') {
-      new MutationObserver(function(ms){
-        ms.forEach(function(m){
-          if (m.attributeName === 'data-vid') {
-            var vid = wrap.getAttribute('data-vid');
-            if (vid) { markViewed(vid); setTimeout(applyViewedClasses, 100); }
-          }
-        });
-      }).observe(wrap, {attributes: true, attributeFilter: ['data-vid']});
-    }
-  }
-
-  // ── Player controls bar (seek ±10s, mute, fullscreen) ──────────────────────
-  // Injected on pages that have #twkHeroWrap/#twkHeroIframe (SEO pages)
-  // OR #twerkhub-pl-player inside .twerkhub-pl-player-wrap (playlist pages).
-  // Uses YouTube postMessage API — no YT.Player wrapper needed.
-  function injectPlayerControls(){
-    var wrap, iframeId;
-    var heroWrap = document.getElementById('twkHeroWrap');
-    var plPlayer = document.getElementById('twerkhub-pl-player');
-    if (heroWrap) {
-      wrap = heroWrap;
-      iframeId = 'twkHeroIframe';
-    } else if (plPlayer) {
-      wrap = plPlayer.closest('.twerkhub-pl-player-wrap') || plPlayer.parentNode;
-      iframeId = 'twerkhub-pl-player';
-    } else {
-      return; // no player on this page
-    }
-    if (!wrap || wrap.querySelector('#twk-player-controls')) return;
-
-    var ctTime  = 0;   // currentTime tracked from postMessage infoDelivery
-    var ctMuted = false;
-
-    function pCmd(func, args){
-      var f = document.getElementById(iframeId);
-      if (!f || !f.contentWindow) return;
-      try { f.contentWindow.postMessage(JSON.stringify({event:'command',func:func,args:args||[]}), '*'); } catch(_){}
-    }
-
-    // SVG icon strings (no external deps)
-    var BACK_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6 8.5 6V6l-8.5 6z"/></svg>';
-    var FWD_SVG  = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>';
-    var MUTE_ON  = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
-    var MUTE_OFF = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
-    var FS_SVG   = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>';
-
-    var bar = document.createElement('div');
-    bar.id = 'twk-player-controls';
-    bar.innerHTML =
-      '<button class="twk-ctrl-btn" id="twk-ctrl-back" title="Rewind 10s" aria-label="Rewind 10 seconds">' + BACK_SVG + '</button>' +
-      '<button class="twk-ctrl-btn" id="twk-ctrl-fwd" title="Forward 10s" aria-label="Forward 10 seconds">' + FWD_SVG + '</button>' +
-      '<button class="twk-ctrl-btn" id="twk-ctrl-mute" title="Mute" aria-label="Mute/Unmute"><svg viewBox="0 0 24 24" fill="currentColor">' + MUTE_ON + '</svg></button>' +
-      '<button class="twk-ctrl-btn" id="twk-ctrl-fs" title="Fullscreen" aria-label="Fullscreen">' + FS_SVG + '</button>';
-    wrap.appendChild(bar);
-
-    var muteBtn = bar.querySelector('#twk-ctrl-mute');
-    function updateMuteIco(){
-      if (!muteBtn) return;
-      var svg = muteBtn.querySelector('svg');
-      if (svg) svg.innerHTML = ctMuted ? MUTE_OFF : MUTE_ON;
-      muteBtn.setAttribute('title', ctMuted ? 'Unmute' : 'Mute');
-    }
-
-    bar.querySelector('#twk-ctrl-back').addEventListener('click', function(e){
-      e.preventDefault(); e.stopPropagation();
-      pCmd('seekTo', [Math.max(0, ctTime - 10), true]);
-    });
-    bar.querySelector('#twk-ctrl-fwd').addEventListener('click', function(e){
-      e.preventDefault(); e.stopPropagation();
-      pCmd('seekTo', [ctTime + 10, true]);
-    });
-    muteBtn.addEventListener('click', function(e){
-      e.preventDefault(); e.stopPropagation();
-      ctMuted = !ctMuted;
-      pCmd(ctMuted ? 'mute' : 'unMute');
-      if (!ctMuted) pCmd('setVolume', [100]);
-      updateMuteIco();
-    });
-    bar.querySelector('#twk-ctrl-fs').addEventListener('click', function(e){
-      e.preventDefault(); e.stopPropagation();
-      if (!document.fullscreenElement){
-        if (wrap.requestFullscreen) wrap.requestFullscreen();
-        else if (wrap.webkitRequestFullscreen) wrap.webkitRequestFullscreen();
-      } else {
-        if (document.exitFullscreen) document.exitFullscreen();
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-      }
-    });
-
-    // Track currentTime / muted state from YouTube postMessage
-    if (!window.__twkCtrlMsgListener){
-      window.__twkCtrlMsgListener = true;
-      window.addEventListener('message', function(ev){
-        if (ev.origin !== 'https://www.youtube.com' && ev.origin !== 'https://www.youtube-nocookie.com') return;
-        var d; try { d = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data; } catch(_){ return; }
-        if (!d) return;
-        if (d.event === 'infoDelivery' || d.event === 'apiInfoDelivery'){
-          var info = d.info || {};
-          if (typeof info.currentTime === 'number') ctTime = info.currentTime;
-          if (typeof info.muted === 'boolean' && info.muted !== ctMuted){
-            ctMuted = info.muted; updateMuteIco();
-          }
-        }
-      });
-    }
-
-    // Subscribe so YouTube pushes infoDelivery updates (gives us currentTime)
-    function subCtrl(){
-      var f = document.getElementById(iframeId);
-      if (!f || !f.contentWindow) return;
-      setTimeout(function(){ try { f.contentWindow.postMessage(JSON.stringify({event:'listening',id:3,channel:'twk_ctrl'}), '*'); } catch(_){} }, 0);
-      setTimeout(function(){ try { f.contentWindow.postMessage(JSON.stringify({event:'command',func:'addEventListener',args:['onStateChange']}), '*'); } catch(_){} }, 220); }
-    setTimeout(subCtrl, 900);
-
-    // Re-subscribe on video swap (src attr change)
-    var IfRef = document.getElementById(iframeId);
-    if (IfRef && typeof MutationObserver !== 'undefined'){
-      new MutationObserver(function(){
-        ctTime = 0; ctMuted = false; updateMuteIco();
-        setTimeout(subCtrl, 900);
-      }).observe(IfRef, {attributes:true, attributeFilter:['src']});
-    }
-  }
-
   function init(){
     injectStyle();
     installInlineErrorListener();
     patchInlinePlayer();
-    watchTwkHeroWrap();
-    injectPlayerControls();
     applyViewedClasses();
     // Only add click listener if there's NO inline player on this page
     // (Pages like /playlist/ have their own swap() handler and don't need the modal)

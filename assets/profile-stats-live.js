@@ -30,7 +30,7 @@
   window.__twkProfileStatsLive = true;
 
   // Must match TIER_THRESHOLDS in /assets/token-system.js
-  var TIERS = { medium: 3000, premium: 12000, vip: 50000 };
+  var TIERS = { medium: 3000, premium: 9000, vip: 50000 };
 
   // Canonical dotted keys written by token-system.js (the source of truth).
   // The legacy single-object key "alexia_tokens_v1" is kept as a fallback
