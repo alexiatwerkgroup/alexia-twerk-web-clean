@@ -33,10 +33,7 @@ $criticalJS = @(
     "twerkhub-auth.js",
     "twk-bot-detect.js",
     "twk-guardian.js",
-    "twk-kill-pink-pills.js",
-    "twerkhub-age-gate.js",
-    "twerkhub-pl-theater-v2.js",
-    "twk-yt-gate.js"
+    "twk-kill-pink-pills.js"
 )
 foreach ($f in $criticalJS) {
     $path = Join-Path $assetsDir $f

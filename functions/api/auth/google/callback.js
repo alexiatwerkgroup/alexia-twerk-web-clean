@@ -122,7 +122,7 @@ export async function onRequest(context) {
         const taken = await env.DB.prepare('SELECT id FROM profiles WHERE LOWER(username) = LOWER(?)').bind(username).first();
         if (!taken) break;
         attempt++;
-        username = baseUsername + Math.floor(Math.random() * 12000 + 1000);
+        username = baseUsername + Math.floor(Math.random() * 9000 + 1000);
       }
       await env.DB.batch([
         env.DB.prepare('INSERT INTO users (id, email, password_hash, email_verified) VALUES (?, ?, ?, 1)').bind(userId, email, passwordHash),

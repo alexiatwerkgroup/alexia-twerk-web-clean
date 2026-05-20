@@ -69,7 +69,7 @@
   //   Medium  = 3,000–8,999   ($9.99/mo  or "or 3,000 tokens" unlock)
   //   Premium = 9,000–49,999  ($29.99/mo or "or 9,000 tokens" unlock)
   //   VIP Top = 50,000+       ($99.99/mo or "or 50,000 tokens" unlock — ~6 months daily)
-  var TIER_THRESHOLDS = { medium: 3000, premium: 12000, vip: 50000 };
+  var TIER_THRESHOLDS = { medium: 3000, premium: 9000, vip: 50000 };
 
   function N(k, dflt){ try { var v = localStorage.getItem(k); return v == null ? dflt : JSON.parse(v); } catch(_){ return dflt; } }
   function S(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(_){} }

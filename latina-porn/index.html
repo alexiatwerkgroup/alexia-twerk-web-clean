@@ -79,6 +79,17 @@
 }
 </style>
 <link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+
+<!-- TWK VIEWED THUMBNAILS PATCH v1: visual-only, no player/embed changes -->
+<style id="twk-viewed-thumbnails-v1">
+.vcard.twk-viewed,.card.twk-viewed,.mini-card.twk-viewed,.rk-item.twk-viewed{position:relative;}
+.twk-viewed .vthumb img,.twk-viewed .thumb img,.twk-viewed .smart-card-thumb img,.twk-viewed .autoplay-thumb img{filter:grayscale(1) brightness(.54) contrast(.94)!important;opacity:.72!important;transition:filter .18s ease,opacity .18s ease!important;}
+.twk-viewed .vthumb,.twk-viewed .thumb,.twk-viewed .smart-card-thumb,.twk-viewed .autoplay-thumb{position:relative!important;}
+.twk-viewed .vthumb::before,.twk-viewed .thumb::before,.twk-viewed .smart-card-thumb::before,.twk-viewed .autoplay-thumb::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.45));}
+.twk-viewed-badge{position:absolute;left:10px;top:10px;z-index:5;display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:rgba(3,5,8,.82);border:1px solid rgba(255,255,255,.18);color:#fff;font:800 10px/1 system-ui,-apple-system,Segoe UI,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 8px 22px rgba(0,0,0,.28);pointer-events:none;}
+.twk-viewed-badge::before{content:"✓";font-size:10px;color:#8affb8;}
+.twk-viewed:hover .vthumb img,.twk-viewed:hover .thumb img,.twk-viewed:hover .smart-card-thumb img,.twk-viewed:hover .autoplay-thumb img{filter:grayscale(.72) brightness(.72) contrast(.98)!important;opacity:.82!important;}
+</style>
 </head>
 <body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater twerkhub-ph-theme" data-page="playlist-index">
 <a href="#main" class="twk-sr-only">Skip to content</a>
@@ -270,5 +281,44 @@ document.addEventListener('click', function(ev) {
     <a class="vcard reveal" data-hot="1" data-vid="kNfeGYZnpXc" data-number="#018" href="#" role="listitem" aria-label="Latin Models Vault · Cut 04"><div class="vthumb"><img height="360" width="480" src="https://i.ytimg.com/vi/kNfeGYZnpXc/hqdefault.jpg" alt="#018" decoding="async" loading="lazy" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)'}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/kNfeGYZnpXc/hqdefault.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div><div class="card-meta vmeta"><span class="video-number vtitle">#018</span></div></a>
   </div>
 </section>
+
+<!-- TWK VIEWED THUMBNAILS PATCH v1: stores only local viewed IDs/hrefs -->
+<script id="twk-viewed-thumbnails-js-v1">
+(function(){
+  if(window.__twkViewedThumbsV1)return; window.__twkViewedThumbsV1=true;
+  var KEY='twk_viewed_video_ids_v1';
+  function read(){try{var v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]}}
+  function write(v){try{localStorage.setItem(KEY,JSON.stringify(v.slice(-900)))}catch(e){}}
+  function normHref(h){try{return new URL(h,location.href).pathname.replace(/\/index\.html$/,'/')}catch(e){return h||''}}
+  function keyFor(el){
+    if(!el)return'';
+    var d=el.getAttribute&&el.getAttribute('data-vid');
+    if(d)return 'vid:'+d;
+    var child=el.querySelector&&el.querySelector('[data-vid]');
+    if(child&&child.getAttribute('data-vid'))return 'vid:'+child.getAttribute('data-vid');
+    var a=(el.matches&&el.matches('a[href]'))?el:(el.querySelector&&el.querySelector('a[href]'));
+    var h=a&&a.getAttribute('href');
+    if(h&&h!=='#')return 'href:'+normHref(h);
+    return'';
+  }
+  function thumbFor(card){return card&&(card.querySelector('.vthumb,.thumb,.smart-card-thumb,.autoplay-thumb')||card);}
+  function mark(card){
+    if(!card||card.classList.contains('twk-viewed'))return;
+    card.classList.add('twk-viewed');
+    var t=thumbFor(card);
+    if(t&&!t.querySelector('.twk-viewed-badge')){var b=document.createElement('span');b.className='twk-viewed-badge';b.textContent='Viewed';t.appendChild(b);}
+  }
+  function cards(){return Array.prototype.slice.call(document.querySelectorAll('.vcard[data-vid],.rk-item[data-vid],.card,.mini-card,a[data-vid]'));}
+  function apply(){var seen=read();cards().forEach(function(c){var k=keyFor(c);if(k&&seen.indexOf(k)>-1)mark(c);});}
+  function save(k){if(!k)return;var seen=read();if(seen.indexOf(k)===-1){seen.push(k);write(seen);}apply();}
+  document.addEventListener('click',function(ev){
+    var card=ev.target.closest&&ev.target.closest('.vcard[data-vid],.rk-item[data-vid],a[data-vid],.card,.mini-card');
+    if(card)save(keyFor(card));
+  },true);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+  setTimeout(apply,600);setTimeout(apply,1800);
+})();
+</script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                  
