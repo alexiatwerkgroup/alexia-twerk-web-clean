@@ -43,7 +43,12 @@
     '/korean-girls-kpop-twerk/',
     '/try-on-hot-leaks/',
     '/sav-twerk-playlist/',
-    '/playlist/'                        // individual video pages inside the 5 main playlists
+    '/playlist/',                       // individual video pages inside the 5 main playlists
+    '/latina-porn/',
+    '/gothic-porn/',
+    '/massage-porn/',
+    '/twerk-porn/',
+    '/russian-porn/',
   ];
   // Temporary deny-list (paywall OFF) — Sav playlist + 49 individual Sav videos
   // until Google indexes them. Remove once GSC confirms indexation.
@@ -162,18 +167,11 @@
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-label', 'Premium content paywall');
     overlay.style.cssText =
-      'position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.96));' +
+      'position:absolute;inset:0;background:radial-gradient(900px 600px at 20% 10%,rgba(255,46,99,.18),transparent 55%),linear-gradient(180deg,#0a0a10,#13131c);' +
       'display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;' +
       'color:#fff;z-index:20;padding:24px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;' +
       'box-sizing:border-box;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);';
-    overlay.innerHTML =
-      '<div style="font-size:42px;margin-bottom:10px;line-height:1;">🔒</div>' +
-      '<div style="font-size:18px;font-weight:700;margin-bottom:6px;">Premium · 18+ content</div>' +
-      '<div style="font-size:13px;opacity:.85;margin-bottom:18px;max-width:380px;line-height:1.5;">' +
-        'This video is age-restricted on YouTube. Become a Twerkhub member to verify and watch without leaving the site.' +
-      '</div>' +
-      '<a href="/membership.html" style="background:#ffd700;color:#000;padding:10px 24px;border-radius:6px;font-weight:700;text-decoration:none;font-size:14px;letter-spacing:.3px;">Become a member</a>' +
-      '<a href="/account.html" style="color:#ccc;margin-top:12px;font-size:12px;text-decoration:underline;">Already a member? Sign in</a>';
+    overlay.innerHTML = '<div style="font-size:52px;margin-bottom:10px">&#x1F51E;</div>' + '<div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#e8c880;font-weight:700;margin-bottom:6px">+18 &middot; Locked content</div>' + '<div style="font-size:22px;font-weight:800;margin-bottom:8px;color:#f4f4f8">Private Content</div>' + '<div style="font-size:13px;opacity:.75;margin-bottom:18px;max-width:360px;line-height:1.5;color:rgba(255,255,255,.72)">To unlock, contact Alexia on Discord or Telegram.</div>' + '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">' + '<a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener nofollow ugc" style="padding:13px 22px;border-radius:14px;color:#fff;font-weight:800;font-size:13px;text-decoration:none;background:linear-gradient(145deg,#5865F2,#3a44b8)">Discord</a>' + '<a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener nofollow ugc" style="padding:13px 22px;border-radius:14px;color:#fff;font-weight:800;font-size:13px;text-decoration:none;background:linear-gradient(145deg,#2AABEE,#229ED9)">Telegram</a>' + '</div>';
     parent.appendChild(overlay);
   }
 
@@ -191,53 +189,122 @@
     el.appendChild(badge);
   }
 
-  // ─────────────────────────────────────────────────────────────────
-  // Main: scan iframes + thumbs, apply paywall to blocked ones
-  // ─────────────────────────────────────────────────────────────────
-  function scan() {
-    if (isMember()) return;
-    // Iframes de YouTube
-    var iframes = document.querySelectorAll('iframe[src*="youtube.com/embed/"], iframe[src*="youtube-nocookie.com/embed/"]');
-    Array.prototype.forEach.call(iframes, function (ifr) {
-      var vid = extractVideoId(ifr.getAttribute('src'));
-      if (!vid || !classification) return;
-      if (classification[vid] === 'blocked') {
-        applyIframePaywall(ifr, vid);
-      }
-    });
-    // Thumbnails con data-vid
-    var thumbs = document.querySelectorAll('[data-vid]');
-    Array.prototype.forEach.call(thumbs, function (el) {
-      var vid = el.getAttribute('data-vid');
-      if (!vid || !classification) return;
-      if (classification[vid] === 'blocked') {
-        applyThumbBadge(el);
-      }
-    });
-  }
-
-  function loadClassification() {
-    return fetch(CLASSIFICATION_URL)
+  // Fetch + cache the classification JSON
+  var classificationCache = null;
+  function fetchClassifications(callback) {
+    if (classificationCache) return callback(classificationCache);
+    fetch(CLASSIFICATION_URL)
       .then(function (r) { return r.json(); })
-      .then(function (j) { classification = j; })
-      .catch(function () { classification = {}; });
+      .then(function (data) {
+        classificationCache = data || {};
+        callback(classificationCache);
+      })
+      .catch(function (err) {
+        try { console.error('[twk-paywall-guard] classification fetch failed:', err); } catch (_) {}
+        callback({});
+      });
   }
 
-  function init() {
-    loadClassification().then(function () {
-      scan();
-      if (window.MutationObserver) {
-        var mo = new MutationObserver(function () { scan(); });
-        mo.observe(document.body, { childList: true, subtree: true });
-      }
-      setTimeout(scan, 1500);
-      setTimeout(scan, 4000);
+
+
+  function findVideoIdFromElement(el) {
+    if (!el) return null;
+    var direct = el.getAttribute && (el.getAttribute('data-vid') || el.getAttribute('data-video-id') || el.getAttribute('data-youtube-id'));
+    if (direct && /^[\w-]{11}$/.test(direct)) return direct;
+
+    var href = el.getAttribute && (el.getAttribute('href') || el.getAttribute('data-href') || el.getAttribute('data-url'));
+    var fromHref = extractVideoId(href);
+    if (fromHref) return fromHref;
+
+    var img = (el.tagName && el.tagName.toLowerCase() === 'img') ? el : (el.querySelector && el.querySelector('img'));
+    if (img) {
+      var src = img.getAttribute('src') || img.getAttribute('data-src') || img.getAttribute('data-original') || '';
+      var m = String(src).match(/ytimg\.com\/vi\/([\w-]{11})\//);
+      if (m) return m[1];
+    }
+
+    var nested = el.querySelector && el.querySelector('[data-vid], [data-video-id], iframe[src*="youtube.com/embed"], img[src*="ytimg.com/vi/"]');
+    if (nested && nested !== el) {
+      if (nested.tagName && nested.tagName.toLowerCase() === 'iframe') return extractVideoId(nested.getAttribute('src'));
+      return findVideoIdFromElement(nested);
+    }
+    return null;
+  }
+
+  function restorePublicStaticLock(box, vid) {
+    if (!box || !vid || box.querySelector('iframe')) return;
+    box.classList.remove('vd-locked');
+    box.classList.add('vd-player');
+    box.innerHTML = '<iframe width="100%" height="480" src="https://www.youtube.com/embed/' + vid + '?start=5&rel=0&modestbranding=1&playsinline=1" title="TWERKHUB video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+  }
+
+  function protectStaticLock(box, vid) {
+    if (!box || !vid) return;
+    if (box.querySelector('.vd-lock-modal')) return;
+    box.classList.add('vd-locked');
+    box.innerHTML = '<div class="vd-lock-modal"><div class="vd-lock-padlock" aria-hidden="true" style="font-size:54px;margin-bottom:8px">🔞</div><div class="vd-lock-kicker">+18 · Locked content</div><h2 class="vd-lock-title">This video is <em>locked</em>.</h2><p class="vd-lock-body"><strong>To unlock, contact Alexia on Discord or Telegram.</strong> YouTube blocks this video from playing outside their platform because it is age-restricted. The uncensored version comes from Alexia directly, in private.</p><div class="vd-lock-cta"><a class="vd-lock-btn discord" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener nofollow ugc">Discord</a><a class="vd-lock-btn telegram" href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener nofollow ugc">Telegram</a></div><div class="vd-lock-footer">Free invite · 18+ only · Private</div></div>';
+  }
+
+  function reconcileStaticLocks(classifications) {
+    // Safety repair: if an old bad build left a public video statically locked,
+    // unlock it at runtime. Blocked IDs remain protected.
+    document.querySelectorAll('.vd-player[data-vid], .vd-locked[data-vid]').forEach(function (box) {
+      var vid = box.getAttribute('data-vid');
+      if (!vid) return;
+      if (classifications[vid] === 'blocked') protectStaticLock(box, vid);
+      else restorePublicStaticLock(box, vid);
     });
   }
 
+  function badgeAllBlockedThumbs(classifications) {
+    var selector = [
+      '[data-vid]', '[data-video-id]',
+      'a[href*="youtube.com/watch"]', 'a[href*="youtu.be/"]',
+      'a[href*="/hottest-cosplay-fancam/"]',
+      '.vthumb', '.rk-thumb', '.rh-thumb', '.twk-rcard', '.twerkhub-fp-thumb'
+    ].join(',');
+
+    document.querySelectorAll(selector).forEach(function (el) {
+      var vid = findVideoIdFromElement(el);
+      if (vid && classifications[vid] === 'blocked') applyThumbBadge(el);
+    });
+  }
+
+  // Main init
+  function init() {
+    if (isMember()) {
+      try { console.log('[twk-paywall-guard] member detected — paywall bypassed'); } catch (_) {}
+      return;
+    }
+
+    fetchClassifications(function (classifications) {
+      // Find all YouTube embeds
+      var iframes = document.querySelectorAll('iframe[src*="youtube.com/embed"]');
+      iframes.forEach(function (iframe) {
+        var vid = extractVideoId(iframe.getAttribute('src'));
+        if (vid && classifications[vid] === 'blocked') {
+          applyIframePaywall(iframe, vid);
+        }
+      });
+
+      // Safety repair for individual pages + robust thumbnail locks.
+      // Only IDs marked "blocked" in youtube-age-classification.json get +18 lock/badge.
+      reconcileStaticLocks(classifications);
+      badgeAllBlockedThumbs(classifications);
+      if (!window.__twkPaywallObserver && typeof MutationObserver !== 'undefined') {
+        window.__twkPaywallObserver = true;
+        new MutationObserver(function () {
+          badgeAllBlockedThumbs(classifications);
+        }).observe(document.documentElement, { childList: true, subtree: true });
+      }
+    });
+  }
+
+  // On DOMContentLoaded or immediately if already loaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
 })();
+// Cache bust: 20260513-223948
