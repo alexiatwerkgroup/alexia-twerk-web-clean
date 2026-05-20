@@ -1,0 +1,29 @@
+TWERKHUB PLAYLIST SURGICAL FIX - 2026-05-20
+
+Touched only playlist/category pages, not the root home index.html.
+
+Patched:
+- playlist/index.html
+- try-on-hot-leaks/index.html
+- latina-porn/index.html
+- massage-porn/index.html
+- russian-porn/index.html
+- gothic-porn/index.html
+- twerk-porn/index.html
+- korean-girls-kpop-twerk/index.html
+- hottest-cosplay-fancam/index.html
+- sav-twerk-playlist/index.html
+- ttl-latin-models/index.html
+- twerk-hub-leaks/index.html
+
+Fixes applied:
+- Critical inline fallback CSS so the main camera/player stays visible even if async CSS/JS fails.
+- Critical fallback JS to restore player src from the first data-vid if the player is empty/hidden.
+- Playlist click fallback to load videos into the same visible player.
+- YouTube embeds normalized to youtube-nocookie with start=5, controls=0, fs=0, modestbranding, iv_load_policy=3 and disablekb=1 where applicable.
+- Thumbnail containment hardening to avoid giant thumbnails breaking playlist layout.
+- Removed NUL/null bytes from affected category HTML files.
+
+Not touched:
+- root /index.html home page.
+- unrelated hot-models-influencers page because it does not use the playlist camera/player structure.
