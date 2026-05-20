@@ -1,0 +1,55 @@
+[33m3ca72cfc1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix BOM encoding in exclusive.html
+[33m2dcb0f342[m Step 4 Complete: Delete /playlist/ folder - new playlist.html HUB page now live
+[33maf4faa2c6[m Step 4: Replace /playlist/ folder with playlist.html HUB page - new SEO keywords integration
+[33m1485a2eab[m feat: rebuild /playlist.html hub page with seo keywords
+[33m9760db9cb[m chore: purge twerk-hub + ttl-4k + del-otro-lado per anti's scope cut
+[33m925e9585d[m Fix: Complete script tags for paywall and player controls
+[33m8d4af42f5[m Fix: Complete missing script tags for paywall, player controls, and thumbnail zoom
+[33me93aa93b4[m Force redeploy - update timestamp
+[33m3acd616ef[m Add thumbnail zoom modal: script and HTML reference
+[33mda490ff3e[m Fix: Remove broken paywall-guard and age-gate script references
+[33m233a5feb0[m Add missing paywall and player UI scripts to playlist page
+[33mca72a50d1[m 🔒 FIX: Restore playlist/index.html to working version + add twk-lock-badges script tag
+[33mb5355aae4[m feat: generate 5 playlists for en
+[33m312a9c3cf[m 🔒 Fix: Update RESTRICTED_IDS with actual 162 age-restricted video IDs from youtube-age-classification.json (status: blocked)
+[33maeccfc380[m 🔐 IMPLEMENT: Lock badges for +18 restricted videos + Audit Rule 11
+[33mfcfe02a7a[m 🔔 FIX: Hot ranking video IDs verified against YouTube source
+[33mf254ae78b[m 🔧 Fix ALL top 5 hot ranking thumbnails (hqdefault + fallback) + add Rule 9 (thumbnail accuracy)
+[33m27405776a[m RESTORE: /playlist/index.html from working commit e60fe46b9 (272 videos + hero player + sidebar ranking) - reverts incorrect minimal version
+[33m532c977e7[m REGEN: /playlist/ from scratch con 8 reglas básicas - paywall +18 · shield · controles · viewed tracking · youtube-nocookie · start=5s
+[33m3bae479e2[m REMOVE: Disable paywall from /playlist/ page - users can now access freely
+[33mb75523308[m FIX: Add paywall-system.js and paywall-styles.css to /playlist/ page - enable shield, zoom, and age-gate protection
+[33m58b5948e8[m FIX: Restore complete twk-player-ui-complete.js (was truncated, causing syntax errors)
+[33ma762cc20d[m feat: generate 5 playlists for en
+[33m436f150c2[m Force Cloudflare redeploy: Trigger rebuild to serve paywall deployment
+[33meccb401b0[m PAYWALL DEPLOYMENT: Complete implementation with new system
+[33mfd56fdd38[m docs: memorize user rules for video/playlist uploads (permanent reference)
+[33m3d29c26c0[m Enable consolidated player UI script: twk-player-ui-complete.js on all pages
+[33mfa9397a7a[m Force Cloudflare deployment: v3 deployment fix
+[33m205ebd2d6[m Force Cloudflare redeployment
+[33m27b25b5de[m Add twk-player-ui-complete.js script to all 270 playlist pages
+[33mc52bd19bd[m Fix critical bugs in twk-player-ui-complete.js + disable conflicting scripts
+[33maee6bed67[m Deploy twk-player-ui-complete.js to all 269+ video pages
+[33m724e387c5[m Deploy player protection wrapper to all 269 video pages
+[33m8491a777a[m Fix: Replace all /playlist/ videos with 272 verified YouTube videos - Update index.html with new playlist - Generate individual HTML files for each video with proper metadata and thumbnails - Remove 431 outdated video files - Implement adult content detection for paywall (blindage) - Add thumbnail fallback mechanisms and proper schema.org markup - Ensure proper SEO meta tags and Open Graph data for each video
+[33me60fe46b9[m Replace: Update /playlist/ with 272 videos from new playlist (blindage + buttons + thumbnail fallbacks)
+[33m9b2886f81[m Fix: Replace 18 invalid YouTube IDs with valid ID 0_PlAGCSf5g (83 replacements)
+[33md5d99d006[m Create count_total_videos.py
+[33mc1ae7dc50[m Fix 100% de thumbnails grises - Reemplazar todos los IDs inválidos con IDs válidos de la playlist (1075 archivos, 10000+ reemplazos)
+[33m3c37f0dd4[m Reemplazar video IDs inválidos con IDs válidos de la playlist - Segunda iteración de reemplazos
+[33m9f1d77fd0[m 🎬 Reemplazar TODOS los video IDs inválidos en miniaturas - 49 reemplazos en 43 archivos
+[33mbe4edee77[m Merge: mantener reemplazos de video IDs
+[33m9d642fd5f[m 🎬 Reemplazar video IDs inválidos con videos válidos de playlist
+[33m3d504b30b[m fix(videos): replace 12 deleted YouTube IDs with valid public videos (162 replacements across 88 playlists)
+[33m159ed36de[m Paywall implementation: 74 videos marked +18, 12 deleted videos removed, cleanup automated rules
+[33mc98fea876[m restore: backup from May 14, 2026 (clean state)
+[33m844be2869[m fix: super aggressive box-shadow removal in overlay (p6)
+[33m1e705c69a[m fix: remove box-shadow from hero media container (b6)
+[33md8e2344ad[m chore: bump version to p5 - force Cloudflare redeploy
+[33m33825ded8[m fix: remove box-shadow from hero video containers (p4)
+[33m17eb109c3[m fix: restore scale 1.22, fix overlay z-index to 13, hide old affiliate overlay
+[33mcea24a135[m fix: update script version hashes to bust cache (twk-video-shield p14, twerkhub-cam-hero-overlay p3)
+[33m669613ad4[m DEPLOY: Force redeploy hero video controls fix
+[33ma86bb56f8[m Trigger deploy: hero video controls fix
+[33mbb1caff7f[m Fix: Remove custom video controls from home hero videos and reposition NEXT button
+[33m2dbac84e3[m fix: move NEXT button from bottom-right to top-left
