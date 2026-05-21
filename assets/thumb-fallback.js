@@ -1,4 +1,4 @@
-/* thumb-fallback.js v2.2 (2026-05-20)
+/* thumb-fallback.js v2.1 (2026-04-30)
    ---
    Strict YouTube thumbnail recovery + dead-video gate.
    - Cascade: maxresdefault -> hqdefault -> mqdefault -> default
@@ -287,66 +287,6 @@
     document.body.style.overflow = "hidden";
   }
 
-
-
-  // 2026-05-20 v2.2: instant gray-thumbnail rescue.
-  // Safe scope: thumbnails only. Does not touch paywall, locks, Top 5, playlist data, layout or video playback.
-  function twkInstantThumbRescue(root) {
-    try {
-      var scope = root && root.querySelectorAll ? root : document;
-      var imgs = scope.querySelectorAll('img');
-      for (var i = 0; i < imgs.length; i++) {
-        var img = imgs[i];
-        var src = img.getAttribute('src') || img.getAttribute('data-src') || img.getAttribute('data-lazy-src') || '';
-        var vid = null;
-        var m = src.match(/i\.ytimg\.com\/vi\/([^\/]+)\//);
-        if (m) vid = m[1];
-        if (!vid && img.dataset) vid = img.dataset.vid || img.dataset.videoId || img.dataset.twkOriginalVid || '';
-        if (!vid) {
-          var card = img.closest && img.closest('[data-vid],a[href*="youtube.com/watch"],a[href*="youtu.be/"]');
-          if (card) {
-            vid = card.getAttribute('data-vid') || '';
-            var href = card.getAttribute('href') || '';
-            var hm = href.match(/[?&]v=([A-Za-z0-9_-]{11})/) || href.match(/youtu\.be\/([A-Za-z0-9_-]{11})/) || href.match(/\/([A-Za-z0-9_-]{11})(?:[/?#]|$)/);
-            if (!vid && hm) vid = hm[1];
-          }
-        }
-        if (!vid || !/^[A-Za-z0-9_-]{11}$/.test(vid)) continue;
-        if (!img.dataset.twkOrigSrc) img.dataset.twkOrigSrc = 'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg';
-        img.dataset.twkOriginalVid = vid;
-        img.setAttribute('loading', 'eager');
-        img.setAttribute('decoding', 'async');
-        img.style.backgroundImage = 'url(https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg)';
-        img.style.backgroundSize = 'cover';
-        img.style.backgroundPosition = 'center';
-        img.style.backgroundColor = '#050505';
-        if (!src || src.indexOf('thumb-unavailable') > -1 || src.indexOf('data:image') === 0) {
-          img.src = 'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg';
-        }
-        (function(el, id){
-          var variants = ['hqdefault','mqdefault','0','1','2','3','default'];
-          var n = 0;
-          function next(){
-            if (n >= variants.length) return;
-            el.src = 'https://i.ytimg.com/vi/' + id + '/' + variants[n++] + '.jpg';
-          }
-          el.onerror = next;
-          el.onload = function(){
-            if (el.naturalWidth === 120 && el.naturalHeight === 90) next();
-          };
-        })(img, vid);
-      }
-    } catch (_) {}
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function(){ twkInstantThumbRescue(document); });
-  } else {
-    twkInstantThumbRescue(document);
-  }
-  setTimeout(function(){ twkInstantThumbRescue(document); }, 250);
-  setTimeout(function(){ twkInstantThumbRescue(document); }, 1000);
-  setTimeout(function(){ twkInstantThumbRescue(document); }, 2500);
-
   function scan() {
     var imgs = document.querySelectorAll('img[src*="i.ytimg.com"]');
     for (var i = 0; i < imgs.length; i++) check(imgs[i]);
@@ -366,4 +306,102 @@
       });
     });
   }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* TWERKHUB 2026-05-20 HOTFIX: remove gray YouTube thumbnail placeholders.
+   Scope: thumbnails only. Does not touch playlist data, paywall, locks, Top 5, layout, or video URLs.
+   Reason: old inline thumb-v4 fallback can leave alive/restricted videos with opacity:.25 + grayscale(1).
+*/
+(function(){
+  'use strict';
+  if (window.__twkThumbGrayHotfix20260520) return;
+  window.__twkThumbGrayHotfix20260520 = true;
+
+  var VARIANTS = ['maxresdefault.jpg','sddefault.jpg','hqdefault.jpg','mqdefault.jpg','default.jpg','0.jpg','1.jpg','2.jpg','3.jpg'];
+
+  function vidFrom(img){
+    if (!img) return null;
+    if (img.dataset && img.dataset.vid) return img.dataset.vid;
+    var src = img.currentSrc || img.src || img.getAttribute('data-src') || '';
+    var m = src.match(/ytimg\.com\/vi\/([A-Za-z0-9_-]{11})\//);
+    if (m) return m[1];
+    var card = img.closest && img.closest('[data-vid]');
+    if (card) return card.getAttribute('data-vid');
+    var a = img.closest && img.closest('a[href]');
+    if (a) {
+      var h = a.getAttribute('href') || '';
+      var hm = h.match(/(?:v=|embed\/|\/)([A-Za-z0-9_-]{11})(?:[?&#/]|$)/);
+      if (hm) return hm[1];
+    }
+    return null;
+  }
+
+  function looksGray(img){
+    var st = img.getAttribute('style') || '';
+    return /opacity\s*:\s*0?\.25/i.test(st) || /grayscale\s*\(\s*1\s*\)/i.test(st) || img.classList.contains('twk-thumb-maybe-dead') || img.classList.contains('twk-thumb-dead');
+  }
+
+  function cleanVisualState(img){
+    if (!img) return;
+    img.style.opacity = '';
+    img.style.filter = '';
+    img.style.visibility = '';
+    img.style.display = img.style.display === 'none' ? 'block' : img.style.display;
+    img.classList.remove('twk-thumb-dead','twk-thumb-maybe-dead');
+    if (img.dataset) delete img.dataset.twkDead;
+    if (img.loading === 'lazy') img.loading = 'eager';
+    try { img.decoding = 'async'; } catch(e) {}
+    try { img.fetchPriority = 'high'; } catch(e) {}
+  }
+
+  function setVariant(img, vid, idx){
+    if (!img || !vid || idx >= VARIANTS.length) {
+      cleanVisualState(img);
+      return;
+    }
+    cleanVisualState(img);
+    var next = 'https://i.ytimg.com/vi/' + vid + '/' + VARIANTS[idx];
+    img.onerror = function(){ setVariant(img, vid, idx + 1); };
+    img.onload = function(){
+      cleanVisualState(img);
+      if (img.naturalWidth && img.naturalWidth <= 120 && idx < VARIANTS.length - 1) {
+        setVariant(img, vid, idx + 1);
+      }
+    };
+    if ((img.src || '') !== next) img.src = next;
+  }
+
+  function fixImg(img){
+    if (!img || img.tagName !== 'IMG') return;
+    var src = img.currentSrc || img.src || '';
+    if (src.indexOf('ytimg.com') === -1 && !(img.dataset && img.dataset.vid)) return;
+    var vid = vidFrom(img);
+    cleanVisualState(img);
+    if (!vid) return;
+
+    // If old inline fallback already grayed it, immediately restart from a safe YouTube thumbnail.
+    if (looksGray(img) || !img.complete || img.naturalWidth === 0 || img.naturalWidth <= 120) {
+      setVariant(img, vid, 0);
+    }
+  }
+
+  function run(){
+    var imgs = document.querySelectorAll('img[src*="ytimg.com"], img[data-vid]');
+    for (var i = 0; i < imgs.length; i++) fixImg(imgs[i]);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+  [100, 500, 1500, 3500, 7000].forEach(function(t){ setTimeout(run, t); });
+
+  new MutationObserver(function(muts){
+    muts.forEach(function(m){
+      if (m.type === 'attributes' && m.target && m.target.tagName === 'IMG') fixImg(m.target);
+      m.addedNodes && m.addedNodes.forEach(function(n){
+        if (n.nodeType !== 1) return;
+        if (n.tagName === 'IMG') fixImg(n);
+        else if (n.querySelectorAll) n.querySelectorAll('img[src*="ytimg.com"], img[data-vid]').forEach(fixImg);
+      });
+    });
+  }).observe(document.documentElement, { childList:true, subtree:true, attributes:true, attributeFilter:['src','style','class','loading'] });
 })();
