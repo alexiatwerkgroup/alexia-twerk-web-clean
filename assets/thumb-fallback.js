@@ -308,100 +308,121 @@
   }).observe(document.documentElement, { childList: true, subtree: true });
 })();
 
-/* TWERKHUB 2026-05-20 HOTFIX: remove gray YouTube thumbnail placeholders.
-   Scope: thumbnails only. Does not touch playlist data, paywall, locks, Top 5, layout, or video URLs.
-   Reason: old inline thumb-v4 fallback can leave alive/restricted videos with opacity:.25 + grayscale(1).
+
+/* 2026-05-20 TWERKHUB GRAY THUMB FIX
+   Purpose: recover gray/hidden YouTube thumbnails without touching playlist data,
+   paywall, locks, Top 5, layout, or video order.
+   Rules:
+   - never hide a thumbnail
+   - never mark alive cards as dead
+   - force visible/eager images
+   - retry safe YouTube thumbnail variants until a non-120x90 image appears
 */
-(function(){
-  'use strict';
-  if (window.__twkThumbGrayHotfix20260520) return;
-  window.__twkThumbGrayHotfix20260520 = true;
+(function () {
+  "use strict";
+  if (window.__twkGrayThumbFix20260520) return;
+  window.__twkGrayThumbFix20260520 = true;
 
-  var VARIANTS = ['maxresdefault.jpg','sddefault.jpg','hqdefault.jpg','mqdefault.jpg','default.jpg','0.jpg','1.jpg','2.jpg','3.jpg'];
+  var VARIANTS = ["hqdefault", "mqdefault", "sddefault", "maxresdefault", "0", "1", "2", "3", "default"];
 
-  function vidFrom(img){
+  function getVid(img) {
     if (!img) return null;
-    if (img.dataset && img.dataset.vid) return img.dataset.vid;
-    var src = img.currentSrc || img.src || img.getAttribute('data-src') || '';
+    if (img.dataset && img.dataset.vid && /^[A-Za-z0-9_-]{11}$/.test(img.dataset.vid)) return img.dataset.vid;
+    var src = img.currentSrc || img.src || img.getAttribute("src") || "";
     var m = src.match(/ytimg\.com\/vi\/([A-Za-z0-9_-]{11})\//);
     if (m) return m[1];
-    var card = img.closest && img.closest('[data-vid]');
-    if (card) return card.getAttribute('data-vid');
-    var a = img.closest && img.closest('a[href]');
-    if (a) {
-      var h = a.getAttribute('href') || '';
-      var hm = h.match(/(?:v=|embed\/|\/)([A-Za-z0-9_-]{11})(?:[?&#/]|$)/);
-      if (hm) return hm[1];
+    var card = img.closest && img.closest("[data-vid]");
+    if (card) {
+      var v = card.getAttribute("data-vid");
+      if (v && /^[A-Za-z0-9_-]{11}$/.test(v)) return v;
     }
     return null;
   }
 
-  function looksGray(img){
-    var st = img.getAttribute('style') || '';
-    return /opacity\s*:\s*0?\.25/i.test(st) || /grayscale\s*\(\s*1\s*\)/i.test(st) || img.classList.contains('twk-thumb-maybe-dead') || img.classList.contains('twk-thumb-dead');
+  function getVariant(img) {
+    var src = img.currentSrc || img.src || img.getAttribute("src") || "";
+    var m = src.match(/\/([^\/]+)\.jpg(?:\?|$)/);
+    return m ? m[1] : "";
   }
 
-  function cleanVisualState(img){
-    if (!img) return;
-    img.style.opacity = '';
-    img.style.filter = '';
-    img.style.visibility = '';
-    img.style.display = img.style.display === 'none' ? 'block' : img.style.display;
-    img.classList.remove('twk-thumb-dead','twk-thumb-maybe-dead');
-    if (img.dataset) delete img.dataset.twkDead;
-    if (img.loading === 'lazy') img.loading = 'eager';
-    try { img.decoding = 'async'; } catch(e) {}
-    try { img.fetchPriority = 'high'; } catch(e) {}
+  function isGrayOrBroken(img) {
+    if (!img) return true;
+    var src = img.currentSrc || img.src || img.getAttribute("src") || "";
+    if (!src || src.indexOf("thumb-unavailable") !== -1) return true;
+    if (img.style && img.style.display === "none") return true;
+    if (!img.complete) return false;
+    if (!img.naturalWidth || !img.naturalHeight) return true;
+    return img.naturalWidth <= 120 && img.naturalHeight <= 90;
   }
 
-  function setVariant(img, vid, idx){
-    if (!img || !vid || idx >= VARIANTS.length) {
-      cleanVisualState(img);
-      return;
-    }
-    cleanVisualState(img);
-    var next = 'https://i.ytimg.com/vi/' + vid + '/' + VARIANTS[idx];
-    img.onerror = function(){ setVariant(img, vid, idx + 1); };
-    img.onload = function(){
-      cleanVisualState(img);
-      if (img.naturalWidth && img.naturalWidth <= 120 && idx < VARIANTS.length - 1) {
-        setVariant(img, vid, idx + 1);
-      }
-    };
-    if ((img.src || '') !== next) img.src = next;
+  function forceVisible(img) {
+    try {
+      img.loading = "eager";
+      img.decoding = "async";
+      img.removeAttribute("hidden");
+      img.style.display = "block";
+      img.style.opacity = "1";
+      img.style.visibility = "visible";
+      img.style.objectFit = "cover";
+      img.dataset.twkDead = "";
+      img.classList.remove("twk-thumb-dead", "twk-thumb-maybe-dead");
+      var wrap = img.closest && img.closest(".twk-thumb-dead,.twk-thumb-maybe-dead");
+      if (wrap) wrap.classList.remove("twk-thumb-dead", "twk-thumb-maybe-dead");
+    } catch (_) {}
   }
 
-  function fixImg(img){
-    if (!img || img.tagName !== 'IMG') return;
-    var src = img.currentSrc || img.src || '';
-    if (src.indexOf('ytimg.com') === -1 && !(img.dataset && img.dataset.vid)) return;
-    var vid = vidFrom(img);
-    cleanVisualState(img);
+  function setVariant(img, vid, variant) {
+    var next = "https://i.ytimg.com/vi/" + vid + "/" + variant + ".jpg";
+    if ((img.getAttribute("src") || "") !== next) img.src = next;
+  }
+
+  function recover(img) {
+    if (!img || !((img.src || "").indexOf("ytimg.com") !== -1 || (img.src || "").indexOf("thumb-unavailable") !== -1)) return;
+    var vid = getVid(img);
     if (!vid) return;
+    forceVisible(img);
 
-    // If old inline fallback already grayed it, immediately restart from a safe YouTube thumbnail.
-    if (looksGray(img) || !img.complete || img.naturalWidth === 0 || img.naturalWidth <= 120) {
-      setVariant(img, vid, 0);
+    if (!isGrayOrBroken(img)) return;
+
+    var current = getVariant(img);
+    var idx = VARIANTS.indexOf(current);
+    if (idx < 0) idx = -1;
+    var triedKey = "twkTried" + vid;
+    var tried = (img.dataset && img.dataset[triedKey] ? img.dataset[triedKey].split(",") : []);
+
+    function tryAt(i) {
+      if (i >= VARIANTS.length) {
+        // Final fallback: keep card visible/clickable, but remove ugly gray box.
+        img.style.background = "linear-gradient(135deg,#15151f,#2a1730)";
+        img.style.objectFit = "cover";
+        img.style.opacity = "1";
+        return;
+      }
+      var v = VARIANTS[i];
+      if (tried.indexOf(v) !== -1 && i !== idx + 1) return tryAt(i + 1);
+      tried.push(v);
+      if (img.dataset) img.dataset[triedKey] = tried.join(",");
+      img.onload = function () {
+        forceVisible(img);
+        if (isGrayOrBroken(img)) tryAt(i + 1);
+      };
+      img.onerror = function () {
+        forceVisible(img);
+        tryAt(i + 1);
+      };
+      setVariant(img, vid, v);
     }
+
+    tryAt(Math.max(0, idx + 1));
   }
 
-  function run(){
-    var imgs = document.querySelectorAll('img[src*="ytimg.com"], img[data-vid]');
-    for (var i = 0; i < imgs.length; i++) fixImg(imgs[i]);
+  function scan() {
+    var imgs = document.querySelectorAll('img[src*="ytimg.com"], img[src*="thumb-unavailable"]');
+    for (var i = 0; i < imgs.length; i++) recover(imgs[i]);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
-  else run();
-  [100, 500, 1500, 3500, 7000].forEach(function(t){ setTimeout(run, t); });
-
-  new MutationObserver(function(muts){
-    muts.forEach(function(m){
-      if (m.type === 'attributes' && m.target && m.target.tagName === 'IMG') fixImg(m.target);
-      m.addedNodes && m.addedNodes.forEach(function(n){
-        if (n.nodeType !== 1) return;
-        if (n.tagName === 'IMG') fixImg(n);
-        else if (n.querySelectorAll) n.querySelectorAll('img[src*="ytimg.com"], img[data-vid]').forEach(fixImg);
-      });
-    });
-  }).observe(document.documentElement, { childList:true, subtree:true, attributes:true, attributeFilter:['src','style','class','loading'] });
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", scan);
+  else scan();
+  [250, 800, 1600, 3200, 6000].forEach(function (t) { setTimeout(scan, t); });
+  new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["src", "style", "class"] });
 })();
