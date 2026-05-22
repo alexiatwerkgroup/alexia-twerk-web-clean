@@ -2,13 +2,16 @@
 // Body: { email, password, username? }
 // Returns: { ok, user: {id,email,username}, token } + Set-Cookie
 //
-// Creates a row in `users` and `profiles` (mirrors the supabase
-// `handle_new_user` trigger). Issues a JWT.
+// Creates a row in `users` and `profiles` in D1 AND Supabase
+// (keeps both databases in sync). Issues a JWT.
 
 import { hashPassword, signJWT, uuidv4 } from '../../_lib/auth.js';
 import { json, preflight, readJSON, setSessionCookie } from '../../_lib/http.js';
 import { createTokenRow } from '../../_lib/tokens.js';
 import { sendEmail, renderVerifyEmail } from '../../_lib/resend.js';
+
+const SUPABASE_URL = 'https://vieqniahusdrfkpcuqsn.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_vpZrp8cL12lpJ3MYWlne6Q_dDkW2NlI';
 
 const EMAIL_RE = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 const USERNAME_RE = /^[a-z0-9_.-]{3,24}$/i;
@@ -73,6 +76,47 @@ export async function onRequest(context) {
   } catch (e) {
     console.error('signup insert failed', e && e.message);
     return json({ ok: false, error: 'storage_failed', detail: e && e.message }, 500, origin);
+  }
+
+  // Also write to Supabase profiles table to keep databases in sync
+  try {
+    const supabaseResponse = await fetch(
+      `${SUPABASE_URL}/rest/v1/profiles`,
+      {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          id: id,
+          email: email,
+          username: usernameRaw || null,
+          created_at: new Date().toISOString(),
+          last_active_at: new Date().toISOString(),
+          last_seen_at: new Date().toISOString(),
+          tokens: 0,
+          total_earned: 0,
+          seconds_on_site: 0,
+          cuts_watched: 0,
+          streak: 0,
+          tier: 'basic'
+        })
+      }
+    );
+
+    if (!supabaseResponse.ok) {
+      console.warn(`[signup] Supabase write failed: ${supabaseResponse.status} ${supabaseResponse.statusText}`);
+      // Don't fail signup if Supabase write fails — user is already created in D1
+      // A sync job can catch this later
+    } else {
+      console.log('[signup] Wrote new user profile to Supabase');
+    }
+  } catch (e) {
+    console.warn('[signup] Supabase write error (non-fatal):', e && e.message);
+    // Continue — D1 write succeeded, user is registered
   }
 
   let token;
