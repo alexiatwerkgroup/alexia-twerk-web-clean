@@ -55,9 +55,11 @@ export async function onRequest(context) {
     // Sync each profile to Supabase
     for (const profile of d1Profiles.results) {
       try {
+        console.log(`[sync-users] Processing ${profile.email} (${profile.id})`);
+
         // Check if user already exists in Supabase by ID
         const checkResponse = await fetch(
-          `${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(profile.id)}&select=id`,
+          `${SUPABASE_URL}/rest/v1/profiles?id=eq.${profile.id}&select=id`,
           {
             method: 'GET',
             headers: {
@@ -67,7 +69,12 @@ export async function onRequest(context) {
           }
         );
 
-        const existing = checkResponse.ok ? await checkResponse.json() : [];
+        let existing = [];
+        if (checkResponse.ok) {
+          existing = await checkResponse.json();
+        } else {
+          console.warn(`[sync-users] Check query failed for ${profile.email}: ${checkResponse.status}`);
+        }
 
         if (existing.length > 0) {
           console.log(`[sync-users] Skipping ${profile.email} (already in Supabase)`);
@@ -109,12 +116,19 @@ export async function onRequest(context) {
           console.log(`[sync-users] Synced ${profile.email}`);
           synced++;
         } else {
-          const errText = await insertResponse.text();
-          console.error(`[sync-users] Failed to sync ${profile.email}: ${insertResponse.status} ${errText}`);
+          let errText = '';
+          try {
+            errText = await insertResponse.text();
+          } catch (_) {
+            errText = 'Could not read error text';
+          }
+          console.error(`[sync-users] Insert failed for ${profile.email}: ${insertResponse.status} - ${errText}`);
+          // Log the actual profile data being sent for debugging
+          console.error(`[sync-users] Profile data:`, JSON.stringify(profileData));
           errors++;
         }
       } catch (e) {
-        console.error(`[sync-users] Error syncing ${profile.email}:`, e && e.message);
+        console.error(`[sync-users] Exception syncing ${profile.email}:`, e && e.message);
         errors++;
       }
     }
