@@ -77,6 +77,20 @@ export async function onRequest(context) {
 
         // Insert profile into Supabase
         const now = new Date().toISOString();
+        const profileData = {
+          id: profile.id,
+          email: profile.email,
+          username: profile.username || null,
+          tokens: profile.tokens || 0,
+          total_earned: profile.total_earned || 0,
+          seconds_on_site: profile.seconds_on_site || 0,
+          cuts_watched: profile.cuts_watched || 0,
+          streak: profile.streak || 0,
+          tier: profile.tier || 'basic',
+          last_active_at: profile.last_active_at || now,
+          last_seen_at: profile.last_seen_at || now
+        };
+
         const insertResponse = await fetch(
           `${SUPABASE_URL}/rest/v1/profiles`,
           {
@@ -87,20 +101,7 @@ export async function onRequest(context) {
               'Content-Type': 'application/json',
               'Prefer': 'return=minimal'
             },
-            body: JSON.stringify({
-              id: profile.id,
-              email: profile.email,
-              username: profile.username,
-              tokens: profile.tokens || 0,
-              total_earned: profile.total_earned || 0,
-              seconds_on_site: profile.seconds_on_site || 0,
-              cuts_watched: profile.cuts_watched || 0,
-              streak: profile.streak || 0,
-              tier: profile.tier || 'basic',
-              created_at: now,
-              last_active_at: profile.last_active_at || now,
-              last_seen_at: profile.last_seen_at || now
-            })
+            body: JSON.stringify(profileData)
           }
         );
 
@@ -108,7 +109,8 @@ export async function onRequest(context) {
           console.log(`[sync-users] Synced ${profile.email}`);
           synced++;
         } else {
-          console.error(`[sync-users] Failed to sync ${profile.email}: ${insertResponse.status}`);
+          const errText = await insertResponse.text();
+          console.error(`[sync-users] Failed to sync ${profile.email}: ${insertResponse.status} ${errText}`);
           errors++;
         }
       } catch (e) {

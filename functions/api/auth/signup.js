@@ -81,6 +81,20 @@ export async function onRequest(context) {
   // Also write to Supabase profiles table to keep databases in sync
   try {
     const now = new Date().toISOString();
+    const profileData = {
+      id: id,
+      email: email,
+      username: usernameRaw || null,
+      last_active_at: now,
+      last_seen_at: now,
+      tokens: 0,
+      total_earned: 0,
+      seconds_on_site: 0,
+      cuts_watched: 0,
+      streak: 0,
+      tier: 'basic'
+    };
+
     const supabaseResponse = await fetch(
       `${SUPABASE_URL}/rest/v1/profiles`,
       {
@@ -91,19 +105,7 @@ export async function onRequest(context) {
           'Content-Type': 'application/json',
           'Prefer': 'return=minimal'
         },
-        body: JSON.stringify({
-          id: id,
-          email: email,
-          username: usernameRaw || null,
-          last_active_at: now,
-          last_seen_at: now,
-          tokens: 0,
-          total_earned: 0,
-          seconds_on_site: 0,
-          cuts_watched: 0,
-          streak: 0,
-          tier: 'basic'
-        })
+        body: JSON.stringify(profileData)
       }
     );
 
