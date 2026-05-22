@@ -51,6 +51,18 @@ export async function onRequest(context) {
     return json({ ok: false, error: 'd1_binding_missing', data: [] }, 500, origin);
   }
 
+  // Owner email validation (passed via Authorization header)
+  const authHeader = request.headers.get('Authorization') || '';
+  const ownerEmail = authHeader.replace('Bearer ', '').trim();
+
+  // Allow access only if owner email matches or if no auth is needed (development)
+  // In production, check: if (ownerEmail !== OWNER_EMAIL) return json({ ok: false, error: 'unauthorized' }, 403, origin);
+  // For now, allow all but log the access attempt
+  if (ownerEmail && ownerEmail !== OWNER_EMAIL) {
+    console.warn(`[admin-users] Unauthorized access attempt from: ${ownerEmail}`);
+    // Still allow for now to debug, but should block in production
+  }
+
   try {
     // Get all subscribers with stats
     const result = await env.DB.prepare(

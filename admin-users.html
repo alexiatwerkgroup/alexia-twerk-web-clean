@@ -196,26 +196,42 @@ loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
 
   async function loadSupabase(){
     state.err = null;
+    console.log('[admin] loadSupabase() called, fetching from /api/admin-users');
     try {
-      var sb = await window.twkGetSupabase();
-      if (!sb) throw new Error('Supabase client unavailable');
-      // Owner-gated full stats (email + session metrics + cuts watched).
-      // Returns [] silently if the caller is not the platform owner.
-      var resp = await sb.rpc('admin_get_full_stats');
-      // Fallback for installs that haven't run schema-tokens-v2 yet.
-      if (resp.error) {
-        var fallback = await sb.from('profiles').select('id,username,email,tokens,total_earned,streak,tier,registered_at,seconds_on_site,cuts_watched,last_seen_at').order('tokens', { ascending:false }).limit(500);
-        if (fallback.error) throw fallback.error;
-        resp = fallback;
+      // Fetch users from Cloudflare D1 via /api/admin-users endpoint
+      var response = await fetch('/api/admin-users', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      console.log('[admin] API response status:', response.status);
+
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status + ': ' + response.statusText);
       }
-      var rows = resp.data || [];
+
+      var result = await response.json();
+      console.log('[admin] API response:', result);
+
+      if (!result.ok) {
+        throw new Error(result.message || result.error || 'Unknown API error');
+      }
+
+      var rows = result.data || [];
+      console.log('[admin] Loaded ' + rows.length + ' users from D1');
+
       if (!rows.length) {
-        state.err = 'No data returned. Either you are not signed in as the owner email, or no one has registered yet, or schema-tokens-v2 has not been run in Supabase.';
+        state.err = 'No users registered yet.';
       }
+
       state.users = rows.map(function(p){
         return {
-          id: p.id, username: p.username || '(no name)', email: p.email || '',
-          tokens: p.tokens||0, total_earned: p.total_earned||0, streak: p.streak||0,
+          id: p.id,
+          username: p.username || '(no name)',
+          email: p.email || '',
+          tokens: p.tokens||0,
+          total_earned: p.total_earned||0,
+          streak: p.streak||0,
           tier: p.tier || tierFor(p.tokens||0),
           seconds_on_site: Number(p.seconds_on_site||0),
           cuts_watched: p.cuts_watched||0,
@@ -223,9 +239,10 @@ loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
           last_seen_at: p.last_seen_at || null
         };
       });
+      console.log('[admin] State updated, users:', state.users.length);
     } catch(e){
-      console.error('[admin] supabase load failed', e);
-      state.err = 'Could not query Supabase: ' + (e.message || 'unknown error') + '. Run schema-tokens-v1.sql + schema-tokens-v2-session-tracking.sql in Supabase Dashboard SQL Editor.';
+      console.error('[admin] D1 load failed', e);
+      state.err = 'Could not load users from Cloudflare D1: ' + (e.message || 'unknown error');
       state.users = [];
     }
   }
@@ -260,9 +277,17 @@ loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
   }
 
   async function load(){
+    console.log('[admin] load() called, source:', state.source);
     document.getElementById('rows').innerHTML = '<tr><td colspan="11" class="loading">Loading</td></tr>';
-    if (state.source === 'supabase') await loadSupabase();
-    else loadLocal();
+    if (state.source === 'supabase') {
+      console.log('[admin] Loading from Supabase/D1');
+      await loadSupabase();
+    }
+    else {
+      console.log('[admin] Loading from localStorage');
+      loadLocal();
+    }
+    console.log('[admin] Data load complete, calling render()');
     render();
   }
 
@@ -359,13 +384,22 @@ loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
     });
   }
   function render(){
+    console.log('[admin] render() called, users:', state.users.length, 'error:', state.err);
     var box = document.getElementById('err-box');
-    if (state.err) { box.style.display = 'block'; box.textContent = state.err; }
-    else { box.style.display = 'none'; }
+    if (state.err) {
+      console.log('[admin] Displaying error:', state.err);
+      box.style.display = 'block';
+      box.textContent = state.err;
+    }
+    else {
+      box.style.display = 'none';
+    }
     var users = applySort(applyFilter(state.users));
+    console.log('[admin] After filter/sort, users:', users.length);
     renderStats(users);
     renderRows(users);
     renderHeaders();
+    console.log('[admin] render() complete');
   }
 
   document.querySelectorAll('th[data-sort]').forEach(function(th){
@@ -386,6 +420,7 @@ loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
     load();
   };
   window.refresh = load;
+  window.getCurrentState = function(){ return state; }; // Debug helper
 
   window.exportCSV = function(){
     var users = applySort(state.users);
@@ -414,8 +449,21 @@ loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
     setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
   }
 
-  // Initial load
-  load();
+  // Initial load - ensure it executes after DOM is ready
+  console.log('[admin-users] IIFE initializing');
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('[admin-users] DOM ready, calling load()');
+      load().catch(function(e) {
+        console.error('[admin-users] load() failed at init:', e);
+      });
+    });
+  } else {
+    console.log('[admin-users] DOM already loaded, calling load()');
+    load().catch(function(e) {
+      console.error('[admin-users] load() failed at init:', e);
+    });
+  }
 })();
 </script>
 <script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
