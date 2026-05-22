@@ -80,6 +80,7 @@ export async function onRequest(context) {
 
   // Also write to Supabase profiles table to keep databases in sync
   try {
+    const now = new Date().toISOString();
     const supabaseResponse = await fetch(
       `${SUPABASE_URL}/rest/v1/profiles`,
       {
@@ -94,9 +95,8 @@ export async function onRequest(context) {
           id: id,
           email: email,
           username: usernameRaw || null,
-          created_at: new Date().toISOString(),
-          last_active_at: new Date().toISOString(),
-          last_seen_at: new Date().toISOString(),
+          last_active_at: now,
+          last_seen_at: now,
           tokens: 0,
           total_earned: 0,
           seconds_on_site: 0,

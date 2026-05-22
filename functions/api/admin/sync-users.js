@@ -39,7 +39,7 @@ export async function onRequest(context) {
 
     // Get all profiles from D1
     const d1Profiles = await env.DB.prepare(
-      'SELECT id, email, username, tokens, total_earned, seconds_on_site, cuts_watched, streak, tier, created_at, last_active_at, last_seen_at FROM profiles ORDER BY created_at DESC'
+      'SELECT id, email, username, tokens, total_earned, seconds_on_site, cuts_watched, streak, tier, last_active_at, last_seen_at FROM profiles ORDER BY last_active_at DESC'
     ).all();
 
     console.log(`[sync-users] Found ${d1Profiles.results.length} profiles in D1`);
@@ -76,6 +76,7 @@ export async function onRequest(context) {
         }
 
         // Insert profile into Supabase
+        const now = new Date().toISOString();
         const insertResponse = await fetch(
           `${SUPABASE_URL}/rest/v1/profiles`,
           {
@@ -96,9 +97,9 @@ export async function onRequest(context) {
               cuts_watched: profile.cuts_watched || 0,
               streak: profile.streak || 0,
               tier: profile.tier || 'basic',
-              created_at: profile.created_at || new Date().toISOString(),
-              last_active_at: profile.last_active_at || new Date().toISOString(),
-              last_seen_at: profile.last_seen_at || new Date().toISOString()
+              created_at: now,
+              last_active_at: profile.last_active_at || now,
+              last_seen_at: profile.last_seen_at || now
             })
           }
         );
