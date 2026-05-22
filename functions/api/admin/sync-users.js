@@ -98,8 +98,9 @@ export async function onRequest(context) {
           last_seen_at: profile.last_seen_at || now
         };
 
+        // Use UPSERT (on_conflict=id) to handle duplicates
         const insertResponse = await fetch(
-          `${SUPABASE_URL}/rest/v1/profiles`,
+          `${SUPABASE_URL}/rest/v1/profiles?on_conflict=id`,
           {
             method: 'POST',
             headers: {

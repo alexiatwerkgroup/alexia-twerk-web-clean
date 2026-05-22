@@ -95,8 +95,9 @@ export async function onRequest(context) {
       tier: 'basic'
     };
 
+    // Use UPSERT in case profile already exists
     const supabaseResponse = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles`,
+      `${SUPABASE_URL}/rest/v1/profiles?on_conflict=id`,
       {
         method: 'POST',
         headers: {
