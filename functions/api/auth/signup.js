@@ -78,9 +78,40 @@ export async function onRequest(context) {
     return json({ ok: false, error: 'storage_failed', detail: e && e.message }, 500, origin);
   }
 
-  // Also write to Supabase profiles table to keep databases in sync
+  // Also write to Supabase to keep databases in sync
   try {
     const now = new Date().toISOString();
+
+    // First, write user to Supabase users table
+    const userData = {
+      id: id,
+      email: email,
+      password_hash: passwordHash,
+      created_at: now,
+      email_verified: 0
+    };
+
+    const userResponse = await fetch(
+      `${SUPABASE_URL}/rest/v1/users?on_conflict=id`,
+      {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(userData)
+      }
+    );
+
+    if (!userResponse.ok) {
+      console.warn(`[signup] Supabase user write failed: ${userResponse.status} ${userResponse.statusText}`);
+    } else {
+      console.log('[signup] Wrote user to Supabase');
+    }
+
+    // Then write profile to Supabase profiles table
     const profileData = {
       id: id,
       email: email,
@@ -95,8 +126,7 @@ export async function onRequest(context) {
       tier: 'basic'
     };
 
-    // Use UPSERT in case profile already exists
-    const supabaseResponse = await fetch(
+    const profileResponse = await fetch(
       `${SUPABASE_URL}/rest/v1/profiles?on_conflict=id`,
       {
         method: 'POST',
@@ -110,8 +140,8 @@ export async function onRequest(context) {
       }
     );
 
-    if (!supabaseResponse.ok) {
-      console.warn(`[signup] Supabase write failed: ${supabaseResponse.status} ${supabaseResponse.statusText}`);
+    if (!profileResponse.ok) {
+      console.warn(`[signup] Supabase profile write failed: ${profileResponse.status} ${profileResponse.statusText}`);
       // Don't fail signup if Supabase write fails — user is already created in D1
       // A sync job can catch this later
     } else {

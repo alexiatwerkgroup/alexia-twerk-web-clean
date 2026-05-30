@@ -35,7 +35,14 @@ export async function onRequest(context) {
   }
 
   try {
-    console.log('[sync-users] Fetching D1 profiles...');
+    console.log('[sync-users] Fetching D1 users and profiles...');
+
+    // Get all users from D1
+    const d1Users = await env.DB.prepare(
+      'SELECT id, email, password_hash, created_at, email_verified FROM users'
+    ).all();
+
+    console.log(`[sync-users] Found ${d1Users.results.length} users in D1`);
 
     // Get all profiles from D1
     const d1Profiles = await env.DB.prepare(
@@ -44,15 +51,56 @@ export async function onRequest(context) {
 
     console.log(`[sync-users] Found ${d1Profiles.results.length} profiles in D1`);
 
-    if (!d1Profiles.results || d1Profiles.results.length === 0) {
-      return json({ ok: true, message: 'No profiles to sync', synced: 0, skipped: 0, errors: 0 });
+    if (!d1Users.results || d1Users.results.length === 0) {
+      return json({ ok: true, message: 'No users to sync', synced: 0, skipped: 0, errors: 0 });
     }
 
-    let synced = 0;
+    let syncedUsers = 0;
+    let syncedProfiles = 0;
     let skipped = 0;
     let errors = 0;
 
-    // Sync each profile to Supabase
+    // First, sync all users to Supabase users table
+    console.log('[sync-users] Syncing users...');
+    for (const user of d1Users.results) {
+      try {
+        const userData = {
+          id: user.id,
+          email: user.email,
+          password_hash: user.password_hash,
+          created_at: user.created_at,
+          email_verified: user.email_verified
+        };
+
+        const userResponse = await fetch(
+          `${SUPABASE_URL}/rest/v1/users?on_conflict=id`,
+          {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify(userData)
+          }
+        );
+
+        if (userResponse.ok) {
+          console.log(`[sync-users] Synced user ${user.email}`);
+          syncedUsers++;
+        } else {
+          console.error(`[sync-users] Failed to sync user ${user.email}: ${userResponse.status}`);
+          errors++;
+        }
+      } catch (e) {
+        console.error(`[sync-users] Exception syncing user ${user.email}:`, e && e.message);
+        errors++;
+      }
+    }
+
+    // Now sync profiles to Supabase
+    console.log('[sync-users] Syncing profiles...');
     for (const profile of d1Profiles.results) {
       try {
         console.log(`[sync-users] Processing ${profile.email} (${profile.id})`);
@@ -114,8 +162,8 @@ export async function onRequest(context) {
         );
 
         if (insertResponse.ok) {
-          console.log(`[sync-users] Synced ${profile.email}`);
-          synced++;
+          console.log(`[sync-users] Synced profile ${profile.email}`);
+          syncedProfiles++;
         } else {
           let errText = '';
           try {
@@ -123,7 +171,7 @@ export async function onRequest(context) {
           } catch (_) {
             errText = 'Could not read error text';
           }
-          console.error(`[sync-users] Insert failed for ${profile.email}: ${insertResponse.status} - ${errText}`);
+          console.error(`[sync-users] Profile insert failed for ${profile.email}: ${insertResponse.status} - ${errText}`);
           // Log the actual profile data being sent for debugging
           console.error(`[sync-users] Profile data:`, JSON.stringify(profileData));
           errors++;
@@ -134,15 +182,17 @@ export async function onRequest(context) {
       }
     }
 
-    console.log(`[sync-users] Sync complete: ${synced} synced, ${skipped} skipped, ${errors} errors`);
+    console.log(`[sync-users] Sync complete: ${syncedUsers} users synced, ${syncedProfiles} profiles synced, ${skipped} skipped, ${errors} errors`);
 
     return json({
       ok: true,
       message: 'Sync complete',
-      synced,
+      syncedUsers,
+      syncedProfiles,
+      totalProfiles: d1Profiles.results.length,
+      totalUsers: d1Users.results.length,
       skipped,
-      errors,
-      total: d1Profiles.results.length
+      errors
     }, 200);
 
   } catch (err) {
