@@ -1,8 +1,0 @@
-GA4 real-time worker setup is not fully wired because the ZIP does not contain the required GA4 property ID + server-side credentials/service account.
-What was done instead:
-- ONLINE NOW now uses real recent active visitors from Supabase page_visits (last 5 minutes), replacing the old fake random counter.
-- A Cloudflare Worker template is included below if you want to switch ONLINE NOW to GA4 later without touching frontend again.
-Required later for GA4:
-- GA4 Property ID
-- service account credentials or secure token flow
-- deploy worker endpoint and point frontend to it
