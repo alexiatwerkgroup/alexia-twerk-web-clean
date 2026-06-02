@@ -275,4 +275,40 @@
     // Big center lock — overlays the thumbnail so users see it from a distance
     if (!el.querySelector(':scope > .twk-blocked-lock')) {
       var lock = document.createElement('span');
-      lock.className =
+      lock.className = 'twk-blocked-lock';
+      lock.textContent = '\uD83D\uDD12';
+      el.appendChild(lock);
+    }
+  }
+
+  function decorateAll() {
+    var blocked = readBlocked();
+    for (var vid in blocked) {
+      if (blocked.hasOwnProperty(vid)) decorateAllForVid(vid);
+    }
+  }
+
+  function init() {
+    injectStyle();
+    purgeProtectedFromBlocked();
+    decorateAll();
+  }
+
+  window.TwkAgeGate = {
+    isBlocked: isBlocked,
+    markBlocked: markBlocked,
+    show: show,
+    showOverlay: showOverlay,
+    hideOverlay: hideOverlay,
+    handleYTError: handleYTError,
+    decorateAll: decorateAll,
+    isProtected: isProtected,
+    getProtectedVids: getProtectedVids
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();

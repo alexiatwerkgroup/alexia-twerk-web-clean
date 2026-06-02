@@ -153,4 +153,15 @@
       setTimeout(function(){
         root.remove();
         document.documentElement.style.overflow = prevOverflow;
-        // Al salir del modal, asegurar qu
+        // Al salir del modal, asegurar que el scroll se restaura completamente
+      }, 500);
+    });
+  }
+
+  // Auto-mount on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mount, { once: true });
+  } else {
+    mount();
+  }
+})();
