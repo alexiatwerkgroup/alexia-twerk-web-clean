@@ -2,6 +2,7 @@
 # Lighthouse Best Practices: HSTS, COOP, XFO, CSP, X-Content-Type-Options
 
 /*
+  Cache-Control: public, max-age=0, must-revalidate
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
@@ -27,9 +28,10 @@
   Cache-Control: no-cache, must-revalidate
   Content-Type: application/javascript
 
-# Hashed/versioned assets — long cache
+# Scripts/CSS — revalidar siempre para que cada deploy se vea sin purgar caché.
+# (Antes era immutable+1año, que dejaba versiones viejas pegadas para siempre.)
 /assets/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 # Fonts — immutable
 /*.woff2

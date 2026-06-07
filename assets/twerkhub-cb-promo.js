@@ -247,7 +247,7 @@
       '&vp[showCallToAction]=' +
       '&vp[showPerformerName]=' +
       '&vp[showPerformerStatus]=' +
-      '&filters=asian+big-breast+18-22' +
+      '&filters=vip-show+big-breast+18-22' +
       '&ms_notrack=1' +
       '&subAffId=';
     s.async = true;
