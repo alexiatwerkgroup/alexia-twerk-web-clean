@@ -22,16 +22,6 @@
   if (window.__twkCbPromoInit) return;
   window.__twkCbPromoInit = true;
 
-  /* ─────────────────────────────────────────────────────────────────────
-   * DISABLED (2026-06-06) — bug "pantalla negra / solo carga la cam".
-   * El embed de LiveJasmin (ecdwm.com) se inyectaba con z-index 2147483647
-   * y a veces se renderizaba a pantalla completa, tapando todo el sitio.
-   * También duplicaba el widget "ONLINE CAMS" del hero.
-   * Se desactiva el widget flotante por completo. Para reactivarlo,
-   * borrá este bloque return.
-   * ───────────────────────────────────────────────────────────────────── */
-  return;
-
   var DELAY_MS = 600;
   var DISMISS_KEY = 'twkLjPromoDismissed_v1';
 
