@@ -124,7 +124,12 @@
     ].join('');
 
     document.head.appendChild(css);
-    document.body.appendChild(root);
+    // 2026-06-06 FIX pantalla negra: el <body> tiene un transform (matrix)
+    // que rompe position:fixed → el gate se estiraba a TODA la pagina y el
+    // cartel +18 quedaba fuera de pantalla (solo se veia el fondo negro).
+    // Colgamos el gate del <html> (sin transform) para que fixed funcione
+    // y cubra solo el viewport.
+    (document.documentElement || document.body).appendChild(root);
 
     // 2026-05-09: forzar scroll al top antes de mostrar el modal. Chrome
     // restaura la posición de scroll de visitas anteriores, lo que hace
@@ -137,9 +142,11 @@
       document.body.scrollTop = 0;
     } catch(_){}
 
-    // Lock scroll while modal open
+    // Lock scroll while modal open (html + body, por el transform del body)
     var prevOverflow = document.documentElement.style.overflow;
+    var prevBodyOverflow = document.body.style.overflow;
     document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
 
     var enterBtn = root.querySelector('[data-action="enter"]');
     enterBtn.addEventListener('click', function(){
@@ -153,6 +160,7 @@
       setTimeout(function(){
         root.remove();
         document.documentElement.style.overflow = prevOverflow;
+        document.body.style.overflow = prevBodyOverflow;
         // Al salir del modal, asegurar que el scroll se restaura completamente
       }, 500);
     });
