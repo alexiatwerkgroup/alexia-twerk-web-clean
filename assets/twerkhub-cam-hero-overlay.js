@@ -206,9 +206,9 @@
     document.head.appendChild(st);
   }
 
-  // LiveSexAsian affiliate URL → asiáticas + BIG TITS con psid (verificado, carga OK)
+  // LiveJasmin affiliate URL → asiáticas + BIG TITS con psid (verificado, carga OK)
   var AFFILIATE_URL =
-    'https://www.livesexasian.com/es/free/chicas?psid=alexiatwerk&pstool=202_1&psprogram=revs&tags=big-tits';
+    'https://www.livejasmin.com/en/girls/asian?psid=alexiatwerk&pstool=202_1&psprogram=revs&tags=big-tits';
 
   function buildOverlay(){
     return [
