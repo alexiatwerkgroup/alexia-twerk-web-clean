@@ -2,9 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://alexiatwerkgroup.com/</loc>
+    <loc>https://twerkhub.lat/</loc>
     <image:image>
-      <image:loc>https://alexiatwerkgroup.com/logo-twerkhub.png</image:loc>
+      <image:loc>https://twerkhub.lat/logo-twerkhub.png</image:loc>
       <image:title>Twerkhub logo</image:title>
       <image:caption>The Twerkhub logo · pink + purple gradient mark</image:caption>
     </image:image>
@@ -15,7 +15,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/playlist/</loc>
+    <loc>https://twerkhub.lat/playlist/</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg</image:loc>
       <image:title>Лада Гоцци · Pharaoh Пломбир</image:title>
@@ -43,7 +43,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/wangong-lin</loc>
+    <loc>https://twerkhub.lat/creator/wangong-lin</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/Ba8udR5zP3g/hqdefault.jpg</image:loc>
       <image:title>WanGong Lin · profile hero</image:title>
@@ -51,7 +51,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/lada-gozzi</loc>
+    <loc>https://twerkhub.lat/creator/lada-gozzi</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg</image:loc>
       <image:title>Лада Гоцци · profile hero</image:title>
@@ -59,7 +59,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/nika-chill</loc>
+    <loc>https://twerkhub.lat/creator/nika-chill</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/HxThOzMTdmg/hqdefault.jpg</image:loc>
       <image:title>Nika Chill · profile hero</image:title>
@@ -67,7 +67,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/angela-idance</loc>
+    <loc>https://twerkhub.lat/creator/angela-idance</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/EX8pMpkLDYI/hqdefault.jpg</image:loc>
       <image:title>Angela · iDance profile hero</image:title>
@@ -75,7 +75,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/foxyen</loc>
+    <loc>https://twerkhub.lat/creator/foxyen</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/6aoJbhxfOn4/hqdefault.jpg</image:loc>
       <image:title>FOXYEN · profile hero</image:title>
@@ -83,7 +83,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/yurgenis</loc>
+    <loc>https://twerkhub.lat/creator/yurgenis</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/GSeYEJ3qIxU/hqdefault.jpg</image:loc>
       <image:title>Yurgenis · profile hero</image:title>
@@ -91,7 +91,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/debii-abreu</loc>
+    <loc>https://twerkhub.lat/creator/debii-abreu</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/k68KXBiflR8/hqdefault.jpg</image:loc>
       <image:title>Debii Abreu · profile hero</image:title>
@@ -99,7 +99,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/lena-indica</loc>
+    <loc>https://twerkhub.lat/creator/lena-indica</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/nIkHv5p6bAU/hqdefault.jpg</image:loc>
       <image:title>Lena Indica · profile hero</image:title>
@@ -107,7 +107,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/abasheva-yana</loc>
+    <loc>https://twerkhub.lat/creator/abasheva-yana</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/qmHxNAwhShY/hqdefault.jpg</image:loc>
       <image:title>Abasheva Yana · profile hero</image:title>
@@ -115,7 +115,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/emiliano-ferrari-villalobo</loc>
+    <loc>https://twerkhub.lat/creator/emiliano-ferrari-villalobo</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/Ye-jOmIomn4/hqdefault.jpg</image:loc>
       <image:title>Emiliano Ferrari Villalobo · profile hero</image:title>
@@ -123,7 +123,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/kadorin-hitomi</loc>
+    <loc>https://twerkhub.lat/creator/kadorin-hitomi</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/cJfDUDYaWYo/hqdefault.jpg</image:loc>
       <image:title>Kadorin Hitomi · profile hero</image:title>
@@ -131,7 +131,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/kato-dance-studio</loc>
+    <loc>https://twerkhub.lat/creator/kato-dance-studio</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/8yAG7toqnCM/hqdefault.jpg</image:loc>
       <image:title>Kato Dance Studio · Ciri Barbie World</image:title>
@@ -144,7 +144,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/befox-dance-studio</loc>
+    <loc>https://twerkhub.lat/creator/befox-dance-studio</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/Kj9T74htwrA/hqdefault.jpg</image:loc>
       <image:title>BEFOX Dance Studio · FOX Unholy</image:title>
@@ -152,47 +152,47 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/vr-kings</loc>
+    <loc>https://twerkhub.lat/creator/vr-kings</loc>
     <image:image>
-      <image:loc>https://alexiatwerkgroup.com/logo-twerkhub.png</image:loc>
+      <image:loc>https://twerkhub.lat/logo-twerkhub.png</image:loc>
       <image:title>VR KINGS · profile mark</image:title>
       <image:caption>VR KINGS · Seoul-based 180° VR fancam team · 8K stereoscopic capture</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/labarbie</loc>
+    <loc>https://twerkhub.lat/creator/labarbie</loc>
     <image:image>
-      <image:loc>https://alexiatwerkgroup.com/logo-twerkhub.png</image:loc>
+      <image:loc>https://twerkhub.lat/logo-twerkhub.png</image:loc>
       <image:title>LABARBIE · profile mark</image:title>
       <image:caption>LABARBIE · Medellín solo dancer · reggaetón floor specialist</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/patricia-atakora</loc>
+    <loc>https://twerkhub.lat/creator/patricia-atakora</loc>
     <image:image>
-      <image:loc>https://alexiatwerkgroup.com/logo-twerkhub.png</image:loc>
+      <image:loc>https://twerkhub.lat/logo-twerkhub.png</image:loc>
       <image:title>Patricia Atakora · profile mark</image:title>
       <image:caption>Patricia Atakora · London-based Ghanaian-British dancer · Afrobeats × twerk crossover</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/sugaarrbbaby</loc>
+    <loc>https://twerkhub.lat/creator/sugaarrbbaby</loc>
     <image:image>
-      <image:loc>https://alexiatwerkgroup.com/logo-twerkhub.png</image:loc>
+      <image:loc>https://twerkhub.lat/logo-twerkhub.png</image:loc>
       <image:title>Sugaarrbbaby · profile mark</image:title>
       <image:caption>Sugaarrbbaby · Moscow solo creator · MDC NRG-adjacent technique</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creator/nika-chilli-odessa</loc>
+    <loc>https://twerkhub.lat/creator/nika-chilli-odessa</loc>
     <image:image>
-      <image:loc>https://alexiatwerkgroup.com/logo-twerkhub.png</image:loc>
+      <image:loc>https://twerkhub.lat/logo-twerkhub.png</image:loc>
       <image:title>Nika Chilli (Odessa) · profile mark</image:title>
       <image:caption>Nika Chilli (Odessa) · Ukrainian solo dancer · Black Sea coastal scene · distinct from Nika Chill (LA)</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creators-taipei</loc>
+    <loc>https://twerkhub.lat/creators-taipei</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/Ba8udR5zP3g/hqdefault.jpg</image:loc>
       <image:title>Taipei roster collection</image:title>
@@ -200,7 +200,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creators-moscow</loc>
+    <loc>https://twerkhub.lat/creators-moscow</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg</image:loc>
       <image:title>Moscow heels school collection</image:title>
@@ -208,7 +208,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creators-colombia</loc>
+    <loc>https://twerkhub.lat/creators-colombia</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/QFDtSC89xDY/hqdefault.jpg</image:loc>
       <image:title>Colombia roster collection</image:title>
@@ -216,7 +216,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/creators-seoul</loc>
+    <loc>https://twerkhub.lat/creators-seoul</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/Kj9T74htwrA/hqdefault.jpg</image:loc>
       <image:title>Seoul stripdance hybrid collection</image:title>
@@ -224,15 +224,15 @@
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/blog/why-i-built-twerkhub</loc>
+    <loc>https://twerkhub.lat/blog/why-i-built-twerkhub</loc>
     <image:image>
-      <image:loc>https://alexiatwerkgroup.com/logo-twerkhub.png</image:loc>
+      <image:loc>https://twerkhub.lat/logo-twerkhub.png</image:loc>
       <image:title>Why I built Twerkhub · founder essay OG</image:title>
       <image:caption>Anti firestarter · founder essay · 8 years of curation, no algorithm, 2,178 members</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://alexiatwerkgroup.com/blog/moscow-dance-centre-nrg-history</loc>
+    <loc>https://twerkhub.lat/blog/moscow-dance-centre-nrg-history</loc>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg</image:loc>
       <image:title>MDC NRG · history article hero</image:title>
