@@ -1,0 +1,15 @@
+# robots.txt — twerkhub.lat
+# Permite el rastreo de todo el contenido y declara el sitemap.
+
+User-agent: *
+Allow: /
+
+# Páginas privadas / utilitarias sin valor SEO (no malgastar crawl budget)
+Disallow: /account
+Disallow: /admin-users
+Disallow: /auth-callback
+Disallow: /profile
+Disallow: /reset
+Disallow: /cdn-cgi/
+
+Sitemap: https://twerkhub.lat/sitemap.xml
