@@ -1384,11 +1384,8 @@ a.twk-hero-affiliate-overlay,
     <!-- 1 · Jenny (AVAILABLE NOW, CO 18, autoplay MP4, hover-unmute). Uses .twerkhub-coming-arch-contain so the full portrait frame is visible (no cover crop). -->
     <div class="twerkhub-coming-card twerkhub-coming-card-c1">
       <div class="twerkhub-coming-pill twerkhub-coming-pill-live">AVAILABLE NOW</div>
-      <video class="twerkhub-coming-arch-video" muted loop playsinline preload="none"
-             poster="/assets/models/jenny-poster.jpg"
-             onmouseenter="try{this.muted=false;this.currentTime=0;this.play();}catch(_){}"
-             onmouseleave="try{this.muted=true;this.pause();}catch(_){}"
-             ontouchstart="try{this.muted=!this.muted;this.play();}catch(_){}">
+      <video class="twerkhub-coming-arch-video" muted playsinline preload="none"
+             poster="/assets/models/jenny-poster.jpg">
         <source src="/assets/models/jenny.mp4" type="video/mp4">
       </video>
       <div class="twerkhub-coming-meta">
@@ -1406,11 +1403,8 @@ a.twk-hero-affiliate-overlay,
     <!-- 2 · Vegan (AVAILABLE NOW, CO 19, autoplay MP4, hover-unmute) — mismo sistema que el resto -->
     <div class="twerkhub-coming-card twerkhub-coming-card-c2">
       <div class="twerkhub-coming-pill twerkhub-coming-pill-live">AVAILABLE NOW</div>
-      <video class="twerkhub-coming-arch-video" muted loop playsinline preload="none"
-             poster="/assets/models/vegan-poster.jpg"
-             onmouseenter="try{this.muted=false;this.currentTime=0;this.play();}catch(_){}"
-             onmouseleave="try{this.muted=true;this.pause();}catch(_){}"
-             ontouchstart="try{this.muted=!this.muted;this.play();}catch(_){}">
+      <video class="twerkhub-coming-arch-video" muted playsinline preload="none"
+             poster="/assets/models/vegan-poster.jpg">
         <source src="/assets/models/vegan.mp4" type="video/mp4">
       </video>
       <div class="twerkhub-coming-meta">
@@ -1431,11 +1425,8 @@ a.twk-hero-affiliate-overlay,
          subtle gradient background that matches the card palette. -->
     <div class="twerkhub-coming-card twerkhub-coming-card-c3">
       <div class="twerkhub-coming-pill">VERY SOON</div>
-      <video class="twerkhub-coming-arch-video" muted loop playsinline preload="none"
-             poster="/assets/models/isabella-poster.svg"
-             onmouseenter="try{this.muted=false;this.currentTime=0;this.play();}catch(_){}"
-             onmouseleave="try{this.muted=true;this.pause();}catch(_){}"
-             ontouchstart="try{this.muted=!this.muted;this.play();}catch(_){}">
+      <video class="twerkhub-coming-arch-video" muted playsinline preload="none"
+             poster="/assets/models/isabella-poster.jpg">
         <source src="/assets/models/isabella.mp4" type="video/mp4">
       </video>
       <div class="twerkhub-coming-meta">
@@ -1454,11 +1445,8 @@ a.twk-hero-affiliate-overlay,
     <!-- 4 · Camila (2 weeks, AR 18, autoplay MP4, hover-unmute, VIP-only chip) -->
     <div class="twerkhub-coming-card twerkhub-coming-card-c4">
       <div class="twerkhub-coming-pill">VERY SOON</div>
-      <video class="twerkhub-coming-arch-video" muted loop playsinline preload="none"
-             poster="/assets/models/camila-poster.jpg"
-             onmouseenter="try{this.muted=false;this.currentTime=0;this.play();}catch(_){}"
-             onmouseleave="try{this.muted=true;this.pause();}catch(_){}"
-             ontouchstart="try{this.muted=!this.muted;this.play();}catch(_){}">
+      <video class="twerkhub-coming-arch-video" muted playsinline preload="none"
+             poster="/assets/models/camila-poster.jpg">
         <source src="/assets/models/camila.mp4" type="video/mp4">
       </video>
       <div class="twerkhub-coming-meta">
@@ -1492,42 +1480,68 @@ a.twk-hero-affiliate-overlay,
   </div>
   <div class="twerkhub-coming-foot">· Don't stay here · Move forward ·</div>
   <script>
-  /* Videos de modelos — UNO A LA VEZ.
-     Causa del bug intermitente: con 4 videos + 8 iframes, Chrome se queda sin
-     decodificadores de video y algunos quedan en cola (readyState 0) sin error,
-     por eso "a veces andan y a veces no". Solucion: nunca decodificar mas de UN
-     video de modelo a la vez.
-       - preload="none": no cargan al abrir la pagina.
-       - al entrar la seccion en pantalla arranca SOLO el primero (mudo).
-       - al pasar el mouse por una tarjeta, esa se reproduce (con sonido, via el
-         onmouseenter inline) y el evento 'play' pausa automaticamente a las demas.
-       - al sacar el mouse, si ninguna quedo reproduciendose, vuelve a animarse la primera. */
+  /* === Videos de modelos: RELAY secuencial (una se mueve, el resto queda fija) ===
+     Causa del bug intermitente: con 4 videos + ~8 iframes (YouTube del hero,
+     YouTube de #playlists y la cam) Chrome se queda sin decodificadores de video;
+     los que sobran quedan en cola (readyState 0) sin error -> "a veces andan, a veces no".
+     Solucion en dos partes:
+       1) RELAY: nunca decodificar mas de UN video de modelo a la vez. Arranca Jenny;
+          cuando termina queda fija en su ultimo frame y sigue Vegan; luego Isabella;
+          luego Camila; y vuelve a empezar. Hover/tap reproduce esa con sonido.
+       2) Pausar (about:blank) los iframes pesados cuando salen de pantalla, para
+          liberarles el decodificador a los videos visibles. Se restauran al volver. */
   (function(){
     var vids = [].slice.call(document.querySelectorAll('.twerkhub-coming-arch-video'));
     if(!vids.length) return;
-    function startFirst(){ try{ vids[0].muted = true; vids[0].play(); }catch(e){} }
-    vids.forEach(function(v){
-      // Regla central: cuando un video arranca, pausa a todos los demas.
-      v.addEventListener('play', function(){
-        vids.forEach(function(o){ if(o!==v){ try{ o.pause(); o.muted = true; }catch(e){} } });
+    var cur = 0, hovering = -1;
+    function stopOthers(except){
+      vids.forEach(function(v,i){ if(i!==except){ try{ v.pause(); v.muted = true; }catch(e){} } });
+    }
+    function play(i, withSound){
+      cur = i; var v = vids[i];
+      stopOthers(i);
+      try{ v.muted = !withSound; if(v.readyState < 1) v.load(); v.play(); }catch(e){}
+    }
+    vids.forEach(function(v, i){
+      // Al terminar queda fija en el ultimo frame (sin loop) y sigue la proxima.
+      v.addEventListener('ended', function(){
+        if(hovering === i){ try{ v.currentTime = 0; v.play(); }catch(e){} return; }
+        play((i + 1) % vids.length, false);
       });
-      // Al salir el mouse, si no quedo ninguno reproduciendose, reanima la primera.
-      v.addEventListener('mouseleave', function(){
-        setTimeout(function(){
-          if(!vids.some(function(o){ return !o.paused; })) startFirst();
-        }, 150);
-      });
+      v.addEventListener('mouseenter', function(){ hovering = i; try{ v.currentTime = 0; }catch(e){} play(i, true); });
+      v.addEventListener('mouseleave', function(){ hovering = -1; play(i, false); });
+      v.addEventListener('touchstart', function(){ hovering = i; play(i, true); }, { passive: true });
     });
-    // Arranca uno solo cuando la seccion entra en pantalla.
+    // Arranca / reanuda el relay cuando la seccion esta en pantalla; lo pausa al salir.
     if('IntersectionObserver' in window){
-      var started = false;
       var io = new IntersectionObserver(function(entries){
         entries.forEach(function(en){
-          if(en.isIntersecting && !started){ started = true; startFirst(); }
+          if(en.isIntersecting){ if(vids.every(function(v){ return v.paused; })) play(cur, false); }
+          else { vids.forEach(function(v){ try{ v.pause(); }catch(e){} }); }
         });
-      }, { threshold: 0.3 });
+      }, { threshold: 0.25 });
       io.observe(vids[0]);
-    } else { startFirst(); }
+    } else { play(0, false); }
+
+    // (2) Pausar iframes pesados fuera de pantalla para liberar decodificadores.
+    if('IntersectionObserver' in window){
+      var heavy = [].slice.call(document.querySelectorAll(
+        '#twerkhub-hh-iframe, #playlists iframe, #object_container_0, #object_container_0 iframe'
+      )).filter(function(el){ return el.tagName === 'IFRAME'; });
+      if(heavy.length){
+        var ifo = new IntersectionObserver(function(entries){
+          entries.forEach(function(en){
+            var f = en.target;
+            if(en.isIntersecting){
+              if(f.dataset.pausedSrc){ f.src = f.dataset.pausedSrc; delete f.dataset.pausedSrc; }
+            } else if(!f.dataset.pausedSrc && f.src && f.src !== 'about:blank'){
+              f.dataset.pausedSrc = f.src; f.src = 'about:blank';
+            }
+          });
+        }, { rootMargin: '250px' });
+        heavy.forEach(function(f){ ifo.observe(f); });
+      }
+    }
   })();
   </script>
 </section>
