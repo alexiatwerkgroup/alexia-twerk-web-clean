@@ -1492,21 +1492,42 @@ a.twk-hero-affiliate-overlay,
   </div>
   <div class="twerkhub-coming-foot">· Don't stay here · Move forward ·</div>
   <script>
-  /* Lazy-play de los videos de modelos: solo cargan/reproducen cuando entran en pantalla.
-     Evita que 4 videos + iframes carguen todos juntos y saturen el navegador.
-     El hover (onmouseenter/leave) sigue manejando el sonido. */
+  /* Videos de modelos — UNO A LA VEZ.
+     Causa del bug intermitente: con 4 videos + 8 iframes, Chrome se queda sin
+     decodificadores de video y algunos quedan en cola (readyState 0) sin error,
+     por eso "a veces andan y a veces no". Solucion: nunca decodificar mas de UN
+     video de modelo a la vez.
+       - preload="none": no cargan al abrir la pagina.
+       - al entrar la seccion en pantalla arranca SOLO el primero (mudo).
+       - al pasar el mouse por una tarjeta, esa se reproduce (con sonido, via el
+         onmouseenter inline) y el evento 'play' pausa automaticamente a las demas.
+       - al sacar el mouse, si ninguna quedo reproduciendose, vuelve a animarse la primera. */
   (function(){
-    var vids = document.querySelectorAll('.twerkhub-coming-arch-video');
+    var vids = [].slice.call(document.querySelectorAll('.twerkhub-coming-arch-video'));
     if(!vids.length) return;
-    function playMuted(v){ try{ if(v.paused){ v.muted = true; v.play(); } }catch(e){} }
-    if(!('IntersectionObserver' in window)){ Array.prototype.forEach.call(vids, playMuted); return; }
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        if(en.isIntersecting){ playMuted(en.target); }
-        else { try{ en.target.pause(); }catch(e){} }
+    function startFirst(){ try{ vids[0].muted = true; vids[0].play(); }catch(e){} }
+    vids.forEach(function(v){
+      // Regla central: cuando un video arranca, pausa a todos los demas.
+      v.addEventListener('play', function(){
+        vids.forEach(function(o){ if(o!==v){ try{ o.pause(); o.muted = true; }catch(e){} } });
       });
-    }, { threshold: 0.2 });
-    Array.prototype.forEach.call(vids, function(v){ io.observe(v); });
+      // Al salir el mouse, si no quedo ninguno reproduciendose, reanima la primera.
+      v.addEventListener('mouseleave', function(){
+        setTimeout(function(){
+          if(!vids.some(function(o){ return !o.paused; })) startFirst();
+        }, 150);
+      });
+    });
+    // Arranca uno solo cuando la seccion entra en pantalla.
+    if('IntersectionObserver' in window){
+      var started = false;
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting && !started){ started = true; startFirst(); }
+        });
+      }, { threshold: 0.3 });
+      io.observe(vids[0]);
+    } else { startFirst(); }
   })();
   </script>
 </section>
