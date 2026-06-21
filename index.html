@@ -558,6 +558,11 @@ a.twk-hero-affiliate-overlay,
     .twerkhub-fp-badge-gold{background:linear-gradient(135deg,#ffb454,#ff9500);color:#2a1400;box-shadow:0 4px 12px rgba(255,180,84,.4)}
     .twerkhub-fp-badge-purple{background:linear-gradient(135deg,#9d4edd,#ff2d87);box-shadow:0 4px 12px rgba(157,78,221,.4)}
     .twerkhub-fp-badge-vip{background:linear-gradient(135deg,#ffb454,#ff2d87);color:#fff;box-shadow:0 4px 12px rgba(255,180,84,.4)}
+    .twerkhub-fp-badge-new{font-size:10.5px;background:linear-gradient(120deg,#ff2d87,#ffb454,#1ee08f,#ff2d87);background-size:300% 300%;color:#0a0a14;font-weight:900;animation:twk-fp-new-shift 3s ease infinite,twk-fp-new-pulse 1.7s ease-in-out infinite}
+    @keyframes twk-fp-new-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    @keyframes twk-fp-new-pulse{0%,100%{box-shadow:0 6px 18px rgba(255,45,135,.45)}50%{box-shadow:0 8px 26px rgba(30,224,143,.6)}}
+    .twerkhub-fp-card-new::before{content:"";position:absolute;inset:0;border-radius:22px;pointer-events:none;z-index:4;animation:twk-fp-cardglow 2.2s ease-in-out infinite}
+    @keyframes twk-fp-cardglow{0%,100%{box-shadow:0 0 0 2px rgba(30,224,143,.45) inset}50%{box-shadow:0 0 0 2px rgba(255,45,135,.6) inset}}
     /* IDENTICAL inline rendering to .twerkhub-fp-badge — same line-height, same default display.
        NO inline-flex (that compressed the height vs the badges). */
     .twerkhub-fp-live{position:absolute;top:14px;right:14px;padding:6px 12px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#ff9000);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;z-index:3;box-shadow:0 4px 12px rgba(255,45,135,.4);white-space:nowrap}
@@ -618,19 +623,19 @@ a.twk-hero-affiliate-overlay,
   <div class="twerkhub-fp-grid">
 
     <!-- 0 · NEW · FEATURED · Models & Cheerleaders (novedad) -->
-    <a class="twerkhub-fp-card twerkhub-fp-card-featured" href="/models-cheerleaders/" data-no-dead="1">
+    <a class="twerkhub-fp-card twerkhub-fp-card-new" href="/models-cheerleaders/" data-no-dead="1">
       <div class="twerkhub-fp-thumb">
         <img height="360" width="480" src="https://i.ytimg.com/vi/K77irMNVp3k/sddefault.jpg" alt="Models & Cheerleaders · 4K fancam archive" loading="eager" fetchpriority="high" decoding="async" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/K77irMNVp3k/hqdefault.jpg';}">
         <div class="twerkhub-fp-scrim"></div>
-        <span class="twerkhub-fp-badge twerkhub-fp-badge-signature">✦ New drop</span>
-        <span class="twerkhub-fp-live">Just added</span>
+        <span class="twerkhub-fp-badge twerkhub-fp-badge-new">✦ NEW DROP</span>
+        <span class="twerkhub-fp-live">🔥 Just added</span>
       </div>
       <div class="twerkhub-fp-body">
         <div class="twerkhub-fp-kicker">/ New · models &amp; cheerleaders</div>
         <h3 class="twerkhub-fp-title">Models &amp; <em>cheerleaders.</em></h3>
         <p class="twerkhub-fp-desc">Brand-new drop. Models and cheerleader fancams in 4K — handpicked routines and sideline cuts. <strong>Fresh on Twerkhub.</strong></p>
         <div class="twerkhub-fp-meta">
-          <span>100 cuts · new</span>
+          <span>855 cuts · new</span>
           <span>⚡ Weekly drops</span>
         </div>
         <span class="twerkhub-fp-cta">Open playlist →</span>
