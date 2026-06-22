@@ -1,5 +1,5 @@
 /* ═══ TWERKHUB · +18 Age Gate (auto-detects YouTube embed-blocked videos) ═══
- * v20260426-p8
+ * v20260602-p9 (re-enabled AGE_GATE_ENABLED)
  *
  * 2026-04-26 fix p8: SAGRADA RULE #9 enforcement — Top-5 ranking videos
  * (`.rk-item` items in the hotrank sidebar) are PROTECTED. They never get
@@ -46,17 +46,13 @@
   if (window.TwkAgeGate) return;
 
   // ─────────────────────────────────────────────────────────────────
-  // ⚠️ AGE-GATE PAYWALL TEMPORARILY DISABLED — 2026-05-11
+  // ✅ AGE-GATE PAYWALL RE-ENABLED — 2026-06-02
   //
-  // Reason: Google needs to (re)index 162 age-restricted pages without
-  // seeing the paywall (otherwise risk: cloaking / soft-404 / thin content).
-  //
-  // TO RE-ENABLE after Google has indexed:
-  //   1) Verify in GSC that the 162 pages are indexed
-  //   2) Change AGE_GATE_ENABLED below from `false` to `true`
-  //   3) Bump cache buster, commit, push.
+  // Was temporarily disabled on 2026-05-11 for Google re-indexing.
+  // After 3 weeks, indexing window should be complete. Re-enabled
+  // per client request to restore +18 paywall functionality.
   // ─────────────────────────────────────────────────────────────────
-  var AGE_GATE_ENABLED = false;
+  var AGE_GATE_ENABLED = true;
 
   // ⚡ Stub the API when disabled OR when bot detected
   // window.__twkIsBot is set by /assets/twk-bot-detect.js (must load FIRST)
@@ -279,4 +275,40 @@
     // Big center lock — overlays the thumbnail so users see it from a distance
     if (!el.querySelector(':scope > .twk-blocked-lock')) {
       var lock = document.createElement('span');
-      lock.className =
+      lock.className = 'twk-blocked-lock';
+      lock.textContent = '\uD83D\uDD12';
+      el.appendChild(lock);
+    }
+  }
+
+  function decorateAll() {
+    var blocked = readBlocked();
+    for (var vid in blocked) {
+      if (blocked.hasOwnProperty(vid)) decorateAllForVid(vid);
+    }
+  }
+
+  function init() {
+    injectStyle();
+    purgeProtectedFromBlocked();
+    decorateAll();
+  }
+
+  window.TwkAgeGate = {
+    isBlocked: isBlocked,
+    markBlocked: markBlocked,
+    show: show,
+    showOverlay: showOverlay,
+    hideOverlay: hideOverlay,
+    handleYTError: handleYTError,
+    decorateAll: decorateAll,
+    isProtected: isProtected,
+    getProtectedVids: getProtectedVids
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();

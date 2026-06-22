@@ -1,0 +1,874 @@
+<!doctype html>
+<!-- CACHE BUST: 2026-05-10T23:45:00Z -->
+<html lang="en">
+<head>
+<script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
+<script src="/assets/twk-guardian.js?v=20260509-g1"></script>
+<script defer src="/assets/twk-paywall-guard.js?v=20260512-pg3"></script>
+<script>(function(){try{
+['twk_playlist_idx','twk_playlist_resume','playlistIndex','lastVideoIndex','currentVideoIndex','playlist_current','twk_last_video','resumeIndex']
+.forEach(function(k){try{localStorage.removeItem(k);sessionStorage.removeItem(k);}catch(e){}});
+if(/\/playlist\//i.test(location.pathname) && location.hash && /^#v?\d+$/i.test(location.hash)){
+  history.replaceState(null,'',location.pathname+location.search);
+}
+}catch(e){}})();</script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
+<script data-twk="thumb-v4">(function(){function tryNext(i,vid,arr,idx){if(idx>=arr.length){i.style.display='none';return;}i.onerror=function(){tryNext(i,vid,arr,idx+1);};i.onload=function(){if(i.naturalWidth<=120){tryNext(i,vid,arr,idx+1);}};i.src='https://i.ytimg.com/vi/'+vid+'/'+arr[idx];}function fix(){document.querySelectorAll('img').forEach(function(i){var m=(i.src||'').match(/ytimg\.com\/vi\/([\w-]{11})/);var vid=i.dataset.vid||(m?m[1]:null);if(!vid)return;if(i.loading==='lazy')i.loading='eager';if(!i.complete||i.naturalWidth<=120){tryNext(i,vid,['maxresdefault.jpg','hqdefault.jpg','mqdefault.jpg','sddefault.jpg','0.jpg'],0);}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+<style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
+<script>(function(){function force(){try{var imgs=document.querySelectorAll('img[src*="i.ytimg.com"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];im.setAttribute('loading','eager');im.style.opacity='1';im.style.visibility='visible';im.style.display='block';if(!im.dataset.twkOrigSrc){im.dataset.twkOrigSrc=im.getAttribute('src')||'';}var s=im.getAttribute('src');if(s)im.src=s;}}catch(_){}}function recover(){try{var bad=document.querySelectorAll('img[src*="thumb-unavailable"]');for(var i=0;i<bad.length;i++){var im=bad[i];if(im.dataset.twkOrigSrc){im.src=im.dataset.twkOrigSrc;}}}catch(_){}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){force();recover();});}else{force();recover();}setTimeout(function(){force();recover();},500);setTimeout(function(){force();recover();},2000);})();</script>
+<style id="twk-sr-only-seo">.twk-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<title>Hottest Cosplay &amp; Fancam · Twerkhub</title>
+<meta name="description" content="The hottest cosplay and fancam videos on YouTube — convention floor, studio cuts, K-pop fancams. Curated by Twerkhub."/>
+<meta name="keywords" content="twerk videos, viral dance, youtube playlist, alexia twerk group, hottest twerk, trending dance, twerkhub">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"/>
+<link rel="canonical" href="https://twerkhub.lat/playlist-hottest-cosplay-fancam/">>
+<link rel="alternate" hreflang="en" href="https://twerkhub.lat/playlist-hottest-cosplay-fancam/">
+<link rel="alternate" hreflang="ru" href="https://twerkhub.lat/ru/playlist/">
+<link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/playlist-hottest-cosplay-fancam/">
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Twerkhub"/>
+<meta property="og:title" content="Hottest Cosplay &amp; Fancam · Twerkhub"/>
+<meta property="og:description" content="The hottest cosplay and fancam videos on YouTube — convention floor, studio cuts, K-pop fancams. Curated by Twerkhub."/>
+<meta property="og:url" content="https://twerkhub.lat/playlist-hottest-cosplay-fancam/"/>
+<!-- Social share image: Лада Гоцци · Let Da Munna Rain · Pharaoh Pharaoh thumbnail
+     (video id DwJQZt7TaTM from the curated playlist). YouTube's maxresdefault
+     serves 1280×720 which is the ideal OG card ratio. Fallback to hqdefault
+     (480×360) is handled by platforms that fail to fetch maxres. -->
+<meta property="og:image" content="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg"/>
+<meta property="og:image:secure_url" content="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg"/>
+<meta property="og:image:type" content="image/jpeg"/>
+<meta property="og:image:width" content="480"/>
+<meta property="og:image:height" content="360"/>
+<meta property="og:image:alt" content="Hottest Cosplay &amp; Fancam · Twerkhub"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Hottest Cosplay &amp; Fancam · Twerkhub"/>
+<meta name="twitter:description" content="The hottest cosplay and fancam videos on YouTube — convention floor, studio cuts, K-pop fancams. Curated by Twerkhub."/>
+<meta name="twitter:image" content="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg"/>
+<meta name="twitter:image:alt" content="Hottest Cosplay &amp; Fancam · Twerkhub"/>
+<!-- Additional Discord / WhatsApp previewer compatibility hints -->
+<link rel="image_src" href="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg"/>
+<meta itemprop="image" content="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg"/>
+<!-- Primary image of the page · explicit schema.org ImageObject so Google
+     uses this exact thumbnail in SERP rich results, Google Discover feeds,
+     and image search. Also sets up a cover-hero that can be read by any
+     crawler that looks at <link rel="preload as=image">. -->
+<link rel="preload" as="image" href="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg" fetchpriority="high"/>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ImageObject", "contentUrl": "https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg", "url": "https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg", "width": 480, "height": 360, "caption": "Hottest Cosplay & Fancam · Twerkhub", "representativeOfPage": true}</script>
+<meta name="rating" content="mature"/>
+<meta name="theme-color" content="#05050a"/>
+<link rel="icon" href="/favicon-32.png" sizes="32x32"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com" crossorigin>
+<link rel="preconnect" href="https://www.youtube.com" crossorigin>
+
+<style>*{box-sizing:border-box;margin:0;padding:0}body.twerkhub-pl-page{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;min-height:100vh;line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:80px}body.twerkhub-pl-page a{color:inherit;text-decoration:none}.twerkhub-pl-visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.twerkhub-pl-skip{position:absolute;top:-60px;left:12px;z-index:9999;padding:10px 16px;background:#1ee08f;color:#000;border-radius:6px;font-weight:700;transition:top .2s}.twerkhub-pl-skip:focus{top:12px;outline:2px solid #ffb454}</style>
+
+<link rel="preload" href="/assets/twerkhub-page.css?v=20260507-pg5-no-pink-lines" as="style">
+<link rel="stylesheet" href="/assets/twerkhub-page.css?v=20260507-pg5-no-pink-lines" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20260507-b5-no-pink-lines">
+</noscript>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap&family=Anton" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Hottest Cosplay & Fancam · Twerkhub", "url": "https://twerkhub.lat/playlist-hottest-cosplay-fancam/", "description": "The hottest cosplay and fancam videos on YouTube — convention floor, studio cuts, K-pop fancams. Curated by Twerkhub.", "inLanguage": "en", "isPartOf": {"@type": "WebSite", "name": "Twerkhub", "url": "https://twerkhub.lat/"}, "hasPart": [{"@type": "VideoObject", "name": "2026 CosForce03甜心女僕 Day2 ft. Miiya(みーや) & Nazo 4K HDR 高畫質 (2160P)", "thumbnailUrl": "https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=qoho-dzADrc", "embedUrl": "https://www.youtube.com/embed/qoho-dzADrc", "inLanguage": "en", "isFamilyFriendly": false, "position": 1}, {"@type": "VideoObject", "name": "251003 부산딸램 쩡이 - 짧은치마 (Cover. AOA) | 세로 직캠 | 부산 로케이션 촬영 [KPOP FanCam 4K]", "thumbnailUrl": "https://i.ytimg.com/vi/wLWDZQmzPOY/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=wLWDZQmzPOY", "embedUrl": "https://www.youtube.com/embed/wLWDZQmzPOY", "inLanguage": "en", "isFamilyFriendly": false, "position": 2}, {"@type": "VideoObject", "name": "[FanCam 8K] ZIA(지아) - Kiss Me(키스해죠) cover.Banana Girl | UMC모터쇼 7차 \"걸크러쉬 플러스\" | 230325", "thumbnailUrl": "https://i.ytimg.com/vi/0_PlAGCSf5g/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=0_PlAGCSf5g", "embedUrl": "https://www.youtube.com/embed/0_PlAGCSf5g", "inLanguage": "en", "isFamilyFriendly": false, "position": 3}, {"@type": "VideoObject", "name": "CosFANS 04-Coser:孫齊", "thumbnailUrl": "https://i.ytimg.com/vi/dY6-eOmVpgQ/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=dY6-eOmVpgQ", "embedUrl": "https://www.youtube.com/embed/dY6-eOmVpgQ", "inLanguage": "en", "isFamilyFriendly": false, "position": 4}, {"@type": "VideoObject", "name": "2026動漫展FF46 日本coser Kikka IG kikka_cos", "thumbnailUrl": "https://i.ytimg.com/vi/U0-_hknfcqE/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=U0-_hknfcqE", "embedUrl": "https://www.youtube.com/embed/U0-_hknfcqE", "inLanguage": "en", "isFamilyFriendly": false, "position": 5}, {"@type": "VideoObject", "name": "20260315 CosForce03｜Nazo eirian & miiya｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8", "thumbnailUrl": "https://i.ytimg.com/vi/YjLy9z57jLA/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=YjLy9z57jLA", "embedUrl": "https://www.youtube.com/embed/YjLy9z57jLA", "inLanguage": "en", "isFamilyFriendly": false, "position": 6}, {"@type": "VideoObject", "name": "[FanCam 8K] GIRL CRUSH TAERI 촬영회 | 착장(3/4) 컨셉(1/3) 고정캠 | 걸크러쉬 태리 촬영회 | 230121", "thumbnailUrl": "https://i.ytimg.com/vi/K77irMNVp3k/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=K77irMNVp3k", "embedUrl": "https://www.youtube.com/embed/K77irMNVp3k", "inLanguage": "en", "isFamilyFriendly": false, "position": 7}, {"@type": "VideoObject", "name": "20260315 CosForce03｜Yuumeilyn玲兒｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8", "thumbnailUrl": "https://i.ytimg.com/vi/B5ggxUkZ1ZI/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=B5ggxUkZ1ZI", "embedUrl": "https://www.youtube.com/embed/B5ggxUkZ1ZI", "inLanguage": "en", "isFamilyFriendly": false, "position": 8}, {"@type": "VideoObject", "name": "名古屋オートフェスティバル りこぴん セクシーナース③の①", "thumbnailUrl": "https://i.ytimg.com/vi/GEVxQV9kuVE/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=GEVxQV9kuVE", "embedUrl": "https://www.youtube.com/embed/GEVxQV9kuVE", "inLanguage": "en", "isFamilyFriendly": false, "position": 9}, {"@type": "VideoObject", "name": "大阪オートメッセ 2025 メガキングドットコム MAKI まおしゃん あんじゅ ちゃんひろ 峰のりえ まりえ 菅生れいか セクシーモデル7名 ②の①", "thumbnailUrl": "https://i.ytimg.com/vi/hDFe_Lq-S1U/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=hDFe_Lq-S1U", "embedUrl": "https://www.youtube.com/embed/hDFe_Lq-S1U", "inLanguage": "en", "isFamilyFriendly": false, "position": 10}, {"@type": "VideoObject", "name": "20241227 Taipei Shot Expo｜台灣寫真博覽會｜TinyAsa｜粉絲互動時間｜NIKON Z8 70 200 F2.8 #TinyAsa", "thumbnailUrl": "https://i.ytimg.com/vi/ChSRVLSMrrI/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=ChSRVLSMrrI", "embedUrl": "https://www.youtube.com/embed/ChSRVLSMrrI", "inLanguage": "en", "isFamilyFriendly": false, "position": 11}, {"@type": "VideoObject", "name": "20260315 CosForce03｜Tiny Asa｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8", "thumbnailUrl": "https://i.ytimg.com/vi/22so6zC3ww4/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=22so6zC3ww4", "embedUrl": "https://www.youtube.com/embed/22so6zC3ww4", "inLanguage": "en", "isFamilyFriendly": false, "position": 12}, {"@type": "VideoObject", "name": "[FanCam 8K] GIRL CRUSH TAERI 촬영회 | 착장(2/4) 컨셉(2/3) 무빙캠 | 걸크러쉬 태리 촬영회 | 230121", "thumbnailUrl": "https://i.ytimg.com/vi/1n3BZq66DTU/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=1n3BZq66DTU", "embedUrl": "https://www.youtube.com/embed/1n3BZq66DTU", "inLanguage": "en", "isFamilyFriendly": false, "position": 13}, {"@type": "VideoObject", "name": "名古屋オートフェスティバル りこぴん セクシーナース③の②", "thumbnailUrl": "https://i.ytimg.com/vi/r9ygRjwDRwg/hqdefault.jpg", "uploadDate": "2026-04-25T12:00:00Z", "contentUrl": "https://www.youtube.com/watch?v=r9ygRjwDRwg", "embedUrl": "https://www.youtube.com/embed/r9ygRjwDRwg", "inLanguage": "en", "isFamilyFriendly": false, "position": 14}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "itemListOrder": "https://schema.org/ItemListOrderAscending", "numberOfItems": 14, "itemListElement": [{"@type": "ListItem", "position": 1, "item": {"@type": "VideoObject", "name": "2026 CosForce03甜心女僕 Day2 ft. Miiya(みーや) & Nazo 4K HDR 高畫質 (2160P)", "thumbnailUrl": "https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=qoho-dzADrc", "embedUrl": "https://www.youtube.com/embed/qoho-dzADrc", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 2, "item": {"@type": "VideoObject", "name": "251003 부산딸램 쩡이 - 짧은치마 (Cover. AOA) | 세로 직캠 | 부산 로케이션 촬영 [KPOP FanCam 4K]", "thumbnailUrl": "https://i.ytimg.com/vi/wLWDZQmzPOY/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=wLWDZQmzPOY", "embedUrl": "https://www.youtube.com/embed/wLWDZQmzPOY", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 3, "item": {"@type": "VideoObject", "name": "[FanCam 8K] ZIA(지아) - Kiss Me(키스해죠) cover.Banana Girl | UMC모터쇼 7차 \"걸크러쉬 플러스\" | 230325", "thumbnailUrl": "https://i.ytimg.com/vi/0_PlAGCSf5g/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=0_PlAGCSf5g", "embedUrl": "https://www.youtube.com/embed/0_PlAGCSf5g", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 4, "item": {"@type": "VideoObject", "name": "CosFANS 04-Coser:孫齊", "thumbnailUrl": "https://i.ytimg.com/vi/dY6-eOmVpgQ/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=dY6-eOmVpgQ", "embedUrl": "https://www.youtube.com/embed/dY6-eOmVpgQ", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 5, "item": {"@type": "VideoObject", "name": "2026動漫展FF46 日本coser Kikka IG kikka_cos", "thumbnailUrl": "https://i.ytimg.com/vi/U0-_hknfcqE/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=U0-_hknfcqE", "embedUrl": "https://www.youtube.com/embed/U0-_hknfcqE", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 6, "item": {"@type": "VideoObject", "name": "20260315 CosForce03｜Nazo eirian & miiya｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8", "thumbnailUrl": "https://i.ytimg.com/vi/YjLy9z57jLA/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=YjLy9z57jLA", "embedUrl": "https://www.youtube.com/embed/YjLy9z57jLA", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 7, "item": {"@type": "VideoObject", "name": "[FanCam 8K] GIRL CRUSH TAERI 촬영회 | 착장(3/4) 컨셉(1/3) 고정캠 | 걸크러쉬 태리 촬영회 | 230121", "thumbnailUrl": "https://i.ytimg.com/vi/K77irMNVp3k/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=K77irMNVp3k", "embedUrl": "https://www.youtube.com/embed/K77irMNVp3k", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 8, "item": {"@type": "VideoObject", "name": "20260315 CosForce03｜Yuumeilyn玲兒｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8", "thumbnailUrl": "https://i.ytimg.com/vi/B5ggxUkZ1ZI/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=B5ggxUkZ1ZI", "embedUrl": "https://www.youtube.com/embed/B5ggxUkZ1ZI", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 9, "item": {"@type": "VideoObject", "name": "名古屋オートフェスティバル りこぴん セクシーナース③の①", "thumbnailUrl": "https://i.ytimg.com/vi/GEVxQV9kuVE/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=GEVxQV9kuVE", "embedUrl": "https://www.youtube.com/embed/GEVxQV9kuVE", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 10, "item": {"@type": "VideoObject", "name": "大阪オートメッセ 2025 メガキングドットコム MAKI まおしゃん あんじゅ ちゃんひろ 峰のりえ まりえ 菅生れいか セクシーモデル7名 ②の①", "thumbnailUrl": "https://i.ytimg.com/vi/hDFe_Lq-S1U/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=hDFe_Lq-S1U", "embedUrl": "https://www.youtube.com/embed/hDFe_Lq-S1U", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 11, "item": {"@type": "VideoObject", "name": "20241227 Taipei Shot Expo｜台灣寫真博覽會｜TinyAsa｜粉絲互動時間｜NIKON Z8 70 200 F2.8 #TinyAsa", "thumbnailUrl": "https://i.ytimg.com/vi/ChSRVLSMrrI/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=ChSRVLSMrrI", "embedUrl": "https://www.youtube.com/embed/ChSRVLSMrrI", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 12, "item": {"@type": "VideoObject", "name": "20260315 CosForce03｜Tiny Asa｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8", "thumbnailUrl": "https://i.ytimg.com/vi/22so6zC3ww4/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=22so6zC3ww4", "embedUrl": "https://www.youtube.com/embed/22so6zC3ww4", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 13, "item": {"@type": "VideoObject", "name": "[FanCam 8K] GIRL CRUSH TAERI 촬영회 | 착장(2/4) 컨셉(2/3) 무빙캠 | 걸크러쉬 태리 촬영회 | 230121", "thumbnailUrl": "https://i.ytimg.com/vi/1n3BZq66DTU/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=1n3BZq66DTU", "embedUrl": "https://www.youtube.com/embed/1n3BZq66DTU", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}, {"@type": "ListItem", "position": 14, "item": {"@type": "VideoObject", "name": "名古屋オートフェスティバル りこぴん セクシーナース③の②", "thumbnailUrl": "https://i.ytimg.com/vi/r9ygRjwDRwg/hqdefault.jpg", "contentUrl": "https://www.youtube.com/watch?v=r9ygRjwDRwg", "embedUrl": "https://www.youtube.com/embed/r9ygRjwDRwg", "inLanguage": "en", "isFamilyFriendly": false, "isAccessibleForFree": true}}]}</script>
+
+<script>
+(function(){
+  function eager(img){
+    if (!img || img.dataset.twkEager) return;
+    img.dataset.twkEager = '1';
+    if (img.loading !== 'eager') img.loading = 'eager';
+    if (!img.fetchPriority || img.fetchPriority === 'auto') img.fetchPriority = 'high';
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.vthumb img, .rk-thumb img, .twerkhub-fp-thumb img').forEach(eager);
+  });
+  if (typeof MutationObserver !== 'undefined'){
+    new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        m.addedNodes && m.addedNodes.forEach(function(n){
+          if (n.nodeType !== 1) return;
+          if (n.matches && n.matches('.vthumb img, .rk-thumb img, .twerkhub-fp-thumb img')) eager(n);
+          if (n.querySelectorAll) n.querySelectorAll('.vthumb img, .rk-thumb img, .twerkhub-fp-thumb img').forEach(eager);
+        });
+      });
+    }).observe(document.documentElement, { childList:true, subtree:true });
+  }
+})();
+</script>
+<!-- twk-schema-v2 -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://twerkhub.lat/"},{"@type":"ListItem","position":2,"name":"Playlist","item":"https://twerkhub.lat/playlist/"}]}</script>
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YSFR7FHCLS', { send_page_view: true });
+</script>
+<!-- TWK_DATA_LAYER_V1 -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoObject","uploadDate":"2026-04-20T12:00:00+00:00""name":"Лада Гоцци // Let Da Munna Rain // Pharaoh - Пломбир","description":"Original by Школа Танцев MDC NRG Moscow Dance Centre. Curated in the Twerk Hub Leaks vault on Twerkhub. runtime 1:26.","thumbnailUrl":["https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg","https://i.ytimg.com/vi/DwJQZt7TaTM/maxresdefault.jpg"],"contentUrl":"https://www.youtube.com/watch?v=DwJQZt7TaTM","embedUrl":"https://www.youtube.com/embed/DwJQZt7TaTM","isFamilyFriendly":false,"isPartOf":{"@type":"CollectionPage","name":"Twerk Hub Leaks · Twerkhub","url":"https://twerkhub.lat/twerk-hub-leaks/"},"publisher":{"@type":"Organization","name":"Twerkhub","url":"https://twerkhub.lat/","logo":{"@type":"ImageObject","url":"https://twerkhub.lat/logo-twerkhub.png"}},"inLanguage":"en","author":{"@type":"Person","name":"Школа Танцев MDC NRG Moscow Dance Centre"},"duration":"PT1M26S","url":"https://twerkhub.lat/playlist/","mainEntityOfPage":{"@type":"WebPage","@id":"https://twerkhub.lat/playlist/"},"isAccessibleForFree":true,"uploadDate":"2026-04-20T12:00:00Z"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://twerkhub.lat/"},{"@type":"ListItem","position":2,"name":"Twerk Hub Leaks","item":"https://twerkhub.lat/twerk-hub-leaks/"},{"@type":"ListItem","position":3,"name":"Лада Гоцци // Let Da Munna Rain // Pharaoh - Пломбир","item":"https://twerkhub.lat/playlist/"}]}</script>
+<!-- /TWK_DATA_LAYER_V1 -->
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20260510-p32-nav-sticky">
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<!-- CLOUDFLARE CACHE PURGE 6700 - CRITICAL POPUP BLOCKER (2026-05-11): Prevents modal from opening on pages with inline player -->
+<script>
+(function(){
+  // Flag to block modal.open() from theater.js on pages with #twerkhub-pl-player
+  window.__TwkBlockModal = !!document.getElementById('twerkhub-pl-player');
+
+  if (window.__TwkBlockModal) {
+    console.log('[TwkBlocker] Inline player detected. Blocking modal completely.');
+    // Store original window.open reference in case needed
+    var originalOpen = window.open;
+
+    // Preemptively hook into the global scope to intercept theater.js's open() function
+    // This uses Object.defineProperty to intercept any future assignment
+    var modalBlockerHooked = false;
+    function ensureModalBlockerActive() {
+      if (modalBlockerHooked) return;
+      modalBlockerHooked = true;
+
+      // Wait for theater module to initialize, then hook its open function
+      var hookAttempts = 0;
+      var hookInterval = setInterval(function(){
+        hookAttempts++;
+        // Check if TwerkubPlTheater module exists (it should after theater.js loads)
+        if (window.TwerkubPlTheater && typeof window.TwerkubPlTheater.open === 'function') {
+          clearInterval(hookInterval);
+          console.log('[TwkBlocker] Hooked into TwerkubPlTheater.open()');
+          // Already blocked by our earlier changes, but this confirms it's loaded
+        } else if (hookAttempts > 60) {
+          // After 30 seconds, give up
+          clearInterval(hookInterval);
+        }
+      }, 500);
+    }
+
+    // Ensure blocker activates once DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', ensureModalBlockerActive);
+    } else {
+      ensureModalBlockerActive();
+    }
+  }
+})();
+</script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,.twk-hero-affiliate-overlay,[class*="video-shield-cta"],[class*="hero-affiliate-overlay"]{display:none !important;visibility:hidden !important;pointer-events:none !important;}
+</style>
+<link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+
+<!-- TWK VIEWED THUMBNAILS PATCH v1: visual-only, no player/embed changes -->
+<style id="twk-viewed-thumbnails-v1">
+.vcard.twk-viewed,.card.twk-viewed,.mini-card.twk-viewed,.rk-item.twk-viewed{position:relative;}
+.twk-viewed .vthumb img,.twk-viewed .thumb img,.twk-viewed .smart-card-thumb img,.twk-viewed .autoplay-thumb img{filter:grayscale(1) brightness(.54) contrast(.94)!important;opacity:.72!important;transition:filter .18s ease,opacity .18s ease!important;}
+.twk-viewed .vthumb,.twk-viewed .thumb,.twk-viewed .smart-card-thumb,.twk-viewed .autoplay-thumb{position:relative!important;}
+.twk-viewed .vthumb::before,.twk-viewed .thumb::before,.twk-viewed .smart-card-thumb::before,.twk-viewed .autoplay-thumb::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.45));}
+.twk-viewed-badge{position:absolute;left:10px;top:10px;z-index:5;display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:rgba(3,5,8,.82);border:1px solid rgba(255,255,255,.18);color:#fff;font:800 10px/1 system-ui,-apple-system,Segoe UI,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 8px 22px rgba(0,0,0,.28);pointer-events:none;}
+.twk-viewed-badge::before{content:"✓";font-size:10px;color:#8affb8;}
+.twk-viewed:hover .vthumb img,.twk-viewed:hover .thumb img,.twk-viewed:hover .smart-card-thumb img,.twk-viewed:hover .autoplay-thumb img{filter:grayscale(.72) brightness(.72) contrast(.98)!important;opacity:.82!important;}
+</style>
+</head>
+<body class="twerkhub-pl-page twerkhub-pl-clean twerkhub-pl-theater twerkhub-ph-theme" data-page="playlist-index">
+<a href="#main" class="twk-sr-only">Skip to content</a>
+
+
+<a class="twerkhub-pl-skip" href="#twerkhub-pl-main">Skip to main content</a>
+
+
+
+
+
+
+
+
+
+
+<!-- TWK_NAV_V1 -->
+<style id="twk-nav-v1-css">
+.twk-nav-v1{position:sticky!important;top:0!important;z-index:9999!important;background:rgba(5,5,10,.94)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)!important;margin:0!important;width:100%!important;display:block!important}
+.twk-nav-v1-inner{max-width:1480px!important;margin:0 auto!important;padding:14px 26px!important;display:flex!important;align-items:center!important;gap:14px!important;flex-wrap:nowrap!important;grid-template-columns:none!important}
+.twk-nav-v1-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;flex-shrink:0}
+.twk-nav-v1-brand img{width:auto;height:34px;max-width:140px;border-radius:6px;display:block;object-fit:contain}
+.twk-nav-v1-links{display:flex;align-items:center;gap:2px;flex-wrap:nowrap;margin-left:auto;white-space:nowrap}
+.twk-nav-v1-links a{position:relative;padding:10px 14px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;line-height:1;transition:color .22s ease,background .22s ease,transform .2s ease;white-space:nowrap}
+.twk-nav-v1-links a:hover{background:rgba(255,255,255,.05);color:#fff;transform:translateY(-1px)}
+.twk-nav-v1-links a.is-active{color:#fff;background:transparent}
+.twk-nav-v1-links a.is-active::after{content:"";position:absolute;left:18%;right:18%;bottom:2px;height:2px;border-radius:2px;background:linear-gradient(90deg,#ff2d87,#ffb454);box-shadow:0 0 10px rgba(255,45,135,.55)}
+.twk-nav-v1-links a.twk-nav-v1-hot{background:linear-gradient(135deg,rgba(255,45,135,.18),rgba(255,180,84,.18));color:#ff7eb0;border:1px solid rgba(255,45,135,.45);padding-left:14px}
+.twk-nav-v1-links a.twk-nav-v1-hot:hover{background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;border-color:transparent;box-shadow:0 6px 18px rgba(255,45,135,.4)}
+.twk-nav-v1-live{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(30,224,143,.1);border:1px solid rgba(30,224,143,.5);color:#1ee08f;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;margin-left:6px}
+.twk-nav-v1-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#1ee08f;box-shadow:0 0 8px #1ee08f;animation:twkLivePulse 2s ease-in-out infinite}
+@keyframes twkLivePulse{0%,100%{opacity:1}50%{opacity:.4}}
+.twk-nav-v1-lang{display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:3px;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.twk-nav-v1-lang a{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;color:rgba(230,230,240,.55);text-decoration:none;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.18em;line-height:1;text-transform:uppercase;transition:color .15s,background .15s,box-shadow .25s,transform .2s}
+.twk-nav-v1-lang a:hover{color:#fff;background:rgba(255,255,255,.06);transform:translateY(-1px)}
+.twk-nav-v1-lang a.is-active{color:#fff;padding:6px 12px;background:linear-gradient(135deg,#ff2d87,#ff9000);box-shadow:0 4px 12px rgba(255,45,135,.4);letter-spacing:.22em;border:0}
+.twk-nav-v1-lang a.is-active::before{content:"";display:inline-block;width:11px;height:11px;margin-right:5px;margin-top:-2px;vertical-align:middle;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231ee08f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 15 12 9 18 15'/></svg>");background-repeat:no-repeat;background-size:contain;filter:drop-shadow(0 0 5px rgba(30,224,143,.85)) drop-shadow(0 0 10px rgba(30,224,143,.45));animation:twk-lang-pulse 1.3s ease-in-out infinite;will-change:transform,opacity}
+@keyframes twk-lang-pulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-3px);opacity:.5}}
+@media(max-width:880px){.twk-nav-v1-lang{display:none}}
+@media(max-width:1180px){.twk-nav-v1-links a{padding:8px 10px;font-size:10.5px;letter-spacing:.08em}}
+@media(max-width:1024px){.twk-nav-v1-links{gap:0}.twk-nav-v1-links a{padding:8px 8px;font-size:10px;letter-spacing:.06em}.twk-nav-v1-live{font-size:9px;padding:5px 9px}}
+@media(max-width:880px){.twk-nav-v1-inner{padding:10px 14px;gap:8px}.twk-nav-v1-links{gap:1px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:2px}.twk-nav-v1-links a{padding:7px 8px;font-size:10px}.twk-nav-v1-brand span{display:none}.twk-nav-v1-live{display:none}}
+.twerkhub-pl-thumb,.vthumb,.rk-thumb,.twerkhub-fp-thumb,.twerkhub-club-thumb{background:linear-gradient(135deg,#1a0a1f 0%,#2a0f3d 50%,#0a0a14 100%)!important}
+.twerkhub-pl-thumb img,.vthumb img,.rk-thumb img,.twerkhub-fp-thumb img,.twerkhub-club-thumb img{background:transparent}
+</style>
+<nav class="twk-nav-v1" aria-label="Primary" data-twk-nav-v1>
+  <div class="twk-nav-v1-inner">
+    <a class="twk-nav-v1-brand" href="/" aria-label="Twerkhub · home">
+      <img src="/logo-twerkhub.png" alt="Twerkhub" width="120" height="34" decoding="async">
+      <span>TWERKHUB · DEPLOY OK · 20260510</span>
+    </a>
+    <div class="twk-nav-v1-links">
+      <a href="/" data-nav="home">HOME</a>
+      <a href="/#private-models" data-nav="exclusive">EXCLUSIVE</a>
+      <a href="/#playlists" data-nav="playlists">PLAYLISTS</a>
+      <a href="/creators" data-nav="creators">CREATORS</a>
+      <a href="/alexia-video-packs" class="twk-nav-v1-hot" data-nav="hotpacks">HOT PACKS</a>
+      <a href="/community.html" data-nav="community">COMMUNITY</a>
+      <a href="/membership" data-nav="membership">MEMBERSHIP</a>
+      <a href="/account" data-nav="account">MY ACCOUNT</a>
+      <a href="/profile" data-nav="profile">PROFILE</a>
+    </div>
+    <div class="twk-nav-v1-lang" role="group" aria-label="Language">
+      <a href="#" data-lang="en" class="is-active" title="English">EN</a>
+      <a href="#" data-lang="es" title="Español">ES</a>
+      <a href="#" data-lang="ru" title="Русский">RU</a>
+      <a href="#" data-lang="pt" title="Português">PT</a>
+    </div>
+    <div class="twerkhub-tokens-hud twk-tk-hud--in-nav" id="twk-tokens-hud-v3" style="display:inline-flex;align-items:center;height:28px;margin-right:6px;flex-shrink:0;pointer-events:auto;"><button type="button" style="pointer-events:auto;display:inline-flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:linear-gradient(135deg,rgba(30,224,143,.18),rgba(255,180,84,.16));border:1px solid rgba(30,224,143,.55);box-shadow:0 6px 20px rgba(30,224,143,.18),0 2px 6px rgba(0,0,0,.4);color:#f5f5fb;font-weight:800;letter-spacing:.06em;cursor:pointer;font-family:Inter,ui-sans-serif,system-ui;font-size:13px;" id="twk-tokens-badge" aria-label="Token balance"><span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#1ee08f,#30ff9f);box-shadow:0 0 12px rgba(30,224,143,.6);" aria-hidden="true"></span><span id="twk-tokens-count" style="font-variant-numeric:tabular-nums;">0</span> <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;">tokens</span> <span id="twk-tokens-tier" style="font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:#1ee08f;">BASIC</span></button></div>
+    <span class="twk-nav-v1-live" id="twk-nav-v1-live" aria-label="Live online count">LIVE <span id="twk-nav-v1-live-n">412</span></span>
+  </div>
+</nav>
+<script>
+(function(){
+  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
+  function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
+  setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
+  function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
+  loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
+  loadOnce('/assets/twk-tokens-v5.js?v=20260511-p1','twk-loader-token-system');
+  loadOnce('/assets/twerkhub-age-gate.js?v=20260602-p9','twk-loader-age-gate');
+  // Load theater - accept whatever Cloudflare serves, but patch it at runtime
+  (function(){
+    var timestamp = Date.now();
+    var random = Math.random().toString(36).substr(2, 9);
+    var script = document.createElement('script');
+    script.async = false;
+    script.src = '/assets/twerkhub-pl-theater-v2.js?t=' + timestamp + '&r=' + random;
+    script.id = 'theater-script-' + timestamp;
+    script.onload = function() {
+      // RUNTIME PATCH: Override grantViewToken to add logging even if old version loads
+      if (window.TwerkubPlTheater || window.grantViewToken) {
+        var original = window.grantViewToken || function() {};
+        window.grantViewToken = function(vid) {
+          try {
+            console.log('[PLAYLIST-PATCH] grantViewToken called with vid:', vid);
+            if (!window.AlexiaTokens) {
+              console.warn('[PLAYLIST-PATCH] window.AlexiaTokens not found');
+              return;
+            }
+            if (typeof window.AlexiaTokens.watchClip === 'function') {
+              console.log('[PLAYLIST-PATCH] Calling watchClip');
+              window.AlexiaTokens.watchClip(vid);
+            } else {
+              console.log('[PLAYLIST-PATCH] watchClip not available, using grant fallback');
+              window.AlexiaTokens.grant(15, 'watch_clip_fallback');
+            }
+          } catch(err) {
+            console.error('[PLAYLIST-PATCH] Error in grantViewToken:', err);
+          }
+        };
+        console.log('[PLAYLIST-PATCH] Successfully patched grantViewToken');
+      }
+    };
+    document.head.appendChild(script);
+  })();
+
+  loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
+  loadOnce('/assets/twerkhub-cb-promo.js?v=20260606-fix','twk-loader-cb-promo');
+
+  /* PH theme · token pill relocator → moved to external file
+     /assets/twerkhub-pill-into-nav.js so it loads on every page (not just
+     the home). Inline duplicate removed 2026-05-05. */
+})();
+</script>
+
+<header class="twerkhub-pl-hero">
+  <div class="twerkhub-pl-kicker">/ Cosplay & Fancam · weekly</div>
+  <h1>Hottest <em>cosplay</em> & fancam.<br><span style="opacity:.75;font-size:.7em;font-weight:800">Convention floor · 4K studio</span></h1>
+  <p class="twerkhub-pl-intro">The complete cosplay and fancam circuit. Convention floor, studio shoots, K-pop dance covers. Updated weekly.</p>
+</header>
+
+<main id="twerkhub-pl-main" class="twerkhub-pl-theater-main">
+  <div class="twerkhub-pl-player-col">
+    <div class="twerkhub-pl-player-wrap">
+      <div class="twk-hero-wrap" id="twkHeroWrap" data-vid="DwJQZt7TaTM" style="position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:12px;">
+<iframe id="twkHeroIframe" src="https://www.youtube.com/embed/DwJQZt7TaTM?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=https://twerkhub.lat" style="width:100%;height:100%;border:0;display:block;" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+</div>
+<script>
+(function(){
+  if(window.__twkHeroSwapInstalled)return;window.__twkHeroSwapInstalled=true;
+  function swap(vid){var f=document.getElementById('twkHeroIframe');if(f){f.src='https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';}var w=document.getElementById('twkHeroWrap');if(w)w.setAttribute('data-vid',vid);window.scrollTo({top:0,behavior:'smooth'});}
+  function block(e){var a=(e.target&&e.target.closest)?e.target.closest('.rk-item,.vcard'):null;if(!a)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(e.type==='click'){var vid=a.dataset.vid;if(vid)swap(vid);}return false;}
+  ['mousedown','pointerdown','click','touchstart','auxclick'].forEach(function(t){document.addEventListener(t,block,true);});
+  // Tambien clonar para sacar listeners directos
+  function rebind(){document.querySelectorAll('.rk-item, .vcard').forEach(function(it){var fresh=it.cloneNode(true);fresh.removeAttribute('href');fresh.removeAttribute('target');fresh.style.cursor='pointer';it.parentNode.replaceChild(fresh,it);});}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',rebind);}else{rebind();}
+  setTimeout(rebind,300);setTimeout(rebind,1500);setTimeout(rebind,4000);
+})();
+</script>
+<script>
+(function(){
+  function swapHero(vid){
+    var iframe=document.getElementById('twkHeroIframe');
+    if(iframe){iframe.src='https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';}
+    var wrap=document.getElementById('twkHeroWrap');
+    if(wrap)wrap.setAttribute('data-vid',vid);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function rebind(){
+    document.querySelectorAll('.rk-item, .vcard').forEach(function(item){
+      // Clonar el item para STRIPEAR todos los listeners (incluidos los del theater script)
+      var fresh=item.cloneNode(true);
+      // Sacar href para que no navegue
+      fresh.removeAttribute('href');
+      fresh.removeAttribute('target');
+      fresh.style.cursor='pointer';
+      // Asignar nuestro onclick limpio
+      fresh.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        var vid=this.dataset.vid;
+        if(vid)swapHero(vid);
+        return false;
+      },true);
+      item.parentNode.replaceChild(fresh,item);
+    });
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',rebind);}else{rebind();}
+  setTimeout(rebind,500);
+  setTimeout(rebind,1500);
+  setTimeout(rebind,4000);
+})();
+</script>
+    </div>
+    <div class="twerkhub-pl-player-meta">
+      <span class="twerkhub-pl-player-now">▶ Now playing</span>
+      <h2 id="twerkhub-pl-now-title">2026 CosForce03甜心女僕 Day2 ft. Miiya(みーや) &amp; Nazo 4K HDR 高畫質 (2</h2>
+    </div>
+  </div>
+
+  <aside class="hotrank twerkhub-pl-theater-rank" aria-label="Hot ranking">
+    <h2 class="twerkhub-pl-hotrank-h2">Hot ranking this week</h2>
+        <div class="rk-list" id="hotrank-list">
+      <a class="rk-item" data-hot="1" data-vid="qoho-dzADrc" data-number="#001" href="#">
+        <div class="rk-num gold">#01</div>
+        <div class="rk-thumb"><img loading="lazy" decoding="async" src="https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg" alt="2026 CosForce03甜心女僕 Day2 ft. Miiya(みーや) &amp; Nazo 4K HDR 高畫質 (2160P)" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/qoho-dzADrc/default.jpg';}"></div>
+        <div class="rk-copy"><div class="rk-title">2026 CosForce03甜心女僕 Day2 ft. Miiya(み…</div><div class="rk-meta">ーや) &amp; Nazo 4K HDR 高畫質 (2160P)</div></div>
+      </a>
+      <a class="rk-item" data-hot="1" data-vid="wLWDZQmzPOY" data-number="#002" href="#">
+        <div class="rk-num purple">#02</div>
+        <div class="rk-thumb"><img loading="lazy" decoding="async" src="https://i.ytimg.com/vi/wLWDZQmzPOY/hqdefault.jpg" alt="251003 부산딸램 쩡이 - 짧은치마 (Cover. AOA) | 세로 직캠 | 부산 로케이션 촬영 [KPOP FanCam 4K]" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/wLWDZQmzPOY/default.jpg';}"></div>
+        <div class="rk-copy"><div class="rk-title">251003 부산딸램 쩡이 - 짧은치마 (Cover. AOA) |…</div><div class="rk-meta"> 세로 직캠 | 부산 로케이션 촬영 [KPOP FanCam 4K]</div></div>
+      </a>
+      <a class="rk-item" data-hot="1" data-vid="0_PlAGCSf5g" data-number="#003" href="#">
+        <div class="rk-num pink">#03</div>
+        <div class="rk-thumb"><img loading="lazy" decoding="async" src="https://i.ytimg.com/vi/0_PlAGCSf5g/hqdefault.jpg" alt="[FanCam 8K] ZIA(지아) - Kiss Me(키스해죠) cover.Banana Girl | UMC모터쇼 7차 &quot;걸크러쉬 플러스&quot; | 230325" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/0_PlAGCSf5g/default.jpg';}"></div>
+        <div class="rk-copy"><div class="rk-title">[FanCam 8K] ZIA(지아) - Kiss Me(키스해죠) …</div><div class="rk-meta">cover.Banana Girl | UMC모터쇼 7차 "걸크러쉬 플러스</div></div>
+      </a>
+      <a class="rk-item" data-hot="1" data-vid="dY6-eOmVpgQ" data-number="#004" href="#">
+        <div class="rk-num monochrome">#04</div>
+        <div class="rk-thumb"><img loading="lazy" decoding="async" src="https://i.ytimg.com/vi/dY6-eOmVpgQ/hqdefault.jpg" alt="CosFANS 04-Coser:孫齊" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/dY6-eOmVpgQ/default.jpg';}"></div>
+        <div class="rk-copy"><div class="rk-title">CosFANS 04-Coser:孫齊</div><div class="rk-meta">·</div></div>
+      </a>
+      <a class="rk-item" data-hot="1" data-vid="U0-_hknfcqE" data-number="#005" href="#">
+        <div class="rk-num monochrome">#05</div>
+        <div class="rk-thumb"><img loading="lazy" decoding="async" src="https://i.ytimg.com/vi/U0-_hknfcqE/hqdefault.jpg" alt="2026動漫展FF46 日本coser Kikka IG kikka_cos" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/U0-_hknfcqE/default.jpg';}"></div>
+        <div class="rk-copy"><div class="rk-title">2026動漫展FF46 日本coser Kikka IG kikka_c…</div><div class="rk-meta">os</div></div>
+      </a>
+    </div>
+  </aside>
+</main>
+
+<section class="twerkhub-pl-grid-section" aria-label="Full archive">
+  <div class="twerkhub-pl-grid-head">
+    <div class="twerkhub-pl-kicker">/ The full playlist</div>
+    <h2>All <em>14</em> cuts in the room.</h2>
+    <p>Tap a cover to play.</p>
+  </div>
+  <div class="grid" id="video-grid" role="list">
+    <a class="vcard reveal" data-hot="1" data-vid="qoho-dzADrc" data-number="#001" href="https://www.youtube.com/watch?v=qoho-dzADrc" target="_blank" rel="noopener" role="listitem" aria-label="2026 CosForce03甜心女僕 Day2 ft. Miiya(みーや) &amp; Nazo 4K HDR 高畫質 (2160P)"><div class="vthumb"><img src="https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg" alt="#001" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/qoho-dzADrc/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="wLWDZQmzPOY" data-number="#002" href="https://www.youtube.com/watch?v=wLWDZQmzPOY" target="_blank" rel="noopener" role="listitem" aria-label="251003 부산딸램 쩡이 - 짧은치마 (Cover. AOA) | 세로 직캠 | 부산 로케이션 촬영 [KPOP FanCam 4K]"><div class="vthumb"><img src="https://i.ytimg.com/vi/wLWDZQmzPOY/hqdefault.jpg" alt="#002" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/wLWDZQmzPOY/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="0_PlAGCSf5g" data-number="#003" href="https://www.youtube.com/watch?v=0_PlAGCSf5g" target="_blank" rel="noopener" role="listitem" aria-label="[FanCam 8K] ZIA(지아) - Kiss Me(키스해죠) cover.Banana Girl | UMC모터쇼 7차 &quot;걸크러쉬 플러스&quot; | 230325"><div class="vthumb"><img src="https://i.ytimg.com/vi/0_PlAGCSf5g/hqdefault.jpg" alt="#003" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/0_PlAGCSf5g/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="dY6-eOmVpgQ" data-number="#004" href="https://www.youtube.com/watch?v=dY6-eOmVpgQ" target="_blank" rel="noopener" role="listitem" aria-label="CosFANS 04-Coser:孫齊"><div class="vthumb"><img src="https://i.ytimg.com/vi/dY6-eOmVpgQ/hqdefault.jpg" alt="#004" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/dY6-eOmVpgQ/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="U0-_hknfcqE" data-number="#005" href="https://www.youtube.com/watch?v=U0-_hknfcqE" target="_blank" rel="noopener" role="listitem" aria-label="2026動漫展FF46 日本coser Kikka IG kikka_cos"><div class="vthumb"><img src="https://i.ytimg.com/vi/U0-_hknfcqE/hqdefault.jpg" alt="#005" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/U0-_hknfcqE/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="YjLy9z57jLA" data-number="#006" href="https://www.youtube.com/watch?v=YjLy9z57jLA" target="_blank" rel="noopener" role="listitem" aria-label="20260315 CosForce03｜Nazo eirian &amp; miiya｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8"><div class="vthumb"><img src="https://i.ytimg.com/vi/YjLy9z57jLA/hqdefault.jpg" alt="#006" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/YjLy9z57jLA/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="K77irMNVp3k" data-number="#007" href="https://www.youtube.com/watch?v=K77irMNVp3k" target="_blank" rel="noopener" role="listitem" aria-label="[FanCam 8K] GIRL CRUSH TAERI 촬영회 | 착장(3/4) 컨셉(1/3) 고정캠 | 걸크러쉬 태리 촬영회 | 230121"><div class="vthumb"><img src="https://i.ytimg.com/vi/K77irMNVp3k/hqdefault.jpg" alt="#007" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/K77irMNVp3k/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="B5ggxUkZ1ZI" data-number="#008" href="https://www.youtube.com/watch?v=B5ggxUkZ1ZI" target="_blank" rel="noopener" role="listitem" aria-label="20260315 CosForce03｜Yuumeilyn玲兒｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8"><div class="vthumb"><img src="https://i.ytimg.com/vi/B5ggxUkZ1ZI/hqdefault.jpg" alt="#008" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/B5ggxUkZ1ZI/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="GEVxQV9kuVE" data-number="#009" href="https://www.youtube.com/watch?v=GEVxQV9kuVE" target="_blank" rel="noopener" role="listitem" aria-label="名古屋オートフェスティバル りこぴん セクシーナース③の①"><div class="vthumb"><img src="https://i.ytimg.com/vi/GEVxQV9kuVE/hqdefault.jpg" alt="#009" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/GEVxQV9kuVE/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="hDFe_Lq-S1U" data-number="#010" href="https://www.youtube.com/watch?v=hDFe_Lq-S1U" target="_blank" rel="noopener" role="listitem" aria-label="大阪オートメッセ 2025 メガキングドットコム MAKI まおしゃん あんじゅ ちゃんひろ 峰のりえ まりえ 菅生れいか セクシーモデル7名 ②の①"><div class="vthumb"><img src="https://i.ytimg.com/vi/hDFe_Lq-S1U/hqdefault.jpg" alt="#010" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/hDFe_Lq-S1U/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="ChSRVLSMrrI" data-number="#011" href="https://www.youtube.com/watch?v=ChSRVLSMrrI" target="_blank" rel="noopener" role="listitem" aria-label="20241227 Taipei Shot Expo｜台灣寫真博覽會｜TinyAsa｜粉絲互動時間｜NIKON Z8 70 200 F2.8 #TinyAsa"><div class="vthumb"><img src="https://i.ytimg.com/vi/ChSRVLSMrrI/hqdefault.jpg" alt="#011" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/ChSRVLSMrrI/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="22so6zC3ww4" data-number="#012" href="https://www.youtube.com/watch?v=22so6zC3ww4" target="_blank" rel="noopener" role="listitem" aria-label="20260315 CosForce03｜Tiny Asa｜ 互動寫真展《甜心女僕》｜NIKON Z8 24 70 F2.8"><div class="vthumb"><img src="https://i.ytimg.com/vi/22so6zC3ww4/hqdefault.jpg" alt="#012" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/22so6zC3ww4/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="1n3BZq66DTU" data-number="#013" href="https://www.youtube.com/watch?v=1n3BZq66DTU" target="_blank" rel="noopener" role="listitem" aria-label="[FanCam 8K] GIRL CRUSH TAERI 촬영회 | 착장(2/4) 컨셉(2/3) 무빙캠 | 걸크러쉬 태리 촬영회 | 230121"><div class="vthumb"><img src="https://i.ytimg.com/vi/1n3BZq66DTU/hqdefault.jpg" alt="#013" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/1n3BZq66DTU/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+    <a class="vcard reveal" data-hot="1" data-vid="r9ygRjwDRwg" data-number="#014" href="https://www.youtube.com/watch?v=r9ygRjwDRwg" target="_blank" rel="noopener" role="listitem" aria-label="名古屋オートフェスティバル りこぴん セクシーナース③の②"><div class="vthumb"><img src="https://i.ytimg.com/vi/r9ygRjwDRwg/hqdefault.jpg" alt="#014" decoding="async" loading="eager" onerror="if(this.dataset.f){this.onerror=null;this.src='/assets/safe-adult-placeholder.svg';this.style.padding='30px';this.style.background='linear-gradient(135deg,#1a1a25,#2a1a35)';}else{this.dataset.f=1;this.src='https://i.ytimg.com/vi/r9ygRjwDRwg/default.jpg';}"><div class="vscrim"></div><div class="vplay"></div></div></a>
+  </div>
+</section>
+
+<section class="twerkhub-pl-more-playlists" aria-label="More playlists">
+  <div style="max-width:1200px;margin:0 auto;padding:40px 20px">
+    <div style="text-align:center;margin-bottom:30px">
+      <div style="font-size:12px;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:10px">Explore more</div>
+      <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:900;color:#fff;margin-bottom:10px">Other <em style="font-style:italic;background:linear-gradient(135deg,#ff2d87,#ffb454);-webkit-background-clip:text;background-clip:text;color:transparent">playlists</em></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+      <a href="/try-on-hot-leaks/" style="display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.7);transition:transform .3s,border-color .3s;text-decoration:none;color:inherit" data-no-dead>
+        <div style="aspect-ratio:16/10;overflow:hidden;background:#000"><img height="360" width="480" src="https://i.ytimg.com/vi/phlPRrYpmz0/hqdefault.jpg" alt="Try-on hot leaks" style="width:100%;height:100%;object-fit:cover" loading="lazy" decoding="async"></div>
+        <div style="padding:14px;flex:1;display:flex;flex-direction:column">
+          <div style="font-size:10px;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px">Try-on · Leaks</div>
+          <h3 style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Try-on hot leaks</h3>
+          <p style="font-size:12px;color:#c7c7d3;margin-bottom:auto;line-height:1.4">Exclusive haul cuts · 18 videos</p>
+        </div>
+      </a>
+      <a href="/hottest-cosplay-fancam/" data-no-dead style="display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.7);transition:transform .3s,border-color .3s;text-decoration:none;color:inherit">
+        <div style="aspect-ratio:16/10;overflow:hidden;background:#000"><img height="360" width="480" src="https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg" alt="Hottest cosplay and fancam" style="width:100%;height:100%;object-fit:cover" loading="lazy" decoding="async"></div>
+        <div style="padding:14px;flex:1;display:flex;flex-direction:column">
+          <div style="font-size:10px;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px">Cosplay · Fancam</div>
+          <h3 style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Cosplay & fancam</h3>
+          <p style="font-size:12px;color:#c7c7d3;margin-bottom:auto;line-height:1.4">Verified creators · 53 videos</p>
+        </div>
+      </a>
+      <a href="/korean-girls-kpop-twerk/" data-no-dead style="display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.7);transition:transform .3s,border-color .3s;text-decoration:none;color:inherit">
+        <div style="aspect-ratio:16/10;overflow:hidden;background:#000"><img height="360" width="480" src="https://i.ytimg.com/vi/v9zzf8elj_w/hqdefault.jpg" alt="Korean girls K-pop and twerk" style="width:100%;height:100%;object-fit:cover" loading="lazy" decoding="async"></div>
+        <div style="padding:14px;flex:1;display:flex;flex-direction:column">
+          <div style="font-size:10px;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px">K-pop · Twerk</div>
+          <h3 style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">K-pop & twerk</h3>
+          <p style="font-size:12px;color:#c7c7d3;margin-bottom:auto;line-height:1.4">Seoul choreography · 50 videos</p>
+        </div>
+      </a>
+      <a href="/ttl-latin-models/" data-no-dead style="display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.7);transition:transform .3s,border-color .3s;text-decoration:none;color:inherit">
+        <div style="aspect-ratio:16/10;overflow:hidden;background:#000"><img height="360" width="480" src="https://i.ytimg.com/vi/CP5Qjr-Rbnw/hqdefault.jpg" alt="Premium Latin models VIP" style="width:100%;height:100%;object-fit:cover" loading="lazy" decoding="async"></div>
+        <div style="padding:14px;flex:1;display:flex;flex-direction:column">
+          <div style="font-size:10px;font-weight:800;letter-spacing:0.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:6px">Latin · VIP Only</div>
+          <h3 style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Premium · Latin Models</h3>
+          <p style="font-size:12px;color:#c7c7d3;margin-bottom:auto;line-height:1.4">Premium exclusive · 1,500+</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="twerkhub-pl-cta-final" aria-label="Keep going">
+  <h2>Keep going — the <em>next move</em> is yours.</h2>
+  <div class="twerkhub-pl-cta-row">
+    <a class="twerkhub-btn twerkhub-btn-primary" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Talk to Alexia →</a>
+    <a class="twerkhub-btn twerkhub-btn-ghost" href="/#playlists">Browse playlists</a>
+  </div>
+</section>
+
+<!-- TWK_MEGA_FOOTER_V1 -->
+<style>
+.twk-mf{
+  background:#05050a;color:#c7c7d3;font-family:'Inter',-apple-system,sans-serif;font-size:13.5px;line-height:1.55;
+  border-top:1px solid rgba(255,255,255,.06);padding:64px 0 28px;margin-top:80px;position:relative;z-index:1;
+}
+.twk-mf *{box-sizing:border-box}
+.twk-mf-wrap{max-width:1480px;margin:0 auto;padding:0 32px}
+/* secondary: earn tokens free */
+.twk-mf-earn{
+  background:rgba(255,255,255,.018);border:1px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px 24px;margin-bottom:54px;
+}
+.twk-mf-earn-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:14px;margin-bottom:18px}
+.twk-mf-earn-head h4{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#fff;
+}
+.twk-mf-earn-head h4 b{color:#ffd78a}
+.twk-mf-earn-head p{font-size:12px;color:#8a8a99}
+.twk-mf-earn-head a{
+  color:#c7c7d3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:2px;transition:color .25s,border-color .25s;
+}
+.twk-mf-earn-head a:hover{color:#ffd78a;border-color:#ffd78a}
+.twk-mf-earn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.twk-mf-rule{
+  background:transparent;border:1px solid rgba(255,255,255,.08);padding:14px 12px;border-radius:8px;text-align:center;text-decoration:none;color:inherit;display:block;
+  transition:border-color .2s;
+}
+.twk-mf-rule:hover{border-color:rgba(255,180,84,.4)}
+.twk-mf-rule-act{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#8a8a99;margin-bottom:6px;
+}
+.twk-mf-rule-tk{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:18px;font-weight:700;color:#ffd78a;
+}
+.twk-mf-rule-tk b{font-weight:900}
+
+.twk-mf-row{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:42px;padding-bottom:42px;margin-bottom:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.twk-mf-row+.twk-mf-row{padding-top:42px;padding-bottom:42px}
+.twk-mf-brand{display:block;line-height:1;margin-bottom:14px}
+.twk-mf-brand img{display:block;width:auto;max-width:200px;height:auto;}
+.twk-mf-row p{color:#8a8a99;font-size:13px;line-height:1.7;max-width:340px}
+.twk-mf-row h5{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ffd78a;margin:0 0 18px;
+}
+.twk-mf-row ul{list-style:none;padding:0;margin:0}
+.twk-mf-row ul li{margin-bottom:8px;line-height:1.4}
+.twk-mf-row ul a{
+  color:#c7c7d3;font-size:13.5px;text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;
+}
+.twk-mf-row ul a:hover{color:#ff6fa8;padding-left:5px}
+.twk-mf-bottom{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:24px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#5a5a68;
+}
+.twk-mf-bottom a{color:#8a8a99;text-decoration:none;margin:0 4px}
+.twk-mf-bottom a:hover{color:#ff6fa8}
+@media(max-width:1100px){
+  .twk-mf-earn-grid{grid-template-columns:repeat(2,1fr)}
+  .twk-mf-row{grid-template-columns:1fr 1fr;gap:28px}
+}
+@media(max-width:720px){
+  .twk-mf-wrap{padding:0 18px}
+  .twk-mf-earn-grid{grid-template-columns:1fr}
+  .twk-mf-row{grid-template-columns:1fr;gap:24px}
+}
+</style>
+<footer class="twk-mf" role="contentinfo">
+  <div class="twk-mf-wrap">
+
+    <!-- secondary path: earn tokens free -->
+    <div class="twk-mf-earn">
+      <div class="twk-mf-earn-head">
+        <h4>Earn tokens · <b>climb tiers without paying</b></h4>
+        <a href="/blog/how-to-earn-tokens-twerkhub.html">Full earn guide →</a>
+      </div>
+      <div class="twk-mf-earn-grid">
+        <a class="twk-mf-rule" href="/account">
+          <div class="twk-mf-rule-act">Daily login</div>
+          <div class="twk-mf-rule-tk">+<b>30</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/recent.html">
+          <div class="twk-mf-rule-act">Watch a cut</div>
+          <div class="twk-mf-rule-tk">+<b>10</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/blog/">
+          <div class="twk-mf-rule-act">Field note read</div>
+          <div class="twk-mf-rule-tk">+<b>90</b></div>
+        </a>
+        <a class="twk-mf-rule" href="/blog/discord-community-playbook.html">
+          <div class="twk-mf-rule-act">Refer friend</div>
+          <div class="twk-mf-rule-tk">+<b>200</b></div>
+        </a>
+        <a class="twk-mf-rule" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">
+          <div class="twk-mf-rule-act">Discord weekly</div>
+          <div class="twk-mf-rule-tk">+<b>300</b></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ROW 1 -->
+    <div class="twk-mf-row">
+      <div>
+        <div class="twk-mf-brand"><img src="/logo-twerkhub.png" alt="TWERKHUB" width="200" height="57" decoding="async" loading="lazy"></div>
+        <p>The platform for private custom videos, verified models and the premium archive you can't find anywhere else. Founded by Anti (firestarter) in 2018. Buenos Aires · served worldwide. 18+.</p>
+      </div>
+      <div>
+        <h5>Vaults · 7 playlists</h5>
+        <ul>
+          <li><a href="/hottest-cosplay-fancam/">Cosplay &amp; fancam</a></li>
+          <li><a href="/korean-girls-kpop-twerk/">K-pop &amp; twerk</a></li>
+          <li></li>
+          <li><a href="/alexia-video-packs">Custom video packs</a></li>
+          <li><a href="/">Alexia exclusives</a></li>
+          <li><a href="/account">Your account</a></li>
+          <li><a href="/profile">Your profile</a></li>
+          <li><a href="/creator-dashboard.html">Creator dashboard</a></li>
+          <li><a href="/blog/the-4-tiers-explained.html">The 4 tiers explained</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Why pay · what you unlock</h5>
+        <ul>
+          <li><a href="/blog/twerkhub-vs-onlyfans-fanvue-comparison.html">vs. OF &amp; Fanvue</a></li>
+          <li><a href="/blog/why-i-built-twerkhub.html">Why I built Twerkhub</a></li>
+          <li><a href="/blog/why-twerkhub-has-no-algorithm-feed.html">No algorithm feed</a></li>
+          <li><a href="/blog/best-twerk-creators-2026.html">Best creators · 2026</a></li>
+          <li><a href="/blog/4k-vs-1080p-vs-vr-fancam.html">4K · 1080p · VR</a></li>
+          <li><a href="/blog/weekly-drop-calendar-2026.html">Drop calendar 2026</a></li>
+          <li><a href="/blog/fancam-etiquette-2026.html">Fancam etiquette</a></li>
+          <li><a href="/blog/heels-choreo-beginner-guide.html">Heels choreo · guide</a></li>
+          <li><a href="/blog/">All field notes →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Channels &amp; press</h5>
+        <ul>
+          <li><a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/+q1cooFnvQctlNjRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://x.com/alexiatwerkofic" target="_blank" rel="noopener">X / Twitter</a></li>
+          <li><a href="https://t.me/+0xNr69raiIlmYWRh" target="_blank" rel="noopener">Telegram</a></li>
+          <li><a href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener">Discord</a></li>
+          <li><a href="https://onlyfans.com/alexiatwerkoficial" target="_blank" rel="noopener">OnlyFans</a></li>
+          <li><a href="https://www.patreon.com/Alexia_Twerk" target="_blank" rel="noopener">Patreon</a></li>
+          <li><a href="mailto:alexiatwerkoficial@gmail.com">Email · press</a></li>
+          <li><a href="/community.html">Community</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="twk-mf-row">
+      <div>
+        <h5>Discovery &amp; search</h5>
+        <ul>
+          <li><a href="/recent.html">Recent · last 200</a></li>
+          <li><a href="/trending.html">Trending · live board</a></li>
+          <li><a href="/search.html">Search the archive</a></li>
+          <li><a href="/glossary.html">Glossary · jargon</a></li>
+          <li><a href="/recommend.html">Get a recommendation</a></li>
+          <li><a href="/variants-showcase.html">Variants showcase</a></li>
+          <li><a href="/variety-catalog.html">Variety catalog</a></li>
+          <li><a href="/">Best dancers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Models · creators</h5>
+        <ul>
+          <li><a href="/models-catalog.html">Models catalog</a></li>
+          <li><a href="/creators">All creators</a></li>
+          <li><a href="/creators-colombia.html">Colombia</a></li>
+          <li><a href="/creators-seoul.html">Seoul</a></li>
+          <li><a href="/creators-moscow.html">Moscow</a></li>
+          <li><a href="/creators-taipei.html">Taipei</a></li>
+          <li><a href="/creators-greece.html">Greece</a></li>
+          <li><a href="/creators-russia.html">Russia</a></li>
+          <li><a href="/creators-latam.html">LATAM</a></li>
+          <li><a href="/creators-usa.html">USA</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Featured talent</h5>
+        <ul>
+          <li><a href="/velvet-young.html">Velvet Young</a></li>
+          <li><a href="/nastya-nass.html">Nastya Nass</a></li>
+          <li><a href="/shoshina-katherina.html">Shoshina Katherina</a></li>
+          <li><a href="/yurgenis.html">Yurgenis</a></li>
+          <li><a href="/group-emiliano-ferrari-villalobo.html">Emiliano Ferrari Villalobo</a></li>
+          <li><a href="/group-kate-knaubl.html">Kate Knaubl</a></li>
+          <li><a href="/group-kelvin-deejay.html">Kelvin DeeJay</a></li>
+          <li><a href="/group-lexy-panterra.html">Lexy Panterra</a></li>
+          <li><a href="/group-monika-99-percent.html">Monika 99%</a></li>
+          <li><a href="/group-street-project-monika.html">Street Project Monika</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Cities &amp; styles</h5>
+        <ul>
+          <li><a href="/style-cosplay-fancam.html">Style · Cosplay</a></li>
+          <li><a href="/style-heels-choreo.html">Style · Heels</a></li>
+          <li><a href="/style-reggaeton-floor.html">Style · Reggaeton</a></li>
+          <li><a href="/japan-cosplay-fancam.html">Japan</a></li>
+          <li><a href="/tokyo-cosplay-fancam.html">Tokyo</a></li>
+          <li><a href="/osaka-cosplay-fancam.html">Osaka</a></li>
+          <li><a href="/akihabara-cosplay-fancam.html">Akihabara</a></li>
+          <li><a href="/">USA</a></li>
+          <li><a href="/">UK</a></li>
+          <li><a href="/">London</a></li>
+          <li><a href="/">New York</a></li>
+          <li><a href="/">Los Angeles</a></li>
+          <li><a href="/">Miami</a></li>
+          <li><a href="/">Atlanta</a></li>
+          <li><a href="/">California</a></li>
+          <li><a href="/">Manchester</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Studios &amp; tutorials</h5>
+        <ul>
+          <li><a href="/twerk-studios.html">Twerk studios</a></li>
+          <li><a href="/kato-dance-studio.html">Kato Dance Studio</a></li>
+          <li><a href="/twerk-tutorials.html">Tutorials</a></li>
+          <li><a href="/twerk-dance-tutorial.html">Dance tutorial</a></li>
+          <li><a href="/twerk-workout-glutes.html">Workout · glutes</a></li>
+          <li><a href="/twerk-dance-4k.html">4K dance edits</a></li>
+          <li><a href="/twerk-dance-battle.html">Dance battle</a></li>
+          <li><a href="/twerk-dance-compilation.html">Compilations</a></li>
+          <li><a href="/twerk-dance-shorts.html">Shorts</a></li>
+          <li><a href="/twerk-dance-music.html">Music edits</a></li>
+          <li><a href="/twerk-dance-video.html">Dance videos</a></li>
+          <li><a href="/">Alexia · leaks</a></li>
+          <li><a href="/alexia-video-packs">Video packs</a></li>
+          <li><a href="/hottest-cosplay-fancam/">Premium · cosplay</a></li>
+          <li><a href="/paid-content.html">Paid content</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- bottom -->
+    <div class="twk-mf-bottom">
+      <span>© 2026 TWERKHUB · Founded by <em style="color:#ff6fa8;font-style:normal">Anti</em> (firestarter) · The Wild Project Models Agency</span>
+      <span>
+        <a href="/about">About</a> ·
+        <a href="/contact.html">Contact</a> ·
+        <a href="/privacy.html">Privacy</a> ·
+        <a href="/terms.html">Terms</a> ·
+        <a href="/glossary.html">Glossary</a> ·
+        <a href="/search.html">Search</a>
+      </span>
+      <span>If you know — you already know</span>
+    </div>
+
+  </div>
+</footer>
+<!-- /TWK_MEGA_FOOTER_V1 -->
+
+<script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
+<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
+<script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
+<script src="/assets/js/image-seo-engine.js" defer></script>
+  <script src="/assets/thumb-fallback.js?v=20260512-fix2" defer></script>
+<script defer src="/assets/profile-stats-live.js?v=20260509-p3-deltacap"></script>
+<script defer src="/assets/twk-yt-gate.js?v=20260504-p2"></script>
+<script defer src="/assets/twk-video-shield.js?v=20260503-p13"></script>
+<!--twk-seo-hidden-block-->
+<aside class="twk-sr-only" aria-hidden="true" lang="en">
+  <p>Curated twerk playlist on TWERKHUB — Insider archive updated weekly.</p>
+  <p>Discover index and similar premium content in our private archive of 4K dance, fancam and creator cuts.</p>
+  <p>Browse the full TWERKHUB catalog: twerk playlist, choreo collection, and rare uncut releases reserved for verified members.</p>
+</aside>
+<!--/twk-seo-hidden-block-->
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p6"></script>
+
+<!-- twk-email-capture:START -->
+<script defer src="/assets/twerkhub-email-capture.js?v=20260509-ec3-noblur-keep-home" data-twk-email-capture></script>
+<!-- twk-email-capture:END -->
+
+<!-- twk-related-auto:START -->
+<style id="twk-rel-auto-css">.twk-rel-auto{max-width:1320px;margin:50px auto 30px;padding:0 26px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif}.twk-rel-auto-head{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:18px;display:block}.twk-rel-auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:880px){.twk-rel-auto-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.twk-rel-auto-grid{grid-template-columns:1fr}}.twk-rel-auto-card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.5);text-decoration:none;color:#f5f5fb;transition:transform .25s,border-color .25s,background .25s}.twk-rel-auto-card:hover{transform:translateY(-2px);border-color:rgba(255,45,135,.45);background:rgba(30,20,40,.7)}.twk-rel-auto-cat{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff6fa8}.twk-rel-auto-title{font-family:"Inter",sans-serif;font-size:14px;font-weight:600;line-height:1.35;color:#e9e9f0}</style>
+<aside class="twk-rel-auto" aria-label="Related pages">
+  <span class="twk-rel-auto-head">★ More from the archive</span>
+  <div class="twk-rel-auto-grid">
+    <a href="/" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">Dacheng Sluttish Ftanba Una Choreographyidance</span>
+    </a>
+    <a href="/playlist/twerk-10age-twerkhub-vault-r8uzin4.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">Twerk 10Age</span>
+    </a>
+    <a href="/playlist/" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">Twerk 2</span>
+    </a>
+    <a href="/playlist/-twerk-3.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">Twerk 3</span>
+    </a>
+    <a href="/playlist/-twerk-4.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">Twerk 4</span>
+    </a>
+    <a href="/playlist/-twerk.html" class="twk-rel-auto-card" data-cat="playlist">
+      <span class="twk-rel-auto-cat">playlist</span>
+      <span class="twk-rel-auto-title">Twerk · Vol 01</span>
+    </a>
+  </div>
+</aside>
+<!-- twk-related-auto:END -->
+
+
+<section class="seo-content-expansion" style="margin:20px 0;padding:20px;background:rgba(255,255,255,.03);border-radius:8px;font-size:14px;line-height:1.6;color:rgba(255,255,255,.85)">
+<p><strong>Playlist Overview:</strong> This curated collection brings together the hottest twerk, dance choreography, and fancam content from talented creators worldwide. Explore premium 4K videos, weekly drops, and exclusive cuts from the Twerkhub archive.</p>
+<p><strong>Content Quality:</strong> All videos are professionally curated and shot in 4K resolution. Each piece is selected for artistic merit, technical skill, and entertainment value, making this a comprehensive resource for dance enthusiasts.</p>
+<p><strong>For Members:</strong> Premium members unlock exclusive behind-the-scenes cuts, creator interviews, and early access to newly added content. Join our community to support independent creators and access unlimited streaming.</p>
+</section>
+
+<script data-twk="paywall-smart-v2">(function(){if(window.__twkPaywallSV2)return;window.__twkPaywallSV2=true;var classification=null,classReady=false;fetch("/assets/youtube-age-classification.json").then(function(r){return r.json();}).then(function(j){classification=j;classReady=true;}).catch(function(){});var currentVid=null,swapTime=0,lastPlayEvent=0,paywallTimer=null;function isBlocked(vid){return classReady&&classification&&classification[vid]==="blocked";}function buildOverlay(vid){var o=document.createElement("a");o.href="/membership";o.className="twk-paywall-overlay";o.setAttribute("data-vid",vid||"");o.style.cssText="position:absolute;inset:0;z-index:9999;background:linear-gradient(135deg,rgba(0,0,0,0.96),rgba(40,0,40,0.96));display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:30px;backdrop-filter:blur(8px);text-decoration:none;cursor:pointer;";o.innerHTML="<div style=\"font-size:64px;line-height:1;\">&#128286;</div><div style=\"font-size:28px;font-weight:900;margin:14px 0 8px;letter-spacing:1px;color:#fff;\">+18 PREMIUM CONTENT</div><div style=\"font-size:14px;opacity:0.85;margin-bottom:24px;max-width:480px;color:#fff;\">This video is marked as age-restricted &mdash; unlock to watch on Twerkhub.</div><span style=\"background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14;padding:14px 32px;border-radius:24px;font-weight:900;font-size:14px;letter-spacing:0.5px;display:inline-block;box-shadow:0 6px 24px rgba(255,45,135,.5);\">UNLOCK MEMBERSHIP &rarr;</span>";return o;}function showPaywall(vid){var wrap=document.getElementById("twkHeroWrap");if(!wrap)return;if(wrap.querySelector(".twk-paywall-overlay"))return;if(getComputedStyle(wrap).position==="static")wrap.style.position="relative";wrap.appendChild(buildOverlay(vid));}function clearPaywall(){var wrap=document.getElementById("twkHeroWrap");if(!wrap)return;var o=wrap.querySelector(".twk-paywall-overlay");if(o)o.remove();}function startListening(){var f=document.querySelector("#twkHeroWrap iframe");if(!f||!f.contentWindow)return;try{f.contentWindow.postMessage(JSON.stringify({event:"listening",id:"twkHero",channel:"widget"}),"*");f.contentWindow.postMessage(JSON.stringify({event:"command",func:"addEventListener",args:["onStateChange"],id:"twkHero"}),"*");f.contentWindow.postMessage(JSON.stringify({event:"command",func:"addEventListener",args:["onError"],id:"twkHero"}),"*");}catch(e){}}window.addEventListener("message",function(e){if(!/youtube(?:-nocookie)?\.com/.test(e.origin))return;try{var d=typeof e.data==="string"?JSON.parse(e.data):e.data;if(d.event==="onError"){showPaywall(currentVid);return;}if(d.event==="onStateChange"||d.event==="infoDelivery"){var info=d.info;var state=null;if(typeof info==="object"&&info){state=info.playerState;}else if(typeof info==="number"){state=info;}if(state===1||state===2||state===3){lastPlayEvent=Date.now();clearPaywall();}}}catch(_){}});function onSrcChange(){var iframe=document.querySelector("#twkHeroWrap iframe");if(!iframe)return;var m=iframe.src.match(/embed\/([\w-]{11})/);if(!m)return;var vid=m[1];currentVid=vid;swapTime=Date.now();lastPlayEvent=0;clearPaywall();var wrap=document.getElementById("twkHeroWrap");if(wrap)wrap.setAttribute("data-vid",vid);if(paywallTimer)clearTimeout(paywallTimer);if(isBlocked(vid)){showPaywall(vid);return;}setTimeout(startListening,500);setTimeout(startListening,1500);paywallTimer=setTimeout(function(){if(currentVid===vid&&lastPlayEvent<swapTime){showPaywall(vid);}},5500);}function watchIframe(){var iframe=document.querySelector("#twkHeroWrap iframe");if(!iframe)return;var lastSrc=iframe.src;var mo=new MutationObserver(function(){if(iframe.src!==lastSrc){lastSrc=iframe.src;onSrcChange();}});mo.observe(iframe,{attributes:true,attributeFilter:["src"]});onSrcChange();}function init(){var w=0;var iv=setInterval(function(){w+=100;if(classReady||w>=1500){clearInterval(iv);watchIframe();}},100);}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",init);}else{init();}})();</script>
+<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876541" defer></script>
+<script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
+
+<!-- TWK VIEWED THUMBNAILS PATCH v1: stores only local viewed IDs/hrefs -->
+<script id="twk-viewed-thumbnails-js-v1">
+(function(){
+  if(window.__twkViewedThumbsV1)return; window.__twkViewedThumbsV1=true;
+  var KEY='twk_viewed_video_ids_v1';
+  function read(){try{var v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]}}
+  function write(v){try{localStorage.setItem(KEY,JSON.stringify(v.slice(-900)))}catch(e){}}
+  function normHref(h){try{return new URL(h,location.href).pathname.replace(/\/index\.html$/,'/')}catch(e){return h||''}}
+  function keyFor(el){
+    if(!el)return'';
+    var d=el.getAttribute&&el.getAttribute('data-vid');
+    if(d)return 'vid:'+d;
+    var child=el.querySelector&&el.querySelector('[data-vid]');
+    if(child&&child.getAttribute('data-vid'))return 'vid:'+child.getAttribute('data-vid');
+    var a=(el.matches&&el.matches('a[href]'))?el:(el.querySelector&&el.querySelector('a[href]'));
+    var h=a&&a.getAttribute('href');
+    if(h&&h!=='#')return 'href:'+normHref(h);
+    return'';
+  }
+  function thumbFor(card){return card&&(card.querySelector('.vthumb,.thumb,.smart-card-thumb,.autoplay-thumb')||card);}
+  function mark(card){
+    if(!card||card.classList.contains('twk-viewed'))return;
+    card.classList.add('twk-viewed');
+    var t=thumbFor(card);
+    if(t&&!t.querySelector('.twk-viewed-badge')){var b=document.createElement('span');b.className='twk-viewed-badge';b.textContent='Viewed';t.appendChild(b);}
+  }
+  function cards(){return Array.prototype.slice.call(document.querySelectorAll('.vcard[data-vid],.rk-item[data-vid],.card,.mini-card,a[data-vid]'));}
+  function apply(){var seen=read();cards().forEach(function(c){var k=keyFor(c);if(k&&seen.indexOf(k)>-1)mark(c);});}
+  function save(k){if(!k)return;var seen=read();if(seen.indexOf(k)===-1){seen.push(k);write(seen);}apply();}
+  document.addEventListener('click',function(ev){
+    var card=ev.target.closest&&ev.target.closest('.vcard[data-vid],.rk-item[data-vid],a[data-vid],.card,.mini-card');
+    if(card)save(keyFor(card));
+  },true);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+  setTimeout(apply,600);setTimeout(apply,1800);
+})();
+</script>
+</body>
+</html>
+
+
+
+
