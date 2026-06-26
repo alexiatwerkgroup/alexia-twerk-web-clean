@@ -185,8 +185,7 @@
       'position:absolute;top:6px;right:6px;background:rgba(0,0,0,.85);color:#ffd700;' +
       'padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;' +
       'z-index:9;pointer-events:none;font-family:system-ui,-apple-system,sans-serif;';
-    badge.textContent = '🔒 18+';
-    el.appendChild(badge);
+    badge.textContent = '🔒 18+'; /* +18 corner badge disabled globally */
   }
 
   // Fetch + cache the classification JSON
