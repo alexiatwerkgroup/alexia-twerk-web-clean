@@ -13,3 +13,6 @@ Disallow: /reset
 Disallow: /cdn-cgi/
 
 Sitemap: https://twerkhub.lat/sitemap.xml
+
+Sitemap: https://twerkhub.lat/sitemap-models-cheerleaders.xml
+Sitemap: https://twerkhub.lat/sitemap-index.xml
