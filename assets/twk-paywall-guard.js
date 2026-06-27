@@ -171,6 +171,9 @@
 
   function applyThumbBadge(el) {
     if (!el || el.querySelector('.twk-thumb-lock')) return;
+    // Never badge the active hero/player — it already has its own paywall overlay
+    if (el.closest && el.closest('#twkHeroWrap, .twk-hero-wrap, .twerkhub-pl-player-wrap, .twerkhub-pl-player-col, .twerkhub-pl-theater')) return;
+    if (el.querySelector && el.querySelector('iframe')) return;
     if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
     var k = document.createElement('div');
     k.className = 'twk-thumb-lock';
