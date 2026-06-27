@@ -1573,6 +1573,26 @@ a.twk-hero-affiliate-overlay,
 
 <!-- ═══ FOUR TIERS pricing ═══ -->
 <section class="twerkhub-tiers" id="tokens" aria-label="Four tiers">
+  <style id="twk-premium-tiers">
+@property --twk-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+.twerkhub-tiers{position:relative;background:radial-gradient(1200px 520px at 50% -12%,rgba(255,154,61,.07),transparent 60%)}
+.twerkhub-tiers-grid-4{gap:20px}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card{position:relative;isolation:isolate;overflow:visible;border-radius:18px;border:1px solid rgba(255,255,255,.05)!important;background:linear-gradient(180deg,#0f0f17,#07070c)!important;box-shadow:0 24px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04)!important;--glow:#7a7aff;--spin:8s;animation:twk-rot var(--spin) linear infinite,twk-breathe 5.5s ease-in-out infinite;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.4px;pointer-events:none;z-index:0;background:conic-gradient(from var(--twk-angle),transparent 0 58%,var(--glow) 72%,#fff 80%,var(--glow) 88%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;background:radial-gradient(120% 60% at 50% -8%,color-mix(in srgb,var(--glow) 22%,transparent),transparent 60%);opacity:.5;animation:twk-pulse 5.5s ease-in-out infinite}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card>*{position:relative;z-index:1}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card:hover{transform:translateY(-7px)}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card:nth-child(1){--glow:#8fe0ff}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card:nth-child(2){--glow:#5b8cff}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card:nth-child(3){--glow:#ff45a8;--spin:6s;background:radial-gradient(520px 320px at 50% -10%,rgba(255,69,168,.12),transparent 60%),linear-gradient(180deg,#130b13,#07060b)!important}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card:nth-child(4),.twerkhub-tiers-grid-4 .twerkhub-tier4-card-vip{--glow:#ffc24d;--spin:6.5s;background:radial-gradient(520px 320px at 50% -10%,rgba(255,194,77,.13),transparent 60%),linear-gradient(180deg,#15110a,#07060b)!important}
+.twerkhub-tiers-grid-4 .twerkhub-tier4-card:nth-child(3)::after,.twerkhub-tiers-grid-4 .twerkhub-tier4-card:nth-child(4)::after{opacity:.7}
+@keyframes twk-rot{to{--twk-angle:360deg}}
+@keyframes twk-breathe{0%,100%{box-shadow:0 24px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04)}50%{box-shadow:0 24px 66px rgba(0,0,0,.62),0 0 34px -10px var(--glow),inset 0 1px 0 rgba(255,255,255,.05)}}
+@keyframes twk-pulse{0%,100%{opacity:.32}50%{opacity:.7}}
+@media (prefers-reduced-motion:reduce){.twerkhub-tiers-grid-4 .twerkhub-tier4-card,.twerkhub-tiers-grid-4 .twerkhub-tier4-card::after{animation:none}}
+</style>
+
   <div class="twerkhub-kicker">/ Rewards · earn or buy · Supabase-backed</div>
   <div class="twerkhub-tiers-head">
     <div>
@@ -1598,7 +1618,7 @@ a.twk-hero-affiliate-overlay,
       <ul class="twerkhub-tier-list">
         <li>✓ Early drops (48h head start)</li><li>✓ Download all videos</li><li>✓ VIP Discord channels</li><li>✓ Token multiplier ×1.5</li>
       </ul>
-      
+      <a class="twerkhub-btn twerkhub-btn-ghost tier__cta" data-tier="medium" data-price="9.99" href="https://discord.gg/WWn8ZgQMjn" target="_blank" rel="noopener nofollow ugc">Get Medium →</a>
     </article>
     <article class="twerkhub-tier4-card">
       <div class="twerkhub-tier4-ribbon">★ MOST POPULAR</div>
