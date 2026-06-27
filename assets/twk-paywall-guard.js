@@ -41,7 +41,7 @@
     '/twerk-hub-leaks/',
     '/hottest-cosplay-fancam/',
     '/korean-girls-kpop-twerk/',
-    '/try-on-hot-leaks/',
+    '/try-on-hot-leaks/', '/ttl-latin-models/', '/models-cheerleaders/',
     '/sav-twerk-playlist/',
     '/playlist/',                       // individual video pages inside the 5 main playlists
     '/latina-porn/',
@@ -170,16 +170,14 @@
   }
 
   function applyThumbBadge(el) {
-    if (!el || el.querySelector('.twk-paywall-badge')) return;
+    if (!el || el.querySelector('.twk-thumb-lock')) return;
     if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
-    var badge = document.createElement('span');
-    badge.className = 'twk-paywall-badge';
-    badge.setAttribute('aria-label', 'Premium 18+ content');
-    badge.style.cssText =
-      'position:absolute;top:6px;right:6px;background:rgba(0,0,0,.85);color:#ffd700;' +
-      'padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;' +
-      'z-index:9;pointer-events:none;font-family:system-ui,-apple-system,sans-serif;';
-    badge.textContent = '🔒 18+'; /* +18 corner badge disabled globally */
+    var k = document.createElement('div');
+    k.className = 'twk-thumb-lock';
+    k.setAttribute('aria-label', 'Locked 18+ content');
+    k.style.cssText = 'position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);pointer-events:none';
+    k.innerHTML = '<span style="font-size:44px;line-height:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,.7))">&#128274;</span>';
+    el.appendChild(k);
   }
 
   // Fetch + cache the classification JSON
