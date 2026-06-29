@@ -182,6 +182,15 @@ a.twk-hero-affiliate-overlay,
   pointer-events: none !important;
 }
 </style>
+<style>
+.twerkhub-pl-page .twerkhub-home-hero-media{position:fixed;bottom:14px;right:14px;z-index:2147483647;width:370px;max-width:calc(100vw - 28px);border-radius:6px;overflow:hidden;border:1px solid #ff9000;box-shadow:0 18px 50px rgba(255,144,0,.32),0 6px 18px rgba(0,0,0,.85)}
+.twerkhub-pl-page .twerkhub-home-hero-media .twerkhub-hh-iframe{width:100%;height:100%;border:0;display:block}
+.twerkhub-pl-page .twerkhub-hh-next{position:absolute;top:8px;right:8px;left:auto!important;z-index:14;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.18);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:transform .2s;line-height:1}
+.twerkhub-pl-page .twerkhub-hh-next:hover{transform:translateY(-1px)}
+.twerkhub-pl-page .twerkhub-hh-next svg{width:10px;height:10px}
+.twerkhub-pl-page .twerkhub-hh-iframe{transform:scale(1.22)!important;transform-origin:center center!important}
+.twerkhub-pl-page .twerkhub-hh-media-inner{overflow:hidden!important}
+</style>
 <link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
 <style id="twk-viewed-css-v1">
 .twk-viewed,.card.twk-viewed,.mini-card.twk-viewed,.rk-item.twk-viewed{position:relative;}
@@ -277,8 +286,7 @@ a.twk-hero-affiliate-overlay,
   loadOnce('/assets/twerkhub-pl-theater-v2.js?v=20260513-ctrl4','twk-loader-pl-theater');
   loadOnce('/assets/twerkhub-age-gate.js?v=20260602-p10','twk-loader-age-gate');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
-  loadOnce('/assets/twerkhub-cb-promo.js?v=20260506-p11','twk-loader-cb-promo');
-
+  loadOnce('/assets/twerkhub-cam-hero-overlay.js?v=20260603-p4-close-btn','twk-loader-cam-hero');
   /* PH theme · token pill relocator → moved to external file
      /assets/twerkhub-pill-into-nav.js so it loads on every page (not just
      the home). Inline duplicate removed 2026-05-05. */
@@ -292,7 +300,73 @@ a.twk-hero-affiliate-overlay,
   <h1>Hottest cosplay <em>fancam</em>.</h1>
   <p class="twerkhub-pl-intro">4K anime cosplay &amp; fancam collection · weekly drops · members only.</p>
 </header>
-<script>window.TWK_VIDEO_CTA_TITLE = '+800 4K videos →';</script>
+
+<aside class="twerkhub-home-hero-media" aria-label="Featured cut" data-hero-video-id="" data-twk-affiliate-url="https://goloveai.com/?ref=7XQFGR" style="position:fixed !important;bottom:14px !important;right:14px !important;z-index:2147483647 !important;width:370px !important;max-width:calc(100vw - 28px) !important;border-radius:6px !important;overflow:hidden !important;border:1px solid #ff9000 !important;box-shadow:0 18px 50px rgba(255,144,0,.32),0 6px 18px rgba(0,0,0,.85) !important">
+  <div class="twerkhub-hh-media-inner">
+    <iframe class="twerkhub-hh-iframe" id="twerkhub-hh-iframe"
+            src="about:blank"
+            title="Live cams · featured preview"
+            loading="eager"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen style="min-height:180px"></iframe>
+    <script>
+      (function(){
+        var pool=[
+          {i:'v9zzf8elj_w', s:0, m:75},
+          {i:'mpZ4-dQFmqo', s:18, m:95},
+          {i:'JGxxoMNscmc', s:19, m:110},
+          {i:'XDkH0yaocJ8', s:16, m:130}
+        ];
+        var f=document.getElementById('twerkhub-hh-iframe');
+        var a=document.querySelector('.twerkhub-home-hero-media');
+        if(!f||!a) return;
+        var currentIdx = Math.floor(Math.random() * pool.length);
+        function applyVideo(p){
+          rotatorEndStamp = Date.now() + p.m * 60 * 1000;
+          var _cd = document.getElementById('twk-rotator-countdown');
+          if (_cd) _cd.setAttribute('data-remaining-minutes', String(p.m));
+          a.setAttribute('data-hero-video-id', p.i);
+          f.src = 'https://www.youtube-nocookie.com/embed/' + p.i +
+                  '?autoplay=1&mute=1&loop=1&playlist=' + p.i +
+                  '&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&start=' + p.s;
+        }
+        var rotatorTickInterval = null;
+        var rotatorEndStamp = 0;
+        function startGlobalCountdown(minutes){
+          rotatorEndStamp = Date.now() + minutes * 60 * 1000;
+          if (rotatorTickInterval) clearInterval(rotatorTickInterval);
+          function pad(n){ return String(n).padStart(2,'0'); }
+          function tick(){
+            var t = document.getElementById('twk-rotator-cd-timer');
+            var rem = rotatorEndStamp - Date.now();
+            if (rem <= 0) {
+              currentIdx = (currentIdx + 1) % pool.length;
+              applyVideo(pool[currentIdx]);
+              rem = rotatorEndStamp - Date.now();
+            }
+            var s = Math.floor(rem / 1000);
+            if (t) t.textContent = pad(Math.floor(s/3600)) + ':' + pad(Math.floor((s%3600)/60)) + ':' + pad(s%60);
+          }
+          tick();
+          rotatorTickInterval = setInterval(tick, 1000);
+        }
+        applyVideo(pool[currentIdx]);
+        startGlobalCountdown(pool[currentIdx].m);
+      })();
+    </script>
+    <div class="twerkhub-hh-media-meta">
+      <span class="twerkhub-hh-live" id="twerkhub-hh-status">
+        <span class="twerkhub-hh-status-dot"></span>
+        <span class="twerkhub-hh-status-label">online</span>
+      </span>
+      <h2 id="twk-rotator-countdown" data-remaining-minutes="75">
+        <span class="twerkhub-hh-cd-kicker">Private · ends in</span>
+        <span class="twerkhub-hh-cd-timer" id="twk-rotator-cd-timer">01:15:00</span>
+      </h2>
+    </div>
+  </div>
+</aside>
 
 <main id="twerkhub-pl-main" class="twerkhub-pl-theater-main">
   <div class="twerkhub-pl-player-col">

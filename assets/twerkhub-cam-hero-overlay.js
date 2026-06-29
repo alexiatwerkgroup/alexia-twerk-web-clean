@@ -70,8 +70,8 @@
       '}',
       /* El countdown viejo lo reposicionamos abajo izquierda y re-estilamos */
       '.twk-cam-styled .twerkhub-hh-media-meta{',
-        'position:absolute !important;bottom:12px !important;left:12px !important;',
-        'top:auto !important;right:auto !important;',
+        'position:absolute !important;bottom:12px !important;right:12px !important;',
+        'top:auto !important;left:auto !important;',
         'z-index:14 !important;display:flex !important;flex-direction:column !important;',
         'align-items:flex-start !important;gap:2px !important;',
         'background:rgba(0,0,0,.78) !important;',
@@ -173,6 +173,15 @@
         'font-size:9px;font-weight:800;letter-spacing:.2em;',
         'padding:4px 8px;border-radius:4px;',
       '}',
+      '.twk-cam-close{',
+        'margin-left:auto;background:rgba(255,255,255,.12);border:none;color:#fff;',
+        'width:20px;height:20px;border-radius:50%;display:flex;',
+        'align-items:center;justify-content:center;cursor:pointer;',
+        'pointer-events:auto;padding:0;flex-shrink:0;',
+        'transition:background .15s,transform .15s;',
+      '}',
+      '.twk-cam-close:hover{background:rgba(255,255,255,.25);transform:scale(1.1)}',
+      '.twk-cam-close svg{width:12px;height:12px;display:block}',
 
       /* Round mute icon (transparente, campana blanca clara — match al banner) */
       '.twk-cam-mute{',
@@ -223,6 +232,9 @@
         '</span>',
         '<span class="twk-cam-live">LIVE NOW</span>',
         '<span class="twk-cam-ad">AD</span>',
+        '<button type="button" class="twk-cam-close" aria-label="Close">',
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+        '</button>',
       '</div>',
       '<button type="button" class="twk-cam-mute" aria-label="Toggle sound">',
         '<svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">',
@@ -265,6 +277,16 @@
               args: []
             }), '*');
           } catch(_){}
+        });
+      }
+
+      var closeBtn = inner.querySelector('.twk-cam-close');
+      if (closeBtn){
+        closeBtn.addEventListener('click', function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          var h = document.querySelector('.twerkhub-home-hero-media');
+          if (h) h.style.display = 'none';
         });
       }
     }

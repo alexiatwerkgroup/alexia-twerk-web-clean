@@ -120,12 +120,16 @@
       '#twk-pl-theater-close:hover{background:#ff2d87}',
       /* Viewed badge: COMPACT green pill, absolutely positioned over card top-left.
          !important on position rules so flex/grid parents can\'t push it to a new row. */
-      '.twk-viewed-badge{position:absolute!important;top:6px!important;left:6px!important;right:auto!important;bottom:auto!important;background:linear-gradient(145deg,#3ddca0,#28a877)!important;color:#06140e!important;font:800 9px/1 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto!important;letter-spacing:.16em!important;padding:4px 8px!important;border-radius:5px!important;z-index:9!important;pointer-events:none;text-transform:uppercase!important;box-shadow:0 2px 6px rgba(0,0,0,.45)!important;white-space:nowrap!important;display:inline-block!important;line-height:1!important;width:auto!important;height:auto!important;margin:0!important;border:0!important}',
+      '.twk-viewed-badge{position:absolute!important;top:6px!important;right:6px!important;left:auto!important;bottom:auto!important;background:linear-gradient(145deg,#3ddca0,#28a877)!important;color:#06140e!important;font:800 9px/1 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto!important;letter-spacing:.16em!important;padding:4px 8px!important;border-radius:5px!important;z-index:9!important;pointer-events:none;text-transform:uppercase!important;box-shadow:0 2px 6px rgba(0,0,0,.45)!important;white-space:nowrap!important;display:inline-block!important;line-height:1!important;width:auto!important;height:auto!important;margin:0!important;border:0!important}',
       '.twk-viewed-badge::before{content:"\\2713 ";font-weight:900}',
       /* Force parent positioning so the absolute badge anchors correctly */
       '.vcard.twk-viewed,.rk-item.twk-viewed{position:relative!important}',
-      /* Subtle dimming of viewed content (the part the user said works fine — keeping intact) */
-      '.vcard.twk-viewed .vthumb img,.rk-item.twk-viewed .rk-thumb img,.rk-item.twk-viewed img{opacity:.55!important;filter:grayscale(.45)!important;transition:opacity .25s,filter .25s}'
+      /* Subtle dimming of viewed content + green glow shadow */
+      '.vcard.twk-viewed .vthumb img,.rk-item.twk-viewed .rk-thumb img,.rk-item.twk-viewed img{opacity:.55!important;filter:grayscale(.45)!important;transition:opacity .25s,filter .25s}',
+      /* Green shadow ring on viewed cards */
+      '.vcard.twk-viewed,.rk-item.twk-viewed{box-shadow:0 0 0 2px rgba(61,220,160,.35),0 0 18px rgba(61,220,160,.2)!important}',
+      /* Hide lock badges on viewed cards — viewed state takes priority */
+      '.twk-viewed .twk-blocked-badge,.twk-viewed .twk-paywall-badge{display:none!important}'
     ].join('\n');
     document.head.appendChild(st);
   }

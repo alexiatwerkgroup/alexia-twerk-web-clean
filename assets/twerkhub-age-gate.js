@@ -169,7 +169,7 @@
       // Card decorations (cards with vid that are blocked)
       // Pill goes top-RIGHT to avoid overlap with the VIEWED badge (top-left)
       '.twk-blocked{position:relative;}',
-      '.twk-blocked-badge{position:absolute;top:6px;right:6px;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#ff5f5f);color:#fff;font:800 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;z-index:6;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);pointer-events:none;box-shadow:0 4px 14px rgba(255,45,135,.4);}',
+      '.twk-blocked-badge{display:none!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;position:absolute!important}',
       // Big center lock overlay so the card READS as locked from a distance
       '.twk-blocked-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:42px;color:rgba(255,255,255,.92);text-shadow:0 4px 20px rgba(0,0,0,.7),0 0 30px rgba(255,45,135,.5);pointer-events:none;z-index:5;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));}',
       // Strong filter on the thumbnail so users SEE the difference instantly

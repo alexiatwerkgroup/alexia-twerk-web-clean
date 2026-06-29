@@ -2224,12 +2224,11 @@ section + section::before{
 .is-viewed:hover img[src*="vi/"]{
   filter:grayscale(0) brightness(1);
 }
-/* Tiny "Seen" chip in the bottom-right corner of viewed cards — only
-   visible when the viewer lands near the card (subtle pink pill). */
+/* "Seen" chip in the top-right corner of viewed cards */
 .is-viewed::after{
   content:"✓ seen";
   position:absolute;
-  bottom:8px;right:8px;
+  top:6px;right:6px;
   font-family:'JetBrains Mono',ui-monospace,monospace;
   font-size:9.5px;font-weight:800;letter-spacing:.14em;
   text-transform:uppercase;
@@ -2245,6 +2244,11 @@ section + section::before{
   line-height:1;
   box-shadow:0 4px 10px rgba(0,0,0,.4);
 }
+/* Green glow shadow on viewed cards */
+.is-viewed{box-shadow:0 0 0 2px rgba(61,220,160,.35),0 0 18px rgba(61,220,160,.2);}
+/* Hide lock badges on viewed cards */
+.is-viewed .twk-blocked-badge,
+.is-viewed .twk-paywall-badge{display:none!important;}
 /* Thin accent bar on the top of viewed items so it's visible in compact lists */
 .is-viewed::before{
   content:"";
