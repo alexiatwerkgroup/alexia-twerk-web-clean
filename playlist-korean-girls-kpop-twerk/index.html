@@ -892,7 +892,7 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
   }
   function cards(){return Array.prototype.slice.call(document.querySelectorAll('.vcard[data-vid],.rk-item[data-vid],.card,.mini-card,a[data-vid]'));}
   function apply(){var seen=read();cards().forEach(function(c){var k=keyFor(c);if(k&&seen.indexOf(k)>-1)mark(c);});}
-  function save(k){if(!k)return;var seen=read();if(seen.indexOf(k)===-1){seen.push(k);write(seen);}apply();}
+  function save(k){if(!k)return;var seen=read();if(seen.indexOf(k)===-1){seen.push(k);write(seen);}}
   document.addEventListener('click',function(ev){
     var card=ev.target.closest&&ev.target.closest('.vcard[data-vid],.rk-item[data-vid],a[data-vid],.card,.mini-card');
     if(card)save(keyFor(card));

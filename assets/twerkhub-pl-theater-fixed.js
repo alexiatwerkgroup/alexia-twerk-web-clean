@@ -177,7 +177,6 @@
     }
 
     frameContainer.innerHTML = '<div id="twk-pl-theater-target"></div>';
-    markViewed(vid);
     grantViewToken(vid);
 
     loadYTApi().then(function(YT){
@@ -478,7 +477,7 @@
       var vid = null;
       try {
         var m = src.match(/embed\/([^?&\s]{6,})/);
-        if (m && m[1]) { vid = m[1]; markViewed(vid); }
+        if (m && m[1]) { vid = m[1]; }
       } catch(_){}
 
       // SAGRADA #9 — top-5 ranking videos must always play, never paywall

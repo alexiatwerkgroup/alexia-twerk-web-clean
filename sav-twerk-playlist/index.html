@@ -212,9 +212,43 @@ a.twk-hero-affiliate-overlay,
   loadOnce('/assets/token-system.js?v=20260509-d1-p5-cap-and-fix','twk-loader-token-system');
   loadOnce('/assets/twerkhub-tokens.js?v=20260509-p12-toast-inline-styles','twk-loader-twerkhub-tokens');
   loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
-  loadOnce('/assets/twerkhub-pl-theater.js?v=20260504-p10','twk-loader-pl-theater');
-  loadOnce('/assets/twerkhub-heatmap.js?v=20260425-p2','twk-loader-heatmap');
   loadOnce('/assets/twerkhub-age-gate.js?v=20260602-p10','twk-loader-age-gate');
+  // Load theater - accept whatever Cloudflare serves, but patch it at runtime
+  (function(){
+    var timestamp = Date.now();
+    var random = Math.random().toString(36).substr(2, 9);
+    var script = document.createElement('script');
+    script.async = false;
+    script.src = '/assets/twerkhub-pl-theater-v2.js?t=' + timestamp + '&r=' + random;
+    script.id = 'theater-script-' + timestamp;
+    script.onload = function() {
+      if (window.TwerkubPlTheater || window.grantViewToken) {
+        var original = window.grantViewToken || function() {};
+        window.grantViewToken = function(vid) {
+          try {
+            console.log('[PLAYLIST-PATCH] grantViewToken called with vid:', vid);
+            if (!window.AlexiaTokens) {
+              console.warn('[PLAYLIST-PATCH] window.AlexiaTokens not found');
+              return;
+            }
+            if (typeof window.AlexiaTokens.watchClip === 'function') {
+              console.log('[PLAYLIST-PATCH] Calling watchClip');
+              window.AlexiaTokens.watchClip(vid);
+            } else {
+              console.log('[PLAYLIST-PATCH] watchClip not available, using grant fallback');
+              window.AlexiaTokens.grant(15, 'watch_clip_fallback');
+            }
+          } catch(err) {
+            console.error('[PLAYLIST-PATCH] Error in grantViewToken:', err);
+          }
+        };
+        console.log('[PLAYLIST-PATCH] Successfully patched grantViewToken');
+      }
+    };
+    document.head.appendChild(script);
+  })();
+
+  loadOnce('/assets/twerkhub-heatmap.js?v=20260425-p2','twk-loader-heatmap');
 })();
 </script>
 
@@ -227,13 +261,15 @@ a.twk-hero-affiliate-overlay,
 <main id="twerkhub-pl-main" class="twerkhub-pl-theater-main">
   <div class="twerkhub-pl-player-col">
     <div class="twerkhub-pl-player-wrap">
-      <iframe id="twerkhub-pl-player"
-              src="https://www.youtube.com/embed/cV8pJIIUC8k?autoplay=1&amp;mute=1&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;controls=0&amp;fs=0&amp;iv_load_policy=3&amp;disablekb=1"
-              title="Sav · The Booty Queen · now playing"
-              loading="eager"
-              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen></iframe>
+      <div class="twk-hero-wrap" id="twkHeroWrap" data-vid="cV8pJIIUC8k" style="position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:12px;">
+        <iframe id="twerkhub-pl-player"
+                src="https://www.youtube.com/embed/cV8pJIIUC8k?autoplay=1&amp;mute=1&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1&amp;widget_referrer=https%3A%2F%2Falexiatwerkgroup.com&amp;origin=https%3A%2F%2Falexiatwerkgroup.com&amp;controls=0&amp;fs=0&amp;iv_load_policy=3&amp;disablekb=1"
+                title="Sav · The Booty Queen · now playing"
+                loading="eager"
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen></iframe>
+      </div>
     </div>
     <div class="twerkhub-pl-player-meta">
       <span class="twerkhub-pl-player-now">▶ Now playing</span>
@@ -666,12 +702,6 @@ a.twk-hero-affiliate-overlay,
           });
         };
       } catch(_){}
-      // Mark as viewed (delegated to the global pl-theater module if loaded)
-      try {
-        if (window.TwerkhubPlTheater && window.TwerkhubPlTheater.markViewed) {
-          window.TwerkhubPlTheater.markViewed(vid);
-        }
-      } catch(_){}
       // Token grant
       try {
         if (window.AlexiaTokens && window.AlexiaTokens.watchClip) window.AlexiaTokens.watchClip();
@@ -726,6 +756,8 @@ a.twk-hero-affiliate-overlay,
 <script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
 <script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
 
+<script data-twk="paywall-smart-v2">(function(){if(window.__twkPaywallSV2)return;window.__twkPaywallSV2=true;var classification=null,classReady=false;fetch("/assets/youtube-age-classification.json").then(function(r){return r.json();}).then(function(j){classification=j;classReady=true;}).catch(function(){});var currentVid=null,swapTime=0,lastPlayEvent=0,paywallTimer=null;function isBlocked(vid){if(vid==="TuRoLKKgCOE")return false;return classReady&&classification&&classification[vid]==="blocked";}function buildOverlay(vid){var o=document.createElement("div");o.className="twk-paywall-overlay";o.setAttribute("data-vid",vid||"");o.style.cssText="position:absolute;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:24px;box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(circle at 13% 6%,rgba(200,35,80,.30),transparent 50%),repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0,rgba(255,255,255,.05) 1.2px,transparent 1.2px,transparent 11px),linear-gradient(150deg,#17101a 0%,#0c0c13 55%,#080810 100%);";o.innerHTML='<div style=\"font-size:52px;line-height:1;margin-bottom:6px\">&#128274;</div><div style=\"font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#e9c98a;font-weight:800;margin-bottom:10px\">+18 &middot; Locked content</div><div style=\"font-family:Impact,Haettenschweiler,sans-serif;font-size:46px;font-weight:900;letter-spacing:1px;text-transform:uppercase;line-height:.98;margin-bottom:14px;color:#fff\">This video is <span style=\"color:#ff7a18\">locked</span>.</div><div style=\"font-size:14px;line-height:1.55;max-width:560px;margin-bottom:22px;color:rgba(255,255,255,.82)\"><strong style=\"color:#ffae52\">To unlock, contact Alexia on Discord or Telegram.</strong> YouTube blocks this video from playing outside their platform because it is age-restricted. The uncensored version comes from Alexia directly, in private.</div><div style=\"display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:16px\"><a href=\"https://discord.gg/WWn8ZgQMjn\" target=\"_blank\" rel=\"noopener nofollow ugc\" style=\"display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:14px;color:#fff;font-weight:800;font-size:14px;text-decoration:none;background:linear-gradient(145deg,#5865F2,#3a44b8)\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M19.3 5.3A17 17 0 0 0 15 4l-.2.4a13 13 0 0 1 3.8 1.2 12 12 0 0 0-10.6 0A13 13 0 0 1 11.8 4.4L11.6 4a17 17 0 0 0-4.3 1.3C4.5 9.4 3.8 13.4 4.1 17.3A17 17 0 0 0 9.3 20l.6-1a11 11 0 0 1-1.9-.9l.5-.4a12 12 0 0 0 10.2 0l.5.4a11 11 0 0 1-1.9.9l.6 1a17 17 0 0 0 5.2-2.7c.4-4.5-.6-8.5-3.8-12.7ZM9.7 15c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7Zm4.6 0c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7Z\"/></svg>Contact on Discord</a><a href=\"https://t.me/+0xNr69raiIlmYWRh\" target=\"_blank\" rel=\"noopener nofollow ugc\" style=\"display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:14px;color:#fff;font-weight:800;font-size:14px;text-decoration:none;background:linear-gradient(145deg,#2AABEE,#229ED9)\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M9.8 15.6 9.5 19.4c.4 0 .6-.2.8-.4l1.9-1.8 3.9 2.9c.7.4 1.2.2 1.4-.7l2.6-12.1c.2-1.1-.4-1.6-1.1-1.3L3.3 9.5c-1.1.4-1.1 1-.2 1.3l4 1.2 9.2-5.8c.4-.3.8-.1.5.2l-7.7 7Z\"/></svg>Contact on Telegram</a></div><div style=\"font-size:12px;color:rgba(255,255,255,.5)\">Free invite &middot; 18+ only &middot; Private</div>';return o;}function showPaywall(vid){if(vid==="TuRoLKKgCOE")return;var wrap=document.getElementById("twkHeroWrap");if(!wrap)return;if(wrap.querySelector(".twk-paywall-overlay"))return;if(getComputedStyle(wrap).position==="static")wrap.style.position="relative";wrap.appendChild(buildOverlay(vid));}function clearPaywall(){var wrap=document.getElementById("twkHeroWrap");if(!wrap)return;var o=wrap.querySelector(".twk-paywall-overlay");if(o)o.remove();}function startListening(){var f=document.querySelector("#twkHeroWrap iframe");if(!f||!f.contentWindow)return;try{f.contentWindow.postMessage(JSON.stringify({event:"listening",id:"twkHero",channel:"widget"}),"*");f.contentWindow.postMessage(JSON.stringify({event:"command",func:"addEventListener",args:["onStateChange"],id:"twkHero"}),"*");f.contentWindow.postMessage(JSON.stringify({event:"command",func:"addEventListener",args:["onError"],id:"twkHero"}),"*");}catch(e){}}window.addEventListener("message",function(e){if(!/youtube(?:-nocookie)?\.com/.test(e.origin))return;try{var d=typeof e.data==="string"?JSON.parse(e.data):e.data;if(d.event==="onError"){showPaywall(currentVid);return;}if(d.event==="onStateChange"||d.event==="infoDelivery"){var info=d.info;var state=null;if(typeof info==="object"&&info){state=info.playerState;}else if(typeof info==="number"){state=info;}if(state===1||state===2||state===3){lastPlayEvent=Date.now();clearPaywall();}}}catch(_){}});function onSrcChange(){var iframe=document.querySelector("#twkHeroWrap iframe");if(!iframe)return;var m=iframe.src.match(/embed\/([\w-]{11})/);if(!m)return;var vid=m[1];currentVid=vid;swapTime=Date.now();lastPlayEvent=0;clearPaywall();var wrap=document.getElementById("twkHeroWrap");if(wrap)wrap.setAttribute("data-vid",vid);if(paywallTimer)clearTimeout(paywallTimer);if(isBlocked(vid)){showPaywall(vid);return;}setTimeout(startListening,500);setTimeout(startListening,1500);paywallTimer=setTimeout(function(){},5500);}function watchIframe(){var iframe=document.querySelector("#twkHeroWrap iframe");if(!iframe)return;var lastSrc=iframe.src;var mo=new MutationObserver(function(){if(iframe.src!==lastSrc){lastSrc=iframe.src;onSrcChange();}});mo.observe(iframe,{attributes:true,attributeFilter:["src"]});onSrcChange();}function init(){var w=0;var iv=setInterval(function(){w+=100;if(classReady||w>=1500){clearInterval(iv);watchIframe();}},100);}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",init);}else{init();}})();</script>
+
 <!-- TWK VIEWED THUMBNAILS PATCH v1: stores only local viewed IDs/hrefs -->
 <script id="twk-viewed-thumbnails-js-v1">
 (function(){
@@ -754,7 +786,7 @@ a.twk-hero-affiliate-overlay,
   }
   function cards(){return Array.prototype.slice.call(document.querySelectorAll('.vcard[data-vid],.rk-item[data-vid],.card,.mini-card,a[data-vid]'));}
   function apply(){var seen=read();cards().forEach(function(c){var k=keyFor(c);if(k&&seen.indexOf(k)>-1)mark(c);});}
-  function save(k){if(!k)return;var seen=read();if(seen.indexOf(k)===-1){seen.push(k);write(seen);}apply();}
+  function save(k){if(!k)return;var seen=read();if(seen.indexOf(k)===-1){seen.push(k);write(seen);}}
   document.addEventListener('click',function(ev){
     var card=ev.target.closest&&ev.target.closest('.vcard[data-vid],.rk-item[data-vid],a[data-vid],.card,.mini-card');
     if(card)save(keyFor(card));
