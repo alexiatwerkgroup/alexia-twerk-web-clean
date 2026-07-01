@@ -796,6 +796,12 @@ iframe[src*="jasmin"] {
         };
       } catch(_){}
       setTimeout(hideLoader, 5000);
+      // Mark as viewed
+      try {
+        if (window.TwerkhubPlTheater && window.TwerkhubPlTheater.markViewed) {
+          window.TwerkhubPlTheater.markViewed(vid);
+        }
+      } catch(_){}
       try {
         if (window.AlexiaTokens && window.AlexiaTokens.watchClip) window.AlexiaTokens.watchClip();
       } catch(_){}
@@ -905,7 +911,7 @@ iframe[src*="jasmin"] {
   function save(k){if(!k)return;var seen=read();if(seen.indexOf(k)===-1){seen.push(k);write(seen);}}
   document.addEventListener('click',function(ev){
     var card=ev.target.closest&&ev.target.closest('.vcard[data-vid],.rk-item[data-vid],a[data-vid],.card,.mini-card');
-    if(card)save(keyFor(card));
+    if(card){save(keyFor(card));mark(card);}
   },true);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
   setTimeout(apply,600);setTimeout(apply,1800);

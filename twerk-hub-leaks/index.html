@@ -676,6 +676,12 @@ a.twk-hero-affiliate-overlay,
           });
         };
       } catch(_){}
+      // Mark as viewed
+      try {
+        if (window.TwerkhubPlTheater && window.TwerkhubPlTheater.markViewed) {
+          window.TwerkhubPlTheater.markViewed(vid);
+        }
+      } catch(_){}
       // Token grant
       try {
         if (window.AlexiaTokens && window.AlexiaTokens.watchClip) window.AlexiaTokens.watchClip();
@@ -763,7 +769,7 @@ a.twk-hero-affiliate-overlay,
   function save(k){if(!k)return;var seen=read();if(seen.indexOf(k)===-1){seen.push(k);write(seen);}}
   document.addEventListener('click',function(ev){
     var card=ev.target.closest&&ev.target.closest('.vcard[data-vid],.rk-item[data-vid],a[data-vid],.card,.mini-card');
-    if(card)save(keyFor(card));
+    if(card){save(keyFor(card));mark(card);}
   },true);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
   setTimeout(apply,600);setTimeout(apply,1800);
