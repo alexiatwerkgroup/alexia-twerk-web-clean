@@ -308,6 +308,13 @@ a.twk-hero-affiliate-overlay,
               allow="autoplay; encrypted-media; picture-in-picture"
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
+      <!-- Click shield: sits above the iframe (z-index 0) so clicks never
+           reach YouTube's own click-to-pause handler. Swallows the click,
+           does nothing else (no navigation — this used to be the goloveai
+           affiliate overlay at z-index 13, which is why mute never worked
+           right; kept BELOW mute (z-index 4) and Next (z-index 14) this
+           time so both stay clickable). -->
+      <div class="twk-hero-clickshield" style="position:absolute;inset:0;z-index:2;cursor:default;background:transparent" aria-hidden="true"></div>
       <style>
         /* Zoom on the hero iframe to crop YouTube's pause-state title overlay,
            bottom watermarks and any logo flash. Same treatment as twk-video-shield. */
@@ -345,6 +352,39 @@ a.twk-hero-affiliate-overlay,
         if(!f||!a) return;
         var currentIdx = 0;  // index into `pool` of the currently-playing video
 
+        // ── Random-seek support (used by Next when there's only 1 video) ──
+        // Tracks the current video's duration via the YouTube postMessage
+        // API so "Next" can jump to a random timestamp instead of reloading.
+        var knownDuration = 0;
+        window.addEventListener('message', function(e){
+          if (!e || !e.origin || !/^https:\/\/www\.youtube(?:-nocookie)?\.com$/.test(e.origin)) return;
+          var data;
+          try { data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch(_){ return; }
+          if (data && data.event === 'infoDelivery' && data.info && typeof data.info.duration === 'number' && data.info.duration > 0) {
+            knownDuration = data.info.duration;
+          }
+        });
+        function startListening(){
+          // Puts the YT iframe into "listening" mode so it proactively sends
+          // infoDelivery events (incl. duration) via postMessage.
+          try { f.contentWindow.postMessage(JSON.stringify({event:'listening'}), '*'); } catch(_){}
+        }
+        function randomSeekCurrentVideo(){
+          var pad = 8; // don't seek right at the very start/end
+          var maxT = knownDuration > pad * 2 ? knownDuration - pad : 0;
+          var target;
+          if (maxT > pad) {
+            target = pad + Math.floor(Math.random() * (maxT - pad));
+          } else {
+            // Duration not known yet (rare — right after page load) →
+            // fall back to a safe random point within a typical long-cut range.
+            target = 60 + Math.floor(Math.random() * 3000);
+          }
+          try {
+            f.contentWindow.postMessage(JSON.stringify({event:'command', func:'seekTo', args:[target, true]}), '*');
+          } catch(_){}
+        }
+
         function weightedPick(){
           // Used ONLY on initial page load. Pure random by weights.
           var totalW=0; for (var k=0;k<pool.length;k++) totalW+=pool[k].w;
@@ -367,9 +407,11 @@ a.twk-hero-affiliate-overlay,
           var _cd = document.getElementById('twk-rotator-countdown');
           if (_cd) _cd.setAttribute('data-remaining-minutes', String(p.m));
           a.setAttribute('data-hero-video-id', p.i);
+          knownDuration = 0; // reset — new video, duration unknown until infoDelivery arrives
           f.src = 'https://www.youtube-nocookie.com/embed/' + p.i +
                   '?autoplay=1&mute=1&loop=1&playlist=' + p.i +
                   '&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&start=' + p.s;
+          setTimeout(startListening, 1800); // give the iframe time to load before it can respond to postMessage
           // 2026-05-06: AUTO-UNMUTE REMOVED. Previously this set f.onload to
           // unmute after 800ms regardless of user intent — that overrode any
           // mouseleave-mute the user fired. Now: video stays MUTED by default;
@@ -431,15 +473,23 @@ a.twk-hero-affiliate-overlay,
         // From here on it ticks down continuously regardless of Next clicks.
         startGlobalCountdown(pool[currentIdx].m);
 
-        // Next button → cycle to the next in fixed order, wrap at end.
-        // No randomness here — strict 1→2→3→4→1 sequence, no repeats.
+        // Next button:
+        //  · pool.length > 1  → cycle to the next in fixed order, wrap at end
+        //    (strict 1→2→3→4→1 sequence, no repeats — restored automatically
+        //    once the 4-video pool above is uncommented).
+        //  · pool.length === 1 → jump to a random timestamp in this same
+        //    video instead (2026-07-29: only 1 video active for now).
         var nextBtn = document.getElementById('twerkhub-hh-next');
         if (nextBtn) {
           nextBtn.addEventListener('click', function(ev){
             ev.preventDefault();
             ev.stopPropagation();
-            currentIdx = (currentIdx + 1) % pool.length;
-            applyVideo(pool[currentIdx]);
+            if (pool.length > 1) {
+              currentIdx = (currentIdx + 1) % pool.length;
+              applyVideo(pool[currentIdx]);
+            } else {
+              randomSeekCurrentVideo();
+            }
           });
         }
 
