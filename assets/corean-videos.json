@@ -6,7 +6,7 @@
   "notes": "Top 5 hot-ranking are free previews with real title/id exposed. Grid items are paywall-gated with anti-piracy: hidden_id is base64 of the real id plus a sha256 tag; real id/title are kept in fields prefixed with \"_\" so the client can avoid rendering them in the initial DOM for non-subscribers. On successful subscription, the client re-renders grid using _id/_title.",
   "hot_ranking": [
     {
-      "id": "v9zzf8elj_w",
+      "id": "CcKbgxAgtPc",
       "title": "狗兰 고라니율 golaniyule0 2026.01.16 红白学生服",
       "channel": "闻风而起",
       "duration": "8:45",

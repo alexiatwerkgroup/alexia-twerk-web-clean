@@ -234,7 +234,7 @@
             }, 500);
             // Start the 1.5s silent-block heartbeat (ultra-aggressive for modal)
             killHeartbeat();
-            blockHeartbeat = setTimeout(triggerSilentBlock, 1500);
+            blockHeartbeat = setTimeout(triggerSilentBlock, 8000);
             // Hook heatmap: track watched buckets while this video plays
             try {
               if (window.TwkHeatmap) {
@@ -541,7 +541,7 @@
           window.TwkAgeGate.markBlocked(vid);
         }
         stopTimeTracker();
-      }, 1500);
+      }, 8000);
 
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
@@ -705,7 +705,7 @@
         try { window.TwkAgeGate.showOverlay(wrap, vid); return; } catch(_){}
       }
       try { renderFallbackPaywall(wrap); } catch(_){}
-    }, 2500);
+    }, 8000);
   }
 
   function renderFallbackPaywall(wrap){

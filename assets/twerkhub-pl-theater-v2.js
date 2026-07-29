@@ -246,9 +246,13 @@
               try { ev.target.unMute(); ev.target.setVolume(100); } catch(_){}
               if (attempts >= 6) clearInterval(iv);
             }, 500);
-            // Start the 1.5s silent-block heartbeat (ultra-aggressive for modal)
+            // Start the silent-block heartbeat. 2026-07-29 fix: was 1500ms,
+            // which false-positived on normal buffering/quality-negotiation
+            // delays and permanently 🔒-locked perfectly public videos
+            // (localStorage-persisted, cascades to every card site-wide).
+            // Bumped to 8s so only genuinely stuck/blocked videos trigger it.
             killHeartbeat();
-            blockHeartbeat = setTimeout(triggerSilentBlock, 1500);
+            blockHeartbeat = setTimeout(triggerSilentBlock, 8000);
             // Hook heatmap: track watched buckets while this video plays
             try {
               if (window.TwkHeatmap) {
@@ -542,20 +546,25 @@
       // ONLY reliable detection. Reduced from 5s → 3s → 1.5s after user reports of
       // age-restricted videos showing YouTube's error instead of our paywall.
       // ALWAYS show paywall when heartbeat fires, except for top-5 protected.
+      // 2026-07-29 fix: was 1500ms, which false-positived on normal
+      // buffering/quality-negotiation delays and permanently 🔒-locked
+      // perfectly public videos (localStorage-persisted, cascades to every
+      // card site-wide showing that video). Bumped to 8s so only genuinely
+      // stuck/blocked videos trigger it.
       if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
       window.__twkInlineHeartbeat = setTimeout(function(){
         if (window.__twkInlinePlaybackStarted) return;
         if (!vid) return;
         // SAGRADA #9 — top-5 protected videos never show paywall
         if (window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) return;
-        // No playback after 1.5s → assume blocked and show paywall
+        // No playback after 8s → assume blocked and show paywall
         showInlinePaywall(player, wrap, vid);
         // Mark as blocked for future reference
         if (window.TwkAgeGate && window.TwkAgeGate.markBlocked) {
           window.TwkAgeGate.markBlocked(vid);
         }
         stopTimeTracker();
-      }, 1500);
+      }, 8000);
 
       // Passive heatmap tracker: while the tab is visible, every 2s mark the
       // bucket corresponding to (elapsed seconds since load) under an assumed
@@ -706,6 +715,8 @@
     var wrap = player.closest('.twerkhub-pl-player-wrap') || player.parentNode;
     window.__twkInlinePlaybackStarted = false;
     if (window.__twkInlineHeartbeat) clearTimeout(window.__twkInlineHeartbeat);
+    // 2026-07-29 fix: was 2500ms, which false-positived on normal buffering
+    // and permanently 🔒-locked public videos. Bumped to 8s.
     window.__twkInlineHeartbeat = setTimeout(function(){
       if (window.__twkInlinePlaybackStarted) return;
       if (window.TwkAgeGate && window.TwkAgeGate.isProtected && window.TwkAgeGate.isProtected(vid)) return;
@@ -719,7 +730,7 @@
         try { window.TwkAgeGate.showOverlay(wrap, vid); return; } catch(_){}
       }
       try { renderFallbackPaywall(wrap); } catch(_){}
-    }, 2500);
+    }, 8000);
   }
 
   function renderFallbackPaywall(wrap){
