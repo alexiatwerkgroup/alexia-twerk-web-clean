@@ -299,7 +299,7 @@ a.twk-hero-affiliate-overlay,
     </div>
   </div>
   <!-- Featured video · live YouTube embed · silenced by default · hover unmutes -->
-  <aside class="twerkhub-home-hero-media" aria-label="Featured cut" data-hero-video-id="" data-twk-affiliate-url="https://goloveai.com/?ref=7XQFGR">
+  <aside class="twerkhub-home-hero-media" aria-label="Featured cut" data-hero-video-id="">
     <div class="twerkhub-hh-media-inner">
       <iframe class="twerkhub-hh-iframe" id="twerkhub-hh-iframe"
               src="about:blank"
@@ -308,9 +308,6 @@ a.twk-hero-affiliate-overlay,
               allow="autoplay; encrypted-media; picture-in-picture"
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
-      <!-- Affiliate click-through overlay: any of the 4 rotator videos → goloveai.com/?ref=7XQFGR -->
-      <a class="twk-hero-affiliate-overlay" href="https://goloveai.com/?ref=7XQFGR" target="_blank" rel="noopener sponsored" aria-label="Try GoLoveAI" style="position:absolute;inset:0;z-index:13;cursor:pointer;display:block;background:transparent" data-no-dead="1"></a>
-      <style>.twk-hero-affiliate-overlay:hover{background:radial-gradient(circle at center,transparent 35%,rgba(255,45,135,.10) 100%)!important}</style>
       <style>
         /* Zoom on the hero iframe to crop YouTube's pause-state title overlay,
            bottom watermarks and any logo flash. Same treatment as twk-video-shield. */
@@ -331,11 +328,17 @@ a.twk-hero-affiliate-overlay,
            no randomness — each click goes to the next in the array, wrapping
            back to the start at the end). */
       (function(){
+        // 2026-07-29: ROTATION PAUSED — only 1 video for now. The 4-video
+        // weighted pool is kept below (commented) so it's a one-line swap
+        // to restore rotation once the other 3 videos are ready.
+        // var pool=[
+        //   {i:'v9zzf8elj_w', s:0,  w:40, m:75 },  // 1h 15m
+        //   {i:'mpZ4-dQFmqo', s:18, w:20, m:95 },  // 1h 35m  (+20)
+        //   {i:'JGxxoMNscmc', s:19, w:20, m:110},  // 1h 50m  (+15)
+        //   {i:'XDkH0yaocJ8', s:16, w:20, m:130}   // 2h 10m  (+20)
+        // ];
         var pool=[
-          {i:'v9zzf8elj_w', s:0,  w:40, m:75 },  // 1h 15m
-          {i:'mpZ4-dQFmqo', s:18, w:20, m:95 },  // 1h 35m  (+20)
-          {i:'JGxxoMNscmc', s:19, w:20, m:110},  // 1h 50m  (+15)
-          {i:'XDkH0yaocJ8', s:16, w:20, m:130}   // 2h 10m  (+20)
+          {i:'znOfqqlzwFE', s:5, w:100, m:75 }
         ];
         var f=document.getElementById('twerkhub-hh-iframe');
         var a=document.querySelector('.twerkhub-home-hero-media');

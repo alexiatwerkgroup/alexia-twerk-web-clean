@@ -38,7 +38,6 @@ const endpoints = [
 
   // Other
   { name: 'POST /api/subscribe', method: 'POST', path: '/api/subscribe', body: { email: 'subscriber@example.com' } },
-  { name: 'GET /api/cb-top', method: 'GET', path: '/api/cb-top' },
 ]
 
 class EndpointBenchmark {
