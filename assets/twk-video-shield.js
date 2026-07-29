@@ -263,9 +263,17 @@
     }
     var wrap = parent;
 
-    // 3. Add the click-capture overlay
+    // The home hero (index.html) has its own dedicated click-shield, mute
+    // button, and Next button already — it doesn't need (and must NOT get)
+    // this script's generic click-to-pause button, controls bar, or Discord
+    // CTA on top of them. This was the actual bug behind "video still
+    // pauses on click": the .twk-video-shield-cap button below was being
+    // created unconditionally, at z-index:5, above the hero's own shield.
+    var isHomeHero = wrap.closest('.twerkhub-home-hero-media') !== null;
+
+    // 3. Add the click-capture overlay (skip on home hero — see above)
     var cap = wrap.querySelector('.' + CAP_CLASS);
-    if (!cap) {
+    if (!cap && !isHomeHero) {
       cap = document.createElement('button');
       cap.type = 'button';
       cap.className = CAP_CLASS;
@@ -287,7 +295,6 @@
 
     // 4. Build the controls bar (back, forward, mute, fullscreen) above overlay
     // SKIP for home hero videos — use twerkhub-cam-hero-overlay.js controls instead
-    var isHomeHero = wrap.closest('.twerkhub-home-hero-media') !== null;
     var ctrls = wrap.querySelector('.' + CTRLS_CLASS);
     if (!ctrls && !isHomeHero) {
       ctrls = document.createElement('div');
@@ -347,8 +354,10 @@
     }
 
     // 5. Premium CTA overlay (top-right) → click goes to Discord VIP
+    // Skip on home hero — it sits at the exact same top:14px;left:14px spot
+    // as the hero's own Next button and isn't needed there.
     var cta = wrap.querySelector('.' + CTA_CLASS);
-    if (!cta) {
+    if (!cta && !isHomeHero) {
       cta = document.createElement('a');
       cta.className = CTA_CLASS;
       cta.href = CTA_URL;
