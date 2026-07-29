@@ -313,13 +313,32 @@ a.twk-hero-affiliate-overlay,
            does nothing else (no navigation — this used to be the goloveai
            affiliate overlay at z-index 13, which is why mute never worked
            right; kept BELOW mute (z-index 4) and Next (z-index 14) this
-           time so both stay clickable). -->
-      <div class="twk-hero-clickshield" style="position:absolute;inset:0;z-index:2;cursor:default;background:transparent" aria-hidden="true"></div>
+           time so both stay clickable). Explicit pointer-events:auto +
+           stopPropagation/stopImmediatePropagation on click so it can't be
+           bypassed by any other click listener bound higher up the DOM
+           (capture-phase AND bubble-phase). -->
+      <div class="twk-hero-clickshield" style="position:absolute;inset:0;z-index:2;cursor:default;background:transparent;pointer-events:auto" aria-hidden="true"></div>
+      <script>
+        (function(){
+          var shield = document.currentScript.previousElementSibling;
+          if (!shield || !shield.classList.contains('twk-hero-clickshield')) {
+            shield = document.querySelector('.twk-hero-clickshield');
+          }
+          if (!shield) return;
+          ['click','mousedown','mouseup','pointerdown','pointerup','touchstart','touchend'].forEach(function(type){
+            shield.addEventListener(type, function(ev){
+              ev.preventDefault();
+              ev.stopPropagation();
+              if (ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+            }, true); // capture phase — fires before any ancestor's bubble-phase handler
+          });
+        })();
+      </script>
       <style>
         /* Zoom on the hero iframe to crop YouTube's pause-state title overlay,
            bottom watermarks and any logo flash. Same treatment as twk-video-shield. */
         .twerkhub-hh-media-inner{overflow:hidden!important}
-        .twerkhub-hh-iframe{transform:scale(1.22)!important;transform-origin:center center!important}
+        .twerkhub-hh-iframe{transform:scale(1.46)!important;transform-origin:center center!important}
         .twerkhub-hh-next{position:absolute;top:14px;left:14px;z-index:14;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18);color:#fff;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s cubic-bezier(.3,1.2,.4,1),background .2s,border-color .2s;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.4)}
         .twerkhub-hh-next:hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(255,45,135,.22),rgba(255,180,84,.10));border-color:rgba(255,45,135,.4)}
         .twerkhub-hh-next svg{width:14px;height:14px;flex-shrink:0}
