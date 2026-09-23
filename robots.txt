@@ -1,5 +1,6 @@
 # robots.txt — twerkhub.lat
-# Permite el rastreo de todo el contenido y declara el sitemap.
+# Permite el rastreo de todo el contenido público y declara los sitemaps.
+# Actualizado 2026-09-22 (recuperación SEO post-incidente).
 
 User-agent: *
 Allow: /
@@ -10,9 +11,10 @@ Disallow: /admin-users
 Disallow: /auth-callback
 Disallow: /profile
 Disallow: /reset
+Disallow: /creator-dashboard
 Disallow: /cdn-cgi/
+Disallow: /tools/
+Disallow: /api/
 
-Sitemap: https://twerkhub.lat/sitemap.xml
-
-Sitemap: https://twerkhub.lat/sitemap-models-cheerleaders.xml
 Sitemap: https://twerkhub.lat/sitemap-index.xml
+Sitemap: https://twerkhub.lat/sitemap.xml
