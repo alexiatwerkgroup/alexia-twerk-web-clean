@@ -63,7 +63,7 @@ p{color:#d8d8e2;font-size:16.5px;margin-bottom:14px}strong{color:#fff;font-weigh
         <a href="/creators" data-nav="creators">CREATORS</a>
         <a href="/hot-models-influencers/" data-nav="hot-models">HOT MODELS</a>
         <a href="/alexia-video-packs" class="twk-nav-v1-hot" data-nav="hotpacks">HOT PACKS</a>
-        <a href="/community.html" data-nav="community">COMMUNITY</a>
+        <a href="/community" data-nav="community">COMMUNITY</a>
         <a href="/membership" data-nav="membership">MEMBERSHIP</a>
         <a href="/account" data-nav="account">MY ACCOUNT</a>
         <a href="/profile" data-nav="profile">PROFILE</a>
@@ -79,7 +79,7 @@ p{color:#d8d8e2;font-size:16.5px;margin-bottom:14px}strong{color:#fff;font-weigh
   </nav>
   <script>
   (function(){
-    try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';else if(p.indexOf('/hot-models-influencers')===0)key='hot-models';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+    try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators':'creators','/community':'community','/membership':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';else if(p.indexOf('/hot-models-influencers')===0)key='hot-models';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
     try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
     function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
     loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
@@ -152,7 +152,7 @@ p{color:#d8d8e2;font-size:16.5px;margin-bottom:14px}strong{color:#fff;font-weigh
   <h2>Contact & Inquiries</h2>
   <p>For business inquiries, partnership proposals, or to request profile updates/removals:</p>
   <div class="link-group">
-    <a href="/contact.html" class="link-btn">Contact Form</a>
+    <a href="/contact" class="link-btn">Contact Form</a>
   </div>
   <p style="font-size: 13px; color: #8a8a99; margin-top: 14px;">Response time: 24-48 hours to verified inquiries</p>
 
@@ -166,7 +166,7 @@ p{color:#d8d8e2;font-size:16.5px;margin-bottom:14px}strong{color:#fff;font-weigh
     <li><a href="/hot-models-influencers/">Hot models roster</a></li>
     <li><a href="/membership">Membership tiers</a></li>
     <li><a href="/playlist/">Playlists</a></li>
-    <li><a href="/community.html">Community</a></li>
+    <li><a href="/community">Community</a></li>
   </ul>
 </section>
 
