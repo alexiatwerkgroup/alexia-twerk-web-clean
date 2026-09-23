@@ -220,7 +220,7 @@ a.twk-hero-affiliate-overlay,
       <a href="/creators" data-nav="creators">CREATORS</a>
       <a href="/hot-models-influencers/" data-nav="hot-models">HOT MODELS</a>
       <a href="/alexia-video-packs" class="twk-nav-v1-hot" data-nav="hotpacks">HOT PACKS</a>
-      <a href="/community.html" data-nav="community">COMMUNITY</a>
+      <a href="/community" data-nav="community">COMMUNITY</a>
       <a href="/membership" data-nav="membership">MEMBERSHIP</a>
       <a href="/account" data-nav="account">MY ACCOUNT</a>
       <a href="/profile" data-nav="profile">PROFILE</a>
@@ -236,7 +236,7 @@ a.twk-hero-affiliate-overlay,
 </nav>
 <script>
 (function(){
-  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';else if(p.indexOf('/hot-models-influencers')===0)key='hot-models';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators':'creators','/community':'community','/membership':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';else if(p.indexOf('/hot-models-influencers')===0)key='hot-models';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
   try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
   function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
   loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
@@ -261,13 +261,13 @@ a.twk-hero-affiliate-overlay,
   <div class="intro-block">
     <h2 style="margin-top:0">What this roster is</h2>
     <p>This is the part of Twerkhub where we map the wider creator landscape. Some of these names already collaborate with our talent pool, some are reference points the audience asks about, and some are simply too culturally important not to document. Every page on this roster is a research-grade profile: birth city, career timeline, body of work, official social links — and a clear separation between the public figure and the marketed brand.</p>
-    <p>We do not host their content. We document who they are, link to where they actually publish, and contextualize their work next to our in-house talent. If a creator on this list wants to update or remove their profile, the contact form at <a href="/contact.html">/contact.html</a> reaches a human within 48 hours.</p>
+    <p>We do not host their content. We document who they are, link to where they actually publish, and contextualize their work next to our in-house talent. If a creator on this list wants to update or remove their profile, the contact form at <a href="/contact">/contact.html</a> reaches a human within 48 hours.</p>
   </div>
 
   <h2>The roster</h2>
   <div class="roster-grid">
 
-    <a class="roster-card" href="/hot-models-influencers/yanet-garcia.html">
+    <a class="roster-card" href="/hot-models-influencers/yanet-garcia">
       <div class="num">/ 01</div>
       <div class="name">Yanet García</div>
       <div class="alt">La Chica del Clima · MX</div>
@@ -275,7 +275,7 @@ a.twk-hero-affiliate-overlay,
       <div class="stats"><span>IG 15M+</span><span>OF Active</span><span>Fitness</span></div>
     </a>
 
-    <a class="roster-card" href="/hot-models-influencers/emarrb.html">
+    <a class="roster-card" href="/hot-models-influencers/emarrb">
       <div class="num">/ 02</div>
       <div class="name">emarrb</div>
       <div class="alt">Viral TikTok · Glam · OF</div>
@@ -283,7 +283,7 @@ a.twk-hero-affiliate-overlay,
       <div class="stats"><span>TikTok Viral</span><span>OF Active</span><span>Glam</span></div>
     </a>
 
-    <a class="roster-card" href="/hot-models-influencers/demi-rose.html">
+    <a class="roster-card" href="/hot-models-influencers/demi-rose">
       <div class="num">/ 03</div>
       <div class="name">Demi Rose</div>
       <div class="alt">UK Glamour · IG 21M+</div>
@@ -291,7 +291,7 @@ a.twk-hero-affiliate-overlay,
       <div class="stats"><span>IG 21M+</span><span>OF Active</span><span>UK Glam</span></div>
     </a>
 
-    <a class="roster-card" href="/hot-models-influencers/karely-ruiz.html">
+    <a class="roster-card" href="/hot-models-influencers/karely-ruiz">
       <div class="num">/ 04</div>
       <div class="name">Karely Ruiz</div>
       <div class="alt">MX · IG 9M+ · OF top tier</div>
@@ -299,7 +299,7 @@ a.twk-hero-affiliate-overlay,
       <div class="stats"><span>IG 9M+</span><span>OF Active</span><span>MX</span></div>
     </a>
 
-    <a class="roster-card" href="/hot-models-influencers/anastasiya-kvitko.html">
+    <a class="roster-card" href="/hot-models-influencers/anastasiya-kvitko">
       <div class="num">/ 05</div>
       <div class="name">Anastasiya Kvitko</div>
       <div class="alt">RU/US · Curve · LA-based</div>
@@ -307,7 +307,7 @@ a.twk-hero-affiliate-overlay,
       <div class="stats"><span>IG 12M+</span><span>Founder</span><span>RU/US</span></div>
     </a>
 
-    <a class="roster-card" href="/hot-models-influencers/aida-cortes.html">
+    <a class="roster-card" href="/hot-models-influencers/aida-cortes">
       <div class="num">/ 06</div>
       <div class="name">Aida Cortés</div>
       <div class="alt">CO · OnlyFans top 0.1%</div>
@@ -315,7 +315,7 @@ a.twk-hero-affiliate-overlay,
       <div class="stats"><span>Top 0.1%</span><span>OF Active</span><span>CO</span></div>
     </a>
 
-    <a class="roster-card" href="/hot-models-influencers/lyna-perez.html">
+    <a class="roster-card" href="/hot-models-influencers/lyna-perez">
       <div class="num">/ 07</div>
       <div class="name">Lyna Pérez</div>
       <div class="alt">CU/US · Miami · IG 9M+</div>
@@ -323,7 +323,7 @@ a.twk-hero-affiliate-overlay,
       <div class="stats"><span>IG 9M+</span><span>OF Active</span><span>Miami</span></div>
     </a>
 
-    <a class="roster-card" href="/hot-models-influencers/andrea-espada.html">
+    <a class="roster-card" href="/hot-models-influencers/andrea-espada">
       <div class="num">/ 08</div>
       <div class="name">Andrea Espada</div>
       <div class="alt">CO/US · YouTube + IG 10M+</div>
@@ -331,7 +331,7 @@ a.twk-hero-affiliate-overlay,
       <div class="stats"><span>IG 10M+</span><span>YouTube</span><span>CO/US</span></div>
     </a>
 
-    <a class="roster-card" href="/hot-models-influencers/esperanza-gomez.html">
+    <a class="roster-card" href="/hot-models-influencers/esperanza-gomez">
       <div class="num">/ 09</div>
       <div class="name">Esperanza Gómez</div>
       <div class="alt">CO · Multi-decade career</div>
@@ -353,7 +353,7 @@ a.twk-hero-affiliate-overlay,
 
   <h2>Adjacent on Twerkhub</h2>
   <p>If you're here from search, the rest of the network is worth a look:</p>
-  <p>→ <a href="/creators">Twerkhub talent directory</a> · <a href="/ttl-latin-models/">Premium Latin Models archive</a> · <a href="/playlist/">Curated playlists</a> · <a href="/blog/best-twerk-creators-2026.html">Best creators of 2026</a> · <a href="/blog/twerkhub-vs-onlyfans-fanvue-comparison.html">Twerkhub vs OF vs Fanvue</a> · <a href="/blog/the-4-tiers-explained.html">The 4-tier system explained</a></p>
+  <p>→ <a href="/creators">Twerkhub talent directory</a> · <a href="/ttl-latin-models/">Premium Latin Models archive</a> · <a href="/playlist/">Curated playlists</a> · <a href="/blog/best-twerk-creators-2026">Best creators of 2026</a> · <a href="/blog/twerkhub-vs-onlyfans-fanvue-comparison">Twerkhub vs OF vs Fanvue</a> · <a href="/blog/the-4-tiers-explained">The 4-tier system explained</a></p>
 
   <a class="back" href="/creators">← Back to creators</a>
 </main>
@@ -373,8 +373,8 @@ a.twk-hero-affiliate-overlay,
     <li><a href="/ttl-latin-models/">Premium Latin Models</a></li>
     <li><a href="/membership">Membership tiers</a></li>
     <li><a href="/playlist/">Playlists</a></li>
-    <li><a href="/blog/best-twerk-creators-2026.html">Best creators 2026</a></li>
-    <li><a href="/community.html">Community</a></li>
+    <li><a href="/blog/best-twerk-creators-2026">Best creators 2026</a></li>
+    <li><a href="/community">Community</a></li>
   </ul>
 </section>
 
@@ -390,23 +390,23 @@ a.twk-hero-affiliate-overlay,
 <aside class="twk-rel-auto" aria-label="Related pages">
   <span class="twk-rel-auto-head">★ More from the archive</span>
   <div class="twk-rel-auto-grid">
-    <a href="/creators-latam.html" class="twk-rel-auto-card" data-cat="creators_hub">
+    <a href="/creators-latam" class="twk-rel-auto-card" data-cat="creators_hub">
       <span class="twk-rel-auto-cat">creators hub</span>
       <span class="twk-rel-auto-title">Latin American Twerk Roster</span>
     </a>
-    <a href="/creators-russia.html" class="twk-rel-auto-card" data-cat="creators_hub">
+    <a href="/creators-russia" class="twk-rel-auto-card" data-cat="creators_hub">
       <span class="twk-rel-auto-cat">creators hub</span>
       <span class="twk-rel-auto-title">Russian Twerk Roster</span>
     </a>
-    <a href="/creators-taipei.html" class="twk-rel-auto-card" data-cat="creators_hub">
+    <a href="/creators-taipei" class="twk-rel-auto-card" data-cat="creators_hub">
       <span class="twk-rel-auto-cat">creators hub</span>
       <span class="twk-rel-auto-title">The Taipei K-dance roster.</span>
     </a>
-    <a href="/creators-usa.html" class="twk-rel-auto-card" data-cat="creators_hub">
+    <a href="/creators-usa" class="twk-rel-auto-card" data-cat="creators_hub">
       <span class="twk-rel-auto-cat">creators hub</span>
       <span class="twk-rel-auto-title">US Twerk Roster</span>
     </a>
-    <a href="/variety-catalog.html" class="twk-rel-auto-card" data-cat="misc">
+    <a href="/variety-catalog" class="twk-rel-auto-card" data-cat="misc">
       <span class="twk-rel-auto-cat">misc</span>
       <span class="twk-rel-auto-title">The Roster</span>
     </a>
