@@ -42,7 +42,7 @@ setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://twerkhub.lat/blog/">
 <link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/">
-<link rel="alternate" hreflang="pt-BR" href="https://twerkhub.lat/pt/blog/index.html">
+<link rel="alternate" hreflang="pt-BR" href="https://twerkhub.lat/pt/blog/">
 <link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/">
 <link rel="alternate" hreflang="ru" href="https://twerkhub.lat/ru/blog/">
 <link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/">
@@ -150,7 +150,7 @@ a.twk-hero-affiliate-overlay,
       <a href="/#playlists" data-nav="playlists">PLAYLISTS</a>
       <a href="/creators" data-nav="creators">CREATORS</a>
       <a href="/alexia-video-packs" class="twk-nav-v1-hot" data-nav="hotpacks">HOT PACKS</a>
-      <a href="/community.html" data-nav="community">COMMUNITY</a>
+      <a href="/community" data-nav="community">COMMUNITY</a>
       <a href="/membership" data-nav="membership">MEMBERSHIP</a>
       <a href="/account" data-nav="account">MY ACCOUNT</a>
       <a href="/profile" data-nav="profile">PROFILE</a>
@@ -166,7 +166,7 @@ a.twk-hero-affiliate-overlay,
 </nav>
 <script>
 (function(){
-  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators.html':'creators','/community.html':'community','/membership.html':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs.html':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators':'creators','/community':'community','/membership':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
   try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
   function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
@@ -185,127 +185,127 @@ a.twk-hero-affiliate-overlay,
   <p class="lede">Deep dives on dance, creator platform economics, and how we curate the seven playlists every week. Written by Anti (founder) and guest creators.</p>
 
   <div class="grid">
-    <a class="post" href="/blog/why-i-built-twerkhub.html">
+    <a class="post" href="/blog/why-i-built-twerkhub">
       <span class="tag">▲ Manifesto</span>
       <h2>Why I built Twerkhub · 8 years, no algorithm</h2>
       <p>Founder essay by Anti. The Palermo apartment. The 2018 boredom. The years it was just a folder. What 8 years of manual curation taught us about why specific beats broad.</p>
       <div class="meta"><span>Apr 24, 2026 · 10 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/studios-shaping-2026.html">
+    <a class="post" href="/blog/studios-shaping-2026">
       <span class="tag">◆ Industry pillar</span>
       <h2>The 6 dance studios shaping 2026</h2>
       <p>iDance Taipei, MDC NRG Moscow, BEFOX Seoul, Kato Germany, VR KINGS, TWERKIT. Six rooms on three continents. What each exported and what they share.</p>
       <div class="meta"><span>Apr 24, 2026 · 11 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/afrobeats-twerk-crossover.html">
+    <a class="post" href="/blog/afrobeats-twerk-crossover">
       <span class="tag">◐ Culture pillar</span>
       <h2>Afrobeats × twerk · the West African crossover</h2>
       <p>Lagos roots, London diaspora, the Tyla "Water" inflection point. Why Afrobeats × twerk is the third major school joining K-dance and reggaetón.</p>
       <div class="meta"><span>Apr 24, 2026 · 10 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/brazilian-funk-twerk-crossover.html">
+    <a class="post" href="/blog/brazilian-funk-twerk-crossover">
       <span class="tag">◑ Culture pillar</span>
       <h2>Brazilian funk × twerk · the favela-floor crossover</h2>
       <p>Funk carioca + paulista roots, the Anitta inflection, why funk × twerk is the fourth major school joining K-dance, reggaetón and Afrobeats.</p>
       
     </a>
-    <a class="post" href="/blog/best-twerk-creators-2026.html">
+    <a class="post" href="/blog/best-twerk-creators-2026">
       <span class="tag">◆ Creators</span>
       <h2>The 12 best twerk creators on YouTube in 2026</h2>
       <p>Our weekly curation source list. 12 channels, 40+ choreographers, and why WanGong Lin, Лада Гоцци, Nika Chill, and the iDance Taipei roster run the scene right now.</p>
       <div class="meta"><span>Apr 22, 2026 · 12 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/k-dance-vs-reggaeton-twerk.html">
+    <a class="post" href="/blog/k-dance-vs-reggaeton-twerk">
       <span class="tag">◇ Culture</span>
       <h2>K-dance vs reggaetón twerk: two schools, one floor</h2>
       <p>Why Korean studio choreo looks nothing like Colombian reggaetón floor work even though both land on "twerk" playlists. History, technique, and the crossover tracks that merge them.</p>
       <div class="meta"><span>Apr 18, 2026 · 10 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/weekly-drop-calendar-2026.html">
+    <a class="post" href="/blog/weekly-drop-calendar-2026">
       <span class="tag">▲ Platform</span>
       <h2>Weekly drop calendar 2026</h2>
       <p>How Thursday drops work. Drop times by timezone. The first-100 bonus. Preview windows by tier. Everything you need to never miss a drop again.</p>
       <div class="meta"><span>Apr 24, 2026 · 6 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/what-is-a-fancam-history.html">
+    <a class="post" href="/blog/what-is-a-fancam-history">
       <span class="tag">◐ Culture</span>
       <h2>What is a fancam · the 25-year history</h2>
       <p>From 2000 Seoul concert tape-traders to 2026 Taipei convention floor cosplay cuts. Five eras. Why fancam became the dominant twerk content format.</p>
       <div class="meta"><span>Apr 20, 2026 · 9 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/twerkhub-vs-onlyfans-fanvue-comparison.html">
+    <a class="post" href="/blog/twerkhub-vs-onlyfans-fanvue-comparison">
       <span class="tag">◈ Industry</span>
       <h2>Twerkhub vs OnlyFans vs Fanvue · 2026 comparison</h2>
       <p>Side-by-side: creator revenue cut, pricing, token economy, platform philosophy. Where each wins, where each loses, which to pick.</p>
       <div class="meta"><span>Apr 15, 2026 · 11 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/moscow-dance-centre-nrg-history.html">
+    <a class="post" href="/blog/moscow-dance-centre-nrg-history">
       <span class="tag">● History</span>
       <h2>Moscow Dance Centre NRG · the studio that shaped heels choreo</h2>
       <p>Third-floor space in a Moscow shopping mall became the most influential dance institution of 2010-2025. Founding, methodology, instructors, influence.</p>
       <div class="meta"><span>Apr 10, 2026 · 9 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/fancam-etiquette-2026.html">
+    <a class="post" href="/blog/fancam-etiquette-2026">
       <span class="tag">◐ Ethics</span>
       <h2>Fancam etiquette 2026 · the rules nobody wrote down</h2>
       <p>7 unwritten rules the community enforces. Consent, attribution, takedown requests, convention policies. How not to be that guy.</p>
       <div class="meta"><span>Apr 8, 2026 · 8 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/token-economy-playbook.html">
+    <a class="post" href="/blog/token-economy-playbook">
       <span class="tag">◆ Economics</span>
       <h2>The token economy playbook · how we pay creators 95%</h2>
       <p>The 3 revenue flows, why OF takes 20% and we take 5%, loyalty math, retention delta between paid vs earned VIP. Full playbook.</p>
       <div class="meta"><span>Apr 6, 2026 · 10 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/heels-choreo-beginner-guide.html">
+    <a class="post" href="/blog/heels-choreo-beginner-guide">
       <span class="tag">◉ Tutorial</span>
       <h2>Heels choreo for beginners · 4-week plan</h2>
       <p>Gear, ankle strength, hip pop, floor work, injury prevention. Zero to first full 30-second choreo in 28 days. HowTo schema.</p>
       <div class="meta"><span>Apr 4, 2026 · 9 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/4k-vs-1080p-vs-vr-fancam.html">
+    <a class="post" href="/blog/4k-vs-1080p-vs-vr-fancam">
       <span class="tag">◄ Technical</span>
       <h2>4K vs 1080p vs VR fancam · format comparison</h2>
       <p>Resolution, bandwidth, playback cost. Where each format wins. When creators should record 4K vs 180° VR.</p>
       <div class="meta"><span>Apr 2, 2026 · 7 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/why-twerkhub-has-no-algorithm-feed.html">
+    <a class="post" href="/blog/why-twerkhub-has-no-algorithm-feed">
       <span class="tag">▲ Manifesto</span>
       <h2>Why Twerkhub has no algorithm feed</h2>
       <p>No For-You. No infinite scroll. No recommendations. The philosophy behind manual curation and what it gives up to get better retention.</p>
       <div class="meta"><span>Mar 30, 2026 · 8 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/buenos-aires-reggaeton-scene-2026.html">
+    <a class="post" href="/blog/buenos-aires-reggaeton-scene-2026">
       <span class="tag">◎ Scene</span>
       <h2>Buenos Aires reggaetón scene 2026</h2>
       <p>From Zárate to Palermo. 12 studios, the weekly calendar, the Zárate-to-BsAs dancer pipeline. Our home-city map.</p>
       <div class="meta"><span>Mar 28, 2026 · 8 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/perreo-history-caribbean-origin.html">
+    <a class="post" href="/blog/perreo-history-caribbean-origin">
       <span class="tag">◈ Pillar</span>
       <h2>Perreo · the 35-year Caribbean history</h2>
       <p>From 1990 Panamanian dembow through Puerto Rican reggaetón explosion to 2026 global choreography. 8-era timeline.</p>
       <div class="meta"><span>Mar 26, 2026 · 11 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/how-to-pitch-twerkhub-creator.html">
+    <a class="post" href="/blog/how-to-pitch-twerkhub-creator">
       <span class="tag">◉ Platform</span>
       <h2>How to pitch Twerkhub as a creator</h2>
       <p>5-step onboarding · what we look for · revenue share · what you get. HowTo schema. The recruitment playbook.</p>
       <div class="meta"><span>Mar 22, 2026 · 8 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/fancam-to-choreography-pipeline.html">
+    <a class="post" href="/blog/fancam-to-choreography-pipeline">
       <span class="tag">◎ Industry</span>
       <h2>The fancam-to-choreography pipeline</h2>
       <p>4-stage creative loop: viral fancam → studio translation → canonical diffusion → new fancams. Why Stage 2 creators dominate.</p>
       <div class="meta"><span>Mar 18, 2026 · 7 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/the-4-tiers-explained.html">
+    <a class="post" href="/blog/the-4-tiers-explained">
       <span class="tag">▣ Tiers</span>
       <h2>The 4 Twerkhub tiers explained</h2>
       <p>Basic · Medium · Premium · VIP Top. Every threshold, every price, every perk. Token math + typical progression by month.</p>
       <div class="meta"><span>Mar 14, 2026 · 9 min read</span><span class="read">Read →</span></div>
     </a>
-    <a class="post" href="/blog/discord-community-playbook.html">
+    <a class="post" href="/blog/discord-community-playbook">
       <span class="tag">◑ Community</span>
       <h2>The Twerkhub Discord playbook · 2,178 members</h2>
       <p>Channel structure, tier gating, moderation, weekly rhythms. What we run, what we tried, what broke. Community design playbook.</p>
@@ -326,10 +326,10 @@ a.twk-hero-affiliate-overlay,
 <section class="twk-related" data-twk="related" aria-label="Related pages">
   <div class="twk-related-head">Related on Twerkhub</div>
   <ul>
-    <li><a href="/blog/why-twerkhub-has-no-algorithm-feed.html">Why Twerkhub has no algorithm feed.</a></li>
-    <li><a href="/blog/why-i-built-twerkhub.html">Why I built Twerkhub.</a></li>
-    <li><a href="/blog/what-is-a-fancam-history.html">What is a fancam.</a></li>
-    <li><a href="/blog/weekly-drop-calendar-2026.html">Weekly drop calendar 2026.</a></li>
+    <li><a href="/blog/why-twerkhub-has-no-algorithm-feed">Why Twerkhub has no algorithm feed.</a></li>
+    <li><a href="/blog/why-i-built-twerkhub">Why I built Twerkhub.</a></li>
+    <li><a href="/blog/what-is-a-fancam-history">What is a fancam.</a></li>
+    <li><a href="/blog/weekly-drop-calendar-2026">Weekly drop calendar 2026.</a></li>
     <li><a href="/ttl-latin-models/">Premium · Latin models.</a></li>
     <li><a href="/try-on-hot-leaks/">Try-on hot leaks.</a></li>
   </ul>
@@ -408,14 +408,14 @@ a.twk-hero-affiliate-overlay,
     <div class="twk-mf-earn">
       <div class="twk-mf-earn-head">
         <h4>Earn tokens · <b>climb tiers without paying</b></h4>
-        <a href="/blog/how-to-earn-tokens-twerkhub.html">Full earn guide →</a>
+        <a href="/blog/how-to-earn-tokens-twerkhub">Full earn guide →</a>
       </div>
       <div class="twk-mf-earn-grid">
         <a class="twk-mf-rule" href="/account">
           <div class="twk-mf-rule-act">Daily login</div>
           <div class="twk-mf-rule-tk">+<b>30</b></div>
         </a>
-        <a class="twk-mf-rule" href="/recent.html">
+        <a class="twk-mf-rule" href="/recent">
           <div class="twk-mf-rule-act">Watch a cut</div>
           <div class="twk-mf-rule-tk">+<b>10</b></div>
         </a>
@@ -423,7 +423,7 @@ a.twk-hero-affiliate-overlay,
           <div class="twk-mf-rule-act">Field note read</div>
           <div class="twk-mf-rule-tk">+<b>90</b></div>
         </a>
-        <a class="twk-mf-rule" href="/blog/discord-community-playbook.html">
+        <a class="twk-mf-rule" href="/blog/discord-community-playbook">
           <div class="twk-mf-rule-act">Refer friend</div>
           <div class="twk-mf-rule-tk">+<b>200</b></div>
         </a>
@@ -450,21 +450,21 @@ a.twk-hero-affiliate-overlay,
           <li><a href="/">Alexia exclusives</a></li>
           <li><a href="/account">Your account</a></li>
           <li><a href="/profile">Your profile</a></li>
-          <li><a href="/creator-dashboard.html">Creator dashboard</a></li>
-          <li><a href="/blog/the-4-tiers-explained.html">The 4 tiers explained</a></li>
+          <li><a href="/creator-dashboard">Creator dashboard</a></li>
+          <li><a href="/blog/the-4-tiers-explained">The 4 tiers explained</a></li>
         </ul>
       </div>
       <div>
         <h5>Why pay · what you unlock</h5>
         <ul>
-          <li><a href="/blog/twerkhub-vs-onlyfans-fanvue-comparison.html">vs. OF &amp; Fanvue</a></li>
-          <li><a href="/blog/why-i-built-twerkhub.html">Why I built Twerkhub</a></li>
-          <li><a href="/blog/why-twerkhub-has-no-algorithm-feed.html">No algorithm feed</a></li>
-          <li><a href="/blog/best-twerk-creators-2026.html">Best creators · 2026</a></li>
-          <li><a href="/blog/4k-vs-1080p-vs-vr-fancam.html">4K · 1080p · VR</a></li>
-          <li><a href="/blog/weekly-drop-calendar-2026.html">Drop calendar 2026</a></li>
-          <li><a href="/blog/fancam-etiquette-2026.html">Fancam etiquette</a></li>
-          <li><a href="/blog/heels-choreo-beginner-guide.html">Heels choreo · guide</a></li>
+          <li><a href="/blog/twerkhub-vs-onlyfans-fanvue-comparison">vs. OF &amp; Fanvue</a></li>
+          <li><a href="/blog/why-i-built-twerkhub">Why I built Twerkhub</a></li>
+          <li><a href="/blog/why-twerkhub-has-no-algorithm-feed">No algorithm feed</a></li>
+          <li><a href="/blog/best-twerk-creators-2026">Best creators · 2026</a></li>
+          <li><a href="/blog/4k-vs-1080p-vs-vr-fancam">4K · 1080p · VR</a></li>
+          <li><a href="/blog/weekly-drop-calendar-2026">Drop calendar 2026</a></li>
+          <li><a href="/blog/fancam-etiquette-2026">Fancam etiquette</a></li>
+          <li><a href="/blog/heels-choreo-beginner-guide">Heels choreo · guide</a></li>
           <li><a href="/blog/">All field notes →</a></li>
         </ul>
       </div>
@@ -480,8 +480,8 @@ a.twk-hero-affiliate-overlay,
           <li><a href="https://onlyfans.com/alexiatwerkoficial" target="_blank" rel="noopener">OnlyFans</a></li>
           <li><a href="https://www.patreon.com/Alexia_Twerk" target="_blank" rel="noopener">Patreon</a></li>
           <li><a href="mailto:alexiatwerkoficial@gmail.com">Email · press</a></li>
-          <li><a href="/community.html">Community</a></li>
-          <li><a href="/contact.html">Contact</a></li>
+          <li><a href="/community">Community</a></li>
+          <li><a href="/contact">Contact</a></li>
         </ul>
       </div>
     </div>
@@ -491,56 +491,56 @@ a.twk-hero-affiliate-overlay,
       <div>
         <h5>Discovery &amp; search</h5>
         <ul>
-          <li><a href="/recent.html">Recent · last 200</a></li>
-          <li><a href="/trending.html">Trending · live board</a></li>
-          <li><a href="/search.html">Search the archive</a></li>
-          <li><a href="/glossary.html">Glossary · jargon</a></li>
-          <li><a href="/recommend.html">Get a recommendation</a></li>
-          <li><a href="/variants-showcase.html">Variants showcase</a></li>
-          <li><a href="/variety-catalog.html">Variety catalog</a></li>
+          <li><a href="/recent">Recent · last 200</a></li>
+          <li><a href="/trending">Trending · live board</a></li>
+          <li><a href="/search">Search the archive</a></li>
+          <li><a href="/glossary">Glossary · jargon</a></li>
+          <li><a href="/recommend">Get a recommendation</a></li>
+          <li><a href="/variants-showcase">Variants showcase</a></li>
+          <li><a href="/variety-catalog">Variety catalog</a></li>
           <li><a href="/">Best dancers</a></li>
         </ul>
       </div>
       <div>
         <h5>Models · creators</h5>
         <ul>
-          <li><a href="/models-catalog.html">Models catalog</a></li>
+          <li><a href="/models-catalog">Models catalog</a></li>
           <li><a href="/creators">All creators</a></li>
-          <li><a href="/creators-colombia.html">Colombia</a></li>
-          <li><a href="/creators-seoul.html">Seoul</a></li>
-          <li><a href="/creators-moscow.html">Moscow</a></li>
-          <li><a href="/creators-taipei.html">Taipei</a></li>
-          <li><a href="/creators-greece.html">Greece</a></li>
-          <li><a href="/creators-russia.html">Russia</a></li>
-          <li><a href="/creators-latam.html">LATAM</a></li>
-          <li><a href="/creators-usa.html">USA</a></li>
+          <li><a href="/creators-colombia">Colombia</a></li>
+          <li><a href="/creators-seoul">Seoul</a></li>
+          <li><a href="/creators-moscow">Moscow</a></li>
+          <li><a href="/creators-taipei">Taipei</a></li>
+          <li><a href="/creators-greece">Greece</a></li>
+          <li><a href="/creators-russia">Russia</a></li>
+          <li><a href="/creators-latam">LATAM</a></li>
+          <li><a href="/creators-usa">USA</a></li>
         </ul>
       </div>
       <div>
         <h5>Featured talent</h5>
         <ul>
-          <li><a href="/velvet-young.html">Velvet Young</a></li>
-          <li><a href="/nastya-nass.html">Nastya Nass</a></li>
-          <li><a href="/shoshina-katherina.html">Shoshina Katherina</a></li>
-          <li><a href="/yurgenis.html">Yurgenis</a></li>
-          <li><a href="/group-emiliano-ferrari-villalobo.html">Emiliano Ferrari Villalobo</a></li>
-          <li><a href="/group-kate-knaubl.html">Kate Knaubl</a></li>
-          <li><a href="/group-kelvin-deejay.html">Kelvin DeeJay</a></li>
-          <li><a href="/group-lexy-panterra.html">Lexy Panterra</a></li>
-          <li><a href="/group-monika-99-percent.html">Monika 99%</a></li>
-          <li><a href="/group-street-project-monika.html">Street Project Monika</a></li>
+          <li><a href="/velvet-young">Velvet Young</a></li>
+          <li><a href="/nastya-nass">Nastya Nass</a></li>
+          <li><a href="/shoshina-katherina">Shoshina Katherina</a></li>
+          <li><a href="/yurgenis">Yurgenis</a></li>
+          <li><a href="/group-emiliano-ferrari-villalobo">Emiliano Ferrari Villalobo</a></li>
+          <li><a href="/group-kate-knaubl">Kate Knaubl</a></li>
+          <li><a href="/group-kelvin-deejay">Kelvin DeeJay</a></li>
+          <li><a href="/group-lexy-panterra">Lexy Panterra</a></li>
+          <li><a href="/group-monika-99-percent">Monika 99%</a></li>
+          <li><a href="/group-street-project-monika">Street Project Monika</a></li>
         </ul>
       </div>
       <div>
         <h5>Cities &amp; styles</h5>
         <ul>
-          <li><a href="/style-cosplay-fancam.html">Style · Cosplay</a></li>
-          <li><a href="/style-heels-choreo.html">Style · Heels</a></li>
-          <li><a href="/style-reggaeton-floor.html">Style · Reggaeton</a></li>
-          <li><a href="/japan-cosplay-fancam.html">Japan</a></li>
-          <li><a href="/tokyo-cosplay-fancam.html">Tokyo</a></li>
-          <li><a href="/osaka-cosplay-fancam.html">Osaka</a></li>
-          <li><a href="/akihabara-cosplay-fancam.html">Akihabara</a></li>
+          <li><a href="/style-cosplay-fancam">Style · Cosplay</a></li>
+          <li><a href="/style-heels-choreo">Style · Heels</a></li>
+          <li><a href="/style-reggaeton-floor">Style · Reggaeton</a></li>
+          <li><a href="/japan-cosplay-fancam">Japan</a></li>
+          <li><a href="/tokyo-cosplay-fancam">Tokyo</a></li>
+          <li><a href="/osaka-cosplay-fancam">Osaka</a></li>
+          <li><a href="/akihabara-cosplay-fancam">Akihabara</a></li>
           <li><a href="/">USA</a></li>
           <li><a href="/">UK</a></li>
           <li><a href="/">London</a></li>
@@ -555,21 +555,21 @@ a.twk-hero-affiliate-overlay,
       <div>
         <h5>Studios &amp; tutorials</h5>
         <ul>
-          <li><a href="/twerk-studios.html">Twerk studios</a></li>
-          <li><a href="/kato-dance-studio.html">Kato Dance Studio</a></li>
-          <li><a href="/twerk-tutorials.html">Tutorials</a></li>
-          <li><a href="/twerk-dance-tutorial.html">Dance tutorial</a></li>
-          <li><a href="/twerk-workout-glutes.html">Workout · glutes</a></li>
-          <li><a href="/twerk-dance-4k.html">4K dance edits</a></li>
-          <li><a href="/twerk-dance-battle.html">Dance battle</a></li>
-          <li><a href="/twerk-dance-compilation.html">Compilations</a></li>
-          <li><a href="/twerk-dance-shorts.html">Shorts</a></li>
-          <li><a href="/twerk-dance-music.html">Music edits</a></li>
-          <li><a href="/twerk-dance-video.html">Dance videos</a></li>
+          <li><a href="/twerk-studios">Twerk studios</a></li>
+          <li><a href="/kato-dance-studio">Kato Dance Studio</a></li>
+          <li><a href="/twerk-tutorials">Tutorials</a></li>
+          <li><a href="/twerk-dance-tutorial">Dance tutorial</a></li>
+          <li><a href="/twerk-workout-glutes">Workout · glutes</a></li>
+          <li><a href="/twerk-dance-4k">4K dance edits</a></li>
+          <li><a href="/twerk-dance-battle">Dance battle</a></li>
+          <li><a href="/twerk-dance-compilation">Compilations</a></li>
+          <li><a href="/twerk-dance-shorts">Shorts</a></li>
+          <li><a href="/twerk-dance-music">Music edits</a></li>
+          <li><a href="/twerk-dance-video">Dance videos</a></li>
           <li><a href="/">Alexia · leaks</a></li>
           <li><a href="/alexia-video-packs">Video packs</a></li>
           <li><a href="/hottest-cosplay-fancam/">Premium · cosplay</a></li>
-          <li><a href="/paid-content.html">Paid content</a></li>
+          <li><a href="/paid-content">Paid content</a></li>
         </ul>
       </div>
     </div>
@@ -579,11 +579,11 @@ a.twk-hero-affiliate-overlay,
       <span>© 2026 TWERKHUB · Founded by <em style="color:#ff6fa8;font-style:normal">Anti</em> (firestarter) · The Wild Project Models Agency</span>
       <span>
         <a href="/about">About</a> ·
-        <a href="/contact.html">Contact</a> ·
-        <a href="/privacy.html">Privacy</a> ·
-        <a href="/terms.html">Terms</a> ·
-        <a href="/glossary.html">Glossary</a> ·
-        <a href="/search.html">Search</a>
+        <a href="/contact">Contact</a> ·
+        <a href="/privacy">Privacy</a> ·
+        <a href="/terms">Terms</a> ·
+        <a href="/glossary">Glossary</a> ·
+        <a href="/search">Search</a>
       </span>
       <span>If you know — you already know</span>
     </div>
@@ -619,27 +619,27 @@ a.twk-hero-affiliate-overlay,
 <aside class="twk-rel-auto" aria-label="Related pages">
   <span class="twk-rel-auto-head">★ More from the archive</span>
   <div class="twk-rel-auto-grid">
-    <a href="/blog/4k-vs-1080p-vs-vr-fancam.html" class="twk-rel-auto-card" data-cat="blog">
+    <a href="/blog/4k-vs-1080p-vs-vr-fancam" class="twk-rel-auto-card" data-cat="blog">
       <span class="twk-rel-auto-cat">blog</span>
       <span class="twk-rel-auto-title">4K vs 1080p vs VR fancam.</span>
     </a>
-    <a href="/blog/afrobeats-twerk-crossover.html" class="twk-rel-auto-card" data-cat="blog">
+    <a href="/blog/afrobeats-twerk-crossover" class="twk-rel-auto-card" data-cat="blog">
       <span class="twk-rel-auto-cat">blog</span>
       <span class="twk-rel-auto-title">Afrobeats × twerk · the West African crossover.</span>
     </a>
-    <a href="/blog/best-twerk-creators-2026.html" class="twk-rel-auto-card" data-cat="blog">
+    <a href="/blog/best-twerk-creators-2026" class="twk-rel-auto-card" data-cat="blog">
       <span class="twk-rel-auto-cat">blog</span>
       <span class="twk-rel-auto-title">The 12 best twerk creators on YouTube in 2026.</span>
     </a>
-    <a href="/blog/black-sea-dance-scene.html" class="twk-rel-auto-card" data-cat="blog">
+    <a href="/blog/black-sea-dance-scene" class="twk-rel-auto-card" data-cat="blog">
       <span class="twk-rel-auto-cat">blog</span>
       <span class="twk-rel-auto-title">The Black Sea dance scene.</span>
     </a>
-    <a href="/blog/brazilian-funk-twerk-crossover.html" class="twk-rel-auto-card" data-cat="blog">
+    <a href="/blog/brazilian-funk-twerk-crossover" class="twk-rel-auto-card" data-cat="blog">
       <span class="twk-rel-auto-cat">blog</span>
       <span class="twk-rel-auto-title">Brazilian funk × twerk · the favela-floor crossover.</span>
     </a>
-    <a href="/blog/buenos-aires-reggaeton-scene-2026.html" class="twk-rel-auto-card" data-cat="blog">
+    <a href="/blog/buenos-aires-reggaeton-scene-2026" class="twk-rel-auto-card" data-cat="blog">
       <span class="twk-rel-auto-cat">blog</span>
       <span class="twk-rel-auto-title">Buenos Aires reggaetón scene · 2026.</span>
     </a>
