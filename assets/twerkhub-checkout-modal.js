@@ -2,10 +2,10 @@
  *
  * Self-contained: injects its own CSS + DOM + handler. Drop the script tag
  * on any page that has .tier__cta[data-tier] elements and clicks will open
- * an aggressive, no-fluff checkout modal with Discord + Telegram options.
+ * a clear contact modal with Discord + Telegram options.
  *
- * Copy is intentionally short and direct — "Pick. Alexia activates." — no
- * onboarding, no explanations. Two big buttons.
+ * It states plainly that access is arranged with the team; it does not
+ * imply an instant purchase or a one-person response.
  *
  * Public API: window.TwkCheckout = { open(tier, price), close() }
  */
@@ -63,18 +63,18 @@
       '  <button class="twk-checkout-close" type="button" aria-label="Close">&times;</button>',
       '  <div class="twk-checkout-tag" id="twk-ck-tag">TIER</div>',
       '  <div class="twk-checkout-price"><span id="twk-ck-price">$0</span><small>/mo</small></div>',
-      '  <p class="twk-checkout-pitch">Pick: <em>Discord</em> or <em>Telegram</em>. Alexia activates in minutes.</p>',
+      '  <p class="twk-checkout-pitch">Choose <em>Discord</em> or <em>Telegram</em>. The TWERKHUB team will confirm availability and next steps.</p>',
       '  <div class="twk-checkout-btns">',
       '    <a class="twk-checkout-btn twk-checkout-btn--discord" id="twk-ck-discord" href="' + DISCORD + '" target="_blank" rel="noopener nofollow ugc">',
       '      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.27 5.33A18.34 18.34 0 0 0 14.94 4l-.2.4a16.8 16.8 0 0 1 4.05 1.4 16.4 16.4 0 0 0-12.6 0A16.8 16.8 0 0 1 10.24 4.4L10.04 4a18.34 18.34 0 0 0-4.32 1.33C2.95 9.5 2.2 13.55 2.6 17.55a18.6 18.6 0 0 0 5.65 2.85l.45-.62a12.2 12.2 0 0 1-2-.97c.17-.12.34-.25.5-.38a13.16 13.16 0 0 0 11.6 0c.16.13.33.26.5.38-.62.37-1.3.7-2 .97l.45.62a18.6 18.6 0 0 0 5.65-2.85c.5-4.6-.77-8.6-3.13-12.22zM9.5 15.4c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13zm5 0c-1.04 0-1.9-.95-1.9-2.13s.84-2.13 1.9-2.13c1.05 0 1.91.95 1.9 2.13 0 1.18-.85 2.13-1.9 2.13z"/></svg>',
-      '      <span>DISCORD &rarr;</span>',
+      '      <span>CONTACT ON DISCORD &rarr;</span>',
       '    </a>',
       '    <a class="twk-checkout-btn twk-checkout-btn--telegram" id="twk-ck-telegram" href="' + TELEGRAM + '" target="_blank" rel="noopener nofollow ugc">',
       '      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>',
-      '      <span>TELEGRAM &rarr;</span>',
+      '      <span>CONTACT ON TELEGRAM &rarr;</span>',
       '    </a>',
       '  </div>',
-      '  <div class="twk-checkout-foot">Direct line &middot; minutes &middot; no third party</div>',
+      '  <div class="twk-checkout-foot">No payment is taken on this page</div>',
       '</div>'
     ].join('');
     // CRITICAL: append to documentElement (not body) — the body has a CSS
