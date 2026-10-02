@@ -301,7 +301,7 @@ a.twk-hero-affiliate-overlay,
     <div class="twerkhub-hh-media-inner">
       <iframe class="twerkhub-hh-iframe" id="twerkhub-hh-iframe"
               src="about:blank"
-              title="Fancam · featured preview"
+              title="Featured YouTube playlist preview"
               loading="eager"
               allow="autoplay; encrypted-media; picture-in-picture"
               referrerpolicy="strict-origin-when-cross-origin"
@@ -346,173 +346,49 @@ a.twk-hero-affiliate-overlay,
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <script>
-      /* Hero video rotator
-         · On page load: weighted pick (40/20/20/20)
-         · On Next click: cycles through the pool in fixed order (no repeats,
-           no randomness — each click goes to the next in the array, wrapping
-           back to the start at the end). */
+      /* Hero playlist player. Starts on a different playlist item each visit
+         and each press of Next, without competing with the card-player API. */
       (function(){
-        // 2026-07-29: ROTATION PAUSED — only 1 video for now. The 4-video
-        // weighted pool is kept below (commented) so it's a one-line swap
-        // to restore rotation once the other 3 videos are ready.
-        // var pool=[
-        //   {i:'CcKbgxAgtPc', s:0,  w:40, m:75 },  // 1h 15m
-        //   {i:'mpZ4-dQFmqo', s:18, w:20, m:95 },  // 1h 35m  (+20)
-        //   {i:'JGxxoMNscmc', s:19, w:20, m:110},  // 1h 50m  (+15)
-        //   {i:'XDkH0yaocJ8', s:16, w:20, m:130}   // 2h 10m  (+20)
-        // ];
-        var pool=[
-          {i:'znOfqqlzwFE', s:5, w:100, m:75 }
-        ];
-        var f=document.getElementById('twerkhub-hh-iframe');
-        var a=document.querySelector('.twerkhub-home-hero-media');
-        if(!f||!a) return;
-        var currentIdx = 0;  // index into `pool` of the currently-playing video
-
-        // ── Random-seek support (used by Next when there's only 1 video) ──
-        // Tracks the current video's duration via the YouTube postMessage
-        // API so "Next" can jump to a random timestamp instead of reloading.
-        var knownDuration = 0;
-        window.addEventListener('message', function(e){
-          if (!e || !e.origin || !/^https:\/\/www\.youtube(?:-nocookie)?\.com$/.test(e.origin)) return;
-          var data;
-          try { data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch(_){ return; }
-          if (data && data.event === 'infoDelivery' && data.info && typeof data.info.duration === 'number' && data.info.duration > 0) {
-            knownDuration = data.info.duration;
-          }
-        });
-        function startListening(){
-          // Puts the YT iframe into "listening" mode so it proactively sends
-          // infoDelivery events (incl. duration) via postMessage.
-          try { f.contentWindow.postMessage(JSON.stringify({event:'listening'}), '*'); } catch(_){}
-        }
-        function randomSeekCurrentVideo(){
-          var pad = 8; // don't seek right at the very start/end
-          var maxT = knownDuration > pad * 2 ? knownDuration - pad : 0;
-          var target;
-          if (maxT > pad) {
-            target = pad + Math.floor(Math.random() * (maxT - pad));
-          } else {
-            // Duration not known yet (rare — right after page load) →
-            // fall back to a safe random point within a typical long-cut range.
-            target = 60 + Math.floor(Math.random() * 3000);
-          }
-          try {
-            f.contentWindow.postMessage(JSON.stringify({event:'command', func:'seekTo', args:[target, true]}), '*');
-          } catch(_){}
-        }
-
-        function weightedPick(){
-          // Used ONLY on initial page load. Pure random by weights.
-          var totalW=0; for (var k=0;k<pool.length;k++) totalW+=pool[k].w;
-          var roll=Math.random()*totalW, acc=0, idx=0;
-          for (var k=0;k<pool.length;k++){
-            acc+=pool[k].w;
-            if (roll < acc){ idx=k; break; }
-          }
-          return idx;
-        }
-
-        // applyVideo: every call sets f.src directly. No dependency on
-        // TwkYTGate (which can be in cool-off and silently drop commands).
-        // Direct src swap proven to work in all states.
-        function applyVideo(p){
-          // Reset countdown to THIS video's duration (was random — caused all
-          // 4 videos to share the same timer regardless of which was playing).
-          rotatorCurrentMinutes = p.m;
-          rotatorEndStamp = Date.now() + p.m * 60 * 1000;
-          var _cd = document.getElementById('twk-rotator-countdown');
-          if (_cd) _cd.setAttribute('data-remaining-minutes', String(p.m));
-          a.setAttribute('data-hero-video-id', p.i);
-          knownDuration = 0; // reset — new video, duration unknown until infoDelivery arrives
-          f.src = 'https://www.youtube-nocookie.com/embed/' + p.i +
-                  '?autoplay=1&mute=1&loop=1&playlist=' + p.i +
-                  '&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&start=' + p.s;
-          setTimeout(startListening, 1800); // give the iframe time to load before it can respond to postMessage
-          // 2026-05-06: AUTO-UNMUTE REMOVED. Previously this set f.onload to
-          // unmute after 800ms regardless of user intent — that overrode any
-          // mouseleave-mute the user fired. Now: video stays MUTED by default;
-          // only hover (mouseenter) or explicit click toggles audio on.
-          // Reset the mute button label to "muted" since new video starts muted.
-          var muteBtn = document.querySelector('.twerkhub-hh-mute');
-          if (muteBtn) {
-            muteBtn.setAttribute('aria-pressed','true');
-            muteBtn.classList.add('is-muted');
-            muteBtn.setAttribute('aria-label','Tap to unmute');
-            var lbl = muteBtn.querySelector('.twerkhub-hh-mute-label');
-            if (lbl) lbl.textContent = 'Sound off';
-            var ico = muteBtn.querySelector('.twerkhub-hh-mute-ico');
-            if (ico) ico.textContent = '🔈';
-          }
-        }
-
-        // ── GLOBAL countdown — independent of which video is active.
-        // Starts ONCE on page load. Next clicks change the video but DON'T
-        // reset the countdown (it keeps ticking). When it reaches 0, it
-        // restarts with a new duration picked from the pool, AND auto-
-        // advances to the next video in the rotation.
-        var rotatorTickInterval = null;
-        var rotatorEndStamp = 0;
-        var rotatorCurrentMinutes = 0;
-        function pickRandomMinutes(){
-          // Randomly pick one of the pool's m values for variety on each cycle
-          return pool[Math.floor(Math.random() * pool.length)].m;
-        }
-        function startGlobalCountdown(minutes){
-          rotatorCurrentMinutes = minutes;
-          rotatorEndStamp = Date.now() + minutes * 60 * 1000;
-          if (rotatorTickInterval) clearInterval(rotatorTickInterval);
-          function pad(n){ return String(n).padStart(2,'0'); }
-          function rotatorTick(){
-            // Lazy-resolve DOM elements each tick (the timer span lives
-            // below this script tag in the source order, so t/cd are null
-            // when the function is first called).
-            var t = document.getElementById('twk-rotator-cd-timer');
-            var cd = document.getElementById('twk-rotator-countdown');
-            var rem = rotatorEndStamp - Date.now();
-            if (rem <= 0) {
-              currentIdx = (currentIdx + 1) % pool.length;
-              applyVideo(pool[currentIdx]); // applyVideo now resets countdown to the new video's m
-              rem = rotatorEndStamp - Date.now();
-            }
-            var s = Math.floor(rem / 1000);
-            if (t) t.textContent = pad(Math.floor(s/3600)) + ':' + pad(Math.floor((s%3600)/60)) + ':' + pad(s%60);
-            if (cd && !cd.getAttribute('data-remaining-minutes')) cd.setAttribute('data-remaining-minutes', String(rotatorCurrentMinutes));
-          }
-          rotatorTick();
-          rotatorTickInterval = setInterval(rotatorTick, 1000);
-        }
-
-        // Initial pick — weighted random ONLY on page load
-        currentIdx = weightedPick();
-        applyVideo(pool[currentIdx]);
-        // Start the GLOBAL countdown ONCE with the initial video's minutes.
-        // From here on it ticks down continuously regardless of Next clicks.
-        startGlobalCountdown(pool[currentIdx].m);
-
-        // Next button:
-        //  · pool.length > 1  → cycle to the next in fixed order, wrap at end
-        //    (strict 1→2→3→4→1 sequence, no repeats — restored automatically
-        //    once the 4-video pool above is uncommented).
-        //  · pool.length === 1 → jump to a random timestamp in this same
-        //    video instead (2026-07-29: only 1 video active for now).
+        var PLAYLIST_ID = 'PLKOS4uK92TgR5VStf8IpRpqpBPu40T9Tv';
+        // The supplied playlist link reaches item 40. Keep this in sync if
+        // more videos are added so every playlist item can be selected.
+        var PLAYLIST_LENGTH = 40;
+        var frame = document.getElementById('twerkhub-hh-iframe');
+        var aside = document.querySelector('.twerkhub-home-hero-media');
         var nextBtn = document.getElementById('twerkhub-hh-next');
-        if (nextBtn) {
-          nextBtn.addEventListener('click', function(ev){
-            ev.preventDefault();
-            ev.stopPropagation();
-            if (pool.length > 1) {
-              currentIdx = (currentIdx + 1) % pool.length;
-              applyVideo(pool[currentIdx]);
-            } else {
-              randomSeekCurrentVideo();
-            }
-          });
+        if (!frame || !aside) return;
+        var currentIndex = 0;
+        function randomIndex(){
+          if (PLAYLIST_LENGTH < 2) return 1;
+          var next;
+          do { next = 1 + Math.floor(Math.random() * PLAYLIST_LENGTH); }
+          while (next === currentIndex);
+          return next;
         }
-
-        // Mute button click handler is delegated to the bottom hero controller
-        // (line ~1346) which already routes through TwkYTGate + claims audio
-        // from other videos via TwerkhubSound. We don't add a duplicate here.
+        function loadRandomPlaylistVideo(){
+          currentIndex = randomIndex();
+          aside.setAttribute('data-hero-video-id', 'playlist-' + currentIndex);
+          frame.src = 'https://www.youtube-nocookie.com/embed/videoseries' +
+            '?list=' + PLAYLIST_ID + '&index=' + currentIndex +
+            '&autoplay=1&mute=1&controls=0&playsinline=1&rel=0&modestbranding=1' +
+            '&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1' +
+            '&origin=' + encodeURIComponent(window.location.origin);
+        }
+        if (nextBtn) {
+          var lastAdvanceAt = 0;
+          function advanceFromControl(event){
+            event.preventDefault();
+            event.stopPropagation();
+            if (Date.now() - lastAdvanceAt < 300) return;
+            lastAdvanceAt = Date.now();
+            loadRandomPlaylistVideo();
+          }
+          // pointerdown runs before the site's global click guard; click keeps
+          // the control keyboard-accessible. The short guard avoids doubles.
+          nextBtn.addEventListener('pointerdown', advanceFromControl, true);
+          nextBtn.addEventListener('click', advanceFromControl, true);
+        }
+        loadRandomPlaylistVideo();
       })();
       </script>
       <button type="button" class="twerkhub-hh-mute is-muted" data-twerkhub-hero-mute aria-pressed="true" aria-label="Tap to unmute">
