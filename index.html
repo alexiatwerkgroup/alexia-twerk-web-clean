@@ -346,51 +346,47 @@ a.twk-hero-affiliate-overlay,
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <script>
-      /* Hero playlist player. Starts on a different playlist item each visit
-         and each press of Next, without competing with the card-player API. */
-      (function(){
-        var PLAYLIST_ID = 'PLKOS4uK92TgR5VStf8IpRpqpBPu40T9Tv';
-        // The supplied playlist link reaches item 40. Keep this in sync if
-        // more videos are added so every playlist item can be selected.
-        var PLAYLIST_LENGTH = 40;
-        var frame = document.getElementById('twerkhub-hh-iframe');
-        var aside = document.querySelector('.twerkhub-home-hero-media');
-        var nextBtn = document.getElementById('twerkhub-hh-next');
-        if (!frame || !aside) return;
-        var currentIndex = 0;
-        function randomIndex(){
-          if (PLAYLIST_LENGTH < 2) return 1;
-          var next;
-          do { next = 1 + Math.floor(Math.random() * PLAYLIST_LENGTH); }
-          while (next === currentIndex);
-          return next;
-        }
-        function loadRandomPlaylistVideo(){
-          currentIndex = randomIndex();
-          aside.setAttribute('data-hero-video-id', 'playlist-' + currentIndex);
-          frame.src = 'https://www.youtube-nocookie.com/embed/videoseries' +
-            '?list=' + PLAYLIST_ID + '&index=' + currentIndex +
-            '&autoplay=1&mute=1&controls=0&playsinline=1&rel=0&modestbranding=1' +
-            '&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1' +
-            '&origin=' + encodeURIComponent(window.location.origin);
-        }
-        if (nextBtn) {
-          var lastAdvanceAt = 0;
-          function advanceFromControl(event){
-            event.preventDefault();
-            event.stopPropagation();
-            if (Date.now() - lastAdvanceAt < 300) return;
-            lastAdvanceAt = Date.now();
-            loadRandomPlaylistVideo();
-          }
-          // pointerdown runs before the site's global click guard; click keeps
-          // the control keyboard-accessible. The short guard avoids doubles.
-          nextBtn.addEventListener('pointerdown', advanceFromControl, true);
-          nextBtn.addEventListener('click', advanceFromControl, true);
-        }
-        loadRandomPlaylistVideo();
-      })();
-      </script>
+/* Hero playlist player v2 · random video on load + real Next · keeps sound state */
+(function(){
+  var PLAYLIST_ID='PLKOS4uK92TgR5VStf8IpRpqpBPu40T9Tv', PLAYLIST_LENGTH=40;
+  var frame=document.getElementById('twerkhub-hh-iframe');
+  var aside=document.querySelector('.twerkhub-home-hero-media');
+  var nextBtn=document.getElementById('twerkhub-hh-next');
+  var muteBtn=document.querySelector('[data-twerkhub-hero-mute]');
+  if(!frame||!aside) return;
+  var current=-1, loadTimer=null;
+  function post(fn,args){try{frame.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(_){}}
+  function wantSound(){return muteBtn && muteBtn.getAttribute('aria-pressed')==='false';}
+  function pick(){var n;do{n=Math.floor(Math.random()*PLAYLIST_LENGTH);}while(n===current&&PLAYLIST_LENGTH>1);return n;}
+  function load(){
+    current=pick();
+    aside.setAttribute('data-hero-video-id','playlist-'+(current+1));
+    var url='https://www.youtube-nocookie.com/embed/videoseries?list='+PLAYLIST_ID+'&index='+current+
+      '&autoplay=1&mute=1&controls=0&playsinline=1&rel=0&modestbranding=1&fs=0&iv_load_policy=3&disablekb=1&enablejsapi=1&_t='+Date.now()+
+      '&origin='+encodeURIComponent(location.origin);
+    var idx=current;
+    frame.addEventListener('load',function onl(){
+      frame.removeEventListener('load',onl);
+      clearTimeout(loadTimer);
+      [600,1500,3000].forEach(function(ms){setTimeout(function(){
+        if(idx!==current) return;
+        try{frame.contentWindow.postMessage('{"event":"listening","id":1,"channel":"widget"}','*');}catch(_){}
+        post('playVideoAt',[idx]); post('playVideo');
+        if(wantSound()){post('unMute');post('setVolume',[100]);}
+      },ms);});
+    });
+    frame.src=url;
+  }
+  if(nextBtn){
+    var last=0;
+    var adv=function(e){e.preventDefault();e.stopPropagation();if(Date.now()-last<400)return;last=Date.now();load();};
+    nextBtn.addEventListener('pointerdown',adv,true);
+    nextBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();},true);
+  }
+  setInterval(function(){ if(!document.hidden) post('playVideo'); },4000);
+  load();
+})();
+</script>
       <button type="button" class="twerkhub-hh-mute is-muted" data-twerkhub-hero-mute aria-pressed="true" aria-label="Tap to unmute">
         <span class="twerkhub-hh-mute-ico" aria-hidden="true">🔈</span>
         <span class="twerkhub-hh-mute-label">Sound off</span>
@@ -2033,19 +2029,8 @@ a.twk-hero-affiliate-overlay,
           if (ico) ico.textContent = '🔊';
         }
       });
-      aside.addEventListener('mouseleave', function(){
-        muted = true;
-        send(iframe, 'mute');
-        sendDirect('mute');
-        if (btn){
-          btn.setAttribute('aria-pressed', 'true');
-          btn.classList.add('is-muted');
-          var lbl = btn.querySelector('.twerkhub-hh-mute-label');
-          var ico = btn.querySelector('.twerkhub-hh-mute-ico');
-          if (lbl) lbl.textContent = 'Sound off';
-          if (ico) ico.textContent = '🔈';
-        }
-      });
+      // mouseleave: sound & playback intentionally untouched (keeps music playing)
+      aside.addEventListener('mouseleave', function(){ send(iframe,'playVideo'); sendDirect('playVideo'); });
       // Page hide → silence (don't keep audio if user tabs away)
       document.addEventListener('visibilitychange', function(){
         if (document.hidden) setMuted(true);
@@ -2176,5 +2161,16 @@ a.twk-hero-affiliate-overlay,
 </script>
 <script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876541" defer></script>
 <script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
+<script>
+/* Hero countdown: counts down from 75 min, restarts when it reaches 0 */
+(function(){
+  var el=document.getElementById('twk-rotator-cd-timer'); if(!el) return;
+  var end=Date.now()+75*60000;
+  function two(n){return String(n).padStart(2,'0');}
+  function tick(){var r=Math.max(0,Math.floor((end-Date.now())/1000));if(r===0)end=Date.now()+75*60000;
+    el.textContent=two(Math.floor(r/3600))+':'+two(Math.floor(r%3600/60))+':'+two(r%60);}
+  tick(); setInterval(tick,1000);
+})();
+</script>
 </body>
 </html>
