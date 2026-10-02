@@ -357,7 +357,19 @@ a.twk-hero-affiliate-overlay,
   var current=-1, loadTimer=null;
   function post(fn,args){try{frame.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(_){}}
   function wantSound(){return muteBtn && muteBtn.getAttribute('aria-pressed')==='false';}
-  function pick(){var n;do{n=Math.floor(Math.random()*PLAYLIST_LENGTH);}while(n===current&&PLAYLIST_LENGTH>1);return n;}
+  var BAD=[];try{BAD=JSON.parse(localStorage.getItem('twk_hero_bad_v1')||'[]');}catch(_){}
+  var fails=0, okTimer=null;
+  function markBad(i){if(BAD.indexOf(i)<0)BAD.push(i);try{localStorage.setItem('twk_hero_bad_v1',JSON.stringify(BAD));}catch(_){}}
+  function pick(){var n,t=0;do{n=Math.floor(Math.random()*PLAYLIST_LENGTH);t++;}while((n===current||BAD.indexOf(n)>=0)&&t<200);return n;}
+  // YouTube age-restricted / non-embeddable videos report onError → skip them automatically
+  window.addEventListener('message',function(ev){
+    if(!frame.contentWindow||ev.source!==frame.contentWindow) return;
+    var d=ev.data; if(typeof d==='string'){try{d=JSON.parse(d);}catch(_){return;}}
+    if(!d) return;
+    if(d.event==='onError'){ markBad(current); if(fails++<8) load(); return; }
+    var st=d.event==='onStateChange'?d.info:(d.info&&typeof d.info.playerState==='number'?d.info.playerState:null);
+    if(st===1||st===3){fails=0;clearTimeout(okTimer);}
+  });
   function load(){
     current=pick();
     aside.setAttribute('data-hero-video-id','playlist-'+(current+1));
@@ -368,6 +380,7 @@ a.twk-hero-affiliate-overlay,
     frame.addEventListener('load',function onl(){
       frame.removeEventListener('load',onl);
       clearTimeout(loadTimer);
+      try{frame.contentWindow.postMessage('{"event":"listening","id":1,"channel":"widget"}','*');}catch(_){}
       [600,1500,3000].forEach(function(ms){setTimeout(function(){
         if(idx!==current) return;
         try{frame.contentWindow.postMessage('{"event":"listening","id":1,"channel":"widget"}','*');}catch(_){}
@@ -376,6 +389,8 @@ a.twk-hero-affiliate-overlay,
       },ms);});
     });
     frame.src=url;
+    clearTimeout(okTimer);
+    okTimer=setTimeout(function(){ if(idx===current && fails++<3) load(); },9000);
   }
   if(nextBtn){
     var last=0;
