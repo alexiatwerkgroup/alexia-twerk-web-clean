@@ -367,6 +367,9 @@ a.twk-hero-affiliate-overlay,
     var d=ev.data; if(typeof d==='string'){try{d=JSON.parse(d);}catch(_){return;}}
     if(!d) return;
     if(d.event==='onError'){ markBad(current); if(fails++<8) load(); return; }
+    // age-restricted / blocked embeds don't fire onError here: YouTube reports videoData.errorCode instead
+    var vd=d.info&&d.info.videoData;
+    if(d.event==='infoDelivery'&&vd&&vd.errorCode){ markBad(current); if(fails++<8) load(); return; }
     var st=d.event==='onStateChange'?d.info:(d.info&&typeof d.info.playerState==='number'?d.info.playerState:null);
     if(st===1||st===3){fails=0;clearTimeout(okTimer);}
   });
