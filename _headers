@@ -38,3 +38,19 @@
   Cache-Control: public, max-age=31536000, immutable
 /*.woff
   Cache-Control: public, max-age=31536000, immutable
+
+# Videos eliminados en YouTube (404 oEmbed): fuera del indice
+/playlist/ash-b-booty-l-choreography-asha-l-ofd-dance-studio
+  X-Robots-Tag: noindex, follow
+/playlist/chromazz-dirty-official-video
+  X-Robots-Tag: noindex, follow
+/playlist/chromazz-famosa-official-video
+  X-Robots-Tag: noindex, follow
+/playlist/let-da-munna-rain-prod-xanganglily-dior
+  X-Robots-Tag: noindex, follow
+/playlist/twerk-tiktok-compilation-part-3-thequeenbsav-thequeenbsav-5poypl4
+  X-Robots-Tag: noindex, follow
+/playlist/wheelie-latto-twerking
+  X-Robots-Tag: noindex, follow
+/playlist/whole-lotta-money-elle-blume-twerk-class
+  X-Robots-Tag: noindex, follow
