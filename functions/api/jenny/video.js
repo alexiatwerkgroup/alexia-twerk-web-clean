@@ -1,4 +1,4 @@
-// GET /api/jenny/video?n=01..13  (login required + access check)
+// GET /api/jenny/video?n=01..94  (login required + access check)
 // Streams the full video from the PRIVATE R2 bucket (binding JENNY_VIDEOS). Supports Range.
 // Access: profiles.tier = 'vip' OR email listed in env.JENNY_ALLOWED (comma separated).
 import { authenticate } from '../../_lib/auth.js';
@@ -6,7 +6,7 @@ import { authenticate } from '../../_lib/auth.js';
 export async function onRequestGet({ request, env }) {
   const deny = (s, m) => new Response(m, { status: s, headers: { 'Cache-Control': 'no-store' } });
   const n = new URL(request.url).searchParams.get('n') || '';
-  if (!/^(0[1-9]|1[0-3])$/.test(n)) return deny(400, 'bad_request');
+  if (!/^(0[1-9]|[1-8][0-9]|9[0-4])$/.test(n)) return deny(400, 'bad_request');
   if (!env.JENNY_VIDEOS || !env.DB) return deny(500, 'not_configured');
   const p = await authenticate(request, env);
   if (!p || !p.sub) return deny(401, 'login_required');
@@ -27,7 +27,7 @@ export async function onRequestGet({ request, env }) {
   const h = new Headers({
     'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes',
     'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff',
-    'Content-Disposition': 'inline', 'X-Robots-Tag': 'noindex'
+    'Content-Disposition': new URL(request.url).searchParams.get('dl') === '1' ? `attachment; filename="jenny-${n}.mp4"` : 'inline', 'X-Robots-Tag': 'noindex'
   });
   const m = range && /^bytes=(\d*)-(\d*)$/.exec(range);
   if (m) {
