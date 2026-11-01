@@ -2,21 +2,18 @@
 // Streams the full video from the PRIVATE R2 bucket (binding JENNY_VIDEOS). Supports Range.
 // Access: profiles.tier = 'vip' OR email listed in env.JENNY_ALLOWED (comma separated).
 import { authenticate } from '../../_lib/auth.js';
+import { validN, isShort, canWatch } from '../../_lib/jenny.js';
 
 export async function onRequestGet({ request, env }) {
   const deny = (s, m) => new Response(m, { status: s, headers: { 'Cache-Control': 'no-store' } });
   const n = new URL(request.url).searchParams.get('n') || '';
-  if (!/^(0[1-9]|[1-8][0-9]|9[0-4])$/.test(n)) return deny(400, 'bad_request');
+  if (!validN(n)) return deny(400, 'bad_request');
   if (!env.JENNY_VIDEOS || !env.DB) return deny(500, 'not_configured');
   const p = await authenticate(request, env);
   if (!p || !p.sub) return deny(401, 'login_required');
   const u = await env.DB.prepare('SELECT email, tier FROM profiles WHERE id = ?').bind(p.sub).first();
   if (!u) return deny(401, 'login_required');
-  const allowed = String(env.JENNY_ALLOWED || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
-  const em = String(u.email || '').toLowerCase();
-  let ok = u.tier === 'vip' || allowed.includes(em) || em === 'alexiatwerkoficial@gmail.com';
-  if (!ok) { const r = await env.DB.prepare('SELECT 1 AS x FROM jenny_access WHERE email = ?').bind(em).first(); ok = !!r; }
-  if (!ok) return deny(403, 'no_access');
+  if (!(await canWatch(env, u, n))) return deny(403, isShort(n) ? 'tokens_required' : 'payment_required');
 
   const key = 'v' + n + '.mp4';
   const range = request.headers.get('Range');
