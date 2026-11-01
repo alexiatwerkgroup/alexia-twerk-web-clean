@@ -16,6 +16,13 @@ export async function onRequest({ request, env }) {
   let b = {}; try { b = await request.json(); } catch {}
   const email = String(b.email || '').trim().toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ ok: false, error: 'bad_email' }, 400);
+  const coins = parseInt(b.coins, 10);
+  if (coins) {
+    if (request.method === 'POST' && coins < 50) return json({ ok: false, error: 'min_50_coins' }, 400);
+    await env.DB.prepare('INSERT INTO jenny_coins (email, coins) VALUES (?, ?) ON CONFLICT(email) DO UPDATE SET coins = MAX(0, coins + excluded.coins)').bind(email, request.method === 'DELETE' ? -Math.abs(coins) : coins).run();
+    const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE email = ?').bind(email).first();
+    return json({ ok: true, coins: c ? c.coins : 0 });
+  }
   const ns = (Array.isArray(b.n) ? b.n : String(b.n || '').split(',')).map(x => String(x).trim().padStart(2, '0')).filter(x => /^(0[1-9]|[1-8][0-9]|9[0-4])$/.test(x));
   if (ns.length) {
     for (const n of ns) {

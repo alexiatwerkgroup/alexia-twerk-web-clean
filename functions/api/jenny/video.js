@@ -13,7 +13,7 @@ export async function onRequestGet({ request, env }) {
   if (!p || !p.sub) return deny(401, 'login_required');
   const u = await env.DB.prepare('SELECT email, tier FROM profiles WHERE id = ?').bind(p.sub).first();
   if (!u) return deny(401, 'login_required');
-  if (!(await canWatch(env, u, n))) return deny(403, isShort(n) ? 'tokens_required' : 'payment_required');
+  if (!(await canWatch(env, u, n))) return deny(403, isShort(n) ? 'tokens_required' : 'coins_required');
 
   const key = 'v' + n + '.mp4';
   const range = request.headers.get('Range');

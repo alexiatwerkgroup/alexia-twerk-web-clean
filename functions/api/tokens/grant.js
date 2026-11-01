@@ -36,6 +36,16 @@ export async function onRequest(context) {
 
   if (!profile) return json({ ok: false, error: 'profile_not_found' }, 404, origin);
 
+  // Anti-abuse: server-side daily ceiling per user (legit max is ~700/day + login streak).
+  const DAILY_MAX = 1000;
+  const day = new Date().toISOString().slice(0, 10);
+  const row = await env.DB.prepare('SELECT total FROM token_grants_day WHERE user_id = ? AND day = ?').bind(payload.sub, day).first();
+  const used = row ? row.total : 0;
+  const room = DAILY_MAX - used;
+  if (room <= 0) return json({ ok: false, error: 'daily_limit', balance: profile.tokens || 0 }, 429, origin);
+  amount = Math.min(amount, room);
+  await env.DB.prepare('INSERT INTO token_grants_day (user_id, day, total) VALUES (?, ?, ?) ON CONFLICT(user_id, day) DO UPDATE SET total = total + excluded.total').bind(payload.sub, day, amount).run();
+
   const newBalance = (profile.tokens || 0) + amount;
   const newTotal = (profile.total_earned || 0) + amount;
   const newTier = computeTier(newBalance);
