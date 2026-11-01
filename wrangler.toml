@@ -18,3 +18,8 @@ bucket_name = "twerkhub-avatars"
 
 # Environment variables must be set in Cloudflare Pages dashboard:
 # JWT_SECRET - random 48+ byte string for signing auth JWTs
+
+# Private R2 bucket with Jenny's full videos (served only via /api/jenny/video)
+[[r2_buckets]]
+binding = "JENNY_VIDEOS"
+bucket_name = "jenny-videos"
