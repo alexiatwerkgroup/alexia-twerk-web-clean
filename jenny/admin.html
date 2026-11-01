@@ -1,0 +1,9 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Accesos Jenny</title>
+<style>body{font:16px system-ui;background:#0b0710;color:#f6eefc;max-width:560px;margin:30px auto;padding:0 16px}input,button{padding:10px;border-radius:8px;border:0;font-size:15px}input{width:68%}button{background:#ff2d8a;color:#fff;cursor:pointer}li{margin:8px 0}</style></head><body>
+<h2>Accesos a los videos de Jenny</h2><p>Logueate con tu cuenta dueña en twerkhub.lat. Agregá el mail de quien pagó.</p>
+<input id="e" type="email" placeholder="mail@ejemplo.com"> <button id="a">Dar acceso</button><ul id="l"></ul><p id="m"></p>
+<script>
+function load(){fetch('/api/jenny/grant',{credentials:'include'}).then(r=>r.json()).then(d=>{var l=document.getElementById('l');l.innerHTML='';if(!d.ok){document.getElementById('m').textContent='Sin permiso: logueate con la cuenta dueña.';return}(d.list||[]).forEach(function(x){var li=document.createElement('li');li.textContent=x.email+' ';var b=document.createElement('button');b.textContent='Quitar';b.onclick=function(){send('DELETE',x.email)};li.appendChild(b);l.appendChild(li)})})}
+function send(m,e){fetch('/api/jenny/grant',{method:m,credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})}).then(r=>r.json()).then(d=>{document.getElementById('m').textContent=d.ok?'Listo':'Error: '+d.error;load()})}
+document.getElementById('a').onclick=function(){send('POST',document.getElementById('e').value)};load();
+</script></body></html>

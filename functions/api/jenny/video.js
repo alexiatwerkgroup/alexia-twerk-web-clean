@@ -13,7 +13,10 @@ export async function onRequestGet({ request, env }) {
   const u = await env.DB.prepare('SELECT email, tier FROM profiles WHERE id = ?').bind(p.sub).first();
   if (!u) return deny(401, 'login_required');
   const allowed = String(env.JENNY_ALLOWED || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
-  if (u.tier !== 'vip' && !allowed.includes(String(u.email || '').toLowerCase())) return deny(403, 'no_access');
+  const em = String(u.email || '').toLowerCase();
+  let ok = u.tier === 'vip' || allowed.includes(em) || em === 'alexiatwerkoficial@gmail.com';
+  if (!ok) { const r = await env.DB.prepare('SELECT 1 AS x FROM jenny_access WHERE email = ?').bind(em).first(); ok = !!r; }
+  if (!ok) return deny(403, 'no_access');
 
   const key = 'v' + n + '.mp4';
   const range = request.headers.get('Range');
