@@ -3,8 +3,12 @@ import { authenticate } from '../../_lib/auth.js';
 import { json } from '../../_lib/http.js';
 const OWNER = 'alexiatwerkoficial@gmail.com';
 export async function onRequest({ request, env }) {
-  const me = await authenticate(request, env);
-  if (!me || String(me.email || '').toLowerCase() !== OWNER) return json({ ok: false, error: 'forbidden' }, 403);
+  const key = request.headers.get('X-Grant-Key') || '';
+  const keyOk = !!env.GRANT_KEY && env.GRANT_KEY.length >= 24 && key === env.GRANT_KEY;
+  if (!keyOk) {
+    const me = await authenticate(request, env);
+    if (!me || String(me.email || '').toLowerCase() !== OWNER) return json({ ok: false, error: 'forbidden' }, 403);
+  }
   if (request.method === 'GET') {
     const r = await env.DB.prepare('SELECT email, granted_at FROM jenny_access ORDER BY granted_at DESC').all();
     return json({ ok: true, list: r.results || [] });
