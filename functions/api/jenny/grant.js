@@ -18,7 +18,7 @@ export async function onRequest({ request, env }) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ ok: false, error: 'bad_email' }, 400);
   const coins = parseInt(b.coins, 10);
   if (coins) {
-    if (request.method === 'POST' && coins < 50) return json({ ok: false, error: 'min_50_coins' }, 400);
+    if (request.method === 'POST' && coins < 20) return json({ ok: false, error: 'min_20_coins' }, 400);
     await env.DB.prepare('INSERT INTO jenny_coins (email, coins) VALUES (?, ?) ON CONFLICT(email) DO UPDATE SET coins = MAX(0, coins + excluded.coins)').bind(email, request.method === 'DELETE' ? -Math.abs(coins) : coins).run();
     const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE email = ?').bind(email).first();
     return json({ ok: true, coins: c ? c.coins : 0 });

@@ -1,6 +1,6 @@
 // POST /api/jenny/unlock {n}
 //   short clip (<15 s) -> costs TOKEN_COST site tokens (earned)
-//   long video         -> costs COIN_COST coin (bought coins, 1 coin = $1)
+//   long video         -> costs COIN_COST coin (bought coins, 1 coin = $0.50)
 // GET  /api/jenny/unlock -> { coins, tokens }
 import { authenticate } from '../../_lib/auth.js';
 import { json } from '../../_lib/http.js';
