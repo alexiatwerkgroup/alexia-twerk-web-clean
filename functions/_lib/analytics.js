@@ -10,6 +10,8 @@ export async function init(db) {
     db.prepare('CREATE INDEX IF NOT EXISTS tw_hits_vid ON tw_hits(vid)'),
     db.prepare('CREATE INDEX IF NOT EXISTS tw_ev_ts ON tw_events(ts)'),
   ]);
+  for (const c of ['human INTEGER DEFAULT 0','lat REAL','lon REAL']) { try { await db.prepare('ALTER TABLE tw_hits ADD COLUMN ' + c).run(); } catch (e) {} }
+  await db.prepare('CREATE TABLE IF NOT EXISTS tw_marks (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER, label TEXT, channel TEXT)').run();
   ready = true;
 }
 export function parseUA(ua) {

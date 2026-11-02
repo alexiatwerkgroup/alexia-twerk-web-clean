@@ -8,7 +8,7 @@ export async function onRequestPost({ request, env }) {
   const d = Math.max(0, Math.min(3600, parseInt(b.d) || 0)), s = Math.max(0, Math.min(100, parseInt(b.s) || 0));
   const row = await env.DB.prepare('SELECT vid FROM tw_hits WHERE hid = ?').bind(h).first();
   if (!row) return json({ ok: false }, 404);
-  await env.DB.prepare('UPDATE tw_hits SET dur = MAX(dur, ?), scroll = MAX(scroll, ?) WHERE hid = ?').bind(d, s, h).run();
+  await env.DB.prepare('UPDATE tw_hits SET dur = MAX(dur, ?), scroll = MAX(scroll, ?), human = MAX(human, ?) WHERE hid = ?').bind(d, s, b.u ? 1 : 0, h).run();
   const ev = Array.isArray(b.ev) ? b.ev.slice(0, 12) : [];
   for (const e of ev) { const n = String(e && e.n || ''); if (!/^[a-z_]{2,24}$/.test(n)) continue; await env.DB.prepare('INSERT INTO tw_events (ts, hid, vid, name, detail) VALUES (?,?,?,?,?)').bind(Date.now(), h, row.vid, n, String(e.d || '').slice(0, 40)).run(); }
   return json({ ok: true });
