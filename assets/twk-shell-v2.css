@@ -33,3 +33,9 @@
 /* IA MODE floating button: black + gold (same family as the gold cards), no pulse */
 html body #ia{background:linear-gradient(180deg,#17120a,#000)!important;color:#f7dd8b!important;border:2px solid #c99a2e!important;animation:none!important;box-shadow:inset 0 0 0 1px rgba(247,221,139,.28),0 0 22px rgba(201,154,46,.4)!important;text-shadow:none}
 html body #ia:hover{box-shadow:inset 0 0 0 1px rgba(247,221,139,.5),0 0 32px rgba(201,154,46,.6)!important}
+
+/* UNIVERSAL BUTTON: one style for every button on the site, same as the Binance/gold card.
+   Black gradient, gold border, gold JetBrains Mono uppercase. No pulse, same height. */
+html body .btn:not(.vb),html body .full,html body .gcta,html body .gold,html body a.tn2-jn,html body .tn2-jn,html body #ia,html body .tn2-mdd>a.tn2-jn{display:inline-flex!important;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:14px 22px!important;border-radius:12px!important;background:linear-gradient(180deg,#17120a,#000)!important;border:2px solid #c99a2e!important;color:#f7dd8b!important;font:700 12px/1.25 'JetBrains Mono',monospace!important;letter-spacing:.14em!important;text-transform:uppercase;text-shadow:none!important;box-shadow:inset 0 0 0 1px rgba(247,221,139,.28),0 0 18px rgba(201,154,46,.22)!important;animation:none!important;filter:none!important;transition:transform .15s,box-shadow .2s!important;white-space:normal;text-align:center}
+html body .full,html body .gcta{width:100%}
+html body .btn:not(.vb):hover,html body .full:hover,html body .gcta:hover,html body .gold:hover,html body a.tn2-jn:hover,html body #ia:hover{transform:translateY(-1px);box-shadow:inset 0 0 0 1px rgba(247,221,139,.5),0 0 26px rgba(201,154,46,.5)!important;filter:none!important}
