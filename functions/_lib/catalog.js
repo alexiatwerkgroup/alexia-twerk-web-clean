@@ -19,6 +19,8 @@ export const videoKey = (slug, n) => `${slug}/v${n}.mp4`;
 
 export async function ensureTables(env) {
   await env.DB.prepare('CREATE TABLE IF NOT EXISTS catalog_unlocks (slug TEXT, email TEXT, n TEXT, via TEXT, PRIMARY KEY (slug, email, n))').run();
+  await env.DB.prepare('CREATE TABLE IF NOT EXISTS catalog_votes (slug TEXT, user_id TEXT, n TEXT, v INTEGER, ts INTEGER DEFAULT (strftime(\'%s\',\'now\')), PRIMARY KEY (slug, user_id, n))').run();
+  await env.DB.prepare('CREATE TABLE IF NOT EXISTS catalog_follow (slug TEXT, email TEXT, created INTEGER DEFAULT (strftime(\'%s\',\'now\')), via TEXT, PRIMARY KEY (slug, email))').run();
   await env.DB.prepare('CREATE TABLE IF NOT EXISTS catalog_access (slug TEXT, email TEXT, granted_at INTEGER DEFAULT (strftime(\'%s\',\'now\')), PRIMARY KEY (slug, email))').run();
 }
 
