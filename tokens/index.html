@@ -1,0 +1,133 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Token Vault | Twerkhub</title>
+<meta name="description" content="Your Twerkhub token vault: balance, daily streak, ways to earn and tiers. Tokens are free, earned by visiting and watching.">
+<link rel="canonical" href="https://twerkhub.lat/tokens/"><meta name="theme-color" content="#000000"><meta name="robots" content="noindex,follow">
+<style>body{margin:0;background:#000;color:#fff}.vt{--bg:#000;--ac:#ff8f00;--pk:#ff4fa3;--mut:#a6a6b2;--card:#101014;--line:#26262c;background:radial-gradient(900px 420px at 80% -60px,rgba(255,143,0,.16),transparent),#000;color:#fff;font-family:Inter,system-ui,sans-serif;min-height:70vh}
+.vt *{box-sizing:border-box}.vt a{color:inherit;text-decoration:none}
+.vt .w{max-width:1200px;margin:0 auto;padding:0 24px}.vt section{padding:54px 0}
+.eyebrow{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--pk);margin-bottom:12px}
+.vt h1{font:400 clamp(60px,9vw,120px)/.95 Anton,Impact,sans-serif;text-transform:uppercase;margin:0}.vt h1 em{font-style:normal;color:var(--ac);text-shadow:0 0 40px rgba(255,143,0,.5)}
+.vt h2{font:400 clamp(34px,4.4vw,52px)/1 Anton,Impact,sans-serif;text-transform:uppercase;margin:0 0 10px}
+.vt h3{font:400 28px/1.05 Anton,sans-serif;text-transform:uppercase;margin:12px 0 8px}
+.vt .lead,.vt .sub{color:#c9c9d3;font-size:18px;line-height:1.55;max-width:560px;margin:16px 0 0}.vt .note{color:var(--mut);margin-top:16px;font-size:15px}.vt .note a{color:var(--ac)}
+.vh .w{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.bal{display:flex;align-items:baseline;gap:12px;margin:26px 0 12px}.bal span{font:400 clamp(72px,10vw,132px)/.9 Anton,sans-serif;color:#ffd27a;text-shadow:0 0 36px rgba(255,170,40,.55);font-variant-numeric:tabular-nums}.bal small{font:700 13px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.tier{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}.tb{background:linear-gradient(180deg,#ffa31f,#e86f00);color:#150a00;padding:6px 12px;border-radius:8px}
+.bar{height:14px;border-radius:99px;background:#17171d;border:2px solid var(--line);margin:14px 0 24px;max-width:520px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff8f00,#ffd27a);border-radius:99px;box-shadow:0 0 14px rgba(255,170,40,.7);transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:14px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;border:2px solid var(--ac);color:var(--ac);background:transparent}.btn.k{background:linear-gradient(180deg,#ffa31f,#e86f00);color:#150a00;box-shadow:0 0 28px rgba(255,143,0,.45),inset 0 1px 0 rgba(255,255,255,.35)}.btn:hover{transform:translateY(-2px)}.vt .ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.gate{margin-top:18px;padding:16px 18px;border:2px solid var(--pk);border-radius:14px;background:rgba(255,79,163,.08);max-width:520px;line-height:1.5}.gate a{color:var(--ac);font-weight:700}
+.vr{text-align:center}.pig{position:relative;display:block;margin:0 auto;width:min(420px,100%);background:none;border:0;cursor:pointer;filter:drop-shadow(0 0 40px rgba(255,143,0,.35));animation:flo 4s ease-in-out infinite}.pig svg{width:100%;height:auto;display:block}
+@keyframes flo{50%{transform:translateY(-8px) rotate(-1deg)}}.pig.hit{animation:hit .5s}@keyframes hit{30%{transform:scale(1.08,.92)}60%{transform:scale(.96,1.05)}}
+.drop{position:absolute;left:50%;top:-10px;width:44px;height:44px;margin-left:-12px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#f6c343 45%,#b9770e);border:3px solid #fbd46b;opacity:0}.drop.go{animation:dr 1s cubic-bezier(.5,0,.8,.6) forwards}@keyframes dr{0%{opacity:1;transform:translateY(0) rotateY(0)}80%{opacity:1;transform:translateY(60px) rotateY(720deg) scale(.8)}100%{opacity:0;transform:translateY(80px) scale(.4)}}
+.tip{color:var(--mut);font:700 11px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;margin-top:10px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:22px}.dy{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:16px 6px;text-align:center}.dy b{display:block;font:400 30px Anton,sans-serif}.dy span{font:700 11px 'JetBrains Mono',monospace;letter-spacing:.1em;color:var(--mut)}.dy.on{border-color:var(--ac);background:#1a1205;box-shadow:0 0 22px rgba(255,143,0,.25)}.dy.on b{color:#ffd27a}.dy.now{border-color:var(--pk)}
+.earn{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:20px}.er{border:2px solid var(--line);border-radius:16px;background:var(--card);padding:18px}.er b{font:400 40px Anton,sans-serif;color:#ffd27a;display:block}.er h4{margin:2px 0 4px;font:700 13px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase}.er p{margin:0 0 12px;color:var(--mut);font-size:14px}.er .pb{height:8px;border-radius:9px;background:#1b1b22;overflow:hidden}.er .pb i{display:block;height:100%;background:linear-gradient(90deg,#ff8f00,#ffd27a)}.er small{display:block;margin-top:6px;color:var(--mut);font:700 11px 'JetBrains Mono',monospace}
+.ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.lt{border:2px solid var(--line);border-radius:16px;background:var(--card);padding:20px}.lt b{font:400 26px Anton,sans-serif;text-transform:uppercase;display:block}.lt span{font:700 12px 'JetBrains Mono',monospace;color:var(--mut)}.lt.on{border-color:var(--ac);box-shadow:0 0 26px rgba(255,143,0,.25)}.lt.done b{color:#ffd27a}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{border:2px solid var(--line);border-radius:20px;background:var(--card);padding:28px;position:relative}.card p{color:#c9c9d3;line-height:1.55;margin:0}.card .ic{width:36px;height:36px;stroke:var(--ac)}.card .go{display:inline-flex;gap:8px;margin-top:16px;color:var(--ac);font:700 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase}.card.rb img{position:absolute;right:20px;top:18px;filter:drop-shadow(0 0 14px rgba(255,61,180,.5))}.card.rb p{max-width:80%}
+@media(max-width:900px){.vh .w,.two{grid-template-columns:1fr}.ladder{grid-template-columns:1fr 1fr}.days{gap:4px}.dy{padding:12px 2px;min-width:0}.dy b{font-size:17px}.dy span{font-size:8px;letter-spacing:0}.vr{order:-1}.pig{width:min(300px,80%)}}
+@media(prefers-reduced-motion:reduce){.pig{animation:none}}
+</style>
+<script defer src="/assets/token-system.js"></script></head><body>
+<!-- TWK_SHELL_V2 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"><link rel="stylesheet" href="/assets/twk-shell-v2.css?v=1">
+<header class="tn2"><div class="tn2-w"><a class="tn2-logo" href="/" aria-label="Twerkhub home">TWERK<b>HUB</b></a>
+<div class="tn2-lk"><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/account">My account</a><a class="tn2-jn" href="/jenny/">Jenny VIP</a></div>
+<details><summary aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/community">Community</a><a href="/account">My account</a></nav></details></div></header>
+<script>(function(){var p=location.pathname.replace(/\/index\.html$/,'/');document.querySelectorAll('.tn2-lk a').forEach(function(a){var h=a.getAttribute('href');if(h.length>1&&h.indexOf('#')<0&&p.indexOf(h.replace(/\/$/,''))===0)a.classList.add('on')})})();</script><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol></defs></svg><main class="vt">
+<section class="vh"><div class="w">
+ <div class="vl">
+  <div class="eyebrow">/ My token vault</div>
+  <h1>Your <em>stash.</em></h1>
+  <p class="lead" id="vlead">Tokens are points you earn just by being here. Spend them on short clips and perks. Nothing to buy.</p>
+  <div class="bal"><span id="vbal">0</span><small>tokens</small></div>
+  <div class="tier"><span class="tb" id="vtier">Basic</span><span id="vnext">Next tier: Medium at 3,000</span></div>
+  <div class="bar"><i id="vbar"></i></div>
+  <div class="cta"><a class="btn k" href="/jenny/">Spend them on Jenny <svg class="ic"><use href="#i-arrow"/></svg></a><button class="btn t" id="vsnd" type="button">Sound on</button></div>
+  <div class="gate" id="vgate" hidden><b>Log in to start.</b> New accounts get 200 welcome tokens and 30 more every day. <a href="/account.html">Log in or sign up</a></div>
+ </div>
+ <div class="vr" aria-hidden="false">
+  <button class="pig" id="vpig" type="button" aria-label="Tap the piggy bank">
+   <svg viewBox="0 0 320 260"><defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb347"/><stop offset=".55" stop-color="#ff8f00"/><stop offset="1" stop-color="#b25400"/></linearGradient><radialGradient id="pc" cx=".35" cy=".3"><stop offset="0" stop-color="#fff3b0"/><stop offset=".45" stop-color="#f6c343"/><stop offset="1" stop-color="#b9770e"/></radialGradient></defs>
+    <ellipse cx="160" cy="240" rx="110" ry="12" fill="#000" opacity=".5"/>
+    <rect x="86" y="196" width="34" height="38" rx="10" fill="#b25400"/><rect x="196" y="196" width="34" height="38" rx="10" fill="#b25400"/>
+    <path d="M262 120c26-6 40 8 30 24-6 10-18 6-14-4 3-8-8-10-16-6z" fill="none" stroke="#ff8f00" stroke-width="9" stroke-linecap="round"/>
+    <ellipse cx="158" cy="132" rx="116" ry="82" fill="url(#pg)"/>
+    <path d="M70 90c10-30 38-36 52-30-14 10-24 20-26 44z" fill="#ffb347"/>
+    <ellipse cx="46" cy="140" rx="30" ry="24" fill="#ff9f1f"/><circle cx="38" cy="140" r="5" fill="#5a2c00"/><circle cx="54" cy="140" r="5" fill="#5a2c00"/>
+    <circle cx="94" cy="108" r="8" fill="#150a00"/><circle cx="96" cy="106" r="2.5" fill="#fff"/>
+    <rect x="120" y="58" width="70" height="12" rx="6" fill="#4a2200"/>
+    <ellipse cx="158" cy="132" rx="116" ry="82" fill="none" stroke="#ffd27a" stroke-opacity=".35" stroke-width="3"/>
+    <text x="178" y="150" text-anchor="middle" font-family="Anton,sans-serif" font-size="44" fill="#7a3a00" fill-opacity=".55">TH</text>
+   </svg>
+   <span class="drop" id="vdrop"></span>
+  </button>
+  <p class="tip">Tap the piggy bank. It likes it.</p>
+ </div>
+</div></section>
+
+<section><div class="w">
+ <div class="eyebrow">/ Your streak</div><h2>Come back every day</h2>
+ <p class="sub">Each day in a row adds more. Skip a day and the streak restarts.</p>
+ <div class="days" id="vdays"></div>
+ <p class="note" id="vtoday"></p>
+</div></section>
+
+<section><div class="w">
+ <div class="eyebrow">/ How to earn</div><h2>Five ways to fill it</h2>
+ <div class="earn" id="vearn"></div>
+ <div class="cta" style="margin-top:22px"><button class="btn k" id="vshare" type="button">Share Twerkhub <svg class="ic"><use href="#i-arrow"/></svg></button></div>
+</div></section>
+
+<section><div class="w">
+ <div class="eyebrow">/ The ladder</div><h2>Four tiers</h2>
+ <div class="ladder" id="vladder"></div>
+ <p class="note">Tiers follow your balance. You can also join a tier with a paid <a href="/membership">membership</a>.</p>
+</div></section>
+
+<section><div class="w">
+ <div class="two">
+  <div class="card"><svg class="ic"><use href="#i-lock"/></svg><h3>Spend them</h3><p>Jenny's 30 short clips (under 15 s) cost 500 tokens each. They are not for sale, only for tokens.</p><a class="go" href="/jenny/">Open Jenny's catalog <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+  <div class="card rb"><img src="/assets/rabbit.png" alt="" width="64" height="86" loading="lazy"><h3>Catch the rabbit</h3><p>A rabbit hops across the page now and then. Click it before it escapes for a prize of $1 to $25 in coins. One try a day, when you are logged in.</p></div>
+ </div>
+</div></section>
+</main>
+<footer class="tf2"><div class="tf2-w"><div class="tf2-cols">
+<div><a class="tn2-logo" href="/">TWERK<b>HUB</b></a><p style="margin-top:14px;max-width:300px">If you know, you know.</p></div>
+<div><h4>Explore</h4><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/blog/">Blog</a></div>
+<div><h4>Community</h4><a href="https://discord.gg/WWn8ZgQMjn" rel="noopener">Discord</a><a href="https://t.me/+0xNr69raiIlmYWRh" rel="noopener">Telegram</a><a href="https://x.com/alexiatwerkofic" rel="noopener">X</a><a href="https://www.patreon.com/Alexia_Twerk" rel="noopener">Patreon</a></div>
+<div><h4>Site</h4><a href="/account">My account</a><a href="/contact">Contact</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/es/">Español</a><a href="/pt/">Português</a><a href="/ru/">Русский</a></div>
+</div><p class="tf2-legal">Adults only. All models are over 18 and appear under written contract. Minors are not allowed to enter this site. © Twerkhub.</p></div></footer>
+<script>document.addEventListener('DOMContentLoaded',function(){
+var K='alexia_tokens_v1.';function g(k,d){try{var v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
+var T=window.AlexiaTokens,R=(T&&T.REWARDS)||{dailyLogin:30,streakBonus:15,streakCap:7,pageVisit:5,videoWatch:10,videoComplete:10,share:50,referral:200};
+var TH=[['Basic',0],['Medium',3000],['Premium',9000],['VIP Top',50000]];
+function $(i){return document.getElementById(i)}
+function fmt(n){return n.toLocaleString('en-US')}
+var shown=0;
+function count(to){var f=shown,t0=performance.now();(function s(t){var p=Math.min(1,(t-t0)/1200),e=1-Math.pow(1-p,3);shown=Math.round(f+(to-f)*e);$('vbal').textContent=fmt(shown);if(p<1)requestAnimationFrame(s)})(t0)}
+function render(first){
+ var logged=T&&T.isLoggedIn&&T.isLoggedIn(),s=(T&&T.getState())||{balance:0,streak:0,tier:'basic'},b=s.balance||0;
+ $('vgate').hidden=!!logged;
+ if(first){shown=0}count(b);
+ var ti=0;TH.forEach(function(x,i){if(b>=x[1])ti=i});var nx=TH[ti+1];
+ $('vtier').textContent=TH[ti][0];$('vnext').textContent=nx?('Next tier: '+nx[0]+' at '+fmt(nx[1])+' · '+fmt(nx[1]-b)+' to go'):'Top tier reached';
+ setTimeout(function(){$('vbar').style.width=(nx?Math.min(100,Math.max(3,(b-TH[ti][1])/(nx[1]-TH[ti][1])*100)):100)+'%'},80);
+ var st=s.streak||0,td=new Date().toDateString(),claimed=g('last_login',null)===td;
+ var h='';for(var d=1;d<=7;d++){var amt=R.dailyLogin+Math.min(d,R.streakCap)*R.streakBonus;h+='<div class="dy'+(d<=st?' on':'')+(d===st+1&&!claimed?' now':'')+'"><b>+'+amt+'</b><span>DAY '+d+'</span></div>'}
+ $('vdays').innerHTML=h;
+ $('vtoday').textContent=!logged?'Log in to start your streak.':(claimed?('Today is claimed. Streak: '+st+' day'+(st==1?'':'s')+'. Come back tomorrow.'):'Your daily bonus is waiting. Reload to claim it.');
+ var caps=[['Visit a page','+'+R.pageVisit,'New pages only','daily_pages',50],['Watch a video','+'+R.videoWatch,'Start any playlist video','daily_watches',20],['Finish a video','+'+R.videoComplete,'Watch 80% or more','daily_finishes',10],['Share the site','+'+R.share,'Tell a friend','daily_shares',3],['Daily login','+'+R.dailyLogin,'Plus streak bonus up to +'+(R.streakCap*R.streakBonus),null,0]];
+ $('vearn').innerHTML=caps.map(function(c){var u=c[3]?g(c[3],0):0;return '<div class="er"><b>'+c[1]+'</b><h4>'+c[0]+'</h4><p>'+c[2]+'</p>'+(c[3]?'<div class="pb"><i style="width:'+Math.min(100,u/c[4]*100)+'%"></i></div><small>'+u+' / '+c[4]+' today</small>':'<small>'+(claimed?'Claimed today':'Not claimed yet')+'</small>')+'</div>'}).join('');
+ $('vladder').innerHTML=TH.map(function(x,i){return '<div class="lt'+(i<ti?' done':'')+(i===ti?' on':'')+'"><b>'+x[0]+'</b><span>'+(x[1]?fmt(x[1])+' tokens':'Free entry')+'</span></div>'}).join('');
+}
+function snd(){return window.TwkCoin&&TwkCoin.soundOn()}
+function setS(){$('vsnd').textContent=snd()?'Sound on':'Sound off'}
+$('vsnd').onclick=function(){TwkCoin.setSound(!snd());setS();if(snd())TwkCoin.sound(false)};
+$('vpig').onclick=function(){var p=$('vpig'),d=$('vdrop');p.classList.remove('hit');d.classList.remove('go');void p.offsetWidth;d.classList.add('go');setTimeout(function(){p.classList.add('hit');if(window.TwkCoin&&snd())TwkCoin.sound(false)},800);setTimeout(function(){p.classList.remove('hit')},1400)};
+$('vshare').onclick=function(){var u='https://twerkhub.lat/',done=function(){if(T&&T.onShare)T.onShare()};if(navigator.share){navigator.share({title:'Twerkhub',url:u}).then(done,function(){})}else{try{navigator.clipboard.writeText(u)}catch(e){};$('vshare').firstChild.textContent='Link copied ';done()}};
+window.addEventListener('alexia-tokens-changed',function(){render(false)});
+(function w(n){if(window.TwkCoin||n>20){setS()}else setTimeout(function(){w(n+1)},150)})(0);
+render(true);setTimeout(function(){setS()},900);
+});
+</script>
+<script src="/assets/twk-stats-btn.js?v=1" defer></script></body></html>
