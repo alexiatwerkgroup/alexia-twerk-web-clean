@@ -43,3 +43,12 @@ html body .btn:not(.vb):hover,html body .full:hover,html body .gcta:hover,html b
 /* Tokens card (inside pricing): same card family as "Buy coins"/"Get the pack"; tokens are GREEN BILLS, coins are GOLD. */
 html body .pc>a.vb.tkn{height:100px;min-height:100px;box-sizing:border-box;margin-top:auto}
 html body a.vb.tkn .bill{flex:none;width:52px;height:30px;border-radius:5px;background:radial-gradient(circle at 50% 50%,#d6ffd9 0,#d6ffd9 12%,transparent 13%),linear-gradient(180deg,#5ee58a,#1d8f45);border:2px solid #0d4f24;box-shadow:inset 0 0 0 3px rgba(255,255,255,.18),0 6px 12px rgba(0,0,0,.6);transform:perspective(200px) rotateX(12deg)}
+
+/* Header "Exclusive content": same card family as Binance/Get the pack: white bold title, gold subtitle, halo and glow. */
+html body .tn2-mdd>a.tn2-jn{display:flex!important;align-items:center;gap:14px;height:56px!important;min-height:56px!important;max-height:56px!important;padding:0 16px!important;text-align:left;text-transform:none!important;letter-spacing:0!important;color:#fff!important;background:linear-gradient(180deg,#2a2208,#0d0b04)!important;border:1.5px solid #e8b84a!important;border-radius:14px!important;box-shadow:0 0 22px rgba(232,184,74,.4),inset 0 1px 0 rgba(255,236,170,.25)!important;font:400 12px/1.2 Inter,system-ui,sans-serif!important}
+html body .tn2-mdd>a.tn2-jn:hover{box-shadow:0 0 34px rgba(232,184,74,.65),inset 0 1px 0 rgba(255,236,170,.35)!important}
+html body .tn2-mdd>a.tn2-jn .hd-t{display:flex;flex-direction:column;gap:2px}
+html body .tn2-mdd>a.tn2-jn .hd-t b{font:700 15px/1.1 Inter,system-ui,sans-serif;color:#fff;text-shadow:0 0 10px rgba(255,220,130,.9),0 0 2px rgba(255,255,255,.6)}
+html body .tn2-mdd>a.tn2-jn .hd-t i{font:600 11px/1.2 Inter,system-ui,sans-serif;font-style:normal;color:#e8c878;text-shadow:0 0 8px rgba(255,200,90,.5)}
+html body .tn2-mdd>a.tn2-jn .hd-c{color:#ffd66b;font-size:11px;text-shadow:0 0 8px rgba(255,200,90,.8)}
+html body .tn2-mdd>a.tn2-jn .hd-l{font-size:24px;line-height:1;filter:drop-shadow(0 0 8px #e8b84a);flex:none}

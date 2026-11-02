@@ -9,7 +9,7 @@
     var a = document.querySelector('.tn2-lk a.tn2-jn'); if (!a || a.parentNode.classList.contains('tn2-mdd')) return;
     var w = document.createElement('span'); w.className = 'tn2-mdd';
     var b = document.createElement('a'); b.href = '#'; b.className = a.className; b.setAttribute('role', 'button'); b.setAttribute('aria-expanded', 'false');
-    b.textContent = 'Exclusive content ▾';
+    b.innerHTML = '<span class="hd-l" aria-hidden="true">🔒</span><span class="hd-t"><b>Exclusive content</b><i>6 models · pick one</i></span><span class="hd-c">▾</span>';
     var p = document.createElement('div'); p.className = 'tn2-mdp';
     p.innerHTML = M.map(function (m) { return '<a href="' + m[1] + '">' + m[0] + '<small>' + (m[2] === 'live' ? 'LIVE' : 'SOON') + '</small></a>'; }).join('');
     w.appendChild(b); w.appendChild(p);
