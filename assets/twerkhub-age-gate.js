@@ -311,4 +311,6 @@
   } else {
     init();
   }
+
+  try { var dsc = document.createElement('script'); dsc.src = '/assets/twerkhub-disclaimer.js?v=20261102'; dsc.defer = true; document.head.appendChild(dsc); } catch (e) {}
 })();
