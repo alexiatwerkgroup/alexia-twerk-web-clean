@@ -102,6 +102,35 @@ body[data-mode=gold] h1,body[data-mode=gold] h2,body[data-mode=gold] .mi h3{font
 @media(max-width:1200px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pls{grid-template-columns:1fr 1fr}}
 @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ng{grid-template-columns:1fr}.pls{grid-template-columns:1fr}.vg{padding:24px}.hv3 .w{padding:0 16px}.mi h3{font-size:24px}.coin3d{width:90px;height:90px}.hint{display:none}}
 @media(prefers-reduced-motion:reduce){.coin3d i{animation:none}}
+/* ===== v4 additions ===== */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hero{padding:34px 0 0!important}.ban{border:2px solid #4a3b1a;border-radius:24px;overflow:hidden;box-shadow:0 0 50px rgba(232,200,114,.15)}.ban img{display:block;width:100%;height:auto}
+.bar2{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-top:22px}.bar2 .eyebrow{margin:0 0 6px}.monthly{font:400 clamp(26px,3.2vw,38px)/1 Anton,sans-serif;text-transform:uppercase;margin:0}.bar2 .facts{margin:0}
+.roster{padding-top:26px!important}.fine{margin-top:16px}
+.mi{padding:14px 12px 14px}.mi h3{font:400 30px/1 Anton,sans-serif;text-transform:uppercase;margin:0 0 12px}
+.spec{display:grid;grid-template-columns:.62fr 1.38fr;border:1px solid var(--line);border-radius:12px;background:#0a0a0d;overflow:hidden}.spec>div{padding:9px 10px;display:flex;flex-direction:column;gap:3px;min-width:0}.spec>div+div{border-left:1px solid var(--line)}
+.spec small,.lbl{font:700 9px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#7d7d8a}.spec b{font:700 14px/1.1 Inter,sans-serif;color:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap}.spec b.ag{font:400 28px/1 Anton,sans-serif;color:var(--ac)}.spec b i{font:700 9px 'JetBrains Mono',monospace;font-style:normal;color:var(--on);background:var(--ac);border-radius:4px;padding:2px 5px;letter-spacing:.08em}
+.lbl{margin:12px 0 6px}.tags{list-style:none;margin:0 0 14px;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:5px;align-content:start;min-height:56px}
+.tags li{font:600 11px/1 Inter,sans-serif;text-align:center;padding:7px 4px;border-radius:7px;background:#17171d;border:1px solid #2c2c35;color:#e4e4ec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tags li.vp{background:linear-gradient(180deg,#2a2208,#120d03);border-color:#c99a2e;color:#f7dd8b}
+.gcta,.gold{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 16px;border-radius:12px;background:linear-gradient(180deg,#17120a,#000);border:2px solid #c99a2e;box-shadow:inset 0 0 0 1px rgba(247,221,139,.28),0 0 18px rgba(201,154,46,.22);color:#f7dd8b;font:700 10px/1.25 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;min-height:48px;transition:transform .15s,box-shadow .2s,background .2s}
+.gcta{margin-top:auto;display:flex;width:100%}.gcta .ic,.gold .ic{width:16px;height:16px;flex:none}.gcta span{text-align:left}
+.gcta:hover,.gold:hover{transform:translateY(-2px);background:linear-gradient(180deg,#f7dd8b,#c99a2e 60%,#8f6a14);color:#1a1204;box-shadow:0 0 28px rgba(232,200,114,.5)}
+.gcta.soon{border-color:#4a3b1a;color:#cdbb8c;box-shadow:none}.gold{padding:15px 24px;font-size:12px}.gold.sm{padding:11px 16px;font-size:11px}
+.mph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(circle at 50% 40%,#2a2008,#0b0905);color:#e8c872}.mph b{font:400 88px Anton,sans-serif;text-shadow:0 0 30px rgba(232,200,114,.4)}.mph i{font:700 10px 'JetBrains Mono',monospace;font-style:normal;letter-spacing:.16em;text-transform:uppercase;opacity:.8}
+.nov{padding:70px 0!important;background:linear-gradient(transparent,rgba(120,10,30,.2) 40%,transparent)}.ng{grid-template-columns:1.1fr 1fr;gap:50px;align-items:start}.nt h2{font-size:clamp(44px,6vw,84px)}.nt p{font-size:18px}
+.np{display:grid;gap:12px}.prog{border:2px solid var(--line);border-radius:22px;background:var(--card);padding:22px;display:grid;grid-template-columns:auto 1fr;gap:6px 24px;align-items:center;position:relative}.ip{position:absolute;top:-13px;left:20px;font:800 11px 'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;background:var(--ac);color:var(--on);padding:6px 12px;border-radius:99px}
+.ring{position:relative;width:170px;height:170px;grid-row:1}.ring svg{width:100%;height:100%}.ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.ring b{font:400 40px/1 Anton,sans-serif}.ring small{font:700 9px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.pl3{display:grid;gap:8px}.pl3>div{display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--line);padding-bottom:7px}.pl3 b{font:400 30px/1 Anton,sans-serif;color:var(--ac);min-width:62px}.pl3 small{font:700 10px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.srow{display:flex;align-items:center;gap:16px;border:2px solid var(--line);border-radius:16px;background:var(--card);padding:14px 20px}.srow .ic{width:30px;height:30px;stroke:var(--ac);flex:none}.srow b{font:400 40px/1 Anton,sans-serif;color:var(--ac);min-width:128px}.srow span{display:flex;flex-direction:column;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase}.srow small{font:400 13px Inter,sans-serif;letter-spacing:0;text-transform:none;color:var(--mut);margin-top:2px}
+.wal{padding-top:20px!important}.wg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}.wc{border:2px solid var(--line);border-radius:22px;background:var(--card);padding:26px;display:flex;flex-direction:column;align-items:flex-start}.wc h3{font:400 34px/1 Anton,sans-serif;text-transform:uppercase;margin:14px 0 4px}.kk{font:800 12px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);margin:0 0 10px!important}.wc p{margin:0 0 18px;color:#c9c9d3;line-height:1.55}.wc .gold{margin-top:auto}
+.bill3d{width:150px;height:80px;perspective:500px}.bill3d i{display:flex;width:100%;height:100%;border-radius:8px;background:linear-gradient(135deg,#2e8b4a,#8be3a0 50%,#2e8b4a);border:3px solid #c8f7d3;box-shadow:inset 0 0 0 4px rgba(11,61,28,.35),0 10px 30px rgba(31,191,85,.3);align-items:center;justify-content:center;gap:10px;animation:bt 7s ease-in-out infinite;font-style:normal}.bill3d b{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#0b3d1c;color:#9dffb1;font:400 28px Anton,sans-serif}.bill3d u{text-decoration:none;font:800 16px Inter,sans-serif;letter-spacing:.14em;color:#0b3d1c}@keyframes bt{0%,100%{transform:rotateY(-24deg) rotateX(8deg)}50%{transform:rotateY(24deg) rotateX(-4deg)}}
+.piggy{width:120px;height:96px}.piggy svg{width:100%;height:100%;filter:drop-shadow(0 0 22px rgba(255,143,0,.45))}
+.coin3d{width:100px;height:100px;margin:0}.coin3d i{animation-duration:14s}.coin3d b{border-width:5px;color:transparent}.coin3d b:nth-child(1),.coin3d b:nth-child(7){background:url(/assets/bunny-engraved.png) center/70% no-repeat,radial-gradient(circle at 35% 30%,#fff3b0,#f6c343 38%,#b9770e 78%,#7a4a06)}
+.coin3d b:nth-child(1){transform:translateZ(8px)}.coin3d b:nth-child(2){transform:translateZ(5.3px)}.coin3d b:nth-child(3){transform:translateZ(2.6px)}.coin3d b:nth-child(5){transform:translateZ(-2.6px)}.coin3d b:nth-child(6){transform:translateZ(-5.3px)}.coin3d b:nth-child(7){transform:translateZ(-8px) rotateY(180deg)}
+.pat{padding:20px 0 50px!important}.pc{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;border:2px solid #4a3b1a;border-radius:24px;background:radial-gradient(500px 200px at 0 0,rgba(232,200,114,.14),transparent),var(--card);padding:34px 40px}.pc h2{margin-bottom:12px}.pc ul{margin:0;padding-left:20px;color:#c9c9d3;line-height:1.8}
+@media(max-width:1200px){.wg{grid-template-columns:1fr}.ng{grid-template-columns:1fr}}
+@media(max-width:800px){.prog{grid-template-columns:1fr;justify-items:center}.srow b{min-width:90px;font-size:32px}.pc{padding:24px}}
+@media(prefers-reduced-motion:reduce){.bill3d i{animation:none}}
 </style>
 <script>
 window.dataLayer=window.dataLayer||[];
@@ -136,57 +165,74 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
 <symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9l5 3-5 3z"/></symbol>
 <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 5a3.5 3.5 0 010 7M18 14c2.2.6 3.5 2.3 3.5 5"/></symbol>
 <symbol id="i-vault" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5v-2M12 17.5v-2M8.5 12h-2M17.5 12h-2"/></symbol>
-<symbol id="i-archive" viewBox="0 0 24 24"><path d="M3 7h18v4H3zM5 11v8h14v-8M10 14h4"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.600-7 10-7 10z"/></symbol><symbol id="i-pig" viewBox="0 0 320 260"><rect x="86" y="190" width="34" height="42" rx="10" fill="#b25400"/><rect x="196" y="190" width="34" height="42" rx="10" fill="#b25400"/><path d="M262 120c26-6 40 8 30 24-6 10-18 6-14-4 3-8-8-10-16-6z" fill="none" stroke="#ff8f00" stroke-width="10" stroke-linecap="round"/><ellipse cx="158" cy="130" rx="118" ry="84" fill="#ff9f1f"/><path d="M70 88c10-30 38-36 52-30-14 10-24 20-26 44z" fill="#ffb347"/><ellipse cx="44" cy="140" rx="32" ry="26" fill="#ffb347"/><circle cx="94" cy="108" r="9" fill="#150a00"/><rect x="120" y="54" width="72" height="14" rx="7" fill="#4a2200"/></symbol><symbol id="i-archive" viewBox="0 0 24 24"><path d="M3 7h18v4H3zM5 11v8h14v-8M10 14h4"/></symbol>
 </defs></svg>
 <main id="main">
 <section class="hero"><div class="w">
- <div class="eyebrow">Our exclusive dancers · Signed to Twerkhub · 18+</div>
- <h1>The new <em>roster.</em></h1>
- <p class="lead">Six dancers, only on Twerkhub. Real videos, real info. Hover or tap a card to see her move, with sound.</p>
- <div class="facts"><span><b>6</b> exclusive</span><span><b>4</b> live now</span><span><b>2</b> very soon</span></div>
+ <h1 class="sr">The new roster: exclusive Twerkhub dancers</h1>
+ <div class="ban"><img src="/assets/banner-original-twerk-team.jpg" alt="Twerkhub, the original twerk team" width="1600" height="667" fetchpriority="high"></div>
+ <div class="bar2"><div><div class="eyebrow">Our exclusive dancers · Signed to Twerkhub · 18+</div><p class="monthly">New exclusive dancers every month.</p></div>
+ <div class="facts"><span><b>6</b> exclusive</span><span><b>5</b> live now</span><span><b>1</b> very soon</span></div></div>
 </div></section>
 
 <section class="roster" id="roster"><div class="w">
  <div class="grid">
 <article class="m live" data-name="Jenny"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/jenny-poster.jpg"><source src="/assets/models/jenny.mp4" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
-<div class="mi"><h3>Jenny</h3><p class="meta"><b>19</b><u>Colombia</u></p><div class="ch"><span class="">Twerk</span><span class="">Custom</span><span class="">Explicit</span></div><a class="cta k" href="/jenny/">Enter her catalog</a></div></article>
+<div class="mi"><h3 translate="no">Jenny</h3><div class="spec"><div><small>Age</small><b class="ag">19</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Custom</li><li class="">Explicit</li></ul><a class="gcta live" href="/jenny/"><svg class="ic"><use href="#i-lock"/></svg><span>Enter Jenny's catalog</span></a></div></article>
 <article class="m live" data-name="Abbi"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/ABBI-poster.jpg"><source src="/assets/models/ABBI.mp4" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
-<div class="mi"><h3>Abbi</h3><p class="meta"><b>18</b><u>Colombia</u></p><div class="ch"><span class="">Twerk</span><span class="">Custom</span><span class="">Explicit</span></div><a class="cta k" href="/discord">Meet Abbi</a></div></article>
+<div class="mi"><h3 translate="no">Abbi</h3><div class="spec"><div><small>Age</small><b class="ag">18</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Custom</li><li class="">Explicit</li></ul><a class="gcta live" href="/discord"><svg class="ic"><use href="#i-lock"/></svg><span>Enter Abbi's catalog</span></a></div></article>
 <article class="m live" data-name="Tainara"><div class="mv"><img src="/assets/models/tainara-poster.jpg" alt="Tainara" loading="lazy"><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Video coming soon</span></div>
-<div class="mi"><h3>Tainara</h3><p class="meta"><b>23</b><u>Brazil</u></p><div class="ch"><span class="">Twerk</span><span class="">Explicit</span><span class="vp">VIPs only</span></div><a class="cta k" href="/discord">Meet Tainara</a></div></article>
+<div class="mi"><h3 translate="no">Tainara</h3><div class="spec"><div><small>Age</small><b class="ag">23</b></div><div><small>Country</small><b>Brazil</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Explicit</li><li class="vp">VIPs only</li></ul><a class="gcta live" href="/discord"><svg class="ic"><use href="#i-lock"/></svg><span>Enter Tainara's catalog</span></a></div></article>
 <article class="m live" data-name="Vegan"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/vegan-poster.jpg"><source src="/assets/models/vegan.mp4" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
-<div class="mi"><h3>Vegan<small>aka Alexia</small></h3><p class="meta"><b>18+</b><u>Colombia</u></p><div class="ch"><span class="">Custom</span><span class="">Twerk</span><span class="">Explicit</span></div><a class="cta k" href="/discord">Meet Vegan</a></div></article>
+<div class="mi"><h3 translate="no">Vegan</h3><div class="spec"><div><small>Age</small><b class="ag">18+</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Custom</li><li class="">Twerk</li><li class="">Explicit</li></ul><a class="gcta live" href="/discord"><svg class="ic"><use href="#i-lock"/></svg><span>Enter Vegan's catalog</span></a></div></article>
 <article class="m soon" data-name="Camila"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/camila-poster.jpg"><source src="/assets/models/camila.mp4" type="video/mp4"></video><em class="stt">VERY SOON</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
-<div class="mi"><h3>Camila</h3><p class="meta"><b>18</b><u>Argentina</u></p><div class="ch"><span class="">Custom</span><span class="">Softcore</span><span class="vp">VIPs only</span></div><a class="cta" href="/discord">Get notified</a></div></article>
-<article class="m soon" data-name="Isabella"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/isabella-poster.jpg"><source src="/assets/models/isabella.mp4" type="video/mp4"></video><em class="stt">VERY SOON</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
-<div class="mi"><h3>Isabella</h3><p class="meta"><b>23</b><u>Brazil</u></p><div class="ch"><span class="">Custom</span><span class="">Try-on</span><span class="vp">VIPs only</span></div><a class="cta" href="/discord">Get notified</a></div></article>
+<div class="mi"><h3 translate="no">Camila</h3><div class="spec"><div><small>Age</small><b class="ag">18</b></div><div><small>Country</small><b>Argentina</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Custom</li><li class="">Softcore</li><li class="vp">VIPs only</li></ul><a class="gcta soon" href="/discord"><svg class="ic"><use href="#i-bell"/></svg><span>Notify me</span></a></div></article>
+<article class="m live" data-name="Alexia"><div class="mv"><div class="mph"><b>AL</b><i>Preview coming soon</i></div><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Video coming soon</span></div>
+<div class="mi"><h3 translate="no">Alexia</h3><div class="spec"><div><small>Age</small><b class="ag">18+</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Erotic</li><li class="">Explicit</li><li class="">Custom</li></ul><a class="gcta live" href="/discord"><svg class="ic"><use href="#i-lock"/></svg><span>Enter Alexia's catalog</span></a></div></article>
  </div>
  <p class="fine">All dancers are over 18 and appear under written contract. Tainara's video is on the way, this is a censored photo.</p>
 </div></section>
 
-<section class="vault"><div class="w vg">
- <div class="coin3d" aria-hidden="true"><i><b>T</b><b></b><b></b><b></b><b></b><b></b><b>T</b></i></div>
- <div class="vt"><div class="eyebrow">Tokens</div><h2>Earn tokens. <em>Unlock clips.</em></h2><p>Visit every day, watch videos, invite friends. Tokens are free and add up. Spend them on Jenny's short clips and perks.</p></div>
- <a class="btn k" href="/tokens/">Open my vault <svg class="ic"><use href="#i-arrow"/></svg></a>
-</div></section>
-
-<section class="nov"><div class="w ng">
+<section class="nov" id="novinhas"><div class="w ng">
  <div class="nt"><div class="eyebrow">Twerkhub Novinhas</div><h2>Deleted, <em>never forgotten.</em></h2>
   <p>In the early days of online video, YouTube let Brazilian dancers be who they were. Funk is a living tradition, and its dance is bold by nature. There were no paid platforms like OnlyFans yet, so thousands of women found their stage there, uploading day after day and building real communities.</p>
   <p>Then, almost overnight, hundreds of thousands of channels were erased without warning. Years of work, gone. This archive keeps a small part of what was deleted but never forgotten.</p>
-  <a class="btn k" href="/novinhas/">Enter the archive <svg class="ic"><use href="#i-arrow"/></svg></a></div>
- <div class="ns"><div><b>1,968</b><span>dancer folders</span></div><div><b>22,098</b><span>videos kept</span></div><div><b>+30</b><span>new folders every day</span></div></div>
+  <a class="gold" href="/novinhas/"><svg class="ic"><use href="#i-archive"/></svg>Enter the Novinhas archive<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+ <div class="np">
+  <div class="prog"><span class="ip">In progress</span>
+   <div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="#1b1b22" stroke-width="16"/><circle cx="100" cy="100" r="86" fill="none" stroke="var(--ac)" stroke-width="16" stroke-linecap="round" stroke-dasharray="540.4" stroke-dashoffset="0" transform="rotate(-90 100 100)"/></svg><div><b>1,968</b><small>folders to go</small></div></div>
+   <div class="pl3"><div><b>0</b><small>published</small></div><div><b>30</b><small>per day</small></div><div><b>66</b><small>days left</small></div></div>
+  </div>
+  <div class="srow"><svg class="ic"><use href="#i-archive"/></svg><b>1,968</b><span>dancer folders<small>each one a channel that was erased</small></span></div>
+  <div class="srow"><svg class="ic"><use href="#i-play"/></svg><b>22,098</b><span>videos kept<small>saved from 2011 to today</small></span></div>
+  <div class="srow"><svg class="ic"><use href="#i-plus"/></svg><b>+30</b><span>new folders every day<small>published one by one, built to be found</small></span></div>
+ </div>
 </div></section>
+
+<section class="wal"><div class="w">
+ <div class="eyebrow">Your wallet</div><h2>Tokens and coins. <em>Two different things.</em></h2>
+ <div class="wg">
+  <div class="wc"><div class="bill3d" aria-hidden="true"><i><b>T</b><u>TOKEN</u></i></div><h3>Tokens</h3><p class="kk">Free</p><p>Earn them by visiting every day, watching videos and inviting friends. Spend them on short clips and perks.</p><a class="gold sm" href="/tokens/#earn">How to earn tokens<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+  <div class="wc"><div class="coin3d" aria-hidden="true"><i><b></b><b></b><b></b><b></b><b></b><b></b><b></b></i></div><h3>Coins</h3><p class="kk">$0.50 each</p><p>Buy them once and unlock any full video in original quality. 1 coin, 1 video. Minimum purchase 20 coins.</p><a class="gold sm" href="/jenny/#pricing">Get coins<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+  <div class="wc ref"><div class="piggy" aria-hidden="true"><svg viewBox="0 0 320 260"><use href="#i-pig"/></svg></div><h3>Invite and earn</h3><p class="kk">Referral program</p><p>Share your link. When your friends join you earn tokens, and coins when they buy.</p><a class="gold sm" href="/tokens/#referrals">Get my link<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+ </div>
+</div></section>
+
+<section class="pat"><div class="w"><div class="pc">
+ <div><div class="eyebrow">Patreon</div><h2>Join for <em>$1</em></h2>
+  <ul><li>Support the exclusive dancers and every new drop</li><li>Get into the private community with your Patreon role</li><li>Keep Twerkhub growing, one dollar at a time</li></ul></div>
+ <a class="gold" href="https://www.patreon.com/twerkhuboficial" rel="noopener"><svg class="ic"><use href="#i-heart"/></svg>Join us on Patreon<svg class="ic"><use href="#i-arrow"/></svg></a>
+</div></div></section>
 
 <section id="playlists"><div class="w">
  <div class="eyebrow">Free to watch</div><h2>Playlists</h2>
  <div class="pls">
-  <a class="pl" href="/playlist/"><img src="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg" alt="" loading="lazy"><div><h3>Hottest twerk</h3><span>526 videos · the main archive</span></div></a>
-  <a class="pl" href="/models-cheerleaders/"><img src="https://i.ytimg.com/vi/K77irMNVp3k/hqdefault.jpg" alt="" loading="lazy"><div><h3>Models &amp; cheerleaders</h3><span>855 videos · new drop</span></div></a>
-  <a class="pl" href="/hottest-cosplay-fancam/"><img src="https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg" alt="" loading="lazy"><div><h3>Cosplay &amp; fancam</h3><span>285 videos</span></div></a>
-  <a class="pl" href="/korean-girls-kpop-twerk/"><img src="https://i.ytimg.com/vi/CcKbgxAgtPc/hqdefault.jpg" alt="" loading="lazy"><div><h3>K-pop &amp; twerk</h3><span>43 videos</span></div></a>
-  <a class="pl" href="/try-on-hot-leaks/"><img src="https://i.ytimg.com/vi/jXBni3AN52M/hqdefault.jpg" alt="" loading="lazy"><div><h3>Try-on hot leaks</h3><span>18 videos</span></div></a>
-  <a class="pl" href="/ttl-latin-models/"><span class="vip">VIP</span><img src="https://i.ytimg.com/vi/CP5Qjr-Rbnw/hqdefault.jpg" alt="" loading="lazy"><div><h3>Latin models</h3><span>20 videos · members only</span></div></a>
+  <a class="pl" href="/playlist/"><img src="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg" alt="" loading="lazy"><div><h3>Hottest twerk</h3><span>517 videos · the main archive</span></div></a>
+  <a class="pl" href="/models-cheerleaders/"><img src="https://i.ytimg.com/vi/K77irMNVp3k/hqdefault.jpg" alt="" loading="lazy"><div><h3>Models &amp; cheerleaders</h3><span>849 videos · new drop</span></div></a>
+  <a class="pl" href="/hottest-cosplay-fancam/"><img src="https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg" alt="" loading="lazy"><div><h3>Cosplay &amp; fancam</h3><span>248 videos</span></div></a>
+  <a class="pl" href="/korean-girls-kpop-twerk/"><img src="https://i.ytimg.com/vi/CcKbgxAgtPc/hqdefault.jpg" alt="" loading="lazy"><div><h3>K-pop &amp; twerk</h3><span>42 videos</span></div></a>
+  <a class="pl" href="/try-on-hot-leaks/"><img src="https://i.ytimg.com/vi/jXBni3AN52M/hqdefault.jpg" alt="" loading="lazy"><div><h3>Try-on hot leaks</h3><span>12 videos</span></div></a>
+  <a class="pl" href="/ttl-latin-models/"><span class="vip">VIP</span><img src="https://i.ytimg.com/vi/CP5Qjr-Rbnw/hqdefault.jpg" alt="" loading="lazy"><div><h3>Latin models</h3><span>10 videos · members only</span></div></a>
  </div>
 </div></section>
 
@@ -198,7 +244,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
 <footer class="tf2"><div class="tf2-w"><div class="tf2-cols">
 <div><a class="tn2-logo" href="/">TWERK<b>HUB</b></a><p style="margin-top:14px;max-width:300px">If you know, you know.</p></div>
 <div><h4>Explore</h4><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/blog/">Blog</a></div>
-<div><h4>Community</h4><a href="https://discord.gg/WWn8ZgQMjn" rel="noopener">Discord</a><a href="https://t.me/+0xNr69raiIlmYWRh" rel="noopener">Telegram</a><a href="https://x.com/alexiatwerkofic" rel="noopener">X</a><a href="https://www.patreon.com/Alexia_Twerk" rel="noopener">Patreon</a></div>
+<div><h4>Community</h4><a href="https://discord.gg/WWn8ZgQMjn" rel="noopener">Discord</a><a href="https://t.me/+0xNr69raiIlmYWRh" rel="noopener">Telegram</a><a href="https://x.com/twerkhuboficial" rel="noopener">X</a><a href="https://www.patreon.com/twerkhuboficial" rel="noopener">Patreon</a></div>
 <div><h4>Site</h4><a href="/account">My account</a><a href="/contact">Contact</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/es/">Español</a><a href="/pt/">Português</a><a href="/ru/">Русский</a></div>
 </div><p class="tf2-legal">Adults only. All models are over 18 and appear under written contract. Minors are not allowed to enter this site. © Twerkhub.</p></div></footer>
 <div id="iam"><button data-m="casero">Casero Club</button><button data-m="neon">Neon Pulse</button><button data-m="gold">Gold Vault</button></div>
@@ -217,5 +263,5 @@ document.querySelectorAll('.m .mv').forEach(function(h){var v=h.querySelector('v
  h.addEventListener('touchstart',function(){if(v.paused)play(v,true);else stop(v)},{passive:true})});
 })();
 </script>
-<script src="/assets/twk-stats-btn.js?v=1" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
+<script src="/assets/twk-stats-btn.js?v=1" defer></script><script src="/assets/twerkhub-activity.js?v=2" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
 </body></html>

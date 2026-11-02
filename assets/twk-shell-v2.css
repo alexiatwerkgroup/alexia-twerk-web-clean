@@ -26,3 +26,7 @@
 .tf2 .tn2-logo{padding:0}
 .tf2-legal{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);font-size:14px}
 @media(max-width:900px){.tn2-lk{display:none}.tn2 details{display:block}.tf2-cols{grid-template-columns:1fr 1fr}}
+/* one logo everywhere */
+.tn2 a.tn2-logo,.tf2 a.tn2-logo{color:#fff}.tn2 a.tn2-logo b,.tf2 a.tn2-logo b{color:#000;background:var(--ac)}
+.tn2-lk .twk-lang{margin-left:2px}
+@media(max-width:560px){.tn2-w{gap:6px}.tn2-logo{font-size:25px}.tn2-logo b{padding:1px 6px 2px}.tn2 summary{width:40px;height:40px}.twk-lang>button{padding:0 8px;height:40px}.twk-coin .pig{display:none}}
