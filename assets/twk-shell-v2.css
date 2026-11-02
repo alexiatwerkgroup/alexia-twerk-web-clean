@@ -1,0 +1,28 @@
+/* Twerkhub shell v2 · Casero Club nav + footer (single implementation, replaces TWK_NAV_V1 / twk-mf) */
+.tn2,.tf2{--bg:#000;--card:#101014;--line:#26262c;--ac:#ff8f00;--ac2:#ffb347;--pk:#ff4fa3;--mut:#a6a6b2;font-family:Inter,system-ui,sans-serif;box-sizing:border-box}
+.tn2 *,.tf2 *{box-sizing:border-box}
+.tn2{position:sticky;top:0;z-index:9999;background:rgba(0,0,0,.94);backdrop-filter:blur(12px);border-bottom:2px solid var(--ac)}
+.tn2 a,.tf2 a{text-decoration:none;color:inherit}
+.tn2-w,.tf2-w{max-width:1200px;margin:0 auto;padding-inline:max(20px,env(safe-area-inset-left,0px)) max(20px,env(safe-area-inset-right,0px))}
+.tn2-w{display:flex;align-items:center;gap:22px;height:72px}
+.tn2-logo{font:400 34px/1 Anton,Impact,sans-serif;color:#fff;display:flex;gap:6px;align-items:center;letter-spacing:.01em}
+.tn2-logo b{background:var(--ac);color:#000;padding:2px 9px 3px;border-radius:6px;font-weight:400}
+.tn2-lk{display:flex;gap:6px;margin-left:auto;align-items:center}
+.tn2-lk a{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#d8d8e2;padding:10px 14px;border-radius:10px}
+.tn2-lk a:hover,.tn2-lk a.on{color:var(--ac)}
+.tn2-lk a.tn2-jn{background:linear-gradient(180deg,#ffa31f,#e86f00);color:#150a00;border:2px solid var(--ac);border-radius:14px;padding:11px 20px;box-shadow:0 0 28px rgba(255,143,0,.45),inset 0 1px 0 rgba(255,255,255,.35)}
+.tn2-lk a.tn2-jn:hover{color:#150a00;box-shadow:0 0 44px rgba(255,143,0,.7)}
+.tn2 details{display:none;margin-left:auto;position:relative}
+.tn2 summary{list-style:none;cursor:pointer;width:46px;height:46px;border:2px solid var(--ac);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--ac)}
+.tn2 summary::-webkit-details-marker{display:none}
+.tn2 summary svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+.tn2 details nav{position:absolute;right:0;top:56px;background:#0a0a0d;border:2px solid var(--ac);border-radius:16px;padding:10px;min-width:230px;display:flex;flex-direction:column;box-shadow:0 20px 60px #000}
+.tn2 details nav a{padding:14px 16px;font:700 13px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;border-radius:10px;color:#fff}
+.tn2 details nav a:hover{background:#17120a;color:var(--ac)}
+.tf2{background:#000;border-top:2px solid var(--line);padding:48px 0 40px;color:var(--mut);font-size:15px;line-height:1.55}
+.tf2-cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px}
+.tf2 h4{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#fff;margin:0 0 12px}
+.tf2 a{display:block;padding:5px 0}.tf2 a:hover{color:var(--ac)}
+.tf2 .tn2-logo{padding:0}
+.tf2-legal{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);font-size:14px}
+@media(max-width:900px){.tn2-lk{display:none}.tn2 details{display:block}.tf2-cols{grid-template-columns:1fr 1fr}}
