@@ -74,7 +74,7 @@ body[data-mode=feed] .grid{grid-template-columns:minmax(0,520px);justify-content
 @media(max-width:640px){.unt .r{display:none}}
 /*HEROUNI*/
 .hero{padding:56px 0 70px}.hero .in{gap:48px;flex-wrap:nowrap}.hero .l{flex:1 1 44%;min-width:0}.hero .r{flex:1 1 56%;max-width:720px;min-width:0;gap:18px}
-.hero h1{font-size:clamp(44px,5.2vw,88px);line-height:.93;margin:14px 0 0}
+@media(min-width:901px){.hero .lead{min-height:132px}@media(max-width:1199px){.hero .lead{min-height:156px}.hero .badges span{min-height:100px}}.hero .cta .btn{white-space:nowrap;padding-left:14px;padding-right:14px;letter-spacing:.08em}.hero .badges span{min-height:90px}}.hero h1{font-size:clamp(44px,5.2vw,88px);line-height:.93;margin:14px 0 0}
 .nd{position:relative;display:inline-flex;align-items:center;gap:12px;padding:10px 22px 10px 18px;font:400 28px Anton,sans-serif;letter-spacing:.2em;clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%)}
 .nd.og{color:var(--ac);text-shadow:0 0 8px var(--ac),0 0 28px var(--glow);background:linear-gradient(90deg,rgba(255,138,0,.14),rgba(255,138,0,.03))}
 .nd.og:before{content:"";position:absolute;inset:0;border:2px solid var(--ac);clip-path:inherit}
@@ -82,7 +82,7 @@ body[data-mode=feed] .grid{grid-template-columns:minmax(0,520px);justify-content
 @media(min-width:901px){.hero{min-height:calc(760px + 9.4vw)}}
 
 .hero{padding:56px 0 70px}.hero .in{gap:48px;flex-wrap:nowrap}.hero .l{flex:1 1 44%;min-width:0}.hero .r{flex:1 1 56%;max-width:720px;min-width:0;gap:18px}
-.hero h1{font-size:clamp(44px,5.2vw,88px);line-height:.93;margin:14px 0 0}
+@media(min-width:901px){.hero .lead{min-height:132px}@media(max-width:1199px){.hero .lead{min-height:156px}.hero .badges span{min-height:100px}}.hero .cta .btn{white-space:nowrap;padding-left:14px;padding-right:14px;letter-spacing:.08em}.hero .badges span{min-height:90px}}.hero h1{font-size:clamp(44px,5.2vw,88px);line-height:.93;margin:14px 0 0}
 .nd{position:relative;display:inline-flex;align-items:center;gap:12px;padding:10px 22px 10px 18px;font:400 28px Anton,sans-serif;letter-spacing:.2em;clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%)}
 .nd.og{color:var(--ac);text-shadow:0 0 8px var(--ac),0 0 28px var(--glow);background:linear-gradient(90deg,rgba(255,138,0,.14),rgba(255,138,0,.03))}
 .nd.og:before{content:"";position:absolute;inset:0;border:2px solid var(--ac);clip-path:inherit}
@@ -148,7 +148,7 @@ body[data-mode=bars] .cz{display:grid}.c:hover .cz{animation:none;clip-path:inse
 <button id="ia" aria-label="Change design">✨ IA MODE</button>
 <dialog class="pay" id="pay"><button class="x" aria-label="Close" onclick="this.closest('dialog').close()">×</button><h3 id="payT">Pay with Binance</h3><p class="warn" id="payA"></p>
 <div class="trust"><img src="/jenny/p/owner.jpg" alt="Twerkhub owner" width="56" height="56"><div class="ti"><b>claudiopolakofirestarter</b><span>Binance ID: 1035936474</span><em>✔ Verified Binance account</em></div></div><p class="warn" style="margin:6px 0 0">Check this name and ID appear in Binance before you confirm. If they do not match, do not pay.</p>
-<div class="row"><small>Option 1 · Binance Pay (no fees)</small><code data-copy="1035936474">Pay ID: 1035936474</code></div>
+<p class="warn" style="margin:10px 0 0">Don't have Binance yet? <a href="https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=es-LA&ref=GRO_28502_8Z3EW&utm_source=referral_entrance" target="_blank" rel="noopener sponsored" style="color:var(--ac);font-weight:800">Create your free account</a> in 2 minutes.</p><div class="row"><small>Option 1 · Binance Pay (no fees)</small><code data-copy="1035936474">Pay ID: 1035936474</code></div>
 <div class="row"><small>Option 2 · USDT on Tron network (TRC20, low fee)</small><code data-copy="TBV4zdSqavgfiUzRBBsques8Pfpuxuuxbp">TBV4zdSqavgfiUzRBBsques8Pfpuxuuxbp</code></div>
 <div class="row"><small>Option 3 · USDT on Ethereum network (ERC20, higher fee)</small><code data-copy="0x6619adc77c05de260f41e0c22d278456a5b9636c">0x6619adc77c05de260f41e0c22d278456a5b9636c</code></div>
 <p class="warn">Tap a box to copy. Send <b>USDT</b> only, on the <b>exact network</b> shown above (TRC20 or ERC20). Other networks or coins will be lost. Then send the receipt and the email you use at Twerkhub on <a href="/discord" style="color:var(--ac)">Discord</a> and we unlock your account.</p></dialog>
