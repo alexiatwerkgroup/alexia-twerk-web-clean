@@ -8,11 +8,13 @@ const DISC = '<div class="twk-disc" role="note" style="margin:0;padding:18px 16p
 
 export async function onRequest(context) {
   const res = await context.next();
+  let spare = null;
   try {
     const { request, env } = context;
     const url = new URL(request.url);
     const ct = res.headers.get('content-type') || '';
     if (request.method !== 'GET' || url.pathname.startsWith('/api/') || !ct.includes('text/html') || !res.body || res.status !== 200) return res;
+    try { spare = res.clone(); } catch (e) {}
     const html = await res.text();
     const ua = request.headers.get('user-agent') || '';
     const track = env.DB && !isBot(ua) && cookie(request, 'twx') !== '1' && !url.pathname.startsWith('/admin/');
@@ -21,7 +23,6 @@ export async function onRequest(context) {
     if (track) {
       let vid = cookie(request, 'twv'); const isNew = vid ? 0 : 1;
       if (!vid) { vid = crypto.randomUUID(); h.append('Set-Cookie', 'twv=' + vid + '; Max-Age=63072000; Path=/; SameSite=Lax; Secure'); }
-      if (owner) { /* never count the owner */ }
       const hid = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
       const cf = request.cf || {};
       let reg = 0, owner = false; try { const p = await authenticate(request, env); reg = p && p.sub ? 1 : 0; if (reg) { const u = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(p.sub).first(); owner = !!u && String(u.email).toLowerCase() === OWNER; } } catch (e) {}
@@ -40,6 +41,6 @@ export async function onRequest(context) {
     h.delete('content-length'); h.delete('content-encoding'); h.delete('etag');
     return new Response(out, { status: res.status, statusText: res.statusText, headers: h });
   } catch (e) {
-    return res;
+    return spare || res;
   }
 }
