@@ -20,4 +20,6 @@
   document.addEventListener('visibilitychange', function () { tick(); shown = !document.hidden; last = Date.now(); if (document.hidden) send(); });
   addEventListener('pagehide', send);
   setTimeout(send, 15000);
+  // heartbeat: keeps time-on-page and "online now" live while the tab stays open (stops after 40 min)
+  var hb = setInterval(function () { if (vis > 2400000) return clearInterval(hb); if (shown) send(); }, 30000);
 })();
