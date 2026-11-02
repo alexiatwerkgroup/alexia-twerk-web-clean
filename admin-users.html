@@ -181,7 +181,7 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
       </tr>
     </thead>
     <tbody id="rows">
-      <tr><td colspan="11" class="loading">Loading from Supabase</td></tr>
+      <tr><td colspan="13" class="loading">Loading from Supabase</td></tr>
     </tbody>
   </table>
 </div>
@@ -282,7 +282,7 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
 
   async function load(){
     console.log('[admin] load() called, source:', state.source);
-    document.getElementById('rows').innerHTML = '<tr><td colspan="11" class="loading">Loading</td></tr>';
+    document.getElementById('rows').innerHTML = '<tr><td colspan="13" class="loading">Loading</td></tr>';
     if (state.source === 'supabase') {
       console.log('[admin] Loading from Supabase/D1');
       await loadSupabase();
@@ -355,7 +355,7 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
   function renderRows(users){
     var tbody = document.getElementById('rows');
     if (!users.length) {
-      tbody.innerHTML = '<tr><td colspan="11" class="empty">No users yet. ' + (state.source==='supabase' ? 'Run schema-tokens-v1.sql + schema-tokens-v2 in Supabase first, then sign in as the owner email.' : 'No registered users in this browser yet.') + '</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="13" class="empty">No users yet. ' + (state.source==='supabase' ? 'Run schema-tokens-v1.sql + schema-tokens-v2 in Supabase first, then sign in as the owner email.' : 'No registered users in this browser yet.') + '</td></tr>';
       return;
     }
     tbody.innerHTML = users.map(function(u, i){
