@@ -1,12 +1,15 @@
-/* Owner admin bar: one clean way around every admin page. Hides the public-site nav/footer on these pages. */
+/* Admin pages use the SAME universal header as the whole site (shell v2). Admin links live in the profile menu. */
 (function () {
-  var st = document.createElement('style');
-  st.textContent = '#twk-nav-container,footer.twk-mf{display:none!important}#adm{position:sticky;top:0;z-index:90;display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px max(16px,calc((100% - 1200px)/2));background:#07070a;border-bottom:1px solid #ff8a00;box-shadow:0 0 22px rgba(255,138,0,.25);font:700 13px Rajdhani,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase}#adm b{color:#ff8a00;margin-right:10px}#adm a{color:#e9dfc0;text-decoration:none;padding:7px 12px;border:1px solid #2a2418;border-radius:10px;background:#0b0a07}#adm a:hover{border-color:#ff8a00;color:#fff;box-shadow:0 0 12px rgba(255,138,0,.5)}#adm a.on{border-color:#ff8a00;color:#fff;background:#1a0f00}#adm .sp{flex:1}';
-  document.head.appendChild(st);
-  var L = [['/admin/stats/', 'Estadísticas'], ['/admin-users.html', 'Registrados'], ['/jenny/', 'Jenny'], ['/jenny/uncensored/', 'Uncensored'], ['/', 'Sitio']];
-  var p = location.pathname.replace(/index\.html$/, '');
-  var bar = document.createElement('nav'); bar.id = 'adm'; bar.setAttribute('aria-label', 'Panel de administración');
-  bar.innerHTML = '<b>Panel Twerkhub</b>' + L.map(function (l) { return '<a href="' + l[0] + '"' + (l[0] === p ? ' class="on"' : '') + '>' + l[1] + '</a>'; }).join('') ;
-  function put() { document.body.insertBefore(bar, document.body.firstChild); }
+  function put() {
+    var old = document.getElementById('twk-nav-container'); if (old) old.remove();
+    document.querySelectorAll('footer.twk-mf').forEach(function (f) { f.remove(); });
+    if (!document.querySelector('link[href*="twk-shell-v2.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/assets/twk-shell-v2.css?v=1'; document.head.appendChild(l); }
+    if (!document.querySelector('header.tn2')) {
+      var h = document.createElement('header'); h.className = 'tn2';
+      h.innerHTML = '<div class="tn2-w"><a class="tn2-logo" href="/" aria-label="Twerkhub home">TWERK<b>HUB</b></a><div class="tn2-lk"><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/account">My account</a><a class="tn2-jn" href="/jenny/">Jenny VIP</a></div></div>';
+      document.body.insertBefore(h, document.body.firstChild);
+    }
+    [['/assets/twk-stats-btn.js?v=2'], ['/assets/twerkhub-activity.js?v=2']].forEach(function (s) { if (!document.querySelector('script[src^="' + s[0].split('?')[0] + '"]')) { var e = document.createElement('script'); e.src = s[0]; e.defer = true; document.head.appendChild(e); } });
+  }
   if (document.body) put(); else document.addEventListener('DOMContentLoaded', put);
 })();
