@@ -12,5 +12,5 @@
       el.innerHTML = '<div class="box"><div class="l"><span>VISITANTES</span><i>● ' + d.online + ' ahora</i></div><div class="d">' + String(d.visitors).split('').map(function (c) { return '<b>' + c + '</b>'; }).join('') + '</div><div class="s"><span>' + d.views + ' vistas</span><span>' + d.today + ' hoy</span></div></div>';
     }).catch(function () {});
   }
-  load(); setInterval(load, 30000);
+  load(); setInterval(function () { if (document.visibilityState === 'visible') load(); }, 300000);
 })();

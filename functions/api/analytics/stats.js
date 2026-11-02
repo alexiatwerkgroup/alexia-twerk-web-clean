@@ -6,6 +6,10 @@ import { init, OWNER } from '../../_lib/analytics.js';
 const rows = async (db, sql, ...a) => (await db.prepare(sql).bind(...a).all()).results || [];
 const one = async (db, sql, ...a) => (await db.prepare(sql).bind(...a).first()) || {};
 
+// Cache of the cheap "mini" counter (owner only). It scans the whole tw_hits table,
+// so it must not run on every poll. 5 min per worker instance is enough for a live counter.
+let miniCache = { t: 0, body: null };
+
 export async function onRequestGet({ request, env }) {
   const p = await authenticate(request, env);
   if (!p || !p.sub) return json({ ok: false, error: 'owner_only' }, 403);
@@ -17,10 +21,13 @@ export async function onRequestGet({ request, env }) {
   const now = Date.now(), tz = Math.max(-840, Math.min(840, parseInt(url.searchParams.get('tz')) || -180));
   const off = tz * 60;
   if (url.searchParams.get('mini')) {
+    if (miniCache.body && now - miniCache.t < 300000) return json(miniCache.body, 200, '', heads);
     const a = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1');
     const t = await one(db, 'SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1 AND ts > ?', now - 86400000);
     const o = await one(db, 'SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1 AND ts > ?', now - 300000);
-    return json({ ok: true, visitors: a.u || 0, views: a.v || 0, today: t.u || 0, online: o.u || 0 }, 200, '', heads);
+    const body = { ok: true, visitors: a.u || 0, views: a.v || 0, today: t.u || 0, online: o.u || 0 };
+    miniCache = { t: now, body };
+    return json(body, 200, '', heads);
   }
   const bots = url.searchParams.get('bots') === '1', hf = bots ? '' : ' AND human = 1';
   const days = Math.max(1, Math.min(365, parseInt(url.searchParams.get('days')) || 30));
