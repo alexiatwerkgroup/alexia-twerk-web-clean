@@ -19,6 +19,7 @@
   function post(b) { return fetch(API, { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify(b) }).then(function (r) { return r.json().catch(function () { return {}; }); }); }
   function rnd(a, b) { return a + Math.random() * (b - a); }
   function show() {
+    if (document.querySelector('.twr')) return;
     post({ action: 'spawn' }).then(function (d) {
       if (!d || !d.eligible || !d.id) return;
       var vw = innerWidth, vh = innerHeight, el = document.createElement('div'); el.className = 'twr';
@@ -51,6 +52,6 @@
   }
   fetch(API, { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.eligible) return;
-    setTimeout(show, rnd(40000, 110000));
+    (function sched(t){ setTimeout(function(){ if(!document.querySelector('.twr') && !document.hidden) show(); sched(rnd(150000, 330000)); }, t); })(rnd(25000, 70000));
   }).catch(function () {});
 })();

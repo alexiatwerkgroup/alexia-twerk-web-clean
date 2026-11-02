@@ -180,7 +180,7 @@ body[data-mode=bars] .cz{display:grid}.c:hover .cz{animation:none;clip-path:inse
 <script>(function(){var d=document.getElementById('pay');document.addEventListener('click',function(e){var b=e.target.closest('[data-pay]');if(b){e.preventDefault();var pk=b.dataset.pay=='pack';document.getElementById('payT').textContent='Coins · $0.50 each';document.getElementById('payA').innerHTML=pk?'Send <span class="amt">$19.99 USDT</span>.':'Send <span class="amt">$0.50 × coins</span> (minimum 20 coins = $10).';d.showModal();return}var c=e.target.closest('[data-copy]');if(c){try{navigator.clipboard.writeText(c.dataset.copy);var o=c.textContent;c.textContent='Copied ✓';setTimeout(function(){c.textContent=o},1200)}catch(x){}}if(e.target===d)d.close()})})();</script>
 <script src="/assets/twerkhub-activity.js?v=3" defer></script>
 <script src="/assets/twerkhub-ico.js?v=4" defer></script><script src="/assets/twerkhub-promo.js?v=1" defer></script>
-<script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
+<script src="/assets/twk-stats-btn.js?v=1" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
 <script>
 (function(){var b=document.body,K='twk-jenny-mode';
 function set(m){b.dataset.mode=m;try{localStorage.setItem(K,m)}catch(e){}document.querySelectorAll('#iam button').forEach(function(x){x.classList.toggle('on',x.dataset.m==m)})}
