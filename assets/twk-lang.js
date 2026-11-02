@@ -38,8 +38,8 @@
     document.addEventListener('click', function () { el.classList.remove('o'); });
     document.querySelectorAll('.tn2-logo').forEach(function (a) { a.setAttribute('translate', 'no'); a.classList.add('notranslate'); });
   }
-  var cur = get(); if (cur !== 'en') { ck(cur); } else { ck('en'); }
-  function boot() { mount(); if (get() !== 'en') loadGT(); }
+  var cur = get(); ck('en'); /* Google Translate off: twk-i18n.js translates the text instead */
+  function boot() { mount(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   setTimeout(mount, 900); setTimeout(mount, 2200);
 })();
