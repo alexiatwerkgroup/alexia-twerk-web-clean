@@ -19,10 +19,10 @@
     var el_ = (Date.now() - t0) / 60000;
     var last = data.last.map(function (r) { return { n: r.n, ago: r.ago + el_ }; });
     var hour = last.filter(function (r) { return r.ago < 60; }).length;
-    if (hour >= 3 && Math.random() < 0.3) return '🔥 <b>' + hour + ' videos</b> unlocked in the last hour';
+    if (hour >= 3 && Math.random() < 0.3) return '<b>' + hour + ' videos</b> unlocked in the last hour';
     var r = last[0];
     if (r.ago > 1440) return null;
-    return '🔓 Someone unlocked ' + label(r.n) + ' · ' + ago(r.ago);
+    return 'Someone unlocked ' + label(r.n) + ' · ' + ago(r.ago);
   }
   function show() {
     var m = pick();
