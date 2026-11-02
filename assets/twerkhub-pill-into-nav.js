@@ -17,7 +17,13 @@
   if (window.__twkPillIntoNavInit) return;
   window.__twkPillIntoNavInit = true;
 
+  function dropFakeLive(){
+    // The LIVE pill showed a random, invented viewer count and overflowed the page: removed.
+    document.querySelectorAll('.twk-nav-v1-live, #twk-nav-v1-live').forEach(function(e){ try{ e.remove(); }catch(_){} });
+  }
+
   function relocate(){
+    dropFakeLive();
     var pills = document.querySelectorAll('.twerkhub-tokens-hud');
     if (!pills.length) return false;
     // Remove all duplicates, keep only first

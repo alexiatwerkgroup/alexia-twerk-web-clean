@@ -67,8 +67,12 @@
       isBlocked: function () { return false; },
       markBlocked: function () {},
       show: function () {},
+      showOverlay: function () {},
+      hideOverlay: function () {},
       handleYTError: function () {},
-      decorateAll: function () {}
+      decorateAll: function () {},
+      isProtected: function () { return false; },
+      getProtectedVids: function () { return []; }
     };
     return;
   }
