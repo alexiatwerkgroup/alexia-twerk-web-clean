@@ -189,6 +189,8 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
 <!-- Supabase config + SDK -->
 <script src="/assets/supabase-config.js"></script>
 <script>
+function unlockLinks(l){ if(!l||!l.length) return ''; var via={coins:'monedas',tokens:'tokens',paid:'pagado'}; return '<div style="margin-top:4px;font-size:11px;line-height:1.7">'+l.map(function(x){var n=String(x.n).replace(/[^a-z0-9]/gi,''); var base=/^x/i.test(n)?'/jenny/uncensored/':'/jenny/'; return '<a href="'+base+'#v'+n+'" target="_blank" rel="noopener" title="'+(via[x.via]||x.via)+'" style="color:#f6c453;margin-right:6px;white-space:nowrap">#'+n+'</a>'}).join('')+'</div>'; }
+
 (function(){
   'use strict';
   var TIER = { medium:500, premium:2000, vip:10000 };
@@ -240,7 +242,8 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
           registered_at: p.registered_at || null,
           last_seen_at: p.last_seen_at || null,
           coins: p.coins||0,
-          unlocks: p.unlocks||0
+          unlocks: p.unlocks||0,
+          unlock_list: p.unlock_list||[]
         };
       });
       console.log('[admin] State updated, users:', state.users.length);
@@ -371,7 +374,7 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
         '<td style="font-weight:700;color:#ffd78a">' + (u.cuts_watched||0).toLocaleString('en-US') + '</td>' +
         '<td>' + (u.streak||0) + 'd</td>' +
         '<td style="font-weight:800;color:#f6dc7a">' + (u.coins||0) + '</td>' +
-        '<td>' + (u.unlocks||0) + '</td>' +
+        '<td>' + (u.unlocks||0) + unlockLinks(u.unlock_list) + '</td>' +
         '<td><span class="tier tier-' + u.tier + '">' + u.tier + '</span></td>' +
         '<td style="font-size:11.5px;color:#a8a8b8">' + fmtRelative(u.last_seen_at) + '</td>' +
         '<td>' + fmtDate(u.registered_at) + '</td>' +

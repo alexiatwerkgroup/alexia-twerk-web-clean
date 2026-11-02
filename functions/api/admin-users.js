@@ -109,8 +109,9 @@ export async function onRequest(context) {
     try {
       const cs = (await env.DB.prepare('SELECT email, coins FROM jenny_coins').all()).results || [];
       const us = (await env.DB.prepare('SELECT email, COUNT(*) n FROM jenny_unlocks GROUP BY email').all()).results || [];
+      const ul = (await env.DB.prepare('SELECT email, n, via FROM jenny_unlocks ORDER BY rowid').all()).results || []; const lm = {}; ul.forEach(r => { const k = String(r.email).toLowerCase(); (lm[k] = lm[k] || []).push({ n: r.n, via: r.via }); });
       const cm = {}, um = {}; cs.forEach(r => { cm[String(r.email).toLowerCase()] = r.coins; }); us.forEach(r => { um[String(r.email).toLowerCase()] = r.n; });
-      users.forEach(u => { const k = String(u.email || '').toLowerCase(); u.coins = cm[k] || 0; u.unlocks = um[k] || 0; });
+      users.forEach(u => { const k = String(u.email || '').toLowerCase(); u.coins = cm[k] || 0; u.unlocks = um[k] || 0; u.unlock_list = lm[k] || []; });
     } catch (e) {}
 
     // Get stats from D1 subscribers table
