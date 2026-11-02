@@ -141,9 +141,7 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
 <div class="wrap">
   <h1>Twerkhub <em>Registrados</em></h1><p style="margin:6px 0 0"><a href="/admin/stats/" style="color:#f6dc7a;font-weight:800;text-decoration:none">← Volver a estadísticas de visitas</a></p>
   <p class="sub">
-    Owner-only dashboard. Real users + full metrics: tokens, time on site, videos watched, streak, last seen.
-    Backed by Supabase RPC <code style="background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:11.5px;color:#ffd78a">admin_get_full_stats()</code>
-    which silently returns empty for any caller that isn't the owner email. Cambiá a <em>Local</em> para ver users registrados solo en este navegador (debug).
+    Panel solo para el dueño. Usuarios reales con todas sus métricas: tokens, tiempo en el sitio, videos vistos, racha, monedas, desbloqueos y último ingreso. Los datos salen de la base de Twerkhub. «Solo este navegador» muestra los usuarios guardados en este navegador (para pruebas).
   </p>
 
   <div class="source-toggle">
@@ -181,7 +179,7 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
       </tr>
     </thead>
     <tbody id="rows">
-      <tr><td colspan="13" class="loading">Loading from Supabase</td></tr>
+      <tr><td colspan="13" class="loading">Cargando registrados…</td></tr>
     </tbody>
   </table>
 </div>
@@ -249,7 +247,7 @@ function unlockLinks(l){ if(!l||!l.length) return ''; var via={coins:'monedas',t
       console.log('[admin] State updated, users:', state.users.length);
     } catch(e){
       console.error('[admin] D1 load failed', e);
-      state.err = 'Could not load users from Cloudflare D1: ' + (e.message || 'unknown error');
+      state.err = 'No se pudieron cargar los registrados: ' + (e.message || 'unknown error');
       state.users = [];
     }
   }
@@ -287,7 +285,7 @@ function unlockLinks(l){ if(!l||!l.length) return ''; var via={coins:'monedas',t
     console.log('[admin] load() called, source:', state.source);
     document.getElementById('rows').innerHTML = '<tr><td colspan="13" class="loading">Loading</td></tr>';
     if (state.source === 'supabase') {
-      console.log('[admin] Loading from Supabase/D1');
+      console.log('[admin] Cargando registrados…/D1');
       await loadSupabase();
     }
     else {

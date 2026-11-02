@@ -1,15 +1,6 @@
-// TWERKHUB · admin users endpoint · Cloudflare Pages Function + D1 + Supabase
-// Deploy: lives at https://alexiatwerkgroup.com/api/admin-users
-//
-// Returns all users with real data from Supabase profiles table
-// Combines D1 subscriber data with Supabase user profiles and stats
-//
-// Required Cloudflare Pages binding:
-//   D1 database: name "DB" → database "twerkhub-subscribers"
-//
-// Supabase integration:
-//   URL: https://vieqniahusdrfkpcuqsn.supabase.co
-//   Key: sb_publishable_vpZrp8cL12lpJ3MYWlne6Q_dDkW2NlI
+// TWERKHUB · registered users endpoint (owner only) · Cloudflare Pages Function + D1
+// Reads the real registered users from D1 table `profiles` (same table the login uses),
+// plus coins and unlocked videos per user. Binding: D1 "DB" -> twerkhub-subscribers.
 
 import { authenticate } from '../_lib/auth.js';
 const OWNER_EMAIL = 'alexiatwerkoficial@gmail.com';
@@ -18,8 +9,6 @@ const ALLOWED_ORIGINS = [
   'https://www.alexiatwerkgroup.com',
 ];
 
-const SUPABASE_URL = 'https://vieqniahusdrfkpcuqsn.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_vpZrp8cL12lpJ3MYWlne6Q_dDkW2NlI';
 
 function corsHeaders(origin) {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -65,27 +54,9 @@ export async function onRequest(context) {
   if (!ou || String(ou.email).toLowerCase() !== OWNER_EMAIL) return json({ ok: false, error: 'owner_only' }, 403, origin);
 
   try {
-    console.log('[admin-users] Fetching data from Supabase');
-
-    // Fetch all profiles from Supabase
-    const supabaseResponse = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?select=*&order=created_at.desc&limit=1000`,
-      {
-        method: 'GET',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-        }
-      }
-    );
-
-    if (!supabaseResponse.ok) {
-      throw new Error(`Supabase API error: ${supabaseResponse.status} ${supabaseResponse.statusText}`);
-    }
-
-    const profiles = await supabaseResponse.json();
-    console.log(`[admin-users] Fetched ${profiles.length} profiles from Supabase`);
+    // Registered users live in D1 (profiles) -- the same table the login system uses.
+    const profiles = ((await env.DB.prepare('SELECT * FROM profiles ORDER BY registered_at DESC LIMIT 5000').all()).results) || [];
+    console.log(`[admin-users] Fetched ${profiles.length} profiles from D1`);
 
     // Transform profiles into user rows
     const users = (profiles || []).map((profile, idx) => ({
@@ -101,7 +72,7 @@ export async function onRequest(context) {
       tier: profile.tier || 'basic',
       registered_at: profile.registered_at || profile.created_at || null,
       last_seen_at: profile.last_seen_at || profile.last_active_at || null,
-      source: 'supabase',
+      source: 'd1',
       confirmed: 1
     }));
 
@@ -115,20 +86,15 @@ export async function onRequest(context) {
     } catch (e) {}
 
     // Get stats from D1 subscribers table
-    const statsResult = await env.DB.prepare(
-      `SELECT
-        COUNT(*) as total_users,
-        SUM(CASE WHEN confirmed = 1 THEN 1 ELSE 0 END) as confirmed_users,
-        SUM(CASE WHEN unsubscribed_at IS NOT NULL THEN 1 ELSE 0 END) as unsubscribed_users
-      FROM subscribers`
-    ).first();
+    let statsResult = null;
+    try { statsResult = await env.DB.prepare('SELECT COUNT(*) as total_users FROM subscribers').first(); } catch (e) {}
 
     const stats = {
       total_users: users.length,
       confirmed_users: users.length,
       unsubscribed_users: 0,
       active_users: users.length,
-      supabase_profiles: users.length,
+      d1_profiles: users.length,
       d1_subscribers: statsResult?.total_users || 0
     };
 
