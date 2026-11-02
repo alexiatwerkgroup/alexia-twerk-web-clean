@@ -8,13 +8,13 @@
   function run() {
     var a = document.querySelector('.tn2-lk a.tn2-jn'); if (!a || a.parentNode.classList.contains('tn2-mdd')) return;
     var w = document.createElement('span'); w.className = 'tn2-mdd';
-    var b = document.createElement('button'); b.type = 'button'; b.className = a.className; b.setAttribute('aria-expanded', 'false');
+    var b = document.createElement('a'); b.href = '#'; b.className = a.className; b.setAttribute('role', 'button'); b.setAttribute('aria-expanded', 'false');
     b.textContent = 'Jenny VIP ▾';
     var p = document.createElement('div'); p.className = 'tn2-mdp';
     p.innerHTML = M.map(function (m) { return '<a href="' + m[1] + '">' + m[0] + '<small>' + (m[2] === 'live' ? 'LIVE' : 'SOON') + '</small></a>'; }).join('');
     w.appendChild(b); w.appendChild(p);
     a.parentNode.replaceChild(w, a);
-    b.addEventListener('click', function (e) { e.stopPropagation(); w.classList.toggle('open'); b.setAttribute('aria-expanded', w.classList.contains('open')); });
+    b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); w.classList.toggle('open'); b.setAttribute('aria-expanded', w.classList.contains('open')); });
     document.addEventListener('click', function () { w.classList.remove('open'); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
