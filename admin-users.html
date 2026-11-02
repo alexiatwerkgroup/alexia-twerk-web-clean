@@ -139,7 +139,7 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
 <a href="#main" class="twk-sr-only">Skip to content</a>
 
 <div class="wrap">
-  <h1>Twerkhub <em>Admin · Stats</em></h1>
+  <h1>Twerkhub <em>Registrados</em></h1><p style="margin:6px 0 0"><a href="/admin/stats/" style="color:#f6dc7a;font-weight:800;text-decoration:none">← Volver a estadísticas de visitas</a></p>
   <p class="sub">
     Owner-only dashboard. Real users + full metrics: tokens, time on site, videos watched, streak, last seen.
     Backed by Supabase RPC <code style="background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:11.5px;color:#ffd78a">admin_get_full_stats()</code>
@@ -147,17 +147,17 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
   </p>
 
   <div class="source-toggle">
-    <button class="source-btn is-active" id="src-supabase" onclick="setSource('supabase')">🌐 Supabase (global)</button>
-    <button class="source-btn" id="src-local" onclick="setSource('local')">💾 LocalStorage (this browser)</button>
+    <button class="source-btn is-active" id="src-supabase" onclick="setSource('supabase')">Todos los registrados</button>
+    <button class="source-btn" id="src-local" onclick="setSource('local')">Solo este navegador</button>
   </div>
 
   <div class="stats" id="stats"></div>
 
   <div class="actions">
-    <input type="search" id="search" class="search" placeholder="Search by username or email…">
-    <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
-    <button class="btn btn-ghost" onclick="exportJSON()">Export JSON</button>
-    <button class="btn btn-ghost" onclick="refresh()">↻ Refresh</button>
+    <input type="search" id="search" class="search" placeholder="Buscar por usuario o email…">
+    <button class="btn btn-primary" onclick="exportCSV()">Exportar CSV</button>
+    <button class="btn btn-ghost" onclick="exportJSON()">Exportar JSON</button>
+    <button class="btn btn-ghost" onclick="refresh()">Actualizar</button>
   </div>
 
   <div id="err-box" class="err" style="display:none"></div>
@@ -169,13 +169,15 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
         <th data-sort="username">Username <span class="arrow">↕</span></th>
         <th data-sort="email">Email <span class="arrow">↕</span></th>
         <th data-sort="tokens" class="active">Tokens <span class="arrow">↓</span></th>
-        <th data-sort="total_earned">Earned <span class="arrow">↕</span></th>
-        <th data-sort="seconds_on_site">Time on site <span class="arrow">↕</span></th>
-        <th data-sort="cuts_watched">Videos watched <span class="arrow">↕</span></th>
-        <th data-sort="streak">Streak <span class="arrow">↕</span></th>
+        <th data-sort="total_earned">Ganado <span class="arrow">↕</span></th>
+        <th data-sort="seconds_on_site">Tiempo en el sitio <span class="arrow">↕</span></th>
+        <th data-sort="cuts_watched">Videos vistos <span class="arrow">↕</span></th>
+        <th data-sort="streak">Racha <span class="arrow">↕</span></th>
+        <th data-sort="coins">Monedas <span class="arrow">↕</span></th>
+        <th data-sort="unlocks">Desbloqueos <span class="arrow">↕</span></th>
         <th data-sort="tier">Tier <span class="arrow">↕</span></th>
-        <th data-sort="last_seen_at">Last seen <span class="arrow">↕</span></th>
-        <th data-sort="registered_at">Registered <span class="arrow">↕</span></th>
+        <th data-sort="last_seen_at">Visto por última vez <span class="arrow">↕</span></th>
+        <th data-sort="registered_at">Registrado <span class="arrow">↕</span></th>
       </tr>
     </thead>
     <tbody id="rows">
@@ -200,7 +202,8 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
       // Fetch users from Cloudflare D1 via /api/admin-users endpoint
       var response = await fetch('/api/admin-users', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin'
       });
 
       console.log('[admin] API response status:', response.status);
@@ -235,7 +238,9 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
           seconds_on_site: Number(p.seconds_on_site||0),
           cuts_watched: p.cuts_watched||0,
           registered_at: p.registered_at || null,
-          last_seen_at: p.last_seen_at || null
+          last_seen_at: p.last_seen_at || null,
+          coins: p.coins||0,
+          unlocks: p.unlocks||0
         };
       });
       console.log('[admin] State updated, users:', state.users.length);
@@ -365,6 +370,8 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
         '<td>' + fmtDuration(u.seconds_on_site||0) + '</td>' +
         '<td style="font-weight:700;color:#ffd78a">' + (u.cuts_watched||0).toLocaleString('en-US') + '</td>' +
         '<td>' + (u.streak||0) + 'd</td>' +
+        '<td style="font-weight:800;color:#f6dc7a">' + (u.coins||0) + '</td>' +
+        '<td>' + (u.unlocks||0) + '</td>' +
         '<td><span class="tier tier-' + u.tier + '">' + u.tier + '</span></td>' +
         '<td style="font-size:11.5px;color:#a8a8b8">' + fmtRelative(u.last_seen_at) + '</td>' +
         '<td>' + fmtDate(u.registered_at) + '</td>' +
@@ -423,14 +430,14 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
 
   window.exportCSV = function(){
     var users = applySort(state.users);
-    var rows = [['rank','username','email','tokens','total_earned','seconds_on_site','time_on_site','cuts_watched','streak','tier','last_seen_at','registered_at']];
+    var rows = [['rank','username','email','tokens','total_earned','seconds_on_site','time_on_site','cuts_watched','streak','coins','unlocks','tier','last_seen_at','registered_at']];
     users.forEach(function(u, i){
       rows.push([
         i+1, u.username, u.email,
         u.tokens, u.total_earned,
         u.seconds_on_site||0, fmtDuration(u.seconds_on_site||0),
         u.cuts_watched||0, u.streak, u.tier,
-        u.last_seen_at||'', u.registered_at||''
+        u.coins||0, u.unlocks||0, u.last_seen_at||'', u.registered_at||''
       ]);
     });
     var csv = rows.map(function(r){ return r.map(function(c){ var s=String(c==null?'':c); if (s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0) s='"'+s.replace(/"/g,'""')+'"'; return s; }).join(','); }).join('\n');

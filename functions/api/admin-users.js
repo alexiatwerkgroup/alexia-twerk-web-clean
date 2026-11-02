@@ -11,6 +11,7 @@
 //   URL: https://vieqniahusdrfkpcuqsn.supabase.co
 //   Key: sb_publishable_vpZrp8cL12lpJ3MYWlne6Q_dDkW2NlI
 
+import { authenticate } from '../_lib/auth.js';
 const OWNER_EMAIL = 'alexiatwerkoficial@gmail.com';
 const ALLOWED_ORIGINS = [
   'https://alexiatwerkgroup.com',
@@ -58,17 +59,10 @@ export async function onRequest(context) {
     return json({ ok: false, error: 'd1_binding_missing', data: [] }, 500, origin);
   }
 
-  // Owner email validation (passed via Authorization header)
-  const authHeader = request.headers.get('Authorization') || '';
-  const ownerEmail = authHeader.replace('Bearer ', '').trim();
-
-  // Allow access only if owner email matches or if no auth is needed (development)
-  // In production, check: if (ownerEmail !== OWNER_EMAIL) return json({ ok: false, error: 'unauthorized' }, 403, origin);
-  // For now, allow all but log the access attempt
-  if (ownerEmail && ownerEmail !== OWNER_EMAIL) {
-    console.warn(`[admin-users] Unauthorized access attempt from: ${ownerEmail}`);
-    // Still allow for now to debug, but should block in production
-  }
+  // OWNER ONLY: this endpoint lists every registered email, so it must never be public.
+  const au = await authenticate(request, env).catch(() => null);
+  const ou = au && au.sub ? await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(au.sub).first() : null;
+  if (!ou || String(ou.email).toLowerCase() !== OWNER_EMAIL) return json({ ok: false, error: 'owner_only' }, 403, origin);
 
   try {
     console.log('[admin-users] Fetching data from Supabase');
@@ -110,6 +104,14 @@ export async function onRequest(context) {
       source: 'supabase',
       confirmed: 1
     }));
+
+    // coins + unlocks per user (D1)
+    try {
+      const cs = (await env.DB.prepare('SELECT email, coins FROM jenny_coins').all()).results || [];
+      const us = (await env.DB.prepare('SELECT email, COUNT(*) n FROM jenny_unlocks GROUP BY email').all()).results || [];
+      const cm = {}, um = {}; cs.forEach(r => { cm[String(r.email).toLowerCase()] = r.coins; }); us.forEach(r => { um[String(r.email).toLowerCase()] = r.n; });
+      users.forEach(u => { const k = String(u.email || '').toLowerCase(); u.coins = cm[k] || 0; u.unlocks = um[k] || 0; });
+    } catch (e) {}
 
     // Get stats from D1 subscribers table
     const statsResult = await env.DB.prepare(
