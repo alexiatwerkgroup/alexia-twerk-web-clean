@@ -54,3 +54,6 @@ html body .tn2-mdd>a.tn2-jn .hd-c{color:#ffd66b;font-size:11px;text-shadow:0 0 8
 html body .tn2-mdd>a.tn2-jn .hd-l{font-size:24px;line-height:1;filter:drop-shadow(0 0 8px #e8b84a);flex:none}
 
 html body .gcta{white-space:normal!important;letter-spacing:.05em!important;font-size:11.5px!important;padding:0 12px!important;line-height:1.25!important;text-align:center}
+
+/* Legacy token HUD bar (old system, e.g. bottom bar on contact): replaced by the new wallet in the header. */
+html body .twerkhub-tokens-hud,html body #twk-tokens-hud-v3,html body .twk-tk-hud,html body #twk-tokens-hud{display:none!important}
