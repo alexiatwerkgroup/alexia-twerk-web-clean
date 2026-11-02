@@ -23,3 +23,16 @@ export async function canWatch(env, user, n) {
   if (!isShort(n) && !isExplicit(n)) { const r = await env.DB.prepare('SELECT 1 x FROM jenny_access WHERE email = ?').bind(em).first(); if (r) return true; }
   return false;
 }
+
+// Gift-price promotion (owner-started, auto-expires). While active: every coin video costs PROMO_COST coin, min purchase PROMO_MIN coins.
+export const PROMO_COST = 1;
+export const PROMO_MIN = 2;
+export async function promoState(env) {
+  try {
+    await env.DB.prepare('CREATE TABLE IF NOT EXISTS jenny_promo (id INTEGER PRIMARY KEY, ends_at INTEGER, started_at INTEGER)').run();
+    const r = await env.DB.prepare('SELECT ends_at, started_at FROM jenny_promo WHERE id = 1').first();
+    const now = Date.now();
+    if (r && r.ends_at > now) return { active: true, ends_at: r.ends_at, started_at: r.started_at, cost: PROMO_COST, min: PROMO_MIN, now };
+    return { active: false, now };
+  } catch (e) { return { active: false, now: Date.now() }; }
+}

@@ -4,7 +4,7 @@
 // GET  /api/jenny/unlock -> { coins, tokens }
 import { authenticate } from '../../_lib/auth.js';
 import { json } from '../../_lib/http.js';
-import { validN, isShort, isExplicit, videoKey, TOKEN_COST, COIN_COST, explicitCost } from '../../_lib/jenny.js';
+import { validN, isShort, isExplicit, videoKey, TOKEN_COST, COIN_COST, explicitCost, promoState, PROMO_COST } from '../../_lib/jenny.js';
 
 export async function onRequest({ request, env }) {
   const p = await authenticate(request, env);
@@ -28,7 +28,8 @@ export async function onRequest({ request, env }) {
     await env.DB.prepare("INSERT OR IGNORE INTO jenny_unlocks (email, n, via) VALUES (?, ?, 'tokens')").bind(em, n).run();
     return json({ ok: true, kind: 'tokens', balance: (u.tokens || 0) - TOKEN_COST });
   }
-  const cost = isExplicit(n) ? explicitCost(n) : COIN_COST;
+  const pr = await promoState(env);
+  const cost = pr.active ? PROMO_COST : (isExplicit(n) ? explicitCost(n) : COIN_COST);
   // never charge for a video that is not in storage yet
   if (isExplicit(n)) { const o = await env.JENNY_VIDEOS.head(videoKey(n)); if (!o) return json({ ok: false, error: 'not_available' }, 404); }
   const r = await env.DB.prepare('UPDATE jenny_coins SET coins = coins - ? WHERE email = ? AND coins >= ?').bind(cost, em, cost).run();
