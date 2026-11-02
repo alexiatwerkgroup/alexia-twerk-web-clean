@@ -59,6 +59,18 @@ export async function onRequestGet({ request, env }) {
       peaks.push({ ts: t0, u: x.u, x: mean ? +(x.u / mean).toFixed(1) : null, ref: rf.k || '', refU: rf.u || 0, country: ct.k || '', countryU: ct.u || 0 }); } }
   const mins = await rows(db, `SELECT (ts/300000) b, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?${hf} GROUP BY b ORDER BY b`, now - 48 * 3600000);
   const live = await rows(db, `SELECT lat, lon, country c, city, MAX(ts) ts, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?${hf} AND lat IS NOT NULL GROUP BY lat, lon ORDER BY ts DESC LIMIT 200`, now - 30 * 60000);
+  // ---- who is online right now (last activity < 2.5 min; hit time + visible seconds) ----
+  const rec = await rows(db, `SELECT ts, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid FROM tw_hits WHERE ts > ?${hf} ORDER BY ts`, now - 30 * 60000);
+  const OV = {};
+  for (const h of rec) { const v = OV[h.vid] = OV[h.vid] || { vid: h.vid, first: h.ts, pages: [], ref: h.ref || '', isNew: h.is_new, since: h.ts };
+    v.last = h; v.lastActive = Math.max(v.lastActive || 0, h.ts + (h.dur || 0) * 1000); if (!v.pages.length || v.pages[v.pages.length - 1] !== h.path) v.pages.push(h.path); if (h.uid) v.uid = h.uid; if (h.reg) v.reg = 1; }
+  const onl = Object.values(OV).filter(v => v.lastActive > now - 150000).sort((a, b) => b.lastActive - a.lastActive).slice(0, 60);
+  let uname = {};
+  const uids = [...new Set(onl.map(v => v.uid).filter(Boolean))];
+  if (uids.length) { const ur = await rows(db, `SELECT id, username, email FROM profiles WHERE id IN (${uids.map(() => '?').join(',')})`, ...uids); ur.forEach(u => { uname[u.id] = u.username || String(u.email || '').split('@')[0]; }); }
+  let evBy = {};
+  if (onl.length) { const er = await rows(db, `SELECT vid, ts, name, detail FROM tw_events WHERE ts > ? AND vid IN (${onl.map(() => '?').join(',')}) ORDER BY ts DESC`, now - 30 * 60000, ...onl.map(v => v.vid)); er.forEach(e => { (evBy[e.vid] = evBy[e.vid] || []).push({ ts: e.ts, name: e.name, detail: e.detail }); }); }
+  const onlineList = onl.map(v => ({ id: v.vid.slice(0, 6), user: v.uid ? (uname[v.uid] || 'registrado') : '', reg: v.reg ? 1 : 0, isNew: v.isNew ? 1 : 0, country: v.last.country, city: v.last.city, device: v.last.device, browser: v.last.browser, os: v.last.os, ref: v.ref, path: v.last.path, pages: v.pages.slice(-5), entered: v.since, lastActive: v.lastActive, dur: v.last.dur || 0, scroll: v.last.scroll || 0, events: (evBy[v.vid] || []).slice(0, 6) }));
   const evU = await rows(db, 'SELECT name, detail, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name, detail ORDER BY n DESC', since);
   const evLast = await rows(db, "SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, h.country, h.city FROM tw_events e LEFT JOIN tw_hits h ON h.hid = e.hid ORDER BY e.ts DESC LIMIT 25");
   const landed = await one(db, `SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND path LIKE '/jenny%'`, since);
@@ -68,5 +80,5 @@ export async function onRequestGet({ request, env }) {
   const top = countries.slice(0, 8).map(x => x.c), loc = {}, fm = {};
   for (const r of raw) { if (!top.includes(r.c)) continue; let f = fm[r.tz]; if (!f) { try { f = fm[r.tz] = new Intl.DateTimeFormat('en-GB', { timeZone: r.tz, hour: 'numeric', hour12: false }); } catch { continue; } } const h = parseInt(f.format(new Date(r.ts))) % 24; (loc[r.c] = loc[r.c] || Array(24).fill(0))[h]++; }
   const bestLocal = Object.entries(loc).map(([c, a]) => ({ c, hours: a.map((n, h) => [h, n]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]) }));
-  return json({ ok: true, days, tz, now, totals: { ...tot, single: single.n, repeat: repeat.n, allViews: all.v, allVisitors: all.u, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { botsFiltered: botU.u || 0, includeBots: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
+  return json({ ok: true, days, tz, now, totals: { ...tot, single: single.n, repeat: repeat.n, allViews: all.v, allVisitors: all.u, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList,  botsFiltered: botU.u || 0, includeBots: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
 }

@@ -25,13 +25,13 @@ export async function onRequest(context) {
       if (!vid) { vid = crypto.randomUUID(); h.append('Set-Cookie', 'twv=' + vid + '; Max-Age=63072000; Path=/; SameSite=Lax; Secure'); }
       const hid = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
       const cf = request.cf || {};
-      let reg = 0, owner = false; try { const p = await authenticate(request, env); reg = p && p.sub ? 1 : 0; if (reg) { const u = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(p.sub).first(); owner = !!u && String(u.email).toLowerCase() === OWNER; } } catch (e) {}
+      let reg = 0, owner = false, uid = null; try { const p = await authenticate(request, env); reg = p && p.sub ? 1 : 0; uid = reg ? String(p.sub) : null; if (reg) { const u = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(p.sub).first(); owner = !!u && String(u.email).toLowerCase() === OWNER; } } catch (e) {}
       let ref = ''; try { const r = request.headers.get('referer'); if (r) { const rh = new URL(r).hostname.replace(/^www\./, ''); if (rh !== url.hostname.replace(/^www\./, '')) ref = rh; } } catch (e) {}
       const utm = url.searchParams.get('utm_source'); if (utm) ref = (ref ? ref + ' · ' : '') + 'utm:' + utm.slice(0, 30);
       const u = parseUA(ua), lang = (request.headers.get('accept-language') || '').split(',')[0].slice(0, 10);
       context.waitUntil((async () => {
-        if (owner) return; try { await init(env.DB); await env.DB.prepare('INSERT INTO tw_hits (hid, ts, vid, path, country, region, city, tz, device, browser, os, lang, ref, is_new, reg, lat, lon) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-          .bind(hid, Date.now(), vid, url.pathname.slice(0, 200), cf.country || '', cf.region || '', cf.city || '', cf.timezone || '', u.device, u.browser, u.os, lang, ref, isNew, reg, cf.latitude ? Math.round(cf.latitude * 10) / 10 : null, cf.longitude ? Math.round(cf.longitude * 10) / 10 : null).run(); } catch (e) {}
+        if (owner) return; try { await init(env.DB); await env.DB.prepare('INSERT INTO tw_hits (hid, ts, vid, path, country, region, city, tz, device, browser, os, lang, ref, is_new, reg, lat, lon, uid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+          .bind(hid, Date.now(), vid, url.pathname.slice(0, 200), cf.country || '', cf.region || '', cf.city || '', cf.timezone || '', u.device, u.browser, u.os, lang, ref, isNew, reg, cf.latitude ? Math.round(cf.latitude * 10) / 10 : null, cf.longitude ? Math.round(cf.longitude * 10) / 10 : null, uid).run(); } catch (e) {}
       })());
       add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=1" defer></script>';
     }

@@ -346,17 +346,17 @@ function unlockLinks(l){ if(!l||!l.length) return ''; var via={coins:'monedas',t
     var totalCuts   = users.reduce(function(s,u){return s+(u.cuts_watched||0);},0);
     var topTokens = users.length ? Math.max.apply(null, users.map(function(u){return u.tokens||0;})) : 0;
     document.getElementById('stats').innerHTML =
-      '<div class="stat"><div class="stat-label">Total users</div><div class="stat-value">' + total + '</div></div>' +
-      '<div class="stat"><div class="stat-label">With email</div><div class="stat-value">' + withEmail + '</div></div>' +
-      '<div class="stat"><div class="stat-label">Total tokens</div><div class="stat-value">' + totalTokens.toLocaleString('en-US') + '</div></div>' +
-      '<div class="stat"><div class="stat-label">Top user</div><div class="stat-value">' + topTokens.toLocaleString('en-US') + '</div></div>' +
-      '<div class="stat"><div class="stat-label">Total time on site</div><div class="stat-value" style="font-size:24px">' + fmtDuration(totalSecs) + '</div></div>' +
-      '<div class="stat"><div class="stat-label">Total videos watched</div><div class="stat-value">' + totalCuts.toLocaleString('en-US') + '</div></div>';
+      '<div class="stat"><div class="stat-label">Total de registrados</div><div class="stat-value">' + total + '</div></div>' +
+      '<div class="stat"><div class="stat-label">Con email</div><div class="stat-value">' + withEmail + '</div></div>' +
+      '<div class="stat"><div class="stat-label">Tokens totales</div><div class="stat-value">' + totalTokens.toLocaleString('en-US') + '</div></div>' +
+      '<div class="stat"><div class="stat-label">Usuario con más tokens</div><div class="stat-value">' + topTokens.toLocaleString('en-US') + '</div></div>' +
+      '<div class="stat"><div class="stat-label">Tiempo total en el sitio</div><div class="stat-value" style="font-size:24px">' + fmtDuration(totalSecs) + '</div></div>' +
+      '<div class="stat"><div class="stat-label">Videos vistos en total</div><div class="stat-value">' + totalCuts.toLocaleString('en-US') + '</div></div>';
   }
   function renderRows(users){
     var tbody = document.getElementById('rows');
     if (!users.length) {
-      tbody.innerHTML = '<tr><td colspan="13" class="empty">No users yet. ' + (state.source==='supabase' ? 'Run schema-tokens-v1.sql + schema-tokens-v2 in Supabase first, then sign in as the owner email.' : 'No registered users in this browser yet.') + '</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="13" class="empty">Todavía no hay registrados.' + (state.source==='supabase' ? 'Run schema-tokens-v1.sql + schema-tokens-v2 in Supabase first, then sign in as the owner email.' : 'No registered users in this browser yet.') + '</td></tr>';
       return;
     }
     tbody.innerHTML = users.map(function(u, i){
@@ -678,3 +678,5 @@ function unlockLinks(l){ if(!l||!l.length) return ''; var via={coins:'monedas',t
  
 <script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p7"></script>
 
+
+<script src="/assets/twerkhub-admin-nav.js?v=1"></script>
