@@ -4,7 +4,7 @@
 // GET  /api/jenny/unlock -> { coins, tokens }
 import { authenticate } from '../../_lib/auth.js';
 import { json } from '../../_lib/http.js';
-import { validN, isShort, TOKEN_COST, COIN_COST } from '../../_lib/jenny.js';
+import { validN, isShort, isExplicit, TOKEN_COST, COIN_COST, EXPLICIT_COST } from '../../_lib/jenny.js';
 
 export async function onRequest({ request, env }) {
   const p = await authenticate(request, env);
@@ -28,8 +28,9 @@ export async function onRequest({ request, env }) {
     await env.DB.prepare("INSERT OR IGNORE INTO jenny_unlocks (email, n, via) VALUES (?, ?, 'tokens')").bind(em, n).run();
     return json({ ok: true, kind: 'tokens', balance: (u.tokens || 0) - TOKEN_COST });
   }
-  const r = await env.DB.prepare('UPDATE jenny_coins SET coins = coins - ? WHERE email = ? AND coins >= ?').bind(COIN_COST, em, COIN_COST).run();
-  if (!r.meta || r.meta.changes !== 1) return json({ ok: false, error: 'not_enough_coins', cost: COIN_COST }, 402);
+  const cost = isExplicit(n) ? EXPLICIT_COST : COIN_COST;
+  const r = await env.DB.prepare('UPDATE jenny_coins SET coins = coins - ? WHERE email = ? AND coins >= ?').bind(cost, em, cost).run();
+  if (!r.meta || r.meta.changes !== 1) return json({ ok: false, error: 'not_enough_coins', cost }, 402);
   await env.DB.prepare("INSERT OR IGNORE INTO jenny_unlocks (email, n, via) VALUES (?, ?, 'coins')").bind(em, n).run();
   const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE email = ?').bind(em).first();
   return json({ ok: true, kind: 'coins', coins: c ? c.coins : 0 });

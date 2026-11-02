@@ -23,7 +23,7 @@ export async function onRequest({ request, env }) {
     const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE email = ?').bind(email).first();
     return json({ ok: true, coins: c ? c.coins : 0 });
   }
-  const ns = (Array.isArray(b.n) ? b.n : String(b.n || '').split(',')).map(x => String(x).trim().padStart(2, '0')).filter(x => /^(0[1-9]|[1-8][0-9]|9[0-4])$/.test(x));
+  const ns = (Array.isArray(b.n) ? b.n : String(b.n || '').split(',')).map(x => { x = String(x).trim().toLowerCase(); return /^x\d+$/.test(x) ? 'x' + x.slice(1).padStart(2, '0') : x.padStart(2, '0'); }).filter(x => /^(0[1-9]|[1-8][0-9]|9[0-4])$/.test(x) || /^x(0[1-9]|1[0-9]|2[0-4])$/.test(x));
   if (ns.length) {
     for (const n of ns) {
       if (request.method === 'POST') await env.DB.prepare("INSERT OR IGNORE INTO jenny_unlocks (email, n, via) VALUES (?, ?, 'paid')").bind(email, n).run();
