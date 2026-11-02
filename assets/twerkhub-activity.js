@@ -6,7 +6,7 @@
   var data = null, t0 = 0, shown = 0, MAX = 8, timer = null, el = null;
   function css() {
     var s = document.createElement('style');
-    s.textContent = '#twk-al{position:fixed;left:16px;bottom:78px;z-index:70;display:flex;gap:10px;align-items:center;background:rgba(11,11,16,.96);border:1px solid #26262e;border-left:3px solid var(--ac,#ff8a00);border-radius:10px;padding:10px 14px;font:13px/1.4 Inter,system-ui,sans-serif;color:#fff;max-width:300px;transform:translateY(90px);opacity:0;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .5s;pointer-events:none}#twk-al.s{transform:none;opacity:1}#twk-al b{color:var(--ac,#ff8a00)}@media(max-width:640px){#twk-al{left:10px;right:10px;bottom:76px;max-width:none}}@media(prefers-reduced-motion:reduce){#twk-al{transition:none}}';
+    s.textContent = '#twk-al{position:fixed;left:16px;bottom:150px;z-index:70;display:flex;gap:10px;align-items:center;background:rgba(11,11,16,.96);border:1px solid #26262e;border-left:3px solid var(--ac,#ff8a00);border-radius:10px;padding:10px 14px;font:13px/1.4 Inter,system-ui,sans-serif;color:#fff;max-width:300px;transform:translateY(90px);opacity:0;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .5s;pointer-events:none}#twk-al.s{transform:none;opacity:1}#twk-al b{color:var(--ac,#ff8a00)}@media(max-width:640px){#twk-al{left:10px;right:10px;bottom:76px;max-width:none}}@media(prefers-reduced-motion:reduce){#twk-al{transition:none}}';
     document.head.appendChild(s);
     el = document.createElement('div'); el.id = 'twk-al'; el.setAttribute('aria-live', 'polite');
     document.body.appendChild(el);
