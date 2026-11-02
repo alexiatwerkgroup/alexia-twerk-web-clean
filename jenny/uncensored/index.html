@@ -72,15 +72,30 @@ body[data-mode=feed] .grid{grid-template-columns:minmax(0,520px);justify-content
 .unt .tz{flex:1;aspect-ratio:9/16;border-radius:14px;background:#111 center/cover;border:2px solid var(--ac);position:relative;overflow:hidden;animation:tzf 6s ease-in-out infinite}.unt .tz:nth-child(2){animation-delay:-2s;border-color:var(--ac2)}.unt .tz:nth-child(3){animation-delay:-4s}
 .unt .tz:after{content:"18+";position:absolute;inset:0;display:grid;place-items:center;font:400 44px Anton;color:#fff;background:rgba(0,0,0,.35);text-shadow:0 2px 14px #000}@keyframes tzf{50%{translate:0 -8px}}
 @media(max-width:640px){.unt .r{display:none}}
+/*HEROUNI*/
+.hero{padding:56px 0 70px}.hero .in{gap:48px;flex-wrap:nowrap}.hero .l{flex:1 1 44%;min-width:0}.hero .r{flex:1 1 56%;max-width:720px;min-width:0;gap:18px}
+.hero h1{font-size:clamp(44px,5.2vw,88px);line-height:.93;margin:14px 0 0}
+.nd{position:relative;display:inline-flex;align-items:center;gap:12px;padding:10px 22px 10px 18px;font:400 28px Anton,sans-serif;letter-spacing:.2em;clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%)}
+.nd.og{color:var(--ac);text-shadow:0 0 8px var(--ac),0 0 28px var(--glow);background:linear-gradient(90deg,rgba(255,138,0,.14),rgba(255,138,0,.03))}
+.nd.og:before{content:"";position:absolute;inset:0;border:2px solid var(--ac);clip-path:inherit}
+.nd.og em{font:700 10px 'JetBrains Mono',monospace;font-style:normal;letter-spacing:.2em;color:#000;background:var(--ac);padding:3px 7px;border-radius:3px;text-shadow:none}
+@media(min-width:901px){.hero{min-height:calc(760px + 9.4vw)}}
+
+.hero{padding:56px 0 70px}.hero .in{gap:48px;flex-wrap:nowrap}.hero .l{flex:1 1 44%;min-width:0}.hero .r{flex:1 1 56%;max-width:720px;min-width:0;gap:18px}
+.hero h1{font-size:clamp(44px,5.2vw,88px);line-height:.93;margin:14px 0 0}
+.nd{position:relative;display:inline-flex;align-items:center;gap:12px;padding:10px 22px 10px 18px;font:400 28px Anton,sans-serif;letter-spacing:.2em;clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%)}
+.nd.og{color:var(--ac);text-shadow:0 0 8px var(--ac),0 0 28px var(--glow);background:linear-gradient(90deg,rgba(255,138,0,.14),rgba(255,138,0,.03))}
+.nd.og:before{content:"";position:absolute;inset:0;border:2px solid var(--ac);clip-path:inherit}
+.nd.og em{font:700 10px 'JetBrains Mono',monospace;font-style:normal;letter-spacing:.2em;color:#000;background:var(--ac);padding:3px 7px;border-radius:3px;text-shadow:none}
+@media(min-width:901px){.hero{min-height:calc(760px + 9.4vw)}}
 
 @property --p{syntax:'<number>';inherits:false;initial-value:0}
 :root{--g:#39ff14;--gg:rgba(57,255,20,.5)}
-.hero{padding:56px 0 70px}.hero .in{gap:48px;flex-wrap:nowrap}.hero .l{flex:1 1 44%;min-width:0}.hero .r{flex:1 1 56%;max-width:720px;min-width:0;gap:18px}.hero h1{font-size:clamp(44px,5.2vw,88px);line-height:.93}
-.nd{position:relative;display:inline-flex;align-items:center;gap:12px;padding:10px 22px 10px 18px;color:var(--g);font:400 28px Anton,sans-serif;letter-spacing:.2em;text-shadow:0 0 8px var(--g),0 0 28px var(--gg);background:linear-gradient(90deg,rgba(57,255,20,.14),rgba(57,255,20,.03));clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%);animation:nd 3s infinite}
-.nd:before{content:"";position:absolute;inset:0;border:2px solid var(--g);clip-path:inherit;filter:drop-shadow(0 0 8px var(--g))}
-.nd:after{content:"";position:absolute;top:0;bottom:0;width:40px;left:-60px;background:linear-gradient(90deg,transparent,rgba(57,255,20,.45),transparent);transform:skewX(-20deg);animation:ndsh 3.4s 1s infinite}
-.nd i{width:10px;height:10px;border-radius:50%;background:var(--g);box-shadow:0 0 12px var(--g);animation:pl 1s infinite}
-.nd em{font:700 10px 'JetBrains Mono',monospace;font-style:normal;letter-spacing:.2em;color:#000;background:var(--g);padding:3px 7px;border-radius:3px;text-shadow:none}
+.nd.gr{color:var(--g);text-shadow:0 0 8px var(--g),0 0 28px var(--gg);background:linear-gradient(90deg,rgba(57,255,20,.14),rgba(57,255,20,.03));animation:nd 3s infinite}
+.nd.gr:before{content:"";position:absolute;inset:0;border:2px solid var(--g);clip-path:inherit;filter:drop-shadow(0 0 8px var(--g))}
+.nd.gr:after{content:"";position:absolute;top:0;bottom:0;width:40px;left:-60px;background:linear-gradient(90deg,transparent,rgba(57,255,20,.45),transparent);transform:skewX(-20deg);animation:ndsh 3.4s 1s infinite}
+.nd.gr i{width:10px;height:10px;border-radius:50%;background:var(--g);box-shadow:0 0 12px var(--g);animation:pl 1s infinite}
+.nd.gr em{font:700 10px 'JetBrains Mono',monospace;font-style:normal;letter-spacing:.2em;color:#000;background:var(--g);padding:3px 7px;border-radius:3px;text-shadow:none}
 @keyframes nd{0%,17%,21%,58%,62%,100%{opacity:1}19%,60%{opacity:.4}}@keyframes pl{50%{transform:scale(.5);opacity:.4}}@keyframes ndsh{0%{left:-60px}60%,100%{left:110%}}
 .hero .r .hv{position:relative;animation:fy 6s ease-in-out infinite}.hero .r .hv:nth-child(2){animation-delay:-2s}.hero .r .hv:nth-child(3){animation-delay:-4s}@keyframes fy{50%{translate:0 -10px}}
 .hero .r .hv:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.25) 50%,transparent 65%);transform:translateX(-120%);animation:gl 5s 1s infinite;pointer-events:none}.hero .r .hv:nth-child(2):after{animation-delay:2.2s}.hero .r .hv:nth-child(3):after{animation-delay:3.4s}@keyframes gl{0%{transform:translateX(-120%)}40%,100%{transform:translateX(120%)}}
@@ -112,16 +127,16 @@ body[data-mode=bars] .cz{display:grid}.c:hover .cz{animation:none;clip-path:inse
 </style></head><body data-mode="casero">
 <header class="top"><a class="logo" href="/">TWERK<b>HUB</b></a><nav class="mono"><a href="/jenny/">Jenny</a><a href="#packs">Videos</a><a href="#pricing">Prices</a><a href="/jenny/#how">How it works</a><a href="/jenny/#faq">FAQ</a><a href="/discord">Discord</a><a class="hot" href="/account.html">My account</a></nav></header>
 <div class="hero"><div class="w"><div class="in">
-<div class="l"><div class="nd"><i></i>NEW DROP<em>LIVE</em></div>
+<div class="l"><div class="nd gr"><i></i>NEW DROP<em>LIVE</em></div>
 <div class="kick mono" style="margin-top:20px">/ uncensored · adults 18+ · 3 packs</div>
 <h1>Jenny.<br><em>Uncensored</em><br>24 videos</h1>
 <p class="lead">No cuts, never posted anywhere else. Hover any cover for a 10-second preview, then unlock the <b>full video</b> and download it. 🔞 <b>Adults 18+ only: if you are under 18, you cannot enter.</b></p>
-<div class="cta"><a class="btn" href="#packs">🔥 See the videos</a><a class="btn o" href="#pricing">💎 How coins work</a></div>
-<div class="pg" id="pg" hidden><div class="t"><span>Unlocked by members</span><b id="pgn">0 / 24</b></div><div class="bar"><u id="pgb"></u></div></div>
+<div class="cta"><a class="btn" href="#packs">🔥 See the videos</a><a class="btn o" href="#pricing">💎 How coins work</a><button class="fol" id="follow" type="button" aria-pressed="false"><span class="bell">🔔</span><span class="ft"><b>Get notified</b><i>New uploads straight to your inbox</i></span><span class="sw"><u></u></span></button></div><div id="fmsg" class="mono"></div>
 <div class="badges mono"><span style="color:var(--ok)"><em>🔞</em>18+ only</span><span style="color:var(--ac)"><em>⏱</em>10 s free preview</span><span style="color:var(--ac2)"><em>⬇️</em>Download included</span></div></div>
 <div class="r"><div class="hv"><video src="/jenny/p/x07.mp4" poster="/jenny/p/x07.jpg" muted loop playsinline autoplay></video><span class="live"><i></i>PREVIEW</span></div><div class="hv"><video src="/jenny/p/x13.mp4" poster="/jenny/p/x13.jpg" muted loop playsinline autoplay></video><span class="live"><i></i>PREVIEW</span></div><div class="hv"><video src="/jenny/p/x24.mp4" poster="/jenny/p/x24.jpg" muted loop playsinline autoplay></video><span class="live"><i></i>PREVIEW</span></div></div>
 </div></div></div>
 <div class="mq o" aria-hidden="true"><div>NEW DROP ★ JENNY UNCENSORED ★ 24 VIDEOS ★ 10 S FREE PREVIEW ★ 18+ ★ NEW DROP ★ JENNY UNCENSORED ★ 24 VIDEOS ★ 10 S FREE PREVIEW ★ 18+ ★ NEW DROP ★ JENNY UNCENSORED ★ 24 VIDEOS ★ 10 S FREE PREVIEW ★ 18+ ★ </div></div>
+<div class="w"><div class="pg" id="pg" hidden><div class="t"><span>Unlocked by members</span><b id="pgn">0 / 24</b></div><div class="bar"><u id="pgb"></u></div></div></div>
 <section id="pricing"><div class="w"><div class="kick mono">/ prices</div><h2>Pay <em>per video.</em></h2>
 <p class="lead" style="margin:0 0 18px">Longer videos cost more coins. 1 coin = $0.50. Buy coins once (minimum 20) and unlock only what you want. Unlocked videos are yours to watch and download. The Uncensored videos are not part of the $19.99 clip pack.</p>
 <div class="tiers"><span>Up to 1 min · <b>1 coin</b></span><span>1 to 2.5 min · <b>2 coins</b></span><span>2.5 to 5 min · <b>3 coins</b></span><span>5 to 7.5 min · <b>4 coins</b></span><span>Over 7.5 min · <b>5 coins</b></span></div>
@@ -163,6 +178,14 @@ fetch('/api/jenny/unlock',{credentials:'include'}).then(function(r){return r.ok?
 function act(d){var seen=d.explicitSeen||0,pg=document.getElementById('pg');if(seen>0){pg.hidden=false;document.getElementById('pgn').textContent=seen+' / 24';setTimeout(function(){document.getElementById('pgb').style.width=(seen*100/24)+'%'},100)}
 var top=null,tn=0;Object.keys(d.perVideo||{}).forEach(function(k){var cnt=d.perVideo[k],c=document.querySelector('.c[data-n="'+k+'"]');if(!c)return;if(cnt>=2){c.querySelector('.uc').textContent=cnt+' unlocked'}if(cnt>tn){tn=cnt;top=c}});if(top&&tn>=3){var h=top.querySelector('.hot2');if(h)h.hidden=false}}
 if(window.TwkActivity)act(window.TwkActivity);document.addEventListener('twk:activity',function(e){act(e.detail)});
+})();
+</script>
+<script>
+(function(){function api(u,o){return fetch(u,Object.assign({credentials:'include'},o||{})).then(function(r){return r.json().then(function(d){return[r.status,d]})})}
+var fb=document.getElementById('follow'),fm=document.getElementById('fmsg'),K='twk-jenny-follow';
+function fset(on){fb.classList.toggle('on',on);fb.setAttribute('aria-pressed',on);fb.querySelector('b').textContent=on?'You are in ✅':'Get notified';fb.querySelector('i').textContent=on?'We will email you when new videos drop':'New uploads straight to your inbox';try{localStorage.setItem(K,on?'1':'')}catch(e){}}
+try{if(localStorage.getItem(K))fset(true)}catch(e){}
+fb.onclick=function(){var on=fb.classList.contains('on');api('/api/jenny/follow',{method:on?'DELETE':'POST'}).then(function(x){if(x[0]==401){fm.textContent='Log in or create your free account to get notified — taking you there…';setTimeout(function(){location.href='/account.html'},1200);return}if(x[1]&&x[1].ok){fset(!!x[1].following);fm.textContent=x[1].following?'Done! We will email you when Jenny uploads new videos. 💌':'You will no longer get notifications.'}else fm.textContent='Something went wrong. Try again.'})};
 })();
 </script>
 </body></html>
