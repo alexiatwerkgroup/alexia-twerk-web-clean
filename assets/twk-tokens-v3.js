@@ -520,6 +520,7 @@
     return _audioCtx;
   }
   function playLoudPing() {
+    try { if (window.TwkCoin && TwkCoin.sound) { TwkCoin.sound(false); return; } } catch (_) {}
     try {
       var ctx = ensureAudioCtx();
       if (!ctx) return;
