@@ -29,13 +29,7 @@ def build(slug, name):
     vids = videos(slug)
     N = len(vids)
     s = TEMPLATE
-    # 1) drop Jenny-only blocks
-    s = re.sub(r'<section class="unt">.*?</section>', '', s, flags=re.S)
-    s = re.sub(r'<button class="fol" id="follow".*?</button>', '', s, flags=re.S)
-    s = re.sub(r'<div class="chips sorts" id="sorts">.*?</div>', '', s, flags=re.S)
-    s = re.sub(r'<div class="pc"><div class="kick mono">Short clips</div>.*?</ul></div>', '', s, flags=re.S)
-    s = re.sub(r'<details><summary>Why are the short clips.*?</details>', '', s, flags=re.S)
-    s = re.sub(r'<script>\s*\(function\(\)\{\s*function api\(u,o\).*?load\(\);\s*\}\)\(\);\s*</script>', '', s, flags=re.S)
+    # 1) nothing is removed from the template; only per-model values change below
     # 2) catalog grid + chips from discovered files
     if N:
         cards = ''.join(card(slug, name, n, hp, i + 1) for i, (n, hp) in enumerate(vids))

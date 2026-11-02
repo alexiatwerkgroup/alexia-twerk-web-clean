@@ -117,13 +117,13 @@ html body[data-mode=casero] .chip{border-color:#ff8a00;box-shadow:0 0 12px rgba(
 <div class="kick mono" style="margin-top:20px">/ private catalog · 18+ · originals</div>
 <h1>Alexia.<br><em>Private</em><br>0 clips</h1>
 <p class="lead">Her full private collection is open. 👀 Hover any cover to preview it with sound, then unlock the <b>original in full quality</b> — watch it and download it. 🔞 Adults 18+ only.</p>
-<div class="cta"><a class="btn" href="#catalog">🔥 See the videos</a><a class="btn o" href="#pricing">💎 The pack · $19.99</a></div><div id="fmsg" class="mono"></div>
+<div class="cta"><a class="btn" href="#catalog">🔥 See the videos</a><a class="btn o" href="#pricing">💎 The pack · $19.99</a><button class="fol" id="follow" type="button" aria-pressed="false"><span class="bell">🔔</span><span class="ft"><b>Get notified</b><i>New uploads straight to your inbox</i></span><span class="sw"><u></u></span></button></div><div id="fmsg" class="mono"></div>
 <div class="badges mono"><span style="color:var(--ok)"><em>🔞</em>18+ only</span><span style="color:var(--ac)"><em>⬇️</em>Originals · download included</span><span style="color:var(--ac2)"><em>⚡</em>Access once payment is confirmed</span></div></div>
 <div class="r"><div class="hv"><video src="p/hero_v14.mp4" poster="p/v14.jpg" muted loop playsinline autoplay></video></div><div class="hv"><video src="p/hero_v40.mp4" poster="p/v40.jpg" muted loop playsinline autoplay></video></div><div class="hv"><video src="p/hero_v10.mp4" poster="p/v10.jpg" muted loop playsinline autoplay></video></div></div>
 </div></div></div>
 <div class="mq" aria-hidden="true"><div>ALEXIA ★ 0 CLIPS ★ ORIGINAL QUALITY ★ DOWNLOAD INCLUDED ★ 18+ ★ ALEXIA ★ 0 CLIPS ★ ORIGINAL QUALITY ★ DOWNLOAD INCLUDED ★ 18+ ★ ALEXIA ★ 0 CLIPS ★ ORIGINAL QUALITY ★ DOWNLOAD INCLUDED ★ 18+ ★ ALEXIA ★ 0 CLIPS ★ ORIGINAL QUALITY ★ DOWNLOAD INCLUDED ★ 18+ ★ </div></div>
 
-
+<section class="unt"><div class="w"><div class="in"><div class="l"><span class="nd2">NEW DROP</span><h2>Alexia <em>Uncensored.</em></h2><p>24 new private videos, no cuts. A 10-second preview on every cover, then unlock only what you want. Adults 18+ only: if you are under 18 you cannot enter.</p><a class="btn" href="/jenny/uncensored/">🔥 Enter Uncensored · 18+</a></div><div class="r"><div class="tz"><video src="/jenny/p/tz1.mp4?v=7" poster="/jenny/p/tz1.jpg?v=7" muted loop autoplay playsinline preload="metadata" disablepictureinpicture></video></div><div class="tz"><video src="/jenny/p/tz2.mp4?v=7" poster="/jenny/p/tz2.jpg?v=7" muted loop autoplay playsinline preload="metadata" disablepictureinpicture></video></div><div class="tz"><video src="/jenny/p/tz3.mp4?v=7" poster="/jenny/p/tz3.jpg?v=7" muted loop autoplay playsinline preload="metadata" disablepictureinpicture></video></div></div></div></div></section>
 <section id="pricing"><div class="w"><div class="kick mono">/ prices</div><h2>Pick <em>your way in.</em></h2>
 <div class="price">
 <div class="pc"><div class="kick mono">Single video</div><div class="n">1<small>coin · $0.50</small></div><p>Unlock exactly the videos you want. 🎯</p><ul><li>✔ Watch + download the original</li><li>✔ Pay only for what you pick</li><li>⚠ Minimum purchase: 20 coins ($10)</li></ul><a class="vb" href="#pay" data-pay="coins"><span class="lk">🔒</span><span class="t"><b>Buy coins</b><i>Secure checkout · Verified Binance ID</i></span><img src="/jenny/p/binance.png" alt="Binance" width="56" height="54"></a></div>
@@ -133,7 +133,7 @@ html body[data-mode=casero] .chip{border-color:#ff8a00;box-shadow:0 0 12px rgba(
 
 <section id="catalog"><div class="w"><div class="kick mono">/ the catalog</div><h2>All <em>0 clips.</em></h2>
 <div class="chips" id="chips"><button class="chip on" data-f="all">All · 0</button></div>
-
+<div class="chips sorts" id="sorts"><button class="chip sc on" data-s="feat">🔥 Featured</button><button class="chip sc" data-s="top">⭐ Top rated</button></div>
 <div class="grid" id="grid"><p class="msg" style="grid-column:1/-1;text-align:center;padding:60px 0">Videos en preparación.</p></div></div></section>
 
 <section id="how"><div class="w"><div class="kick mono">/ how it works</div><h2>Three steps. <em>Zero waiting.</em></h2>
@@ -143,7 +143,7 @@ html body[data-mode=casero] .chip{border-color:#ff8a00;box-shadow:0 0 12px rgba(
 <details><summary>What do I get?</summary><p>Access to the original, full-quality video — you can watch it online and download it.</p></details>
 <details><summary>Coins vs tokens?</summary><p>Coins are bought (1 coin = 1 video, minimum purchase 20 coins, $0.50 each). Tokens are points you earn on Twerkhub and only unlock the short clips.</p></details>
 <details><summary>How fast is access?</summary><p>As soon as your payment is confirmed (usually within minutes, after you send the receipt on Discord). Sign in at twerkhub.lat with the same email you gave us.</p></details>
-
+<details><summary>Why are the short clips not for sale?</summary><p>They're under 15 seconds, so they're a bonus you earn with tokens instead of paying.</p></details>
 <details><summary>Is this for adults only?</summary><p>Yes. 18+ only. You must be of legal age to view this content.</p></details></div></section>
 
 <section><div class="w"><div class="kick mono">/ more models</div><h2>More <em>girls.</em></h2>
@@ -182,6 +182,26 @@ if(r.ok||r.status==206){play();return}
 if(r.status==403){if(!confirm(sh?'Unlock this short clip for 500 tokens?':'Unlock this video for 1 coin?'))return;fetch('/api/c/alexia/unlock',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({n:n})}).then(function(u){return u.json().then(function(d){return[u.status,d]})}).then(function(x){if(x[1].ok){play();msg(sh?'Unlocked! Tokens left: '+x[1].balance:'Unlocked! Coins left: '+x[1].coins)}else if(x[0]==402&&sh)msg('Not enough tokens ('+(x[1].balance||0)+'). Earn more by exploring, watching and logging in daily.');else if(x[0]==402){msg('No coins yet. Minimum purchase is 20 coins ($10), or get the 63-clip pack for $19.99.');window.open('/discord','_blank')}else msg('Could not unlock. Try again.')});return}
 bt.textContent='Soon'}).catch(function(){})}});
 fetch('/api/c/alexia/unlock',{credentials:'include'}).then(function(r){return r.ok?r.json():null}).then(function(d){if(d&&d.ok)document.getElementById('bal').textContent='Your coins: '+d.coins+' · Your tokens: '+d.tokens}).catch(function(){});
+})();
+</script><script>
+(function(){
+function api(u,o){return fetch(u,Object.assign({credentials:'include'},o||{})).then(function(r){return r.json().then(function(d){return[r.status,d]})})}
+var votes={},mine={};
+function paint(n){var box=document.querySelector('.vt[data-n="'+n+'"]');if(!box)return;var c=votes[n]||{up:0,down:0},t=c.up+c.down,p=box.querySelector('.vp');
+box.querySelector('.up').classList.toggle('on',mine[n]==1);box.querySelector('.dn').classList.toggle('on',mine[n]==-1);
+if(t<3){p.textContent=t?t+' vote'+(t>1?'s':''):'Be the first';p.className='vp mono';return}
+var pc=Math.round(c.up*100/t);p.textContent=pc+'% · '+t;p.className='vp mono '+(pc>=80?'g':pc>=50?'m':'b')}
+function load(){api('/api/c/alexia/votes').then(function(x){if(x[1]&&x[1].ok){votes=x[1].counts||{};mine=x[1].mine||{};document.querySelectorAll('.vt').forEach(function(b){paint(b.dataset.n)});sortNow()}})}
+document.addEventListener('click',function(e){var bt=e.target.closest&&e.target.closest('.vt button');if(!bt)return;e.stopPropagation();var n=bt.parentNode.dataset.n,v=bt.classList.contains('up')?1:-1;if(mine[n]==v)v=0;
+api('/api/c/alexia/votes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n:n,v:v})}).then(function(x){if(x[0]==401){location.href='/account.html';return}if(x[1]&&x[1].ok){mine[n]=x[1].mine;votes[n]={up:x[1].up,down:x[1].down};paint(n);sortNow()}})},true);
+var mode='feat';function sortNow(){var g=document.getElementById('grid'),cs=[].slice.call(g.children);
+cs.sort(function(a,b){if(mode=='feat')return a.dataset.pos-b.dataset.pos;function sc(x){var c=votes[x.dataset.n]||{up:0,down:0},t=c.up+c.down;return t?(c.up+1)/(t+2):0.5}return sc(b)-sc(a)||a.dataset.pos-b.dataset.pos});cs.forEach(function(c){g.appendChild(c)})}
+document.querySelectorAll('.sc').forEach(function(c){c.onclick=function(){document.querySelectorAll('.sc').forEach(function(x){x.classList.remove('on')});c.classList.add('on');mode=c.dataset.s;sortNow()}});
+var fb=document.getElementById('follow'),fm=document.getElementById('fmsg'),K='twk-jenny-follow';
+function fset(on){fb.classList.toggle('on',on);fb.setAttribute('aria-pressed',on);fb.querySelector('.ft b').textContent=on?'You are in':'Get notified';fb.querySelector('.ft i').textContent=on?'We email you when videos drop':'New uploads straight to your inbox';try{localStorage.setItem(K,on?'1':'')}catch(e){}}
+try{if(localStorage.getItem(K))fset(true)}catch(e){}
+fb.onclick=function(){var on=fb.classList.contains('on');api('/api/c/alexia/follow',{method:on?'DELETE':'POST'}).then(function(x){if(x[0]==401){fm.textContent='Log in or create your free account to get notified — taking you there…';setTimeout(function(){location.href='/account.html'},1200);return}if(x[1]&&x[1].ok){fset(!!x[1].following);fm.textContent=x[1].following?'Done! We will email you.':'Notifications off.'}else fm.textContent='Error. Try again.'})};
+load();
 })();
 </script>
 <script src="/assets/twerkhub-activity.js?v=3" defer></script>
