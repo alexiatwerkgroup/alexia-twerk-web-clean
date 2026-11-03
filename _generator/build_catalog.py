@@ -2,10 +2,10 @@
 # Videos are discovered from <slug>/p/ : v01.mp4 (+ v01.jpg poster), v02.mp4, ...
 # Full originals live in the private R2 bucket under "<slug>/v01.mp4" (served by /api/c/<slug>/video).
 # Usage: python3 _generator/build_catalog.py            (all models)
-#        python3 _generator/build_catalog.py abbi       (one model)
+#        python3 _generator/build_catalog.py lolita       (one model)
 import os, re, sys, html, glob
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODELS = {'abbi': 'Abbi', 'tainara': 'Tainara', 'vegan': 'Vegan', 'camila': 'Camila', 'alexia': 'Alexia', 'lolita': 'Lolita'}
+MODELS = {'tainara': 'Tainara', 'vegan': 'Vegan', 'camila': 'Camila', 'alexia': 'Alexia', 'lolita': 'Lolita'}
 TEMPLATE = open(os.path.join(ROOT, 'jenny', 'index.html'), encoding='utf-8').read()
 
 def videos(slug):

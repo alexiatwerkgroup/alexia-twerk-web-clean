@@ -9,6 +9,8 @@
 #    (Google treats them as soft-404). Those URLs now return a clean 404.
 #  - Keep splat rules at the END of this file.
 
+/abbi  /lolita/  301
+/abbi/  /lolita/  301
 /account.html  /account  301
 /admin-users.html  /admin-users  301
 /auth-callback.html  /auth-callback  301
