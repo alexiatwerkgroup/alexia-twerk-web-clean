@@ -1,3 +1,4 @@
+import { explicitPauseResponse } from './_lib/jenny-pause.js';
 // TWERKHUB · global middleware for every HTML page (existing and future), one implementation:
 //  1) adults-only disclaimer at the end of <body>
 //  2) first-party visit tracking (anonymous visitor cookie, country from Cloudflare, no IP stored)
@@ -7,6 +8,8 @@ import { init, parseUA, isBot, cookie, OWNER } from './_lib/analytics.js';
 const DISC = '<div class="twk-disc" role="note" style="margin:0;padding:18px 16px;border-top:1px solid rgba(255,255,255,.12);background:#000;color:#9d9db0;font:11px/1.6 system-ui,Arial,sans-serif;text-align:center;letter-spacing:.02em"><b style="color:#fff">18+ ADULTS ONLY.</b> If you are under 18 you cannot enter this site. All performers in Twerkhub original content are 18 or older and appear under a written agreement.</div>';
 
 export async function onRequest(context) {
+  const paused = await explicitPauseResponse(context.request);
+  if (paused) return paused;
   const res = await context.next();
   let spare = null;
   try {
