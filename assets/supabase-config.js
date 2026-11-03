@@ -97,7 +97,7 @@
     if (window.twkSecurityCheck) return window.twkSecurityCheck(action);
     if (!securityReady) securityReady = new Promise(function (resolve, reject) {
       var script = document.createElement('script');
-      script.src = '/assets/twerkhub-security.js?v=20261103';
+      script.src = '/assets/twerkhub-security.js?v=20261103-confirm';
       script.onload = resolve;
       script.onerror = function () { reject(Error('Security verification could not load. Please reload and try again.')); };
       document.head.appendChild(script);
