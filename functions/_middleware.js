@@ -35,7 +35,7 @@ export async function onRequest(context) {
     const ct = res.headers.get('content-type') || '';
     if (request.method !== 'GET' || url.pathname.startsWith('/api/') || !ct.includes('text/html') || !res.body || res.status !== 200) return res;
     try { spare = res.clone(); } catch (e) {}
-    const html = await res.text();
+    const html = (await res.text()).replace(/supabase-config\.js(?:\?[^"'<>\s]*)?/g, 'supabase-config.js?v=20261103-turnstile');
     const ua = request.headers.get('user-agent') || '';
     const track = env.DB && !isBot(ua) && cookie(request, 'twx') !== '1' && !url.pathname.startsWith('/admin/');
     let add = html.includes('class="twk-disc"') ? '' : DISC;
