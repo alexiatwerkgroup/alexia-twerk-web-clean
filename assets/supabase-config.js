@@ -92,7 +92,25 @@
   }
 
   // ─── HTTP helper ──────────────────────────────────────────────────────
-  function api(path, opts) {
+  var securityReady;
+  function securityCheck(action) {
+    if (window.twkSecurityCheck) return window.twkSecurityCheck(action);
+    if (!securityReady) securityReady = new Promise(function (resolve, reject) {
+      var script = document.createElement('script');
+      script.src = '/assets/twerkhub-security.js?v=20261103';
+      script.onload = resolve;
+      script.onerror = function () { reject(Error('Security verification could not load. Please reload and try again.')); };
+      document.head.appendChild(script);
+    });
+    return securityReady.then(function () { return window.twkSecurityCheck(action); });
+  }
+  async function api(path, opts) {
+    if (path === '/api/auth/signin' || path === '/api/auth/signup') {
+      try {
+        var challengeToken = await securityCheck(path.endsWith('/signup') ? 'signup' : 'signin');
+        opts = Object.assign({}, opts, { body: Object.assign({}, opts.body, { turnstileToken: challengeToken }) });
+      } catch (error) { return { status: 403, body: { ok: false, error: error.message } }; }
+    }
     var url = (location.origin || '') + path;
     var token = readToken();
     var headers = { 'Content-Type': 'application/json' };
@@ -128,6 +146,15 @@
     });
   }
 
+  function authError(body, fallback) {
+    var errors = {
+      security_verification_required: 'Complete the security verification and try again.',
+      security_verification_failed: 'Security verification failed. Please try again.',
+      security_check_unavailable: 'Security verification is temporarily unavailable. Please try again later.',
+      rate_limit_exceeded: 'Too many attempts. Please try again later.'
+    };
+    return body && (errors[body.error] || body.error) || fallback;
+  }
   // ─── the Supabase-compat auth API ─────────────────────────────────────
   var auth = {
     getSession: function () {
@@ -167,7 +194,7 @@
           notifyAuth('SIGNED_IN');
           return { data: { user: r.body.user, session: currentSession }, error: null };
         }
-        return { data: { user: null, session: null }, error: { message: (r.body && r.body.error) || 'signin_failed' } };
+        return { data: { user: null, session: null }, error: { message: authError(r.body, 'signin_failed') } };
       });
     },
     signUp: function (creds) {
@@ -182,7 +209,7 @@
           notifyAuth('SIGNED_IN');
           return { data: { user: r.body.user, session: currentSession }, error: null };
         }
-        return { data: { user: null, session: null }, error: { message: (r.body && r.body.error) || 'signup_failed' } };
+        return { data: { user: null, session: null }, error: { message: authError(r.body, 'signup_failed') } };
       });
     },
     signOut: function () {

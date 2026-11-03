@@ -1,3 +1,4 @@
+import { verifyTurnstile } from './_lib/turnstile.js';
 import { authAbuseResponse } from './_lib/auth-abuse.js';
 import { explicitPauseResponse } from './_lib/jenny-pause.js';
 // TWERKHUB · global middleware for every HTML page (existing and future), one implementation:
@@ -13,6 +14,12 @@ export async function onRequest(context) {
   if (paused) return paused;
   const limited = await authAbuseResponse(context);
   if (limited) return limited;
+  const authPath = new URL(context.request.url).pathname.replace(/\/+$/, '');
+  if (context.request.method === 'POST' && ['/api/auth/signin', '/api/auth/signup'].includes(authPath)) {
+    let body; try { body = await context.request.clone().json(); } catch { body = {}; }
+    const challenge = await verifyTurnstile(context.request, context.env, body.turnstileToken, authPath.endsWith('/signup') ? 'signup' : 'signin');
+    if (challenge) return challenge;
+  }
   let res = await context.next();
   if (context.authQuota) {
     const headers = new Headers(res.headers);

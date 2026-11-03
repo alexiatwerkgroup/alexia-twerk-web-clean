@@ -1,0 +1,48 @@
+(function () {
+  'use strict';
+  if (window.twkSecurityCheck) return;
+  var sitekey = '0x4AAAAAAFyov-cxmExBGGwP';
+  var scriptReady, busy = false;
+  function load() {
+    if (window.turnstile) return Promise.resolve();
+    if (!scriptReady) scriptReady = new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      s.async = true;
+      var timer = setTimeout(function () { reject(Error('Security verification could not load. Please reload and try again.')); }, 15000);
+      s.onload = function () { clearTimeout(timer); if (window.turnstile) resolve(); else reject(Error('Security verification unavailable.')); };
+      s.onerror = function () { clearTimeout(timer); reject(Error('Security verification could not load. Please reload and try again.')); };
+      document.head.appendChild(s);
+    });
+    return scriptReady;
+  }
+  window.twkSecurityCheck = function (action) {
+    if (busy) return Promise.reject(Error('A security verification is already open.'));
+    busy = true;
+    return new Promise(function (resolve, reject) {
+      var dialog = document.createElement('dialog'), id, done = false;
+      dialog.setAttribute('aria-labelledby', 'twk-security-title');
+      dialog.style.cssText = 'box-sizing:border-box;width:min(380px,calc(100% - 24px));max-width:calc(100% - 24px);padding:24px;border:1px solid #444;border-radius:16px;background:#101016;color:white;font:15px/1.5 system-ui;';
+      dialog.innerHTML = '<h2 id="twk-security-title" style="margin:0 0 12px;color:#ff8a00;font:700 22px system-ui">Security verification</h2><p style="margin:0 0 18px">Complete the check to continue.</p><div class="twk-security-widget" style="width:100%;min-height:70px"></div><p class="twk-security-msg" role="status"></p><button type="button" style="padding:10px 16px;border:1px solid #777;border-radius:6px;background:#222;color:white;cursor:pointer">Cancel</button>';
+      function finish(error, token) {
+        if (done) return; done = true; busy = false;
+        if (id !== undefined && window.turnstile) window.turnstile.remove(id);
+        dialog.close(); dialog.remove();
+        if (error) reject(error); else resolve(token);
+      }
+      dialog.querySelector('button').onclick = function () { finish(Error('Security verification cancelled.')); };
+      dialog.addEventListener('cancel', function (e) { e.preventDefault(); finish(Error('Security verification cancelled.')); });
+      document.body.appendChild(dialog); dialog.showModal();
+      load().then(function () {
+        if (done) return;
+        id = window.turnstile.render(dialog.querySelector('.twk-security-widget'), {
+          sitekey: sitekey, action: action, theme: 'dark', size: 'flexible',
+          callback: function (token) { finish(null, token); },
+          'error-callback': function () { dialog.querySelector('.twk-security-msg').textContent = 'Verification failed. Please cancel and try again.'; },
+          'expired-callback': function () { if (id !== undefined) window.turnstile.reset(id); },
+          'timeout-callback': function () { dialog.querySelector('.twk-security-msg').textContent = 'Verification timed out. Please cancel and try again.'; }
+        });
+      }).catch(function (e) { finish(e); });
+    });
+  };
+})();
