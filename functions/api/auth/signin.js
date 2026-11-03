@@ -1,3 +1,4 @@
+import { limitByIdentity } from '../../_lib/auth-abuse.js';
 // POST /api/auth/signin
 // Body: { email, password }   OR   { username, password }
 // Returns: { ok, user: {id,email,username}, token } + Set-Cookie
@@ -41,6 +42,10 @@ export async function onRequest(context) {
   if (!email || !EMAIL_RE.test(email)) {
     return json({ ok: false, error: 'invalid_credentials' }, 401, origin);
   }
+
+  // Canonical email makes username/email share a quota across changing IPs.
+  const accountLimited = await limitByIdentity(context, 'signin-account-hour-v2', 3600, 5, 'email:' + email);
+  if (accountLimited) return accountLimited;
 
   const user = await env.DB.prepare(
     'SELECT id, email, password_hash FROM users WHERE email = ?'

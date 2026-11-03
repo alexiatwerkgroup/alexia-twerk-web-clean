@@ -54,7 +54,7 @@ export async function onRequest(context) {
     if (u) return json({ ok: false, error: 'username_taken' }, 409, origin);
   }
 
-  const limited = await limitByIP(context, 'new-account', 3600, 5);
+  const limited = await limitByIP(context, 'new-account-day-v2', 86400, 1);
   if (limited) return limited;
   const id = uuidv4();
   let passwordHash;

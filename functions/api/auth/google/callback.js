@@ -1,4 +1,4 @@
-import { limitByIP } from '../../../_lib/auth-abuse.js';
+import { limitByIP, limitByIdentity } from '../../../_lib/auth-abuse.js';
 // GET /api/auth/google/callback?code=...&state=...
 //   → 302 redirect to / with auth cookie set
 //
@@ -54,6 +54,9 @@ export async function onRequest(context) {
     return new Response(null, { status: 302, headers: r.headers });
   }
 
+  const loginLimited = await limitByIP(context, 'signin-attempt-hour-v2', 3600, 5);
+  if (loginLimited) return loginLimited;
+
   // Exchange code for tokens
   const redirectUri = siteOrigin + '/api/auth/google/callback';
   const tokenRes = await fetch(TOKEN_URL, {
@@ -99,6 +102,9 @@ export async function onRequest(context) {
     return new Response(null, { status: 302, headers: r.headers });
   }
 
+  const accountLimited = await limitByIdentity(context, 'signin-account-hour-v2', 3600, 5, 'email:' + email);
+  if (accountLimited) return accountLimited;
+
   // Find or create user in D1
   let user = await env.DB.prepare('SELECT id, email FROM users WHERE email = ?').bind(email).first();
   let userId;
@@ -110,7 +116,7 @@ export async function onRequest(context) {
       await env.DB.prepare('UPDATE users SET email_verified = 1 WHERE id = ?').bind(userId).run();
     } catch (_) {}
   } else {
-  const limited = await limitByIP(context, 'new-account', 3600, 5);
+  const limited = await limitByIP(context, 'new-account-day-v2', 86400, 1);
   if (limited) return limited;
     // Create new user. Password_hash is set to a sentinel "oauth:google:<sub>"
     // since the user can't log in via password — only via Google.

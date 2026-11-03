@@ -13,7 +13,14 @@ export async function onRequest(context) {
   if (paused) return paused;
   const limited = await authAbuseResponse(context);
   if (limited) return limited;
-  const res = await context.next();
+  let res = await context.next();
+  if (context.authQuota) {
+    const headers = new Headers(res.headers);
+    headers.set('X-RateLimit-Limit', String(context.authQuota.limit));
+    headers.set('X-RateLimit-Remaining', String(context.authQuota.remaining));
+    headers.set('X-RateLimit-Reset', String(context.authQuota.reset));
+    res = new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+  }
   let spare = null;
   try {
     const { request, env } = context;

@@ -17,15 +17,22 @@ function denied(status, error, retryAfter) {
 export async function limitByIP(context, scope, seconds, max) {
   const { request, env } = context;
   const ip = request.headers.get('CF-Connecting-IP');
-  if (!ip || !env.DB || !env.JWT_SECRET) return denied(503, 'security_check_unavailable', 60);
+  if (!ip) return denied(503, 'security_check_unavailable', 60);
+  return limitByIdentity(context, scope, seconds, max, 'ip:' + ip.trim().toLowerCase());
+}
+
+export async function limitByIdentity(context, scope, seconds, max, identity) {
+  const { env } = context;
+  if (!identity || !env.DB || !env.JWT_SECRET) return denied(503, 'security_check_unavailable', 60);
   try {
     const enc = new TextEncoder();
     const key = await crypto.subtle.importKey('raw', enc.encode(env.JWT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-    const hash = Array.from(new Uint8Array(await crypto.subtle.sign('HMAC', key, enc.encode(ip.trim().toLowerCase()))), b => b.toString(16).padStart(2, '0')).join('');
+    const hash = Array.from(new Uint8Array(await crypto.subtle.sign('HMAC', key, enc.encode(identity))), b => b.toString(16).padStart(2, '0')).join('');
     const now = Math.floor(Date.now() / 1000);
     await env.DB.prepare(QUOTA_SCHEMA).run();
     const row = await env.DB.prepare(QUOTA_SQL).bind(scope + ':' + hash, now + seconds, now, now, now, max).first();
     if (!row) return denied(429, 'rate_limit_exceeded', seconds);
+    context.authQuota = { limit: max, remaining: Math.max(0, max - row.count), reset: row.expires };
     return null;
   } catch {
     // Never silently allow unmetered signup when the protection fails.
@@ -39,7 +46,7 @@ export async function authAbuseResponse(context) {
   const path = new URL(request.url).pathname.replace(/\/+$/, '');
   const rules = {
     '/api/auth/signup': ['signup-attempt', 3600, 10],
-    '/api/auth/signin': ['signin-attempt', 900, 30],
+    '/api/auth/signin': ['signin-attempt-hour-v2', 3600, 5],
     '/api/auth/forgot-password': ['password-reset', 3600, 5],
     '/api/auth/send-verification': ['verify-email', 3600, 5]
   };
