@@ -2,7 +2,7 @@
 # Replace each page with the full catalog once its folder (previews + R2 videos) is ready.
 import os, html
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODELS = {'abbi': 'Abbi', 'tainara': 'Tainara', 'vegan': 'Vegan', 'camila': 'Camila', 'alexia': 'Alexia'}
+MODELS = {'abbi': 'Abbi', 'tainara': 'Tainara', 'vegan': 'Vegan', 'camila': 'Camila', 'alexia': 'Alexia', 'lolita': 'Lolita'}
 TPL = """<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{name} · Catálogo privado | Twerkhub</title>
 <meta name="description" content="Catálogo privado de {name} en Twerkhub. Solo mayores de 18 años.">

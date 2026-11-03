@@ -8,6 +8,7 @@ export const MODELS = {
   camila:  { name: 'Camila' },
   tainara: { name: 'Tainara' },
   alexia:  { name: 'Alexia' },
+  lolita:  { name: 'Lolita' },
 };
 export const COIN_COST = 1;        // 1 coin = $0.50 (same as Jenny for now)
 export const MIN_COIN_PURCHASE = 20;

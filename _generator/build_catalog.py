@@ -5,7 +5,7 @@
 #        python3 _generator/build_catalog.py abbi       (one model)
 import os, re, sys, html, glob
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODELS = {'abbi': 'Abbi', 'tainara': 'Tainara', 'vegan': 'Vegan', 'camila': 'Camila', 'alexia': 'Alexia'}
+MODELS = {'abbi': 'Abbi', 'tainara': 'Tainara', 'vegan': 'Vegan', 'camila': 'Camila', 'alexia': 'Alexia', 'lolita': 'Lolita'}
 TEMPLATE = open(os.path.join(ROOT, 'jenny', 'index.html'), encoding='utf-8').read()
 
 def videos(slug):
