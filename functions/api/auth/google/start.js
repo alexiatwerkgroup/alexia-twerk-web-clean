@@ -1,4 +1,3 @@
-import { consumeOAuthPass, passCookie, saveOAuthState, securityError } from '../../../_lib/turnstile.js';
 // GET /api/auth/google/start
 //   → 302 redirect to Google OAuth consent screen
 //
@@ -41,9 +40,7 @@ export async function onRequest(context) {
     return json({ ok: false, error: 'oauth_not_configured' }, 503, origin);
   }
 
-  if (!(await consumeOAuthPass(request, env))) return new Response(null, { status: 302, headers: { Location: '/auth-check', 'Cache-Control': 'no-store', 'Set-Cookie': passCookie('', 0) } });
   const state = randomB64Url(24);
-  try { await saveOAuthState(request, env, state); } catch { return securityError('security_check_unavailable', 503); }
   const verifier = randomB64Url(48);
   const challenge = await sha256B64Url(verifier);
 
@@ -63,8 +60,6 @@ export async function onRequest(context) {
 
   const headers = new Headers();
   headers.set('Location', url.toString());
-  headers.append('Set-Cookie', passCookie('', 0));
-  headers.set('Cache-Control', 'no-store');
   headers.append('Set-Cookie', setCookie('twk_oauth_state', state, 600));
   headers.append('Set-Cookie', setCookie('twk_oauth_verifier', verifier, 600));
 

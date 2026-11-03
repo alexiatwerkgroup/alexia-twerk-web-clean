@@ -1,4 +1,3 @@
-import { consumeOAuthState, securityError } from '../../../_lib/turnstile.js';
 import { limitByIP, limitByIdentity } from '../../../_lib/auth-abuse.js';
 // GET /api/auth/google/callback?code=...&state=...
 //   → 302 redirect to / with auth cookie set
@@ -54,8 +53,6 @@ export async function onRequest(context) {
     const r = redirect(siteOrigin, '?oauth_error=invalid_state');
     return new Response(null, { status: 302, headers: r.headers });
   }
-
-  if (!(await consumeOAuthState(request, env, state))) return securityError('security_verification_required');
 
   const loginLimited = await limitByIP(context, 'signin-attempt-hour-v2', 3600, 5);
   if (loginLimited) return loginLimited;
