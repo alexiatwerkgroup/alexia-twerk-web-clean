@@ -1,3 +1,4 @@
+import { authAbuseResponse } from './_lib/auth-abuse.js';
 import { explicitPauseResponse } from './_lib/jenny-pause.js';
 // TWERKHUB · global middleware for every HTML page (existing and future), one implementation:
 //  1) adults-only disclaimer at the end of <body>
@@ -10,6 +11,8 @@ const DISC = '<div class="twk-disc" role="note" style="margin:0;padding:18px 16p
 export async function onRequest(context) {
   const paused = await explicitPauseResponse(context.request);
   if (paused) return paused;
+  const limited = await authAbuseResponse(context);
+  if (limited) return limited;
   const res = await context.next();
   let spare = null;
   try {

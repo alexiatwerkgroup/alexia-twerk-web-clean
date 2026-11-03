@@ -1,3 +1,4 @@
+import { limitByIP } from '../../_lib/auth-abuse.js';
 // POST /api/auth/signup
 // Body: { email, password, username? }
 // Returns: { ok, user: {id,email,username}, token } + Set-Cookie
@@ -53,6 +54,8 @@ export async function onRequest(context) {
     if (u) return json({ ok: false, error: 'username_taken' }, 409, origin);
   }
 
+  const limited = await limitByIP(context, 'new-account', 3600, 5);
+  if (limited) return limited;
   const id = uuidv4();
   let passwordHash;
   try {

@@ -1,3 +1,4 @@
+import { limitByIP } from '../../../_lib/auth-abuse.js';
 // GET /api/auth/google/callback?code=...&state=...
 //   → 302 redirect to / with auth cookie set
 //
@@ -109,6 +110,8 @@ export async function onRequest(context) {
       await env.DB.prepare('UPDATE users SET email_verified = 1 WHERE id = ?').bind(userId).run();
     } catch (_) {}
   } else {
+  const limited = await limitByIP(context, 'new-account', 3600, 5);
+  if (limited) return limited;
     // Create new user. Password_hash is set to a sentinel "oauth:google:<sub>"
     // since the user can't log in via password — only via Google.
     userId = uuidv4();
