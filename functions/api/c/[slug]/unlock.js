@@ -16,7 +16,7 @@ export async function onRequest({ request, env, params }) {
   await ensureTables(env);
   if (request.method === 'GET') {
     const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE email = ?').bind(em).first();
-    return json({ ok: true, coins: c ? c.coins : 0 });
+    return json({ ok: true, coins: c ? c.coins : 0, tokens: (await env.DB.prepare('SELECT tokens FROM profiles WHERE id = ?').bind(p.sub).first())?.tokens || 0 });
   }
   if (request.method !== 'POST') return json({ ok: false, error: 'method' }, 405);
   let b = {}; try { b = await request.json(); } catch {}

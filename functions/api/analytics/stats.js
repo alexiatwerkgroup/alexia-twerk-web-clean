@@ -17,7 +17,7 @@ export async function onRequestGet({ request, env }) {
   if (!u || String(u.email).toLowerCase() !== OWNER) return json({ ok: false, error: 'owner_only' }, 403);
   await init(env.DB);
   const db = env.DB, url = new URL(request.url);
-  const heads = { 'Set-Cookie': 'twx=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure' };
+  const heads = { 'Cache-Control': 'private, no-store', 'Set-Cookie': 'twx=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure' };
   const now = Date.now(), tz = Math.max(-840, Math.min(840, parseInt(url.searchParams.get('tz')) || -180));
   const off = tz * 60;
   if (url.searchParams.get('mini')) {
@@ -48,7 +48,7 @@ export async function onRequestGet({ request, env }) {
   const [devices, browsers, oses, langs, refs] = [await dist('device'), await dist('browser'), await dist('os'), await dist('lang'), await dist('ref')];
   const pages = await rows(db, `SELECT path, COUNT(*) v, COUNT(DISTINCT vid) u, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) dur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) sc FROM tw_hits WHERE ${W} GROUP BY path ORDER BY v DESC LIMIT 15`, since);
   const events = await rows(db, 'SELECT name, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name ORDER BY n DESC', since);
-  const recent = await rows(db, 'SELECT hid, ts, substr(vid,1,6) vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human FROM tw_hits WHERE 1=1' + hf + ' ORDER BY ts DESC LIMIT 40');
+  const recent = await rows(db, 'SELECT hid, ts, uid, substr(vid,1,6) vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human FROM tw_hits WHERE 1=1' + hf + ' ORDER BY ts DESC LIMIT 40');
   const repeat = await one(db, `SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(DISTINCT date(ts/1000,'unixepoch'))>1)`, since);
   const unlocks = await one(db, "SELECT COUNT(*) n FROM jenny_unlocks WHERE via='coins'").catch(() => ({}));
 
@@ -72,12 +72,13 @@ export async function onRequestGet({ request, env }) {
   for (const h of rec) { const v = OV[h.vid] = OV[h.vid] || { vid: h.vid, first: h.ts, pages: [], ref: h.ref || '', isNew: h.is_new, since: h.ts };
     v.last = h; v.lastActive = Math.max(v.lastActive || 0, h.ts + (h.dur || 0) * 1000); if (!v.pages.length || v.pages[v.pages.length - 1] !== h.path) v.pages.push(h.path); if (h.uid) v.uid = h.uid; if (h.reg) v.reg = 1; }
   const onl = Object.values(OV).filter(v => v.lastActive > now - 150000).sort((a, b) => b.lastActive - a.lastActive).slice(0, 60);
-  let uname = {};
-  const uids = [...new Set(onl.map(v => v.uid).filter(Boolean))];
-  if (uids.length) { const ur = await rows(db, `SELECT id, username, email FROM profiles WHERE id IN (${uids.map(() => '?').join(',')})`, ...uids); ur.forEach(u => { uname[u.id] = u.username || String(u.email || '').split('@')[0]; }); }
+  let uname = {}, profiles = {};
+  const uids = [...new Set(onl.map(v => v.uid).concat(recent.map(v => v.uid)).filter(Boolean))];
+  if (uids.length) { const ur = await rows(db, `SELECT id, username, email, tokens, tier, streak, registered_at, last_login_date, last_seen_at, seconds_on_site, cuts_watched FROM profiles WHERE id IN (${uids.map(() => '?').join(',')})`, ...uids); ur.forEach(u => { uname[u.id] = u.username || ''; profiles[u.id] = u; }); }
   let evBy = {};
   if (onl.length) { const er = await rows(db, `SELECT vid, ts, name, detail FROM tw_events WHERE ts > ? AND vid IN (${onl.map(() => '?').join(',')}) ORDER BY ts DESC`, now - 30 * 60000, ...onl.map(v => v.vid)); er.forEach(e => { (evBy[e.vid] = evBy[e.vid] || []).push({ ts: e.ts, name: e.name, detail: e.detail }); }); }
-  const onlineList = onl.map(v => ({ id: v.vid.slice(0, 6), user: v.uid ? (uname[v.uid] || 'registrado') : '', reg: v.reg ? 1 : 0, isNew: v.isNew ? 1 : 0, country: v.last.country, city: v.last.city, device: v.last.device, browser: v.last.browser, os: v.last.os, ref: v.ref, path: v.last.path, pages: v.pages.slice(-5), entered: v.since, lastActive: v.lastActive, dur: v.last.dur || 0, scroll: v.last.scroll || 0, events: (evBy[v.vid] || []).slice(0, 6) }));
+  const onlineList = onl.map(v => ({ id: v.vid.slice(0, 6), user: v.uid ? (uname[v.uid] || '') : '', profile: v.uid ? (profiles[v.uid] || null) : null, reg: v.reg ? 1 : 0, isNew: v.isNew ? 1 : 0, country: v.last.country, city: v.last.city, device: v.last.device, browser: v.last.browser, os: v.last.os, ref: v.ref, path: v.last.path, pages: v.pages.slice(-5), entered: v.since, lastActive: v.lastActive, dur: v.last.dur || 0, scroll: v.last.scroll || 0, events: (evBy[v.vid] || []).slice(0, 6) }));
+  recent.forEach(v => { v.user = uname[v.uid] || ''; v.profile = profiles[v.uid] || null; });
   const evU = await rows(db, 'SELECT name, detail, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name, detail ORDER BY n DESC', since);
   const evLast = await rows(db, "SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, h.country, h.city FROM tw_events e LEFT JOIN tw_hits h ON h.hid = e.hid ORDER BY e.ts DESC LIMIT 25");
   const landed = await one(db, `SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND path LIKE '/jenny%'`, since);
