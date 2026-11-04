@@ -33,23 +33,52 @@ async function buildStats({ request, env }) {
   const days = Math.max(1, Math.min(365, parseInt(url.searchParams.get('days')) || 30));
   const since = now - days * 86400000;
   const W = 'ts > ?' + hf;
-  const tot = await one(db, `SELECT COUNT(*) views, COUNT(DISTINCT vid) uniq, COUNT(DISTINCT CASE WHEN is_new=1 THEN vid END) newv, COUNT(DISTINCT CASE WHEN reg=1 THEN vid END) regv, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) avgdur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) avgscroll FROM tw_hits WHERE ${W}`, since);
-  const single = await one(db, `SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(*)=1)`, since);
-  const all = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u, MIN(ts) first FROM tw_hits WHERE 1=1' + hf);
-  const win = async ms => one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf, now - ms);
-  const [h24, d7, d30, online] = await Promise.all([win(86400000), win(7 * 86400000), win(30 * 86400000), win(300000)]);
-  const byDay = await rows(db, `SELECT date((ts/1000)+${off},'unixepoch') d, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY d ORDER BY d`, since);
-  const byHour = await rows(db, `SELECT CAST(strftime('%H',(ts/1000)+${off},'unixepoch') AS INTEGER) h, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY h ORDER BY h`, since);
-  const heat = await rows(db, `SELECT CAST(strftime('%w',(ts/1000)+${off},'unixepoch') AS INTEGER) w, CAST(strftime('%H',(ts/1000)+${off},'unixepoch') AS INTEGER) h, COUNT(*) v FROM tw_hits WHERE ${W} GROUP BY w,h`, since);
-  const countries = await rows(db, `SELECT country c, COUNT(*) v, COUNT(DISTINCT vid) u, COUNT(DISTINCT CASE WHEN is_new=1 THEN vid END) nv, COUNT(DISTINCT CASE WHEN reg=1 THEN vid END) rv, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) dur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) sc FROM tw_hits WHERE ${W} AND country<>'' GROUP BY country ORDER BY u DESC LIMIT 40`, since);
-  const intent = await rows(db, `SELECT h.country c, COUNT(DISTINCT e.vid) n FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE e.ts > ? AND e.name IN ('pay_open','binance_ref','unlock_click') AND h.country<>'' GROUP BY h.country`, since);
-  const cities = await rows(db, `SELECT city, country c, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND city<>'' GROUP BY city, country ORDER BY u DESC LIMIT 15`, since);
-  const dist = async col => rows(db, `SELECT ${col} k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND ${col}<>'' GROUP BY ${col} ORDER BY u DESC LIMIT 10`, since);
-  const [devices, browsers, oses, langs, refs] = await Promise.all([dist('device'), dist('browser'), dist('os'), dist('lang'), dist('ref')]);
-  const pages = await rows(db, `SELECT path, COUNT(*) v, COUNT(DISTINCT vid) u, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) dur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) sc FROM tw_hits WHERE ${W} GROUP BY path ORDER BY v DESC LIMIT 15`, since);
-  const events = await rows(db, 'SELECT name, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name ORDER BY n DESC', since);
-  const recent = await rows(db, 'SELECT hid, ts, uid, substr(vid,1,6) vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human FROM tw_hits WHERE 1=1' + hf + ' ORDER BY ts DESC LIMIT 40');
-  const repeat = await one(db, `SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(DISTINCT date(ts/1000,'unixepoch'))>1)`, since);
+  const mainResults=await db.batch([
+    db.prepare(`SELECT COUNT(*) views, COUNT(DISTINCT vid) uniq, COUNT(DISTINCT CASE WHEN is_new=1 THEN vid END) newv, COUNT(DISTINCT CASE WHEN reg=1 THEN vid END) regv, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) avgdur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) avgscroll FROM tw_hits WHERE ${W}`).bind(since),
+    db.prepare(`SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(*)=1)`).bind(since),
+    db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u, MIN(ts) first FROM tw_hits WHERE 1=1' + hf),
+    db.prepare(`SELECT date((ts/1000)+${off},'unixepoch') d, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY d ORDER BY d`).bind(since),
+    db.prepare(`SELECT CAST(strftime('%H',(ts/1000)+${off},'unixepoch') AS INTEGER) h, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY h ORDER BY h`).bind(since),
+    db.prepare(`SELECT CAST(strftime('%w',(ts/1000)+${off},'unixepoch') AS INTEGER) w, CAST(strftime('%H',(ts/1000)+${off},'unixepoch') AS INTEGER) h, COUNT(*) v FROM tw_hits WHERE ${W} GROUP BY w,h`).bind(since),
+    db.prepare(`SELECT country c, COUNT(*) v, COUNT(DISTINCT vid) u, COUNT(DISTINCT CASE WHEN is_new=1 THEN vid END) nv, COUNT(DISTINCT CASE WHEN reg=1 THEN vid END) rv, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) dur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) sc FROM tw_hits WHERE ${W} AND country<>'' GROUP BY country ORDER BY u DESC LIMIT 40`).bind(since),
+    db.prepare(`SELECT h.country c, COUNT(DISTINCT e.vid) n FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE e.ts > ? AND e.name IN ('pay_open','binance_ref','unlock_click') AND h.country<>'' GROUP BY h.country`).bind(since),
+    db.prepare(`SELECT city, country c, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND city<>'' GROUP BY city, country ORDER BY u DESC LIMIT 15`).bind(since),
+    db.prepare(`SELECT path, COUNT(*) v, COUNT(DISTINCT vid) u, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) dur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) sc FROM tw_hits WHERE ${W} GROUP BY path ORDER BY v DESC LIMIT 15`).bind(since),
+    db.prepare('SELECT name, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name ORDER BY n DESC').bind(since),
+    db.prepare('SELECT hid, ts, uid, substr(vid,1,6) vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human FROM tw_hits WHERE 1=1' + hf + ' ORDER BY ts DESC LIMIT 40'),
+    db.prepare(`SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(DISTINCT date(ts/1000,'unixepoch'))>1)`).bind(since),
+    db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-86400000),
+    db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-7*86400000),
+    db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-30*86400000),
+    db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-300000),
+    db.prepare(`SELECT device k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND device<>'' GROUP BY device ORDER BY u DESC LIMIT 10`).bind(since),
+    db.prepare(`SELECT browser k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND browser<>'' GROUP BY browser ORDER BY u DESC LIMIT 10`).bind(since),
+    db.prepare(`SELECT os k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND os<>'' GROUP BY os ORDER BY u DESC LIMIT 10`).bind(since),
+    db.prepare(`SELECT lang k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND lang<>'' GROUP BY lang ORDER BY u DESC LIMIT 10`).bind(since),
+    db.prepare(`SELECT ref k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND ref<>'' GROUP BY ref ORDER BY u DESC LIMIT 10`).bind(since),
+  ]);
+  const tot=(mainResults[0].results||[])[0]||{};
+  const single=(mainResults[1].results||[])[0]||{};
+  const all=(mainResults[2].results||[])[0]||{};
+  const byDay=mainResults[3].results||[];
+  const byHour=mainResults[4].results||[];
+  const heat=mainResults[5].results||[];
+  const countries=mainResults[6].results||[];
+  const intent=mainResults[7].results||[];
+  const cities=mainResults[8].results||[];
+  const pages=mainResults[9].results||[];
+  const events=mainResults[10].results||[];
+  const recent=mainResults[11].results||[];
+  const repeat=(mainResults[12].results||[])[0]||{};
+  const h24=(mainResults[13].results||[])[0]||{};
+  const d7=(mainResults[14].results||[])[0]||{};
+  const d30=(mainResults[15].results||[])[0]||{};
+  const online=(mainResults[16].results||[])[0]||{};
+  const devices=mainResults[17].results||[];
+  const browsers=mainResults[18].results||[];
+  const oses=mainResults[19].results||[];
+  const langs=mainResults[20].results||[];
+  const refs=mainResults[21].results||[];
   const unlocks = await one(db, "SELECT COUNT(*) n FROM jenny_unlocks WHERE via='coins'").catch(() => ({}));
 
   // ---- v2: bots filtered, peaks, live map, funnel, promo marks ----
