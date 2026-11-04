@@ -13,9 +13,11 @@
     if(width&&height){var q=document.createElement('i');q.textContent='▱ '+width+'×'+height;meta.appendChild(q)}
     var d=document.createElement('i');d.textContent='⬇ Download';meta.appendChild(d);
     var price=cb.querySelector('p');
+    if(price&&/or in the full/i.test(price.textContent))price.textContent=price.textContent.split(/\s+or in the full/i)[0].trim();
     if(price&&label&&!price.textContent.includes(label))price.textContent=price.textContent.trim()+' · '+label;
     var full=cb.querySelector('.full');
-    if(full&&full.textContent.toLowerCase().indexOf('watch')===-1)full.textContent='▶ Watch & download · Original resolution';
+    if(full)full.textContent='▶ Watch & download · Original resolution';
     if(full)cb.insertBefore(meta,full);
+    var votes=cb.querySelector('.vt');if(votes)votes.hidden=true;
   });
 })();
