@@ -5,7 +5,8 @@ export const BONUS_GROUPS = [
   {id:'07',parts:['79','87']}
 ];
 export const isLolitaBonus = n => BONUS_GROUPS.some(g=>g.parts.includes(n));
-export const SPIN_WAIT = 1200000;
+export const SPIN_WINDOW = 3600000;
+export const SPINS_PER_HOUR = 5;
 export const WHEEL_TOKENS = [10,0,25,0,50,0,100,0];
 export function choosePrize(unowned, random) {
   const segment=random(8),tokens=WHEEL_TOKENS[segment];
