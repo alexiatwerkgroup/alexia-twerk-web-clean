@@ -1,4 +1,4 @@
-#lolita-bonus{padding:58px 0;background:#090a10;border-block:1px solid #2b2d38}
+#lolita-bonus{display:none!important}
 #lolita-bonus .bonus-layout{max-width:1100px;margin:auto;display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:center}
 #lolita-bonus .bonus-copy h2{font:400 clamp(42px,5vw,76px)/.95 Anton,sans-serif;margin:12px 0;text-transform:uppercase}
 #lolita-bonus .bonus-copy h2 em{color:#ff8a00;font-style:normal}
@@ -21,3 +21,13 @@
 #lolita-bonus .bonus-auth-help ol{margin:8px 0 14px;padding-left:22px}
 #lolita-bonus .bonus-auth-help a{display:inline-block;padding:9px 13px;border:1px solid #ffb52e;border-radius:7px;color:#ffcf70;font-weight:700}
 @media(max-width:800px){#lolita-bonus .bonus-layout{grid-template-columns:1fr;gap:28px}#lolita-bonus .bonus-stage{grid-row:1;min-height:270px}}
+
+/* Lolita catalog uses the Jenny universal card language; only content changes. */
+body[data-model="lolita"] .grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+body[data-model="lolita"] .c .v{border-radius:14px}
+body[data-model="lolita"] .cb h3{font-size:30px}
+body[data-model="lolita"] .cb p{font-size:12px;letter-spacing:.14em}
+body[data-model="lolita"] .universal-meta{font-size:15px}
+body[data-model="lolita"] .full{min-height:54px}
+@media(max-width:1000px){body[data-model="lolita"] .grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:640px){body[data-model="lolita"] .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
