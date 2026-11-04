@@ -103,3 +103,8 @@ html body[data-mode=casero] .chip{border-color:#ff8a00;box-shadow:0 0 12px rgba(
 .c{scroll-margin-top:90px}.unt .tz video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.hero p [class~=ic],.pc p [class~=ic],.sub [class~=ic]{display:none}.c .tag{left:auto;right:10px}
 .release-countdown{margin:20px 0;padding:20px 22px;background:#090a10;border:1px solid var(--ac);border-radius:14px;max-width:520px}.release-countdown p{margin:5px 0;color:var(--mut);font:13px/1.6 system-ui}.release-time{display:block;font:800 clamp(36px,7vw,62px)/1.2 monospace;letter-spacing:.08em;color:var(--ac)}.release-state{font-size:11px!important}body[data-release-pending=true] #pricing,body[data-release-pending=true] #catalog,body[data-release-pending=true] #how,body[data-release-pending=true] .unt{display:none}
 body[data-model=lolita] #pricing .price{grid-template-columns:minmax(0,540px);justify-content:center}
+.jenny-promo{padding:46px 0 18px;background:radial-gradient(circle at 50% 0,rgba(255,138,0,.14),transparent 62%);border-bottom:1px solid var(--line)}
+.jenny-promo .promo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.jenny-promo .ended{opacity:.7}
+@media(max-width:1000px){.jenny-promo .promo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.jenny-promo .promo-grid{grid-template-columns:1fr}}
