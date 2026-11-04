@@ -62,6 +62,7 @@
 <p class="warn">Tap a box to copy. Send <b>USDT</b> only, on the <b>exact network</b> shown above (TRC20 or ERC20). Other networks or coins will be lost. Then send the receipt and the email you use at Twerkhub on <a href="/discord" style="color:var(--ac)">Discord</a> and we unlock your account.</p></dialog>
 <script>(function(){var d=document.getElementById('pay');document.addEventListener('click',function(e){var b=e.target.closest('[data-pay]');if(b){e.preventDefault();document.getElementById('payT').textContent='Coins · $0.50 each';document.getElementById('payA').innerHTML='Send <span class="amt">$0.50 × coins</span> (minimum 20 coins = $10).';d.showModal();return}var c=e.target.closest('[data-copy]');if(c){try{navigator.clipboard.writeText(c.dataset.copy);var o=c.textContent;c.textContent='Copied ✓';setTimeout(function(){c.textContent=o},1200)}catch(x){}}if(e.target===d)d.close()})})();</script>
 <script>
+document.querySelectorAll('.c[data-width][data-height]').forEach(function(card){var w=Number(card.dataset.width),h=Number(card.dataset.height);if(w>0&&h>0)card.style.setProperty('--media-ratio',w+' / '+h)});
 (function(){var b=document.body,K='twk-jenny-mode';
 function set(m){b.dataset.mode=m;try{localStorage.setItem(K,m)}catch(e){}document.querySelectorAll('#iam button').forEach(function(x){x.classList.toggle('on',x.dataset.m==m)})}
 var s0='casero';try{var s=localStorage.getItem(K);if(s&&/^(casero|neon|custom|feed)$/.test(s))s0=s}catch(e){}set(s0);
