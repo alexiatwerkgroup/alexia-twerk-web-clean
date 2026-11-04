@@ -60,10 +60,16 @@ export async function onRequestGet({ request, env }) {
   for (let b = nowB - 14 * 24 + 1, i = 0; b <= nowB; b++) { const r = hrs.find(x => x.b === b); series.push({ b, u: r ? r.u : 0 }); }
   const vals = series.map(x => x.u), mean = vals.reduce((a, c) => a + c, 0) / Math.max(1, vals.length), sd = Math.sqrt(vals.reduce((a, c) => a + (c - mean) ** 2, 0) / Math.max(1, vals.length));
   const peaks = [];
-  for (const x of series) { if (x.u >= 3 && x.u >= mean + 2 * Math.max(sd, 0.8)) { const t0 = x.b * 3600000;
-      const rf = await one(db, `SELECT ref k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts >= ? AND ts < ?${hf} AND ref<>'' GROUP BY ref ORDER BY u DESC LIMIT 1`, t0, t0 + 3600000);
-      const ct = await one(db, `SELECT country k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts >= ? AND ts < ?${hf} AND country<>'' GROUP BY country ORDER BY u DESC LIMIT 1`, t0, t0 + 3600000);
-      peaks.push({ ts: t0, u: x.u, x: mean ? +(x.u / mean).toFixed(1) : null, ref: rf.k || '', refU: rf.u || 0, country: ct.k || '', countryU: ct.u || 0 }); } }
+  const peakHours=series.filter(x=>x.u>=3&&x.u>=mean+2*Math.max(sd,0.8));
+  let peakRefs=[],peakCountries=[];
+  if(peakHours.length){
+    [peakRefs,peakCountries]=await Promise.all([
+      rows(db,`SELECT (ts/3600000) b,ref k,COUNT(DISTINCT vid) u FROM tw_hits WHERE ts>?${hf} AND ref<>'' GROUP BY b,ref ORDER BY u DESC`,now-14*86400000),
+      rows(db,`SELECT (ts/3600000) b,country k,COUNT(DISTINCT vid) u FROM tw_hits WHERE ts>?${hf} AND country<>'' GROUP BY b,country ORDER BY u DESC`,now-14*86400000)
+    ]);
+  }
+  const refByHour=new Map(),countryByHour=new Map();for(const r of peakRefs)if(!refByHour.has(r.b))refByHour.set(r.b,r);for(const r of peakCountries)if(!countryByHour.has(r.b))countryByHour.set(r.b,r);
+  for(const x of peakHours){const rf=refByHour.get(x.b)||{},ct=countryByHour.get(x.b)||{};peaks.push({ts:x.b*3600000,u:x.u,x:mean?+(x.u/mean).toFixed(1):null,ref:rf.k||'',refU:rf.u||0,country:ct.k||'',countryU:ct.u||0});}
   const mins = await rows(db, `SELECT (ts/300000) b, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?${hf} GROUP BY b ORDER BY b`, now - 48 * 3600000);
   const live = await rows(db, `SELECT lat, lon, country c, city, MAX(ts) ts, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?${hf} AND lat IS NOT NULL GROUP BY lat, lon ORDER BY ts DESC LIMIT 200`, now - 30 * 60000);
   // ---- who is online right now (last activity < 2.5 min; hit time + visible seconds) ----
