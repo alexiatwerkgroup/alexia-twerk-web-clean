@@ -20,8 +20,8 @@ export async function onRequest({ request, env }) {
     return reply({ ok: true, chunk: CHUNK, files: r.results || [] });
   }
   const name = url.searchParams.get('name') || '';
-  if (!/^v(0[1-9]|[1-9][0-9])\.mp4$/.test(name)) return reply({ error: 'bad_name' }, 400);
-  const key = 'lolita/' + name;
+  if (!/^(?:bonus-)?v(0[1-9]|[1-9][0-9])\.mp4$/.test(name)) return reply({ error: 'bad_name' }, 400);
+  const key = name.startsWith('bonus-') ? 'lolita/bonus/' + name.slice(6) : 'lolita/' + name;
   if (request.method === 'POST' && action === 'init') {
     const body = await request.json().catch(() => ({}));
     const size = Number(body.size);

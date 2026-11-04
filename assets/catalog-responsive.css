@@ -6,3 +6,5 @@ html body[data-mode] .grid{gap:24px;grid-template-columns:repeat(auto-fit,minmax
 html body[data-mode] .tag{max-width:calc(100% - 20px);white-space:normal;line-height:1.4;font-size:10px;letter-spacing:.035em}
 html body[data-mode] .vb .t b,html body[data-mode] .vb .t i{white-space:normal;overflow-wrap:anywhere}html body[data-mode] .pc{min-width:0}
 @media(max-width:640px){html body[data-mode] .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 12px}html body[data-mode] .full{font-size:11px;min-height:72px;padding:10px 7px}html body[data-mode] .tag{font-size:8px;padding:4px;max-width:calc(100% - 16px)}html body[data-mode=feed] .grid{grid-template-columns:1fr}}
+
+html body[data-mode] .c .v{aspect-ratio:4/5}html body[data-mode] .c video{object-fit:contain}

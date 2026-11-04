@@ -2,7 +2,6 @@
 // Registry: only slugs listed here can be served. Videos live in the private R2 bucket
 // JENNY_VIDEOS under the prefix "<slug>/v<NN>.mp4" (e.g. abbi/v01.mp4).
 // Coins are shared with Jenny (table jenny_coins). Unlocks/access are per model.
-import {isLolitaBonus} from './lolita-bonus.js';
 export const MODELS = {
   abbi:    { name: 'Abbi' },
   vegan:   { name: 'Vegan' },
@@ -12,7 +11,9 @@ export const MODELS = {
   lolita:  { name: 'Lolita' },
 };
 export const COIN_COST = 1;        // 1 coin = $0.50 (same as Jenny for now)
-export const LOLITA_COSTS = {"01":11,"02":4,"03":4,"04":8,"05":9,"06":9,"07":10,"08":9,"09":8,"10":8,"11":9,"12":10,"13":10,"14":6,"15":10,"16":9,"17":10,"18":6,"19":6,"20":6,"21":4,"22":5,"23":6,"24":6,"25":5,"26":4,"27":6,"28":4,"29":6,"30":4,"31":5,"32":1,"33":1,"34":1,"35":1,"36":4,"37":6,"38":6,"39":11,"40":11,"41":11,"42":11,"43":11,"44":11,"45":11,"47":11,"48":8,"49":11,"50":7,"51":7,"55":6,"56":9,"57":11,"58":8,"61":11,"62":4,"63":10,"64":10,"65":9,"66":8,"67":6,"68":2,"69":1,"70":7,"71":9,"72":9,"73":7,"74":5,"75":5,"76":6,"77":5,"78":8,"80":6};
+export const LOLITA_COSTS = {"01":11,"02":4,"03":4,"04":8,"05":9,"06":9,"07":10,"08":9,"09":8,"10":8,"11":9,"12":10,"13":10,"14":6,"15":10,"16":9,"17":10,"18":6,"19":6,"20":6,"21":4,"22":5,"23":6,"24":6,"25":5,"26":4,"27":6,"28":4,"29":6,"30":4,"31":5,"32":1,"33":1,"34":1,"35":1,"36":4,"37":6,"38":6,"39":11,"40":11,"41":11,"42":11,"43":11,"44":11,"45":11,"46":12,"47":11,"48":8,"49":11,"50":7,"51":7,"52":11,"53":11,"54":11,"55":6,"56":9,"57":11,"58":8,"59":11,"60":11,"61":11,"62":4,"63":10,"64":10,"65":9,"66":8,"67":6,"68":2,"69":1,"70":7,"71":9,"72":9,"73":7,"74":5,"75":5,"76":6,"77":5,"78":8,"79":11,"80":6};
+export const LOLITA_PARTS = {"46":"81","52":"82","53":"83","54":"84","59":"85","60":"86","79":"87"};
+export const lolitaPrimary = n => Object.keys(LOLITA_PARTS).find(k=>LOLITA_PARTS[k]===n)||n;
 export const coinCost = (slug, n) => slug === "lolita" ? (LOLITA_COSTS[n] || null) : COIN_COST;
 export const MIN_COIN_PURCHASE = 20;
 export const OWNER = 'alexiatwerkoficial@gmail.com';
@@ -34,7 +35,7 @@ export async function canWatch(env, user, slug, n) {
   if (user.tier === 'vip' || em === OWNER || allowed.includes(em)) return true;
   const u = await env.DB.prepare('SELECT 1 x FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?').bind(slug, em, n).first();
   if (u) return true;
-  if (slug === 'lolita' && isLolitaBonus(n)) return false;
+  if (slug === 'lolita') { const primary=lolitaPrimary(n); if(primary!==n) { const access=await env.DB.prepare('SELECT 1 x FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?').bind(slug,em,primary).first(); if(access)return true; } }
   const r = await env.DB.prepare('SELECT 1 x FROM catalog_access WHERE slug = ? AND email = ?').bind(slug, em).first();
   return !!r;
 }

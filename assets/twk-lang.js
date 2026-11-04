@@ -24,18 +24,19 @@
       '@media(max-width:900px){.twk-lang>button span{display:none}.twk-lang{margin-left:auto}.twk-lang+.twk-coin{margin-left:8px}}';
     document.head.appendChild(s);
   }
-  function pick(l) { try { localStorage.setItem(K, l); } catch (e) {} ck(l); location.reload(); }
+  function pick(l){try{localStorage.setItem(K,l)}catch(e){}ck('en');if(window.TwkI18n)window.TwkI18n.setLang(l);else location.reload();document.querySelectorAll('.twk-lang').forEach(function(el){el.classList.remove('o');el.querySelector('button>span').textContent=l.toUpperCase();el.querySelectorAll('[data-l]').forEach(function(b){b.classList.toggle('on',b.dataset.l===l)});el.querySelector('button').setAttribute('aria-expanded','false')})}
+
   function mount() {
     var w = document.querySelector('.tn2-w'); if (!w || w.querySelector('.twk-lang')) return;
     css();
     var cur = get(), c = L.filter(function (x) { return x[0] === cur; })[0] || L[0];
     var el = document.createElement('div'); el.className = 'twk-lang'; el.setAttribute('translate', 'no'); el.classList.add('notranslate');
-    el.innerHTML = '<button type="button" aria-label="Language" aria-haspopup="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg><span>' + c[2] + '</span></button><ul>' + L.map(function (x) { return '<li><button type="button" data-l="' + x[0] + '"' + (x[0] === cur ? ' class="on"' : '') + '>' + x[1] + '<small>' + x[2] + '</small></button></li>'; }).join('') + '</ul>';
+    el.innerHTML = '<button type="button" aria-label="Language" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg><span>' + c[2] + '</span></button><ul>' + L.map(function (x) { return '<li><button type="button" data-l="' + x[0] + '"' + (x[0] === cur ? ' class="on"' : '') + '>' + x[1] + '<small>' + x[2] + '</small></button></li>'; }).join('') + '</ul>';
     var anchor = w.querySelector('.twk-coin') || w.querySelector('details');
     if (anchor) w.insertBefore(el, anchor); else w.appendChild(el);
-    el.querySelector('button').onclick = function (e) { e.stopPropagation(); el.classList.toggle('o'); };
+    el.querySelector('button').onclick = function (e) { e.stopPropagation(); var open=el.classList.toggle('o');el.querySelector('button').setAttribute('aria-expanded',String(open)); };
     el.querySelector('ul').onclick = function (e) { var b = e.target.closest('button[data-l]'); if (b) pick(b.dataset.l); };
-    document.addEventListener('click', function () { el.classList.remove('o'); });
+    document.addEventListener('click',function(){el.classList.remove('o');el.querySelector('button').setAttribute('aria-expanded','false')});document.addEventListener('keydown',function(e){if(e.key==='Escape'){el.classList.remove('o');el.querySelector('button').setAttribute('aria-expanded','false')}});
     document.querySelectorAll('.tn2-logo').forEach(function (a) { a.setAttribute('translate', 'no'); a.classList.add('notranslate'); });
   }
   var cur = get(); ck('en'); /* Google Translate off: twk-i18n.js translates the text instead */
