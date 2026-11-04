@@ -28,9 +28,15 @@ export async function onRequest({ request, env, params }) {
   // never charge for a video that is not in storage yet
   const o = await env.JENNY_VIDEOS.head(videoKey(slug, n));
   if (!o) return json({ ok: false, error: 'not_available' }, 404);
-  const r = await env.DB.prepare('UPDATE jenny_coins SET coins = coins - ? WHERE email = ? AND coins >= ?').bind(cost, em, cost).run();
-  if (!r.meta || r.meta.changes !== 1) return json({ ok: false, error: 'not_enough_coins', cost }, 402);
-  await env.DB.prepare("INSERT OR IGNORE INTO catalog_unlocks (slug, email, n, via) VALUES (?, ?, ?, 'coins')").bind(slug, em, n).run();
+  const results = await env.DB.batch([
+    env.DB.prepare('UPDATE jenny_coins SET coins = coins - ? WHERE email = ? AND coins >= ? AND NOT EXISTS (SELECT 1 FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?)').bind(cost, em, cost, slug, em, n),
+    env.DB.prepare("INSERT OR IGNORE INTO catalog_unlocks (slug, email, n, via) SELECT ?, ?, ?, 'coins' WHERE changes() = 1").bind(slug, em, n)
+  ]);
+  if (!results[0].meta || results[0].meta.changes !== 1) {
+    const already = await env.DB.prepare('SELECT 1 x FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?').bind(slug, em, n).first();
+    if (already) return json({ ok: true, already: true });
+    return json({ ok: false, error: 'not_enough_coins', cost }, 402);
+  }
   const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE email = ?').bind(em).first();
   return json({ ok: true, kind: 'coins', coins: c ? c.coins : 0 });
 }
