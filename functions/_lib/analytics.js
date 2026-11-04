@@ -12,6 +12,7 @@ export async function init(db) {
   ]);
   for (const c of ['human INTEGER DEFAULT 0','lat REAL','lon REAL','uid TEXT','last_active INTEGER']) { try { await db.prepare('ALTER TABLE tw_hits ADD COLUMN ' + c).run(); } catch (e) {} }
   await db.prepare('CREATE INDEX IF NOT EXISTS tw_hits_active ON tw_hits(last_active)').run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS tw_hits_uid_active ON tw_hits(uid,last_active)').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS tw_marks (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER, label TEXT, channel TEXT)').run();
   ready = true;
 }

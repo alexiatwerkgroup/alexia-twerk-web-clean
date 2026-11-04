@@ -122,6 +122,7 @@ async function buildStats({ request, env }) {
   const evLast = await rows(db, "SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, h.country, h.city FROM tw_events e LEFT JOIN tw_hits h ON h.hid = e.hid ORDER BY e.ts DESC LIMIT 25");
   const landed = await one(db, `SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND path LIKE '/jenny%'`, since);
   const regs = await one(db, 'SELECT COUNT(*) n FROM profiles').catch(() => ({}));
+  const registeredLocations = await rows(db, `WITH latest AS (SELECT h.uid,h.country,h.city,ROW_NUMBER() OVER (PARTITION BY h.uid ORDER BY COALESCE(h.last_active,h.ts) DESC) rank FROM tw_hits h JOIN (SELECT id FROM profiles ORDER BY registered_at DESC LIMIT 25) p ON p.id=h.uid WHERE h.uid IS NOT NULL AND h.country<>'') SELECT uid,country,city FROM latest WHERE rank=1`);
   // best local hour per top country (visitor's own time zone)
   const raw = await rows(db, `SELECT country c, tz, ts FROM tw_hits WHERE ${W} AND country<>'' AND tz<>'' ORDER BY ts DESC LIMIT 20000`, since);
   const top = countries.slice(0, 8).map(x => x.c), loc = {}, fm = {};
@@ -134,7 +135,7 @@ async function buildStats({ request, env }) {
     (loc[r.c]=loc[r.c]||Array(24).fill(0))[h]++;
   }
   const bestLocal = Object.entries(loc).map(([c, a]) => ({ c, hours: a.map((n, h) => [h, n]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]) }));
-  return json({ ok: true, days, tz, now, totals: { ...tot, single: single.n, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList,  botsFiltered: botU.u || 0, includeBots: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
+  return json({ ok: true, days, tz, now, totals: { ...tot, single: single.n, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList, registeredLocations, botsFiltered: botU.u || 0, includeBots: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
 }
 
 // Multiple open owner panels share one short-lived snapshot rather than flooding D1.
