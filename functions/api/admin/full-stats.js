@@ -6,6 +6,7 @@
 
 import { authenticate } from '../../_lib/auth.js';
 import { json, preflight } from '../../_lib/http.js';
+import { init } from '../../_lib/analytics.js';
 
 const OWNER_EMAIL = 'alexiatwerkoficial@gmail.com';
 
@@ -22,6 +23,7 @@ export async function onRequest(context) {
   if (!me || !me.email || String(me.email).toLowerCase() !== OWNER_EMAIL) {
     return json({ ok: true, users: [], total_users: 0, owner_only: true }, 200, origin);
   }
+  await init(env.DB);
 
   const usersRows = await env.DB.prepare(
     `SELECT id, email, username, tokens, total_earned, streak, tier,
@@ -48,7 +50,9 @@ export async function onRequest(context) {
   let visits=[],countries=[],payments=[],trackingSince=null;
   try {
     visits=((await env.DB.prepare("WITH ordered AS (SELECT uid,ts,LAG(ts) OVER (PARTITION BY uid ORDER BY ts) previous FROM tw_hits WHERE uid IS NOT NULL AND human=1) SELECT uid,COUNT(*) page_views,SUM(CASE WHEN previous IS NULL OR ts-previous>1800000 THEN 1 ELSE 0 END) visits FROM ordered GROUP BY uid").all()).results)||[];
-    countries=((await env.DB.prepare("SELECT uid,country,city FROM (SELECT uid,country,city,ROW_NUMBER() OVER (PARTITION BY uid ORDER BY ts DESC) rank FROM tw_hits WHERE uid IS NOT NULL AND human=1 AND country<>'') WHERE rank=1").all()).results)||[];
+    // Country comes from Cloudflare's request IP geolocation, so use the latest
+    // observed location even when the visitor has not interacted with the page.
+    countries=((await env.DB.prepare("SELECT uid,country,city FROM (SELECT uid,country,city,ROW_NUMBER() OVER (PARTITION BY uid ORDER BY last_active DESC,ts DESC) rank FROM tw_hits WHERE uid IS NOT NULL AND country<>'') WHERE rank=1").all()).results)||[];
     trackingSince=(await env.DB.prepare('SELECT MIN(ts) since FROM tw_hits').first())?.since||null;
   } catch {}
   try { payments=((await env.DB.prepare("SELECT LOWER(email) email,SUM(amount_usd) paid_usd FROM verified_payments WHERE status='confirmed' GROUP BY LOWER(email)").all()).results)||[]; } catch {}
