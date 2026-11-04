@@ -107,7 +107,7 @@ html body[data-mode=casero] .btn:not(.vb){background:linear-gradient(180deg,#171
 html body[data-mode=casero] .btn:not(.vb):hover{filter:brightness(1.12);box-shadow:inset 0 0 0 1px rgba(247,221,139,.5),0 0 26px rgba(201,154,46,.5)}
 html body[data-mode=casero] .chip{border-color:#ff8a00;box-shadow:0 0 12px rgba(255,138,0,.45);border-radius:999px}
 .price{align-items:stretch}.pc{display:flex;flex-direction:column}.pc>ul{margin-bottom:24px}html body[data-mode] .pc>.vb,html body[data-mode] .pc>.btn{margin-top:auto;min-height:100px;height:100px;width:100%;box-sizing:border-box}html body[data-mode] .pc>.btn{display:flex;align-items:center;justify-content:center}
-.c{scroll-margin-top:90px}.unt .tz video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.hero p [class~=ic],.pc p [class~=ic],.sub [class~=ic]{display:none}.c .tag{left:auto;right:10px}</style><link rel="stylesheet" href="/assets/catalog-responsive.css?v=20261104-1"></head><body data-mode="casero">
+.c{scroll-margin-top:90px}.unt .tz video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.hero p [class~=ic],.pc p [class~=ic],.sub [class~=ic]{display:none}.c .tag{left:auto;right:10px}.release-countdown{margin:20px 0;padding:20px 22px;background:#090a10;border:1px solid var(--ac);border-radius:14px;max-width:520px}.release-countdown p{margin:5px 0;color:var(--mut);font:13px/1.6 system-ui}.release-time{display:block;font:800 clamp(36px,7vw,62px)/1.2 monospace;letter-spacing:.08em;color:var(--ac)}.release-state{font-size:11px!important}body[data-release-pending=true] #pricing,body[data-release-pending=true] #catalog,body[data-release-pending=true] #how,body[data-release-pending=true] .unt{display:none}</style><link rel="stylesheet" href="/assets/catalog-responsive.css?v=20261104-3"></head><body data-mode="casero" data-release-pending="true">
 <header class="tn2"><div class="tn2-w"><a class="tn2-logo" href="/" aria-label="Twerkhub home">TWERK<b>HUB</b></a>
 <div class="tn2-lk"><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/account">My account</a><a class="tn2-jn" href="/tainara/">Tainara VIP</a></div>
 <details><summary aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav><a class="on" href="/tainara/">Tainara VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/community">Community</a><a href="/account">My account</a></nav></details></div></header>
@@ -115,9 +115,9 @@ html body[data-mode=casero] .chip{border-color:#ff8a00;box-shadow:0 0 12px rgba(
 <div class="hero"><div class="w"><div class="in">
 <div class="l"><div class="nd og">VIP CATALOG<em>18+</em></div>
 <div class="kick mono" style="margin-top:20px">/ private catalog · 18+ · originals</div>
-<h1>Tainara.<br><em>Private</em><br>0 clips</h1>
-<p class="lead">Her full private collection is open. 👀 Hover any cover to preview it with sound, then unlock the <b>original in full quality</b> — watch it and download it. 🔞 Adults 18+ only.</p>
-<div class="cta"><a class="btn" href="#catalog">🔥 See the videos</a><a class="btn o" href="#pricing">💎 The pack · $19.99</a><button class="fol" id="follow" type="button" aria-pressed="false"><span class="bell">🔔</span><span class="ft"><b>Get notified</b><i>New uploads straight to your inbox</i></span><span class="sw"><u></u></span></button></div><div id="fmsg" class="mono"></div>
+<h1>Tainara.<br><em>Private</em><br>Coming soon</h1>
+<p class="lead">The videos are in preparation. Follow the countdown for the estimated release.</p><div id="release-clock" class="release-countdown" data-launch-at="2026-11-04T06:03:18Z"><p>Estimated release in</p><strong class="release-time" role="timer">--:--:--</strong><p class="release-date"></p><p class="release-state">Final checks before opening.</p></div>
+<div class="cta"><a class="btn" href="#release-clock">See the countdown</a><button class="fol" id="follow" type="button" aria-pressed="false"><span class="bell">🔔</span><span class="ft"><b>Get notified</b><i>New uploads straight to your inbox</i></span><span class="sw"><u></u></span></button></div><div id="fmsg" class="mono"></div>
 <div class="badges mono"><span style="color:var(--ok)"><em>🔞</em>18+ only</span><span style="color:var(--ac)"><em>⬇️</em>Originals · download included</span><span style="color:var(--ac2)"><em>⚡</em>Access once payment is confirmed</span></div></div>
 <div class="r"><div class="hv"><video src="p/hero_v14.mp4" poster="p/v14.jpg" muted loop playsinline autoplay></video></div><div class="hv"><video src="p/hero_v40.mp4" poster="p/v40.jpg" muted loop playsinline autoplay></video></div><div class="hv"><video src="p/hero_v10.mp4" poster="p/v10.jpg" muted loop playsinline autoplay></video></div></div>
 </div></div></div>
@@ -206,5 +206,5 @@ load();
 </script>
 <script src="/assets/twerkhub-activity.js?v=3" defer></script>
 <script src="/assets/twerkhub-ico.js?v=4" defer></script><script src="/assets/twerkhub-promo.js?v=1" defer></script>
-<script src="/assets/twk-stats-btn.js?v=20261104-1" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
-</body></html>
+<script src="/assets/twk-stats-btn.js?v=20261104-2" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
+<script src="/assets/catalog-countdown.js?v=20261104-1" defer></script><script src="/assets/catalog-preview-clock.js?v=20261104-1" defer></script></body></html>

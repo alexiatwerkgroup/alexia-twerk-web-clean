@@ -45,10 +45,20 @@ export async function onRequest(context) {
     'SELECT COUNT(*) as n FROM video_comments'
   ).first();
 
+  let visits=[],countries=[],payments=[],trackingSince=null;
+  try {
+    visits=((await env.DB.prepare("WITH ordered AS (SELECT uid,ts,LAG(ts) OVER (PARTITION BY uid ORDER BY ts) previous FROM tw_hits WHERE uid IS NOT NULL AND human=1) SELECT uid,COUNT(*) page_views,SUM(CASE WHEN previous IS NULL OR ts-previous>1800000 THEN 1 ELSE 0 END) visits FROM ordered GROUP BY uid").all()).results)||[];
+    countries=((await env.DB.prepare("SELECT uid,country,city FROM (SELECT uid,country,city,ROW_NUMBER() OVER (PARTITION BY uid ORDER BY ts DESC) rank FROM tw_hits WHERE uid IS NOT NULL AND human=1 AND country<>'') WHERE rank=1").all()).results)||[];
+    trackingSince=(await env.DB.prepare('SELECT MIN(ts) since FROM tw_hits').first())?.since||null;
+  } catch {}
+  try { payments=((await env.DB.prepare("SELECT LOWER(email) email,SUM(amount_usd) paid_usd FROM verified_payments WHERE status='confirmed' GROUP BY LOWER(email)").all()).results)||[]; } catch {}
+  const visitMap=new Map(visits.map(x=>[x.uid,x])),countryMap=new Map(countries.map(x=>[x.uid,x])),paymentMap=new Map(payments.map(x=>[x.email,x.paid_usd]));
+  const enriched=((usersRows&&usersRows.results)||[]).map(u=>({...u,country:countryMap.get(u.id)?.country||null,city:countryMap.get(u.id)?.city||null,recorded_visits:visitMap.get(u.id)?.visits??null,recorded_page_views:visitMap.get(u.id)?.page_views??null,confirmed_paid_usd:paymentMap.get(String(u.email).toLowerCase())??null}));
   return json(
     {
       ok: true,
-      users: (usersRows && usersRows.results) || [],
+      users: enriched,
+      tracking_since: trackingSince,
       ...totals,
       total_comments: (commentTotal && commentTotal.n) || 0,
       generated_at: new Date().toISOString(),

@@ -8,3 +8,7 @@ html body[data-mode] .vb .t b,html body[data-mode] .vb .t i{white-space:normal;o
 @media(max-width:640px){html body[data-mode] .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 12px}html body[data-mode] .full{font-size:11px;min-height:72px;padding:10px 7px}html body[data-mode] .tag{font-size:8px;padding:4px;max-width:calc(100% - 16px)}html body[data-mode=feed] .grid{grid-template-columns:1fr}}
 
 html body[data-mode] .c .v{aspect-ratio:4/5}html body[data-mode] .c video{object-fit:contain}
+
+.pricing-specs{padding:12px 14px;margin:12px 0 18px;border:1px solid var(--line,#333);border-radius:10px;background:#ffffff05}.pricing-specs p{font-size:13px;line-height:1.7;margin:5px 0}
+
+.preview-clock{position:absolute;left:10px;top:10px;z-index:4;padding:7px 9px;border:1px solid #dcb14a99;border-radius:8px;background:#05060bd9;color:#fff1b2;font:700 12px/1.2 monospace;font-variant-numeric:tabular-nums;box-shadow:0 2px 12px #0008;pointer-events:none}.preview-clock[hidden]{display:none}@media(max-width:640px){.preview-clock{left:7px;top:36px;font-size:10px;padding:5px 7px}}
