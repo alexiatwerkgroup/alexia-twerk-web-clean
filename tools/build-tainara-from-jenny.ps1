@@ -28,12 +28,11 @@ foreach ($file in $files) {
   $n = '{0:00}' -f $i
   $duration = Get-Duration $file.FullName
   $time = Format-Time $duration
-  $name = [System.Net.WebUtility]::HtmlEncode(([IO.Path]::GetFileNameWithoutExtension($file.Name)))
   $card = @'
-<article class="c long" id="v{0}" data-duration="{1}" data-n="{0}" data-pos="{2}"><div class="v"><video muted loop playsinline preload="none" poster="p/v{0}.jpg" data-src="p/v{0}.mp4"></video><span class="tag">PREVIEW · LOW RES</span><span class="fire">🔥 HOT</span><span class="lock">🔒</span></div><div class="cb"><div class="k">TAINARA · #{0}</div><h3>{3}</h3><p>1 coin per started minute</p><div class="vt" data-n="{0}"><button class="up" aria-label="Like">👍</button><button class="dn" aria-label="Dislike">👎</button><span class="vp mono">–</span></div><button class="full">▶ Watch &amp; download · Original resolution</button></div></article>
+<article class="c long" id="v{0}" data-duration="{1}" data-n="{0}" data-pos="{2}"><div class="v"><video muted loop playsinline preload="none" poster="p/v{0}.jpg" data-src="p/v{0}.mp4"></video><span class="tag">PREVIEW - LOW RES</span><span class="fire">HOT</span><span class="lock">LOCK</span></div><div class="cb"><div class="k">TAINARA - #{0}</div><h3>Video {0}</h3><p>1 coin per started minute</p><div class="vt" data-n="{0}"><button class="up" aria-label="Like">Like</button><button class="dn" aria-label="Dislike">Dislike</button><span class="vp mono">-</span></div><button class="full">WATCH &amp; DOWNLOAD - ORIGINAL RESOLUTION</button></div></article>
 '@
   $durationText = $duration.ToString('0.###', [Globalization.CultureInfo]::InvariantCulture)
-  [void]$cards.Append(($card.Trim() -f $n, $durationText, $i, $name))
+  [void]$cards.Append(($card.Trim() -f $n, $durationText, $i))
 }
 
 $start = $html.IndexOf('<div class="grid" id="grid">')
