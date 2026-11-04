@@ -13,15 +13,16 @@ export async function onRequest({ request, env }) {
   const user = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();
   if (String(user?.email || '').toLowerCase() !== OWNER) return reply({ error: 'owner_only' }, 403);
   const url = new URL(request.url), action = url.searchParams.get('action');
+  const model = url.searchParams.get('model') === 'tainara' ? 'tainara' : 'lolita';
   if (!['GET','POST','PUT'].includes(request.method)) return reply({ error: 'method' }, 405);
   await tables(env.DB);
   if (request.method === 'GET' && action === 'status') {
-    const r = await env.DB.prepare('SELECT key,size,status FROM lolita_uploads ORDER BY key').all();
+    const r = await env.DB.prepare('SELECT key,size,status FROM lolita_uploads WHERE key LIKE ? ORDER BY key').bind(model + '/%').all();
     return reply({ ok: true, chunk: CHUNK, files: r.results || [] });
   }
   const name = url.searchParams.get('name') || '';
   if (!/^(?:bonus-)?v(0[1-9]|[1-9][0-9])\.mp4$/.test(name)) return reply({ error: 'bad_name' }, 400);
-  const key = name.startsWith('bonus-') ? 'lolita/bonus/' + name.slice(6) : 'lolita/' + name;
+  const key = name.startsWith('bonus-') ? model + '/bonus/' + name.slice(6) : model + '/' + name;
   if (request.method === 'POST' && action === 'init') {
     const body = await request.json().catch(() => ({}));
     const size = Number(body.size);
