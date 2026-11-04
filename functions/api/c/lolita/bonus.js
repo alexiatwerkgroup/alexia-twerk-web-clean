@@ -12,22 +12,22 @@ export async function onRequest({request,env}){
  await env.DB.batch([
  env.DB.prepare('CREATE TABLE IF NOT EXISTS lolita_bonus_plays(claim_id TEXT PRIMARY KEY,user_id TEXT NOT NULL,at INTEGER NOT NULL,reward TEXT NOT NULL)'),
  env.DB.prepare('CREATE INDEX IF NOT EXISTS lolita_bonus_plays_user_at ON lolita_bonus_plays(user_id,at)'),
- env.DB.prepare('CREATE TABLE IF NOT EXISTS lolita_bonus_clips(email TEXT NOT NULL,n TEXT NOT NULL,won_at INTEGER NOT NULL,PRIMARY KEY(email,n))')
+ env.DB.prepare('CREATE TABLE IF NOT EXISTS lolita_bonus_previews(email TEXT NOT NULL,n TEXT NOT NULL,won_at INTEGER NOT NULL,PRIMARY KEY(email,n))')
  ]);
  const now=Date.now();
- const own=await env.DB.prepare('SELECT n FROM lolita_bonus_clips WHERE email=? ORDER BY n').bind(email).all();const won=(own.results||[]).map(x=>({n:x.n,seconds:30}));
- const uploads=await env.DB.prepare("SELECT key FROM lolita_uploads WHERE status='complete' AND key LIKE 'lolita/bonus/v%.mp4'").all();const keys=new Set((uploads.results||[]).map(x=>x.key));const ready=CATALOG.every(n=>keys.has('lolita/bonus/v'+n+'.mp4'));
+ const own=await env.DB.prepare('SELECT n FROM lolita_bonus_previews WHERE email=? ORDER BY n').bind(email).all();const won=(own.results||[]).map(x=>({n:x.n,seconds:10}));
+ const uploads=await env.DB.prepare("SELECT key FROM lolita_uploads WHERE status='complete' AND key LIKE 'lolita/v%.mp4'").all();const keys=new Set((uploads.results||[]).map(x=>x.key));const ready=CATALOG.every(n=>keys.has('lolita/v'+n+'.mp4'));
  const recent=await env.DB.prepare('SELECT at,reward FROM lolita_bonus_plays WHERE user_id=? AND at>? ORDER BY at').bind(uid,now-SPIN_WINDOW).all();const plays=recent.results||[],remaining=Math.max(0,SPINS_PER_HOUR-plays.length),next=remaining?0:plays[0].at+SPIN_WINDOW;
  if(request.method==='GET')return reply({ok:true,ready,now,next_at:next,remaining,tokens:user.tokens||0,won});
  if(!ready)return reply({error:'clips_preparing',now,next_at:next,remaining},503);
  if(!remaining)return reply({error:'cooldown',now,next_at:next,remaining:0},429);
  const prize=choosePrize(CATALOG.filter(n=>!won.some(w=>w.n===n)),random);
- if(prize.type==='clip'&&!(await env.JENNY_VIDEOS.head('lolita/bonus/v'+prize.n+'.mp4')))return reply({error:'prize_not_ready'},503);
+ if(prize.type==='clip'&&!(await env.JENNY_VIDEOS.head('lolita/v'+prize.n+'.mp4')))return reply({error:'prize_not_ready'},503);
  const claim=crypto.randomUUID();let query='INSERT INTO lolita_bonus_plays(claim_id,user_id,at,reward) SELECT ?,?,?,? WHERE (SELECT COUNT(*) FROM lolita_bonus_plays WHERE user_id=? AND at>?)<?',args=[claim,uid,now,JSON.stringify(prize),uid,now-SPIN_WINDOW,SPINS_PER_HOUR];
- if(prize.type==='clip'){query+=' AND NOT EXISTS (SELECT 1 FROM lolita_bonus_clips WHERE email=? AND n=?)';args.push(email,prize.n)}
+ if(prize.type==='clip'){query+=' AND NOT EXISTS (SELECT 1 FROM lolita_bonus_previews WHERE email=? AND n=?)';args.push(email,prize.n)}
  const statements=[env.DB.prepare(query).bind(...args)];
  if(prize.type==='tokens')statements.push(env.DB.prepare('UPDATE profiles SET tokens=COALESCE(tokens,0)+?,total_earned=COALESCE(total_earned,0)+? WHERE id=? AND EXISTS(SELECT 1 FROM lolita_bonus_plays WHERE claim_id=?)').bind(prize.tokens,prize.tokens,uid,claim));
- else statements.push(env.DB.prepare('INSERT OR IGNORE INTO lolita_bonus_clips(email,n,won_at) SELECT ?,?,? WHERE EXISTS(SELECT 1 FROM lolita_bonus_plays WHERE claim_id=?)').bind(email,prize.n,now,claim));
+ else statements.push(env.DB.prepare('INSERT OR IGNORE INTO lolita_bonus_previews(email,n,won_at) SELECT ?,?,? WHERE EXISTS(SELECT 1 FROM lolita_bonus_plays WHERE claim_id=?)').bind(email,prize.n,now,claim));
  const results=await env.DB.batch(statements);
  const current=await env.DB.prepare('SELECT at FROM lolita_bonus_plays WHERE user_id=? AND at>? ORDER BY at').bind(uid,now-SPIN_WINDOW).all();const left=Math.max(0,SPINS_PER_HOUR-current.results.length),nextAt=left?0:current.results[0].at+SPIN_WINDOW;
  if(results[0].meta.changes!==1)return reply({error:left?'retry_spin':'cooldown',now,next_at:nextAt,remaining:left},left?409:429);
