@@ -1,6 +1,6 @@
 // GET /api/c/<slug>/video?n=01..99  (login + access check). Streams from private R2 (JENNY_VIDEOS).
 import { authenticate } from '../../../_lib/auth.js';
-import { modelOf, validN, canWatch, videoKey } from '../../../_lib/catalog.js';
+import { modelOf, validN, canWatch, ensureTables, videoKey } from '../../../_lib/catalog.js';
 
 export async function onRequestGet({ request, env, params }) {
   const deny = (s, m) => new Response(m, { status: s, headers: { 'Cache-Control': 'no-store' } });
@@ -13,6 +13,7 @@ export async function onRequestGet({ request, env, params }) {
   if (!p || !p.sub) return deny(401, 'login_required');
   const u = await env.DB.prepare('SELECT email, tier FROM profiles WHERE id = ?').bind(p.sub).first();
   if (!u) return deny(401, 'login_required');
+  await ensureTables(env);
   if (!(await canWatch(env, u, slug, n))) return deny(403, 'coins_required');
 
   const key = videoKey(slug, n);
