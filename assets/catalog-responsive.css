@@ -15,6 +15,8 @@ html body[data-mode] .c .v{aspect-ratio:4/5}html body[data-mode] .c video{object
 
 /* Universal Jenny reference: portrait cards, preserved pixel proportions, no preview letterboxing. */
 html body[data-mode] .c .v{aspect-ratio:9/16}html body[data-mode] .c .v video{object-fit:cover}html body[data-mode] .c .v video[controls]{object-fit:contain}
+/* Lolita sources have mixed native aspect ratios; show every frame without cropping or stretching. */
+html body[data-model="lolita"] .c .v video{object-fit:contain;background:#000}
 .video-duration{position:absolute;left:10px;bottom:10px;z-index:4;background:#05060bd9;border:1px solid #ffffff30;border-radius:6px;padding:5px 8px;color:#fff;font:700 12px/1.3 monospace;font-variant-numeric:tabular-nums;pointer-events:none}.video-duration[hidden]{display:none}.preview-clock{display:flex;align-items:center;gap:7px;letter-spacing:.02em}.preview-clock svg{width:16px;height:16px;flex:none}.preview-clock circle{fill:none;stroke:currentColor;stroke-width:2.2}.preview-clock .clock-progress{stroke-dasharray:44;stroke-dashoffset:var(--clock-offset,0);transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .15s linear}.preview-clock .clock-track{opacity:.2}
 
 /* Information is a UI layer, never a filter on the preview image. */
