@@ -106,8 +106,11 @@ body[data-model=lolita] #pricing .price{grid-template-columns:minmax(0,540px);ju
 .jenny-promo{padding:46px 0 18px;background:radial-gradient(circle at 50% 0,rgba(255,138,0,.14),transparent 62%);border-bottom:1px solid var(--line)}
 .jenny-promo .promo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 .jenny-promo .ended{opacity:.7}
-.jenny-promo #jenny-promo-countdown{color:#39ff14!important;border-color:#39ff14!important;text-shadow:0 0 8px #39ff14,0 0 22px #39ff14,0 0 44px #00ff66;box-shadow:0 0 10px #39ff14,0 0 28px #00ff6688,inset 0 0 18px #39ff1433!important;animation:toxicPulse 1.15s ease-in-out infinite!important;background:rgba(8,28,8,.72)}
+.jenny-promo #jenny-promo-countdown{position:relative;min-width:min(680px,90vw);color:#67ff3d!important;border-color:#39ff14!important;text-shadow:0 0 5px #39ff14,0 0 16px #39ff14,0 0 34px #00ff66;font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:.18em;background:linear-gradient(180deg,rgba(10,42,12,.88),rgba(1,12,4,.96));box-shadow:0 0 10px #39ff14,0 0 28px #00ff6688,inset 0 0 18px #39ff1433!important;animation:toxicPulse 1.15s ease-in-out infinite!important;overflow:hidden}
+.jenny-promo #jenny-promo-countdown:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 5px,#72ff5940 6px 7px);mix-blend-mode:screen;pointer-events:none;animation:scanline 3s linear infinite}
+.jenny-promo #jenny-promo-countdown:after{content:"";position:absolute;inset:0;border:1px solid #9aff7c88;box-shadow:inset 0 0 24px #39ff1438;pointer-events:none}
 @keyframes toxicPulse{0%,100%{filter:brightness(.95);transform:scale(1);box-shadow:0 0 10px #39ff14,0 0 28px #00ff6688,inset 0 0 18px #39ff1433}50%{filter:brightness(1.35);transform:scale(1.018);box-shadow:0 0 18px #39ff14,0 0 52px #00ff66, inset 0 0 28px #39ff1466}}
+@keyframes scanline{to{transform:translateY(12px)}}
 @media(max-width:1000px){.jenny-promo .promo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.jenny-promo .promo-grid{grid-template-columns:1fr}}
 .urgency-panel{position:fixed;right:18px;top:140px;z-index:45;width:260px;padding:16px;background:#090a10ee;border:1px solid var(--ac);border-radius:14px;box-shadow:0 12px 36px #0008;backdrop-filter:blur(8px)}
