@@ -50,11 +50,11 @@ $html = $html.Replace('93 Originals', '96 Originals')
 $html = $html.Replace('All · 93', 'All · 96').Replace('Full videos · 63', 'Full videos · 96').Replace('Short clips · 30', 'Short clips · 0')
 $html = $html.Replace('The pack · $99', '1 coin per started minute').Replace('63 clips · 50% OFF', '1 coin per started minute')
 $html = $html.Replace('Full pack', 'Simple pricing').Replace('Best value', 'Universal pricing')
-$html = [regex]::Replace($html, '<section class="tainara-promo".*?</section>', '')
+$html = [regex]::Replace($html, '(?s)<section class="tainara-promo".*?</section>', '')
 $tainaraPricing = @'
 <section id="pricing"><div class="w"><div class="kick mono">/ tainara pricing</div><h2>Choose your <em>video.</em></h2><div class="price"><div class="pc best"><span class="rib mono">⭐ TAINARA</span><div class="kick mono">Single video</div><div class="n">1<small>coin per started minute</small></div><p>Pay only for the time you choose. Watch and download the original resolution.</p><ul><li>✔ 96 full videos in the catalog</li><li>✔ Duration shown before purchase</li><li>✔ Same Binance payment and receipt flow as Lolita</li></ul><a class="vb" href="#pay" data-pay="coins"><span class="lk">🔒</span><span class="t"><b>Buy coins</b><i>Secure checkout · Verified Binance ID</i></span><img src="/tainara/p/binance.png" alt="Binance" width="56" height="54"></a></div></div><p class="bal" id="bal"></p></div></section>
 '@
-$html = [regex]::Replace($html, '<section id="pricing">.*?</section>', $tainaraPricing.Trim(), 1)
+$html = [regex]::Replace($html, '(?s)<section id="pricing">.*?</section>', $tainaraPricing.Trim(), 1)
 $html = $html.Replace('full $99 pack', 'the catalog')
 New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
 Set-Content -LiteralPath $target -Value $html -Encoding utf8
