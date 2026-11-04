@@ -121,7 +121,14 @@ async function buildStats({ request, env }) {
   // best local hour per top country (visitor's own time zone)
   const raw = await rows(db, `SELECT country c, tz, ts FROM tw_hits WHERE ${W} AND country<>'' AND tz<>'' ORDER BY ts DESC LIMIT 20000`, since);
   const top = countries.slice(0, 8).map(x => x.c), loc = {}, fm = {};
-  for (const r of raw) { if (!top.includes(r.c)) continue; let f = fm[r.tz]; if (!f) { try { f = fm[r.tz] = new Intl.DateTimeFormat('en-GB', { timeZone: r.tz, hour: 'numeric', hour12: false }); } catch { continue; } } const h = parseInt(f.format(new Date(r.ts))) % 24; (loc[r.c] = loc[r.c] || Array(24).fill(0))[h]++; }
+  for (const r of raw) {
+    if(!top.includes(r.c)||typeof r.tz!=='string')continue;
+    const stamp=Number(r.ts);if(!Number.isFinite(stamp))continue;
+    let f=Object.prototype.hasOwnProperty.call(fm,r.tz)?fm[r.tz]:null;
+    if(!f){try{f=fm[r.tz]=new Intl.DateTimeFormat('en-GB',{timeZone:r.tz,hour:'numeric',hour12:false})}catch{continue}}
+    let h;try{h=parseInt(f.format(new Date(stamp)))%24}catch{continue}if(!Number.isFinite(h))continue;
+    (loc[r.c]=loc[r.c]||Array(24).fill(0))[h]++;
+  }
   const bestLocal = Object.entries(loc).map(([c, a]) => ({ c, hours: a.map((n, h) => [h, n]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]) }));
   return json({ ok: true, days, tz, now, totals: { ...tot, single: single.n, repeat: repeat.n, allViews: all.v, allVisitors: all.u, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList,  botsFiltered: botU.u || 0, includeBots: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
 }
@@ -137,5 +144,5 @@ export async function onRequestGet(context){
  if(cached&&Date.now()-cached.at<5000)return cached.response.clone();
  if(fullFlights.has(key))return (await fullFlights.get(key)).clone();
  const flight=buildStats(context);fullFlights.set(key,flight);
- try{const response=await flight;if(response.status===200){fullResponses.set(key,{at:Date.now(),response:response.clone()});if(fullResponses.size>24)fullResponses.delete(fullResponses.keys().next().value)}return response;}finally{fullFlights.delete(key)}
+ try{const response=await flight;if(response.status===200){fullResponses.set(key,{at:Date.now(),response:response.clone()});if(fullResponses.size>24)fullResponses.delete(fullResponses.keys().next().value)}return response;}catch(error){return json({ok:false,error:'traffic_unavailable',detail:String(error?.message||error)},500,'',{'Cache-Control':'private, no-store'})}finally{fullFlights.delete(key)}
 }
