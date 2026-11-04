@@ -10,7 +10,7 @@ const one = async (db, sql, ...a) => (await db.prepare(sql).bind(...a).first()) 
 // so it must not run on every poll. 5 min per worker instance is enough for a live counter.
 let miniCache = { t: 0, body: null };
 
-export async function onRequestGet({ request, env }) {
+async function buildStats({ request, env }) {
   const p = await authenticate(request, env);
   if (!p || !p.sub) return json({ ok: false, error: 'owner_only' }, 403);
   const u = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(p.sub).first();
@@ -37,7 +37,7 @@ export async function onRequestGet({ request, env }) {
   const single = await one(db, `SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(*)=1)`, since);
   const all = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u, MIN(ts) first FROM tw_hits WHERE 1=1' + hf);
   const win = async ms => one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf, now - ms);
-  const [h24, d7, d30, online] = [await win(86400000), await win(7 * 86400000), await win(30 * 86400000), await win(300000)];
+  const [h24, d7, d30, online] = await Promise.all([win(86400000), win(7 * 86400000), win(30 * 86400000), win(300000)]);
   const byDay = await rows(db, `SELECT date((ts/1000)+${off},'unixepoch') d, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY d ORDER BY d`, since);
   const byHour = await rows(db, `SELECT CAST(strftime('%H',(ts/1000)+${off},'unixepoch') AS INTEGER) h, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY h ORDER BY h`, since);
   const heat = await rows(db, `SELECT CAST(strftime('%w',(ts/1000)+${off},'unixepoch') AS INTEGER) w, CAST(strftime('%H',(ts/1000)+${off},'unixepoch') AS INTEGER) h, COUNT(*) v FROM tw_hits WHERE ${W} GROUP BY w,h`, since);
@@ -45,7 +45,7 @@ export async function onRequestGet({ request, env }) {
   const intent = await rows(db, `SELECT h.country c, COUNT(DISTINCT e.vid) n FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE e.ts > ? AND e.name IN ('pay_open','binance_ref','unlock_click') AND h.country<>'' GROUP BY h.country`, since);
   const cities = await rows(db, `SELECT city, country c, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND city<>'' GROUP BY city, country ORDER BY u DESC LIMIT 15`, since);
   const dist = async col => rows(db, `SELECT ${col} k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND ${col}<>'' GROUP BY ${col} ORDER BY u DESC LIMIT 10`, since);
-  const [devices, browsers, oses, langs, refs] = [await dist('device'), await dist('browser'), await dist('os'), await dist('lang'), await dist('ref')];
+  const [devices, browsers, oses, langs, refs] = await Promise.all([dist('device'), dist('browser'), dist('os'), dist('lang'), dist('ref')]);
   const pages = await rows(db, `SELECT path, COUNT(*) v, COUNT(DISTINCT vid) u, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) dur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) sc FROM tw_hits WHERE ${W} GROUP BY path ORDER BY v DESC LIMIT 15`, since);
   const events = await rows(db, 'SELECT name, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name ORDER BY n DESC', since);
   const recent = await rows(db, 'SELECT hid, ts, uid, substr(vid,1,6) vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human FROM tw_hits WHERE 1=1' + hf + ' ORDER BY ts DESC LIMIT 40');
@@ -95,4 +95,18 @@ export async function onRequestGet({ request, env }) {
   for (const r of raw) { if (!top.includes(r.c)) continue; let f = fm[r.tz]; if (!f) { try { f = fm[r.tz] = new Intl.DateTimeFormat('en-GB', { timeZone: r.tz, hour: 'numeric', hour12: false }); } catch { continue; } } const h = parseInt(f.format(new Date(r.ts))) % 24; (loc[r.c] = loc[r.c] || Array(24).fill(0))[h]++; }
   const bestLocal = Object.entries(loc).map(([c, a]) => ({ c, hours: a.map((n, h) => [h, n]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]) }));
   return json({ ok: true, days, tz, now, totals: { ...tot, single: single.n, repeat: repeat.n, allViews: all.v, allVisitors: all.u, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList,  botsFiltered: botU.u || 0, includeBots: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
+}
+
+// Multiple open owner panels share one short-lived snapshot rather than flooding D1.
+const fullResponses=new Map(),fullFlights=new Map();
+export async function onRequestGet(context){
+ const {request,env}=context,url=new URL(request.url);
+ if(url.searchParams.get('mini'))return buildStats(context);
+ const identity=await authenticate(request,env);if(!identity?.sub)return json({ok:false,error:'owner_only'},403);
+ const owner=await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();if(String(owner?.email||'').toLowerCase()!==OWNER)return json({ok:false,error:'owner_only'},403);
+ const key=['days','bots','tz'].map(k=>url.searchParams.get(k)||'').join('|'),cached=fullResponses.get(key);
+ if(cached&&Date.now()-cached.at<5000)return cached.response.clone();
+ if(fullFlights.has(key))return (await fullFlights.get(key)).clone();
+ const flight=buildStats(context);fullFlights.set(key,flight);
+ try{const response=await flight;if(response.status===200){fullResponses.set(key,{at:Date.now(),response:response.clone()});if(fullResponses.size>24)fullResponses.delete(fullResponses.keys().next().value)}return response;}finally{fullFlights.delete(key)}
 }
