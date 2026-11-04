@@ -1,0 +1,8 @@
+/* Responsive controls: translated labels must remain fully readable. */
+html body[data-mode] .full,html body[data-mode] .hero .cta .btn,html body[data-mode] .fol .ft b{white-space:normal!important;overflow-wrap:anywhere;word-break:normal;text-overflow:clip;height:auto;line-height:1.5;letter-spacing:.025em}
+html body[data-mode] .full{display:block;min-height:64px;padding:12px 10px;font-size:clamp(11px,1.1vw,14px);text-align:center;overflow:visible}
+html body[data-mode] .c,html body[data-mode] .cb{min-width:0}.cb p{font-size:12px;line-height:1.6;white-space:normal;overflow-wrap:anywhere}
+html body[data-mode] .grid{gap:24px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}html body[data-mode=feed] .grid{grid-template-columns:minmax(0,520px)}
+html body[data-mode] .tag{max-width:calc(100% - 20px);white-space:normal;line-height:1.4;font-size:10px;letter-spacing:.035em}
+html body[data-mode] .vb .t b,html body[data-mode] .vb .t i{white-space:normal;overflow-wrap:anywhere}html body[data-mode] .pc{min-width:0}
+@media(max-width:640px){html body[data-mode] .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 12px}html body[data-mode] .full{font-size:11px;min-height:72px;padding:10px 7px}html body[data-mode] .tag{font-size:8px;padding:4px;max-width:calc(100% - 16px)}html body[data-mode=feed] .grid{grid-template-columns:1fr}}
