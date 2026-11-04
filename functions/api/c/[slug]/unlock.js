@@ -3,7 +3,7 @@
 import { authenticate } from '../../../_lib/auth.js';
 import { isLolitaBonus } from '../../../_lib/lolita-bonus.js';
 import { json } from '../../../_lib/http.js';
-import { modelOf, validN, videoKey, COIN_COST, ensureTables } from '../../../_lib/catalog.js';
+import { modelOf, validN, videoKey, coinCost, ensureTables } from '../../../_lib/catalog.js';
 
 export async function onRequest({ request, env, params }) {
   const slug = String(params.slug || '').toLowerCase();
@@ -23,13 +23,15 @@ export async function onRequest({ request, env, params }) {
   const n = String(b.n || '');
   if (!validN(n)) return json({ ok: false, error: 'bad_video' }, 400);
   if (slug === 'lolita' && isLolitaBonus(n)) return json({ ok: false, error: 'bonus_only' }, 403);
+  const cost = coinCost(slug, n);
+  if (!cost) return json({ ok: false, error: 'bad_video' }, 400);
   const had = await env.DB.prepare('SELECT 1 x FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?').bind(slug, em, n).first();
   if (had) return json({ ok: true, already: true });
   // never charge for a video that is not in storage yet
   const o = await env.JENNY_VIDEOS.head(videoKey(slug, n));
   if (!o) return json({ ok: false, error: 'not_available' }, 404);
-  const r = await env.DB.prepare('UPDATE jenny_coins SET coins = coins - ? WHERE email = ? AND coins >= ?').bind(COIN_COST, em, COIN_COST).run();
-  if (!r.meta || r.meta.changes !== 1) return json({ ok: false, error: 'not_enough_coins', cost: COIN_COST }, 402);
+  const r = await env.DB.prepare('UPDATE jenny_coins SET coins = coins - ? WHERE email = ? AND coins >= ?').bind(cost, em, cost).run();
+  if (!r.meta || r.meta.changes !== 1) return json({ ok: false, error: 'not_enough_coins', cost }, 402);
   await env.DB.prepare("INSERT OR IGNORE INTO catalog_unlocks (slug, email, n, via) VALUES (?, ?, ?, 'coins')").bind(slug, em, n).run();
   const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE email = ?').bind(em).first();
   return json({ ok: true, kind: 'coins', coins: c ? c.coins : 0 });
