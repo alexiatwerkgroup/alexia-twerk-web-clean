@@ -2,6 +2,7 @@
 // Registry: only slugs listed here can be served. Videos live in the private R2 bucket
 // JENNY_VIDEOS under the prefix "<slug>/v<NN>.mp4" (e.g. abbi/v01.mp4).
 // Coins are shared with Jenny (table jenny_coins). Unlocks/access are per model.
+import {isLolitaBonus} from './lolita-bonus.js';
 export const MODELS = {
   abbi:    { name: 'Abbi' },
   vegan:   { name: 'Vegan' },
@@ -31,6 +32,7 @@ export async function canWatch(env, user, slug, n) {
   if (user.tier === 'vip' || em === OWNER || allowed.includes(em)) return true;
   const u = await env.DB.prepare('SELECT 1 x FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?').bind(slug, em, n).first();
   if (u) return true;
+  if (slug === 'lolita' && isLolitaBonus(n)) return false;
   const r = await env.DB.prepare('SELECT 1 x FROM catalog_access WHERE slug = ? AND email = ?').bind(slug, em).first();
   return !!r;
 }

@@ -1,6 +1,7 @@
 // POST /api/c/<slug>/unlock {n}  -> costs COIN_COST coin per video (coins shared with Jenny)
 // GET  /api/c/<slug>/unlock      -> { coins }
 import { authenticate } from '../../../_lib/auth.js';
+import { isLolitaBonus } from '../../../_lib/lolita-bonus.js';
 import { json } from '../../../_lib/http.js';
 import { modelOf, validN, videoKey, COIN_COST, ensureTables } from '../../../_lib/catalog.js';
 
@@ -21,6 +22,7 @@ export async function onRequest({ request, env, params }) {
   let b = {}; try { b = await request.json(); } catch {}
   const n = String(b.n || '');
   if (!validN(n)) return json({ ok: false, error: 'bad_video' }, 400);
+  if (slug === 'lolita' && isLolitaBonus(n)) return json({ ok: false, error: 'bonus_only' }, 403);
   const had = await env.DB.prepare('SELECT 1 x FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?').bind(slug, em, n).first();
   if (had) return json({ ok: true, already: true });
   // never charge for a video that is not in storage yet
