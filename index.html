@@ -77,6 +77,11 @@ body.hv3{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Inter,syst
 .m{position:relative;border-radius:18px;border:2px solid var(--line);background:var(--card);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}.m.live{border-color:var(--ac);box-shadow:0 0 22px var(--glow)}.m:hover{transform:translateY(-4px);box-shadow:0 0 38px var(--glow)}
 .mv{position:relative;aspect-ratio:9/16;background:#0a0a0d;overflow:hidden}.mv video,.mv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .stt{position:absolute;top:10px;left:10px;font:800 10px 'JetBrains Mono',monospace;letter-spacing:.12em;font-style:normal;padding:5px 9px;border-radius:99px;background:var(--ac);color:var(--on)}.soon .stt{background:#26262c;color:#ddd}
+/* Tainara is live: high contrast status with a restrained neon activity pulse. */
+.m[data-name="Tainara"].live .stt{display:inline-flex;align-items:center;gap:8px;background:#030906;color:#78ff9b;border:1px solid #22f05d;box-shadow:0 0 10px rgba(34,240,93,.42),inset 0 0 10px rgba(34,240,93,.08);text-shadow:0 0 8px rgba(34,240,93,.55)}
+.m[data-name="Tainara"].live .stt::before{content:"";width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#39ff70;box-shadow:0 0 6px #39ff70,0 0 13px rgba(57,255,112,.9);animation:tainara-live-pulse 1.35s ease-in-out infinite}
+@keyframes tainara-live-pulse{0%,100%{opacity:1;box-shadow:0 0 6px #39ff70,0 0 13px rgba(57,255,112,.9)}50%{opacity:.42;box-shadow:0 0 2px #39ff70,0 0 6px rgba(57,255,112,.5)}}
+@media(prefers-reduced-motion:reduce){.m[data-name="Tainara"].live .stt::before{animation:none}}
 .ex{position:absolute;top:10px;right:10px;font:800 9px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:5px 8px;border-radius:6px;background:rgba(0,0,0,.65);color:var(--ac);border:1px solid var(--ac)}
 .hint{position:absolute;left:10px;bottom:10px;font:700 9px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:5px 8px;border-radius:6px;background:rgba(0,0,0,.6);color:#fff}
 .mi{padding:16px 14px 16px;display:flex;flex-direction:column;flex:1}
@@ -173,7 +178,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
  <h1 class="sr">The new roster: exclusive Twerkhub dancers</h1>
  <div class="ban"><img src="/assets/banner-original-twerk-team.jpg" alt="Twerkhub, the original twerk team" width="1600" height="667" fetchpriority="high"></div>
  <div class="bar2"><div><div class="eyebrow">Our exclusive dancers · Signed to Twerkhub · 18+</div><p class="monthly">New exclusive dancers every month.</p></div>
- <div class="facts"><span><b>6</b> exclusive</span><span><b>5</b> live now</span><span><b>1</b> very soon</span></div></div>
+ <div class="facts"><span><b>6</b> exclusive</span><span><b>4</b> live now</span><span><b>2</b> very soon</span></div></div>
 </div></section>
 
 <section class="roster" id="roster"><div class="w">
@@ -182,7 +187,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
 <div class="mi"><h3 translate="no">Jenny</h3><div class="spec"><div><small>Age</small><b class="ag">19</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Custom</li><li class="">Explicit</li></ul><a class="gcta live" href="/jenny/"><svg class="ic"><use href="#i-lock"/></svg><span>Jenny's catalog</span></a></div></article>
 <article class="m live" data-name="Lolita"><div class="mv"><video muted playsinline loop preload="none" poster="/lolita/p/v55.jpg?v=20261104-3"><source src="/lolita/p/v55.mp4?v=20261104-3" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
 <div class="mi"><h3 translate="no">Lolita</h3><div class="spec"><div><small>Age</small><b class="ag">19</b></div><div><small>Country</small><b>Venezuela</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Explicit</li></ul><a class="gcta live" href="/lolita/"><svg class="ic"><use href="#i-lock"/></svg><span>Lolita's catalog</span></a></div></article>
-<article class="m soon" data-name="Tainara"><div class="mv"><img src="/assets/models/tainara-poster.jpg" alt="Tainara" loading="lazy"><em class="stt">VERY SOON</em><span class="ex">Exclusive</span><span class="hint">Video coming soon</span></div>
+<article class="m live" data-name="Tainara"><div class="mv"><img src="/assets/models/tainara-poster.jpg" alt="Tainara" loading="lazy"><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Open catalog</span></div>
 <div class="mi"><h3 translate="no">Tainara</h3><div class="spec"><div><small>Age</small><b class="ag">23</b></div><div><small>Country</small><b>Brazil</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Explicit</li><li class="vp">VIPs only</li></ul><a class="gcta live" href="/tainara/"><svg class="ic"><use href="#i-lock"/></svg><span>Tainara's catalog</span></a></div></article>
 <article class="m live" data-name="Vegan"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/vegan-poster.jpg"><source src="/assets/models/vegan.mp4" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
 <div class="mi"><h3 translate="no">Vegan</h3><div class="spec"><div><small>Age</small><b class="ag">18+</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Custom</li><li class="">Twerk</li><li class="">Explicit</li></ul><a class="gcta live" href="/vegan/"><svg class="ic"><use href="#i-lock"/></svg><span>Vegan's catalog</span></a></div></article>
@@ -191,7 +196,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
 <article class="m soon" data-name="Alexia"><div class="mv"><div class="mph"><img src="/assets/rabbit.png" alt="" style="width:110px;height:auto;filter:drop-shadow(0 12px 22px #000b) drop-shadow(0 0 18px rgba(232,200,114,.35))"><i>Preview coming soon</i></div><em class="stt">VERY SOON</em><span class="ex">Exclusive</span><span class="hint">Video coming soon</span></div>
 <div class="mi"><h3 translate="no">Alexia</h3><div class="spec"><div><small>Age</small><b class="ag">25</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Erotic</li><li class="">Explicit</li><li class="">Custom</li></ul><a class="gcta live" href="/alexia/"><svg class="ic"><use href="#i-lock"/></svg><span>Alexia's catalog</span></a></div></article>
  </div>
- <p class="fine">All dancers are over 18 and appear under written contract. Tainara's video is on the way, this is a censored photo.</p>
+ <p class="fine">All dancers are over 18 and appear under written contract. Tainara's catalog is live; the roster preview is a censored photo.</p>
 </div></section>
 
 <section class="nov" id="novinhas"><div class="w ng">
