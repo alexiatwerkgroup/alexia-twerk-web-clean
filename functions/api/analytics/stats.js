@@ -111,6 +111,19 @@ async function buildStats({ request, env }) {
   for (const h of rec) { const v = OV[h.vid] = OV[h.vid] || { vid: h.vid, first: h.ts, pages: [], ref: h.ref || '', isNew: h.is_new, since: h.ts };
     v.last = h; v.lastActive = Math.max(v.lastActive || 0, h.last_active_ts || h.ts); if (!v.pages.length || v.pages[v.pages.length - 1] !== h.path) v.pages.push(h.path); if (h.uid) v.uid = h.uid; if (h.reg) v.reg = 1; }
   const onl = Object.values(OV).filter(v => v.lastActive > now - 150000).sort((a, b) => b.lastActive - a.lastActive).slice(0, 60);
+  // The 30-minute online trail above is only for recent pages. Find each visitor's
+  // current session start separately so long visits do not get shown as 8–30 min old.
+  if (onl.length) {
+    const vids = onl.map(v => v.vid);
+    const trail = await rows(db, `SELECT vid, ts FROM tw_hits WHERE vid IN (${vids.map(() => '?').join(',')}) AND ts > ?${hf} ORDER BY vid, ts`, ...vids, now - 7 * 86400000);
+    const sessions = {};
+    for (const hit of trail) {
+      const session = sessions[hit.vid];
+      if (!session || hit.ts - session.last > 30 * 60000) sessions[hit.vid] = { start: hit.ts, last: hit.ts };
+      else session.last = hit.ts;
+    }
+    for (const visitor of onl) if (sessions[visitor.vid]) visitor.since = sessions[visitor.vid].start;
+  }
   let uname = {}, profiles = {};
   const uids = [...new Set(onl.map(v => v.uid).concat(recent.map(v => v.uid)).filter(Boolean))];
   if (uids.length) { const ur = await rows(db, `SELECT id, username, email, tokens, tier, streak, registered_at, last_login_date, last_seen_at, seconds_on_site, cuts_watched FROM profiles WHERE id IN (${uids.map(() => '?').join(',')})`, ...uids); ur.forEach(u => { uname[u.id] = u.username || ''; profiles[u.id] = u; }); }
