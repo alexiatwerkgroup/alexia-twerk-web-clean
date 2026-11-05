@@ -25,5 +25,5 @@
   resolveOwner();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',resolveOwner,{once:true});
   setTimeout(resolveOwner,500);
-  ['twk-coin.js?v=20261105-walletfix','twk-i18n.js?v=20261104-info','twk-models-nav.js?v=20261105-tainara','twk-profile.js?v=20261105-walletfix','twk-lang.js?v=20261104-info'].forEach(function(src){var s=document.createElement('script');s.src='/assets/'+src;s.defer=true;document.head.appendChild(s)});
+  ['twk-coin.js?v=20261105-ledger','twk-i18n.js?v=20261104-info','twk-models-nav.js?v=20261105-tainara','twk-profile.js?v=20261105-walletfix','twk-lang.js?v=20261104-info'].forEach(function(src){var s=document.createElement('script');s.src='/assets/'+src;s.defer=true;document.head.appendChild(s)});
 })();

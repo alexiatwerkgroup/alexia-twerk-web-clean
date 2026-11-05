@@ -2,6 +2,7 @@
 import { authenticate } from '../../_lib/auth.js';
 import { json } from '../../_lib/http.js';
 import { promoState, PROMO_MIN } from '../../_lib/jenny.js';
+import { ensureCoinLedger, recordCoinMovement } from '../../_lib/coin-ledger.js';
 const OWNER = 'alexiatwerkoficial@gmail.com';
 export async function onRequest({ request, env }) {
   const key = request.headers.get('X-Grant-Key') || '';
@@ -21,7 +22,14 @@ export async function onRequest({ request, env }) {
   if (coins) {
     const minC = (await promoState(env)).active ? PROMO_MIN : 20;
     if (request.method === 'POST' && coins < minC) return json({ ok: false, error: 'min_' + minC + '_coins' }, 400);
-    await env.DB.prepare('INSERT INTO jenny_coins (email, coins) VALUES (?, ?) ON CONFLICT(email) DO UPDATE SET coins = MAX(0, coins + excluded.coins)').bind(email, request.method === 'DELETE' ? -Math.abs(coins) : coins).run();
+    if (request.method !== 'POST' && request.method !== 'DELETE') return json({ ok: false, error: 'method' }, 405);
+    await ensureCoinLedger(env.DB);
+    const delta = request.method === 'DELETE' ? -Math.abs(coins) : Math.abs(coins);
+    const update = request.method === 'DELETE'
+      ? env.DB.prepare('UPDATE jenny_coins SET coins = coins - ? WHERE lower(email)=? AND coins >= ?').bind(-delta, email, -delta)
+      : env.DB.prepare('INSERT INTO jenny_coins (email,coins) VALUES (?,?) ON CONFLICT(email) DO UPDATE SET coins=coins+excluded.coins').bind(email, delta);
+    const results = await env.DB.batch([update, recordCoinMovement(env.DB, email, delta, request.method === 'DELETE' ? 'admin_adjustment' : 'coin_credit', 'jenny:manual-credit')]);
+    if (request.method === 'DELETE' && (!results[0].meta || results[0].meta.changes !== 1)) return json({ ok: false, error: 'insufficient_coins' }, 402);
     const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE email = ?').bind(email).first();
     return json({ ok: true, coins: c ? c.coins : 0 });
   }

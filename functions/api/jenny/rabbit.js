@@ -5,6 +5,7 @@
 // Limits: 1 prize per user per day, 1 per IP per day, global daily budget in coins.
 import { authenticate } from '../../_lib/auth.js';
 import { json } from '../../_lib/http.js';
+import { ensureCoinLedger, recordCoinMovement } from '../../_lib/coin-ledger.js';
 
 const PRIZES = [[2, 60], [4, 25], [10, 10], [20, 4], [50, 1]]; // [coins, weight]  ($1, $2, $5, $10, $25)
 const DAILY_BUDGET = 60; // coins per day for everybody ($30)
@@ -40,6 +41,7 @@ export async function onRequest({ request, env }) {
   const email = String(u.email).toLowerCase();
   const ip = request.headers.get('CF-Connecting-IP') || '';
   await init(env.DB);
+  await ensureCoinLedger(env.DB);
   const st = await status(env, email, ip);
   if (request.method === 'GET') return json({ ok: true, eligible: !st.won && st.left >= PRIZES[0][0] });
   if (request.method !== 'POST') return json({ ok: false, error: 'method' }, 405);
@@ -60,8 +62,11 @@ export async function onRequest({ request, env }) {
     if (!claim.meta || claim.meta.changes !== 1) return json({ ok: false, error: 'bad_rabbit' }, 400);
     const coins = pick(st.left);
     if (!coins) return json({ ok: false, error: 'budget' }, 409);
-    await env.DB.prepare('INSERT INTO rabbit_wins (email, ip, day, coins, at) VALUES (?, ?, ?, ?, ?)').bind(email, ip, st.day, coins, Date.now()).run();
-    await env.DB.prepare('INSERT INTO jenny_coins (email, coins) VALUES (?, ?) ON CONFLICT(email) DO UPDATE SET coins = coins + excluded.coins').bind(email, coins).run();
+    await env.DB.batch([
+      env.DB.prepare('INSERT INTO rabbit_wins (email, ip, day, coins, at) VALUES (?, ?, ?, ?, ?)').bind(email, ip, st.day, coins, Date.now()),
+      env.DB.prepare('INSERT INTO jenny_coins (email, coins) VALUES (?, ?) ON CONFLICT(email) DO UPDATE SET coins = coins + excluded.coins').bind(email, coins),
+      recordCoinMovement(env.DB, email, coins, 'rabbit_reward', 'rabbit:' + st.day)
+    ]);
     return json({ ok: true, coins, usd: coins / 2 });
   }
   return json({ ok: false, error: 'bad_action' }, 400);

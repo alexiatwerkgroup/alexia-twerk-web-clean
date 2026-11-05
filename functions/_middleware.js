@@ -35,7 +35,7 @@ export async function onRequest(context) {
     const ct = res.headers.get('content-type') || '';
     if (request.method !== 'GET' || url.pathname.startsWith('/api/') || !ct.includes('text/html') || !res.body || res.status !== 200) return res;
     try { spare = res.clone(); } catch (e) {}
-    const html = (await res.text()).replace(/supabase-config\.js(?:\?[^"'<>\s]*)?/g, 'supabase-config.js?v=20261103-confirm').replace(/twerkhub-auth\.js(?:\?[^"'<>\s]*)?/g, 'twerkhub-auth.js?v=20261103-confirm').replace(/twk-stats-btn\.js(?:\?[^"'<>\s]*)?/g, 'twk-stats-btn.js?v=20261105-walletfix');
+    const html = (await res.text()).replace(/supabase-config\.js(?:\?[^"'<>\s]*)?/g, 'supabase-config.js?v=20261103-confirm').replace(/twerkhub-auth\.js(?:\?[^"'<>\s]*)?/g, 'twerkhub-auth.js?v=20261103-confirm').replace(/twk-stats-btn\.js(?:\?[^"'<>\s]*)?/g, 'twk-stats-btn.js?v=20261105-ledger');
     const ua = request.headers.get('user-agent') || '';
     const track = env.DB && !isBot(ua) && cookie(request, 'twx') !== '1' && !url.pathname.startsWith('/admin/');
     let add = html.includes('class="twk-disc"') ? '' : DISC;
@@ -57,7 +57,7 @@ export async function onRequest(context) {
     }
     add += '<script src="/assets/twerkhub-counter.js?v=1" defer></script>';
     add += '<script>(function(){document.querySelectorAll(".tn2-lk a,.tn2 details nav a,.tf2 a").forEach(function(a){var h=a.getAttribute("href")||"";if(h.indexOf("/membership")===0||h.indexOf("/pt/membership")===0){a.href="/tokens/";a.textContent="BALANCE"}})})();</script>';
-    if (!html.includes('/assets/twk-stats-btn.js')) add += '<script src="/assets/twk-stats-btn.js?v=20261105-walletfix" defer></script>';
+    if (!html.includes('/assets/twk-stats-btn.js')) add += '<script src="/assets/twk-stats-btn.js?v=20261105-ledger" defer></script>';
     const i = html.lastIndexOf('</body>');
     const out = i >= 0 ? html.slice(0, i) + add + html.slice(i) : html + add;
     h.delete('content-length'); h.delete('content-encoding'); h.delete('etag');

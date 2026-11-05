@@ -112,6 +112,11 @@
       var b = Math.round(((e.detail || st()).balance) || 0), diff = b - shown;
       if (diff > 0) { countTo(b); celebrate(diff, diff >= 100); } else { shown = b; val.textContent = fmt(b); } try { localStorage.setItem('twk_coin_seen', String(b)); } catch (er) {}
     });
+    addEventListener('twk-coins-changed', function (e) {
+      var n = Number(e.detail && e.detail.coins); if (!Number.isFinite(n) || n < 0) return;
+      cshown = n; if (cval) cval.textContent = String(n);
+      try { var u = JSON.parse(localStorage.getItem('alexia_current_user') || '{}'); if (u.email) localStorage.setItem('twk_coins_cache_v1', JSON.stringify({ email: String(u.email).toLowerCase(), coins: n })); } catch (er) {}
+    });
     addEventListener('alexia-level-up', function () { setTimeout(function () { sound(true); }, 500); });
     addEventListener('storage', function () { var b = Math.round(st().balance || 0); if (b !== shown) countTo(b, 500); });
   }
