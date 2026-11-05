@@ -46,7 +46,7 @@
 <details><summary>Is this for adults only?</summary><p>Yes. 18+ only. You must be of legal age to view this content.</p></details></div></section>
 
 <section><div class="w"><div class="kick mono">/ more models</div><h2>More <em>girls.</em></h2>
-<div class="roster"><a class="g" href="/models-catalog.html"><video muted loop playsinline preload="none" poster="/assets/models/vegan-poster.jpg" data-src="/assets/models/vegan.mp4"></video><b>Vegan</b></a><a class="g" href="/lolita/"><video muted loop playsinline preload="none" poster="/assets/models/lolita-poster.jpg"></video><b>Lolita</b></a><a class="g" href="/models-catalog.html"><video muted loop playsinline preload="none" poster="/assets/models/camila-poster.jpg" data-src="/assets/models/camila.mp4"></video><b>Camila</b></a><a class="g" href="/models-catalog.html"><video muted loop playsinline preload="none" poster="/assets/models/isabella-poster.jpg" data-src="/assets/models/isabella.mp4"></video><b>Isabella</b></a></div></div></section>
+<div class="roster"><a class="g" href="/models-catalog.html"><video muted loop playsinline preload="none" poster="/assets/models/vegan-poster.jpg" data-src="/assets/models/short-previews/vegan.mp4" aria-label="Vegan 10-second video preview"></video><b>Vegan</b></a><a class="g" href="/lolita/"><video muted loop playsinline preload="none" poster="/assets/models/lolita-poster.jpg" aria-label="Lolita preview"></video><b>Lolita</b></a><a class="g" href="/models-catalog.html"><video muted loop playsinline preload="none" poster="/assets/models/camila-poster.jpg" data-src="/assets/models/short-previews/camila.mp4" aria-label="Camila 10-second video preview"></video><b>Camila</b></a><a class="g" href="/models-catalog.html"><video muted loop playsinline preload="none" poster="/assets/models/isabella-poster.jpg" aria-label="Isabella preview"></video><b>Isabella</b></a></div></div></section>
 
 <section><div class="w"><div class="kick mono">/ community</div><h2>Join <em>the circle.</em></h2><div class="com"><a href="/discord"><b>Discord 💬</b><p>Get your pack, ask for customs, talk to the community.</p></a><a href="/community.html"><b>Forum 🧵</b><p>Threads, requests and updates.</p></a><a href="/account.html"><b>My account 🏆</b><p>Your tokens, streak and tier.</p></a></div></div></section>
 
@@ -54,6 +54,18 @@
 
 <div id="iam"><button data-m="casero">Casero Club</button><button data-m="neon">Neon Pulse</button><button data-m="custom">Custom Studio</button><button data-m="feed">Feed</button></div>
 <button id="ia" aria-label="Change design">IA MODE</button>
+<script>
+(function(){
+  var cards=[].slice.call(document.querySelectorAll('.roster .g video[data-src]'));
+  function start(v){if(!v.src){v.src=v.dataset.src;v.load()}v.play().catch(function(){})}
+  function stop(v){v.pause();try{v.currentTime=0}catch(e){}}
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)start(e.target);else stop(e.target)})},{threshold:.55});
+    cards.forEach(function(v){io.observe(v)});
+  }else cards.forEach(start);
+  cards.forEach(function(v){var a=v.closest('a');a.addEventListener('pointerenter',function(){start(v)});a.addEventListener('pointerleave',function(){if(!('IntersectionObserver' in window))stop(v)});a.addEventListener('focus',function(){start(v)});a.addEventListener('blur',function(){if(!('IntersectionObserver' in window))stop(v)})});
+})();
+</script>
 <dialog class="pay" id="pay"><button class="x" aria-label="Close" onclick="this.closest('dialog').close()">×</button><h3 id="payT">Pay with Binance</h3><p class="warn" id="payA"></p>
 <div class="trust"><img src="/jenny/p/owner.jpg" alt="Twerkhub owner" width="56" height="56"><div class="ti"><b>claudiopolakofirestarter</b><span>Binance ID: 1035936474</span><em>✔ Verified Binance account</em></div></div><p class="warn" style="margin:6px 0 0">Check this name and ID appear in Binance before you confirm. If they do not match, do not pay.</p>
 <p class="warn" style="margin:10px 0 0">Don't have Binance yet? <a href="https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=es-LA&ref=GRO_28502_8Z3EW&utm_source=referral_entrance" target="_blank" rel="noopener sponsored" style="color:var(--ac);font-weight:800">Create your free account</a> in 2 minutes.</p><div class="row"><small>Option 1 · Binance Pay (no fees)</small><code data-copy="1035936474">Pay ID: 1035936474</code></div>
@@ -101,5 +113,5 @@ load();
 </script>
 <script src="/assets/twerkhub-activity.js?v=3" defer></script>
 <script src="/assets/twerkhub-ico.js?v=4" defer></script><script src="/assets/twerkhub-promo.js?v=1" defer></script>
-<script src="/assets/twk-stats-btn.js?v=20261104-info" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
+<script src="/assets/twk-stats-btn.js?v=20261105-model-count" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
 <script src="/assets/catalog-preview-clock.js?v=20261104-4" defer></script><script src="/assets/catalog-universal-meta.js?v=20261104-2" defer></script></body></html>

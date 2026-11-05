@@ -4,12 +4,12 @@
   var st = document.createElement('style');
   st.textContent = '.tn2-mdd{position:relative;display:inline-flex}.tn2-mdd>button{cursor:pointer}.tn2-mdp{display:none;position:absolute;right:0;top:calc(100% + 10px);min-width:240px;background:#0b0a07;border:1px solid #3a2a10;border-radius:14px;padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.6);z-index:300}.tn2-mdd.open .tn2-mdp{display:block}.tn2-mdp a{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:9px;color:#e9dfc0;text-decoration:none;font:700 12px "JetBrains Mono",monospace;letter-spacing:.12em;text-transform:uppercase}.tn2-mdp a:hover{background:#1a0f00;color:#ffb03a}.tn2-mdp a small{color:#8a7a55;font-size:10px}';
   document.head.appendChild(st);
-  var M = [['Jenny', '/jenny/', 'live'], ['Lolita', '/lolita/', 'live'], ['Tainara', '/tainara/', 'live'], ['Vegan', '/#roster', 'soon'], ['Camila', '/#roster', 'soon'], ['Alexia', '/#roster', 'live']];
+  var M = [['Jenny', '/jenny/', 'live'], ['Lolita', '/lolita/', 'live'], ['Tainara', '/tainara/', 'live'], ['Vegan', '/#roster', 'soon'], ['Camila', '/camila/', 'soon']];
   function run() {
     var a = document.querySelector('.tn2-lk a.tn2-jn'); if (!a || a.parentNode.classList.contains('tn2-mdd')) return;
     var w = document.createElement('span'); w.className = 'tn2-mdd';
     var b = document.createElement('a'); b.href = '#'; b.className = a.className; b.setAttribute('role', 'button'); b.setAttribute('aria-expanded', 'false');
-    b.innerHTML = '<span class="hd-l" aria-hidden="true">🔒</span><span class="hd-t"><b>Exclusive content</b><i>6 models · pick one</i></span><span class="hd-c">▾</span>';
+    b.innerHTML = '<span class="hd-l" aria-hidden="true">🔒</span><span class="hd-t"><b>Exclusive content</b><i>5 models · pick one</i></span><span class="hd-c">▾</span>';
     var p = document.createElement('div'); p.className = 'tn2-mdp';
     p.innerHTML = M.map(function (m) { return '<a href="' + m[1] + '">' + m[0] + '<small>' + (m[2] === 'live' ? 'LIVE' : 'SOON') + '</small></a>'; }).join('');
     w.appendChild(b); w.appendChild(p);
