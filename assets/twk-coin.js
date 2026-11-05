@@ -42,10 +42,10 @@
     if (document.getElementById('twk-coin-css')) return;
     var s = document.createElement('style'); s.id = 'twk-coin-css';
     s.textContent =
-      '.tn2 .twk-coin,.twk-coin{position:relative;display:flex;align-items:center;gap:8px;margin-left:8px;padding:5px 12px 5px 8px;border-radius:14px;border:2px solid var(--ac,#ff8f00);background:linear-gradient(180deg,#1a1205,#0a0703);color:#fff !important;text-decoration:none;font:700 14px "JetBrains Mono",monospace;letter-spacing:.02em;box-shadow:0 0 18px rgba(255,143,0,.25);transition:transform .15s,box-shadow .2s}' +
+      '.tn2 .twk-coin,.twk-coin{position:relative;display:flex;align-items:center;gap:9px;margin-left:8px;padding:6px 13px 6px 9px;border-radius:14px;border:1.5px solid #d7a93f;background:linear-gradient(180deg,#1d180b,#090807);color:#fff !important;text-decoration:none;font:700 12px "JetBrains Mono",monospace;letter-spacing:.03em;box-shadow:inset 0 1px 0 #ffffff20,0 0 20px rgba(255,180,40,.2);transition:transform .15s,box-shadow .2s}' +
       '.twk-coin:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(255,143,0,.55)}' +
       '.twk-coin .pig{width:34px;height:28px;flex:none;filter:drop-shadow(0 0 6px rgba(255,143,0,.5))}.twk-coin .pig svg{width:100%;height:100%;display:block}' +
-      '.twk-coin .wb{display:flex;flex-direction:column;gap:3px}.twk-coin .wr{display:flex;align-items:center;gap:6px;line-height:1}' +
+      '.twk-coin .wb{display:flex;flex-direction:column;gap:4px;min-width:89px}.twk-coin .wallet-heading{font:800 9px/1 "JetBrains Mono",monospace;letter-spacing:.2em;color:#f4d47a}.twk-coin .wr{display:flex;align-items:center;gap:5px;line-height:1}.twk-coin .wl{width:42px;color:#aaa6a0;font:700 8px/1 "JetBrains Mono",monospace;letter-spacing:.1em}' +
       '.twk-coin .tcv,.twk-coin .tcc2{min-width:1.4ch;font-variant-numeric:tabular-nums}.twk-coin .tcv{color:#8dffa6}.twk-coin .tcc2{color:#ffd27a}' +
       '.bill{display:inline-grid;place-items:center;width:20px;height:12px;border-radius:2px;background:linear-gradient(135deg,#2e8b4a,#8be3a0 55%,#2e8b4a);border:1px solid #bff5cb;color:#0b3d1c;font:900 8px Inter,sans-serif;flex:none;position:relative}.bill:after{content:"";position:absolute;inset:2px;border:1px solid rgba(11,61,28,.45);border-radius:1px}' +
       '.gcoin{display:inline-block;width:16px;height:16px;perspective:200px;flex:none}.gcoin i{display:block;width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:gcs 9s linear infinite}.gcoin b{position:absolute;inset:0;border-radius:50%;background:url(/assets/bunny-engraved.png) center/72% no-repeat,radial-gradient(circle at 35% 30%,#fff3b0,#f6c343 40%,#b9770e 80%,#7a4a06);border:1.5px solid #fbd46b;backface-visibility:hidden}.gcoin b:nth-child(2){transform:rotateY(180deg)}' +
@@ -57,6 +57,7 @@
       '.tcc{position:fixed;z-index:100000;pointer-events:none;width:22px;height:13px;border-radius:2px;background:linear-gradient(135deg,#2e8b4a,#8be3a0 55%,#2e8b4a);border:1px solid #bff5cb;animation:tcb 1.1s cubic-bezier(.2,.7,.4,1) forwards}.tcc.g{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#f6c343 45%,#b9770e);border:1.5px solid #fbd46b}' +
       '@keyframes tcb{0%{opacity:1;transform:translate(0,0) scale(1) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.5) rotate(540deg)}}' +
       '@media(max-width:900px){.twk-coin{margin-left:auto;padding:4px 9px 4px 6px;gap:6px}.tn2 details{margin-left:10px}.twk-coin .pig{width:28px}}' +
+      '@media(max-width:560px){.twk-coin{gap:5px;padding:4px 7px;margin-left:4px}.twk-coin .wb{min-width:64px}.twk-coin .wl{display:none}.twk-coin .wallet-heading{font-size:8px}}' +
       '@media(prefers-reduced-motion:reduce){.gcoin i,.twk-coin.win{animation:none}.tcc{display:none}}';
     document.head.appendChild(s);
   }
@@ -88,7 +89,7 @@
     var w = document.querySelector('.tn2-w'); if (!w) return;
     document.querySelectorAll('.twk-nav-v1-tokens,.twk-tokens-pill,#twk-tokens-pill').forEach(function (x) { x.remove(); });
     el = document.createElement('a'); el.className = 'twk-coin'; el.href = '/tokens/'; el.setAttribute('aria-label', 'My tokens');
-    el.innerHTML = '<span class="pig"><svg viewBox="0 0 320 260"><defs><linearGradient id="wpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset=".55" stop-color="#ff8f00"/><stop offset="1" stop-color="#b25400"/></linearGradient></defs><rect x="86" y="190" width="34" height="42" rx="10" fill="#b25400"/><rect x="196" y="190" width="34" height="42" rx="10" fill="#b25400"/><path d="M262 120c26-6 40 8 30 24-6 10-18 6-14-4 3-8-8-10-16-6z" fill="none" stroke="#ff8f00" stroke-width="10" stroke-linecap="round"/><ellipse cx="158" cy="130" rx="118" ry="84" fill="url(#wpg)"/><path d="M70 88c10-30 38-36 52-30-14 10-24 20-26 44z" fill="#ffb347"/><ellipse cx="44" cy="140" rx="32" ry="26" fill="#ff9f1f"/><circle cx="94" cy="108" r="9" fill="#150a00"/><rect x="120" y="54" width="72" height="14" rx="7" fill="#4a2200"/></svg></span><span class="wb"><span class="wr"><span class="bill">T</span><span class="tcv">0</span></span><span class="wr"><span class="gcoin"><i><b></b><b></b></i></span><span class="tcc2">0</span></span></span>';
+    el.innerHTML = '<span class="pig"><svg viewBox="0 0 320 260"><defs><linearGradient id="wpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset=".55" stop-color="#ff8f00"/><stop offset="1" stop-color="#b25400"/></linearGradient></defs><rect x="86" y="190" width="34" height="42" rx="10" fill="#b25400"/><rect x="196" y="190" width="34" height="42" rx="10" fill="#b25400"/><path d="M262 120c26-6 40 8 30 24-6 10-18 6-14-4 3-8-8-10-16-6z" fill="none" stroke="#ff8f00" stroke-width="10" stroke-linecap="round"/><ellipse cx="158" cy="130" rx="118" ry="84" fill="url(#wpg)"/><path d="M70 88c10-30 38-36 52-30-14 10-24 20-26 44z" fill="#ffb347"/><ellipse cx="44" cy="140" rx="32" ry="26" fill="#ff9f1f"/><circle cx="94" cy="108" r="9" fill="#150a00"/><rect x="120" y="54" width="72" height="14" rx="7" fill="#4a2200"/></svg></span><span class="wb"><span class="wallet-heading">BALANCE</span><span class="wr"><span class="wl">TOKENS</span><span class="bill">T</span><span class="tcv">0</span></span><span class="wr"><span class="wl">COINS</span><span class="gcoin"><i><b></b><b></b></i></span><span class="tcc2">0</span></span></span>';
     val = el.querySelector('.tcv'); cval = el.querySelector('.tcc2'); el.title = 'My wallet: tokens and coins';
     var d = w.querySelector('details'); if (d) w.insertBefore(el, d); else w.appendChild(el);
     var cur = Math.round(st().balance || 0), seen = NaN; try { seen = parseInt(localStorage.getItem('twk_coin_seen'), 10); } catch (e) {}
@@ -96,13 +97,16 @@
     if (cur > shown) setTimeout(function () { var d0 = cur - shown; countTo(cur); celebrate(d0, d0 >= 100); }, 700);
     try { localStorage.setItem('twk_coin_seen', String(cur)); } catch (e) {}
     function pullCoins() {
-      if (!(window.AlexiaTokens && AlexiaTokens.isLoggedIn && AlexiaTokens.isLoggedIn())) { cval.textContent = '0'; return; }
-      fetch('/api/jenny/unlock', { credentials: 'include' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      var auth = {}; try { auth = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}; } catch (e) {}
+      var headers = auth.token ? { Authorization: 'Bearer ' + auth.token } : {};
+      fetch('/api/jenny/unlock', { credentials: 'same-origin', headers: headers }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
         if (!d || !d.ok) return; var c = d.coins || 0;
         if (cshown !== null && c > cshown) { celebrate(c - cshown, true, 'coin'); }
         cshown = c; cval.textContent = c;
+        try { var u = JSON.parse(localStorage.getItem('alexia_current_user') || '{}'); if (u.email) localStorage.setItem('twk_coins_cache_v1', JSON.stringify({ email: String(u.email).toLowerCase(), coins: c })); } catch (e) {}
       }).catch(function () {});
     }
+    try { var u0 = JSON.parse(localStorage.getItem('alexia_current_user') || '{}'), cc = JSON.parse(localStorage.getItem('twk_coins_cache_v1') || '{}'); if (u0.email && String(cc.email || '').toLowerCase() === String(u0.email).toLowerCase() && Number.isFinite(Number(cc.coins))) { cshown = Number(cc.coins); cval.textContent = cshown; } } catch (e) {}
     pullCoins(); setInterval(pullCoins, 60000); addEventListener('focus', pullCoins);
     addEventListener('alexia-tokens-changed', function (e) {
       var b = Math.round(((e.detail || st()).balance) || 0), diff = b - shown;
