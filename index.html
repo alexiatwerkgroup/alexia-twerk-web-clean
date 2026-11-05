@@ -138,6 +138,20 @@ body[data-mode=gold] h1,body[data-mode=gold] h2,body[data-mode=gold] .mi h3{font
 @media(prefers-reduced-motion:reduce){.bill3d i{animation:none}}
 .m:hover{transform:scale(1.05);z-index:3;box-shadow:0 18px 40px rgba(255,138,0,.35)}.m{will-change:transform}
 </style>
+<style>
+.nov-brand{position:relative;display:inline-flex;align-items:center;gap:12px;font:400 clamp(22px,2.5vw,30px)/1 Anton,sans-serif;letter-spacing:.18em;color:var(--pk);text-shadow:0 0 10px rgba(255,61,127,.65),0 0 28px rgba(255,61,127,.35);margin-bottom:20px!important}
+.nov-brand:after{content:'✦';font:700 17px/1 Inter,sans-serif;color:#ffd2e1;text-shadow:0 0 9px #ff3d7f;animation:nov-spark 2.2s ease-in-out infinite}
+@keyframes nov-spark{0%,100%{opacity:.5;transform:scale(.8) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(24deg)}}
+.nov-vault-cta{position:relative;isolation:isolate;overflow:hidden;gap:16px!important;min-height:78px!important;padding:14px 30px!important;border-radius:17px!important;border:2px solid #ffd76a!important;background:linear-gradient(115deg,#302006 0%,#100b03 36%,#271800 70%,#0b0804 100%)!important;box-shadow:inset 0 0 0 1px #fff2b34d,0 0 0 4px #e8b84a1c,0 12px 30px #000b,0 0 34px #e8b84a59!important;color:#fff0b2!important;font:800 15px/1.2 'JetBrains Mono',monospace!important;letter-spacing:.14em!important;text-shadow:0 0 14px #ffd76a55;transition:transform .2s,box-shadow .2s,filter .2s!important}
+.nov-vault-cta:before{content:'';position:absolute;z-index:0;top:-80%;left:-40%;width:28%;height:260%;transform:rotate(25deg);background:linear-gradient(90deg,transparent,#fff7d988,transparent);animation:nov-shine 4.5s ease-in-out infinite}
+.nov-vault-cta>*{position:relative;z-index:1}
+@keyframes nov-shine{0%,45%{left:-40%;opacity:0}55%{opacity:1}85%,100%{left:125%;opacity:0}}
+.nov-vault-cta:hover{transform:translateY(-3px) scale(1.015)!important;filter:brightness(1.18);box-shadow:inset 0 0 0 1px #fff2b3aa,0 0 0 5px #e8b84a2b,0 17px 38px #000c,0 0 48px #e8b84a88!important}
+.nov-vault-emblem{display:grid;place-items:center;width:42px;height:42px;flex:none;border:1px solid #ffe69a;border-radius:11px;background:linear-gradient(145deg,#f8d46d,#9f680e 72%);box-shadow:inset 0 1px 2px #fff9,0 5px 12px #0008;transform:perspective(260px) rotateY(-17deg) rotateX(8deg)}
+.nov-vault-emblem .ic{width:25px;height:25px;stroke:#1a1002;stroke-width:1.8}
+@media(max-width:800px){.nov-brand{font-size:25px}.nov-vault-cta{width:100%;min-height:72px!important;padding:12px 18px!important;font-size:12px!important;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.nov-brand:after,.nov-vault-cta:before{animation:none}}
+</style>
 <script>
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
@@ -200,10 +214,10 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
 </div></section>
 
 <section class="nov" id="novinhas"><div class="w ng">
- <div class="nt"><div class="eyebrow">Twerkhub Novinhas</div><h2>Deleted, <em>never forgotten.</em></h2>
+  <div class="nt"><div class="eyebrow nov-brand">Twerkhub Novinhas</div><h2>Deleted, <em>never forgotten.</em></h2>
   <p>In the early days of online video, YouTube let Brazilian dancers be who they were. Funk is a living tradition, and its dance is bold by nature. There were no paid platforms like OnlyFans yet, so thousands of women found their stage there, uploading day after day and building real communities.</p>
   <p>Then, almost overnight, hundreds of thousands of channels were erased without warning. Years of work, gone. This archive keeps a small part of what was deleted but never forgotten.</p>
-  <a class="gold" href="/novinhas/"><svg class="ic"><use href="#i-archive"/></svg>Enter the Novinhas archive<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+  <a class="gold nov-vault-cta" href="/novinhas/" aria-label="Enter the Novinhas Vault"><span class="nov-vault-emblem" aria-hidden="true"><svg class="ic"><use href="#i-vault"/></svg></span><span>Enter the Vault</span><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
  <div class="np">
   <div class="prog"><span class="ip">In progress</span>
    <div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="#1b1b22" stroke-width="16"/><circle cx="100" cy="100" r="86" fill="none" stroke="var(--ac)" stroke-width="16" stroke-linecap="round" stroke-dasharray="540.4" stroke-dashoffset="0" transform="rotate(-90 100 100)"/></svg><div><b>1,968</b><small>folders to go</small></div></div>
@@ -269,6 +283,6 @@ document.querySelectorAll('.m .mv').forEach(function(h){var v=h.querySelector('v
  h.addEventListener('touchstart',function(){if(v.paused)play(v,true);else stop(v)},{passive:true})});
 })();
 </script>
-<script src="/assets/twk-stats-btn.js?v=20261105-floating" defer></script><script src="/assets/twerkhub-activity.js?v=2" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
+<script src="/assets/twk-stats-btn.js?v=20261105-single-card" defer></script><script src="/assets/twerkhub-activity.js?v=2" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
 <script>document.querySelectorAll(".grid article.m").forEach(function(a){var l=a.querySelector("a.gcta");if(!l)return;a.style.cursor="pointer";a.addEventListener("click",function(e){if(e.target.closest("a"))return;location.href=l.getAttribute("href")})});</script>
 </body></html>
