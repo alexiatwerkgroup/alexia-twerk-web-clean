@@ -18,7 +18,7 @@ export async function onRequestGet({ request, env }) {
      FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?)) AND human = 1
      ORDER BY COALESCE(last_active,ts) DESC LIMIT 300`, cutoff, cutoff);
   const recent = await rows(db,
-    `SELECT hid, ts, uid, substr(vid,1,6) vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll
+    `SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll
      FROM tw_hits WHERE human = 1 ORDER BY ts DESC LIMIT 40`);
   onlineHits.sort((a,b) => a.ts-b.ts);
   const active = {};
@@ -71,8 +71,12 @@ export async function onRequestGet({ request, env }) {
   }));
   for (const hit of recent) { hit.user = profiles[hit.uid]?.username || ''; hit.profile = profiles[hit.uid] || null; }
   const evLast = await rows(db,
-    `SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, h.country, h.city
-     FROM tw_events e LEFT JOIN tw_hits h ON h.hid=e.hid ORDER BY e.ts DESC LIMIT 25`);
+    `SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, h.country, h.city,
+            p.id profile_id, p.username
+     FROM tw_events e LEFT JOIN tw_hits h ON h.hid=e.hid
+     LEFT JOIN profiles p ON p.id=h.uid ORDER BY e.ts DESC LIMIT 25`);
+  for (const event of evLast) event.profile = event.profile_id
+    ? { id: event.profile_id, username: event.username || '' } : null;
   return json({ ok: true, now, onlineList, recent, evLast, windows: { online: { u: onlineList.length } } }, 200, '', {
     'Cache-Control': 'private, no-store',
     'Set-Cookie': 'twx=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure'
