@@ -25,6 +25,61 @@ export async function onRequest(context) {
   }
   await init(env.DB);
 
+  // Lightweight polling path for the live stats screen. Keep the existing
+  // full owner report intact; the dashboard only needs the 25 newest accounts.
+  if (new URL(request.url).searchParams.get('latest') === '1') {
+    const usersRows = await env.DB.prepare(
+      `SELECT id, email, username, tokens, total_earned, streak, tier,
+              registered_at, last_login_date, last_seen_at,
+              seconds_on_site, cuts_watched, welcomed
+         FROM profiles
+        ORDER BY registered_at DESC
+        LIMIT 25`
+    ).all();
+    const users = (usersRows.results || []);
+    const ids = users.map(u => u.id).filter(Boolean);
+    let visits = [], countries = [], payments = [];
+    if (ids.length) {
+      const marks = ids.map(() => '?').join(',');
+      visits = (await env.DB.prepare(
+        `SELECT uid, COUNT(*) page_views,
+                SUM(CASE WHEN previous IS NULL OR ts-previous>1800000 THEN 1 ELSE 0 END) visits
+           FROM (SELECT uid,ts,LAG(ts) OVER (PARTITION BY uid ORDER BY ts) previous
+                   FROM tw_hits WHERE uid IN (${marks}) AND human=1)
+          GROUP BY uid`
+      ).bind(...ids).all()).results || [];
+      countries = (await env.DB.prepare(
+        `SELECT uid,country,city FROM (
+           SELECT uid,country,city,ROW_NUMBER() OVER (PARTITION BY uid ORDER BY COALESCE(last_active,ts) DESC) rank
+             FROM tw_hits WHERE uid IN (${marks}) AND country<>'')
+          WHERE rank=1`
+      ).bind(...ids).all()).results || [];
+      const emails = users.map(u => String(u.email || '').toLowerCase()).filter(Boolean);
+      if (emails.length) {
+        const emailMarks = emails.map(() => '?').join(',');
+        try {
+          payments = (await env.DB.prepare(
+            `SELECT LOWER(email) email,SUM(amount_usd) paid_usd FROM verified_payments
+              WHERE status='confirmed' AND LOWER(email) IN (${emailMarks}) GROUP BY LOWER(email)`
+          ).bind(...emails).all()).results || [];
+        } catch (_) {}
+      }
+    }
+    const visitMap = new Map(visits.map(x => [x.uid, x]));
+    const countryMap = new Map(countries.map(x => [x.uid, x]));
+    const paymentMap = new Map(payments.map(x => [x.email, x.paid_usd]));
+    const enriched = users.map(u => ({
+      ...u,
+      country: countryMap.get(u.id)?.country || null,
+      city: countryMap.get(u.id)?.city || null,
+      recorded_visits: visitMap.get(u.id)?.visits ?? null,
+      recorded_page_views: visitMap.get(u.id)?.page_views ?? null,
+      confirmed_paid_usd: paymentMap.get(String(u.email || '').toLowerCase()) ?? null,
+    }));
+    const total = await env.DB.prepare('SELECT COUNT(*) total_users FROM profiles').first();
+    return json({ ok: true, users: enriched, total_users: total?.total_users || 0, generated_at: new Date().toISOString() }, 200, origin);
+  }
+
   const usersRows = await env.DB.prepare(
     `SELECT id, email, username, tokens, total_earned, streak, tier,
             registered_at, last_login_date, last_seen_at,

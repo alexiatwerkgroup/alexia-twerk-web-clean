@@ -24,12 +24,15 @@ async function buildStats({ request, env }) {
   const localNow = new Date(now + off * 60000);
   const todayStart = Date.UTC(localNow.getUTCFullYear(), localNow.getUTCMonth(), localNow.getUTCDate()) - off * 60000;
   if (url.searchParams.get('mini')) {
-    if (miniCache.body && now - miniCache.t < 300000) return json(miniCache.body, 200, '', heads);
-    const a = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1');
-    const t = await one(db, 'SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1 AND ts > ?', now - 86400000);
-    const o = await one(db, 'SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1 AND ts > ?', now - 300000);
-    const body = { ok: true, visitors: a.u || 0, views: a.v || 0, today: t.u || 0, online: o.u || 0 };
-    miniCache = { t: now, body };
+    let base = miniCache.body;
+    if (!base || now - miniCache.t >= 300000) {
+      const a = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1');
+      const t = await one(db, 'SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1 AND ts > ?', now - 86400000);
+      base = { visitors: a.u || 0, views: a.v || 0, today: t.u || 0 };
+      miniCache = { t: now, body: base };
+    }
+    const o = await one(db, 'SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1 AND (last_active > ? OR (last_active IS NULL AND ts > ?))', now - 150000, now - 150000);
+    const body = { ok: true, ...base, online: o.u || 0 };
     return json(body, 200, '', heads);
   }
   const bots = url.searchParams.get('bots') === '1', hf = bots ? '' : ' AND human = 1';
@@ -53,7 +56,7 @@ async function buildStats({ request, env }) {
     db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-86400000),
     db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-7*86400000),
     db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-30*86400000),
-    db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?))' + hf).bind(now-300000, now-300000),
+    db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?))' + hf).bind(now-150000, now-150000),
     db.prepare(`SELECT device k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND device<>'' GROUP BY device ORDER BY u DESC LIMIT 10`).bind(since),
     db.prepare(`SELECT browser k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND browser<>'' GROUP BY browser ORDER BY u DESC LIMIT 10`).bind(since),
     db.prepare(`SELECT os k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND os<>'' GROUP BY os ORDER BY u DESC LIMIT 10`).bind(since),
@@ -106,7 +109,7 @@ async function buildStats({ request, env }) {
   const mins = await rows(db, `SELECT (ts/300000) b, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?${hf} GROUP BY b ORDER BY b`, now - 48 * 3600000);
   const live = await rows(db, `SELECT lat, lon, country c, city, MAX(ts) ts, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?${hf} AND lat IS NOT NULL GROUP BY lat, lon ORDER BY ts DESC LIMIT 200`, now - 30 * 60000);
   // ---- who is online right now (last activity < 2.5 min; hit time + visible seconds) ----
-  const rec = await rows(db, `SELECT ts, COALESCE(last_active,ts) last_active_ts, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?))${hf} ORDER BY COALESCE(last_active,ts)`, now - 30 * 60000, now - 30 * 60000);
+  const rec = await rows(db, `SELECT ts, COALESCE(last_active,ts) last_active_ts, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?))${hf} ORDER BY COALESCE(last_active,ts)`, now - 150000, now - 150000);
   const OV = {};
   for (const h of rec) { const v = OV[h.vid] = OV[h.vid] || { vid: h.vid, first: h.ts, pages: [], ref: h.ref || '', isNew: h.is_new, since: h.ts };
     v.last = h; v.lastActive = Math.max(v.lastActive || 0, h.last_active_ts || h.ts); if (!v.pages.length || v.pages[v.pages.length - 1] !== h.path) v.pages.push(h.path); if (h.uid) v.uid = h.uid; if (h.reg) v.reg = 1; }
@@ -129,7 +132,8 @@ async function buildStats({ request, env }) {
   if (uids.length) { const ur = await rows(db, `SELECT id, username, email, tokens, tier, streak, registered_at, last_login_date, last_seen_at, seconds_on_site, cuts_watched FROM profiles WHERE id IN (${uids.map(() => '?').join(',')})`, ...uids); ur.forEach(u => { uname[u.id] = u.username || ''; profiles[u.id] = u; }); }
   let evBy = {};
   if (onl.length) { const er = await rows(db, `SELECT vid, ts, name, detail FROM tw_events WHERE ts > ? AND vid IN (${onl.map(() => '?').join(',')}) ORDER BY ts DESC`, now - 30 * 60000, ...onl.map(v => v.vid)); er.forEach(e => { (evBy[e.vid] = evBy[e.vid] || []).push({ ts: e.ts, name: e.name, detail: e.detail }); }); }
-  const onlineList = onl.map(v => ({ id: v.vid.slice(0, 6), user: v.uid ? (uname[v.uid] || '') : '', profile: v.uid ? (profiles[v.uid] || null) : null, reg: v.reg ? 1 : 0, isNew: v.isNew ? 1 : 0, country: v.last.country, city: v.last.city, device: v.last.device, browser: v.last.browser, os: v.last.os, ref: v.ref, path: v.last.path, pages: v.pages.slice(-5), entered: v.since, lastActive: v.lastActive, dur: v.last.dur || 0, scroll: v.last.scroll || 0, events: (evBy[v.vid] || []).slice(0, 6) }));
+  for (const h of rec) if (OV[h.vid] && OV[h.vid].lastActive > now - 150000) (evBy[h.vid] = evBy[h.vid] || []).push({ ts: h.ts, name: 'page_view', detail: h.path });
+  const onlineList = onl.map(v => ({ id: v.vid.slice(0, 6), user: v.uid ? (uname[v.uid] || '') : '', profile: v.uid ? (profiles[v.uid] || null) : null, reg: v.uid ? 1 : (v.reg ? 1 : 0), isNew: v.isNew ? 1 : 0, country: v.last.country, city: v.last.city, device: v.last.device, browser: v.last.browser, os: v.last.os, ref: v.ref, path: v.last.path, pages: v.pages.slice(-5), entered: v.since, lastActive: v.lastActive, dur: v.last.dur || 0, scroll: v.last.scroll || 0, events: (evBy[v.vid] || []).sort((a, b) => b.ts - a.ts).slice(0, 6) }));
   recent.forEach(v => { v.user = uname[v.uid] || ''; v.profile = profiles[v.uid] || null; });
   const evU = await rows(db, 'SELECT name, detail, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name, detail ORDER BY n DESC', since);
   const evLast = await rows(db, "SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, h.country, h.city FROM tw_events e LEFT JOIN tw_hits h ON h.hid = e.hid ORDER BY e.ts DESC LIMIT 25");
@@ -160,7 +164,7 @@ export async function onRequestGet(context){
  const owner=await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();if(String(owner?.email||'').toLowerCase()!==OWNER)return json({ok:false,error:'owner_only'},403);
  const key=['days','bots','tz'].map(k=>url.searchParams.get(k)||'').join('|'),cached=fullResponses.get(key);
  const respond=record=>new Response(record.body,{status:record.status,headers:record.headers});
- if(cached&&Date.now()-cached.at<5000)return respond(cached);
+ if(cached&&Date.now()-cached.at<2000)return respond(cached);
  let flight=fullFlights.get(key);
  if(!flight){
    flight=(async()=>{try{
