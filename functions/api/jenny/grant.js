@@ -1,7 +1,7 @@
 // Owner-only. GET /api/jenny/grant -> list; POST {email} -> grant; DELETE {email} -> revoke.
 import { authenticate } from '../../_lib/auth.js';
 import { json } from '../../_lib/http.js';
-import { promoState, PROMO_MIN } from '../../_lib/jenny.js';
+import { MIN_COIN_PURCHASE } from '../../_lib/jenny.js';
 import { ensureCoinLedger, recordCoinMovement } from '../../_lib/coin-ledger.js';
 const OWNER = 'alexiatwerkoficial@gmail.com';
 export async function onRequest({ request, env }) {
@@ -20,7 +20,7 @@ export async function onRequest({ request, env }) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ ok: false, error: 'bad_email' }, 400);
   const coins = parseInt(b.coins, 10);
   if (coins) {
-    const minC = (await promoState(env)).active ? PROMO_MIN : 20;
+    const minC = MIN_COIN_PURCHASE;
     if (request.method === 'POST' && coins < minC) return json({ ok: false, error: 'min_' + minC + '_coins' }, 400);
     if (request.method !== 'POST' && request.method !== 'DELETE') return json({ ok: false, error: 'method' }, 405);
     await ensureCoinLedger(env.DB);

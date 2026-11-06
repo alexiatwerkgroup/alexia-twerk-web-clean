@@ -2,7 +2,7 @@
 // Streams the full video from the PRIVATE R2 bucket (binding JENNY_VIDEOS). Supports Range.
 // Access: profiles.tier = 'vip' OR email listed in env.JENNY_ALLOWED (comma separated).
 import { authenticate } from '../../_lib/auth.js';
-import { validN, isShort, canWatch, videoKey } from '../../_lib/jenny.js';
+import { validN, isExplicit, canWatch, videoKey } from '../../_lib/jenny.js';
 
 export async function onRequestGet({ request, env }) {
   const deny = (s, m) => new Response(m, { status: s, headers: { 'Cache-Control': 'no-store' } });
@@ -13,7 +13,7 @@ export async function onRequestGet({ request, env }) {
   if (!p || !p.sub) return deny(401, 'login_required');
   const u = await env.DB.prepare('SELECT email, tier FROM profiles WHERE id = ?').bind(p.sub).first();
   if (!u) return deny(401, 'login_required');
-  if (!(await canWatch(env, u, n))) return deny(403, isShort(n) ? 'tokens_required' : 'coins_required');
+  if (!(await canWatch(env, u, n))) return deny(403, isExplicit(n) ? 'coins_required' : 'tokens_required');
 
   const key = videoKey(n);
   const range = request.headers.get('Range');
