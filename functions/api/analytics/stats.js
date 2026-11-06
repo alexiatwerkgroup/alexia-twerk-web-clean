@@ -164,7 +164,7 @@ export async function onRequestGet(context){
  const owner=await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();if(String(owner?.email||'').toLowerCase()!==OWNER)return json({ok:false,error:'owner_only'},403);
  const key=['days','bots','tz'].map(k=>url.searchParams.get(k)||'').join('|'),cached=fullResponses.get(key);
  const respond=record=>new Response(record.body,{status:record.status,headers:record.headers});
- if(cached&&Date.now()-cached.at<2000)return respond(cached);
+ if(cached&&Date.now()-cached.at<60000)return respond(cached);
  let flight=fullFlights.get(key);
  if(!flight){
    flight=(async()=>{try{
