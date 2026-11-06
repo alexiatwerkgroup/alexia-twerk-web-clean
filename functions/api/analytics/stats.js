@@ -137,17 +137,23 @@ async function buildStats({ request, env }) {
     }
     for (const visitor of onl) if (sessions[visitor.vid]) visitor.since = sessions[visitor.vid].start;
   }
+  const evLast = await rows(db, "SELECT e.ts, e.name, e.detail, e.vid, h.uid, h.country, h.city FROM tw_events e LEFT JOIN tw_hits h ON h.hid = e.hid ORDER BY e.ts DESC LIMIT 25");
+  const knownIdentity = {};
+  const linked = await rows(db, 'WITH linked AS (SELECT vid, uid, ROW_NUMBER() OVER (PARTITION BY vid ORDER BY ts DESC, hid DESC) rank FROM tw_hits WHERE ts > ? AND uid IS NOT NULL) SELECT vid, uid FROM linked WHERE rank = 1', now - 60 * 60000);
+  linked.forEach(h => { knownIdentity[h.vid] = h.uid; });
+  recent.forEach(h => { if (!h.uid && knownIdentity[h.vid]) h.uid = knownIdentity[h.vid]; });
+  evLast.forEach(e => { if (!e.uid && knownIdentity[e.vid]) e.uid = knownIdentity[e.vid]; });
+  onl.forEach(v => { if (!v.uid && knownIdentity[v.vid]) v.uid = knownIdentity[v.vid]; });
   let uname = {}, profiles = {};
-  const uids = [...new Set(onl.map(v => v.uid).concat(recent.map(v => v.uid)).filter(Boolean))];
-  if (uids.length) { const ur = await rows(db, `SELECT id, username, email, tokens, tier, streak, registered_at, last_login_date, last_seen_at, seconds_on_site, cuts_watched FROM profiles WHERE id IN (${uids.map(() => '?').join(',')})`, ...uids); ur.forEach(u => { uname[u.id] = u.username || ''; profiles[u.id] = u; }); }
+  const uids = [...new Set(onl.map(v => v.uid).concat(recent.map(v => v.uid), evLast.map(e => e.uid)).filter(Boolean))];
+  for (let i = 0; i < uids.length; i += 80) { const batch = uids.slice(i, i + 80); const ur = await rows(db, `SELECT id, username, email, tokens, tier, streak, registered_at, last_login_date, last_seen_at, seconds_on_site, cuts_watched FROM profiles WHERE id IN (${batch.map(() => '?').join(',')})`, ...batch); ur.forEach(u => { uname[u.id] = u.username || ''; profiles[u.id] = u; }); }
   let evBy = {};
   if (onl.length) { const er = await rows(db, `SELECT vid, ts, name, detail FROM tw_events WHERE ts > ? AND vid IN (${onl.map(() => '?').join(',')}) ORDER BY ts DESC`, now - 30 * 60000, ...onl.map(v => v.vid)); er.forEach(e => { (evBy[e.vid] = evBy[e.vid] || []).push({ ts: e.ts, name: e.name, detail: e.detail }); }); }
   for (const h of rec) if (OV[h.vid] && OV[h.vid].lastActive > now - 150000) (evBy[h.vid] = evBy[h.vid] || []).push({ ts: h.ts, name: 'page_view', detail: h.path });
   const onlineList = onl.map(v => ({ id: v.vid.slice(0, 6), user: v.uid ? (uname[v.uid] || '') : '', profile: v.uid ? (profiles[v.uid] || null) : null, reg: v.uid ? 1 : (v.reg ? 1 : 0), isNew: v.isNew ? 1 : 0, country: v.last.country, city: v.last.city, device: v.last.device, browser: v.last.browser, os: v.last.os, ref: v.ref, path: v.last.path, pages: v.pages.slice(-5), entered: v.since, lastActive: v.lastActive, dur: v.last.dur || 0, scroll: v.last.scroll || 0, events: (evBy[v.vid] || []).sort((a, b) => b.ts - a.ts).slice(0, 6) }));
   recent.forEach(v => { v.user = uname[v.uid] || ''; v.profile = profiles[v.uid] || null; });
   const evU = await rows(db, 'SELECT name, detail, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name, detail ORDER BY n DESC', since);
-  const evLast = await rows(db, "SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, h.country, h.city, p.id profile_id, p.username FROM tw_events e LEFT JOIN tw_hits h ON h.hid = e.hid LEFT JOIN profiles p ON p.id = h.uid ORDER BY e.ts DESC LIMIT 25");
-  for (const event of evLast) event.profile = event.profile_id ? { id: event.profile_id, username: event.username || '' } : null;
+  for (const event of evLast) { event.user = uname[event.uid] || ''; event.profile = profiles[event.uid] || null; }
   const landed = await one(db, `SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND path LIKE '/jenny%'`, since);
   const regs = await one(db, 'SELECT COUNT(*) n FROM profiles').catch(() => ({}));
   const registeredLocations = await rows(db, `WITH latest AS (SELECT h.uid,h.country,h.city,ROW_NUMBER() OVER (PARTITION BY h.uid ORDER BY COALESCE(h.last_active,h.ts) DESC) rank FROM tw_hits h JOIN (SELECT id FROM profiles ORDER BY registered_at DESC LIMIT 25) p ON p.id=h.uid WHERE h.uid IS NOT NULL AND h.country<>'') SELECT uid,country,city FROM latest WHERE rank=1`);
