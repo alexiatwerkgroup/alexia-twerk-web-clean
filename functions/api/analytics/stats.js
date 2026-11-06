@@ -51,7 +51,12 @@ async function buildStats({ request, env }) {
     db.prepare(`SELECT city, country c, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND city<>'' GROUP BY city, country ORDER BY u DESC LIMIT 15`).bind(since),
     db.prepare(`SELECT path, COUNT(*) v, COUNT(DISTINCT vid) u, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) dur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) sc FROM tw_hits WHERE ${W} GROUP BY path ORDER BY v DESC LIMIT 15`).bind(since),
     db.prepare('SELECT name, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name ORDER BY n DESC').bind(since),
-    db.prepare('SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human FROM tw_hits WHERE 1=1' + hf + ' ORDER BY ts DESC LIMIT 40'),
+    db.prepare(`WITH ranked AS (
+      SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human,
+        ROW_NUMBER() OVER (PARTITION BY CASE WHEN uid IS NOT NULL THEN 'user:'||uid ELSE 'visitor:'||vid END ORDER BY ts DESC, hid DESC) rn
+      FROM tw_hits WHERE ts > ?${hf}
+    ) SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human
+      FROM ranked WHERE rn <= 5 ORDER BY ts DESC` ).bind(now - 60 * 60000),
     db.prepare(`SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(DISTINCT date(ts/1000,'unixepoch'))>1)`).bind(since),
     db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-86400000),
     db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-7*86400000),
@@ -107,7 +112,12 @@ async function buildStats({ request, env }) {
   const refByHour=new Map(),countryByHour=new Map();for(const r of peakRefs)if(!refByHour.has(r.b))refByHour.set(r.b,r);for(const r of peakCountries)if(!countryByHour.has(r.b))countryByHour.set(r.b,r);
   for(const x of peakHours){const rf=refByHour.get(x.b)||{},ct=countryByHour.get(x.b)||{};peaks.push({ts:x.b*3600000,u:x.u,x:mean?+(x.u/mean).toFixed(1):null,ref:rf.k||'',refU:rf.u||0,country:ct.k||'',countryU:ct.u||0});}
   const mins = await rows(db, `SELECT (ts/300000) b, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?${hf} GROUP BY b ORDER BY b`, now - 48 * 3600000);
-  const live = await rows(db, `SELECT lat, lon, country c, city, MAX(ts) ts, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?${hf} AND lat IS NOT NULL GROUP BY lat, lon ORDER BY ts DESC LIMIT 200`, now - 30 * 60000);
+  const live = await rows(db, `WITH ranked AS (
+    SELECT lat, lon, country c, city, COALESCE(last_active,ts) last_active_ts, vid,
+      ROW_NUMBER() OVER (PARTITION BY vid ORDER BY COALESCE(last_active,ts) DESC, ts DESC) rn
+    FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?))${hf} AND lat IS NOT NULL AND lon IS NOT NULL
+  ) SELECT lat, lon, c, city, MAX(last_active_ts) ts, COUNT(*) u FROM ranked WHERE rn=1
+    GROUP BY lat, lon, c, city ORDER BY ts DESC LIMIT 200`, now - 150000, now - 150000);
   // ---- who is online right now (last activity < 2.5 min; hit time + visible seconds) ----
   const rec = await rows(db, `SELECT ts, COALESCE(last_active,ts) last_active_ts, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?))${hf} ORDER BY COALESCE(last_active,ts)`, now - 150000, now - 150000);
   const OV = {};

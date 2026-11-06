@@ -14,12 +14,16 @@ export async function onRequestGet({ request, env }) {
   await init(env.DB);
   const db = env.DB, now = Date.now(), cutoff = now - 150000;
   const onlineHits = await rows(db,
-    `SELECT ts, COALESCE(last_active,ts) last_active_ts, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid
+    `SELECT ts, COALESCE(last_active,ts) last_active_ts, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid, lat, lon
      FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?)) AND human = 1
      ORDER BY COALESCE(last_active,ts) DESC LIMIT 300`, cutoff, cutoff);
   const recent = await rows(db,
-    `SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll
-     FROM tw_hits WHERE human = 1 ORDER BY ts DESC LIMIT 40`);
+    `WITH ranked AS (
+       SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll,
+         ROW_NUMBER() OVER (PARTITION BY CASE WHEN uid IS NOT NULL THEN 'user:'||uid ELSE 'visitor:'||vid END ORDER BY ts DESC, hid DESC) rn
+       FROM tw_hits WHERE human = 1 AND ts > ?
+     ) SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll
+       FROM ranked WHERE rn <= 5 ORDER BY ts DESC`, now - 60 * 60000);
   onlineHits.sort((a,b) => a.ts-b.ts);
   const active = {};
   for (const hit of onlineHits) {
@@ -31,6 +35,14 @@ export async function onRequestGet({ request, env }) {
     if (hit.reg) visitor.reg = 1;
   }
   const online = Object.values(active).filter(v => v.lastActive > cutoff).sort((a,b) => b.lastActive-a.lastActive).slice(0,60);
+  const pointGroups = {};
+  for (const visitor of Object.values(active).filter(v => v.lastActive > cutoff && Number.isFinite(v.last?.lat) && Number.isFinite(v.last?.lon))) {
+    const key = `${visitor.last.lat},${visitor.last.lon}`;
+    const point = pointGroups[key] || (pointGroups[key] = { lat: visitor.last.lat, lon: visitor.last.lon, c: visitor.last.country || '', city: visitor.last.city || '', ts: visitor.lastActive, u: 0 });
+    point.u++;
+    point.ts = Math.max(point.ts, visitor.lastActive);
+  }
+  const live = Object.values(pointGroups).sort((a,b) => b.ts-a.ts).slice(0,200);
   if (online.length) {
     const ids = online.map(v => v.vid);
     const trail = await rows(db,
@@ -67,7 +79,7 @@ export async function onRequestGet({ request, env }) {
     device: v.last?.device || '', browser: v.last?.browser || '', os: v.last?.os || '',
     ref: v.ref, path: v.last?.path || '/', pages: v.pages.slice(-5), entered: v.since,
     lastActive: v.lastActive, dur: v.last?.dur || 0, scroll: v.last?.scroll || 0,
-    events: (eventsByVisitor[v.vid] || []).slice(0,6)
+    events: (eventsByVisitor[v.vid] || []).slice(0,6), lat: v.last?.lat ?? null, lon: v.last?.lon ?? null
   }));
   for (const hit of recent) { hit.user = profiles[hit.uid]?.username || ''; hit.profile = profiles[hit.uid] || null; }
   const evLast = await rows(db,
@@ -77,7 +89,7 @@ export async function onRequestGet({ request, env }) {
      LEFT JOIN profiles p ON p.id=h.uid ORDER BY e.ts DESC LIMIT 25`);
   for (const event of evLast) event.profile = event.profile_id
     ? { id: event.profile_id, username: event.username || '' } : null;
-  return json({ ok: true, now, onlineList, recent, evLast, windows: { online: { u: onlineList.length } } }, 200, '', {
+  return json({ ok: true, now, onlineList, recent, live, evLast, windows: { online: { u: onlineList.length } } }, 200, '', {
     'Cache-Control': 'private, no-store',
     'Set-Cookie': 'twx=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure'
   });
