@@ -5,8 +5,8 @@
   "minimumCoins": 20,
   "minimumUsd": 10,
   "hotPackUsdt": 18.25,
-  "individualCoins": 118.0,
-  "individualUsd": 59.0,
+  "individualCoins": 144.0,
+  "individualUsd": 72.0,
   "videos": [
     {
       "n": "01",
@@ -15,7 +15,9 @@
       "coins": 3,
       "width": 576,
       "height": 768,
-      "resolution": "576×768"
+      "resolution": "576×768",
+      "title": "Abbi a cuatro patas, baile y movimiento",
+      "description": "Abbi a cuatro patas, baile y movimiento"
     },
     {
       "n": "02",
@@ -24,7 +26,9 @@
       "coins": 1,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Primer plano de baile frente al espejo",
+      "description": "Primer plano de baile frente al espejo"
     },
     {
       "n": "03",
@@ -33,16 +37,20 @@
       "coins": 3,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Encuentro íntimo sobre la cama",
+      "description": "Encuentro íntimo sobre la cama"
     },
     {
       "n": "04",
       "pack": 1,
       "seconds": 361.62,
-      "coins": 7,
+      "coins": 13,
       "width": 1920,
       "height": 1080,
-      "resolution": "1920×1080"
+      "resolution": "1920×1080",
+      "title": "Abbi en sesión larga de baile",
+      "description": "Abbi en sesión larga de baile"
     },
     {
       "n": "05",
@@ -51,7 +59,9 @@
       "coins": 2,
       "width": 464,
       "height": 848,
-      "resolution": "464×848"
+      "resolution": "464×848",
+      "title": "Baile de cadera en primer plano",
+      "description": "Baile de cadera en primer plano"
     },
     {
       "n": "06",
@@ -60,7 +70,9 @@
       "coins": 1,
       "width": 576,
       "height": 1024,
-      "resolution": "576×1024"
+      "resolution": "576×1024",
+      "title": "Clip breve de presentación",
+      "description": "Clip breve de presentación"
     },
     {
       "n": "07",
@@ -69,16 +81,20 @@
       "coins": 4,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Baile de pie con movimientos de cadera",
+      "description": "Baile de pie con movimientos de cadera"
     },
     {
       "n": "08",
       "pack": 1,
       "seconds": 388.567,
-      "coins": 7,
+      "coins": 13,
       "width": 464,
       "height": 848,
-      "resolution": "464×848"
+      "resolution": "464×848",
+      "title": "Rutina de baile en plano abierto",
+      "description": "Rutina de baile en plano abierto"
     },
     {
       "n": "09",
@@ -87,7 +103,9 @@
       "coins": 4,
       "width": 832,
       "height": 464,
-      "resolution": "832×464"
+      "resolution": "832×464",
+      "title": "Baile horizontal de ritmo continuo",
+      "description": "Baile horizontal de ritmo continuo"
     },
     {
       "n": "10",
@@ -96,7 +114,9 @@
       "coins": 1,
       "width": 576,
       "height": 1024,
-      "resolution": "576×1024"
+      "resolution": "576×1024",
+      "title": "Clip corto de baile cercano",
+      "description": "Clip corto de baile cercano"
     },
     {
       "n": "11",
@@ -105,7 +125,9 @@
       "coins": 2,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Movimientos de baile sobre la cama",
+      "description": "Movimientos de baile sobre la cama"
     },
     {
       "n": "12",
@@ -114,7 +136,9 @@
       "coins": 3,
       "width": 576,
       "height": 1024,
-      "resolution": "576×1024"
+      "resolution": "576×1024",
+      "title": "Baile de cuerpo completo en vertical",
+      "description": "Baile de cuerpo completo en vertical"
     },
     {
       "n": "13",
@@ -123,7 +147,9 @@
       "coins": 2,
       "width": 1920,
       "height": 1080,
-      "resolution": "1920×1080"
+      "resolution": "1920×1080",
+      "title": "Baile frente a cámara en alta definición",
+      "description": "Baile frente a cámara en alta definición"
     },
     {
       "n": "14",
@@ -132,25 +158,31 @@
       "coins": 1,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Clip breve de baile vertical",
+      "description": "Clip breve de baile vertical"
     },
     {
       "n": "15",
       "pack": 2,
       "seconds": 466.563,
-      "coins": 8,
+      "coins": 16,
       "width": 640,
       "height": 360,
-      "resolution": "640×360"
+      "resolution": "640×360",
+      "title": "Sesión extensa de baile en pareja",
+      "description": "Sesión extensa de baile en pareja"
     },
     {
       "n": "16",
       "pack": 2,
       "seconds": 374.367,
-      "coins": 7,
+      "coins": 13,
       "width": 360,
       "height": 640,
-      "resolution": "360×640"
+      "resolution": "360×640",
+      "title": "Baile de cuerpo completo en vertical",
+      "description": "Baile de cuerpo completo en vertical"
     },
     {
       "n": "17",
@@ -159,7 +191,9 @@
       "coins": 4,
       "width": 360,
       "height": 640,
-      "resolution": "360×640"
+      "resolution": "360×640",
+      "title": "Baile cercano sobre la cama",
+      "description": "Baile cercano sobre la cama"
     },
     {
       "n": "18",
@@ -168,7 +202,9 @@
       "coins": 2,
       "width": 464,
       "height": 848,
-      "resolution": "464×848"
+      "resolution": "464×848",
+      "title": "Baile de cadera en plano medio",
+      "description": "Baile de cadera en plano medio"
     },
     {
       "n": "19",
@@ -177,7 +213,9 @@
       "coins": 4,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Secuencia de baile en cama",
+      "description": "Secuencia de baile en cama"
     },
     {
       "n": "20",
@@ -186,7 +224,9 @@
       "coins": 2,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Clip breve de movimientos de baile",
+      "description": "Clip breve de movimientos de baile"
     },
     {
       "n": "21",
@@ -195,7 +235,9 @@
       "coins": 2,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Baile vertical de ritmo suave",
+      "description": "Baile vertical de ritmo suave"
     },
     {
       "n": "22",
@@ -204,7 +246,9 @@
       "coins": 4,
       "width": 464,
       "height": 848,
-      "resolution": "464×848"
+      "resolution": "464×848",
+      "title": "Rutina extendida de baile en vertical",
+      "description": "Rutina extendida de baile en vertical"
     },
     {
       "n": "23",
@@ -213,7 +257,9 @@
       "coins": 3,
       "width": 464,
       "height": 848,
-      "resolution": "464×848"
+      "resolution": "464×848",
+      "title": "Secuencia vertical de baile",
+      "description": "Secuencia vertical de baile"
     },
     {
       "n": "24",
@@ -222,7 +268,9 @@
       "coins": 3,
       "width": 464,
       "height": 848,
-      "resolution": "464×848"
+      "resolution": "464×848",
+      "title": "Baile de cadera en primer plano",
+      "description": "Baile de cadera en primer plano"
     },
     {
       "n": "25",
@@ -231,7 +279,9 @@
       "coins": 2,
       "width": 464,
       "height": 848,
-      "resolution": "464×848"
+      "resolution": "464×848",
+      "title": "Movimientos de baile en formato vertical",
+      "description": "Movimientos de baile en formato vertical"
     },
     {
       "n": "26",
@@ -240,7 +290,9 @@
       "coins": 4,
       "width": 368,
       "height": 640,
-      "resolution": "368×640"
+      "resolution": "368×640",
+      "title": "Toma continua de baile vertical",
+      "description": "Toma continua de baile vertical"
     },
     {
       "n": "27",
@@ -249,7 +301,9 @@
       "coins": 4,
       "width": 368,
       "height": 640,
-      "resolution": "368×640"
+      "resolution": "368×640",
+      "title": "Rutina de baile en vertical",
+      "description": "Rutina de baile en vertical"
     },
     {
       "n": "28",
@@ -258,7 +312,9 @@
       "coins": 4,
       "width": 368,
       "height": 640,
-      "resolution": "368×640"
+      "resolution": "368×640",
+      "title": "Baile en plano fijo y vertical",
+      "description": "Baile en plano fijo y vertical"
     },
     {
       "n": "29",
@@ -267,7 +323,9 @@
       "coins": 4,
       "width": 368,
       "height": 640,
-      "resolution": "368×640"
+      "resolution": "368×640",
+      "title": "Secuencia de baile en plano fijo",
+      "description": "Secuencia de baile en plano fijo"
     },
     {
       "n": "30",
@@ -276,7 +334,9 @@
       "coins": 2,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Clip breve de baile en vertical",
+      "description": "Clip breve de baile en vertical"
     },
     {
       "n": "31",
@@ -285,7 +345,9 @@
       "coins": 2,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Toma continua de baile",
+      "description": "Toma continua de baile"
     },
     {
       "n": "32",
@@ -294,7 +356,9 @@
       "coins": 2,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Baile vertical en plano medio",
+      "description": "Baile vertical en plano medio"
     },
     {
       "n": "33",
@@ -303,7 +367,9 @@
       "coins": 2,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Baile breve en vertical",
+      "description": "Baile breve en vertical"
     },
     {
       "n": "34",
@@ -312,7 +378,9 @@
       "coins": 4,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Rutina continua de baile en vertical",
+      "description": "Rutina continua de baile en vertical"
     },
     {
       "n": "35",
@@ -321,7 +389,9 @@
       "coins": 4,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Sesión de baile en plano fijo",
+      "description": "Sesión de baile en plano fijo"
     },
     {
       "n": "36",
@@ -330,7 +400,9 @@
       "coins": 4,
       "width": 464,
       "height": 832,
-      "resolution": "464×832"
+      "resolution": "464×832",
+      "title": "Baile de cuerpo completo en vertical",
+      "description": "Baile de cuerpo completo en vertical"
     }
   ]
 }

@@ -1,9 +1,12 @@
-// POST /api/c/<slug>/unlock {n}  -> costs COIN_COST coin per video (coins shared with Jenny)
+// POST /api/c/<slug>/unlock {n}  -> charges the server-authoritative price (coins shared with Jenny)
 // GET  /api/c/<slug>/unlock      -> { coins }
 import { authenticate } from '../../../_lib/auth.js';
 import { json } from '../../../_lib/http.js';
 import { modelOf, validModelN, videoKey, coinCost, ensureTables, OWNER, catalogStorage, isPublished } from '../../../_lib/catalog.js';
 import { ensureCoinLedger, recordCoinMovement } from '../../../_lib/coin-ledger.js';
+
+const ABBI_SECONDS = {"01":149.72,"02":32.925,"03":125.41,"04":361.62,"05":117.515,"06":15.045,"07":208.003,"08":388.567,"09":185.55,"10":26.446,"11":103.606,"12":135.977,"13":66.986,"14":18.767,"15":466.563,"16":374.367,"17":215.567,"18":84.775,"19":208.051,"20":67.222,"21":94.97,"22":237.433,"23":169.633,"24":141.467,"25":108.8,"26":208.003,"27":208.016,"28":208.003,"29":208.003,"30":63.041,"31":60.033,"32":60.033,"33":90.743,"34":208.003,"35":208.003,"36":208.003};
+const abbiCost = n => Math.max(1, Math.ceil(ABBI_SECONDS[n] / 60 * (ABBI_SECONDS[n] <= 240 ? 1 : 2)));
 
 export async function onRequest({ request, env, params }) {
   const slug = String(params.slug || '').toLowerCase();
@@ -28,7 +31,7 @@ export async function onRequest({ request, env, params }) {
   const n = String(b.n || '');
   if (!validModelN(slug, n)) return json({ ok: false, error: 'bad_video' }, 400);
   if (request.method === 'POST' && !(await isPublished(env, slug, n))) return json({ ok: false, error: 'not_available' }, 404);
-  const cost = coinCost(slug, n);
+  const cost = slug === 'abbi' ? abbiCost(n) : coinCost(slug, n);
   if (!cost) return json({ ok: false, error: 'bad_video' }, 400);
   if (accessMode) {
     const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE email = ?').bind(em).first();
