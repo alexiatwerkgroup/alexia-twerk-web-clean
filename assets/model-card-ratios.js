@@ -1,6 +1,6 @@
 (function(){
   function fit(){
-    document.querySelectorAll('body[data-model] .c .v video').forEach(function(video){
+    document.querySelectorAll('body[data-model] .c .v video, body .video-card .video-cover video').forEach(function(video){
       var box=video.closest('.v'); if(!box)return;
       function apply(){if(video.videoWidth&&video.videoHeight)box.style.aspectRatio=video.videoWidth+'/'+video.videoHeight}
       video.preload='metadata'; video.addEventListener('loadedmetadata',apply,{once:true});
