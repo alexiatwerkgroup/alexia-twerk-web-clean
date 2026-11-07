@@ -2,7 +2,7 @@
 // GET  /api/c/<slug>/unlock      -> { coins }
 import { authenticate } from '../../../_lib/auth.js';
 import { json } from '../../../_lib/http.js';
-import { modelOf, validN, videoKey, coinCost, ensureTables, OWNER } from '../../../_lib/catalog.js';
+import { modelOf, validModelN, videoKey, coinCost, ensureTables, OWNER, catalogStorage, isPublished } from '../../../_lib/catalog.js';
 import { ensureCoinLedger, recordCoinMovement } from '../../../_lib/coin-ledger.js';
 
 export async function onRequest({ request, env, params }) {
@@ -26,7 +26,8 @@ export async function onRequest({ request, env, params }) {
   if (request.method !== 'POST') return json({ ok: false, error: 'method' }, 405);
   let b = {}; try { b = await request.json(); } catch {}
   const n = String(b.n || '');
-  if (!validN(n)) return json({ ok: false, error: 'bad_video' }, 400);
+  if (!validModelN(slug, n)) return json({ ok: false, error: 'bad_video' }, 400);
+  if (request.method === 'POST' && !(await isPublished(env, slug, n))) return json({ ok: false, error: 'not_available' }, 404);
   const cost = coinCost(slug, n);
   if (!cost) return json({ ok: false, error: 'bad_video' }, 400);
   if (accessMode) {
@@ -36,7 +37,9 @@ export async function onRequest({ request, env, params }) {
   const had = await env.DB.prepare('SELECT 1 x FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?').bind(slug, em, n).first();
   if (had) return json({ ok: true, already: true });
   // never charge for a video that is not in storage yet
-  const o = await env.JENNY_VIDEOS.head(videoKey(slug, n));
+  const storage = catalogStorage(env, slug);
+  if (!storage) return json({ ok: false, error: 'not_configured' }, 503);
+  const o = await storage.head(videoKey(slug, n));
   if (!o) return json({ ok: false, error: 'not_available' }, 404);
   const results = await env.DB.batch([
     env.DB.prepare('UPDATE jenny_coins SET coins = coins - ? WHERE email = ? AND coins >= ? AND NOT EXISTS (SELECT 1 FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?)').bind(cost, em, cost, slug, em, n),

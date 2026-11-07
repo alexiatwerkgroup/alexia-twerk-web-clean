@@ -22,6 +22,10 @@ export async function onRequest({ request, env, params }) {
   let b = {}; try { b = await request.json(); } catch {}
   const email = String(b.email || '').trim().toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ ok: false, error: 'bad_email' }, 400);
+  if (slug === 'abbi') {
+    const account = await env.DB.prepare('SELECT 1 x FROM profiles WHERE lower(email)=?').bind(email).first();
+    if (!account) return json({ ok: false, error: 'twerkhub_account_required' }, 404);
+  }
   const coins = parseInt(b.coins, 10);
   if (coins) {
     if (request.method === 'POST' && coins < MIN_COIN_PURCHASE) return json({ ok: false, error: 'min_' + MIN_COIN_PURCHASE + '_coins' }, 400);
@@ -44,7 +48,14 @@ export async function onRequest({ request, env, params }) {
     }
     return json({ ok: true, videos: ns });
   }
-  if (request.method === 'POST') { await env.DB.prepare('INSERT OR IGNORE INTO catalog_access (slug, email) VALUES (?, ?)').bind(slug, email).run(); return json({ ok: true }); }
+  if (request.method === 'POST') {
+    if (slug === 'abbi') {
+      const live = await env.DB.prepare('SELECT COUNT(*) AS n FROM abbi_publications').first();
+      if (Number(live?.n || 0) !== 36) return json({ ok: false, error: 'hotpack_incomplete' }, 409);
+    }
+    await env.DB.prepare('INSERT OR IGNORE INTO catalog_access (slug, email) VALUES (?, ?)').bind(slug, email).run();
+    return json({ ok: true });
+  }
   if (request.method === 'DELETE') { await env.DB.prepare('DELETE FROM catalog_access WHERE slug = ? AND email = ?').bind(slug, email).run(); return json({ ok: true }); }
   return json({ ok: false, error: 'method' }, 405);
 }

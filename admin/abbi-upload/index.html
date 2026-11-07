@@ -5,8 +5,101 @@
 </style></head><body><main>
 <nav><a href="/abbi/">← Abbi's page</a> · <a href="/">Twerkhub home</a></nav>
 <h1>Abbi <span>video studio.</span></h1><p class="muted">Owner only. Upload originals privately, verify them, then publish when the collection is ready.</p>
-<section class="panel"><h2>1 · Upload originals</h2><p>Name each file <strong>v01.mp4, v02.mp4…</strong> before selecting it. Existing files are never overwritten.</p><p id="owner" class="status">Checking your session…</p><input id="files" type="file" multiple accept="video/mp4,.mp4" disabled><button id="start" disabled>Upload selected videos</button><button id="pause" class="secondary" disabled>Pause</button><p id="summary" class="status" role="status"></p><progress id="progress" value="0" max="100"></progress><pre id="log" aria-label="Upload log"></pre></section>
-<section class="panel"><h2>2 · Review and publish</h2><p>Uploaded files stay private until you publish them. Check the originals before clicking the publish button. The first publication also sends the launch email to people who requested it.</p><div id="files-status" class="tiny">Loading uploaded videos…</div><button id="publish" class="publish" disabled>Publish verified videos + notify subscribers</button><p id="publish-status" class="status" role="status"></p><p class="tiny">Publishing is the launch action. Repeat it if any notification delivery fails; already notified subscribers will not receive a second launch email.</p></section>
+<section class="panel"><h2>1 · Upload originals</h2><p>Select all 36 source originals together. They are assigned to v01–v36 in the prepared catalog order and uploaded without changing file bytes. Existing files are never overwritten.</p><p id="owner" class="status">Checking your session…</p><input id="files" type="file" multiple accept="video/mp4,.mp4" disabled><button id="start" disabled>Upload selected videos</button><button id="pause" class="secondary" disabled>Pause</button><p id="summary" class="status" role="status"></p><progress id="progress" value="0" max="100"></progress><pre id="log" aria-label="Upload log"></pre></section>
+<section class="panel"><h2>2 · Register local technical checks</h2><p>After downloading each object from R2 and confirming its SHA-256 against the untouched original, load the local verification manifest. The manifest contains technical metadata only—no source filenames.</p><input id="manifest" type="file" accept="application/json,.json"><button id="verify" disabled>Register 36 verified objects</button><p id="verify-status" class="status" role="status"></p><div id="files-status" class="tiny">Loading upload and verification state…</div></section>
+<section class="panel"><h2>3 · Publish all 36 together</h2><p>Publishing requires all 36 objects to be uploaded and technically verified. It records the collection live without sending launch emails.</p><button id="publish" class="publish" disabled>Publish verified videos</button><p id="publish-status" class="status" role="status"></p><p class="tiny">Publishing makes each verified video available under its access rules. Launch notifications remain off.</p></section>
 </main><script>
-(()=>{'use strict';const $=id=>document.getElementById(id),files=$('files'),start=$('start'),pause=$('pause'),summary=$('summary'),bar=$('progress'),log=$('log'),publish=$('publish'),fileStatus=$('files-status'),publishStatus=$('publish-status');let stopped=false,running=false,verified=[];const token=()=>{try{return JSON.parse(localStorage.getItem('alexia-auth-v3')||'{}').token||''}catch{return ''}};async function api(action,name,method,body,part){const headers={},t=token();if(t)headers.Authorization='Bearer '+t;if(body&&!(body instanceof Blob)){headers['Content-Type']='application/json';body=JSON.stringify(body)}const url='/api/admin/media-upload?model=abbi&action='+action+(name?'&name='+encodeURIComponent(name):'')+(part?'&part='+part:'');const response=await fetch(url,{method:method||'GET',credentials:'include',headers,body});const data=await response.json();if(!response.ok)throw Error(data.error||'HTTP '+response.status);return data}async function retry(task){let last;for(let i=0;i<4;i++){try{return await task()}catch(error){last=error;if(/owner_only|login_required|object_already_exists|different_file/.test(error.message))throw error;await new Promise(resolve=>setTimeout(resolve,1200*(i+1)))}}throw last}function note(text){log.textContent+=text+'\n';log.scrollTop=log.scrollHeight}async function refresh(){const [uploads,catalog]=await Promise.all([api('status'),fetch('/api/c/abbi/catalog',{cache:'no-store'}).then(r=>r.json())]);verified=(uploads.files||[]).filter(f=>f.status==='complete'&&/^abbi\/v\d\d\.mp4$/.test(f.key)).map(f=>f.key.match(/v(\d\d)\.mp4$/)[1]);const live=new Set((catalog.videos||[]).map(v=>v.n));fileStatus.textContent=verified.length?verified.map(n=>'Video '+n+(live.has(n)?' · PUBLISHED':' · private, verified')).join('  |  '):'No verified originals uploaded yet.';publish.disabled=!verified.length;return verified.length}files.addEventListener('change',()=>{start.disabled=!files.files.length;summary.textContent=files.files.length+' file(s) selected'});pause.addEventListener('click',()=>{stopped=true;pause.disabled=true;summary.textContent='Pausing after the current block…'});start.addEventListener('click',async()=>{if(running)return;running=true;stopped=false;start.disabled=true;files.disabled=true;pause.disabled=false;const selected=[...files.files].sort((a,b)=>a.name.localeCompare(b.name)),total=selected.reduce((sum,file)=>sum+file.size,0);let done=0,count=0;try{for(const file of selected){if(stopped)break;if(!/^v\d\d\.mp4$/.test(file.name))throw Error('Use v01.mp4, v02.mp4…');note('Preparing '+file.name);const init=await retry(()=>api('init',file.name,'POST',{size:file.size}));if(init.complete){done+=file.size;count++;note(file.name+' already verified');continue}const saved=new Set((init.parts||[]).map(p=>p.n));for(let n=1;n<=Math.ceil(file.size/init.chunk);n++){if(stopped)break;const begin=(n-1)*init.chunk,end=Math.min(begin+init.chunk,file.size);summary.textContent=file.name+' · block '+n+' · '+count+'/'+selected.length;if(!saved.has(n))await retry(()=>api('part',file.name,'PUT',file.slice(begin,end),n));bar.value=Math.min(100,(done+end)/total*100)}if(stopped)break;const result=await retry(()=>api('complete',file.name,'POST',{}));if(!result.complete)throw Error('Verification failed for '+file.name);done+=file.size;count++;note('VERIFIED '+file.name+' · '+file.size+' bytes')}summary.textContent=stopped?'Upload paused.':count+' video(s) uploaded and verified';if(!stopped)bar.value=100;await refresh()}catch(error){summary.textContent='Stopped: '+error.message;note('ERROR '+error.message)}finally{running=false;start.disabled=false;files.disabled=false;pause.disabled=true}});publish.addEventListener('click',async()=>{publish.disabled=true;publishStatus.textContent='Publishing verified videos…';try{if(!verified.length)throw Error('No verified videos');const headers={'Content-Type':'application/json'},t=token();if(t)headers.Authorization='Bearer '+t;const response=await fetch('/api/admin/abbi-publish',{method:'POST',credentials:'include',headers,body:JSON.stringify({videos:verified,notify:true})});const data=await response.json();if(!response.ok||!data.ok)throw Error(data.error||'Publish failed');await refresh();publishStatus.textContent=data.notice_error?'Videos published, but email is not configured. Fix email and retry.':'Published '+data.published.length+' video(s). Launch emails sent: '+data.sent+'. Failed: '+data.failed+'. Still pending: '+data.pending+(data.pending?' — click publish again to retry.':'.')}catch(error){publishStatus.textContent='Could not finish publishing: '+error.message}finally{publish.disabled=!verified.length}});refresh().then(()=>{$('owner').textContent='Owner session ready. Select Abbi videos to upload.';files.disabled=false}).catch(error=>{$('owner').innerHTML='Owner sign-in required. <a href="/account">Sign in to Twerkhub</a>, then return here.';fileStatus.textContent='Sign in with the owner account to continue.'})})();
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const files=$('files'),start=$('start'),pause=$('pause'),summary=$('summary'),bar=$('progress'),log=$('log');
+const manifestFile=$('manifest'),verifyButton=$('verify'),verifyStatus=$('verify-status');
+const publish=$('publish'),fileStatus=$('files-status'),publishStatus=$('publish-status');
+let stopped=false,running=false,uploaded=new Set(),verified=new Set();
+const token=()=>{try{return JSON.parse(localStorage.getItem('alexia-auth-v3')||'{}').token||''}catch{return ''}};
+function authHeaders(extra={}){const headers={...extra},t=token();if(t)headers.Authorization='Bearer '+t;return headers}
+async function api(action,name,method,body,part){
+ const headers=authHeaders();
+ if(body&&!(body instanceof Blob)){headers['Content-Type']='application/json';body=JSON.stringify(body)}
+ const url='/api/admin/media-upload?model=abbi&action='+action+(name?'&name='+encodeURIComponent(name):'')+(part?'&part='+part:'');
+ const response=await fetch(url,{method:method||'GET',credentials:'include',headers,body});
+ const data=await response.json();if(!response.ok)throw Error(data.error||'HTTP '+response.status);return data
+}
+async function ownerFetch(path,options={}){
+ const response=await fetch(path,{credentials:'include',...options,headers:authHeaders(options.headers||{})});
+ const data=await response.json();if(!response.ok)throw Error(data.error||'HTTP '+response.status);return data
+}
+async function retry(task){let last;for(let i=0;i<4;i++){try{return await task()}catch(error){last=error;if(/owner_only|login_required|object_already_exists|different_file|bad_name/.test(error.message))throw error;await new Promise(resolve=>setTimeout(resolve,1200*(i+1)))}}throw last}
+function note(text){log.textContent+=text+'\n';log.scrollTop=log.scrollHeight}
+async function refresh(){
+ const [uploads,catalog,checks]=await Promise.all([api('status'),fetch('/api/c/abbi/catalog',{cache:'no-store'}).then(r=>r.json()),ownerFetch('/api/admin/abbi-verify')]);
+ uploaded=new Set((uploads.files||[]).filter(f=>f.status==='complete'&&/^abbi\/v(0[1-9]|[12][0-9]|3[0-6])\.mp4$/.test(f.key)).map(f=>f.key.match(/v(\d\d)\.mp4$/)[1]));
+ verified=new Set((checks.videos||[]).filter(v=>/^abbi\/v(0[1-9]|[12][0-9]|3[0-6])\.mp4$/.test(v.key)).map(v=>v.n));
+ const live=new Set((catalog.videos||[]).map(v=>v.n));
+ fileStatus.textContent='Uploaded: '+uploaded.size+'/36 · SHA-256/metadata registered: '+verified.size+'/36 · Published: '+live.size+'/36';
+ verifyButton.disabled=uploaded.size!==36||!manifestFile.files.length;
+ publish.disabled=uploaded.size!==36||verified.size!==36;
+ return {uploaded,verified,live}
+}
+files.addEventListener('change',()=>{start.disabled=!files.files.length;summary.textContent=files.files.length+' file(s) selected'});
+manifestFile.addEventListener('change',()=>{verifyButton.disabled=uploaded.size!==36||!manifestFile.files.length;verifyStatus.textContent=manifestFile.files.length?'Manifest selected.':''});
+pause.addEventListener('click',()=>{stopped=true;pause.disabled=true;summary.textContent='Pausing after the current block…'});
+start.addEventListener('click',async()=>{
+ if(running)return;running=true;stopped=false;start.disabled=true;files.disabled=true;pause.disabled=false;
+ const selected=[...files.files].sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0),total=selected.reduce((sum,file)=>sum+file.size,0);
+ let done=0,count=0;
+ try{
+  if(selected.length!==36)throw Error('Select all 36 original videos together.');
+  for(const [index,file] of selected.entries()){
+   if(stopped)break;
+   const name='v'+String(index+1).padStart(2,'0')+'.mp4';note('Preparing '+name);
+   const init=await retry(()=>api('init',name,'POST',{size:file.size}));
+   if(init.complete){done+=file.size;count++;note(name+' already present; SHA-256 still required before publication');continue}
+   const saved=new Set((init.parts||[]).map(p=>p.n));
+   for(let n=1;n<=Math.ceil(file.size/init.chunk);n++){
+    if(stopped)break;
+    const begin=(n-1)*init.chunk,end=Math.min(begin+init.chunk,file.size);
+    summary.textContent=name+' · block '+n+' · '+count+'/'+selected.length;
+    if(!saved.has(n))await retry(()=>api('part',name,'PUT',file.slice(begin,end),n));
+    bar.value=Math.min(100,(done+end)/total*100)
+   }
+   if(stopped)break;
+   const result=await retry(()=>api('complete',name,'POST',{}));
+   if(!result.complete)throw Error('Upload size check failed for '+name);
+   done+=file.size;count++;note('UPLOADED '+name+' · '+file.size+' bytes')
+  }
+  summary.textContent=stopped?'Upload paused.':count+' video(s) uploaded; SHA-256 verification is a separate required step';
+  if(!stopped)bar.value=100;
+  await refresh()
+ }catch(error){summary.textContent='Stopped: '+error.message;note('ERROR '+error.message)}
+ finally{running=false;start.disabled=false;files.disabled=false;pause.disabled=true}
+});
+verifyButton.addEventListener('click',async()=>{
+ verifyButton.disabled=true;verifyStatus.textContent='Validating manifest…';
+ try{
+  if(uploaded.size!==36)throw Error('All 36 objects must be uploaded first.');
+  const data=JSON.parse(await manifestFile.files[0].text()),rows=data.videos;
+  if(!Array.isArray(rows)||rows.length!==36)throw Error('Manifest must contain exactly 36 records.');
+  const expected=new Set(Array.from({length:36},(_,i)=>String(i+1).padStart(2,'0')));
+  for(const row of rows){
+   if(!expected.delete(String(row.n))||row.key!=='abbi/v'+row.n+'.mp4'||!Number.isSafeInteger(row.size)||!/^[a-f0-9]{64}$/i.test(row.sha256||'')||!Number.isFinite(row.duration)||row.duration<=0||!Number.isInteger(row.width)||!Number.isInteger(row.height)||!row.videoCodec||!row.audioCodec||row.localObjectMatch!==true||row.decodeOk!==true)throw Error('Invalid or incomplete verification record for '+row.n);
+  }
+  if(expected.size)throw Error('Manifest is missing video numbers.');
+  for(let i=0;i<rows.length;i++){
+   const row=rows[i];verifyStatus.textContent='Registering '+row.n+'/36…';
+   await ownerFetch('/api/admin/abbi-verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n:row.n,key:row.key,size:row.size,sha256:row.sha256,duration:row.duration,width:row.width,height:row.height,videoCodec:row.videoCodec,audioCodec:row.audioCodec,localObjectMatch:row.localObjectMatch,decodeOk:row.decodeOk})})
+  }
+  await refresh();verifyStatus.textContent='All 36 object checks recorded.'
+ }catch(error){verifyStatus.textContent='Verification registration stopped: '+error.message;verifyButton.disabled=uploaded.size!==36||!manifestFile.files.length}
+});
+publish.addEventListener('click',async()=>{
+ publish.disabled=true;publishStatus.textContent='Publishing the complete verified pack…';
+ try{
+  if(uploaded.size!==36||verified.size!==36)throw Error('All 36 uploads and technical checks are required.');
+  const data=await ownerFetch('/api/admin/abbi-publish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({videos:Array.from({length:36},(_,i)=>String(i+1).padStart(2,'0')),notify:false})});
+  await refresh();publishStatus.textContent='Published '+data.published.length+' videos. No launch emails were sent.'
+ }catch(error){publishStatus.textContent='Could not publish: '+error.message;publish.disabled=uploaded.size!==36||verified.size!==36}
+});
+refresh().then(()=>{$('owner').textContent='Owner session ready. Select the 36 Abbi originals to upload.';files.disabled=false}).catch(error=>{$('owner').innerHTML='Owner sign-in required. <a href="/account">Sign in to Twerkhub</a>, then return here.';fileStatus.textContent='Sign in with the owner account to continue.'})
+})();
 </script></body></html>

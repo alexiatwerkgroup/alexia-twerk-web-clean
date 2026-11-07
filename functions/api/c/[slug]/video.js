@@ -1,20 +1,21 @@
 // GET /api/c/<slug>/video?n=01..99  (login + access check). Streams from private R2 (JENNY_VIDEOS).
 import { authenticate } from '../../../_lib/auth.js';
-import { modelOf, validN, canWatch, ensureTables, videoKey } from '../../../_lib/catalog.js';
+import { modelOf, validModelN, canWatch, ensureTables, videoKey, catalogStorage, isPublished } from '../../../_lib/catalog.js';
 
 export async function onRequestGet({ request, env, params }) {
   const deny = (s, m) => new Response(m, { status: s, headers: { 'Cache-Control': 'no-store' } });
   const slug = String(params.slug || '').toLowerCase();
   if (!modelOf(slug)) return deny(404, 'not_found');
   const n = new URL(request.url).searchParams.get('n') || '';
-  if (!validN(n)) return deny(400, 'bad_request');
-  const storage = slug === 'abbi' ? (env.ABBI_VIDEOS || env.JENNY_VIDEOS) : env.JENNY_VIDEOS;
+  if (!validModelN(slug, n)) return deny(400, 'bad_request');
+  const storage = catalogStorage(env, slug);
   if (!storage || !env.DB) return deny(500, 'not_configured');
   const p = await authenticate(request, env);
   if (!p || !p.sub) return deny(401, 'login_required');
   const u = await env.DB.prepare('SELECT email, tier FROM profiles WHERE id = ?').bind(p.sub).first();
   if (!u) return deny(401, 'login_required');
   await ensureTables(env);
+  if (!(await isPublished(env, slug, n))) return deny(404, 'not_found');
   if (!(await canWatch(env, u, slug, n))) return deny(403, 'coins_required');
 
   const key = videoKey(slug, n);

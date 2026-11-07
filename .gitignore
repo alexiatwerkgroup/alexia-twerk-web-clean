@@ -82,3 +82,4 @@ DEPLOY-BLINDAJE-V5.ps1
 
 # Dependencies (install locally via npm install)
 node_modules/
+.wrangler/

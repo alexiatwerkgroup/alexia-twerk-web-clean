@@ -1,4 +1,5 @@
 import { authenticate } from '../../_lib/auth.js';
+import { catalogStorage } from '../../_lib/catalog.js';
 const OWNER = 'alexiatwerkoficial@gmail.com';
 const CHUNK = 16 * 1024 * 1024;
 const reply = (data, status = 200) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store' } });
@@ -7,7 +8,7 @@ async function tables(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS lolita_upload_parts (key TEXT NOT NULL, n INTEGER NOT NULL, etag TEXT NOT NULL, bytes INTEGER NOT NULL, PRIMARY KEY (key,n))').run();
 }
 export async function onRequest({ request, env }) {
-  if (!env.DB || !env.JENNY_VIDEOS) return reply({ error: 'not_configured' }, 503);
+  if (!env.DB) return reply({ error: 'not_configured' }, 503);
   const identity = await authenticate(request, env).catch(() => null);
   if (!identity?.sub) return reply({ error: 'login_required' }, 401);
   const user = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();
@@ -16,7 +17,7 @@ export async function onRequest({ request, env }) {
   const requestedModel = url.searchParams.get('model') || 'lolita';
   if (!['lolita','tainara','abbi'].includes(requestedModel)) return reply({ error: 'bad_model' }, 400);
   const model = requestedModel;
-  const storage = model === 'abbi' ? (env.ABBI_VIDEOS || env.JENNY_VIDEOS) : env.JENNY_VIDEOS;
+  const storage = catalogStorage(env, model);
   if (!storage) return reply({ error: 'not_configured' }, 503);
   if (!['GET','POST','PUT'].includes(request.method)) return reply({ error: 'method' }, 405);
   await tables(env.DB);
@@ -26,6 +27,7 @@ export async function onRequest({ request, env }) {
   }
   const name = url.searchParams.get('name') || '';
   if (!/^(?:bonus-)?v(0[1-9]|[1-9][0-9])\.mp4$/.test(name)) return reply({ error: 'bad_name' }, 400);
+  if (model === 'abbi' && !/^v(0[1-9]|[12][0-9]|3[0-6])\.mp4$/.test(name)) return reply({ error: 'bad_name' }, 400);
   const key = name.startsWith('bonus-') ? model + '/bonus/' + name.slice(6) : model + '/' + name;
   if (request.method === 'POST' && action === 'init') {
     const body = await request.json().catch(() => ({}));
@@ -34,7 +36,14 @@ export async function onRequest({ request, env }) {
     const existing = await storage.head(key);
     if (existing) {
       const known = await env.DB.prepare('SELECT size,status FROM lolita_uploads WHERE key=?').bind(key).first();
-      if (known && known.size === size && existing.size === size) return reply({ ok: true, complete: true, bytes: existing.size });
+      if (known && known.size === size && existing.size === size) {
+        await env.DB.prepare("UPDATE lolita_uploads SET status='complete' WHERE key=?").bind(key).run();
+        return reply({ ok: true, complete: true, bytes: existing.size });
+      }
+      if (!known && model === 'abbi' && existing.size === size) {
+        await env.DB.prepare("INSERT INTO lolita_uploads(key,upload_id,size,status,created) VALUES (?,'preexisting',?,'complete',?)").bind(key,size,Date.now()).run();
+        return reply({ ok: true, complete: true, bytes: existing.size, preexisting: true });
+      }
       return reply({ error: 'object_already_exists' }, 409);
     }
     let row = await env.DB.prepare('SELECT * FROM lolita_uploads WHERE key=?').bind(key).first();

@@ -1,0 +1,336 @@
+{
+  "model": "Abbi",
+  "count": 36,
+  "coinUsd": 0.5,
+  "minimumCoins": 20,
+  "minimumUsd": 10,
+  "hotPackUsdt": 18.25,
+  "individualCoins": 118.0,
+  "individualUsd": 59.0,
+  "videos": [
+    {
+      "n": "01",
+      "pack": 1,
+      "seconds": 149.72,
+      "coins": 3,
+      "width": 576,
+      "height": 768,
+      "resolution": "576×768"
+    },
+    {
+      "n": "02",
+      "pack": 1,
+      "seconds": 32.925,
+      "coins": 1,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "03",
+      "pack": 1,
+      "seconds": 125.41,
+      "coins": 3,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "04",
+      "pack": 1,
+      "seconds": 361.62,
+      "coins": 7,
+      "width": 1920,
+      "height": 1080,
+      "resolution": "1920×1080"
+    },
+    {
+      "n": "05",
+      "pack": 1,
+      "seconds": 117.515,
+      "coins": 2,
+      "width": 464,
+      "height": 848,
+      "resolution": "464×848"
+    },
+    {
+      "n": "06",
+      "pack": 1,
+      "seconds": 15.045,
+      "coins": 1,
+      "width": 576,
+      "height": 1024,
+      "resolution": "576×1024"
+    },
+    {
+      "n": "07",
+      "pack": 1,
+      "seconds": 208.003,
+      "coins": 4,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "08",
+      "pack": 1,
+      "seconds": 388.567,
+      "coins": 7,
+      "width": 464,
+      "height": 848,
+      "resolution": "464×848"
+    },
+    {
+      "n": "09",
+      "pack": 1,
+      "seconds": 185.55,
+      "coins": 4,
+      "width": 832,
+      "height": 464,
+      "resolution": "832×464"
+    },
+    {
+      "n": "10",
+      "pack": 1,
+      "seconds": 26.446,
+      "coins": 1,
+      "width": 576,
+      "height": 1024,
+      "resolution": "576×1024"
+    },
+    {
+      "n": "11",
+      "pack": 1,
+      "seconds": 103.606,
+      "coins": 2,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "12",
+      "pack": 1,
+      "seconds": 135.977,
+      "coins": 3,
+      "width": 576,
+      "height": 1024,
+      "resolution": "576×1024"
+    },
+    {
+      "n": "13",
+      "pack": 1,
+      "seconds": 66.986,
+      "coins": 2,
+      "width": 1920,
+      "height": 1080,
+      "resolution": "1920×1080"
+    },
+    {
+      "n": "14",
+      "pack": 1,
+      "seconds": 18.767,
+      "coins": 1,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "15",
+      "pack": 2,
+      "seconds": 466.563,
+      "coins": 8,
+      "width": 640,
+      "height": 360,
+      "resolution": "640×360"
+    },
+    {
+      "n": "16",
+      "pack": 2,
+      "seconds": 374.367,
+      "coins": 7,
+      "width": 360,
+      "height": 640,
+      "resolution": "360×640"
+    },
+    {
+      "n": "17",
+      "pack": 2,
+      "seconds": 215.567,
+      "coins": 4,
+      "width": 360,
+      "height": 640,
+      "resolution": "360×640"
+    },
+    {
+      "n": "18",
+      "pack": 2,
+      "seconds": 84.775,
+      "coins": 2,
+      "width": 464,
+      "height": 848,
+      "resolution": "464×848"
+    },
+    {
+      "n": "19",
+      "pack": 2,
+      "seconds": 208.051,
+      "coins": 4,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "20",
+      "pack": 2,
+      "seconds": 67.222,
+      "coins": 2,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "21",
+      "pack": 2,
+      "seconds": 94.97,
+      "coins": 2,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "22",
+      "pack": 2,
+      "seconds": 237.433,
+      "coins": 4,
+      "width": 464,
+      "height": 848,
+      "resolution": "464×848"
+    },
+    {
+      "n": "23",
+      "pack": 2,
+      "seconds": 169.633,
+      "coins": 3,
+      "width": 464,
+      "height": 848,
+      "resolution": "464×848"
+    },
+    {
+      "n": "24",
+      "pack": 2,
+      "seconds": 141.467,
+      "coins": 3,
+      "width": 464,
+      "height": 848,
+      "resolution": "464×848"
+    },
+    {
+      "n": "25",
+      "pack": 2,
+      "seconds": 108.8,
+      "coins": 2,
+      "width": 464,
+      "height": 848,
+      "resolution": "464×848"
+    },
+    {
+      "n": "26",
+      "pack": 2,
+      "seconds": 208.003,
+      "coins": 4,
+      "width": 368,
+      "height": 640,
+      "resolution": "368×640"
+    },
+    {
+      "n": "27",
+      "pack": 2,
+      "seconds": 208.016,
+      "coins": 4,
+      "width": 368,
+      "height": 640,
+      "resolution": "368×640"
+    },
+    {
+      "n": "28",
+      "pack": 2,
+      "seconds": 208.003,
+      "coins": 4,
+      "width": 368,
+      "height": 640,
+      "resolution": "368×640"
+    },
+    {
+      "n": "29",
+      "pack": 2,
+      "seconds": 208.003,
+      "coins": 4,
+      "width": 368,
+      "height": 640,
+      "resolution": "368×640"
+    },
+    {
+      "n": "30",
+      "pack": 2,
+      "seconds": 63.041,
+      "coins": 2,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "31",
+      "pack": 2,
+      "seconds": 60.033,
+      "coins": 2,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "32",
+      "pack": 2,
+      "seconds": 60.033,
+      "coins": 2,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "33",
+      "pack": 3,
+      "seconds": 90.743,
+      "coins": 2,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "34",
+      "pack": 3,
+      "seconds": 208.003,
+      "coins": 4,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "35",
+      "pack": 3,
+      "seconds": 208.003,
+      "coins": 4,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    },
+    {
+      "n": "36",
+      "pack": 3,
+      "seconds": 208.003,
+      "coins": 4,
+      "width": 464,
+      "height": 832,
+      "resolution": "464×832"
+    }
+  ]
+}
