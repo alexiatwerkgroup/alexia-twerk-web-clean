@@ -13,7 +13,9 @@ export async function onRequest({ request, env }) {
   const user = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();
   if (String(user?.email || '').toLowerCase() !== OWNER) return reply({ error: 'owner_only' }, 403);
   const url = new URL(request.url), action = url.searchParams.get('action');
-  const model = url.searchParams.get('model') === 'tainara' ? 'tainara' : 'lolita';
+  const requestedModel = url.searchParams.get('model') || 'lolita';
+  if (!['lolita','tainara','abbi'].includes(requestedModel)) return reply({ error: 'bad_model' }, 400);
+  const model = requestedModel;
   if (!['GET','POST','PUT'].includes(request.method)) return reply({ error: 'method' }, 405);
   await tables(env.DB);
   if (request.method === 'GET' && action === 'status') {
