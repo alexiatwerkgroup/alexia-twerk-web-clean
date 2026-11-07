@@ -43,7 +43,7 @@
   <p class="paynote">Check that the Binance account name and ID match before confirming. Send USDT only on the exact network shown. After payment, send the receipt and the email on your Twerkhub account through <a href="/discord" style="color:var(--pink);text-decoration:underline">Twerkhub Discord</a>. Access is added after verification. Do not include passwords or login codes.</p>
   <p class="paynote" id="pay-minimum"></p>
 </dialog>
-<script defer src="/assets/supabase-config.js"></script><script defer src="/assets/twerkhub-auth.js"></script>
+<script defer src="/assets/model-card-ratios.js?v=20261107-1"></script><script defer src="/assets/supabase-config.js"></script><script defer src="/assets/twerkhub-auth.js"></script>
 <script>
 (()=>{const catalog=document.getElementById('catalog'),status=document.getElementById('catalog-status'),account=document.getElementById('account-state'),balance=document.getElementById('balance'),packButton=document.getElementById('buy-hotpack'),packState=document.getElementById('hotpack-state'),dialog=document.getElementById('pay');let data=null,auth=null,published=new Set(),modelAccess=false,unlocked=new Set();
 const fmtTime=s=>{const t=Math.max(0,Math.round(Number(s)||0));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
