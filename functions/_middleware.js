@@ -35,7 +35,7 @@ export async function onRequest(context) {
     const ct = res.headers.get('content-type') || '';
     if (request.method !== 'GET' || url.pathname.startsWith('/api/') || !ct.includes('text/html') || !res.body || res.status !== 200) return res;
     try { spare = res.clone(); } catch (e) {}
-    const html = (await res.text()).replace(/supabase-config\.js(?:\?[^"'<>\s]*)?/g, 'supabase-config.js?v=20261103-confirm').replace(/twerkhub-auth\.js(?:\?[^"'<>\s]*)?/g, 'twerkhub-auth.js?v=20261103-confirm').replace(/twk-stats-btn\.js(?:\?[^"'<>\s]*)?/g, 'twk-stats-btn.js?v=20261105-fixed-shortcut');
+    const html = (await res.text()).replace(/supabase-config\.js(?:\?[^"'<>\s]*)?/g, 'supabase-config.js?v=20261103-confirm').replace(/twerkhub-auth\.js(?:\?[^"'<>\s]*)?/g, 'twerkhub-auth.js?v=20261107-novinhas-return').replace(/twk-stats-btn\.js(?:\?[^"'<>\s]*)?/g, 'twk-stats-btn.js?v=20261105-fixed-shortcut');
     const ua = request.headers.get('user-agent') || '';
     const track = env.DB && !isBot(ua) && cookie(request, 'twx') !== '1' && !url.pathname.startsWith('/admin/');
     let add = html.includes('class="twk-disc"') ? '' : DISC;
@@ -53,7 +53,7 @@ export async function onRequest(context) {
         if (owner) return; try { await init(env.DB); const seenAt = Date.now(); await env.DB.prepare('INSERT INTO tw_hits (hid, ts, last_active, vid, path, country, region, city, tz, device, browser, os, lang, ref, is_new, reg, lat, lon, uid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
           .bind(hid, seenAt, seenAt, vid, url.pathname.slice(0, 200), cf.country || '', cf.region || '', cf.city || '', cf.timezone || '', u.device, u.browser, u.os, lang, ref, isNew, reg, cf.latitude ? Math.round(cf.latitude * 10) / 10 : null, cf.longitude ? Math.round(cf.longitude * 10) / 10 : null, uid).run(); } catch (e) {}
       })());
-      add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=4" defer></script>';
+      add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=5" defer></script>';
     }
     add += '<script src="/assets/twerkhub-counter.js?v=20261105-owner-auth" defer></script>';
     add += '<script>(function(){document.querySelectorAll(".tn2-lk a,.tn2 details nav a,.tf2 a").forEach(function(a){var h=a.getAttribute("href")||"";if(h.indexOf("/membership")===0||h.indexOf("/pt/membership")===0){a.href="/tokens/";a.textContent="BALANCE"}})})();</script>';

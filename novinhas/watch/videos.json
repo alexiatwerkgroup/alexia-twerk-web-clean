@@ -1,10 +1,10 @@
 {
   "videos": [
-    {"id":4,"title":"Bumbum granada stheyc","sourceDuration":87.17,"width":720,"height":1280,"video":"/assets/youtube/kelina-kessia/full/video-04.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-04.webp"},
-    {"id":5,"title":"Full HD,1080p","sourceDuration":180.12,"width":608,"height":1080,"video":"/assets/youtube/kelina-kessia/full/video-05.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-05.webp"},
-    {"id":10,"title":"Mc Delano Faz tum tum tum Full HD,1080p","sourceDuration":132.82,"width":608,"height":1080,"video":"/assets/youtube/kelina-kessia/full/video-10.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-10.webp"},
-    {"id":11,"title":"Mc Magrinho e Mc Lan Quica no pai,senta no pai Full HD,1080p","sourceDuration":60.6,"width":608,"height":1080,"video":"/assets/youtube/kelina-kessia/full/video-11.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-11.webp"},
-    {"id":14,"title":"Mc Nando Dk Desafio do combate Full HD,1080p","sourceDuration":81.92,"width":608,"height":1080,"video":"/assets/youtube/kelina-kessia/full/video-14.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-14.webp"},
-    {"id":19,"title":"Novinha tesuda","sourceDuration":85.66,"width":406,"height":720,"video":"/assets/youtube/kelina-kessia/full/video-19.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-19.webp"}
+    {"id":4,"title":"Bumbum granada stheyc","sourceDuration":87.17,"width":720,"height":1280,"video":"/assets/youtube/kelina-kessia/full/video-04.mp4","lowVideo":"/assets/youtube/kelina-kessia/480h/video-04.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-04.webp"},
+    {"id":5,"title":"Full HD,1080p","sourceDuration":180.12,"width":608,"height":1080,"video":"/assets/youtube/kelina-kessia/full/video-05.mp4","lowVideo":"/assets/youtube/kelina-kessia/480h/video-05.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-05.webp"},
+    {"id":10,"title":"Mc Delano Faz tum tum tum Full HD,1080p","sourceDuration":132.82,"width":608,"height":1080,"video":"/assets/youtube/kelina-kessia/full/video-10.mp4","lowVideo":"/assets/youtube/kelina-kessia/480h/video-10.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-10.webp"},
+    {"id":11,"title":"Mc Magrinho e Mc Lan Quica no pai,senta no pai Full HD,1080p","sourceDuration":60.6,"width":608,"height":1080,"video":"/assets/youtube/kelina-kessia/full/video-11.mp4","lowVideo":"/assets/youtube/kelina-kessia/480h/video-11.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-11.webp"},
+    {"id":14,"title":"Mc Nando Dk Desafio do combate Full HD,1080p","sourceDuration":81.92,"width":608,"height":1080,"video":"/assets/youtube/kelina-kessia/full/video-14.mp4","lowVideo":"/assets/youtube/kelina-kessia/480h/video-14.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-14.webp"},
+    {"id":19,"title":"Novinha tesuda","sourceDuration":85.66,"width":406,"height":720,"video":"/assets/youtube/kelina-kessia/full/video-19.mp4","lowVideo":"/assets/youtube/kelina-kessia/480h/video-19.mp4","poster":"/assets/youtube/kelina-kessia/previews/poster-19.webp"}
   ]
 }

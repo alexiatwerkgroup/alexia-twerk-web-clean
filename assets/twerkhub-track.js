@@ -17,7 +17,19 @@
     if (t.closest('[data-copy]')) add('copy_id');
     var l = t.closest('a[href*="binance.com"]'); if (l) add('binance_ref');
     if (t.closest('.twr')) add('rabbit_click');
+    var nov = t.closest('[data-nov-action]');
+    if (nov && (nov.dataset.novAction === 'watch' || nov.dataset.novAction === 'join')) {
+      add('nov_' + nov.dataset.novAction, nov.dataset.novLocation || '');
+    }
   }, true);
+  document.addEventListener('play', function (e) {
+    if (location.pathname.indexOf('/novinhas/watch') === 0 && e.target && e.target.id === 'player') add('nov_play');
+  }, true);
+  document.addEventListener('twk:signup-success', function (e) {
+    var source = String(e.detail && e.detail.source || '');
+    add(source.indexOf('novinhas_') === 0 ? 'nov_signup' : 'signup_done', source);
+    send();
+  });
   function send() { tick(); scr(); var b = JSON.stringify({ h: h, d: Math.round(vis / 1000), s: maxS, u: hum, i: interaction > lastSentInteraction ? interaction : 0, ev: ev }); lastSentInteraction = interaction; ev = []; sent++; try { navigator.sendBeacon('/api/analytics/track', new Blob([b], { type: 'application/json' })); } catch (e) {} }
   document.addEventListener('visibilitychange', function () { tick(); shown = !document.hidden; last = Date.now(); if (document.hidden) send(); });
   addEventListener('pagehide', send);

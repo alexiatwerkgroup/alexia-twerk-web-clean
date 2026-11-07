@@ -457,17 +457,18 @@
         var res = isSignUp ? await register(u, pw, em, remember) : await signIn(u, pw, remember);
         btn.disabled = false;
         if (!res.ok) { showError(res.error); return; }
+        if (isSignUp) {
+          try { document.dispatchEvent(new CustomEvent('twk:signup-success', { detail: { source: new URLSearchParams(location.search).get('utm_source') || '' } })); } catch(_) {}
+        }
         if (isSignUp && res.requiresEmailConfirmation) {
           showOk('Account created! Check your email at <strong>' + escapeHtml(em) + '</strong> to confirm and unlock your +200 tokens.');
           return;
         }
         // Success path: signup-no-confirmation OR signin.
-        // 2026-05-08 v3 (D1): redirect to HOME (/) instead of reloading
-        // /account.html. The home page is the natural landing for a freshly
-        // logged-in user, AND it picks up the JWT from localStorage cleanly
-        // without any race against the inline form re-mount.
+        // An allowlisted return path lets Novinhas visitors resume the video
+        // they were watching. Other signups and signins still go home.
         showOk(isSignUp
-          ? 'Welcome <strong>' + escapeHtml(u) + '</strong>! Redirecting to home...'
+          ? 'Welcome <strong>' + escapeHtml(u) + '</strong>! Redirecting...'
           : 'Signed in as <strong>' + escapeHtml(u) + '</strong>. Redirecting...');
         closeForm();
         setTimeout(function(){
@@ -475,7 +476,8 @@
           // Otherwise reload to refresh auth state in place.
           var path = (location.pathname || '').toLowerCase();
           if (path.indexOf('/account') === 0 || path.indexOf('/profile') === 0) {
-            location.href = '/';
+            var next = new URLSearchParams(location.search).get('next') || '';
+            location.href = /^\/novinhas\/(?:watch\/(?:#video-\d{2})?)?$/.test(next) ? next : '/';
           } else {
             location.reload();
           }
