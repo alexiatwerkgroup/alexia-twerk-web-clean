@@ -26,6 +26,9 @@ export async function onRequest({ request, env, params }) {
   }
   if (request.method !== 'POST') return json({ ok: false, error: 'method' }, 405);
   if (!me) return json({ ok: false, error: 'login_required' }, 401);
+  const body = await request.json().catch(() => ({}));
+  const submitted = String(body.email || '').trim().toLowerCase();
+  if (submitted && submitted !== me) return json({ ok: false, error: 'email_mismatch' }, 409);
   await env.DB.prepare("INSERT OR IGNORE INTO catalog_follow (slug, email, via) VALUES (?, ?, 'account')").bind(slug, me).run();
   return json({ ok: true, following: true });
 }
