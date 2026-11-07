@@ -73,11 +73,8 @@ body.hv3{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Inter,syst
 .hv3 .lead{color:#c9c9d3;font-size:19px;max-width:640px;margin:18px 0 0}
 .hero{padding:70px 0 20px!important}.facts{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.facts span{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);border:2px solid var(--line);border-radius:999px;padding:9px 16px;background:var(--card)}.facts b{color:var(--ac);font-size:15px;margin-right:4px}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:999px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;border:2px solid var(--ac);color:var(--ac);background:transparent;cursor:pointer;transition:transform .15s,box-shadow .2s}.btn.k{background:linear-gradient(180deg,var(--g1),var(--g2));color:var(--on);box-shadow:0 0 28px var(--glow),inset 0 1px 0 rgba(255,255,255,.35)}.btn:hover{transform:translateY(-2px);box-shadow:0 0 36px var(--glow)}.hv3 .ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.roster{padding-top:30px!important}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
-.roster .m{transform-style:preserve-3d;animation:roster-card-spin 18s ease-in-out infinite}
-.roster .m:nth-child(1){animation-delay:0s}.roster .m:nth-child(2){animation-delay:1.2s}.roster .m:nth-child(3){animation-delay:2.4s}.roster .m:nth-child(4){animation-delay:3.6s}.roster .m:nth-child(5){animation-delay:4.8s}
-@keyframes roster-card-spin{0%,72%{transform:rotateY(0deg)}86%,100%{transform:rotateY(360deg)}}
-@media(prefers-reduced-motion:reduce){.roster .m{animation:none}}
+.roster{padding-top:30px!important}.roster .grid{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 56px)/5);grid-template-columns:none;gap:14px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--ac) var(--card)}
+.roster .m{min-width:0}
 .m{position:relative;border-radius:18px;border:2px solid var(--line);background:var(--card);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}.m.live{border-color:var(--ac);box-shadow:0 0 22px var(--glow)}.m:hover{transform:translateY(-4px);box-shadow:0 0 38px var(--glow)}
 .mv{position:relative;aspect-ratio:9/16;background:#0a0a0d;overflow:hidden}.mv video,.mv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .stt{position:absolute;top:10px;left:10px;font:800 10px 'JetBrains Mono',monospace;letter-spacing:.12em;font-style:normal;padding:5px 9px;border-radius:99px;background:#030906;color:#78ff9b;border:1px solid #22f05d;box-shadow:0 0 10px rgba(34,240,93,.32),inset 0 0 10px rgba(34,240,93,.06);text-shadow:0 0 8px rgba(34,240,93,.4)}
@@ -108,8 +105,8 @@ body.hv3{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Inter,syst
 #iam{position:fixed;right:16px;bottom:72px;z-index:9990;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;display:none;min-width:190px}#iam.o{display:block}#iam button{display:block;width:100%;margin:4px 0;padding:11px 14px;border:0;border-radius:10px;background:#ffffff12;color:var(--fg);cursor:pointer;text-align:left;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase}#iam button.on{background:var(--ac);color:var(--on)}
 body[data-mode=neon] .m,body[data-mode=neon] .vg,body[data-mode=neon] .ns div{box-shadow:0 0 18px var(--glow)}body[data-mode=neon] h1,body[data-mode=neon] h2{text-shadow:0 0 28px var(--glow)}
 body[data-mode=gold] h1,body[data-mode=gold] h2,body[data-mode=gold] .mi h3{font-family:Anton,sans-serif;letter-spacing:.02em}body[data-mode=gold] .m{border-radius:14px}
-@media(max-width:1200px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pls{grid-template-columns:1fr 1fr}}
-@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ng{grid-template-columns:1fr}.pls{grid-template-columns:1fr}.vg{padding:24px}.hv3 .w{padding:0 16px}.mi h3{font-size:24px}.coin3d{width:90px;height:90px}.hint{display:none}}
+@media(max-width:1200px){.roster .grid{grid-auto-columns:calc((100% - 28px)/3)}.pls{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){.roster .grid{grid-auto-columns:calc((100% - 10px)/2);gap:10px}.ng{grid-template-columns:1fr}.pls{grid-template-columns:1fr}.vg{padding:24px}.hv3 .w{padding:0 16px}.mi h3{font-size:24px}.coin3d{width:90px;height:90px}.hint{display:none}}
 @media(prefers-reduced-motion:reduce){.coin3d i{animation:none}}
 /* ===== v4 additions ===== */
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -220,16 +217,39 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
 <article class="m live" data-name="Jenny"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/jenny-poster.jpg"><source src="/assets/models/jenny.mp4" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
 <div class="mi"><h3 translate="no">Jenny</h3><div class="spec"><div><small>Age</small><b class="ag">19</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Twerk</li><li class="">Custom</li><li class="">Explicit</li></ul><a class="gcta live" href="/jenny/"><svg class="ic"><use href="#i-lock"/></svg><span>Jenny's catalog</span></a></div></article>
 <article class="m soon" data-name="Abbi"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/ABBI-poster.jpg"><source src="/assets/models/ABBI.mp4" type="video/mp4"></video><em class="stt">PREMIERE SOON</em><span class="ex">Exclusive</span><span class="hint">Meet Abbi</span></div>
-<div class="mi"><h3 translate="no">Abbi</h3><div class="spec"><div><small>Age</small><b class="ag">18+</b></div><div><small>Country</small><b>Argentina</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Custom</li><li class="">Premium</li></ul><a class="gcta soon" href="/abbi/"><svg class="ic"><use href="#i-bell"/></svg><span>Abbi's page</span></a></div></article>
+<div class="mi"><h3 translate="no">Abbi</h3><div class="spec"><div><small>Age</small><b class="ag">18+</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Custom</li><li class="">Premium</li></ul><a class="gcta soon" href="/abbi/"><svg class="ic"><use href="#i-bell"/></svg><span>Abbi's page</span></a></div></article>
 <article class="m live" data-name="Tainara"><div class="mv"><img src="/assets/models/tainara-poster.jpg" alt="Tainara" loading="lazy"><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Open catalog</span></div>
 <div class="mi"><h3 translate="no">Tainara</h3><div class="spec"><div><small>Age</small><b class="ag">23</b></div><div><small>Country</small><b>Brazil</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Twerk</li><li class="">Explicit</li><li class="vp">VIPs only</li></ul><a class="gcta live" href="/tainara/"><svg class="ic"><use href="#i-lock"/></svg><span>Tainara's catalog</span></a></div></article>
 <article class="m live" data-name="Vegan"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/vegan-poster.jpg"><source src="/assets/models/vegan.mp4" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
 <div class="mi"><h3 translate="no">Vegan</h3><div class="spec"><div><small>Age</small><b class="ag">18+</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Custom</li><li class="">Twerk</li><li class="">Explicit</li></ul><a class="gcta live" href="/vegan/"><svg class="ic"><use href="#i-lock"/></svg><span>Vegan's catalog</span></a></div></article>
 <article class="m live" data-name="Lolita"><div class="mv"><video muted playsinline loop preload="none" poster="/lolita/p/v55.jpg?v=20261104-3"><source src="/lolita/p/v55.mp4?v=20261104-3" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
 <div class="mi"><h3 translate="no">Lolita</h3><div class="spec"><div><small>Age</small><b class="ag">19</b></div><div><small>Country</small><b>Venezuela</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Twerk</li><li class="">Explicit</li></ul><a class="gcta live" href="/lolita/"><svg class="ic"><use href="#i-lock"/></svg><span>Lolita's catalog</span></a></div></article>
+<article class="m soon" data-name="Camila"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/camila-poster.jpg"><source src="/assets/models/camila.mp4" type="video/mp4"></video><em class="stt">VERY SOON</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
+<div class="mi"><h3 translate="no">Camila</h3><div class="spec"><div><small>Age</small><b class="ag">18</b></div><div><small>Country</small><b>Argentina</b></div></div><div class="lbl">Content</div><ul class="tags"><li>Erotic</li><li>Custom</li><li>Softcore</li><li class="vp">VIPs only</li></ul><a class="gcta soon" href="/camila/"><svg class="ic"><use href="#i-bell"/></svg><span>Notify me</span></a></div></article>
  </div>
  <p class="fine">All dancers are over 18 and appear under written contract. Abbi's premiere page includes a live countdown and daily Patreon chat.</p>
 </div></section>
+<script>
+(() => {
+ const grid = document.querySelector('#roster .grid');
+ if (!grid || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+ let direction = 1, pauseUntil = performance.now() + 1800, previous = performance.now();
+ grid.addEventListener('pointerenter', () => { pauseUntil = performance.now() + 2500; });
+ grid.addEventListener('focusin', () => { pauseUntil = performance.now() + 2500; });
+ function move(now) {
+  const elapsed = Math.min(50, now - previous); previous = now;
+  if (now > pauseUntil && grid.scrollWidth > grid.clientWidth) {
+   grid.scrollLeft += direction * elapsed * 0.022;
+   const end = grid.scrollWidth - grid.clientWidth;
+   if (grid.scrollLeft >= end - 1 || grid.scrollLeft <= 0) {
+    direction *= -1; pauseUntil = now + 1800;
+   }
+  }
+  requestAnimationFrame(move);
+ }
+ requestAnimationFrame(move);
+})();
+</script>
 
 
 
@@ -243,9 +263,11 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
 </div></section>
 
 <style>
-.pc > div{flex:2 1 400px;min-width:0}
-.pc h2{font-size:clamp(2rem,5vw,4.25rem);line-height:1.05}
-.pc .pat-logo{display:grid;justify-items:center;gap:18px;flex:1 1 280px;max-width:360px;margin-inline:auto}
+.pc{align-items:flex-start}
+.pc > div{flex:1 1 0;min-width:0}
+.pc h2{font-size:clamp(2rem,3.25vw,3.5rem);line-height:1.05}
+.pc .pat-logo{display:grid;justify-items:center;gap:18px;flex:0 1 360px;max-width:360px;margin:42px 0 0}
+@media(max-width:800px){.pc > div{flex-basis:100%}.pc .pat-logo{margin:0 auto}}
 .pat-logo video{display:block;width:100%;height:auto;pointer-events:none}
 .pat-logo:focus-visible{outline:2px solid #e8c872;outline-offset:6px}
 </style>
