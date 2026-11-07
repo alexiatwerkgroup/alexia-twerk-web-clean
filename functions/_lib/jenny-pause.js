@@ -14,13 +14,11 @@ export async function explicitPauseResponse(request) {
       headers: { ...headers, 'Content-Type': 'text/html; charset=utf-8' }
     });
   }
-  // Includes covers and promotional teasers, as well as direct preview URLs.
-  const preview = /^\/jenny\/p\/(?:x\d+|tz\d+)\./.test(path);
-  let explicit = /^\/api\/jenny\/video\/?$/.test(path) && /^x/i.test(url.searchParams.get('n') || '');
-  if (/^\/api\/jenny\/unlock\/?$/.test(path) && request.method === 'POST') {
-    try { explicit = /^x/i.test(String((await request.clone().json()).n || '')); } catch {}
-  }
-  if (preview || explicit) return new Response(JSON.stringify({ ok: false, error: 'temporarily_unavailable', message: 'very soon' }), {
+  // Global maintenance: block every Jenny media URL and unlock attempt, while leaving pages visible.
+  const preview = /^\/jenny\/p\/.+\.(?:mp4|jpg|jpeg|png|webp)$/i.test(path);
+  const mediaApi = /^\/api\/jenny\/video\/?$/.test(path);
+  const unlockApi = /^\/api\/jenny\/unlock\/?$/.test(path);
+  if (preview || mediaApi || unlockApi) return new Response(JSON.stringify({ ok: false, error: 'temporarily_unavailable', message: 'Jenny videos are temporarily under maintenance.' }), {
     status: 403, headers: { ...headers, 'Content-Type': 'application/json; charset=utf-8' }
   });
   return null;
