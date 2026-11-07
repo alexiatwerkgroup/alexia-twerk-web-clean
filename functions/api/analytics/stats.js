@@ -70,6 +70,26 @@ async function buildStats({ request, env }) {
   ]);
   const tot=(mainResults[0].results||[])[0]||{};
   const single=(mainResults[1].results||[])[0]||{};
+  let sessionMetrics = { sessions: null, bounces: null };
+  if ((tot.views || 0) <= 10000) {
+    try {
+      const hits = await rows(db, `SELECT vid, ts FROM tw_hits WHERE ${W} ORDER BY vid, ts`, since);
+      if (hits.length === (tot.views || 0)) {
+        let sessions = 0, bounces = 0, previousVid = null, previousTs = 0, pages = 0;
+        for (const hit of hits) {
+          if (hit.vid !== previousVid || hit.ts - previousTs > 1800000) {
+            if (pages === 1) bounces++;
+            sessions++;
+            pages = 1;
+          } else pages++;
+          previousVid = hit.vid;
+          previousTs = hit.ts;
+        }
+        if (pages === 1) bounces++;
+        sessionMetrics = { sessions, bounces };
+      }
+    } catch (error) { console.warn('Session metric unavailable:', error); }
+  }
   const all=(mainResults[2].results||[])[0]||{};
   const byDay=mainResults[3].results||[];
   const byHour=mainResults[4].results||[];
@@ -171,7 +191,7 @@ async function buildStats({ request, env }) {
     (loc[r.c]=loc[r.c]||Array(24).fill(0))[h]++;
   }
   const bestLocal = Object.entries(loc).map(([c, a]) => ({ c, hours: a.map((n, h) => [h, n]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]) }));
-  return json({ ok: true, days, tz, now, latestHit: latestHit.ts || null, totals: { ...tot, onePageVisitors: single.n || 0, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList, registeredLocations, unverifiedVisitors: botU.u || 0, includeUnverified: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evNameU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
+  return json({ ok: true, days, tz, now, latestHit: latestHit.ts || null, totals: { ...tot, ...sessionMetrics, onePageVisitors: single.n || 0, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList, registeredLocations, unverifiedVisitors: botU.u || 0, includeUnverified: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evNameU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
 }
 
 // Multiple open owner panels share one short-lived snapshot rather than flooding D1.
