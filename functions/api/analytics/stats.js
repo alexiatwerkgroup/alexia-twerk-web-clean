@@ -41,7 +41,13 @@ async function buildStats({ request, env }) {
   const W = 'ts > ?' + hf;
   const mainResults=await db.batch([
     db.prepare(`SELECT COUNT(*) views, COUNT(DISTINCT vid) uniq, COUNT(DISTINCT CASE WHEN is_new=1 THEN vid END) newv, COUNT(DISTINCT CASE WHEN reg=1 THEN vid END) regv, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) avgdur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) avgscroll FROM tw_hits WHERE ${W}`).bind(since),
-    db.prepare(`SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(*)=1)`).bind(since),
+    db.prepare(`WITH ordered AS (
+      SELECT vid, ts, LAG(ts) OVER (PARTITION BY vid ORDER BY ts, hid) previous_ts FROM tw_hits WHERE ${W}
+    ), grouped AS (
+      SELECT vid, ts, SUM(CASE WHEN previous_ts IS NULL OR ts - previous_ts > 1800000 THEN 1 ELSE 0 END)
+        OVER (PARTITION BY vid ORDER BY ts ROWS UNBOUNDED PRECEDING) session_no FROM ordered
+    ), sessions AS (SELECT vid, session_no, COUNT(*) pages FROM grouped GROUP BY vid, session_no)
+    SELECT COUNT(*) sessions, SUM(CASE WHEN pages = 1 THEN 1 ELSE 0 END) bounces FROM sessions`).bind(since),
     db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u, MIN(ts) first FROM tw_hits WHERE 1=1' + hf),
     db.prepare(`SELECT date((ts/1000)+${off},'unixepoch') d, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY d ORDER BY d`).bind(since),
     db.prepare(`SELECT CAST(strftime('%H',(ts/1000)+${off},'unixepoch') AS INTEGER) h, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY h ORDER BY h`).bind(since),
@@ -50,14 +56,14 @@ async function buildStats({ request, env }) {
     db.prepare(`SELECT h.country c, COUNT(DISTINCT e.vid) n FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE e.ts > ? AND e.name IN ('pay_open','binance_ref','unlock_click') AND h.country<>'' GROUP BY h.country`).bind(since),
     db.prepare(`SELECT city, country c, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND city<>'' GROUP BY city, country ORDER BY u DESC LIMIT 15`).bind(since),
     db.prepare(`SELECT path, COUNT(*) v, COUNT(DISTINCT vid) u, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) dur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) sc FROM tw_hits WHERE ${W} GROUP BY path ORDER BY v DESC LIMIT 15`).bind(since),
-    db.prepare('SELECT name, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name ORDER BY n DESC').bind(since),
+    db.prepare(`SELECT e.name, COUNT(*) n, COUNT(DISTINCT e.vid) u FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE e.ts > ?${bots ? '' : ' AND h.human=1'} GROUP BY e.name ORDER BY n DESC`).bind(since),
     db.prepare(`WITH ranked AS (
       SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human,
         ROW_NUMBER() OVER (PARTITION BY CASE WHEN uid IS NOT NULL THEN 'user:'||uid ELSE 'visitor:'||vid END ORDER BY ts DESC, hid DESC) rn
       FROM tw_hits WHERE ts > ?${hf}
     ) SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, human
-      FROM ranked WHERE rn <= 5 ORDER BY ts DESC` ).bind(now - 60 * 60000),
-    db.prepare(`SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(DISTINCT date(ts/1000,'unixepoch'))>1)`).bind(since),
+      FROM ranked WHERE rn <= 5 ORDER BY ts DESC LIMIT 200` ).bind(now - 60 * 60000),
+    db.prepare(`SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(DISTINCT date((ts/1000)+${off},'unixepoch'))>1)`).bind(since),
     db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-86400000),
     db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-7*86400000),
     db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?' + hf).bind(now-30*86400000),
@@ -66,7 +72,7 @@ async function buildStats({ request, env }) {
     db.prepare(`SELECT browser k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND browser<>'' GROUP BY browser ORDER BY u DESC LIMIT 10`).bind(since),
     db.prepare(`SELECT os k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND os<>'' GROUP BY os ORDER BY u DESC LIMIT 10`).bind(since),
     db.prepare(`SELECT lang k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND lang<>'' GROUP BY lang ORDER BY u DESC LIMIT 10`).bind(since),
-    db.prepare(`SELECT ref k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND ref<>'' GROUP BY ref ORDER BY u DESC LIMIT 10`).bind(since),
+    db.prepare(`SELECT CASE WHEN ref='' THEN 'Directo / sin dato' ELSE ref END k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY k ORDER BY u DESC LIMIT 10`).bind(since),
   ]);
   const tot=(mainResults[0].results||[])[0]||{};
   const single=(mainResults[1].results||[])[0]||{};
@@ -91,6 +97,7 @@ async function buildStats({ request, env }) {
   const langs=mainResults[20].results||[];
   const refs=mainResults[21].results||[];
   const today = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts >= ? AND ts < ?' + hf, todayStart, now);
+  const latestHit = await one(db, 'SELECT ts FROM tw_hits WHERE human = 1 ORDER BY ts DESC LIMIT 1');
   const unlocks = await one(db, "SELECT COUNT(*) n FROM jenny_unlocks WHERE via='coins'").catch(() => ({}));
 
   // ---- v2: bots filtered, peaks, live map, funnel, promo marks ----
@@ -119,10 +126,10 @@ async function buildStats({ request, env }) {
   ) SELECT lat, lon, c, city, MAX(last_active_ts) ts, COUNT(*) u FROM ranked WHERE rn=1
     GROUP BY lat, lon, c, city ORDER BY ts DESC LIMIT 200`, now - 150000, now - 150000);
   // ---- who is online right now (last activity < 2.5 min; hit time + visible seconds) ----
-  const rec = await rows(db, `SELECT ts, COALESCE(last_active,ts) last_active_ts, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?))${hf} ORDER BY COALESCE(last_active,ts)`, now - 150000, now - 150000);
+  const rec = await rows(db, `SELECT ts, COALESCE(last_active,ts) last_active_ts, last_engaged, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?))${hf} ORDER BY COALESCE(last_active,ts)`, now - 150000, now - 150000);
   const OV = {};
   for (const h of rec) { const v = OV[h.vid] = OV[h.vid] || { vid: h.vid, first: h.ts, pages: [], ref: h.ref || '', isNew: h.is_new, since: h.ts };
-    v.last = h; v.lastActive = Math.max(v.lastActive || 0, h.last_active_ts || h.ts); if (!v.pages.length || v.pages[v.pages.length - 1] !== h.path) v.pages.push(h.path); if (h.uid) v.uid = h.uid; if (h.reg) v.reg = 1; }
+    v.last = h; v.lastActive = Math.max(v.lastActive || 0, h.last_active_ts || h.ts); v.lastEngaged = Math.max(v.lastEngaged || 0, h.last_engaged || 0); if (!v.pages.length || v.pages[v.pages.length - 1] !== h.path) v.pages.push(h.path); if (h.uid) v.uid = h.uid; if (h.reg) v.reg = 1; }
   const onl = Object.values(OV).filter(v => v.lastActive > now - 150000).sort((a, b) => b.lastActive - a.lastActive).slice(0, 60);
   // The 30-minute online trail above is only for recent pages. Find each visitor's
   // current session start separately so long visits do not get shown as 8–30 min old.
@@ -150,9 +157,10 @@ async function buildStats({ request, env }) {
   let evBy = {};
   if (onl.length) { const er = await rows(db, `SELECT vid, ts, name, detail FROM tw_events WHERE ts > ? AND vid IN (${onl.map(() => '?').join(',')}) ORDER BY ts DESC`, now - 30 * 60000, ...onl.map(v => v.vid)); er.forEach(e => { (evBy[e.vid] = evBy[e.vid] || []).push({ ts: e.ts, name: e.name, detail: e.detail }); }); }
   for (const h of rec) if (OV[h.vid] && OV[h.vid].lastActive > now - 150000) (evBy[h.vid] = evBy[h.vid] || []).push({ ts: h.ts, name: 'page_view', detail: h.path });
-  const onlineList = onl.map(v => ({ id: v.vid.slice(0, 6), user: v.uid ? (uname[v.uid] || '') : '', profile: v.uid ? (profiles[v.uid] || null) : null, reg: v.uid ? 1 : (v.reg ? 1 : 0), isNew: v.isNew ? 1 : 0, country: v.last.country, city: v.last.city, device: v.last.device, browser: v.last.browser, os: v.last.os, ref: v.ref, path: v.last.path, pages: v.pages.slice(-5), entered: v.since, lastActive: v.lastActive, dur: v.last.dur || 0, scroll: v.last.scroll || 0, events: (evBy[v.vid] || []).sort((a, b) => b.ts - a.ts).slice(0, 6) }));
+  const onlineList = onl.map(v => ({ id: v.vid.slice(0, 6), user: v.uid ? (uname[v.uid] || '') : '', profile: v.uid ? (profiles[v.uid] || null) : null, reg: v.uid ? 1 : (v.reg ? 1 : 0), isNew: v.isNew ? 1 : 0, country: v.last.country, city: v.last.city, device: v.last.device, browser: v.last.browser, os: v.last.os, ref: v.ref, path: v.last.path, pages: v.pages.slice(-5), entered: v.since, lastActive: v.lastActive, lastEngaged: v.lastEngaged || null, dur: v.last.dur || 0, scroll: v.last.scroll || 0, events: (evBy[v.vid] || []).sort((a, b) => b.ts - a.ts).slice(0, 6) }));
   recent.forEach(v => { v.user = uname[v.uid] || ''; v.profile = profiles[v.uid] || null; });
-  const evU = await rows(db, 'SELECT name, detail, COUNT(*) n, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ? GROUP BY name, detail ORDER BY n DESC', since);
+  const evU = await rows(db, `SELECT e.name, e.detail, COUNT(*) n, COUNT(DISTINCT e.vid) u FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE e.ts > ?${bots ? '' : ' AND h.human=1'} GROUP BY e.name, e.detail ORDER BY n DESC`, since);
+  const evNameU = await rows(db, `SELECT e.name, COUNT(DISTINCT e.vid) u FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE e.ts > ?${bots ? '' : ' AND h.human=1'} GROUP BY e.name`, since);
   for (const event of evLast) { event.user = uname[event.uid] || ''; event.profile = profiles[event.uid] || null; }
   const landed = await one(db, `SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND path LIKE '/jenny%'`, since);
   const regs = await one(db, 'SELECT COUNT(*) n FROM profiles').catch(() => ({}));
@@ -169,7 +177,7 @@ async function buildStats({ request, env }) {
     (loc[r.c]=loc[r.c]||Array(24).fill(0))[h]++;
   }
   const bestLocal = Object.entries(loc).map(([c, a]) => ({ c, hours: a.map((n, h) => [h, n]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]) }));
-  return json({ ok: true, days, tz, now, totals: { ...tot, single: single.n, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList, registeredLocations, botsFiltered: botU.u || 0, includeBots: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
+  return json({ ok: true, days, tz, now, latestHit: latestHit.ts || null, totals: { ...tot, sessions: single.sessions || 0, bounces: single.bounces || 0, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList, registeredLocations, unverifiedVisitors: botU.u || 0, includeUnverified: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evNameU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
 }
 
 // Multiple open owner panels share one short-lived snapshot rather than flooding D1.

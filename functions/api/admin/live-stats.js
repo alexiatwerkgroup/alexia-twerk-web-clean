@@ -14,7 +14,7 @@ export async function onRequestGet({ request, env }) {
   await init(env.DB);
   const db = env.DB, now = Date.now(), cutoff = now - 150000;
   const onlineHits = await rows(db,
-    `SELECT ts, COALESCE(last_active,ts) last_active_ts, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid, lat, lon
+    `SELECT ts, COALESCE(last_active,ts) last_active_ts, last_engaged, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid, lat, lon
      FROM tw_hits WHERE (last_active > ? OR (last_active IS NULL AND ts > ?)) AND human = 1
      ORDER BY COALESCE(last_active,ts) DESC LIMIT 300`, cutoff, cutoff);
   const recent = await rows(db,
@@ -23,12 +23,14 @@ export async function onRequestGet({ request, env }) {
          ROW_NUMBER() OVER (PARTITION BY CASE WHEN uid IS NOT NULL THEN 'user:'||uid ELSE 'visitor:'||vid END ORDER BY ts DESC, hid DESC) rn
        FROM tw_hits WHERE human = 1 AND ts > ?
      ) SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll
-       FROM ranked WHERE rn <= 5 ORDER BY ts DESC`, now - 60 * 60000);
+       FROM ranked WHERE rn <= 5 ORDER BY ts DESC LIMIT 200`, now - 60 * 60000);
+  const latestHit = await db.prepare('SELECT ts FROM tw_hits WHERE human = 1 ORDER BY ts DESC LIMIT 1').first();
   onlineHits.sort((a,b) => a.ts-b.ts);
   const active = {};
   for (const hit of onlineHits) {
     const visitor = active[hit.vid] || (active[hit.vid] = { vid: hit.vid, first: hit.ts, entered: hit.ts, pages: [], ref: hit.ref || '', isNew: hit.is_new, since: hit.ts });
     visitor.lastActive = Math.max(visitor.lastActive || 0, hit.last_active_ts || hit.ts);
+    visitor.lastEngaged = Math.max(visitor.lastEngaged || 0, hit.last_engaged || 0);
     if (!visitor.last || hit.ts > visitor.last.ts) visitor.last = hit;
     if (!visitor.pages.includes(hit.path)) visitor.pages.push(hit.path);
     if (hit.uid) visitor.uid = hit.uid;
@@ -78,7 +80,7 @@ export async function onRequestGet({ request, env }) {
     isNew: v.isNew ? 1 : 0, country: v.last?.country || '', city: v.last?.city || '',
     device: v.last?.device || '', browser: v.last?.browser || '', os: v.last?.os || '',
     ref: v.ref, path: v.last?.path || '/', pages: v.pages.slice(-5), entered: v.since,
-    lastActive: v.lastActive, dur: v.last?.dur || 0, scroll: v.last?.scroll || 0,
+    lastActive: v.lastActive, lastEngaged: v.lastEngaged || null, dur: v.last?.dur || 0, scroll: v.last?.scroll || 0,
     events: (eventsByVisitor[v.vid] || []).slice(0,6), lat: v.last?.lat ?? null, lon: v.last?.lon ?? null
   }));
   for (const hit of recent) { hit.user = profiles[hit.uid]?.username || ''; hit.profile = profiles[hit.uid] || null; }
@@ -89,7 +91,7 @@ export async function onRequestGet({ request, env }) {
      LEFT JOIN profiles p ON p.id=h.uid ORDER BY e.ts DESC LIMIT 25`);
   for (const event of evLast) event.profile = event.profile_id
     ? { id: event.profile_id, username: event.username || '' } : null;
-  return json({ ok: true, now, onlineList, recent, live, evLast, windows: { online: { u: onlineList.length } } }, 200, '', {
+  return json({ ok: true, now, latestHit: latestHit?.ts || null, onlineList, recent, live, evLast, windows: { online: { u: onlineList.length } } }, 200, '', {
     'Cache-Control': 'private, no-store',
     'Set-Cookie': 'twx=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure'
   });

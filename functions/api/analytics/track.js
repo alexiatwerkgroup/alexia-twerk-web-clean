@@ -15,8 +15,10 @@ export async function onRequestPost({ request, env }) {
   const timezone = String(cf.timezone || '').slice(0, 80);
   const lat = typeof cf.latitude === 'number' && Number.isFinite(cf.latitude) ? cf.latitude : null;
   const lon = typeof cf.longitude === 'number' && Number.isFinite(cf.longitude) ? cf.longitude : null;
-  await env.DB.prepare("UPDATE tw_hits SET dur = MAX(dur, ?), scroll = MAX(scroll, ?), human = MAX(human, ?), last_active = ?, country = COALESCE(NULLIF(?, ''), country), region = COALESCE(NULLIF(?, ''), region), city = COALESCE(NULLIF(?, ''), city), tz = COALESCE(NULLIF(?, ''), tz), lat = COALESCE(?, lat), lon = COALESCE(?, lon) WHERE hid = ?")
-    .bind(d, s, b.u ? 1 : 0, Date.now(), country, region, city, timezone, lat, lon, h).run();
+  const now = Date.now();
+  const engaged = b.i && Number.isFinite(Number(b.i)) ? Math.max(now - 60000, Math.min(now, Number(b.i))) : null;
+  await env.DB.prepare("UPDATE tw_hits SET dur = MAX(dur, ?), scroll = MAX(scroll, ?), human = MAX(human, ?), last_active = ?, last_engaged = CASE WHEN ? IS NULL THEN last_engaged ELSE MAX(COALESCE(last_engaged, 0), ?) END, country = COALESCE(NULLIF(?, ''), country), region = COALESCE(NULLIF(?, ''), region), city = COALESCE(NULLIF(?, ''), city), tz = COALESCE(NULLIF(?, ''), tz), lat = COALESCE(?, lat), lon = COALESCE(?, lon) WHERE hid = ?")
+    .bind(d, s, b.u ? 1 : 0, now, engaged, engaged, country, region, city, timezone, lat, lon, h).run();
   const ev = Array.isArray(b.ev) ? b.ev.slice(0, 12) : [];
   for (const e of ev) { const n = String(e && e.n || ''); if (!/^[a-z_]{2,24}$/.test(n)) continue; await env.DB.prepare('INSERT INTO tw_events (ts, hid, vid, name, detail) VALUES (?,?,?,?,?)').bind(Date.now(), h, row.vid, n, String(e.d || '').slice(0, 40)).run(); }
   return json({ ok: true });
