@@ -10,6 +10,11 @@ export async function onRequest({ request, env, params }) {
   if (p && p.sub) { const u = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(p.sub).first(); me = u ? String(u.email).toLowerCase() : ''; }
   await ensureTables(env);
   if (request.method === 'GET') {
+    if (new URL(request.url).searchParams.get('mine') === '1') {
+      if (!me) return json({ ok: false, error: 'login_required' }, 401);
+      const row = await env.DB.prepare('SELECT 1 AS subscribed FROM catalog_follow WHERE slug = ? AND email = ?').bind(slug, me).first();
+      return json({ ok: true, following: !!row });
+    }
     if (me !== OWNER) return json({ ok: false, error: 'forbidden' }, 403);
     const r = await env.DB.prepare('SELECT email, created, via FROM catalog_follow WHERE slug = ? ORDER BY created DESC').bind(slug).all();
     return json({ ok: true, count: (r.results || []).length, list: r.results || [] });
