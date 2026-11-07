@@ -73,7 +73,11 @@ body.hv3{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Inter,syst
 .hv3 .lead{color:#c9c9d3;font-size:19px;max-width:640px;margin:18px 0 0}
 .hero{padding:70px 0 20px!important}.facts{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.facts span{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);border:2px solid var(--line);border-radius:999px;padding:9px 16px;background:var(--card)}.facts b{color:var(--ac);font-size:15px;margin-right:4px}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:999px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;border:2px solid var(--ac);color:var(--ac);background:transparent;cursor:pointer;transition:transform .15s,box-shadow .2s}.btn.k{background:linear-gradient(180deg,var(--g1),var(--g2));color:var(--on);box-shadow:0 0 28px var(--glow),inset 0 1px 0 rgba(255,255,255,.35)}.btn:hover{transform:translateY(-2px);box-shadow:0 0 36px var(--glow)}.hv3 .ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.roster{padding-top:30px!important}.grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.roster{padding-top:30px!important}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.roster .m{transform-style:preserve-3d;animation:roster-card-spin 18s ease-in-out infinite}
+.roster .m:nth-child(1){animation-delay:0s}.roster .m:nth-child(2){animation-delay:1.2s}.roster .m:nth-child(3){animation-delay:2.4s}.roster .m:nth-child(4){animation-delay:3.6s}.roster .m:nth-child(5){animation-delay:4.8s}
+@keyframes roster-card-spin{0%,72%{transform:rotateY(0deg)}86%,100%{transform:rotateY(360deg)}}
+@media(prefers-reduced-motion:reduce){.roster .m{animation:none}}
 .m{position:relative;border-radius:18px;border:2px solid var(--line);background:var(--card);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}.m.live{border-color:var(--ac);box-shadow:0 0 22px var(--glow)}.m:hover{transform:translateY(-4px);box-shadow:0 0 38px var(--glow)}
 .mv{position:relative;aspect-ratio:9/16;background:#0a0a0d;overflow:hidden}.mv video,.mv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .stt{position:absolute;top:10px;left:10px;font:800 10px 'JetBrains Mono',monospace;letter-spacing:.12em;font-style:normal;padding:5px 9px;border-radius:99px;background:#030906;color:#78ff9b;border:1px solid #22f05d;box-shadow:0 0 10px rgba(34,240,93,.32),inset 0 0 10px rgba(34,240,93,.06);text-shadow:0 0 8px rgba(34,240,93,.4)}
@@ -215,16 +219,16 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
  <div class="grid">
 <article class="m live" data-name="Jenny"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/jenny-poster.jpg"><source src="/assets/models/jenny.mp4" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
 <div class="mi"><h3 translate="no">Jenny</h3><div class="spec"><div><small>Age</small><b class="ag">19</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Twerk</li><li class="">Custom</li><li class="">Explicit</li></ul><a class="gcta live" href="/jenny/"><svg class="ic"><use href="#i-lock"/></svg><span>Jenny's catalog</span></a></div></article>
-<article class="m live" data-name="Lolita"><div class="mv"><video muted playsinline loop preload="none" poster="/lolita/p/v55.jpg?v=20261104-3"><source src="/lolita/p/v55.mp4?v=20261104-3" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
-<div class="mi"><h3 translate="no">Lolita</h3><div class="spec"><div><small>Age</small><b class="ag">19</b></div><div><small>Country</small><b>Venezuela</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Twerk</li><li class="">Explicit</li></ul><a class="gcta live" href="/lolita/"><svg class="ic"><use href="#i-lock"/></svg><span>Lolita's catalog</span></a></div></article>
+<article class="m soon" data-name="Abbi"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/ABBI-poster.jpg"><source src="/assets/models/ABBI.mp4" type="video/mp4"></video><em class="stt">PREMIERE SOON</em><span class="ex">Exclusive</span><span class="hint">Meet Abbi</span></div>
+<div class="mi"><h3 translate="no">Abbi</h3><div class="spec"><div><small>Age</small><b class="ag">18+</b></div><div><small>Country</small><b>Argentina</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">Custom</li><li class="">Premium</li></ul><a class="gcta soon" href="/abbi/"><svg class="ic"><use href="#i-bell"/></svg><span>Abbi's page</span></a></div></article>
 <article class="m live" data-name="Tainara"><div class="mv"><img src="/assets/models/tainara-poster.jpg" alt="Tainara" loading="lazy"><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Open catalog</span></div>
 <div class="mi"><h3 translate="no">Tainara</h3><div class="spec"><div><small>Age</small><b class="ag">23</b></div><div><small>Country</small><b>Brazil</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Twerk</li><li class="">Explicit</li><li class="vp">VIPs only</li></ul><a class="gcta live" href="/tainara/"><svg class="ic"><use href="#i-lock"/></svg><span>Tainara's catalog</span></a></div></article>
 <article class="m live" data-name="Vegan"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/vegan-poster.jpg"><source src="/assets/models/vegan.mp4" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
 <div class="mi"><h3 translate="no">Vegan</h3><div class="spec"><div><small>Age</small><b class="ag">18+</b></div><div><small>Country</small><b>Colombia</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Custom</li><li class="">Twerk</li><li class="">Explicit</li></ul><a class="gcta live" href="/vegan/"><svg class="ic"><use href="#i-lock"/></svg><span>Vegan's catalog</span></a></div></article>
-<article class="m soon" data-name="Camila"><div class="mv"><video muted playsinline loop preload="none" poster="/assets/models/camila-poster.jpg"><source src="/assets/models/camila.mp4" type="video/mp4"></video><em class="stt">VERY SOON</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
-<div class="mi"><h3 translate="no">Camila</h3><div class="spec"><div><small>Age</small><b class="ag">18</b></div><div><small>Country</small><b>Argentina</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Custom</li><li class="">Softcore</li><li class="vp">VIPs only</li></ul><a class="gcta soon" href="/camila/"><svg class="ic"><use href="#i-bell"/></svg><span>Notify me</span></a></div></article>
+<article class="m live" data-name="Lolita"><div class="mv"><video muted playsinline loop preload="none" poster="/lolita/p/v55.jpg?v=20261104-3"><source src="/lolita/p/v55.mp4?v=20261104-3" type="video/mp4"></video><em class="stt">LIVE NOW</em><span class="ex">Exclusive</span><span class="hint">Hover · sound on</span></div>
+<div class="mi"><h3 translate="no">Lolita</h3><div class="spec"><div><small>Age</small><b class="ag">19</b></div><div><small>Country</small><b>Venezuela</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Erotic</li><li class="">Twerk</li><li class="">Explicit</li></ul><a class="gcta live" href="/lolita/"><svg class="ic"><use href="#i-lock"/></svg><span>Lolita's catalog</span></a></div></article>
  </div>
- <p class="fine">All dancers are over 18 and appear under written contract. Tainara's catalog is live; the roster preview is a censored photo.</p>
+ <p class="fine">All dancers are over 18 and appear under written contract. Abbi's premiere page includes a live countdown and daily Patreon chat.</p>
 </div></section>
 
 
@@ -238,11 +242,44 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
  </div>
 </div></section>
 
+<style>
+.pc > div{flex:2 1 400px;min-width:0}
+.pc h2{font-size:clamp(2rem,5vw,4.25rem);line-height:1.05}
+.pc .pat-logo{display:grid;justify-items:center;gap:18px;flex:1 1 280px;max-width:360px;margin-inline:auto}
+.pat-logo video{display:block;width:100%;height:auto;pointer-events:none}
+.pat-logo:focus-visible{outline:2px solid #e8c872;outline-offset:6px}
+</style>
 <section class="pat"><div class="w"><div class="pc">
- <div><div class="eyebrow">Patreon</div><h2>Join for <em>$1</em></h2>
+ <div><div class="eyebrow">Patreon</div><h2>CONOCÉ A TODAS LAS CHICAS DE TWERKHUB <em>POR SOLO $1</em></h2>
   <ul><li>Support the exclusive dancers and every new drop</li><li>Get into the private community with your Patreon role</li><li>Keep Twerkhub growing, one dollar at a time</li></ul></div>
- <a class="gold" href="https://www.patreon.com/twerkhuboficial" rel="noopener"><svg class="ic"><use href="#i-heart"/></svg>Join us on Patreon<svg class="ic"><use href="#i-arrow"/></svg></a>
+ <a class="pat-logo" href="https://www.patreon.com/twerkhuboficial">
+  <video aria-hidden="true" width="360" height="81" muted playsinline preload="metadata" poster="/assets/patreon-logo-final.png" src="/assets/patreon-logo.webm"></video>
+  <span class="gold">UNITE EN PATREON <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+ </a>
 </div></div></section>
+<script>
+(() => {
+ const link = document.querySelector('.pat-logo');
+ const video = link.querySelector('video');
+ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+ let lastPlay = -Infinity;
+ function playLogo() {
+  if (reducedMotion.matches || !video.paused || performance.now() - lastPlay < 30000) return;
+  video.currentTime = 0;
+  lastPlay = performance.now();
+  video.play().catch(() => { lastPlay = -Infinity; });
+ }
+ const observer = new IntersectionObserver(entries => {
+  if (!entries.some(entry => entry.isIntersecting)) return;
+  playLogo();
+  observer.disconnect();
+ }, {threshold: 0.5});
+ observer.observe(video);
+ link.addEventListener('pointerenter', event => {
+  if (event.pointerType === 'mouse') playLogo();
+ });
+})();
+</script>
 
 <section id="playlists"><div class="w">
  <div class="eyebrow">Free to watch</div><h2>Playlists</h2>
