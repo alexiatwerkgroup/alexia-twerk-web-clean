@@ -8,7 +8,8 @@ export async function onRequestGet({ request, env, params }) {
   if (!modelOf(slug)) return deny(404, 'not_found');
   const n = new URL(request.url).searchParams.get('n') || '';
   if (!validN(n)) return deny(400, 'bad_request');
-  if (!env.JENNY_VIDEOS || !env.DB) return deny(500, 'not_configured');
+  const storage = slug === 'abbi' ? (env.ABBI_VIDEOS || env.JENNY_VIDEOS) : env.JENNY_VIDEOS;
+  if (!storage || !env.DB) return deny(500, 'not_configured');
   const p = await authenticate(request, env);
   if (!p || !p.sub) return deny(401, 'login_required');
   const u = await env.DB.prepare('SELECT email, tier FROM profiles WHERE id = ?').bind(p.sub).first();
@@ -19,7 +20,7 @@ export async function onRequestGet({ request, env, params }) {
   const key = videoKey(slug, n);
   const range = request.headers.get('Range');
   let obj, status = 200, start = 0, end;
-  const head = await env.JENNY_VIDEOS.head(key);
+  const head = await storage.head(key);
   if (!head) return deny(404, 'not_found');
   const size = head.size;
   const h = new Headers({
@@ -35,10 +36,10 @@ export async function onRequestGet({ request, env, params }) {
     status = 206;
     h.set('Content-Range', `bytes ${start}-${end}/${size}`);
     h.set('Content-Length', String(end - start + 1));
-    obj = await env.JENNY_VIDEOS.get(key, { range: { offset: start, length: end - start + 1 } });
+    obj = await storage.get(key, { range: { offset: start, length: end - start + 1 } });
   } else {
     h.set('Content-Length', String(size));
-    obj = await env.JENNY_VIDEOS.get(key);
+    obj = await storage.get(key);
   }
   return new Response(obj.body, { status, headers: h });
 }

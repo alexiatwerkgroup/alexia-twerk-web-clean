@@ -4,7 +4,8 @@ import { ensureTables, OWNER } from '../../_lib/catalog.js';
 import { sendEmail } from '../../_lib/resend.js';
 
 export async function onRequestPost({ request, env }) {
-  if (!env.DB || !env.JENNY_VIDEOS) return json({ ok: false, error: 'not_configured' }, 503);
+  const storage = env.ABBI_VIDEOS || env.JENNY_VIDEOS;
+  if (!env.DB || !storage) return json({ ok: false, error: 'not_configured' }, 503);
   const identity = await authenticate(request, env);
   if (!identity?.sub) return json({ ok: false, error: 'login_required' }, 401);
   const user = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();
@@ -18,7 +19,7 @@ export async function onRequestPost({ request, env }) {
   await env.DB.prepare('CREATE TABLE IF NOT EXISTS abbi_publications (n TEXT PRIMARY KEY, published_at INTEGER NOT NULL)').run();
   await env.DB.prepare('CREATE TABLE IF NOT EXISTS abbi_launch_notice (email TEXT PRIMARY KEY, sent_at INTEGER NOT NULL)').run();
   for (const n of numbers) {
-    const file = await env.JENNY_VIDEOS.head(`abbi/v${n}.mp4`);
+    const file = await storage.head(`abbi/v${n}.mp4`);
     if (!file) return json({ ok: false, error: 'video_missing', video: n }, 409);
   }
   for (const n of numbers) {

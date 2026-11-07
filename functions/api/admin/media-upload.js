@@ -16,6 +16,8 @@ export async function onRequest({ request, env }) {
   const requestedModel = url.searchParams.get('model') || 'lolita';
   if (!['lolita','tainara','abbi'].includes(requestedModel)) return reply({ error: 'bad_model' }, 400);
   const model = requestedModel;
+  const storage = model === 'abbi' ? (env.ABBI_VIDEOS || env.JENNY_VIDEOS) : env.JENNY_VIDEOS;
+  if (!storage) return reply({ error: 'not_configured' }, 503);
   if (!['GET','POST','PUT'].includes(request.method)) return reply({ error: 'method' }, 405);
   await tables(env.DB);
   if (request.method === 'GET' && action === 'status') {
@@ -29,7 +31,7 @@ export async function onRequest({ request, env }) {
     const body = await request.json().catch(() => ({}));
     const size = Number(body.size);
     if (!Number.isSafeInteger(size) || size < 1 || size > 2 * 1024 ** 3) return reply({ error: 'bad_size' }, 400);
-    const existing = await env.JENNY_VIDEOS.head(key);
+    const existing = await storage.head(key);
     if (existing) {
       const known = await env.DB.prepare('SELECT size,status FROM lolita_uploads WHERE key=?').bind(key).first();
       if (known && known.size === size && existing.size === size) return reply({ ok: true, complete: true, bytes: existing.size });
@@ -38,7 +40,7 @@ export async function onRequest({ request, env }) {
     let row = await env.DB.prepare('SELECT * FROM lolita_uploads WHERE key=?').bind(key).first();
     if (row && row.size !== size) return reply({ error: 'different_file_size' }, 409);
     if (!row) {
-      const upload = await env.JENNY_VIDEOS.createMultipartUpload(key, { httpMetadata: { contentType: 'video/mp4', cacheControl: 'private, no-store' } });
+      const upload = await storage.createMultipartUpload(key, { httpMetadata: { contentType: 'video/mp4', cacheControl: 'private, no-store' } });
       try {
         await env.DB.prepare('INSERT INTO lolita_uploads(key,upload_id,size,status,created) VALUES (?,?,?,\'uploading\',?)').bind(key,upload.uploadId,size,Date.now()).run();
       } catch {
@@ -52,7 +54,7 @@ export async function onRequest({ request, env }) {
   }
   const row = await env.DB.prepare('SELECT * FROM lolita_uploads WHERE key=?').bind(key).first();
   if (!row) return reply({ error: 'not_initialized' }, 409);
-  const upload = env.JENNY_VIDEOS.resumeMultipartUpload(key,row.upload_id);
+  const upload = storage.resumeMultipartUpload(key,row.upload_id);
   if (request.method === 'PUT' && action === 'part') {
     if (row.status !== 'uploading') return reply({ error: 'already_complete' }, 409);
     const n = Number(url.searchParams.get('part'));
@@ -70,9 +72,9 @@ export async function onRequest({ request, env }) {
     const r = await env.DB.prepare('SELECT n,etag,bytes FROM lolita_upload_parts WHERE key=? ORDER BY n').bind(key).all();
     const parts = r.results || [];
     if (parts.length !== Math.ceil(row.size/CHUNK) || parts.some((p,i)=>p.n!==i+1) || parts.reduce((s,p)=>s+p.bytes,0)!==row.size) return reply({ error: 'missing_parts' }, 409);
-    const exists = await env.JENNY_VIDEOS.head(key);
+    const exists = await storage.head(key);
     if (!exists) await upload.complete(parts.map(p=>({partNumber:p.n,etag:p.etag})));
-    const head = await env.JENNY_VIDEOS.head(key);
+    const head = await storage.head(key);
     if (!head || head.size !== row.size) return reply({ error: 'size_check_failed' }, 503);
     await env.DB.prepare('UPDATE lolita_uploads SET status=\'complete\' WHERE key=?').bind(key).run();
     return reply({ ok: true, complete: true, bytes: head.size });
