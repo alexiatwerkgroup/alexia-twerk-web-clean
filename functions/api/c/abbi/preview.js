@@ -28,7 +28,7 @@ export async function onRequestGet({ request, env }) {
   if (!head) return new Response('not_found', { status: 404 });
   const duration = DURATION_SECONDS[n];
   if (!duration || !head.size) return new Response('not_found', { status: 404 });
-  const previewSeconds = Math.max(1, duration * 0.1);
+  const previewSeconds = Math.min(10, Math.max(1, duration * 0.1));
   const range = request.headers.get('Range');
   let start = 0, end = head.size - 1;
   const match = range && /^bytes=(\d*)-(\d*)$/.exec(range);
