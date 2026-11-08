@@ -13,9 +13,9 @@ html body[data-mode] .c .v{aspect-ratio:4/5}html body[data-mode] .c video{object
 
 .preview-clock{position:absolute;left:10px;top:10px;z-index:4;padding:7px 9px;border:1px solid #dcb14a99;border-radius:8px;background:#05060bd9;color:#fff1b2;font:700 12px/1.2 monospace;font-variant-numeric:tabular-nums;box-shadow:0 2px 12px #0008;pointer-events:none}.preview-clock[hidden]{display:none}@media(max-width:640px){.preview-clock{left:7px;top:36px;font-size:10px;padding:5px 7px}}
 
-/* Keep every catalog tile aligned while showing each source frame without
-   stretching or cropping it. Landscape frames letterbox inside the portrait tile. */
-html body[data-mode] .c .v{aspect-ratio:9/16}html body[data-mode] .c .v video{object-fit:contain;background:#000}html body[data-mode] .c .v video[controls]{object-fit:contain}
+/* Keep every catalog tile aligned without stretching. Preview covers may crop
+   landscape edges to fill the 9:16 tile; unlocked originals remain contained. */
+html body[data-mode] .c .v{aspect-ratio:9/16}html body[data-mode] .c .v video{object-fit:cover;background:#000}html body[data-mode] .c .v video[controls]{object-fit:contain}
 .video-duration{position:absolute;left:10px;bottom:10px;z-index:4;background:#05060bd9;border:1px solid #ffffff30;border-radius:6px;padding:5px 8px;color:#fff;font:700 12px/1.3 monospace;font-variant-numeric:tabular-nums;pointer-events:none}.video-duration[hidden]{display:none}.preview-clock{display:flex;align-items:center;gap:7px;letter-spacing:.02em}.preview-clock svg{width:16px;height:16px;flex:none}.preview-clock circle{fill:none;stroke:currentColor;stroke-width:2.2}.preview-clock .clock-progress{stroke-dasharray:44;stroke-dashoffset:var(--clock-offset,0);transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .15s linear}.preview-clock .clock-track{opacity:.2}
 
 /* Information is a UI layer, never a filter on the preview image. */
@@ -91,7 +91,8 @@ html body[data-model] .price-card.hot{border-color:var(--ac);box-shadow:0 16px 4
 html body[data-model] .card{border-color:var(--line);border-radius:14px;background:var(--card);transition:transform .2s,border-color .2s,box-shadow .2s}
 html body[data-model] .card:hover{transform:translateY(-3px);border-color:#e8b84a88;box-shadow:0 16px 42px var(--glow)}
 html body[data-model] .cover{aspect-ratio:9/16;background:#050507}
-html body[data-model] .cover video.preview,html body[data-model] .video-slot video{object-fit:contain;background:#050507}
+html body[data-model] .cover video.preview{object-fit:cover;background:#050507}
+html body[data-model] .video-slot video{object-fit:contain;background:#050507}
 html body[data-model] .card-body button{border-color:var(--ac)!important;border-radius:10px!important;background:linear-gradient(180deg,#17120a,#000)!important;color:#f7dd8b!important;font:700 11px 'JetBrains Mono',monospace!important;letter-spacing:.06em}
 html body[data-model] .pill{border-color:#e8b84a66;background:#100e0ee8;color:#f7dd8b}
 html body[data-model] .badge-row span{border-color:var(--line);color:#e8dfea}
@@ -126,5 +127,5 @@ html body[data-model] #pay::backdrop{background:rgba(0,0,0,.84)}
 html body[data-model] .hero .r{display:block;min-width:0}
 html body[data-model] .hero .r .hv:not(:first-child){display:none!important}
 html body[data-model] .hero .r .hv:first-child{width:min(100%,460px);margin-inline:auto;aspect-ratio:9/16;max-height:78svh;flex:none;transform:none!important;border:1px solid var(--line)!important;border-radius:18px;box-shadow:0 18px 50px #0008!important}
-html body[data-model] .hero .r .hv:first-child video{object-fit:contain;background:#050507}
+html body[data-model] .hero .r .hv:first-child video{object-fit:cover;background:#050507}
 @media(max-width:640px){html body[data-model] .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px}html body[data-model] .c .tag{font-size:8px;padding:4px 5px}}
