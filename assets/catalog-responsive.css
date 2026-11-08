@@ -94,6 +94,7 @@ html body[data-model] #ia,html body[data-model] #iam{display:none!important}
 html body[data-model] .grid{align-items:stretch}
 html body[data-model] .c{display:flex;flex-direction:column;min-width:0;height:100%}
 html body[data-model] .c .v{flex:none;aspect-ratio:9/16!important;overflow:hidden}
+html body[data-model] .c:hover .v{transform:none!important;box-shadow:none!important}
 html body[data-model] .cb{display:flex;flex:1;flex-direction:column;min-width:0}
 html body[data-model] .cb .full{margin-top:auto}
 html body[data-model] .c .tag{max-width:calc(100% - 20px);white-space:normal;overflow-wrap:anywhere;line-height:1.3}
