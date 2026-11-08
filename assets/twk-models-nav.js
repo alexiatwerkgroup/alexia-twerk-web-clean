@@ -5,7 +5,7 @@
 
   var models = [
     { name: 'Abbi', href: '/abbi/', status: 'LIVE', key: 'abbi' },
-    { name: 'Jenny', href: '/jenny/', status: 'MAINTENANCE', key: 'jenny' },
+    { name: 'Jenny', href: '/jenny/', status: 'LIVE', key: 'jenny' },
     { name: 'Lolita', href: '/lolita/', status: 'LIVE', key: 'lolita' },
     { name: 'Tainara', href: '/tainara/', status: 'LIVE', key: 'tainara' },
     { name: 'Vegan', href: '/vegan/', status: 'COMING SOON', key: 'vegan' },

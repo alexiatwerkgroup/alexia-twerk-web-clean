@@ -1,7 +1,7 @@
 // One shared deadline, enforced by the server (Buenos Aires: Nov 3, 22:34:59).
 export const REOPEN_AT = Date.parse('2026-11-04T01:34:59Z');
-// Temporary global maintenance pause. Set to false to reopen Jenny access.
-export const JENNY_MAINTENANCE = true;
+// Jenny's temporary access pause has ended; the reopening deadline is also past.
+export const JENNY_MAINTENANCE = false;
 export const isJennyOpen = (now = Date.now()) => !JENNY_MAINTENANCE && now >= REOPEN_AT;
 export const LAUNCH_COPY = 'TESTER launch prices · Limited time after opening. Buy coins with Binance and use them to unlock videos. Take advantage of launch prices while available.';
 export function launchPage(now = Date.now()) {

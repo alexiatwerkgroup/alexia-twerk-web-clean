@@ -10,7 +10,7 @@
 - Publicar solo los archivos del cambio y verificar visualmente la versión publicada antes de afirmar que está lista.
 
 - Las páginas exclusivas viven en `/abbi/`, `/jenny/`, `/lolita/`, `/tainara/`, `/vegan/` y `/camila/`; no incluir ni enlazar `/novinhas/`. Mantener el roster y los estados reales en `assets/twk-models-nav.js` y el tema común en `assets/catalog-responsive.css`.
-- Vegan y Camila siguen sin catálogo publicado (0 videos): no mostrar precios, packs ni botones de compra hasta que haya material disponible. Jenny conserva sus 93 entradas, pero indicar claramente que acceso y reproducciones están en mantenimiento cuando ese bloqueo siga activo.
+- Vegan y Camila siguen sin catálogo publicado (0 videos): no mostrar precios, packs ni botones de compra hasta que haya material disponible. El roster de Jenny debe reflejar `functions/_lib/jenny-launch.js`; la pausa temporal fue cerrada y su bandera está desactivada.
 - No ampliar las rutas protegidas de previews ni originals. Revisar como visitante sin gastar monedas y no declarar probado el acceso autenticado sin una sesión de prueba autorizada.
 
 - Las fichas de videos de pago aparecen al pasar el mouse o tocar el botón de información. Mover las descripciones existentes allí y no duplicarlas en el pie de la tarjeta. Si no hay descripción editorial, usar solo datos reales del archivo; no inventar contenido ni actos.
