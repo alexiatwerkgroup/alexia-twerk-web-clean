@@ -64,6 +64,7 @@ html body[data-model] .catalog-info-toggle{border-color:#e8b84a99;color:#f7dd8b}
 @media(max-width:640px){html body[data-model] .hero .in{flex-wrap:wrap;gap:24px}html body[data-model] .hero .l,html body[data-model] .hero .r{flex:1 1 100%;width:100%;max-width:none}}
 @media(max-width:640px){html body[data-model] .universal-meta{flex-wrap:wrap;gap:4px 8px;font-size:11px}html body[data-model] .universal-meta i{white-space:nowrap}}
 @media(max-width:560px){html body[data-model] .tn2 .tn2-w{padding-inline:max(10px,env(safe-area-inset-left,0px)) max(2px,env(safe-area-inset-right,0px))}}
+@media(max-width:560px){html body[data-model] .tn2 .twk-lang>button{padding-inline:4px}}
 @media(prefers-reduced-motion:reduce){html body[data-model] *,html body[data-model] *::before,html body[data-model] *::after{scroll-behavior:auto;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 html body[data-model] .model-status-portrait{position:relative;flex:none;width:min(100%,380px);aspect-ratio:4/5;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#050507}
 html body[data-model] .model-status-portrait img{display:block;width:100%;height:100%;object-fit:cover}
