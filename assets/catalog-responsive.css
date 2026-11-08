@@ -89,3 +89,31 @@ html body[data-model] dialog{border-color:var(--ac);border-radius:16px;backgroun
 @media(max-width:640px){html body[data-model] section{padding-top:42px;padding-bottom:14px}.hero h1{font-size:clamp(45px,13vw,64px)}}
 /* Model pages share one branded theme; legacy per-page palette switches are not part of the shared nav. */
 html body[data-model] #ia,html body[data-model] #iam{display:none!important}
+
+/* Keep model pages visually stable across the shared catalog templates. */
+html body[data-model] .grid{align-items:stretch}
+html body[data-model] .c{display:flex;flex-direction:column;min-width:0;height:100%}
+html body[data-model] .c .v{flex:none;aspect-ratio:9/16!important;overflow:hidden}
+html body[data-model] .cb{display:flex;flex:1;flex-direction:column;min-width:0}
+html body[data-model] .cb .full{margin-top:auto}
+html body[data-model] .c .tag{max-width:calc(100% - 20px);white-space:normal;overflow-wrap:anywhere;line-height:1.3}
+html body[data-model] .pc .rib{max-width:100%;height:auto;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+html body[data-model] .pc,html body[data-model] .pc p,html body[data-model] .pc li{overflow-wrap:anywhere;word-break:normal}
+html body[data-model] .pc .n{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+/* The campaign-choice mockup was accidentally rendered as public page content. */
+html body[data-model] .urgency-panel{display:none!important}
+/* Keep the established Binance payment instructions consistent on every live catalog. */
+html body[data-model] #pay{width:min(900px,calc(100vw - 32px));max-width:900px;max-height:92svh;overflow:auto;padding:clamp(20px,4vw,38px);border:1px solid #e8b84a;border-radius:24px;background:#151219;color:#f7f5f8;box-shadow:0 25px 90px #000b}
+html body[data-model] #pay h2,html body[data-model] #pay h3{max-width:100%;margin:0 40px 12px 0;color:#fff;font:400 clamp(38px,7vw,78px)/.95 Anton,Impact,sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
+html body[data-model] #pay .paynote,html body[data-model] #pay .warn{color:#d7d1dc;font-size:clamp(14px,2vw,18px);line-height:1.55;overflow-wrap:anywhere}
+html body[data-model] #pay .payrow,html body[data-model] #pay .row{min-width:0;margin:12px 0;padding:14px 16px;border:1px solid #403744;border-radius:12px;background:#0c0a0e}
+html body[data-model] #pay .payrow small,html body[data-model] #pay .row small{display:block;margin-bottom:6px;color:#aaa3b1;font:500 12px/1.4 'JetBrains Mono',monospace;letter-spacing:.07em;text-transform:uppercase}
+html body[data-model] #pay .payrow code,html body[data-model] #pay .row code{display:block;max-width:100%;padding:0;border:0;background:transparent;color:#f4cf68;font:700 clamp(13px,1.8vw,16px)/1.5 'JetBrains Mono',monospace;overflow-wrap:anywhere;word-break:break-word;cursor:pointer}
+html body[data-model] #pay .x,html body[data-model] #pay .close{position:absolute;top:16px;right:18px;float:none;border:0;background:transparent;color:#fff;font-size:32px;line-height:1;cursor:pointer}
+html body[data-model] #pay::backdrop{background:rgba(0,0,0,.84)}
+/* One clear featured video in every live model hero. */
+html body[data-model] .hero .r{display:block;min-width:0}
+html body[data-model] .hero .r .hv:not(:first-child){display:none!important}
+html body[data-model] .hero .r .hv:first-child{width:min(100%,460px);margin-inline:auto;aspect-ratio:9/16;max-height:78svh;flex:none;transform:none!important;border:1px solid var(--line)!important;border-radius:18px;box-shadow:0 18px 50px #0008!important}
+html body[data-model] .hero .r .hv:first-child video{object-fit:contain;background:#050507}
+@media(max-width:640px){html body[data-model] .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px}html body[data-model] .c .tag{font-size:8px;padding:4px 5px}}

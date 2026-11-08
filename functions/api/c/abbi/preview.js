@@ -1,5 +1,3 @@
-import { authenticate } from '../../../_lib/auth.js';
-import { json } from '../../../_lib/http.js';
 import { validModelN, videoKey, catalogStorage, isPublished } from '../../../_lib/catalog.js';
 
 const DURATION_SECONDS = {"01":149.72,"02":32.925,"03":125.41,"04":361.62,"05":117.515,"06":15.045,"07":208.003,"08":388.567,"09":185.55,"10":26.446,"11":103.606,"12":135.977,"13":66.986,"14":18.767,"15":466.563,"16":374.367,"17":215.567,"18":84.775,"19":208.051,"20":67.222,"21":94.97,"22":237.433,"23":169.633,"24":141.467,"25":108.8,"26":208.003,"27":208.016,"28":208.003,"29":208.003,"30":63.041,"31":60.033,"32":60.033,"33":90.743,"34":208.003,"35":208.003,"36":208.003};
@@ -8,18 +6,6 @@ export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
   const n = url.searchParams.get('n') || '';
   if (!validModelN('abbi', n)) return new Response('bad_request', { status: 400 });
-  const p = await authenticate(request, env);
-  if (!p?.sub) return json({ ok: false, error: 'login_required' }, 401);
-  const user = await env.DB.prepare('SELECT email, tier FROM profiles WHERE id = ?').bind(p.sub).first();
-  if (!user) return json({ ok: false, error: 'login_required' }, 401);
-  const allowed = String(env.JENNY_ALLOWED || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
-  const email = String(user.email || '').toLowerCase();
-  const owner = email === 'alexiatwerkoficial@gmail.com' || user.tier === 'vip' || allowed.includes(email);
-  if (!owner) {
-    const grant = await env.DB.prepare('SELECT 1 x FROM catalog_access WHERE slug = ? AND email = ?').bind('abbi', email).first();
-    const unlock = await env.DB.prepare('SELECT 1 x FROM catalog_unlocks WHERE slug = ? AND email = ? AND n = ?').bind('abbi', email, n).first();
-    if (!grant && !unlock) return json({ ok: false, error: 'coins_required' }, 403);
-  }
   if (!(await isPublished(env, 'abbi', n))) return new Response('not_found', { status: 404 });
   const storage = catalogStorage(env, 'abbi');
   if (!storage || !env.DB) return new Response('not_configured', { status: 503 });
