@@ -11,7 +11,7 @@ export const MODELS = {
   lolita:  { name: 'Lolita' },
 };
 export const COIN_COST = 1;        // 1 coin = $0.50 (used by catalogs without duration pricing)
-// Abbi's Explicit Hot Pack prices are derived from the measured originals:
+// Abbi's individual coin costs are based on measured original durations:
 // one coin for every started minute. Keep this server-side; client data is display-only.
 export const ABBI_COUNT = 36;
 export const ABBI_COSTS = {"01":3,"02":1,"03":3,"04":7,"05":2,"06":1,"07":4,"08":7,"09":4,"10":1,"11":2,"12":3,"13":2,"14":1,"15":8,"16":7,"17":4,"18":2,"19":4,"20":2,"21":2,"22":4,"23":3,"24":3,"25":2,"26":4,"27":4,"28":4,"29":4,"30":2,"31":2,"32":2,"33":2,"34":4,"35":4,"36":4};
