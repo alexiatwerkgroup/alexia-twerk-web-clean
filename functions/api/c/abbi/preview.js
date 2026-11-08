@@ -1,36 +1,31 @@
-import { validModelN, videoKey, catalogStorage, isPublished } from '../../../_lib/catalog.js';
-
-const DURATION_SECONDS = {"01":149.72,"02":32.925,"03":125.41,"04":361.62,"05":117.515,"06":15.045,"07":208.003,"08":388.567,"09":185.55,"10":26.446,"11":103.606,"12":135.977,"13":66.986,"14":18.767,"15":466.563,"16":374.367,"17":215.567,"18":84.775,"19":208.051,"20":67.222,"21":94.97,"22":237.433,"23":169.633,"24":141.467,"25":108.8,"26":208.003,"27":208.016,"28":208.003,"29":208.003,"30":63.041,"31":60.033,"32":60.033,"33":90.743,"34":208.003,"35":208.003,"36":208.003};
+import { validModelN, catalogStorage, isPublished } from '../../../_lib/catalog.js';
 
 export async function onRequestGet({ request, env }) {
-  const url = new URL(request.url);
-  const n = url.searchParams.get('n') || '';
+  const n = new URL(request.url).searchParams.get('n') || '';
   if (!validModelN('abbi', n)) return new Response('bad_request', { status: 400 });
   if (!(await isPublished(env, 'abbi', n))) return new Response('not_found', { status: 404 });
   const storage = catalogStorage(env, 'abbi');
   if (!storage || !env.DB) return new Response('not_configured', { status: 503 });
-  const key = videoKey('abbi', n);
+  const key = `preview-v1/abbi/v${n}.mp4`;
   const head = await storage.head(key);
-  if (!head) return new Response('not_found', { status: 404 });
-  const duration = DURATION_SECONDS[n];
-  if (!duration || !head.size) return new Response('not_found', { status: 404 });
-  const previewSeconds = Math.min(10, duration);
+  if (!head?.size) return new Response('not_found', { status: 404 });
+
   const range = request.headers.get('Range');
-  let start = 0, end = head.size - 1;
   const match = range && /^bytes=(\d*)-(\d*)$/.exec(range);
+  let status = 200, start = 0, end = head.size - 1;
   if (match) {
     if (match[1] === '') start = Math.max(0, head.size - parseInt(match[2], 10));
     else start = parseInt(match[1], 10);
     if (match[2] && match[1]) end = Math.min(end, parseInt(match[2], 10));
+    if (start > end || start >= head.size) return new Response(null, { status: 416, headers: { 'Content-Range': `bytes */${head.size}` } });
+    status = 206;
   }
-  const allowedEnd = Math.max(0, Math.floor(head.size * previewSeconds / duration) - 1);
-  if (start > allowedEnd || start >= head.size) return new Response(null, { status: 416, headers: { 'Content-Range': `bytes */${head.size}` } });
-  end = Math.min(end, allowedEnd);
-  const obj = await storage.get(key, { range: { offset: start, length: end - start + 1 } });
-  return new Response(obj.body, { status: 206, headers: {
-    'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Content-Length': String(end - start + 1),
-    'Content-Range': `bytes ${start}-${end}/${head.size}`, 'Cache-Control': 'private, no-store',
-    'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex',
-    'X-Preview-Duration': String(previewSeconds)
+  const length = end - start + 1;
+  const obj = await storage.get(key, match ? { range: { offset: start, length } } : undefined);
+  return new Response(obj.body, { status, headers: {
+    'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Content-Length': String(length),
+    ...(match ? { 'Content-Range': `bytes ${start}-${end}/${head.size}` } : {}),
+    'Content-Disposition': 'inline', 'Cache-Control': 'private, no-store',
+    'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex', 'X-Preview-Duration': '10'
   }});
 }
