@@ -15,6 +15,7 @@ Disallow: /creator-dashboard
 Disallow: /cdn-cgi/
 Disallow: /tools/
 Disallow: /api/
+Disallow: /_deleted/
 
 Sitemap: https://twerkhub.lat/sitemap-index.xml
 Sitemap: https://twerkhub.lat/sitemap.xml
