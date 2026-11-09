@@ -46,6 +46,18 @@ html body[data-model="abbi"] #pay .trust em{font-style:normal;font-size:12px;col
 html body[data-model="abbi"] #pay .amt{color:var(--ok);font-weight:800}
 html body[data-model="abbi"] #pay .close{position:absolute;top:12px;right:14px;float:none;border:0;background:none;color:var(--fg);font-size:26px;line-height:1;cursor:pointer}
 </style>
+<style>
+.about{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px 28px;margin-top:22px}
+.about h3{font-size:21px;margin:20px 0 6px;color:var(--pink)}
+.about h3:first-of-type{margin-top:2px}
+.about p{color:#cdc6cf;line-height:1.7;max-width:720px;margin:0 0 13px}
+.about .tag{display:inline-block;font:800 11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.about blockquote{margin:22px 0;padding:16px 20px;border-left:3px solid var(--gold);background:#1b1620;border-radius:0 10px 10px 0;color:#f0e9f2;font-size:16px;line-height:1.6}
+.about blockquote cite{display:block;margin-top:7px;font:700 11px ui-monospace,monospace;letter-spacing:.1em;color:var(--muted);font-style:normal}
+.about .links{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.about .links a{padding:8px 13px;border:1px solid var(--line);border-radius:999px;font:700 11px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+.about .links a:hover{border-color:var(--gold);color:var(--gold)}
+</style>
 </head>
 <body data-model="abbi" data-mode="casero">
 <header class="tn2"><div class="tn2-w"><a class="tn2-logo" href="/" aria-label="Twerkhub home"><img src="/assets/patreon-logo-final.png" alt="Twerkhub.lat" width="190" height="43"></a><div class="tn2-lk"><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/community">Community</a><a href="/account">My account</a><a class="tn2-jn" href="/abbi/">Abbi VIP</a></div><details><summary aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav><a class="on" href="/abbi/">Abbi VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/community">Community</a><a href="/account">My account</a></nav></details></div></header><main class="wrap">
@@ -68,6 +80,16 @@ html body[data-model="abbi"] #pay .close{position:absolute;top:12px;right:14px;f
   <div id="catalog"></div>
 </section>
 <section class="section"><div class="eyebrow">/ how access works</div><h2>Private originals, <em class="gold">account access.</em></h2><div class="how"><article class="step"><b>01 / SIGN IN</b><h3>Use your Twerkhub account</h3><p>Individual unlocks are associated with the email on your authenticated account.</p></article><article class="step"><b>02 / UNLOCK</b><h3>Choose an individual video</h3><p>Each video costs 1 coin per started minute. One coin is US$0.50.</p></article><article class="step"><b>03 / WATCH</b><h3>Play or download the original</h3><p>The server checks your entitlement before sending any part of an original video.</p></article></div></section>
+<section class="section" id="about"><div class="eyebrow">/ about this catalog</div><h2>Inside <em>the Abbi collection.</em></h2><div class="about">
+<span class="tag">36 videos · the smaller, gold-accented catalog</span>
+<h3>A tighter catalog by design</h3>
+<p>Abbi's 36 originals are kept deliberately smaller than catalogs like Tainara's 96 or Lolita's 80. Each one is still priced and unlocked individually by the minute, same as everywhere else on Twerkhub — the difference here is curation, not a cut-down version of the same thing.</p>
+<h3>Why it's the gold-accented page</h3>
+<p>Abbi's page uses Twerkhub's gold-bordered layout, the design the rest of the site's catalog pages are checked against. A smaller, more consistent set of videos is part of what makes that layout work — every card the same shape, every price visible without scrolling.</p>
+<blockquote>"When we test a new catalog feature, it goes on this page first. A tighter catalog makes it easier to tell if something's actually broken."<cite>— Twerkhub team</cite></blockquote>
+<p>Want more volume instead? <a href="/tainara/">Tainara's 96 originals</a> and <a href="/lolita/">Lolita's 80-clip catalog</a> use the same per-minute pricing across a larger set.</p>
+<div class="links"><a href="/blog/perreo-history-caribbean-origin">Perreo's Caribbean roots →</a><a href="/novinhas/">Browse the Novinhas archive →</a><a href="/membership">Membership & access →</a></div>
+</div></section>
 <p class="legal">18+ only. All performers are 18 or older and appear under written agreement. Explicit content is for adults only. © Twerkhub.</p>
 </main>
 <dialog class="pay" id="pay"><button class="x close" type="button" aria-label="Close" onclick="this.closest('dialog').close()">×</button><h3 id="payT">Pay with Binance</h3><p class="warn" id="payA"></p>

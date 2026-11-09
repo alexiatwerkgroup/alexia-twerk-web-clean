@@ -1,0 +1,11 @@
+.about{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:34px 32px;margin-top:6px}
+.about h3{font:400 24px/1.1 Anton,sans-serif;text-transform:uppercase;margin:22px 0 8px;color:var(--ac)}
+.about h3:first-of-type{margin-top:4px}
+.about p{color:#cfcfda;line-height:1.7;max-width:720px;margin:0 0 14px}
+.about .tag{display:inline-block;font:700 11px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--ac2);margin-bottom:6px}
+.about blockquote{margin:24px 0;padding:18px 22px;border-left:3px solid var(--ac);background:rgba(255,138,0,.06);border-radius:0 10px 10px 0;color:#e7e3ea;font-size:17px;line-height:1.6}
+.about blockquote cite{display:block;margin-top:8px;font:700 11px 'JetBrains Mono',monospace;letter-spacing:.12em;color:var(--mut);font-style:normal}
+.about .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.about .links a{padding:9px 14px;border:1px solid var(--line);border-radius:999px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);text-decoration:none}
+.about .links a:hover{border-color:var(--ac);color:var(--ac)}
+@media(max-width:700px){.about{padding:24px 20px}}
