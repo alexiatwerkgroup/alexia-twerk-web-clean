@@ -97,12 +97,6 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://twerkhub.lat/ru/playlist/</loc>
-    <lastmod>2026-05-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
     <loc>https://twerkhub.lat/ru/search</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>weekly</changefreq>
