@@ -7,6 +7,7 @@ Allow: /
 
 # Páginas privadas / utilitarias sin valor SEO (no malgastar crawl budget)
 Disallow: /account
+Disallow: /admin/
 Disallow: /admin-users
 Disallow: /auth-callback
 Disallow: /profile
