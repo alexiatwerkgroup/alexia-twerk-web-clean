@@ -216,4 +216,4 @@ try{if(localStorage.getItem(K))fset(true)}catch(e){}
 fb.onclick=function(){var on=fb.classList.contains('on');api('/api/jenny/follow',{method:on?'DELETE':'POST'}).then(function(x){if(x[0]==401){fm.textContent='Log in or create your free account to get notified — taking you there…';setTimeout(function(){location.href='/account.html'},1200);return}if(x[1]&&x[1].ok){fset(!!x[1].following);fm.textContent=x[1].following?'Done! We will email you.':'Notifications off.'}else fm.textContent='Error. Try again.'})};
 })();
 </script>
-<script src="/assets/catalog-preview-clock.js?v=20261108-3" defer></script></body></html>
+<script src="/assets/catalog-preview-clock.js?v=20261110-fix1" defer></script></body></html>
