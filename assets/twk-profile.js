@@ -27,7 +27,7 @@
     var w = document.querySelector('.tn2-w'); if (!w) return; styles();
     var p = json(KEY), name = p.nickname || p.username || 'Claudio';
     el = document.createElement('div'); el.className = 'twk-pf';
-    var adm = owner() ? '<h6>Panel Twerkhub</h6><a href="/admin/stats/">Estadísticas</a><a href="/admin-users.html">Registrados</a><a href="/jenny/uncensored/">Uncensored</a>' : '';
+    var adm = owner() ? '<h6>Panel Twerkhub</h6><a href="/admin/stats/">Estadísticas</a><a href="/admin-users.html">Registrados</a><a href="/jenny/">Uncensored</a>' : '';
     el.innerHTML = '<button type="button" aria-label="Perfil" aria-expanded="false"></button><div><a href="/account">My account</a><a href="/tokens/">My balance</a>' + adm + '</div>';
     var d = w.querySelector('details'); if (d) w.insertBefore(el, d); else w.appendChild(el);
     setAvatar(p.avatar_url || '', name);

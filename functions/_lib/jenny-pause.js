@@ -9,7 +9,7 @@ export async function explicitPauseResponse(request) {
   try { path = decodeURIComponent(url.pathname).replace(/\/{2,}/g, '/').toLowerCase(); }
   catch { return null; }
   const headers = { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex,nofollow' };
-  if (/^\/jenny\/uncensored(?:\/|\.html|$)/.test(path)) {
+  if (/^\/jenny(?:\/(?:index\.html)?)?$/.test(path)) {
     return new Response(request.method === 'HEAD' ? null : launchPage(), {
       headers: { ...headers, 'Content-Type': 'text/html; charset=utf-8' }
     });

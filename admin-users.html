@@ -191,7 +191,7 @@ loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkh
 <!-- Supabase config + SDK -->
 <script src="/assets/supabase-config.js"></script>
 <script>
-function unlockLinks(l){ if(!l||!l.length) return ''; var via={coins:'monedas',tokens:'tokens',paid:'pagado'}; return '<div style="margin-top:4px;font-size:11px;line-height:1.7">'+l.map(function(x){var n=String(x.n).replace(/[^a-z0-9]/gi,''); var base=/^x/i.test(n)?'/jenny/uncensored/':'/jenny/'; return '<a href="'+base+'#v'+n+'" target="_blank" rel="noopener" title="'+(via[x.via]||x.via)+'" style="color:#f6c453;margin-right:6px;white-space:nowrap">#'+n+'</a>'}).join('')+'</div>'; }
+function unlockLinks(l){ if(!l||!l.length) return ''; var via={coins:'monedas',tokens:'tokens',paid:'pagado'}; return '<div style="margin-top:4px;font-size:11px;line-height:1.7">'+l.map(function(x){var n=String(x.n).replace(/[^a-z0-9]/gi,''); var base=/^x/i.test(n)?'/jenny/':'/jenny/uncensored/'; return '<a href="'+base+'#v'+n+'" target="_blank" rel="noopener" title="'+(via[x.via]||x.via)+'" style="color:#f6c453;margin-right:6px;white-space:nowrap">#'+n+'</a>'}).join('')+'</div>'; }
 
 (function(){
   'use strict';
