@@ -132,3 +132,7 @@ html body[data-model] .hero .r .hv:first-child video{object-fit:cover;background
 /* Tainara cards have no top-left tag badge (removed stray "POSTER · LOCKED" label), so the clock can sit back at the top. */
 html body[data-model="tainara"] .preview-clock{top:10px}
 @media(max-width:640px){html body[data-model="tainara"] .preview-clock{top:7px}}
+/* Twerkhub brand watermark overlay (shared across all model heroes/cards; jenny defines its own local copy of this too). */
+html body[data-model] .ov{position:absolute;pointer-events:none;z-index:2;height:auto}
+html body[data-model] .ov.b{left:3%;top:3%;width:32%}
+html body[data-model] .ov.f{left:50%;transform:translateX(-50%);bottom:3%;width:66%}
