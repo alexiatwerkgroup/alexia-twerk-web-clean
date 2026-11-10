@@ -23,7 +23,7 @@ button:focus-visible,a:focus-visible{outline-offset:4px;}
 /* ── 4. Custom scrollbar on the main document (Chromium) ─────────────── */
 html::-webkit-scrollbar{width:10px;}
 html::-webkit-scrollbar-track{background:#05050a;}
-html::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ff2d87,#9d4edd);border-radius:999px;border:2px solid #05050a;}
+html::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ff8a00,#9d4edd);border-radius:999px;border:2px solid #05050a;}
 html::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#ff6fa8,#b572e0);}
 
 /* ── 5. Smooth hover transitions default (if not already defined) ────── */

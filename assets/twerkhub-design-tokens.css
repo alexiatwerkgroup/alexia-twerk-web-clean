@@ -84,7 +84,7 @@
   --twk-c-text:    #f5f5fb;
   --twk-c-text-dim:#a8a8b8;
   --twk-c-text-mute:#6b6b7b;
-  --twk-c-pink:    #ff2d87;
+  --twk-c-pink:    #ff8a00;
   --twk-c-pink-soft:#ff6fa8;
   --twk-c-purple:  #9d4edd;
   --twk-c-purple-soft:#c084fc;
@@ -94,9 +94,9 @@
   --twk-c-green-soft:#83ffc0;
 
   /* Signature brand gradients — use via background: var(--twk-grad-pink) */
-  --twk-grad-pink:   linear-gradient(135deg, #ff2d87 0%, #9d4edd 100%);
+  --twk-grad-pink:   linear-gradient(135deg, #ff8a00 0%, #9d4edd 100%);
   --twk-grad-gold:   linear-gradient(135deg, #ff6fa8 0%, #ffb454 55%, #ffd693 100%);
-  --twk-grad-vip:    linear-gradient(135deg, #ffd693 0%, #ff2d87 50%, #9d4edd 100%);
+  --twk-grad-vip:    linear-gradient(135deg, #ffd693 0%, #ff8a00 50%, #9d4edd 100%);
   --twk-grad-ambient:
     radial-gradient(ellipse at 18% 12%, rgba(255,45,135,.14), transparent 48%),
     radial-gradient(ellipse at 86% 22%, rgba(157,78,221,.12), transparent 52%),

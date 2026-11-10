@@ -216,7 +216,7 @@ img[loading="lazy"].is-loaded{animation:none;background:none;}
 .twk-skip-link{
   position:absolute;left:-9999px;top:0;padding:10px 18px;
   background:#0a0a14;color:#fff;text-decoration:none;font-weight:800;
-  border:2px solid #ff2d87;border-radius:0 0 10px 0;z-index:10000;
+  border:2px solid #ff8a00;border-radius:0 0 10px 0;z-index:10000;
   font-family:'Inter',sans-serif;letter-spacing:.08em;text-transform:uppercase;font-size:var(--fs-12);
 }
 .twk-skip-link:focus{left:0;top:0;}
@@ -300,7 +300,7 @@ section + section::before{
 .twerkhub-nav a.twerkhub-nav-hot[aria-current="page"]::after,
 .site-nav-final__links a.twerkhub-nav-hot.is-active::after,
 .snf__l a.twerkhub-nav-hot.is-active::after{
-  background:linear-gradient(90deg,#ffb454,#ff2d87) !important;
+  background:linear-gradient(90deg,#ffb454,#ff8a00) !important;
   box-shadow:0 0 10px rgba(255,180,84,.55) !important;
 }
 

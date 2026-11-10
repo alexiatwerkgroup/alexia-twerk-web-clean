@@ -32,9 +32,9 @@
   height: 2px;
   background: linear-gradient(90deg,
     transparent 0%,
-    #ff2d87 18%,
+    #ff8a00 18%,
     #ffb454 50%,
-    #ff2d87 82%,
+    #ff8a00 82%,
     transparent 100%);
   border-radius: 2px;
   transform: translateX(-50%);
@@ -105,14 +105,14 @@
 .twk-nav-v1-links a.is-active::before {
   width: 56%;
   opacity: 1;
-  background: linear-gradient(90deg, #ff2d87, #ffb454);
+  background: linear-gradient(90deg, #ff8a00, #ffb454);
   box-shadow: 0 0 12px rgba(255, 45, 135, .5);
 }
 
 /* HOT PACKS button gets the full red carpet treatment on hover */
 .twk-nav-v1-links a.twk-nav-v1-hot:hover,
 .twk-nav-v1-links a.twk-nav-v1-hot:focus-visible {
-  background: linear-gradient(135deg, #ff2d87, #ffb454) !important;
+  background: linear-gradient(135deg, #ff8a00, #ffb454) !important;
   color: #1a0a14 !important;
   border-color: transparent !important;
   box-shadow:
