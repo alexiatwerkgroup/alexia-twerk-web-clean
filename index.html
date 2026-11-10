@@ -73,7 +73,7 @@ body.hv3{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Inter,syst
 .hv3 .lead{color:#c9c9d3;font-size:19px;max-width:640px;margin:18px 0 0}
 .hero{padding:70px 0 20px!important}.facts{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.facts span{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);border:2px solid var(--line);border-radius:999px;padding:9px 16px;background:var(--card)}.facts b{color:var(--ac);font-size:15px;margin-right:4px}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:999px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;border:2px solid var(--ac);color:var(--ac);background:transparent;cursor:pointer;transition:transform .15s,box-shadow .2s}.btn.k{background:linear-gradient(180deg,var(--g1),var(--g2));color:var(--on);box-shadow:0 0 28px var(--glow),inset 0 1px 0 rgba(255,255,255,.35)}.btn:hover{transform:translateY(-2px);box-shadow:0 0 36px var(--glow)}.hv3 .ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.roster{padding-top:30px!important}.roster .grid{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 56px)/5);grid-template-columns:none;gap:14px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--ac) var(--card)}
+.roster{padding-top:30px!important}.roster-head{margin-bottom:26px}.roster-head h2{margin:6px 0 0}.roster .grid{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 56px)/5);grid-template-columns:none;gap:14px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--ac) var(--card)}
 .roster .m{min-width:0}
 .m{position:relative;border-radius:18px;border:2px solid var(--line);background:var(--card);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}.m.live{border-color:var(--ac);box-shadow:0 0 22px var(--glow)}.m:hover{transform:translateY(-4px);box-shadow:0 0 38px var(--glow)}
 .mv{position:relative;aspect-ratio:9/16;background:#0a0a0d;overflow:hidden}.mv video,.mv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
@@ -151,27 +151,16 @@ body[data-mode=gold] h1,body[data-mode=gold] h2,body[data-mode=gold] .mi h3{font
 .nov-vault-emblem{display:grid;place-items:center;width:42px;height:42px;flex:none;border:1px solid #ffe69a;border-radius:11px;background:linear-gradient(145deg,#f8d46d,#9f680e 72%);box-shadow:inset 0 1px 2px #fff9,0 5px 12px #0008;transform:perspective(260px) rotateY(-17deg) rotateX(8deg)}
 .nov-vault-emblem .ic{width:25px;height:25px;stroke:#1a1002;stroke-width:1.8}
 @media(max-width:800px){.nov-brand{font-size:25px}.nov-vault-cta{width:100%;min-height:72px!important;padding:12px 18px!important;font-size:12px!important;justify-content:center}}
-/* Inventory widget: constant "uploading" motion so the counter reads as a live, ongoing scan. */
-.ip{display:inline-flex;align-items:center;gap:0;padding:9px 18px 9px 32px!important;font-size:11px!important;border-radius:99px;background:linear-gradient(135deg,var(--ac2,var(--ac)),var(--ac));box-shadow:0 0 0 0 var(--glow),0 4px 14px rgba(0,0,0,.4);animation:ip-pulse 2s ease-in-out infinite}
-.ip:before{content:'';position:absolute;left:14px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:var(--on);box-shadow:0 0 0 0 var(--on);animation:ip-dot 1.3s ease-in-out infinite}
-@keyframes ip-pulse{0%{box-shadow:0 0 0 0 var(--glow),0 4px 14px rgba(0,0,0,.4)}70%{box-shadow:0 0 0 13px transparent,0 4px 14px rgba(0,0,0,.4)}100%{box-shadow:0 0 0 0 transparent,0 4px 14px rgba(0,0,0,.4)}}
-@keyframes ip-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(.7)}}
-.ring .scan{transform-origin:100px 100px;animation:ring-scan 2.8s linear infinite;filter:drop-shadow(0 0 7px var(--ac)) drop-shadow(0 0 3px #fff)}
-.ring .scan2{transform-origin:100px 100px;animation:ring-scan 2.8s linear infinite;animation-delay:-.22s;opacity:.4}
-.ring .scan3{transform-origin:100px 100px;animation:ring-scan 2.8s linear infinite;animation-delay:-.4s;opacity:.18}
-@keyframes ring-scan{to{transform:rotate(360deg)}}
-.srow{position:relative;overflow:hidden;padding-bottom:28px!important}
-.srow:before{content:'';position:absolute;z-index:0;inset:0;background:linear-gradient(100deg,transparent 42%,rgba(255,255,255,.1) 50%,transparent 58%);background-size:280% 100%;background-position:-100% 0;animation:srow-shine 5.6s ease-in-out infinite}
-.srow:nth-of-type(2):before{animation-delay:1.15s}
-.srow:nth-of-type(3):before{animation-delay:2.3s}
-@keyframes srow-shine{0%,28%{background-position:-100% 0}72%,100%{background-position:100% 0}}
-.srow>*{position:relative;z-index:1}
-.srow .bar{position:absolute;left:14px;right:14px;bottom:9px;height:7px;border-radius:99px;background:#000;border:1px solid var(--line);overflow:hidden;z-index:1;box-shadow:inset 0 1px 3px rgba(0,0,0,.8)}
-.srow .bar i{position:absolute;top:-1px;bottom:-1px;left:-40%;width:40%;border-radius:99px;background:linear-gradient(90deg,transparent,var(--ac),var(--ac2,#fff),var(--ac),transparent);box-shadow:0 0 14px 2px var(--glow);animation:bar-slide 2.1s ease-in-out infinite}
-.srow:nth-of-type(2) .bar i{animation-delay:.5s}
-.srow:nth-of-type(3) .bar i{animation-delay:1s}
-@keyframes bar-slide{0%{left:-40%}100%{left:100%}}
-@media(prefers-reduced-motion:reduce){.nov-brand:after,.nov-vault-cta:before,.ip,.ip:before,.ring .scan,.ring .scan2,.ring .scan3,.srow:before,.srow .bar i{animation:none}}
+/* Inventory widget: one clear, easy-to-read progress bar. No sweeping/sliding motion. */
+.prog2{border:2px solid var(--line);border-radius:22px;background:var(--card);padding:24px 26px}
+.prog2-head{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.prog2-head strong{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#fff}
+.prog2-pct{margin-left:auto;font:400 38px/1 Anton,sans-serif;color:var(--ac)}
+.livedot{width:10px;height:10px;border-radius:50%;flex:none;background:#39ff70;box-shadow:0 0 6px #39ff70,0 0 13px rgba(57,255,112,.9);animation:roster-live-pulse 1.8s ease-in-out infinite}
+.prog2-track{height:16px;border-radius:99px;background:#000;border:1px solid var(--line);overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.8)}
+.prog2-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ac),var(--ac2,var(--ac)));box-shadow:0 0 10px var(--glow);transition:width 1.2s ease}
+.prog2 small{display:block;margin-top:12px;color:var(--mut);font-size:12px}
+@media(prefers-reduced-motion:reduce){.nov-brand:after,.nov-vault-cta:before,.livedot{animation:none}}
 </style>
 <script>
 window.dataLayer=window.dataLayer||[];
@@ -222,17 +211,20 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
   <p>The current inventory counts 1,061 folders and 12,565 video files. Public cards use invented generic names and broad category suggestions; original names, filenames and media stay off the public directory.</p>
   <a class="gold nov-vault-cta" href="/novinhas/" aria-label="Enter the Novinhas Vault"><span class="nov-vault-emblem" aria-hidden="true"><svg class="ic"><use href="#i-vault"/></svg></span><span>Enter the Vault</span><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
  <div class="np">
-  <div class="prog"><span class="ip">In progress</span>
-   <div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="#1b1b22" stroke-width="16"/><circle cx="100" cy="100" r="86" fill="none" stroke="var(--ac)" stroke-width="16" stroke-linecap="round" stroke-dasharray="540.4" stroke-dashoffset="0" transform="rotate(-90 100 100)"/><circle class="scan3" cx="100" cy="100" r="98" fill="none" stroke="var(--ac)" stroke-width="7" stroke-linecap="round" stroke-dasharray="52 564"/><circle class="scan2" cx="100" cy="100" r="98" fill="none" stroke="var(--ac)" stroke-width="7" stroke-linecap="round" stroke-dasharray="52 564"/><circle class="scan" cx="100" cy="100" r="98" fill="none" stroke="var(--ac)" stroke-width="7" stroke-linecap="round" stroke-dasharray="52 564"/></svg><div><b data-na-stat="folders">1,061</b><small>folders indexed</small></div></div>
-   <div class="pl3"><div><b data-na-stat="listed">1,061</b><small>generic folder records</small></div><div><b data-na-stat="folders-with-videos">1,046</b><small>folders with videos</small></div><div><b>—</b><small>publication schedule</small></div></div>
+  <div class="prog2">
+   <div class="prog2-head"><span class="livedot" aria-hidden="true"></span><strong>Upload progress</strong><span class="prog2-pct" id="nov-home-pct">20%</span></div>
+   <div class="prog2-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20" aria-label="Archive upload progress"><i id="nov-home-fill" style="width:20%"></i></div>
+   <small>Archive upload status · increases 1% per hour</small>
   </div>
-  <div class="srow"><svg class="ic"><use href="#i-archive"/></svg><b data-na-stat="folders">1,061</b><span>folders counted<small>aggregate local inventory</small></span><i class="bar"><i></i></i></div>
-  <div class="srow"><svg class="ic"><use href="#i-play"/></svg><b data-na-stat="videos">12,565</b><span>video files counted<small>aggregate local inventory</small></span><i class="bar"><i></i></i></div>
-  <div class="srow"><svg class="ic"><use href="#i-plus"/></svg><b data-na-stat="folders-with-videos">1,046</b><span>folders with video files<small>rights review required before publication</small></span><i class="bar"><i></i></i></div>
+  <div class="srow"><svg class="ic"><use href="#i-archive"/></svg><b data-na-stat="folders">1,061</b><span>folders counted<small>aggregate local inventory</small></span></div>
+  <div class="srow"><svg class="ic"><use href="#i-play"/></svg><b data-na-stat="videos">12,565</b><span>video files counted<small>aggregate local inventory</small></span></div>
+  <div class="srow"><svg class="ic"><use href="#i-plus"/></svg><b data-na-stat="folders-with-videos">1,046</b><span>folders with video files<small>rights review required before publication</small></span></div>
  </div>
 </div></section>
+<script>(()=>{const value=document.getElementById('nov-home-pct'),fill=document.getElementById('nov-home-fill'),track=document.querySelector('.prog2-track');if(!value||!fill)return;const key='novinhas-home-progress-start';let started=Number(localStorage.getItem(key));if(!started||started>Date.now()){started=Date.now();localStorage.setItem(key,String(started))}function update(){const percent=Math.min(99,20+Math.floor((Date.now()-started)/3600000));value.textContent=percent+'%';fill.style.width=percent+'%';if(track)track.setAttribute('aria-valuenow',String(percent))}update();setInterval(update,60000)})();</script>
 
 <section class="roster" id="roster"><div class="w">
+ <div class="roster-head"><div class="eyebrow">Our exclusive dancers · 18+</div><h2>Our exclusive models.<br><em>A new one every month.</em></h2></div>
  <div class="grid">
 <article class="m live" data-name="Alexia"><div class="mv"><img src="/hero_alexia_local.webp" alt="Alexia" loading="lazy"><em class="stt">AVAILABLE</em><span class="ex">Founder</span><span class="hint">Meet Alexia</span></div>
 <div class="mi"><h3 translate="no">Alexia</h3><div class="spec"><div><small>Age</small><b class="ag">18+</b></div><div><small>Role</small><b>Founder</b></div></div><div class="lbl">Content</div><ul class="tags"><li class="">Twerk</li><li class="">VIP</li><li class="">Exclusive</li></ul><a class="gcta live" href="/alexia/"><svg class="ic"><use href="#i-lock"/></svg><span>Alexia's catalog</span></a></div></article>
