@@ -4,6 +4,7 @@
   var initialized=new WeakSet();
   var states=new WeakMap();
   var PREVIEW_SECONDS=10;
+  var current=null; /* only one preview plays at a time, site-wide */
   var io='IntersectionObserver' in window?new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       var state=states.get(entry.target);
@@ -27,6 +28,7 @@
     state.clock.hidden=false;
     state.digits.textContent='00:10';
     state.clock.style.setProperty('--clock-offset','0');
+    if(current===video)current=null;
   }
 
   function durationLimit(video,state){
@@ -58,6 +60,12 @@
       if(!replay)return;
       reset(video,state,false);
     }
+    if(current&&current!==video){
+      var prevState=states.get(current);
+      if(prevState)reset(current,prevState,false);
+      else current.pause();
+    }
+    current=video;
     if(!video.getAttribute('src'))video.src=video.dataset.src;
     video.muted=true;
     state.started=true;
