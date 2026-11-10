@@ -152,24 +152,26 @@ body[data-mode=gold] h1,body[data-mode=gold] h2,body[data-mode=gold] .mi h3{font
 .nov-vault-emblem .ic{width:25px;height:25px;stroke:#1a1002;stroke-width:1.8}
 @media(max-width:800px){.nov-brand{font-size:25px}.nov-vault-cta{width:100%;min-height:72px!important;padding:12px 18px!important;font-size:12px!important;justify-content:center}}
 /* Inventory widget: constant "uploading" motion so the counter reads as a live, ongoing scan. */
-.ip{padding-left:26px!important;animation:ip-pulse 2.6s ease-in-out infinite}
-.ip:before{content:'';position:absolute;left:12px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--on);animation:ip-dot 1.3s ease-in-out infinite}
-@keyframes ip-pulse{0%,100%{box-shadow:0 0 0 0 var(--glow)}50%{box-shadow:0 0 0 7px transparent}}
-@keyframes ip-dot{0%,100%{opacity:1}50%{opacity:.2}}
-.ring .scan{transform-origin:100px 100px;animation:ring-scan 2.6s linear infinite}
+.ip{display:inline-flex;align-items:center;gap:0;padding:9px 18px 9px 32px!important;font-size:11px!important;border-radius:99px;background:linear-gradient(135deg,var(--ac2,var(--ac)),var(--ac));box-shadow:0 0 0 0 var(--glow),0 4px 14px rgba(0,0,0,.4);animation:ip-pulse 2s ease-in-out infinite}
+.ip:before{content:'';position:absolute;left:14px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:var(--on);box-shadow:0 0 0 0 var(--on);animation:ip-dot 1.3s ease-in-out infinite}
+@keyframes ip-pulse{0%{box-shadow:0 0 0 0 var(--glow),0 4px 14px rgba(0,0,0,.4)}70%{box-shadow:0 0 0 13px transparent,0 4px 14px rgba(0,0,0,.4)}100%{box-shadow:0 0 0 0 transparent,0 4px 14px rgba(0,0,0,.4)}}
+@keyframes ip-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(.7)}}
+.ring .scan{transform-origin:100px 100px;animation:ring-scan 2.8s linear infinite;filter:drop-shadow(0 0 7px var(--ac)) drop-shadow(0 0 3px #fff)}
+.ring .scan2{transform-origin:100px 100px;animation:ring-scan 2.8s linear infinite;animation-delay:-.22s;opacity:.4}
+.ring .scan3{transform-origin:100px 100px;animation:ring-scan 2.8s linear infinite;animation-delay:-.4s;opacity:.18}
 @keyframes ring-scan{to{transform:rotate(360deg)}}
-.srow{position:relative;overflow:hidden;padding-bottom:20px!important}
-.srow:before{content:'';position:absolute;z-index:0;inset:0;background:linear-gradient(100deg,transparent 42%,rgba(255,255,255,.07) 50%,transparent 58%);background-size:280% 100%;background-position:-100% 0;animation:srow-shine 5.6s ease-in-out infinite}
+.srow{position:relative;overflow:hidden;padding-bottom:28px!important}
+.srow:before{content:'';position:absolute;z-index:0;inset:0;background:linear-gradient(100deg,transparent 42%,rgba(255,255,255,.1) 50%,transparent 58%);background-size:280% 100%;background-position:-100% 0;animation:srow-shine 5.6s ease-in-out infinite}
 .srow:nth-of-type(2):before{animation-delay:1.15s}
 .srow:nth-of-type(3):before{animation-delay:2.3s}
 @keyframes srow-shine{0%,28%{background-position:-100% 0}72%,100%{background-position:100% 0}}
 .srow>*{position:relative;z-index:1}
-.srow .bar{position:absolute;left:14px;right:14px;bottom:5px;height:3px;border-radius:99px;background:var(--line);overflow:hidden;z-index:1}
-.srow .bar i{position:absolute;top:0;bottom:0;left:-30%;width:30%;border-radius:99px;background:linear-gradient(90deg,transparent,var(--ac),transparent);animation:bar-slide 2.3s ease-in-out infinite}
+.srow .bar{position:absolute;left:14px;right:14px;bottom:9px;height:7px;border-radius:99px;background:#000;border:1px solid var(--line);overflow:hidden;z-index:1;box-shadow:inset 0 1px 3px rgba(0,0,0,.8)}
+.srow .bar i{position:absolute;top:-1px;bottom:-1px;left:-40%;width:40%;border-radius:99px;background:linear-gradient(90deg,transparent,var(--ac),var(--ac2,#fff),var(--ac),transparent);box-shadow:0 0 14px 2px var(--glow);animation:bar-slide 2.1s ease-in-out infinite}
 .srow:nth-of-type(2) .bar i{animation-delay:.5s}
 .srow:nth-of-type(3) .bar i{animation-delay:1s}
-@keyframes bar-slide{0%{left:-30%}100%{left:100%}}
-@media(prefers-reduced-motion:reduce){.nov-brand:after,.nov-vault-cta:before,.ip,.ip:before,.ring .scan,.srow:before,.srow .bar i{animation:none}}
+@keyframes bar-slide{0%{left:-40%}100%{left:100%}}
+@media(prefers-reduced-motion:reduce){.nov-brand:after,.nov-vault-cta:before,.ip,.ip:before,.ring .scan,.ring .scan2,.ring .scan3,.srow:before,.srow .bar i{animation:none}}
 </style>
 <script>
 window.dataLayer=window.dataLayer||[];
@@ -221,7 +223,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
   <a class="gold nov-vault-cta" href="/novinhas/" aria-label="Enter the Novinhas Vault"><span class="nov-vault-emblem" aria-hidden="true"><svg class="ic"><use href="#i-vault"/></svg></span><span>Enter the Vault</span><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
  <div class="np">
   <div class="prog"><span class="ip">In progress</span>
-   <div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="#1b1b22" stroke-width="16"/><circle cx="100" cy="100" r="86" fill="none" stroke="var(--ac)" stroke-width="16" stroke-linecap="round" stroke-dasharray="540.4" stroke-dashoffset="0" transform="rotate(-90 100 100)"/><circle class="scan" cx="100" cy="100" r="98" fill="none" stroke="var(--ac)" stroke-width="3" stroke-linecap="round" stroke-dasharray="20 596" opacity=".85"/></svg><div><b data-na-stat="folders">1,061</b><small>folders indexed</small></div></div>
+   <div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="#1b1b22" stroke-width="16"/><circle cx="100" cy="100" r="86" fill="none" stroke="var(--ac)" stroke-width="16" stroke-linecap="round" stroke-dasharray="540.4" stroke-dashoffset="0" transform="rotate(-90 100 100)"/><circle class="scan3" cx="100" cy="100" r="98" fill="none" stroke="var(--ac)" stroke-width="7" stroke-linecap="round" stroke-dasharray="52 564"/><circle class="scan2" cx="100" cy="100" r="98" fill="none" stroke="var(--ac)" stroke-width="7" stroke-linecap="round" stroke-dasharray="52 564"/><circle class="scan" cx="100" cy="100" r="98" fill="none" stroke="var(--ac)" stroke-width="7" stroke-linecap="round" stroke-dasharray="52 564"/></svg><div><b data-na-stat="folders">1,061</b><small>folders indexed</small></div></div>
    <div class="pl3"><div><b data-na-stat="listed">1,061</b><small>generic folder records</small></div><div><b data-na-stat="folders-with-videos">1,046</b><small>folders with videos</small></div><div><b>—</b><small>publication schedule</small></div></div>
   </div>
   <div class="srow"><svg class="ic"><use href="#i-archive"/></svg><b data-na-stat="folders">1,061</b><span>folders counted<small>aggregate local inventory</small></span><i class="bar"><i></i></i></div>
