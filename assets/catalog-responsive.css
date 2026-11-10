@@ -115,12 +115,12 @@ html body[data-model] .pc .n{min-width:0;max-width:100%;white-space:normal;overf
 /* The campaign-choice mockup was accidentally rendered as public page content. */
 html body[data-model] .urgency-panel{display:none!important}
 /* Keep the established Binance payment instructions consistent on every live catalog. */
-html body[data-model] #pay{width:min(900px,calc(100vw - 32px));max-width:900px;max-height:92svh;overflow:auto;padding:clamp(20px,4vw,38px);border:1px solid #e8b84a;border-radius:24px;background:#151219;color:#f7f5f8;box-shadow:0 25px 90px #000b}
-html body[data-model] #pay h2,html body[data-model] #pay h3{max-width:100%;margin:0 40px 12px 0;color:#fff;font:400 clamp(38px,7vw,78px)/.95 Anton,Impact,sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
-html body[data-model] #pay .paynote,html body[data-model] #pay .warn{color:#d7d1dc;font-size:var(--fs-h4);line-height:1.55;overflow-wrap:anywhere}
-html body[data-model] #pay .payrow,html body[data-model] #pay .row{min-width:0;margin:12px 0;padding:14px 16px;border:1px solid #403744;border-radius:12px;background:#0c0a0e}
-html body[data-model] #pay .payrow small,html body[data-model] #pay .row small{display:block;margin-bottom:6px;color:#aaa3b1;font:500 12px/1.4 'JetBrains Mono',monospace;letter-spacing:.07em;text-transform:uppercase}
-html body[data-model] #pay .payrow code,html body[data-model] #pay .row code{display:block;max-width:100%;padding:0;border:0;background:transparent;color:#f4cf68;font:700 clamp(13px,1.8vw,16px)/1.5 'JetBrains Mono',monospace;overflow-wrap:anywhere;word-break:break-word;cursor:pointer}
+html body[data-model] #pay{width:min(520px,calc(100vw - 32px));max-width:520px;max-height:92svh;overflow:auto;padding:clamp(18px,3vw,26px);border:1px solid #e8b84a;border-radius:18px;background:#151219;color:#f7f5f8;box-shadow:0 25px 90px #000b}
+html body[data-model] #pay h2,html body[data-model] #pay h3{max-width:100%;margin:0 40px 12px 0;color:#fff;font:400 clamp(19px,2.6vw,24px)/1.2 Anton,Impact,sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
+html body[data-model] #pay .warn{color:#d7d1dc;font-size:var(--fs-13);line-height:1.55;overflow-wrap:anywhere}
+html body[data-model] #pay .row{min-width:0;margin:12px 0;padding:14px 16px;border:1px solid #403744;border-radius:12px;background:#0c0a0e}
+html body[data-model] #pay .row small{display:block;margin-bottom:6px;color:#aaa3b1;font:500 12px/1.4 'JetBrains Mono',monospace;letter-spacing:.07em;text-transform:uppercase}
+html body[data-model] #pay .row code{display:block;max-width:100%;padding:0;border:0;background:transparent;color:#f4cf68;font:700 clamp(13px,1.8vw,16px)/1.5 'JetBrains Mono',monospace;overflow-wrap:anywhere;word-break:break-word;cursor:pointer}
 html body[data-model] #pay .x,html body[data-model] #pay .close{position:absolute;top:16px;right:18px;float:none;border:0;background:transparent;color:#fff;font-size:var(--fs-32);line-height:1;cursor:pointer}
 html body[data-model] #pay::backdrop{background:rgba(0,0,0,.84)}
 /* One clear featured video in every live model hero. */
