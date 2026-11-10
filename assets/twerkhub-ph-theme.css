@@ -91,9 +91,9 @@ body.twerkhub-ph-theme .twerkhub-home-hero h1 {
   line-height: 0.92 !important;
 }
 
-body.twerkhub-ph-theme h2 { font-size: clamp(34px, 5vw, 64px); line-height: 1; }
-body.twerkhub-ph-theme h3 { font-size: clamp(24px, 3.2vw, 38px); line-height: 1.05; }
-body.twerkhub-ph-theme h4 { font-size: clamp(18px, 2.4vw, 24px); line-height: 1.1; }
+body.twerkhub-ph-theme h2 { font-size:clamp(32px, 4.8vw, 58px); line-height: 1; }
+body.twerkhub-ph-theme h3 { font-size:clamp(26px, 3.6vw, 40px); line-height: 1.05; }
+body.twerkhub-ph-theme h4 { font-size:clamp(20px, 2.4vw, 26px); line-height: 1.1; }
 
 body.twerkhub-ph-theme p,
 body.twerkhub-ph-theme li,
@@ -128,7 +128,7 @@ body.twerkhub-ph-theme .twerkhub-hh-stat span {
   text-transform: uppercase;
   letter-spacing: .18em;
   color: #b3b3b3;
-  font-size: 11px;
+  font-size:11px;
 }
 
 /* ────────────────────────────────────────────────────────────────────
@@ -145,7 +145,7 @@ body.twerkhub-ph-theme .twk-nav-v1 {
 
 body.twerkhub-ph-theme .twk-nav-v1-brand {
   font-family: "Anton", "Inter", sans-serif !important;
-  font-size: 13px;
+  font-size:13px;
   letter-spacing: .15em;
   color: #fff;
   gap: 6px;
@@ -156,7 +156,7 @@ body.twerkhub-ph-theme .twk-nav-v1-brand img { display: none !important; }
 body.twerkhub-ph-theme .twk-nav-v1-brand::before {
   content: "TWERK";
   font-family: "Anton", "Inter", sans-serif;
-  font-size: 28px;
+  font-size:28px;
   font-weight: 400;
   color: #fff;
   letter-spacing: .01em;
@@ -165,7 +165,7 @@ body.twerkhub-ph-theme .twk-nav-v1-brand::before {
 body.twerkhub-ph-theme .twk-nav-v1-brand::after {
   content: "HUB";
   font-family: "Anton", "Inter", sans-serif;
-  font-size: 24px;
+  font-size:24px;
   font-weight: 400;
   color: #000;
   background: #ff9000;
@@ -175,8 +175,8 @@ body.twerkhub-ph-theme .twk-nav-v1-brand::after {
   line-height: 1;
 }
 @media (max-width: 880px) {
-  body.twerkhub-ph-theme .twk-nav-v1-brand::before { font-size: 22px; }
-  body.twerkhub-ph-theme .twk-nav-v1-brand::after { font-size: 18px; padding: 3px 8px 2px; }
+  body.twerkhub-ph-theme .twk-nav-v1-brand::before { font-size:22px; }
+  body.twerkhub-ph-theme .twk-nav-v1-brand::after { font-size:18px; padding: 3px 8px 2px; }
 }
 
 body.twerkhub-ph-theme .twk-nav-v1-links a {
@@ -281,7 +281,7 @@ body.twerkhub-ph-theme .twerkhub-hh-mute {
   color: #fff !important;
   font-family: "JetBrains Mono", ui-monospace, monospace !important;
   font-weight: 800 !important;
-  font-size: 11px !important;
+  font-size:11px !important;
   letter-spacing: .18em !important;
   text-transform: uppercase !important;
   line-height: 1 !important;
@@ -307,14 +307,14 @@ body.twerkhub-ph-theme .twerkhub-hh-mute:not(.is-muted) {
 }
 /* Kill the legacy "fade to .45 on parent hover" */
 body.twerkhub-ph-theme .twerkhub-home-hero-media:hover .twerkhub-hh-mute { opacity: 1 !important; }
-body.twerkhub-ph-theme .twerkhub-hh-mute-ico { font-size: 14px !important; }
+body.twerkhub-ph-theme .twerkhub-hh-mute-ico { font-size:14px !important; }
 body.twerkhub-ph-theme .twerkhub-hh-mute-label { white-space: nowrap !important; }
 @media (max-width: 520px) {
   body.twerkhub-ph-theme .twerkhub-hh-mute {
     padding: 8px 12px !important;
-    font-size: 10px !important;
+    font-size:10px !important;
   }
-  body.twerkhub-ph-theme .twerkhub-hh-mute-ico { font-size: 13px !important; }
+  body.twerkhub-ph-theme .twerkhub-hh-mute-ico { font-size:13px !important; }
 }
 
 /* ────────────────────────────────────────────────────────────────────
@@ -606,25 +606,25 @@ body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-coin {
   box-shadow: 0 0 10px rgba(255,144,0,.7), inset 0 0 4px rgba(255,255,255,.4) !important;
   width: 16px !important;
   height: 16px !important;
-  font-size: 9px !important;
+  font-size:10px !important;
   flex-shrink: 0 !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-count {
   color: #ff9000 !important;
-  font-size: 12px !important;
+  font-size:12px !important;
   font-weight: 900 !important;
   line-height: 1 !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-unit {
   color: #ffd596 !important;
-  font-size: 9px !important;
+  font-size:10px !important;
   font-weight: 800 !important;
   letter-spacing: .15em !important;
 }
 body.twerkhub-ph-theme .twerkhub-tokens-hud .twerkhub-tokens-tier {
   color: #ff9000 !important;
   border-left-color: rgba(255,144,0,.25) !important;
-  font-size: 9px !important;
+  font-size:10px !important;
   letter-spacing: .18em !important;
   padding-left: 7px !important;
   margin-left: 4px !important;

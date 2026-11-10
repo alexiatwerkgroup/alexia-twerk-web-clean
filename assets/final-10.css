@@ -38,7 +38,7 @@ body.community-page .panel, body.profile-page .panel{backdrop-filter:blur(10px)}
 
 /* Video pages */
 body.video-page .side p,
-body.video-page aside.side p{font-size:14px !important;line-height:1.6 !important;color:rgba(255,255,255,.78) !important}
+body.video-page aside.side p{font-size:var(--fs-14) !important;line-height:1.6 !important;color:rgba(255,255,255,.78) !important}
 body.video-page .vote-box,
 body.video-page .alexia-hm-box,
 body.video-page .clip-finder{box-shadow:0 16px 40px rgba(0,0,0,.24) !important}
@@ -79,7 +79,7 @@ body.video-page .glow-orb{display:none !important}
 .breadcrumb{
   margin:6px 0 14px !important;
   color:rgba(255,255,255,.82) !important;
-  font-size:13px !important;
+  font-size:var(--fs-13) !important;
   line-height:1.45 !important;
   letter-spacing:.01em !important;
 }
@@ -100,7 +100,7 @@ body.video-page .glow-orb{display:none !important}
   margin:0 0 12px !important;
   max-width:92ch !important;
   color:rgba(255,255,255,.84) !important;
-  font-size:15px !important;
+  font-size:var(--fs-15) !important;
   line-height:1.62 !important;
 }
 .seo-pills{
@@ -132,7 +132,7 @@ body.video-page .glow-orb{display:none !important}
   border:1px solid rgba(255,255,255,.12) !important;
   background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.026)) !important;
   color:#fff !important;
-  font-size:12px !important;
+  font-size:var(--fs-12) !important;
   font-weight:700 !important;
   letter-spacing:.04em !important;
   box-shadow:0 8px 22px rgba(0,0,0,.18) !important;
@@ -181,7 +181,7 @@ body.video-page .glow-orb{display:none !important}
 body.video-page .side h2,
 body.video-page aside.side h2,
 .side h2{
-  font-size:28px !important;
+  font-size:var(--fs-28) !important;
   line-height:1.12 !important;
   letter-spacing:-.03em !important;
 }
@@ -216,7 +216,7 @@ body.video-page aside.side h2,
   letter-spacing:-.03em !important;
 }
 .vote-box-title{
-  font-size:12px !important;
+  font-size:var(--fs-12) !important;
   font-weight:700 !important;
   letter-spacing:.01em !important;
   white-space:nowrap !important;
@@ -258,7 +258,7 @@ a[href$="paid-content.html"]:hover,
 /* Misma tipografía para Comments / HOT REPLAYS / TOP DISCUSSION */
 .yt-comments-head h2,
 .alexia-discussion-head strong{
-  font-size:18px !important;
+  font-size:var(--fs-18) !important;
   font-weight:900 !important;
   letter-spacing:.16em !important;
   text-transform:uppercase !important;
@@ -636,7 +636,7 @@ body.has-final-nav .subtitle,
 body.site-nav-final--playlist .playlist-hero-subtitle,
 body.site-nav-final--playlist .hero p,
 body.site-nav-final--playlist .sub{
-  font-size:16px !important;
+  font-size:var(--fs-16) !important;
   line-height:1.72 !important;
   color:rgba(255,255,255,.80) !important;
   max-width:72ch !important;

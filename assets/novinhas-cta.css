@@ -27,7 +27,7 @@
 }
 .nvp .nov-hero-copy > span:last-child {
   color: #e3d8d1;
-  font-size: 15px;
+  font-size:var(--fs-15);
   line-height: 1.45;
 }
 .nvp .nov-hero-actions {
@@ -85,8 +85,8 @@
 .nvp .nov-demo-btn { flex: none; }
 .nvp .nov-featured { margin: 30px 0 22px; }
 .nvp .nov-featured-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 15px; }
-.nvp .nov-featured-heading h2 { margin: 0; font-size: clamp(27px, 3vw, 38px); }
-.nvp .nov-featured-heading > span { color: #bdb6b5; font-size: 13px; }
+.nvp .nov-featured-heading h2 { margin: 0; font-size:var(--fs-h3); }
+.nvp .nov-featured-heading > span { color: #bdb6b5; font-size:var(--fs-13); }
 .nvp .nov-featured-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .nvp .nov-channel-card { display: flex; align-items: center; gap: 14px; min-width: 0; min-height: 146px; padding: 14px; border: 1px solid #3d3b40; border-radius: 17px; background: #141317; }
 .nvp a.nov-channel-live { border-color: #ff9a25; background: linear-gradient(110deg, #24150b, #171218); box-shadow: 0 8px 24px #ff8f0026; }
@@ -95,11 +95,11 @@
 .nvp .nov-channel-art { display: grid; place-items: center; background: linear-gradient(140deg, #3d1b32, #18121b); color: #ff72b4; font: 400 56px Anton, Impact, sans-serif; }
 .nvp .nov-channel-art-alt { background: linear-gradient(140deg, #453215, #18151a); color: #ffc06d; }
 .nvp .nov-channel-card > div { display: grid; align-content: center; gap: 5px; min-width: 0; }
-.nvp .nov-channel-card strong { font-size: 19px; line-height: 1.2; }
-.nvp .nov-channel-card div > span:not(.nov-channel-status) { color: #bbb5bd; font-size: 12px; line-height: 1.4; }
+.nvp .nov-channel-card strong { font-size:var(--fs-20); line-height: 1.2; }
+.nvp .nov-channel-card div > span:not(.nov-channel-status) { color: #bbb5bd; font-size:var(--fs-12); line-height: 1.4; }
 .nvp .nov-channel-status { color: #ffca78; font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .1em; }
 .nvp .nov-channel-pending .nov-channel-status { color: #b9a6b4; }
-.nvp .nov-channel-card b { color: #ffd37c; font-size: 13px; }
+.nvp .nov-channel-card b { color: #ffd37c; font-size:var(--fs-13); }
 @media (max-width: 900px) {
   .nvp .nov-hero-cta { align-items: flex-start; flex-direction: column; }
   .nvp .nov-hero-actions { width: 100%; }

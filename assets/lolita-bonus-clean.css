@@ -2,7 +2,7 @@
 #lolita-bonus .bonus-copy h2{font:400 clamp(42px,5vw,76px)/.95 Anton,sans-serif;margin:12px 0;text-transform:uppercase}
 #lolita-bonus .bonus-copy h2 em{color:#ff8a00;font-style:normal}
 #lolita-bonus .bonus-eyebrow{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.2em;color:#ff6fa8}
-#lolita-bonus .bonus-copy>p{max-width:620px;color:#cbd0dc;font-size:16px;line-height:1.6}
+#lolita-bonus .bonus-copy>p{max-width:620px;color:#cbd0dc;font-size:var(--fs-16);line-height:1.6}
 #lolita-bonus .bonus-rules{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
 #lolita-bonus .bonus-rules span{padding:8px 12px;border:1px solid #3b3d49;border-radius:999px;color:#e5e6eb;background:#11131b;font:12px 'JetBrains Mono',monospace}
 #lolita-bonus .bonus-action{width:100%;max-width:420px;min-height:54px;border:2px solid #c99a2e;border-radius:10px;background:#090807;color:#f7dd8b;font:700 14px 'JetBrains Mono',monospace;cursor:pointer}
@@ -25,7 +25,7 @@
 body[data-model="lolita"] .grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
 body[data-model="lolita"] .c .v{border-radius:14px}
 body[data-model="lolita"] .cb h3{font-size:30px}
-body[data-model="lolita"] .cb p{font-size:12px;letter-spacing:.14em}
+body[data-model="lolita"] .cb p{font-size:var(--fs-12);letter-spacing:.14em}
 body[data-model="lolita"] .universal-meta{font-size:15px}
 body[data-model="lolita"] .full{min-height:54px}
 @media(max-width:1000px){body[data-model="lolita"] .grid{grid-template-columns:repeat(3,minmax(0,1fr))}}

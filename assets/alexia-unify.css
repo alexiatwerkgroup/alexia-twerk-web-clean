@@ -8,7 +8,7 @@
 .alexia-seo-h1{position:absolute!important;left:-9999px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important}
 .alexia-global-nav{position:sticky;top:0;z-index:9999;padding:12px 14px;background:linear-gradient(180deg,rgba(6,7,12,.94),rgba(6,7,12,.82));backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
 .alexia-global-nav__inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.alexia-global-brand{color:#fff;text-decoration:none;font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.92;margin-right:auto;white-space:nowrap}
+.alexia-global-brand{color:#fff;text-decoration:none;font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:var(--fs-12);opacity:.92;margin-right:auto;white-space:nowrap}
 .alexia-global-links{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .alexia-global-links a,.alexia-online-pill,
 .topbar .nav a,.nav a,.pill,.topicBtn,.quick-link,.chip,.btn,
@@ -24,7 +24,7 @@
 .alexia-online-dot{width:10px;height:10px;border-radius:50%;background:#52e18d;box-shadow:0 0 0 4px rgba(82,225,141,.14)}
 .alexia-global-links a,.topbar .nav a,.nav a,.pill,.topicBtn,.quick-link,.chip{font-size:13px!important}
 .btn strong{font-size:14px!important}
-.btn small{font-size:11px!important;opacity:.82}
+.btn small{font-size:var(--fs-11)!important;opacity:.82}
 .stats .stat,.filter-chips .chip,.quick-links .quick-link,.toolbar .chip{opacity:.96!important}
 .stats .stat,.quick-links .quick-link{background:rgba(255,255,255,.04)!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:999px;padding:11px 16px;display:inline-flex;align-items:center}
 .pills,.nav,.topicRow,.quick-links,.jump-row,.filter-chips,.actions,.buttonRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -56,7 +56,7 @@ header .nav a{
   border:1px solid rgba(255,255,255,.10)!important;
   background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.028))!important;
   box-shadow:0 10px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.04)!important;
-  font-size:13px!important;
+  font-size:var(--fs-13)!important;
   font-weight:800!important;
   letter-spacing:.11em!important;
   text-transform:uppercase!important;

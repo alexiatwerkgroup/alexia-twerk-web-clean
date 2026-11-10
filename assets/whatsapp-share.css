@@ -21,7 +21,7 @@
   /* Appearance */
   background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
   color: white;
-  font-size: 13px;
+  font-size:var(--fs-13);
   font-weight: 600;
   font-family: inherit;
   letter-spacing: 0.3px;
@@ -87,7 +87,7 @@
 @media (max-width: 768px) {
   .whatsapp-share-btn {
     padding: 8px 12px;
-    font-size: 12px;
+    font-size:var(--fs-12);
   }
   
   .whatsapp-share-btn--floating {
