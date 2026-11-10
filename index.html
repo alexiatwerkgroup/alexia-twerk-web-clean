@@ -99,7 +99,7 @@ body.hv3{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Inter,syst
 @keyframes cs{to{transform:rotateY(360deg)}}
 .ng{display:grid;grid-template-columns:1.4fr 1fr;gap:44px;padding-block:20px}.nov{background:linear-gradient(transparent,rgba(120,10,30,.18))}.nt p{color:#c9c9d3;font-size:17px;line-height:1.7;margin:0 0 14px;max-width:680px}.nt .btn{margin-top:8px}
 .ns{display:grid;gap:14px;align-content:center}.ns div{border:2px solid var(--line);border-radius:18px;background:var(--card);padding:20px 24px;display:flex;flex-direction:column}.ns b{font:400 clamp(44px,5vw,64px)/1 Anton,sans-serif;color:var(--ac)}.ns span{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
-.pls{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}.pl{position:relative;display:flex;gap:14px;align-items:center;border:2px solid var(--line);border-radius:16px;background:var(--card);padding:10px;transition:border-color .2s}.pl:hover{border-color:var(--ac)}.pl img{width:120px;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:#16161b;flex:none}.pl h3{font:400 22px/1.05 Anton,sans-serif;text-transform:uppercase;margin:0}.pl span{color:var(--mut);font-size:13px}.pl .vip{position:absolute;top:8px;right:10px;font:800 10px 'JetBrains Mono',monospace;color:var(--on);background:var(--ac);border-radius:6px;padding:2px 7px}
+.pls{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}.pl{position:relative;display:flex;gap:16px;align-items:center;border:2px solid var(--line);border-radius:16px;background:var(--card);padding:12px;transition:border-color .25s,transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}.pl:hover{border-color:var(--ac);transform:translateY(-5px);box-shadow:0 16px 38px rgba(0,0,0,.5),0 0 0 1px var(--glow)}.pl .plth{width:150px;aspect-ratio:16/9;border-radius:11px;overflow:hidden;flex:none}.pl img{width:100%;height:100%;object-fit:cover;background:#16161b;display:block;transition:transform .35s cubic-bezier(.2,.8,.2,1)}.pl:hover img{transform:scale(1.12)}.pl h3{font:400 22px/1.05 Anton,sans-serif;text-transform:uppercase;margin:0}.pl span{color:var(--mut);font-size:13px}.pl .vip{position:absolute;top:8px;right:10px;font:800 10px 'JetBrains Mono',monospace;color:var(--on);background:var(--ac);border-radius:6px;padding:2px 7px}
 .cr{display:flex;gap:12px;flex-wrap:wrap}
 #ia{position:fixed;right:16px;bottom:16px;z-index:9990;border:0;border-radius:99px;padding:14px 22px;font:700 13px 'JetBrains Mono',monospace;letter-spacing:.16em;color:var(--on);background:var(--ac);cursor:pointer;box-shadow:0 8px 30px var(--glow)}
 #iam{position:fixed;right:16px;bottom:72px;z-index:9990;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;display:none;min-width:190px}#iam.o{display:block}#iam button{display:block;width:100%;margin:4px 0;padding:11px 14px;border:0;border-radius:10px;background:#ffffff12;color:var(--fg);cursor:pointer;text-align:left;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase}#iam button.on{background:var(--ac);color:var(--on)}
@@ -160,7 +160,7 @@ body[data-mode=gold] h1,body[data-mode=gold] h2,body[data-mode=gold] .mi h3{font
 .prog2-track{height:16px;border-radius:99px;background:#000;border:1px solid var(--line);overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.8)}
 .prog2-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ac),var(--ac2,var(--ac)));box-shadow:0 0 10px var(--glow);transition:width 1.2s ease}
 .prog2 small{display:block;margin-top:12px;color:var(--mut);font-size:12px}
-@media(prefers-reduced-motion:reduce){.nov-brand:after,.nov-vault-cta:before,.livedot{animation:none}}
+@media(prefers-reduced-motion:reduce){.nov-brand:after,.nov-vault-cta:before,.livedot{animation:none}.pl{transition:border-color .25s}.pl:hover{transform:none}.pl img{transition:none}.pl:hover img{transform:none}}
 </style>
 <script>
 window.dataLayer=window.dataLayer||[];
@@ -319,12 +319,12 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
 <section id="playlists"><div class="w">
  <div class="eyebrow">Free to watch</div><h2>Playlists</h2>
  <div class="pls">
-  <a class="pl" href="/playlist/"><img width="480" height="360" src="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg" alt="" loading="lazy"><div><h3>Hottest twerk</h3><span>517 videos · the main archive</span></div></a>
-  <a class="pl" href="/models-cheerleaders/"><img width="480" height="360" src="https://i.ytimg.com/vi/K77irMNVp3k/hqdefault.jpg" alt="" loading="lazy"><div><h3>Models &amp; cheerleaders</h3><span>849 videos · new drop</span></div></a>
-  <a class="pl" href="/hottest-cosplay-fancam/"><img width="480" height="360" src="https://i.ytimg.com/vi/qoho-dzADrc/hqdefault.jpg" alt="" loading="lazy"><div><h3>Cosplay &amp; fancam</h3><span>247 videos</span></div></a>
-  <a class="pl" href="/korean-girls-kpop-twerk/"><img width="480" height="360" src="https://i.ytimg.com/vi/CcKbgxAgtPc/hqdefault.jpg" alt="" loading="lazy"><div><h3>K-pop &amp; twerk</h3><span>42 videos</span></div></a>
-  <a class="pl" href="/try-on-hot-leaks/"><img width="480" height="360" src="https://i.ytimg.com/vi/jXBni3AN52M/hqdefault.jpg" alt="" loading="lazy"><div><h3>Try-on hot leaks</h3><span>12 videos</span></div></a>
-  <a class="pl" href="/ttl-latin-models/"><span class="vip">VIP</span><img width="480" height="360" src="https://i.ytimg.com/vi/CP5Qjr-Rbnw/hqdefault.jpg" alt="" loading="lazy"><div><h3>Latin models</h3><span>10 videos · members only</span></div></a>
+  <a class="pl" href="/playlist/"><span class="plth"><img width="480" height="360" src="https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg" alt="" loading="lazy"></span><div><h3>Hottest twerk</h3><span>517 videos · the main archive</span></div></a>
+  <a class="pl" href="/models-cheerleaders/"><span class="plth"><img width="480" height="360" src="https://i.ytimg.com/vi/K77irMNVp3k/hqdefault.jpg" alt="" loading="lazy"></span><div><h3>Models &amp; cheerleaders</h3><span>849 videos · new drop</span></div></a>
+  <a class="pl" href="/hottest-cosplay-fancam/"><span class="plth"><img width="480" height="360" src="https://i.ytimg.com/vi/wLWDZQmzPOY/hqdefault.jpg" alt="" loading="lazy"></span><div><h3>Cosplay &amp; fancam</h3><span>247 videos</span></div></a>
+  <a class="pl" href="/korean-girls-kpop-twerk/"><span class="plth"><img width="480" height="360" src="https://i.ytimg.com/vi/CcKbgxAgtPc/hqdefault.jpg" alt="" loading="lazy"></span><div><h3>K-pop &amp; twerk</h3><span>42 videos</span></div></a>
+  <a class="pl" href="/try-on-hot-leaks/"><span class="plth"><img width="480" height="360" src="https://i.ytimg.com/vi/EI13xgmMf9Y/hqdefault.jpg" alt="" loading="lazy"></span><div><h3>Try-on hot leaks</h3><span>12 videos</span></div></a>
+  <a class="pl" href="/ttl-latin-models/"><span class="vip">VIP</span><span class="plth"><img width="480" height="360" src="https://i.ytimg.com/vi/CP5Qjr-Rbnw/hqdefault.jpg" alt="" loading="lazy"></span><div><h3>Latin models</h3><span>10 videos · members only</span></div></a>
  </div>
 </div></section>
 
