@@ -117,7 +117,7 @@ html body[data-model="abbi"] #pay .close{position:absolute;top:12px;right:14px;f
   <p class="warn">Tap a box to copy. Send <b>USDT</b> only on the exact network shown above. Other networks or coins can be lost. Then send the receipt and your Twerkhub account email through <a href="/discord" style="color:var(--ok)">Discord</a> for verification. Never include passwords or login codes.</p>
   <p class="warn" id="payCoinInfo"></p>
 </dialog>
-<script src="/assets/twk-models-nav.js?v=20261108-2" defer></script><script defer src="/assets/catalog-preview-clock.js?v=20261110-fix1"></script><script defer src="/assets/catalog-universal-meta.js?v=20261108-1"></script><script defer src="/assets/supabase-config.js"></script><script defer src="/assets/twerkhub-auth.js"></script>
+<script src="/assets/twk-models-nav.js?v=20261108-2" defer></script><script defer src="/assets/catalog-preview-clock.js?v=20261110-fix3"></script><script defer src="/assets/catalog-universal-meta.js?v=20261108-1"></script><script defer src="/assets/supabase-config.js"></script><script defer src="/assets/twerkhub-auth.js"></script>
 <script>
 (()=>{const catalog=document.getElementById('catalog'),status=document.getElementById('catalog-status'),account=document.getElementById('account-state'),balance=document.getElementById('balance'),dialog=document.getElementById('pay');let data=null,auth=null,published=new Set(),modelAccess=false,unlocked=new Set();
 const fmtTime=s=>{const t=Math.max(0,Math.round(Number(s)||0));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};const priceCoins=v=>Math.max(1,Math.ceil(Number(v.seconds)/60));

@@ -61,9 +61,11 @@
       reset(video,state,false);
     }
     if(current&&current!==video){
-      var prevState=states.get(current);
-      if(prevState)reset(current,prevState,false);
-      else current.pause();
+      /* Pause only — do NOT reset()/seek the outgoing video here: seeking its
+         currentTime re-fires its own 'canplay' listener, which calls start()
+         on it again and steals `current` right back, creating an infinite
+         play/pause ping-pong between whichever cards are visible at once. */
+      current.pause();
     }
     current=video;
     if(!video.getAttribute('src'))video.src=video.dataset.src;
