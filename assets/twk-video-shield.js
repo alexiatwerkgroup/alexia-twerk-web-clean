@@ -283,7 +283,7 @@
       var off = id !== 'auto' && s.avail && s.avail.length && s.avail.indexOf(id) === -1;
       chips[i].classList.toggle('off', !!off);
       chips[i].setAttribute('aria-disabled', off ? 'true' : 'false');
-      chips[i].classList.toggle('on', id === pref);
+      chips[i].classList.toggle('on', pref === 'auto' ? id === 'auto' : id === (s.eff || pref));
     }
     var v = s.dock.querySelector('.twk-q-v');
     var cur = qLabel(s.cur);
@@ -323,7 +323,7 @@
       '.twk-q-chip:hover{filter:brightness(1.2)}' +
       '.twk-q-chip:active{transform:translateY(2px);box-shadow:0 1px 0 #120d00,inset 0 1px 0 rgba(255,255,255,.15)}' +
       '.twk-q-chip.on{color:#2a1a00;background:' + gold + ';box-shadow:0 3px 0 #8a6205,inset 0 1px 0 rgba(255,255,255,.75)}' +
-      '.twk-q-chip.off{opacity:.35;text-decoration:line-through;cursor:not-allowed}' +
+      '.twk-q-chip.off{opacity:.4;text-decoration:line-through}' +
       ':fullscreen .twk-q,:-webkit-full-screen .twk-q{left:32px;bottom:28px}' +
       '@media(max-width:540px){.twk-q{left:8px;bottom:8px}.twk-q-btn{height:42px}.twk-q-chip{height:40px;min-width:60px}}' +
       '@media(prefers-reduced-motion:reduce){.twk-q-panel{animation:none!important}}';
@@ -349,7 +349,6 @@
       ev.preventDefault();
       var chip = ev.target.closest && ev.target.closest('.twk-q-chip');
       if (chip) {
-        if (chip.classList.contains('off')) return;
         qSavePref(chip.dataset.q);
         dock.dataset.open = '0';
         qApplyAll();
