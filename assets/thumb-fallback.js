@@ -376,9 +376,15 @@
     img.dataset.twkGrayFixDone = "1";
     img.dataset.twkOriginalVid = id;
     try {
-      img.setAttribute("loading", "eager");
+      var r = img.getBoundingClientRect ? img.getBoundingClientRect() : null;
+      var inView = !r || (r.top < (window.innerHeight || 800) * 1.5);
       img.setAttribute("decoding", "async");
-      img.setAttribute("fetchpriority", "high");
+      if (inView) {
+        img.setAttribute("loading", "eager");
+        img.setAttribute("fetchpriority", "high");
+      } else {
+        img.setAttribute("loading", "lazy");
+      }
       img.style.visibility = "visible";
       img.style.opacity = "1";
       var card = img.closest && img.closest(".twk-thumb-dead,.twk-thumb-maybe-dead");
