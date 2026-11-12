@@ -85,12 +85,27 @@ export async function onRequestGet({ request, env }) {
   }));
   for (const hit of recent) { hit.user = profiles[hit.uid]?.username || ''; hit.profile = profiles[hit.uid] || null; }
   const evLast = await rows(db,
-    `SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, h.country, h.city,
+    `SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, e.vid full_vid, h.uid hit_uid, h.country, h.city,
             p.id profile_id, p.username
      FROM tw_events e LEFT JOIN tw_hits h ON h.hid=e.hid
      LEFT JOIN profiles p ON p.id=h.uid ORDER BY e.ts DESC LIMIT 25`);
   for (const event of evLast) event.profile = event.profile_id
     ? { id: event.profile_id, username: event.username || '' } : null;
+  // Total de páginas vistas (humanas) por visitante: por cuenta si está registrado, por identificador si no.
+  const uidSet = new Set(), vidSet = new Set();
+  for (const hit of recent) { if (hit.uid) uidSet.add(hit.uid); else if (hit.vid) vidSet.add(hit.vid); }
+  for (const event of evLast) { if (event.hit_uid) uidSet.add(event.hit_uid); else if (event.full_vid) vidSet.add(event.full_vid); }
+  const visitCounts = async (col, list) => {
+    const out = {};
+    for (let i = 0; i < list.length; i += 80) {
+      const part = list.slice(i, i + 80);
+      for (const r of await rows(db, `SELECT ${col} k, COUNT(*) c FROM tw_hits WHERE human = 1 AND ${col} IN (${part.map(() => '?').join(',')}) GROUP BY ${col}`, ...part)) out[r.k] = r.c;
+    }
+    return out;
+  };
+  const [byUid, byVid] = await Promise.all([visitCounts('uid', [...uidSet]), visitCounts('vid', [...vidSet])]);
+  for (const hit of recent) hit.visits = (hit.uid ? byUid[hit.uid] : byVid[hit.vid]) || 0;
+  for (const event of evLast) { event.visits = (event.hit_uid ? byUid[event.hit_uid] : byVid[event.full_vid]) || 0; delete event.full_vid; delete event.hit_uid; }
   return json({ ok: true, now, latestHit: latestHit?.ts || null, onlineList, recent, live, evLast, windows: { online: { u: onlineList.length } } }, 200, '', {
     'Cache-Control': 'private, no-store',
     'Set-Cookie': 'twx=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure'
