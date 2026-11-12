@@ -518,4 +518,22 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/black-sea-dance-scene.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/black-sea-dance-scene.html"/>
   </url>
+  <url>
+    <loc>https://twerkhub.lat/pt/blog/moscow-dance-centre-nrg-history</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://twerkhub.lat/pt/blog/moscow-dance-centre-nrg-history.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/moscow-dance-centre-nrg-history.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/moscow-dance-centre-nrg-history.html"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/pt/blog/studios-shaping-2026</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://twerkhub.lat/pt/blog/studios-shaping-2026.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/studios-shaping-2026.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/studios-shaping-2026.html"/>
+  </url>
 </urlset>
