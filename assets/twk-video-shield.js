@@ -236,10 +236,25 @@
   function qPref(){ try { return localStorage.getItem(Q_KEY) || 'auto'; } catch(_){ return 'auto'; } }
   function qSavePref(v){ try { localStorage.setItem(Q_KEY, v); } catch(_){} }
 
+  // Crash guard: 1440p/4K layouts are very heavy. A heavy level sets a guard
+  // stamp that is cleared after 20s of the page staying alive; if the page
+  // froze/crashed, the stamp survives and the next load falls back to 1080p.
+  var Q_GUARD = 'twk_quality_guard';
+  var Q_HEAVY = 6; // index of hd1440
+  (function(){
+    try {
+      var g = Number(localStorage.getItem(Q_GUARD) || 0);
+      if (g && Date.now() - g < 180000) { localStorage.setItem(Q_KEY, 'hd1080'); }
+      localStorage.removeItem(Q_GUARD);
+    } catch(_){}
+  })();
   function qEffective(s){
     var pref = qPref();
     var i = qIdx(pref);
     if (i < 0) return null;
+    // A saved heavy level is only applied after an explicit pick in THIS
+    // page view; on load it is capped to 1080p.
+    if (i >= Q_HEAVY && !s.picked) i = Q_HEAVY - 1;
     if (!s.avail || !s.avail.length) return Q_LEVELS[i].id;
     for (var d = i; d >= 0; d--) if (s.avail.indexOf(Q_LEVELS[d].id) !== -1) return Q_LEVELS[d].id;
     for (var u = i + 1; u < Q_LEVELS.length; u++) if (s.avail.indexOf(Q_LEVELS[u].id) !== -1) return Q_LEVELS[u].id;
@@ -268,6 +283,11 @@
       st.setProperty('bottom', 'auto', 'important');
       st.setProperty('transform-origin', 'center center', 'important');
       st.setProperty('transform', 'translate(-50%,-50%) scale(' + (1.22 / k).toFixed(4) + ')', 'important');
+      if (qIdx(eff) >= Q_HEAVY) {
+        try { localStorage.setItem(Q_GUARD, String(Date.now())); } catch(_){}
+        clearTimeout(s.guardT);
+        s.guardT = setTimeout(function(){ try { localStorage.removeItem(Q_GUARD); } catch(_){} }, 20000);
+      }
     }
     qRender(iframe);
   }
@@ -350,6 +370,7 @@
       var chip = ev.target.closest && ev.target.closest('.twk-q-chip');
       if (chip) {
         qSavePref(chip.dataset.q);
+        s.picked = true;
         dock.dataset.open = '0';
         qApplyAll();
         qReload(iframe);
