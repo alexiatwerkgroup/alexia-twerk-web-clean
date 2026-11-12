@@ -124,32 +124,37 @@ async function buildStats({ request, env }) {
   const refs=mainResults[21].results||[];
   const meddur=(mainResults[22].results||[])[0]?.meddur??null;
   // Desglose "hoy" y "total histórico" por cada fila de los paneles (mismo filtro humano que el resto)
+  try {
   const REFX = "CASE WHEN ref='' THEN 'Directo / sin dato' ELSE ref END";
   const allKey = 'all|' + hf;
   let allMaps = allCache.get(allKey);
   const bd = (rs) => { const m = new Map(); rs.forEach(r => m.set(String(r.k), r.n)); return m; };
   const evF = bots ? '' : ' AND h.human=1';
-  const [tDev, tBro, tOs, tLang, tRef, tCity, tPage, tEv] = await Promise.all([
-    rows(db, `SELECT device k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`, todayStart),
-    rows(db, `SELECT browser k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`, todayStart),
-    rows(db, `SELECT os k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`, todayStart),
-    rows(db, `SELECT lang k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`, todayStart),
-    rows(db, `SELECT ${REFX} k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`, todayStart),
-    rows(db, `SELECT city||'|'||country k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} AND city<>'' GROUP BY k`, todayStart),
-    rows(db, `SELECT path k, COUNT(*) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`, todayStart),
-    rows(db, `SELECT e.name k, COUNT(*) n FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE e.ts >= ?${evF} GROUP BY k`, todayStart),
+  const tq = (sql) => db.prepare(sql).bind(todayStart);
+  const tRes = await db.batch([
+    tq(`SELECT device k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`),
+    tq(`SELECT browser k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`),
+    tq(`SELECT os k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`),
+    tq(`SELECT lang k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`),
+    tq(`SELECT ${REFX} k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`),
+    tq(`SELECT city||'|'||country k, COUNT(DISTINCT vid) n FROM tw_hits WHERE ts >= ?${hf} AND city<>'' GROUP BY k`),
+    tq(`SELECT path k, COUNT(*) n FROM tw_hits WHERE ts >= ?${hf} GROUP BY k`),
+    tq(`SELECT e.name k, COUNT(*) n FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE e.ts >= ?${evF} GROUP BY k`),
   ]);
+  const [tDev, tBro, tOs, tLang, tRef, tCity, tPage, tEv] = tRes.map(r => r.results || []);
+
   if (!allMaps || now - allMaps.t > 300000) {
-    const [aDev, aBro, aOs, aLang, aRef, aCity, aPage, aEv] = await Promise.all([
-      rows(db, `SELECT device k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
-      rows(db, `SELECT browser k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
-      rows(db, `SELECT os k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
-      rows(db, `SELECT lang k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
-      rows(db, `SELECT ${REFX} k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
-      rows(db, `SELECT city||'|'||country k, COUNT(DISTINCT vid) n FROM tw_hits WHERE city<>''${hf} GROUP BY k`),
-      rows(db, `SELECT path k, COUNT(*) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
-      rows(db, `SELECT e.name k, COUNT(*) n FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE 1=1${evF} GROUP BY k`),
+    const aRes = await db.batch([
+      db.prepare(`SELECT device k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
+      db.prepare(`SELECT browser k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
+      db.prepare(`SELECT os k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
+      db.prepare(`SELECT lang k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
+      db.prepare(`SELECT ${REFX} k, COUNT(DISTINCT vid) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
+      db.prepare(`SELECT city||'|'||country k, COUNT(DISTINCT vid) n FROM tw_hits WHERE city<>''${hf} GROUP BY k`),
+      db.prepare(`SELECT path k, COUNT(*) n FROM tw_hits WHERE 1=1${hf} GROUP BY k`),
+      db.prepare(`SELECT e.name k, COUNT(*) n FROM tw_events e JOIN tw_hits h ON h.hid=e.hid WHERE 1=1${evF} GROUP BY k`),
     ]);
+    const [aDev, aBro, aOs, aLang, aRef, aCity, aPage, aEv] = aRes.map(r => r.results || []);
     allMaps = { t: now, dev: bd(aDev), bro: bd(aBro), os: bd(aOs), lang: bd(aLang), ref: bd(aRef), city: bd(aCity), page: bd(aPage), ev: bd(aEv) };
     allCache.set(allKey, allMaps);
   }
@@ -157,6 +162,7 @@ async function buildStats({ request, env }) {
   const tag = (list, kind, keyFn) => list.forEach(x => { const k = String(keyFn(x)); x.td = tm[kind].get(k) || 0; x.tt = allMaps[kind].get(k) || 0; });
   tag(devices, 'dev', x => x.k); tag(browsers, 'bro', x => x.k); tag(oses, 'os', x => x.k); tag(langs, 'lang', x => x.k);
   tag(refs, 'ref', x => x.k); tag(cities, 'city', x => x.city + '|' + x.c); tag(pages, 'page', x => x.path); tag(events, 'ev', x => x.name);
+  } catch (error) { console.warn('Desglose hoy/total no disponible:', error); }
   const today = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts >= ? AND ts < ?' + hf, todayStart, now);
   const latestHit = await one(db, 'SELECT ts FROM tw_hits WHERE human = 1 ORDER BY ts DESC LIMIT 1');
   const unlocks = await one(db, "SELECT COUNT(*) n FROM jenny_unlocks WHERE via='coins'").catch(() => ({}));
