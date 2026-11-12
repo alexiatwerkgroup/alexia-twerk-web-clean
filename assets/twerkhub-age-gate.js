@@ -131,15 +131,47 @@
     if (changed) writeBlocked(b);
   }
 
+  // ── Source of truth: /assets/youtube-age-classification.json ────────
+  // A video the classification marks "public" can NEVER be locked, whatever
+  // a local heuristic (silent-block timer, flaky buffering) concluded. This
+  // stops false-positive locks from being memoized in localStorage and
+  // cascading to every card / the active player.
+  var _cls = null;
+  function isPublicByClass(vid){ return !!(_cls && _cls[vid] === 'public'); }
+  function loadClassification(){
+    try {
+      fetch('/assets/youtube-age-classification.json').then(function(r){ return r.json(); }).then(function(j){
+        if (!j || typeof j !== 'object') return;
+        _cls = j;
+        var b = readBlocked(), changed = false;
+        for (var k in b) {
+          if (b.hasOwnProperty(k) && j[k] === 'public') { delete b[k]; changed = true; undecorateForVid(k); }
+        }
+        if (changed) writeBlocked(b);
+      }).catch(function(){});
+    } catch(_){}
+  }
+  function undecorateForVid(vid){
+    var els = document.querySelectorAll('.twk-blocked[data-vid]');
+    for (var i = 0; i < els.length; i++) {
+      if (els[i].getAttribute('data-vid') !== vid) continue;
+      els[i].classList.remove('twk-blocked');
+      var x = els[i].querySelectorAll(':scope > .twk-blocked-badge, :scope > .twk-blocked-lock');
+      for (var j = 0; j < x.length; j++) x[j].remove();
+    }
+  }
+
   function isBlocked(vid){
     if (!vid) return false;
     if (isProtected(vid)) return false; // SAGRADA #9 — top 5 never blocked
+    if (isPublicByClass(vid)) return false;
     var b = readBlocked();
     return !!b[vid];
   }
   function markBlocked(vid){
     if (!vid) return;
     if (isProtected(vid)) return; // SAGRADA #9 — never persist a top-5 vid
+    if (isPublicByClass(vid)) return; // classified public — never lock
     var b = readBlocked();
     if (!b[vid]) {
       b[vid] = Date.now();
@@ -269,6 +301,11 @@
   function addBlockedDecoration(el){
     if (!el || el.classList.contains('twk-blocked')) return;
     if (el.matches && el.matches('.rk-item')) return; // SAGRADA #9 belt+suspenders
+    // The active player / hero wrapper carries data-vid of the CURRENT video;
+    // it must never get the thumbnail lock (it has its own paywall overlay).
+    if (el.matches && el.matches('#twkHeroWrap,.twk-hero-wrap,.twerkhub-pl-player-wrap,.twerkhub-pl-player-col,.twerkhub-pl-theater')) return;
+    if (el.querySelector && el.querySelector(':scope iframe')) return;
+    if (isPublicByClass(el.getAttribute('data-vid'))) return;
     el.classList.add('twk-blocked');
     if (!el.querySelector(':scope > .twk-blocked-badge')) {
       var b = document.createElement('span');
@@ -295,6 +332,7 @@
   function init() {
     injectStyle();
     purgeProtectedFromBlocked();
+    loadClassification();
     decorateAll();
   }
 
