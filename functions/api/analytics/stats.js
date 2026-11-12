@@ -25,11 +25,11 @@ async function buildStats({ request, env }) {
   const todayStart = Date.UTC(localNow.getUTCFullYear(), localNow.getUTCMonth(), localNow.getUTCDate()) - off * 60000;
   if (url.searchParams.get('mini')) {
     let base = miniCache.body;
-    if (!base || now - miniCache.t >= 300000) {
+    if (!base || now - miniCache.t >= 120000 || miniCache.d !== todayStart) {
       const a = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1');
-      const t = await one(db, 'SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1 AND ts > ?', now - 86400000);
-      base = { visitors: a.u || 0, views: a.v || 0, today: t.u || 0 };
-      miniCache = { t: now, body: base };
+      const t = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1 AND ts >= ? AND ts < ?', todayStart, now);
+      base = { visitors: a.u || 0, views: a.v || 0, today: t.u || 0, todayViews: t.v || 0 };
+      miniCache = { t: now, body: base, d: todayStart };
     }
     const o = await one(db, 'SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 1 AND (last_active > ? OR (last_active IS NULL AND ts > ?))', now - 150000, now - 150000);
     const body = { ok: true, ...base, online: o.u || 0 };

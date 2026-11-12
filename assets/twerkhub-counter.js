@@ -6,7 +6,7 @@
   var el = document.createElement('div'); el.id = 'twc'; el.title = 'Ver estadísticas'; el.hidden = true; document.documentElement.appendChild(el);
   el.addEventListener('click', function () { location.href = '/admin/stats/'; });
   function load() {
-    fetch('/api/analytics/stats?mini=1', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    fetch('/api/analytics/stats?mini=1&tz='+(-new Date().getTimezoneOffset()), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
       if (!d || !d.ok) return;
       el.hidden = false;
       el.innerHTML = '<div class="box"><div class="l"><span>VISITANTES</span><i>● ' + d.online + ' ahora</i></div><div class="d">' + String(d.visitors).split('').map(function (c) { return '<b>' + c + '</b>'; }).join('') + '</div><div class="s"><span>' + d.views + ' vistas</span><span>' + d.today + ' hoy</span></div></div>';
