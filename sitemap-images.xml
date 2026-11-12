@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://twerkhub.lat/</loc>
+    <loc>https://twerkhub.lat/</loc><lastmod>2026-11-12</lastmod>
     <image:image>
       <image:loc>https://twerkhub.lat/logo-twerkhub.png</image:loc>
       <image:title>Twerkhub logo</image:title>
@@ -232,7 +232,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://twerkhub.lat/blog/moscow-dance-centre-nrg-history</loc>
+    <loc>https://twerkhub.lat/blog/moscow-dance-centre-nrg-history</loc><lastmod>2026-11-12</lastmod>
     <image:image>
       <image:loc>https://i.ytimg.com/vi/DwJQZt7TaTM/hqdefault.jpg</image:loc>
       <image:title>MDC NRG · history article hero</image:title>
