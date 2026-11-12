@@ -161,7 +161,7 @@ def build_vcard_grid(videos: list[dict], slug: str, vip: bool) -> str:
         title = v["title"]
         num = num_pad(i)
         # For VIP-locked, link to /membership.html (forces upsell). For others, link to YouTube.
-        href = "/membership.html" if vip else f"https://www.youtube.com/watch?v={vid}"
+        href = "/tokens/" if vip else f"https://www.youtube.com/watch?v={vid}"
         target = "" if vip else ' target="_blank" rel="noopener"'
         oe = make_onerror(vid)
         out.append(
@@ -244,7 +244,7 @@ VIP_BANNER = """
     <div class="twerkhub-pl-vip-icon" aria-hidden="true">🔒</div>
     <h2>VIP archive · 1,500+ uncut cuts</h2>
     <p>The complete TTL Latin model collection in MP4 4K. Members of the VIP tier unlock the full grid below — every clip in original quality, no reuploads, no compression artifacts.</p>
-    <a class="twerkhub-pl-vip-cta" href="/membership.html">Unlock the full archive · Upgrade to VIP →</a>
+    <a class="twerkhub-pl-vip-cta" href="/tokens/">Unlock the full archive · Upgrade to VIP →</a>
     <p class="twerkhub-pl-vip-note">Scattered low-quality reuploads exist on Google; this is the source.</p>
   </div>
 </section>

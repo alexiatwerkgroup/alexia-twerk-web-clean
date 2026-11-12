@@ -409,7 +409,7 @@ def build_twerk_hub() -> str:
       <a href="/#private-models">Exclusive</a>
       <a href="/#playlists" class="is-active" aria-current="page">Playlists</a>
       <a href="/community.html">Community</a>
-      <a href="/membership.html">Membership</a>
+      <a href="/tokens/">Membership</a>
       <a href="/account.html">My Account</a>
       <a href="/profile.html">Profile</a>
     </div>
@@ -909,7 +909,7 @@ def render_individual_video_page(yt_id, slug, title, description, canonical, dis
       <a href="/#private-models">Exclusive</a>
       <a href="/playlist/" class="is-active" aria-current="page">Playlists</a>
       <a href="/community.html">Community</a>
-      <a href="/membership.html">Membership</a>
+      <a href="/tokens/">Membership</a>
       <a href="/account.html">My Account</a>
       <a href="/profile.html">Profile</a>
     </div>
