@@ -1,0 +1,50 @@
+# Twerkhub
+
+> Twerkhub (twerkhub.lat) is a hand-curated dance video platform: twerk, perreo, reggaeton, K-dance, cosplay fancams and heels choreography. No algorithm feed; playlists are curated by humans. Adult audience (18+).
+
+Guides are available in English (/blog/), Spanish (/es/blog/), Portuguese (/pt/blog/) and Russian (/ru/blog/).
+
+## Guides
+
+- [4K vs 1080p vs VR fancam: technical comparison](https://twerkhub.lat/blog/4k-vs-1080p-vs-vr-fancam): Technical comparison of fancam formats — 1080p standard vs 4K close-focus vs 180°/VR. Bandwidth, quality perception, where each wins.
+- [Afrobeats × twerk](https://twerkhub.lat/blog/afrobeats-twerk-crossover): How Afrobeats choreography crossed into twerk in 2022-2026. Lagos azonto roots, London studio diaspora, the Tyla 'Water' inflection point.
+- [8 reggaeton songs to practice perreo and twerk](https://twerkhub.lat/blog/best-reggaeton-songs-to-dance-perreo): Eight reggaeton songs from 2003 to 2022 that are ideal for practicing perreo, twerk and floor work, with what each one is good for.
+- [The 12 best twerk creators on YouTube in 2026](https://twerkhub.lat/blog/best-twerk-creators-2026): Twerkhub's weekly curation source list. 12 twerk creators on YouTube that define the scene in 2026: WanGong Lin, Лада Гоцци, iDance Taipei, Nika Chill.
+- [The Black Sea dance scene](https://twerkhub.lat/blog/black-sea-dance-scene): The Black Sea coastal scene: Odessa, Sochi, Constanța, Burgas. A regional dance ecosystem distinct from Moscow studio circuits.
+- [Bounce music](https://twerkhub.lat/blog/bounce-music-explained): What is bounce music? The New Orleans hip-hop style behind twerk: the Triggaman beat, call-and-response, key artists and how it spread worldwide.
+- [Brazilian funk × twerk](https://twerkhub.lat/blog/brazilian-funk-twerk-crossover): How Brazilian funk choreography crossed into twerk in 2023-2026.
+- [Buenos Aires reggaetón scene 2026](https://twerkhub.lat/blog/buenos-aires-reggaeton-scene-2026): The Buenos Aires reggaetón + twerk scene in 2026 — from Emiliano Ferrari Villalobo's Zárate studio to the Palermo underground.
+- [10-minute dance warm-up routine](https://twerkhub.lat/blog/dance-warm-up-routine-10-minutes): A simple 10-minute warm-up for dancers: pulse raiser, mobility, activation and dynamic stretches for twerk, reggaeton or heels.
+- [Dembow](https://twerkhub.lat/blog/dembow-rhythm-explained): What is dembow? The rhythm behind reggaetón and perreo: its Jamaican origin in 1990, the 3+3+2 pattern, tempo and how dancers move to it.
+- [The Twerkhub Discord playbook](https://twerkhub.lat/blog/discord-community-playbook): How Twerkhub's Discord community runs at 2,178 members. Channel structure, moderation rules, tier-gating, weekly rhythms, what works + what broke.
+- [Fancam etiquette 2026](https://twerkhub.lat/blog/fancam-etiquette-2026): Fancam etiquette 2026 — how to record, post, attribute and share cosplay fancam + dance studio cuts without being that guy.
+- [The fancam to choreography pipeline](https://twerkhub.lat/blog/fancam-to-choreography-pipeline): The 2020-2026 creative pipeline: viral fancam moments feed studio choreographers, who translate them into formal K-dance or reggaetón pieces.
+- [Floor work in dance](https://twerkhub.lat/blog/floor-work-dance-explained): What is floor work in dance? Definition, core moves, safety tips for knees and wrists, and a simple beginner progression for heels and reggaetón choreography.
+- [Glute and leg workout for dancers](https://twerkhub.lat/blog/glute-leg-workout-for-dancers): A no-equipment glute and leg workout for twerk, reggaetón and heels dancers: 6 exercises, sets and reps, and a weekly plan to build control and stamina.
+- [Heels choreo for beginners](https://twerkhub.lat/blog/heels-choreo-beginner-guide): Start heels choreo from zero.
+- [Hip mobility exercises for dancers](https://twerkhub.lat/blog/hip-mobility-exercises-for-dancers): Seven hip mobility exercises for twerk, reggaetón and heels dancers: a short routine to improve range, control and reduce lower-back strain.
+- [How to earn 10,000 tokens in 3 weeks](https://twerkhub.lat/blog/how-to-earn-tokens-twerkhub): The exact path Twerkhub members use to reach Premium tier (10,000 tokens, 17 days) without spending a cent. VIP Top long road = 50,000 tokens / ~6 months.
+- [How to film a fancam](https://twerkhub.lat/blog/how-to-film-a-fancam): How to film a great fancam: phone or camera settings, vertical framing, stabilization, lighting, audio and etiquette. A practical guide for dance videos.
+- [How to pitch Twerkhub as a creator](https://twerkhub.lat/blog/how-to-pitch-twerkhub-creator): Complete creator onboarding guide — what we look for, how to pitch, the 5-step review process, what you get if selected, 95% revenue share explained.
+- [How to twerk](https://twerkhub.lat/blog/how-to-twerk-beginners-guide): How to twerk for beginners: stance, hip hinge, the bounce, timing to the beat, a 4-week practice plan and common mistakes. Safe and step by step.
+- [K-dance vs reggaetón twerk: two schools, one floor](https://twerkhub.lat/blog/k-dance-vs-reggaeton-twerk): Why Korean studio choreography looks nothing like Colombian reggaetón floor work — even though both land on 'twerk' playlists.
+- [Moscow Dance Centre NRG: the studio behind Russian heels choreo](https://twerkhub.lat/blog/moscow-dance-centre-nrg-history): Moscow Dance Centre NRG (MDC NRG) founded the modern Russian heels-choreo curriculum.
+- [Perreo](https://twerkhub.lat/blog/perreo-history-caribbean-origin): What is perreo? Its 35-year history: from 1990 Panamanian dembow to Puerto Rican reggaetón and today's global floor work. Origins, eras and FAQ.
+- [Reggaeton dance steps for beginners](https://twerkhub.lat/blog/reggaeton-dance-steps-for-beginners): Five basic reggaeton dance steps for beginners: the bounce, side step, hip roll, body wave and turn. How to count the dembow beat and practice at home.
+- [Reggaeton vs dancehall vs afrobeats](https://twerkhub.lat/blog/reggaeton-vs-dancehall-vs-afrobeats): Reggaeton vs dancehall vs afrobeats: where each genre comes from, their rhythms, languages and dance styles, and how they influence twerk today.
+- [The 6 dance studios shaping 2026](https://twerkhub.lat/blog/studios-shaping-2026): The six dance institutions defining 2026 twerk, K-dance and heels choreo: iDance Taipei, MDC NRG Moscow, BEFOX Seoul, Kato Dance Studio Germany.
+- [The 4 Twerkhub tiers explained](https://twerkhub.lat/blog/the-4-tiers-explained): Every Twerkhub tier explained in depth — what you get, token thresholds, subscription prices, perks, typical progression.
+- [The token economy playbook](https://twerkhub.lat/blog/token-economy-playbook): How Twerkhub's token economy works — creator revenue flows, why we pay 95% vs OF's 80%, the loyalty math behind 4 tiers.
+- [Twerk history](https://twerkhub.lat/blog/twerk-history-origins): Where does twerk come from? From West African dances to New Orleans bounce, the 2013 mainstream explosion and today’s global scene. Timeline and FAQ.
+- [Twerk vs perreo](https://twerkhub.lat/blog/twerk-vs-perreo-differences): Twerk vs perreo: different origins, music, movement and meaning. A clear comparison of New Orleans bounce twerk and Caribbean dembow perreo.
+- [Twerkhub vs OnlyFans vs Fanvue: platform comparison 2026](https://twerkhub.lat/blog/twerkhub-vs-onlyfans-fanvue-comparison): Side-by-side: Twerkhub vs OnlyFans vs Fanvue. Pricing, creator cut, token economy, content curation, platform philosophy.
+- [Twerkhub weekly drop calendar 2026](https://twerkhub.lat/blog/weekly-drop-calendar-2026): How Twerkhub's weekly drops work: every Thursday 00:00 ART across 7 curated playlists. What to expect, drop times by timezone, first-100 bonus.
+- [What is a fancam](https://twerkhub.lat/blog/what-is-a-fancam-history): Fancam explained: born in 2000s K-pop concert culture, adopted by anime conventions, now the dominant twerk content format.
+- [Why I built Twerkhub](https://twerkhub.lat/blog/why-i-built-twerkhub): Founder essay by Anti (firestarter).
+- [Why Twerkhub has no algorithm feed](https://twerkhub.lat/blog/why-twerkhub-has-no-algorithm-feed): Why Twerkhub refuses to ship an algorithmic feed, infinite scroll, or 'recommended for you' in 2026.
+
+## Main sections
+
+- [Blog index](https://twerkhub.lat/blog/)
+- [Glossary](https://twerkhub.lat/glossary)
+- [Perreo history](https://twerkhub.lat/blog/perreo-history-caribbean-origin)
