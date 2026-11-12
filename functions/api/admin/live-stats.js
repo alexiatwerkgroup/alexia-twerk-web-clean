@@ -2,6 +2,7 @@
 import { authenticate } from '../../_lib/auth.js';
 import { json } from '../../_lib/http.js';
 import { init, OWNER } from '../../_lib/analytics.js';
+import { sweepBotWaves } from '../../_lib/botwaves.js';
 
 const rows = async (db, sql, ...args) => (await db.prepare(sql).bind(...args).all()).results || [];
 
@@ -31,13 +32,14 @@ async function visitCounts(db, now, iphs, vids) {
   return { byIph, byVid };
 }
 
-export async function onRequestGet({ request, env }) {
+export async function onRequestGet({ request, env, waitUntil }) {
   const identity = await authenticate(request, env);
   if (!identity?.sub) return json({ ok: false, error: 'owner_only' }, 403);
   const owner = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();
   if (String(owner?.email || '').toLowerCase() !== OWNER) return json({ ok: false, error: 'owner_only' }, 403);
 
   await init(env.DB);
+  if (typeof waitUntil === 'function') waitUntil(sweepBotWaves(env.DB));
   const db = env.DB, now = Date.now(), cutoff = now - 150000;
   const onlineHits = await rows(db,
     `SELECT ts, COALESCE(last_active,ts) last_active_ts, last_engaged, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll, uid, lat, lon
