@@ -72,23 +72,33 @@ async function buildStats({ request, env }) {
   ]);
   const tot=(mainResults[0].results||[])[0]||{};
   const single=(mainResults[1].results||[])[0]||{};
-  let sessionMetrics = { sessions: null, bounces: null };
+  let sessionMetrics = { sessions: null, bounces: null, visitMed: null, visitAvg: null };
   if ((tot.views || 0) <= 10000) {
     try {
-      const hits = await rows(db, `SELECT vid, ts FROM tw_hits WHERE ${W} ORDER BY vid, ts`, since);
+      const hits = await rows(db, `SELECT vid, ts, dur FROM tw_hits WHERE ${W} ORDER BY vid, ts`, since);
       if (hits.length === (tot.views || 0)) {
-        let sessions = 0, bounces = 0, previousVid = null, previousTs = 0, pages = 0;
+        let sessions = 0, bounces = 0, previousVid = null, previousTs = 0, pages = 0, sStart = 0, sEnd = 0;
+        const spans = [];
+        const closeSession = () => { if (sessions) spans.push(Math.max(0, Math.round((sEnd - sStart) / 1000))); };
         for (const hit of hits) {
+          const end = hit.ts + Math.max(0, hit.dur || 0) * 1000;
           if (hit.vid !== previousVid || hit.ts - previousTs > 1800000) {
             if (pages === 1) bounces++;
+            closeSession();
             sessions++;
             pages = 1;
-          } else pages++;
+            sStart = hit.ts; sEnd = end;
+          } else { pages++; if (end > sEnd) sEnd = end; }
           previousVid = hit.vid;
           previousTs = hit.ts;
         }
         if (pages === 1) bounces++;
-        sessionMetrics = { sessions, bounces };
+        closeSession();
+        // Duración por VISITA: desde la entrada hasta la última señal observada (suma de todas las páginas vistas)
+        const real = spans.filter(x => x > 0).sort((a, b) => a - b);
+        const visitMed = real.length ? real[Math.floor((real.length - 1) / 2)] : null;
+        const visitAvg = real.length ? Math.round(real.reduce((a, b) => a + b, 0) / real.length) : null;
+        sessionMetrics = { sessions, bounces, visitMed, visitAvg };
       }
     } catch (error) { console.warn('Session metric unavailable:', error); }
   }
@@ -150,6 +160,8 @@ async function buildStats({ request, env }) {
   const today = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts >= ? AND ts < ?' + hf, todayStart, now);
   const latestHit = await one(db, 'SELECT ts FROM tw_hits WHERE human = 1 ORDER BY ts DESC LIMIT 1');
   const unlocks = await one(db, "SELECT COUNT(*) n FROM jenny_unlocks WHERE via='coins'").catch(() => ({}));
+  const rw24 = await one(db, 'SELECT COUNT(*) n, COALESCE(SUM(coins),0) c FROM rabbit_wins WHERE at > ?', now - 86400000).catch(() => null);
+  const rwAll = await one(db, 'SELECT COUNT(*) n, COALESCE(SUM(coins),0) c FROM rabbit_wins').catch(() => null);
 
   // ---- v2: bots filtered, peaks, live map, funnel, promo marks ----
   const botU = await one(db, 'SELECT COUNT(DISTINCT vid) u FROM tw_hits WHERE human = 0 AND ts > ?', since);
@@ -228,7 +240,7 @@ async function buildStats({ request, env }) {
     (loc[r.c]=loc[r.c]||Array(24).fill(0))[h]++;
   }
   const bestLocal = Object.entries(loc).map(([c, a]) => ({ c, hours: a.map((n, h) => [h, n]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]) }));
-  return json({ ok: true, days, tz, now, latestHit: latestHit.ts || null, totals: { ...tot, ...sessionMetrics, meddur, onePageVisitors: single.n || 0, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList, registeredLocations, unverifiedVisitors: botU.u || 0, includeUnverified: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evNameU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
+  return json({ ok: true, days, tz, now, latestHit: latestHit.ts || null, totals: { ...tot, ...sessionMetrics, meddur, onePageVisitors: single.n || 0, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0, rabbitWins24: rw24 ? rw24.n : null, rabbitCoins24: rw24 ? rw24.c : 0, rabbitWinsAll: rwAll ? rwAll.n : 0, rabbitCoinsAll: rwAll ? rwAll.c : 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList, registeredLocations, unverifiedVisitors: botU.u || 0, includeUnverified: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evNameU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
 }
 
 // Multiple open owner panels share one short-lived snapshot rather than flooding D1.
