@@ -273,7 +273,7 @@
     if (!eff || !r.width || !r.height) {
       for (i = 0; i < Q_PROPS.length; i++) st.removeProperty(Q_PROPS[i]);
     } else {
-      var target = Q_LEVELS[qIdx(eff)].w;
+      var target = Q_LEVELS[qIdx(eff)].w / Math.max(1, window.devicePixelRatio || 1); // YouTube reads device pixels
       var k = target / Math.max(r.width, r.height * 16 / 9);
       st.setProperty('width',  (r.width  * k).toFixed(1) + 'px', 'important');
       st.setProperty('height', (r.height * k).toFixed(1) + 'px', 'important');
