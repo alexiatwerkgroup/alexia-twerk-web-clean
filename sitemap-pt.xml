@@ -554,4 +554,13 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/fancam-to-choreography-pipeline.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/fancam-to-choreography-pipeline.html"/>
   </url>
+  <url>
+    <loc>https://twerkhub.lat/pt/blog/weekly-drop-calendar-2026</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://twerkhub.lat/pt/blog/weekly-drop-calendar-2026.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/weekly-drop-calendar-2026.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/weekly-drop-calendar-2026.html"/>
+  </url>
 </urlset>
