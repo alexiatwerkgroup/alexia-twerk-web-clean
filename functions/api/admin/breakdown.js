@@ -59,7 +59,7 @@ export async function onRequestGet({ request, env }) {
     }
     if (open) spans.push(Math.round((e0 - s0) / 1000));
     const real = spans.filter(x => x > 0).sort((a, b) => a - b);
-    const visit = real.length ? { med: real[Math.floor((real.length - 1) / 2)], avg: Math.round(real.reduce((a, b) => a + b, 0) / real.length) } : null;
+    const visit = real.length ? { med: real[Math.floor((real.length - 1) / 2)], avg: Math.round(real.reduce((a, b) => a + b, 0) / real.length), over60: Math.round(1000 * real.filter(x => x >= 60).length / real.length) / 10, n: real.length } : null;
     let rabbit = null;
     try {
       const r24 = await db.prepare('SELECT COUNT(*) n, COALESCE(SUM(coins),0) c FROM rabbit_wins WHERE at > ?').bind(now - 86400000).first();
