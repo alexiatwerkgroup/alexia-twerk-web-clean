@@ -340,7 +340,7 @@
     for (var i = Q_LEVELS.length - 1; i >= 0; i--) html += '<button type="button" class="twk-q-chip" role="menuitem" data-q="' + Q_LEVELS[i].id + '">' + Q_LEVELS[i].label + '</button>';
     html += '<button type="button" class="twk-q-chip" role="menuitem" data-q="auto">' + qTxt.auto + '</button></div>';
     dock.innerHTML = html;
-    var s = { dock: dock, avail: null, cur: '', eff: null };
+    var s = { dock: dock, avail: null, cur: '', eff: null, appliedEff: null, appliedPref: 'auto', lastReload: 0 };
     qState.set(iframe, s);
     ['click','mousedown','touchstart','pointerdown'].forEach(function(t){
       dock.addEventListener(t, function(ev){ ev.stopPropagation(); }, {passive: true});
@@ -352,6 +352,7 @@
         qSavePref(chip.dataset.q);
         dock.dataset.open = '0';
         qApplyAll();
+        qReload(iframe);
         return;
       }
       if (ev.target.closest && ev.target.closest('.twk-q-btn')) dock.dataset.open = dock.dataset.open === '1' ? '0' : '1';
@@ -359,6 +360,32 @@
     wrap.appendChild(dock);
     if (window.ResizeObserver) new ResizeObserver(function(){ qLayout(iframe); }).observe(wrap);
     qLayout(iframe);
+  }
+
+  // YouTube only (re)chooses the stream quality when the player LOADS, from
+  // the player's layout size at that moment. So after resizing we reload this
+  // one iframe at the current second. Guarded: only when the effective level
+  // actually changed, and never more than once per 4s (anti-bot friendly).
+  function qReload(iframe){
+    var s = qState.get(iframe); if (!s) return;
+    var now = Date.now();
+    if (s.appliedEff === s.eff && s.appliedPref === qPref()) return;
+    if (now - (s.lastReload || 0) < 4000) return;
+    var src = iframe.getAttribute('src') || '';
+    if (!/youtube(?:-nocookie)?\.com\/embed\//.test(src)) return;
+    var uid = iframe.dataset.twkUid;
+    var t = Math.max(DEFAULT_START, Math.floor((uid && timeMap[uid]) || 0));
+    try {
+      var u = new URL(src, location.href);
+      u.searchParams.set('start', String(t));
+      u.searchParams.set('autoplay', '1');
+      s.lastReload = now;
+      s.appliedEff = s.eff;
+      s.appliedPref = qPref();
+      s.cur = '';
+      qRender(iframe);
+      iframe.src = u.toString();
+    } catch(_){}
   }
 
   // One preference for every player on the page / session (sticky).
