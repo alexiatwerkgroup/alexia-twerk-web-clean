@@ -50,8 +50,10 @@ export async function onRequest(context) {
       const utm = url.searchParams.get('utm_source'); if (utm) ref = (ref ? ref + ' · ' : '') + 'utm:' + utm.slice(0, 30);
       const u = parseUA(ua), lang = (request.headers.get('accept-language') || '').split(',')[0].slice(0, 10);
       context.waitUntil((async () => {
-        if (owner) return; try { await init(env.DB); const seenAt = Date.now(); await env.DB.prepare('INSERT INTO tw_hits (hid, ts, last_active, vid, path, country, region, city, tz, device, browser, os, lang, ref, is_new, reg, lat, lon, uid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-          .bind(hid, seenAt, seenAt, vid, url.pathname.slice(0, 200), cf.country || '', cf.region || '', cf.city || '', cf.timezone || '', u.device, u.browser, u.os, lang, ref, isNew, reg, cf.latitude ? Math.round(cf.latitude * 10) / 10 : null, cf.longitude ? Math.round(cf.longitude * 10) / 10 : null, uid).run(); } catch (e) {}
+        if (owner) return; try { await init(env.DB); const seenAt = Date.now();
+        let iph = null; try { const ip = request.headers.get('CF-Connecting-IP') || ''; if (ip) { const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode((env.IP_HASH_SALT || 'twerkhub-ip-v1') + '|' + ip)); iph = Array.from(new Uint8Array(buf)).slice(0, 8).map(x => x.toString(16).padStart(2, '0')).join(''); } } catch (e) {}
+        await env.DB.prepare('INSERT INTO tw_hits (hid, ts, last_active, vid, path, country, region, city, tz, device, browser, os, lang, ref, is_new, reg, lat, lon, uid, iph) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+          .bind(hid, seenAt, seenAt, vid, url.pathname.slice(0, 200), cf.country || '', cf.region || '', cf.city || '', cf.timezone || '', u.device, u.browser, u.os, lang, ref, isNew, reg, cf.latitude ? Math.round(cf.latitude * 10) / 10 : null, cf.longitude ? Math.round(cf.longitude * 10) / 10 : null, uid, iph).run(); } catch (e) {}
       })());
       add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=5" defer></script>';
     }

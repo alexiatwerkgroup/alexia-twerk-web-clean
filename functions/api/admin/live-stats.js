@@ -19,10 +19,10 @@ export async function onRequestGet({ request, env }) {
      ORDER BY COALESCE(last_active,ts) DESC LIMIT 300`, cutoff, cutoff);
   const recent = await rows(db,
     `WITH ranked AS (
-       SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll,
+       SELECT hid, ts, uid, vid, iph, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll,
          ROW_NUMBER() OVER (PARTITION BY CASE WHEN uid IS NOT NULL THEN 'user:'||uid ELSE 'visitor:'||vid END ORDER BY ts DESC, hid DESC) rn
        FROM tw_hits WHERE human = 1 AND ts > ?
-     ) SELECT hid, ts, uid, vid, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll
+     ) SELECT hid, ts, uid, vid, iph, path, country, city, device, browser, os, ref, is_new, reg, dur, scroll
        FROM ranked WHERE rn <= 5 ORDER BY ts DESC LIMIT 200`, now - 60 * 60000);
   const latestHit = await db.prepare('SELECT ts FROM tw_hits WHERE human = 1 ORDER BY ts DESC LIMIT 1').first();
   onlineHits.sort((a,b) => a.ts-b.ts);
@@ -85,27 +85,34 @@ export async function onRequestGet({ request, env }) {
   }));
   for (const hit of recent) { hit.user = profiles[hit.uid]?.username || ''; hit.profile = profiles[hit.uid] || null; }
   const evLast = await rows(db,
-    `SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, e.vid full_vid, h.uid hit_uid, h.country, h.city,
+    `SELECT e.ts, e.name, e.detail, substr(e.vid,1,6) vid, e.vid full_vid, h.iph hit_iph, h.country, h.city,
             p.id profile_id, p.username
      FROM tw_events e LEFT JOIN tw_hits h ON h.hid=e.hid
      LEFT JOIN profiles p ON p.id=h.uid ORDER BY e.ts DESC LIMIT 25`);
   for (const event of evLast) event.profile = event.profile_id
     ? { id: event.profile_id, username: event.username || '' } : null;
-  // Total de páginas vistas (humanas) por visitante: por cuenta si está registrado, por identificador si no.
-  const uidSet = new Set(), vidSet = new Set();
-  for (const hit of recent) { if (hit.uid) uidSet.add(hit.uid); else if (hit.vid) vidSet.add(hit.vid); }
-  for (const event of evLast) { if (event.hit_uid) uidSet.add(event.hit_uid); else if (event.full_vid) vidSet.add(event.full_vid); }
-  const visitCounts = async (col, list) => {
+  // Visitas por visitante, según IP (hash con sal; no se guarda la IP en crudo), tengan o no cuenta.
+  // Una visita nueva = más de 30 min sin actividad. Los hits anteriores a esta función no tienen IP: se suman por cookie (vid).
+  const GAP = 30 * 60000, iphSet = new Set(), vidSet = new Set();
+  for (const hit of recent) { if (hit.iph) iphSet.add(hit.iph); if (hit.vid) vidSet.add(hit.vid); }
+  for (const event of evLast) { if (event.hit_iph) iphSet.add(event.hit_iph); if (event.full_vid) vidSet.add(event.full_vid); }
+  const sessionCounts = async (col, list, extra) => {
     const out = {};
     for (let i = 0; i < list.length; i += 80) {
       const part = list.slice(i, i + 80);
-      for (const r of await rows(db, `SELECT ${col} k, COUNT(*) c FROM tw_hits WHERE human = 1 AND ${col} IN (${part.map(() => '?').join(',')}) GROUP BY ${col}`, ...part)) out[r.k] = r.c;
+      for (const r of await rows(db,
+        `SELECT k, SUM(CASE WHEN prev IS NULL OR ts - prev > ${GAP} THEN 1 ELSE 0 END) c
+         FROM (SELECT ${col} k, ts, LAG(ts) OVER (PARTITION BY ${col} ORDER BY ts) prev
+               FROM tw_hits WHERE human = 1 ${extra} AND ${col} IN (${part.map(() => '?').join(',')}))
+         GROUP BY k`, ...part)) out[r.k] = r.c;
     }
     return out;
   };
-  const [byUid, byVid] = await Promise.all([visitCounts('uid', [...uidSet]), visitCounts('vid', [...vidSet])]);
-  for (const hit of recent) hit.visits = (hit.uid ? byUid[hit.uid] : byVid[hit.vid]) || 0;
-  for (const event of evLast) { event.visits = (event.hit_uid ? byUid[event.hit_uid] : byVid[event.full_vid]) || 0; delete event.full_vid; delete event.hit_uid; }
+  const [byIph, byOldVid] = await Promise.all([sessionCounts('iph', [...iphSet], ''), sessionCounts('vid', [...vidSet], 'AND iph IS NULL')]);
+  const visitsOf = (iph, vid) => (iph ? byIph[iph] || 0 : 0) + (byOldVid[vid] || 0);
+  for (const hit of recent) hit.visits = visitsOf(hit.iph, hit.vid);
+  for (const event of evLast) { event.visits = visitsOf(event.hit_iph, event.full_vid); delete event.full_vid; delete event.hit_iph; }
+  for (const hit of recent) delete hit.iph;
   return json({ ok: true, now, latestHit: latestHit?.ts || null, onlineList, recent, live, evLast, windows: { online: { u: onlineList.length } } }, 200, '', {
     'Cache-Control': 'private, no-store',
     'Set-Cookie': 'twx=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure'
