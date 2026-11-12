@@ -28,12 +28,12 @@ PLAYLISTS = [
     {
         "slug": "playlist-try-on-hot-leaks",
         "data": "playlist-data-try-on-hot-leaks.json",
-        "title": "Try-On Hot Leaks · Twerkhub",
+        "title": "Try-On Hot Exclusives · Twerkhub",
         "kicker": "/ Try-on Hub · weekly drops",
-        "h1_main": "Hottest <em>try-on</em> leaks.",
+        "h1_main": "Hottest <em>try-on</em> exclusives.",
         "h1_sub": "VR180 + 4K · uncut",
         "intro": "The curated try-on archive. VR180, 4K and lingerie haul cuts. Refreshed every week.",
-        "meta_desc": "The hottest try-on hauls and lingerie leaks on YouTube — VR180, 4K, weekly drops. Curated by Twerkhub.",
+        "meta_desc": "The hottest try-on hauls and lingerie exclusives on YouTube — VR180, 4K, weekly drops. Curated by Twerkhub.",
         "vip_locked": False,
     },
     {
