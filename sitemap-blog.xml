@@ -729,6 +729,8 @@
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/dembow-rhythm-explained"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/dembow-rhythm-explained"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://twerkhub.lat/pt/blog/dembow-rhythm-explained"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://twerkhub.lat/ru/blog/dembow-rhythm-explained"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/dembow-rhythm-explained"/>
   </url>
   <url>
@@ -738,6 +740,19 @@
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/dembow-rhythm-explained"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/dembow-rhythm-explained"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://twerkhub.lat/pt/blog/dembow-rhythm-explained"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://twerkhub.lat/ru/blog/dembow-rhythm-explained"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/dembow-rhythm-explained"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/ru/blog/dembow-rhythm-explained</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/dembow-rhythm-explained"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/dembow-rhythm-explained"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://twerkhub.lat/pt/blog/dembow-rhythm-explained"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://twerkhub.lat/ru/blog/dembow-rhythm-explained"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/dembow-rhythm-explained"/>
   </url>
   <url>
@@ -775,5 +790,77 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/reggaeton-vs-dancehall-vs-afrobeats"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/reggaeton-vs-dancehall-vs-afrobeats"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/reggaeton-vs-dancehall-vs-afrobeats"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/blog/twerk-vs-perreo-differences</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/twerk-vs-perreo-differences"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/twerk-vs-perreo-differences"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/twerk-vs-perreo-differences"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/es/blog/twerk-vs-perreo-differences</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/twerk-vs-perreo-differences"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/twerk-vs-perreo-differences"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/twerk-vs-perreo-differences"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/blog/floor-work-dance-explained</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/floor-work-dance-explained"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/floor-work-dance-explained"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/floor-work-dance-explained"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/es/blog/floor-work-dance-explained</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/floor-work-dance-explained"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/floor-work-dance-explained"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/floor-work-dance-explained"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/blog/hip-mobility-exercises-for-dancers</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/hip-mobility-exercises-for-dancers"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/hip-mobility-exercises-for-dancers"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/hip-mobility-exercises-for-dancers"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/es/blog/hip-mobility-exercises-for-dancers</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/hip-mobility-exercises-for-dancers"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/hip-mobility-exercises-for-dancers"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/hip-mobility-exercises-for-dancers"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/blog/how-to-film-a-fancam</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/how-to-film-a-fancam"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/how-to-film-a-fancam"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/how-to-film-a-fancam"/>
+  </url>
+  <url>
+    <loc>https://twerkhub.lat/es/blog/how-to-film-a-fancam</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/how-to-film-a-fancam"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/how-to-film-a-fancam"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/how-to-film-a-fancam"/>
   </url>
 </urlset>
