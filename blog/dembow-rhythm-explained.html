@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
+<script src="/assets/twk-guardian.js?v=20260509-g1"></script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
+<script data-twk="thumb-v4">(function(){function tryNext(i,vid,arr,idx){if(idx>=arr.length){i.style.display='none';return;}i.onerror=function(){tryNext(i,vid,arr,idx+1);};i.onload=function(){if(i.naturalWidth<=120){tryNext(i,vid,arr,idx+1);}};i.src='https://i.ytimg.com/vi/'+vid+'/'+arr[idx];}function fix(){document.querySelectorAll('img').forEach(function(i){var m=(i.src||'').match(/ytimg\.com\/vi\/([\w-]{11})/);var vid=i.dataset.vid||(m?m[1]:null);if(!vid)return;if(i.loading==='lazy')i.loading='eager';if(i.complete&&i.naturalWidth<=120){tryNext(i,vid,['hqdefault.jpg','mqdefault.jpg','sddefault.jpg','maxresdefault.jpg','0.jpg'],0);}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+<style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
+<script>(function(){function force(){try{var imgs=document.querySelectorAll('img[src*="i.ytimg.com"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];im.setAttribute('loading','eager');im.style.opacity='1';im.style.visibility='visible';im.style.display='block';if(!im.dataset.twkOrigSrc){im.dataset.twkOrigSrc=im.getAttribute('src')||'';}var s=im.getAttribute('src');if(s)im.src=s;}}catch(_){}}function recover(){try{var bad=document.querySelectorAll('img[src*="thumb-unavailable"]');for(var i=0;i<bad.length;i++){var im=bad[i];if(im.dataset.twkOrigSrc){im.src=im.dataset.twkOrigSrc;}}}catch(_){}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){force();recover();});}else{force();recover();}setTimeout(function(){force();recover();},500);setTimeout(function(){force();recover();},2000);})();</script>
+<style id="twk-sr-only-seo">.twk-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="Anti · Twerkhub">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap&family=Anton">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.72;min-height:100vh;padding-bottom:120px}
+a{color:#ff6fa8;text-decoration:none}a:hover{color:#ffb454}
+.wrap{max-width:740px;margin:0 auto;padding:110px 28px 40px}
+.kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#fdd835;margin-bottom:14px}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,5vw,60px);font-weight:900;line-height:1.08;letter-spacing:-.02em;margin-bottom:20px}
+h1 em{font-style:italic;background:linear-gradient(135deg,#fdd835,#ff8a00);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:900;margin:46px 0 14px;color:#fff}
+h3{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:800;margin:26px 0 8px;color:#fdd835}
+p,li{color:#d8d8e2;font-size:17px;margin-bottom:16px}
+strong{color:#fff;font-weight:700}em{color:#ff9ec4;font-style:italic}
+.meta{display:flex;gap:18px;margin-bottom:44px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a8a96}
+.era{padding:22px;margin:22px 0;border-left:3px solid #fdd835;background:rgba(253,216,53,.04);border-radius:0 14px 14px 0}
+.era-year{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#fdd835;margin-bottom:4px}
+blockquote{margin:26px 0;padding:18px 24px;border-left:3px solid #fdd835;background:rgba(253,216,53,.06);border-radius:0 12px 12px 0;color:#fff;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:19px}
+.back{display:inline-block;margin-top:44px;padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.06);color:#ff6fa8;border:1px solid rgba(255,255,255,.12);font-weight:700;font-size:13px}
+</style>
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YSFR7FHCLS', { send_page_view: true });
+</script>
+<link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20261110-typescale1">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20261110-typescale1">
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
+<link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+<style id="pvx-css">
+.pvx{margin:34px 0 40px;padding:26px 22px 20px;border:1px solid #3a2e10;border-radius:20px;background:radial-gradient(120% 90% at 50% 0%,rgba(201,154,46,.14),rgba(0,0,0,0) 60%),#070709;box-shadow:0 0 40px rgba(201,154,46,.12)}
+.pvx-eye{font:700 11px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase;color:#e8c872;margin-bottom:8px}
+.pvx h2{font:400 clamp(26px,5vw,40px)/1.05 Anton,Impact,sans-serif;text-transform:uppercase;margin:0 0 8px!important;color:#fff}
+.pvx h2 em{font-style:normal;color:#f7dd8b}
+.pvx-sub{font-size:15px;opacity:.85;margin:0 0 18px!important;max-width:640px}
+.pvx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pvx-c{position:relative;display:flex;flex-direction:column;border:2px solid #2a2a33;border-radius:16px;overflow:hidden;background:#0c0c10;text-decoration:none!important;color:#fff;transition:transform .2s,box-shadow .2s}
+.pvx-c.live{border-color:#c99a2e;box-shadow:0 0 20px rgba(201,154,46,.25)}
+.pvx-c:hover{transform:translateY(-4px);box-shadow:0 0 36px rgba(232,200,114,.45)}
+.pvx-v{position:relative;aspect-ratio:9/14;overflow:hidden;background:#000}
+.pvx-v video,.pvx-v img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(9px) saturate(1.1);transform:scale(1.12);transition:filter .35s,transform .35s}
+.pvx-c:hover .pvx-v video,.pvx-c:hover .pvx-v img,.pvx-c.on .pvx-v video,.pvx-c.on .pvx-v img{filter:none;transform:scale(1)}
+.pvx-v img.kb{animation:pvxkb 9s ease-in-out infinite alternate}
+@keyframes pvxkb{from{transform:scale(1.12)}to{transform:scale(1.24)}}
+.pvx-c:hover .pvx-v img.kb,.pvx-c.on .pvx-v img.kb{animation:none}
+.pvx-st{position:absolute;top:8px;left:8px;z-index:2;font:800 9px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:#030906;color:#78ff9b;border:1px solid #22f05d}
+.pvx-c.soon .pvx-st{background:#17171c;color:#ddd;border-color:#45454f}
+.pvx-ex{position:absolute;top:8px;right:8px;z-index:2;font:800 8px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;padding:4px 7px;border-radius:6px;background:rgba(0,0,0,.65);color:#e8c872;border:1px solid #c99a2e}
+.pvx-lk{position:absolute;left:8px;bottom:8px;z-index:2;font:700 8px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;padding:4px 7px;border-radius:6px;background:rgba(0,0,0,.65)}
+.pvx-sd{position:absolute;right:8px;bottom:8px;z-index:2;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid #c99a2e;display:none;align-items:center;justify-content:center}
+.pvx-c.snd .pvx-sd{display:flex}
+.pvx-i{padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px}
+.pvx-n{font:400 22px/1 Anton,Impact,sans-serif;text-transform:uppercase}
+.pvx-m{font:700 10px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.pvx-b{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 8px;border-radius:12px;background:linear-gradient(180deg,#f7dd8b,#c99a2e 60%,#8f6a14);color:#1a1204;font:800 10px/1.2 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 16px rgba(201,154,46,.3)}
+.pvx-c.soon .pvx-b{background:linear-gradient(180deg,#17120a,#000);border:2px solid #4a3b1a;color:#cdbb8c;box-shadow:none}
+.pvx-d{margin:14px 0 0!important;font-size:11px!important;opacity:.6;letter-spacing:.04em}
+@media(max-width:640px){.pvx{padding:18px 12px 14px}.pvx-grid{gap:8px}.pvx-n{font-size:17px}.pvx-b{font-size:8px;min-height:40px}.pvx-ex,.pvx-lk{display:none}.pvx-i{padding:8px 6px 10px}}
+@media(prefers-reduced-motion:reduce){.pvx-v img.kb{animation:none}}
+</style>
+
+<style id="seo-pr-css">
+.pr-def{margin:22px 0 8px;padding:16px 20px;border-left:3px solid #c99a2e;border-radius:0 14px 14px 0;background:linear-gradient(90deg,rgba(201,154,46,.12),rgba(201,154,46,.03))}
+.pr-def h2{font:800 13px/1.2 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:#e8c872;margin:0 0 8px!important}
+.pr-def p{margin:0!important;font-size:17px;line-height:1.55}
+.pr-toc{margin:22px 0 30px;padding:18px 22px;border:1px solid #3a2e10;border-radius:16px;background:#0b0a07}
+.pr-toc b{display:block;font:800 12px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:#e8c872;margin-bottom:10px}
+.pr-toc ol{margin:0;padding-left:20px;display:grid;gap:6px}
+.pr-toc a{color:inherit;text-decoration:none;border-bottom:1px dotted rgba(232,200,114,.5)}
+.pr-toc a:hover{color:#f7dd8b}
+.pr-tl{scroll-margin-top:80px}
+.era{scroll-margin-top:80px}
+.pr-faq{margin:44px 0 12px;scroll-margin-top:80px}
+.pr-faq details{border:1px solid #2a2a33;border-radius:14px;background:#0c0c10;margin:10px 0;padding:0}
+.pr-faq summary{cursor:pointer;list-style:none;padding:15px 18px;font-weight:700;font-size:16px}
+.pr-faq summary::-webkit-details-marker{display:none}
+.pr-faq summary::after{content:"+";float:right;color:#e8c872;font-weight:800}
+.pr-faq details[open] summary::after{content:"\2212"}
+.pr-faq details>div{padding:0 18px 16px;line-height:1.6;opacity:.92}
+.pr-faq a{color:#f7dd8b}
+</style>
+<title>Dembow · the rhythm behind reggaetón explained · Twerkhub</title>
+<meta name="description" content="What is dembow? The rhythm behind reggaetón and perreo: its Jamaican origin in 1990, the 3+3+2 pattern, tempo and how dancers move to it.">
+<link rel="canonical" href="https://twerkhub.lat/blog/dembow-rhythm-explained">
+<link rel="alternate" hreflang="en" href="https://twerkhub.lat/blog/dembow-rhythm-explained">
+<link rel="alternate" hreflang="es" href="https://twerkhub.lat/es/blog/dembow-rhythm-explained">
+<link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/blog/dembow-rhythm-explained">
+<meta property="og:type" content="article"><meta property="og:title" content="Dembow · the rhythm behind reggaetón explained">
+<meta property="og:description" content="What is dembow? The rhythm behind reggaetón and perreo: its Jamaican origin in 1990, the 3+3+2 pattern, tempo and how dancers move to it.">
+<meta property="og:url" content="https://twerkhub.lat/blog/dembow-rhythm-explained">
+<meta property="og:image" content="https://i.ytimg.com/vi/EZuwgskBEdQ/hqdefault.jpg">
+<meta property="article:published_time" content="2026-11-12T12:00:00Z"><meta property="article:modified_time" content="2026-11-12">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Dembow · the rhythm behind reggaetón explained", "description": "What is dembow? The rhythm behind reggaetón and perreo: its Jamaican origin in 1990, the 3+3+2 pattern, tempo and how dancers move to it.", "url": "https://twerkhub.lat/blog/dembow-rhythm-explained", "datePublished": "2026-11-12", "dateModified": "2026-11-12", "inLanguage": "en", "image": "https://i.ytimg.com/vi/EZuwgskBEdQ/hqdefault.jpg", "author": {"@type": "Person", "name": "Anti · Twerkhub"}, "publisher": {"@type": "Organization", "name": "Twerkhub", "url": "https://twerkhub.lat"}, "mainEntityOfPage": "https://twerkhub.lat/blog/dembow-rhythm-explained"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Twerkhub", "item": "https://twerkhub.lat/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://twerkhub.lat/blog/"}, {"@type": "ListItem", "position": 3, "name": "Dembow · the rhythm behind reggaetón explained", "item": "https://twerkhub.lat/blog/dembow-rhythm-explained"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "en", "mainEntity": [{"@type": "Question", "name": "What is dembow?", "acceptedAnswer": {"@type": "Answer", "text": "Dembow is the drum pattern behind reggaetón: a steady kick with a syncopated snare accent in a 3+3+2 grouping. The name comes from Shabba Ranks’s 1990 song “Dem Bow”."}}, {"@type": "Question", "name": "Is dembow the same as reggaetón?", "acceptedAnswer": {"@type": "Answer", "text": "Not exactly. Dembow is the rhythm; reggaetón is the genre built on it, together with rap or singing in Spanish and other production choices. Dominican dembow is also a separate, faster genre."}}, {"@type": "Question", "name": "What BPM is reggaetón?", "acceptedAnswer": {"@type": "Answer", "text": "Typically around 90 to 100 BPM. Dominican dembow often runs at 120 BPM or more."}}, {"@type": "Question", "name": "Who created the dembow beat?", "acceptedAnswer": {"@type": "Answer", "text": "The riddim behind “Dem Bow” was produced by Steely & Clevie in Jamaica. Panamanian and Puerto Rican artists later adapted it into Spanish-language music."}}]}</script>
+</head>
+<body class="twerkhub-page twerkhub-ph-theme">
+<a href="#main" class="twk-sr-only">Skip to content</a>
+
+<!-- TWK_SHELL_V2 -->
+<link rel="stylesheet" href="/assets/twk-shell-v2.css?v=20261110-typescale1">
+<header class="tn2"><div class="tn2-w"><a class="tn2-logo" href="/" aria-label="Twerkhub home">TWERK<b>HUB</b></a>
+<div class="tn2-lk"><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/account">My account</a><a class="tn2-jn" href="/jenny/">Jenny VIP</a></div>
+<details><summary aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/community">Community</a><a href="/account">My account</a></nav></details></div></header>
+<script>(function(){var p=location.pathname.replace(/\/index\.html$/,'/');document.querySelectorAll('.tn2-lk a').forEach(function(a){var h=a.getAttribute('href');if(h.length>1&&h.indexOf('#')<0&&p.indexOf(h.replace(/\/$/,''))===0)a.classList.add('on')})})();</script>
+<script>
+(function(){
+  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators':'creators','/community':'community','/membership':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
+  function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
+  setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
+  function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
+  loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260513-blindaje-v62','twk-loader-token-system');
+  loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
+})();
+</script>
+
+
+<article class="wrap">
+  <div class="kicker">/ Culture · music · dembow</div>
+  <h1>Dembow · the <em>rhythm</em> behind reggaetón.</h1>
+  <div class="meta"><span>By Anti · firestarter</span><span>Nov 12, 2026</span><span>6 min read</span></div>
+<section class="pvx pvx-top" aria-label="Our exclusive dancers · 18+"><div class="pvx-eye">Our exclusive dancers · 18+</div><h2>Done reading? <em>Watch them move.</em></h2><p class="pvx-sub">Exclusive to Twerkhub. A new dancer joins every month. Hover a card to unmute it.</p><div class="pvx-grid"><a class="pvx-c live" href="/jenny/?from=dembow-rhythm-explained-top" data-model="Jenny"><div class="pvx-v"><video muted loop playsinline preload="none" poster="/assets/models/jenny-poster.jpg" data-src="/assets/models/blog-previews/jenny.mp4?v=20261112-1" data-snd="1"></video><span class="pvx-st">Live now</span><span class="pvx-ex">Exclusive</span><span class="pvx-lk">Explicit videos inside</span><span class="pvx-sd" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="#f7dd8b"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z"/></svg></span></div><div class="pvx-i"><div class="pvx-n">Jenny</div><div class="pvx-m">Colombia · 19</div><span class="pvx-b">Watch videos</span></div></a><a class="pvx-c live" href="/abbi/?from=dembow-rhythm-explained-top" data-model="Abbi"><div class="pvx-v"><video muted loop playsinline preload="none" poster="/assets/models/ABBI-poster.jpg" data-src="/assets/models/blog-previews/abbi.mp4?v=20261112-1" data-snd="1"></video><span class="pvx-st">Live now</span><span class="pvx-ex">Exclusive</span><span class="pvx-lk">Explicit videos inside</span><span class="pvx-sd" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="#f7dd8b"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z"/></svg></span></div><div class="pvx-i"><div class="pvx-n">Abbi</div><div class="pvx-m">Colombia · 18+</div><span class="pvx-b">Watch videos</span></div></a><a class="pvx-c live" href="/tainara/?from=dembow-rhythm-explained-top" data-model="Tainara"><div class="pvx-v"><img class="kb" src="/assets/models/tainara-poster.jpg" alt="Tainara" width="540" height="964"><span class="pvx-st">Live now</span><span class="pvx-ex">Exclusive</span><span class="pvx-lk">Explicit videos inside</span><span class="pvx-sd" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="#f7dd8b"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z"/></svg></span></div><div class="pvx-i"><div class="pvx-n">Tainara</div><div class="pvx-m">Brazil · 23</div><span class="pvx-b">Watch videos</span></div></a></div><p class="pvx-d">18+ only. All models are over 18 and appear under written contract. Minors are not allowed.</p></section>
+  <p>Every reggaetón track you have ever danced to is built on one drum pattern. It has a name: dembow. Understand it and you understand why perreo moves the way it does.</p>
+  <div class="pr-def"><h2>What is dembow?</h2><p><strong>Dembow</strong> is the drum pattern at the core of reggaetón: a steady kick on each beat with a syncopated snare accent that repeats in a 3+3+2 grouping. It takes its name from Shabba Ranks’s 1990 dancehall hit “Dem Bow”.</p></div><nav class="pr-toc" aria-label="In this guide"><b>In this guide</b><ol><li><a href="#s1">Jamaica, 1990</a></li><li><a href="#s2">Panama and Puerto Rico</a></li><li><a href="#s3">The 3+3+2 pattern</a></li><li><a href="#s4">Tempo</a></li><li><a href="#s5">How dancers use it</a></li></ol></nav>
+
+  <h2 id="s1">Jamaica, 1990</h2>
+  <p>“Dem Bow” by Shabba Ranks used a riddim produced by Steely &amp; Clevie. The riddim became one of the most reused in dancehall history.</p>
+
+  <h2 id="s2">Panama and Puerto Rico</h2>
+  <p>Panamanian artists such as El General translated that rhythm into Spanish. In the mid-1990s Puerto Rican producers like DJ Playero built whole tracks on it, and reggaetón took shape.</p>
+
+  <h2 id="s3">The 3+3+2 pattern</h2>
+  <p>Count eight steps. The accents land on steps 1, 4 and 7: three, three, two. Dancers feel it as “boom — ch — boom-chick”. The ear hears the same loop over and over, which is why the beat is so easy to move to and so hard to forget.</p>
+
+  <h2 id="s4">Tempo</h2>
+  <p>Classic reggaetón usually sits around 90 to 100 BPM. Dominican dembow is much faster, often above 120 BPM. Slower tempos give room for low, controlled hip work; faster ones push dancers into quick isolations.</p>
+
+  <h2 id="s5">How dancers use it</h2>
+  <p>Good dancers do not just hit the kick. They play with the off-beat, pausing on the dembow gap and then hitting the next accent. That contrast is what separates a clean perreo from a random one.</p>
+
+  <section class="pr-faq" id="faq"><h2>Frequently asked questions</h2><details><summary>What is dembow?</summary><div>Dembow is the drum pattern behind reggaetón: a steady kick with a syncopated snare accent in a 3+3+2 grouping. The name comes from Shabba Ranks’s 1990 song “Dem Bow”.</div></details><details><summary>Is dembow the same as reggaetón?</summary><div>Not exactly. Dembow is the rhythm; reggaetón is the genre built on it, together with rap or singing in Spanish and other production choices. Dominican dembow is also a separate, faster genre.</div></details><details><summary>What BPM is reggaetón?</summary><div>Typically around 90 to 100 BPM. Dominican dembow often runs at 120 BPM or more.</div></details><details><summary>Who created the dembow beat?</summary><div>The riddim behind “Dem Bow” was produced by Steely &amp; Clevie in Jamaica. Panamanian and Puerto Rican artists later adapted it into Spanish-language music.</div></details></section>
+  <div class="pr-def"><h2>Related</h2><ul><li><a href="/blog/perreo-history-caribbean-origin">Perreo · the 35-year Caribbean history</a></li><li><a href="/blog/twerk-history-origins">Twerk history · where it really comes from</a></li><li><a href="/blog/how-to-twerk-beginners-guide">How to twerk · beginner guide in 6 steps</a></li><li><a href="/blog/reggaeton-vs-dancehall-vs-afrobeats">Reggaeton vs dancehall vs afrobeats · the differences</a></li></ul></div>
+<section class="pvx pvx-bottom" aria-label="Our exclusive dancers · 18+"><div class="pvx-eye">Our exclusive dancers · 18+</div><h2>Done reading? <em>Watch them move.</em></h2><div class="pvx-grid"><a class="pvx-c live" href="/lolita/?from=dembow-rhythm-explained-bottom" data-model="Lolita"><div class="pvx-v"><video muted loop playsinline preload="none" poster="/lolita/p/v55.jpg?v=20261104-3" data-src="/assets/models/blog-previews/lolita.mp4?v=20261112-1" data-snd="1"></video><span class="pvx-st">Live now</span><span class="pvx-ex">Exclusive</span><span class="pvx-lk">Explicit videos inside</span><span class="pvx-sd" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="#f7dd8b"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z"/></svg></span></div><div class="pvx-i"><div class="pvx-n">Lolita</div><div class="pvx-m">Venezuela · 19</div><span class="pvx-b">Watch videos</span></div></a><a class="pvx-c soon" href="/vegan/?from=dembow-rhythm-explained-bottom" data-model="Vegan"><div class="pvx-v"><video muted loop playsinline preload="none" poster="/assets/models/vegan-poster.jpg" data-src="/assets/models/blog-previews/vegan.mp4?v=20261112-1"></video><span class="pvx-st">Coming soon</span><span class="pvx-ex">Exclusive</span><span class="pvx-lk">Members only</span><span class="pvx-sd" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="#f7dd8b"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z"/></svg></span></div><div class="pvx-i"><div class="pvx-n">Vegan</div><div class="pvx-m">Colombia · 18+</div><span class="pvx-b">Notify me</span></div></a><a class="pvx-c soon" href="/camila/?from=dembow-rhythm-explained-bottom" data-model="Camila"><div class="pvx-v"><video muted loop playsinline preload="none" poster="/assets/models/camila-poster.jpg" data-src="/assets/models/blog-previews/camila.mp4?v=20261112-1"></video><span class="pvx-st">Coming soon</span><span class="pvx-ex">Exclusive</span><span class="pvx-lk">Members only</span><span class="pvx-sd" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="#f7dd8b"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z"/></svg></span></div><div class="pvx-i"><div class="pvx-n">Camila</div><div class="pvx-m">Argentina · 18</div><span class="pvx-b">Notify me</span></div></a></div><p class="pvx-d">18+ only. All models are over 18 and appear under written contract. Minors are not allowed.</p></section>
+  <a class="back" href="/blog/">← All posts</a>
+</article>
+<style id="twk-related-css">.twk-related,.twk-mf{grid-column:1/-1!important}
+.twk-related{max-width:1200px;margin:60px auto 40px;padding:24px 26px;border-top:1px solid rgba(255,255,255,.08);font-family:'Inter',ui-sans-serif,system-ui,sans-serif}
+.twk-related-head{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px}
+.twk-related ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px}
+.twk-related a{display:block;padding:9px 12px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-size:13px;line-height:1.35;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .15s,color .15s,transform .15s}
+.twk-related a:hover{background:rgba(255,46,135,.12);color:#fff;border-color:rgba(255,46,135,.3);transform:translateY(-1px)}
+@media(max-width:760px){.twk-related{margin:36px auto 24px;padding:18px 16px}.twk-related ul{grid-template-columns:1fr 1fr;gap:6px 10px}.twk-related a{padding:8px 10px;font-size:12px}}
+</style>
+<section class="twk-related" data-twk="related" aria-label="Related pages">
+  <div class="twk-related-head">Related on Twerkhub</div>
+  <ul>
+    <li><a href="/blog/what-is-a-fancam-history">What is a fancam.</a></li>
+    <li><a href="/blog/moscow-dance-centre-nrg-history">Moscow Dance Centre NRG.</a></li>
+    <li><a href="/blog/why-twerkhub-has-no-algorithm-feed">Why Twerkhub has no algorithm feed.</a></li>
+    <li><a href="/blog/why-i-built-twerkhub">Why I built Twerkhub.</a></li>
+    <li><a href="/twerk-tutorials">Twerk Tutorials</a></li>
+    <li><a href="/ttl-latin-models/">Premium · Latin models.</a></li>
+  </ul>
+</section>
+
+<!-- TWK_MEGA_FOOTER_V1 -->
+<style>
+.twk-mf{
+  background:#05050a;color:#c7c7d3;font-family:'Inter',-apple-system,sans-serif;font-size:13.5px;line-height:1.55;
+  border-top:1px solid rgba(255,255,255,.06);padding:64px 0 28px;margin-top:80px;position:relative;z-index:1;
+}
+.twk-mf *{box-sizing:border-box}
+.twk-mf-wrap{max-width:1480px;margin:0 auto;padding:0 32px}
+/* secondary: earn tokens free */
+.twk-mf-earn{
+  background:rgba(255,255,255,.018);border:1px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px 24px;margin-bottom:54px;
+}
+.twk-mf-earn-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:14px;margin-bottom:18px}
+.twk-mf-earn-head h4{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#fff;
+}
+.twk-mf-earn-head h4 b{color:#ffd78a}
+.twk-mf-earn-head p{font-size:12px;color:#8a8a99}
+.twk-mf-earn-head a{
+  color:#c7c7d3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:2px;transition:color .25s,border-color .25s;
+}
+.twk-mf-earn-head a:hover{color:#ffd78a;border-color:#ffd78a}
+.twk-mf-earn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.twk-mf-rule{
+  background:transparent;border:1px solid rgba(255,255,255,.08);padding:14px 12px;border-radius:8px;text-align:center;text-decoration:none;color:inherit;display:block;
+  transition:border-color .2s;
+}
+.twk-mf-rule:hover{border-color:rgba(255,180,84,.4)}
+.twk-mf-rule-act{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#8a8a99;margin-bottom:6px;
+}
+.twk-mf-rule-tk{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:18px;font-weight:700;color:#ffd78a;
+}
+.twk-mf-rule-tk b{font-weight:900}
+
+.twk-mf-row{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:42px;padding-bottom:42px;margin-bottom:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.twk-mf-row+.twk-mf-row{padding-top:42px;padding-bottom:42px}
+.twk-mf-brand{display:block;line-height:1;margin-bottom:14px}
+.twk-mf-brand img{display:block;width:auto;max-width:200px;height:auto;}
+.twk-mf-row p{color:#8a8a99;font-size:13px;line-height:1.7;max-width:340px}
+.twk-mf-row h5{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ffd78a;margin:0 0 18px;
+}
+.twk-mf-row ul{list-style:none;padding:0;margin:0}
+.twk-mf-row ul li{margin-bottom:8px;line-height:1.4}
+.twk-mf-row ul a{
+  color:#c7c7d3;font-size:13.5px;text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;
+}
+.twk-mf-row ul a:hover{color:#ff6fa8;padding-left:5px}
+.twk-mf-bottom{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:24px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#5a5a68;
+}
+.twk-mf-bottom a{color:#8a8a99;text-decoration:none;margin:0 4px}
+.twk-mf-bottom a:hover{color:#ff6fa8}
+@media(max-width:1100px){
+  .twk-mf-earn-grid{grid-template-columns:repeat(2,1fr)}
+  .twk-mf-row{grid-template-columns:1fr 1fr;gap:28px}
+}
+@media(max-width:720px){
+  .twk-mf-wrap{padding:0 18px}
+  .twk-mf-earn-grid{grid-template-columns:1fr}
+  .twk-mf-row{grid-template-columns:1fr;gap:24px}
+}
+</style>
+<footer class="tf2"><div class="tf2-w"><div class="tf2-cols">
+<div><a class="tn2-logo" href="/">TWERK<b>HUB</b></a><p style="margin-top:14px;max-width:300px">If you know, you know.</p></div>
+<div><h4>Explore</h4><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/blog/">Blog</a></div>
+<div><h4>Community</h4><a href="https://discord.gg/WWn8ZgQMjn" rel="noopener">Discord</a><a href="https://t.me/+0xNr69raiIlmYWRh" rel="noopener">Telegram</a><a href="https://x.com/twerkhuboficial" rel="noopener">X</a><a href="https://www.patreon.com/twerkhuboficial" rel="noopener">Patreon</a></div>
+<div><h4>Site</h4><a href="/account">My account</a><a href="/contact">Contact</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/es/">Español</a><a href="/pt/">Português</a><a href="/ru/">Русский</a></div>
+</div><p class="tf2-legal">Adults only. All models are over 18 and appear under written contract. Minors are not allowed to enter this site. © Twerkhub.</p></div></footer>
+<!-- /TWK_MEGA_FOOTER_V1 -->
+
+<script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
+<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
+<script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
+<script src="/assets/js/image-seo-engine.js" defer></script>
+  <script src="/assets/thumb-fallback.js?v=20260512-fix2" defer></script>
+<script defer src="/assets/profile-stats-live.js?v=20260509-p3-deltacap"></script>
+<script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p6"></script>
+
+<!-- twk-email-capture:START -->
+<script defer src="/assets/twerkhub-email-capture.js?v=20260509-ec3-noblur-keep-home" data-twk-email-capture></script>
+<!-- twk-email-capture:END -->
+
+<!-- twk-related-auto:START -->
+<style id="twk-rel-auto-css">.twk-rel-auto{max-width:1320px;margin:50px auto 30px;padding:0 26px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif}.twk-rel-auto-head{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:18px;display:block}.twk-rel-auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:880px){.twk-rel-auto-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.twk-rel-auto-grid{grid-template-columns:1fr}}.twk-rel-auto-card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.5);text-decoration:none;color:#f5f5fb;transition:transform .25s,border-color .25s,background .25s}.twk-rel-auto-card:hover{transform:translateY(-2px);border-color:rgba(255,45,135,.45);background:rgba(30,20,40,.7)}.twk-rel-auto-cat{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff6fa8}.twk-rel-auto-title{font-family:"Inter",sans-serif;font-size:14px;font-weight:600;line-height:1.35;color:#e9e9f0}</style>
+<aside class="twk-rel-auto" aria-label="Related pages">
+  <span class="twk-rel-auto-head">★ More from the archive</span>
+  <div class="twk-rel-auto-grid">
+    <a href="/blog/moscow-dance-centre-nrg-history" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">Moscow Dance Centre NRG.</span>
+    </a>
+    <a href="/blog/what-is-a-fancam-history" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">What is a fancam.</span>
+    </a>
+    <a href="/blog/" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">Notes from the archive.</span>
+    </a>
+    <a href="/blog/4k-vs-1080p-vs-vr-fancam" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">4K vs 1080p vs VR fancam.</span>
+    </a>
+    <a href="/blog/afrobeats-twerk-crossover" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">Afrobeats × twerk · the West African crossover.</span>
+    </a>
+    <a href="/blog/best-twerk-creators-2026" class="twk-rel-auto-card" data-cat="blog">
+      <span class="twk-rel-auto-cat">blog</span>
+      <span class="twk-rel-auto-title">The 12 best twerk creators on YouTube in 2026.</span>
+    </a>
+  </div>
+</aside>
+<!-- twk-related-auto:END -->
+<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
+<script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
+<script src="/assets/twk-stats-btn.js?v=1" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script><script id="pvx-js">(function(){var cs=[].slice.call(document.querySelectorAll('.pvx-c'));if(!cs.length)return;var snd=null;
+function mute(c){var v=c.querySelector('video');if(v)v.muted=true;c.classList.remove('on','snd');if(snd===c)snd=null}
+function ensure(c){var v=c.querySelector('video');if(!v)return;if(!v.src&&v.dataset.src){v.src=v.dataset.src}var p=v.play();if(p&&p.catch)p.catch(function(){})}
+function unmute(c){var v=c.querySelector('video');c.classList.add('on');if(!v||!v.dataset.snd)return;if(snd&&snd!==c)mute(snd);snd=c;v.muted=false;ensure(c);var p=v.play();if(p&&p.catch)p.catch(function(){v.muted=true});if(!v.muted)c.classList.add('snd')}
+var io='IntersectionObserver' in window?new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target.querySelector('video');if(!v)return;if(e.isIntersecting){ensure(e.target)}else{try{v.pause()}catch(_){}}})},{threshold:.35}):null;
+cs.forEach(function(c){if(io)io.observe(c);else ensure(c);c.addEventListener('mouseenter',function(){unmute(c)});c.addEventListener('mouseleave',function(){mute(c);ensure(c)});c.addEventListener('touchstart',function(){if(c.classList.contains('on')){mute(c)}else{cs.forEach(mute);unmute(c)}},{passive:true})})})();</script></body></html>
