@@ -67,6 +67,7 @@ async function buildStats({ request, env }) {
     db.prepare(`SELECT os k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND os<>'' GROUP BY os ORDER BY u DESC LIMIT 10`).bind(since),
     db.prepare(`SELECT lang k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND lang<>'' GROUP BY lang ORDER BY u DESC LIMIT 10`).bind(since),
     db.prepare(`SELECT CASE WHEN ref='' THEN 'Directo / sin dato' ELSE ref END k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY k ORDER BY u DESC LIMIT 10`).bind(since),
+    db.prepare(`SELECT dur meddur FROM tw_hits WHERE ${W} AND dur>0 ORDER BY dur LIMIT 1 OFFSET (SELECT (COUNT(*)-1)/2 FROM tw_hits WHERE ${W} AND dur>0)`).bind(since, since),
   ]);
   const tot=(mainResults[0].results||[])[0]||{};
   const single=(mainResults[1].results||[])[0]||{};
@@ -110,6 +111,7 @@ async function buildStats({ request, env }) {
   const oses=mainResults[19].results||[];
   const langs=mainResults[20].results||[];
   const refs=mainResults[21].results||[];
+  const meddur=(mainResults[22].results||[])[0]?.meddur??null;
   const today = await one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts >= ? AND ts < ?' + hf, todayStart, now);
   const latestHit = await one(db, 'SELECT ts FROM tw_hits WHERE human = 1 ORDER BY ts DESC LIMIT 1');
   const unlocks = await one(db, "SELECT COUNT(*) n FROM jenny_unlocks WHERE via='coins'").catch(() => ({}));
@@ -191,7 +193,7 @@ async function buildStats({ request, env }) {
     (loc[r.c]=loc[r.c]||Array(24).fill(0))[h]++;
   }
   const bestLocal = Object.entries(loc).map(([c, a]) => ({ c, hours: a.map((n, h) => [h, n]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]) }));
-  return json({ ok: true, days, tz, now, latestHit: latestHit.ts || null, totals: { ...tot, ...sessionMetrics, onePageVisitors: single.n || 0, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList, registeredLocations, unverifiedVisitors: botU.u || 0, includeUnverified: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evNameU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
+  return json({ ok: true, days, tz, now, latestHit: latestHit.ts || null, totals: { ...tot, ...sessionMetrics, meddur, onePageVisitors: single.n || 0, repeat: repeat.n, allViews: all.v, allVisitors: all.u, todayViews: today.v || 0, todayVisitors: today.u || 0, since: all.first, unlocks: unlocks.n || 0 }, windows: { h24, d7, d30, online }, byDay, byHour, heat, countries, intent, cities, devices, browsers, oses, langs, refs, pages, events, recent, bestLocal, v2: { onlineList, registeredLocations, unverifiedVisitors: botU.u || 0, includeUnverified: bots, marks, peaks, series, mean: +mean.toFixed(2), mins, live, evU, evNameU, evLast, landed: landed.u || 0, profiles: regs.n || 0 } }, 200, '', heads);
 }
 
 // Multiple open owner panels share one short-lived snapshot rather than flooding D1.
@@ -203,7 +205,7 @@ export async function onRequestGet(context){
  const owner=await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();if(String(owner?.email||'').toLowerCase()!==OWNER)return json({ok:false,error:'owner_only'},403);
  const key=['days','bots','tz'].map(k=>url.searchParams.get(k)||'').join('|'),cached=fullResponses.get(key);
  const respond=record=>new Response(record.body,{status:record.status,headers:record.headers});
- if(cached&&Date.now()-cached.at<25000)return respond(cached);
+ if(cached&&Date.now()-cached.at<60000)return respond(cached);
  let flight=fullFlights.get(key);
  if(!flight){
    flight=(async()=>{try{

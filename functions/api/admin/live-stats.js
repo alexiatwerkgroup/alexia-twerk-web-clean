@@ -5,6 +5,32 @@ import { init, OWNER } from '../../_lib/analytics.js';
 
 const rows = async (db, sql, ...args) => (await db.prepare(sql).bind(...args).all()).results || [];
 
+
+const GAP = 30 * 60000, WINDOW = 120 * 86400000, TTL = 120000;
+const visitCache = new Map(); // "i:<iph>" | "v:<vid>" -> { t, c }
+async function visitCounts(db, now, iphs, vids) {
+  const byIph = {}, byVid = {};
+  const sessions = async (col, list, extra) => {
+    const out = {};
+    for (let i = 0; i < list.length; i += 80) {
+      const part = list.slice(i, i + 80);
+      for (const r of await rows(db,
+        `SELECT k, SUM(CASE WHEN prev IS NULL OR ts - prev > ${GAP} THEN 1 ELSE 0 END) c
+         FROM (SELECT ${col} k, ts, LAG(ts) OVER (PARTITION BY ${col} ORDER BY ts) prev
+               FROM tw_hits WHERE human = 1 AND ts > ? ${extra} AND ${col} IN (${part.map(() => '?').join(',')}))
+         GROUP BY k`, now - WINDOW, ...part)) out[r.k] = r.c;
+    }
+    return out;
+  };
+  const need = (prefix, list, target) => list.filter(k => { const c = visitCache.get(prefix + k); if (c && now - c.t < TTL) { target[k] = c.c; return false; } return true; });
+  const missIph = need('i:', iphs, byIph), missVid = need('v:', vids, byVid);
+  const [a, b] = await Promise.all([missIph.length ? sessions('iph', missIph, '') : {}, missVid.length ? sessions('vid', missVid, 'AND iph IS NULL') : {}]);
+  for (const k of missIph) { byIph[k] = a[k] || 0; visitCache.set('i:' + k, { t: now, c: byIph[k] }); }
+  for (const k of missVid) { byVid[k] = b[k] || 0; visitCache.set('v:' + k, { t: now, c: byVid[k] }); }
+  if (visitCache.size > 2000) for (const k of [...visitCache.keys()].slice(0, 1000)) visitCache.delete(k);
+  return { byIph, byVid };
+}
+
 export async function onRequestGet({ request, env }) {
   const identity = await authenticate(request, env);
   if (!identity?.sub) return json({ ok: false, error: 'owner_only' }, 403);
@@ -93,26 +119,18 @@ export async function onRequestGet({ request, env }) {
     ? { id: event.profile_id, username: event.username || '' } : null;
   // Visitas por visitante, según IP (hash con sal; no se guarda la IP en crudo), tengan o no cuenta.
   // Una visita nueva = más de 30 min sin actividad. Los hits anteriores a esta función no tienen IP: se suman por cookie (vid).
-  const GAP = 30 * 60000, iphSet = new Set(), vidSet = new Set();
-  for (const hit of recent) { if (hit.iph) iphSet.add(hit.iph); if (hit.vid) vidSet.add(hit.vid); }
-  for (const event of evLast) { if (event.hit_iph) iphSet.add(event.hit_iph); if (event.full_vid) vidSet.add(event.full_vid); }
-  const sessionCounts = async (col, list, extra) => {
-    const out = {};
-    for (let i = 0; i < list.length; i += 80) {
-      const part = list.slice(i, i + 80);
-      for (const r of await rows(db,
-        `SELECT k, SUM(CASE WHEN prev IS NULL OR ts - prev > ${GAP} THEN 1 ELSE 0 END) c
-         FROM (SELECT ${col} k, ts, LAG(ts) OVER (PARTITION BY ${col} ORDER BY ts) prev
-               FROM tw_hits WHERE human = 1 ${extra} AND ${col} IN (${part.map(() => '?').join(',')}))
-         GROUP BY k`, ...part)) out[r.k] = r.c;
-    }
-    return out;
-  };
-  const [byIph, byOldVid] = await Promise.all([sessionCounts('iph', [...iphSet], ''), sessionCounts('vid', [...vidSet], 'AND iph IS NULL')]);
-  const visitsOf = (iph, vid) => (iph ? byIph[iph] || 0 : 0) + (byOldVid[vid] || 0);
-  for (const hit of recent) hit.visits = visitsOf(hit.iph, hit.vid);
-  for (const event of evLast) { event.visits = visitsOf(event.hit_iph, event.full_vid); delete event.full_vid; delete event.hit_iph; }
+  // Es accesorio: va con caché de 2 min, ventana de 120 días y un tope de 3 s; si falla o tarda, la vista en vivo sigue igual.
+  try {
+    const iphSet = new Set(), vidSet = new Set();
+    for (const hit of recent) { if (hit.iph) iphSet.add(hit.iph); if (hit.vid) vidSet.add(hit.vid); }
+    for (const event of evLast) { if (event.hit_iph) iphSet.add(event.hit_iph); if (event.full_vid) vidSet.add(event.full_vid); }
+    const counts = await Promise.race([visitCounts(db, now, [...iphSet], [...vidSet]), new Promise(res => setTimeout(() => res(null), 3000))]);
+    const visitsOf = (iph, vid) => counts ? (iph ? counts.byIph[iph] || 0 : 0) + (counts.byVid[vid] || 0) : null;
+    for (const hit of recent) hit.visits = visitsOf(hit.iph, hit.vid);
+    for (const event of evLast) event.visits = visitsOf(event.hit_iph, event.full_vid);
+  } catch (error) { for (const hit of recent) hit.visits = null; for (const event of evLast) event.visits = null; }
   for (const hit of recent) delete hit.iph;
+  for (const event of evLast) { delete event.full_vid; delete event.hit_iph; }
   return json({ ok: true, now, latestHit: latestHit?.ts || null, onlineList, recent, live, evLast, windows: { online: { u: onlineList.length } } }, 200, '', {
     'Cache-Control': 'private, no-store',
     'Set-Cookie': 'twx=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure'
