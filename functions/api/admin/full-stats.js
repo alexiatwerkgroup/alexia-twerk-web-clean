@@ -10,6 +10,21 @@ import { init } from '../../_lib/analytics.js';
 
 const OWNER_EMAIL = 'alexiatwerkoficial@gmail.com';
 
+// Every account must show entries + last entry: take the best evidence available.
+// Hits (tw_hits by uid) > profile columns > the registration itself (registering is an entry).
+const parseWhen = v => {
+  if (v == null || v === '') return 0;
+  if (typeof v === 'number') return v > 1e12 ? v : v * 1000;
+  const s = String(v).trim();
+  const t = Date.parse(/^\d{4}-\d{2}-\d{2}$/.test(s) ? s + 'T00:00:00Z' : /Z$|[+-]\d{2}:?\d{2}$/.test(s) ? s : s.replace(' ', 'T') + 'Z');
+  return Number.isFinite(t) ? t : 0;
+};
+const entryInfo = (u, visit) => {
+  const hits = Number(visit?.visits) || 0;
+  const last = Math.max(parseWhen(u.last_login_date), parseWhen(u.last_seen_at), Number(visit?.last_hit) || 0, parseWhen(u.registered_at));
+  return { recorded_visits: Math.max(hits, 1), recorded_visits_basis: hits ? 'hits' : 'registro', last_entry_at: last || null };
+};
+
 export async function onRequest(context) {
   const { request, env } = context;
   const origin = request.headers.get('Origin') || '';
@@ -43,7 +58,7 @@ export async function onRequest(context) {
       const marks = ids.map(() => '?').join(',');
       visits = (await env.DB.prepare(
         `SELECT uid, COUNT(*) page_views,
-                SUM(CASE WHEN previous IS NULL OR ts-previous>1800000 THEN 1 ELSE 0 END) visits
+                SUM(CASE WHEN previous IS NULL OR ts-previous>1800000 THEN 1 ELSE 0 END) visits, MAX(ts) last_hit
            FROM (SELECT uid,ts,LAG(ts) OVER (PARTITION BY uid ORDER BY ts) previous
                    FROM tw_hits WHERE uid IN (${marks}) AND human=1)
           GROUP BY uid`
@@ -72,7 +87,7 @@ export async function onRequest(context) {
       ...u,
       country: countryMap.get(u.id)?.country || null,
       city: countryMap.get(u.id)?.city || null,
-      recorded_visits: visitMap.get(u.id)?.visits ?? null,
+      ...entryInfo(u, visitMap.get(u.id)),
       recorded_page_views: visitMap.get(u.id)?.page_views ?? null,
       confirmed_paid_usd: paymentMap.get(String(u.email || '').toLowerCase()) ?? null,
     }));
@@ -104,7 +119,7 @@ export async function onRequest(context) {
 
   let visits=[],countries=[],payments=[],trackingSince=null;
   try {
-    visits=((await env.DB.prepare("WITH ordered AS (SELECT uid,ts,LAG(ts) OVER (PARTITION BY uid ORDER BY ts) previous FROM tw_hits WHERE uid IS NOT NULL AND human=1) SELECT uid,COUNT(*) page_views,SUM(CASE WHEN previous IS NULL OR ts-previous>1800000 THEN 1 ELSE 0 END) visits FROM ordered GROUP BY uid").all()).results)||[];
+    visits=((await env.DB.prepare("WITH ordered AS (SELECT uid,ts,LAG(ts) OVER (PARTITION BY uid ORDER BY ts) previous FROM tw_hits WHERE uid IS NOT NULL AND human=1) SELECT uid,COUNT(*) page_views,SUM(CASE WHEN previous IS NULL OR ts-previous>1800000 THEN 1 ELSE 0 END) visits, MAX(ts) last_hit FROM ordered GROUP BY uid").all()).results)||[];
     // Country comes from Cloudflare's request IP geolocation, so use the latest
     // observed location even when the visitor has not interacted with the page.
     countries=((await env.DB.prepare("SELECT uid,country,city FROM (SELECT uid,country,city,ROW_NUMBER() OVER (PARTITION BY uid ORDER BY last_active DESC,ts DESC) rank FROM tw_hits WHERE uid IS NOT NULL AND country<>'') WHERE rank=1").all()).results)||[];
@@ -112,7 +127,7 @@ export async function onRequest(context) {
   } catch {}
   try { payments=((await env.DB.prepare("SELECT LOWER(email) email,SUM(amount_usd) paid_usd FROM verified_payments WHERE status='confirmed' GROUP BY LOWER(email)").all()).results)||[]; } catch {}
   const visitMap=new Map(visits.map(x=>[x.uid,x])),countryMap=new Map(countries.map(x=>[x.uid,x])),paymentMap=new Map(payments.map(x=>[x.email,x.paid_usd]));
-  const enriched=((usersRows&&usersRows.results)||[]).map(u=>({...u,country:countryMap.get(u.id)?.country||null,city:countryMap.get(u.id)?.city||null,recorded_visits:visitMap.get(u.id)?.visits??null,recorded_page_views:visitMap.get(u.id)?.page_views??null,confirmed_paid_usd:paymentMap.get(String(u.email).toLowerCase())??null}));
+  const enriched=((usersRows&&usersRows.results)||[]).map(u=>({...u,country:countryMap.get(u.id)?.country||null,city:countryMap.get(u.id)?.city||null,...entryInfo(u,visitMap.get(u.id)),recorded_page_views:visitMap.get(u.id)?.page_views??null,confirmed_paid_usd:paymentMap.get(String(u.email).toLowerCase())??null}));
   return json(
     {
       ok: true,
