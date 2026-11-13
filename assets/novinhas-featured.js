@@ -10,7 +10,7 @@
     }).join('') + '</div>';
     var cards = [].slice.call(box.querySelectorAll('.nf-it')), vids = cards.map(function (a) { return a.querySelector('video'); }), hov = -1, cur = -1, pass = 0, started = false;
     vids.forEach(function (v) { v.loop = false; v.addEventListener('loadeddata', function () { if (v.paused && vids.indexOf(v) !== cur) { try { v.currentTime = 6; } catch (_) {} v.classList.add('on'); } }); });
-    function rest(i) { var v = vids[i]; v.pause(); v.muted = true; try { v.currentTime = 6; } catch (_) {} if (i !== hov) v.classList.add('on'); }
+    function rest(i) { var v = vids[i]; v._q = Date.now(); v.pause(); v.muted = true; try { v.currentTime = 6; } catch (_) {} if (i !== hov) v.classList.add('on'); }
     function play(i) {
       cur = i; var v = vids[i]; v.classList.add('on'); v.volume = 0.4; v.muted = pass > 0;
       try { v.currentTime = 0; } catch (_) {}
@@ -24,6 +24,11 @@
       cards[i].addEventListener('mouseenter', function () { hov = i; if (i === cur) return; v.muted = true; v.classList.add('on'); try { v.currentTime = 0; } catch (_) {} v.play().catch(function () {}); });
       cards[i].addEventListener('mouseleave', function () { hov = -1; if (i !== cur) rest(i); });
     });
+    /* Si el navegador pausa el preview en curso (ventana/pestana en segundo plano), se reanuda solo: la secuencia y el sonido siguen. */
+    vids.forEach(function (v, i) { v.addEventListener('pause', function () { if (Date.now() - (v._q || 0) < 600 || i !== cur || v.ended || hov === i) return; setTimeout(function () { if (i === cur && v.paused && !v.ended) v.play().catch(function () {}); }, 150); }); });
+    function resume() { var v = vids[cur]; if (v && v.paused && !v.ended) v.play().catch(function () {}); }
+    document.addEventListener('visibilitychange', resume); window.addEventListener('focus', resume); window.addEventListener('blur', function () { setTimeout(resume, 200); });
+    setInterval(resume, 1500);
     play(0);
   }).catch(function () {});
 })();
