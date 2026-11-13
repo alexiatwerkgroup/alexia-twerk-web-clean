@@ -189,6 +189,11 @@
     v.addEventListener('volumechange', function () { LS.set(VOL_KEY, String(v.muted ? v.volume : v.volume)); });
     v.addEventListener('ratechange', function () { LS.set(SPEED_KEY, String(v.playbackRate)); });
     v.addEventListener('ended', function () { markSeen(slug, cur.id); LS.set(posKey, '0'); });
+    /* Viewed fiable: se marca a los 2 s de reproduccion real, al pausar/salir y al terminar (sin depender del throttle de timeupdate) */
+    var seenT = null;
+    v.addEventListener('playing', function () { clearTimeout(seenT); seenT = setTimeout(function () { if (!v.paused) markSeen(slug, cur.id); }, 2000); });
+    v.addEventListener('pause', function () { clearTimeout(seenT); if (v.currentTime > 2) markSeen(slug, cur.id); });
+    window.addEventListener('pagehide', function () { if (v.currentTime > 2) markSeen(slug, cur.id); });
 
     /* teclado */
     var SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
