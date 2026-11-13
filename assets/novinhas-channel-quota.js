@@ -1,9 +1,9 @@
 /* Novinhas: contador "25/X" en la portada del canal + popup VIP.
    Uso: <script src="/assets/novinhas-channel-quota.js" data-total="89" data-shown="25" data-target=".banner" defer></script>
-   Si total <= shown no muestra nada. */
+   Tope: 20 por canal. Si total <= shown no muestra nada. */
 (function () {
   var s = document.currentScript; if (!s) return;
-  var total = parseInt(s.dataset.total, 10), shown = parseInt(s.dataset.shown, 10) || 25;
+  var total = parseInt(s.dataset.total, 10), shown = parseInt(s.dataset.shown, 10) || 20;
   if (!(total > shown)) return;
   var href = s.dataset.href || 'https://www.patreon.com/16791856/join';
   var css = '.nq-b{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 16px;border-radius:999px;border:1.5px solid #e8b84a;background:linear-gradient(180deg,#2a2208,#0d0b04);color:#ffd76a;font:800 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 0 14px #e8b84a33}.nq-b i{font-style:normal;color:#fff;font-weight:600;font-size:12px;opacity:.8}' +
