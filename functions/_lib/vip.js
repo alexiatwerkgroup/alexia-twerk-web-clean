@@ -1,4 +1,6 @@
 // Helpers del acceso VIP de Novinhas. La config vive en el bucket R2 (NOVINHAS_VIDEOS), no en variables de entorno.
+import { authenticate } from './auth.js';
+import { OWNER } from './analytics.js';
 const mem = {};
 async function cached(env, key) {
   const m = mem[key]; if (m && Date.now() - m.t < 60000) return m.v;
@@ -21,7 +23,17 @@ async function codeOk(env, cid) {
   try { const r = await env.DB.prepare('SELECT revoked, exp FROM nv_codes WHERE cid = ?').bind(cid).first(); v = !!r && !r.revoked && r.exp > Date.now() / 1000; } catch (e) { v = true; }
   rev[cid] = { t: Date.now(), v }; return v;
 }
+// El dueño del sitio (sesion iniciada con su cuenta) ve todo, sin codigo.
+async function isOwner(request, env) {
+  try {
+    if (!/twk_jwt=/.test(request.headers.get('Cookie') || '') && !request.headers.get('Authorization')) return false;
+    const p = await authenticate(request, env); if (!p || !p.sub) return false;
+    const u = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(p.sub).first();
+    return !!u && String(u.email).toLowerCase() === OWNER;
+  } catch (e) { return false; }
+}
 export async function isVip(request, env) {
+  if (await isOwner(request, env)) return true;
   const m = /(?:^|;\s*)twk_vip=([0-9]+)\.(?:([0-9a-f]{12})\.)?([0-9a-f]{64})/.exec(request.headers.get('Cookie') || ''); if (!m) return false;
   if (+m[1] < Date.now() / 1000) return false;
   const cc = await codesCfg(env); if (!cc || !cc.key) return false;
