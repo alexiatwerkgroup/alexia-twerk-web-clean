@@ -118,3 +118,11 @@ body[data-model=lolita] #pricing .price{grid-template-columns:minmax(0,540px);ju
 .urgency-panel{position:fixed;right:18px;top:140px;z-index:45;width:260px;padding:16px;background:#090a10ee;border:1px solid var(--ac);border-radius:14px;box-shadow:0 12px 36px #0008;backdrop-filter:blur(8px)}
 .urgency-panel h3{margin:0 0 6px;color:var(--ac);font:700 14px Rajdhani,sans-serif;letter-spacing:.12em;text-transform:uppercase}.urgency-panel p{margin:0 0 10px;color:var(--mut);font-size:11px}.urgency-panel label{display:block;padding:8px 9px;margin:6px 0;border:1px solid var(--line);border-radius:8px;color:var(--fg);font-size:var(--fs-12);cursor:pointer}.urgency-panel label:hover{border-color:var(--ac)}.urgency-panel input{accent-color:var(--ac);margin-right:7px}.urgency-panel .selected{color:var(--ac)}
 @media(max-width:760px){.urgency-panel{position:static;width:auto;margin:18px 16px;order:20}}
+/* Tarjeta de precio: boton universal + metodos de pago (PayPal, Binance, tarjeta) que llevan a /paymentmethods/ */
+.pc .co{margin-top:auto;padding-top:18px;display:flex;flex-direction:column;gap:12px}
+.pc .co-pay{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.pc .co-pay span{display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;border-radius:9px;border:1px solid #3a3115;background:#0d0b05;color:#d9cfae;font:700 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}
+.pc .co-pay .pp{background:#fff;border-color:#fff;padding:0 10px}.pc .co-pay .pp img{height:16px;width:auto;display:block}
+.pc .co-pay .bn{padding:0 8px}.pc .co-pay .bn img{height:24px;width:auto;display:block}
+.pc .co-pay svg{width:16px;height:16px;margin-right:6px}
+.pc .co-note{margin:0;text-align:center;color:#a99b72;font:600 12px/1.4 system-ui,sans-serif}

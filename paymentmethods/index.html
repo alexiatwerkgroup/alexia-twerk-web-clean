@@ -9,20 +9,14 @@
 
 .pm h2{font:400 clamp(30px,4vw,44px)/1 Anton,Impact,sans-serif;text-transform:uppercase;margin:54px 0 16px}.pm ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}.pm li{counter-increment:s;border:1.5px solid #26262c;border-radius:16px;background:#101014;padding:20px 20px 20px 64px;position:relative;line-height:1.5;color:#c9c9d3}.pm li:before{content:counter(s);position:absolute;left:18px;top:16px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#ffe08a,#c99a2e);color:#1a1200;font:900 15px system-ui}.pm li b{color:#fff;display:block}
 .pm .note{margin-top:22px;color:#8d8d99;font-size:13px;line-height:1.6}.pm .note a{color:#e8b84a}@media(max-width:860px){.pm .grid,.pm ol{grid-template-columns:1fr}}.pm .prow{display:grid;grid-template-columns:auto 1fr;gap:18px;margin-top:30px}
-.pm .price,.pm .help{position:relative;border-radius:22px;background:linear-gradient(180deg,#17130a,#0a0905);box-shadow:inset 0 1px 0 #ffffff14,0 18px 40px #000a}
-.pm .price:before,.pm .help:before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:linear-gradient(150deg,#ffe08a,#7a5a10 40%,#3a2c0a 60%,#d9a62e);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
-.pm .price{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:20px 30px;min-width:230px}
-.pm .price small{font:700 11px 'JetBrains Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:#e8b84a}
-.pm .price b{font:400 64px/1 Anton,Impact,sans-serif;background:linear-gradient(180deg,#fff3b8,#f7c83a 55%,#c98a0b);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 14px rgba(247,200,58,.25))}
-.pm .price em{font:600 12px Inter,system-ui,sans-serif;font-style:normal;color:#a99b72}
-.pm .help{display:flex;align-items:center;gap:20px;padding:18px 24px}
-.pm .hic{flex:none;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;color:#1a1200;background:linear-gradient(180deg,#fff0a8,#f7c83a 50%,#d99a0b);box-shadow:0 4px 0 #8a6205,0 10px 22px #000a,inset 0 1px 0 #fff9;position:relative}
-.pm .hic svg{width:34px;height:34px}.pm .hic:after{content:"";position:absolute;right:1px;bottom:3px;width:15px;height:15px;border-radius:50%;background:#2fdc72;border:3px solid #17130a;box-shadow:0 0 10px #2fdc72aa}
-.pm .htx{flex:1;min-width:0}.pm .htx small{display:block;font:700 11px 'JetBrains Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:#e8b84a}
-.pm .htx b{display:block;margin:4px 0 3px;font:400 28px/1.05 Anton,Impact,sans-serif;letter-spacing:.01em;text-transform:uppercase;color:#fff}
-.pm .htx span{display:block;color:#b9b19a;font:500 14px/1.45 Inter,system-ui,sans-serif}
-@media(max-width:900px){.pm .prow{grid-template-columns:1fr}.pm .help{flex-wrap:wrap}.pm .help .twk-btn{width:100%}}
-.pm .card .lg{display:flex;align-items:center;height:64px}.pm .card .lg-pp{align-self:flex-start;padding:0 16px;border-radius:12px;background:#fff}.pm .card .lg-pp img{height:34px;width:auto}.pm .card .lg-bn img{height:64px;width:auto}</style></head><body>
+.pm .card .lg{display:flex;align-items:center;height:64px}.pm .card .lg-pp{align-self:flex-start;padding:0 16px;border-radius:12px;background:#fff}.pm .card .lg-pp img{height:34px;width:auto}.pm .card .lg-bn img{height:64px;width:auto}.pm .sum{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 18px;margin-top:30px;padding-bottom:22px;border-bottom:1px solid #2a2410}
+.pm .sum small{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#e8b84a}
+.pm .sum b{font:400 52px/1 Anton,Impact,sans-serif;color:#ffd76a}
+.pm .sum em{font:600 14px Inter,system-ui,sans-serif;font-style:normal;color:#a99b72}
+.pm .sup{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 22px;margin-top:34px;padding-top:26px;border-top:1px solid #2a2410;text-align:center}
+.pm .sup p{margin:0;color:#c9c9d3;font:500 15px/1.5 Inter,system-ui,sans-serif}.pm .sup p b{color:#fff}
+@media(max-width:700px){.pm .sup{flex-direction:column}.pm .sup .twk-btn{width:100%}.pm .sum b{font-size:44px}}
+</style></head><body>
 <!-- TWK_SHELL_V2 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,17 +28,22 @@
 <main class="pm"><div class="w">
 <div class="eb">/ Payment methods</div><h1>Get <em>VIP</em> access</h1>
 <p class="lead">One membership unlocks every video in every VIP channel and archive, including the new ones we keep adding. Choose how you want to pay.</p>
-<div class="prow"><div class="price"><small>VIP &middot; Monthly</small><b>$49.99</b><em>USD / month &middot; cancel anytime</em></div><div class="help"><span class="hic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 26v-4a15 15 0 0 1 30 0v4"/><rect x="6" y="24" width="7" height="11" rx="3.5" fill="currentColor" stroke="none"/><rect x="35" y="24" width="7" height="11" rx="3.5" fill="currentColor" stroke="none"/><path d="M38.5 35c0 5-4.5 7-10 7"/><circle cx="26" cy="42" r="2.4" fill="currentColor" stroke="none"/></svg></span><div class="htx"><small>Live support</small><b>Questions before you pay?</b><span>Chat with an agent in real time. Almost instant replies, 24/7.</span></div><button type="button" class="twk-btn twk-btn--live" data-twk-agent><i class="twk-live-dot"></i><span>Chat with an agent</span><em class="twk-live-tag">ONLINE</em></button></div></div>
+<div class="sum price"><small>VIP &middot; Monthly</small><b>$49.99</b><em>USD / month &middot; cancel anytime</em></div>
 <div class="grid">
 <div class="card"><span class="lg lg-pp"><img src="/assets/paypal-logo.png" alt="PayPal" width="420" height="123" loading="lazy"></span><h3>PayPal</h3><p>Pay with your PayPal balance or any card linked to your PayPal account.</p><a class="twk-btn twk-btn--block" href="/discord" target="_blank" rel="noopener">Pay with PayPal</a></div>
 <div class="card"><span class="lg lg-bn"><img src="/assets/binance-mark.png" alt="Binance" width="185" height="178" loading="lazy"></span><h3>Binance</h3><p>Pay in crypto with Binance Pay (USDT and other supported coins). Fast and worldwide.</p><a class="twk-btn twk-btn--block" href="#binance" data-twk-binance="$49.99 USD">Pay with Binance</a></div>
 <div class="card"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2.5 9.5h19M6 15h4" stroke="currentColor" stroke-width="1.8" fill="none"/></svg><h3>Credit &amp; debit card</h3><p>Visa, Mastercard and other major cards. Your bank may show a charge for digital content.</p><a class="twk-btn twk-btn--block" href="/discord" target="_blank" rel="noopener">Pay with card</a></div>
 </div>
+<div class="sup"><p><b>Questions before you pay?</b> An agent answers in real time, 24/7.</p><button type="button" class="twk-btn twk-btn--sm twk-btn--live" data-twk-agent><i class="twk-live-dot"></i><span>Chat with an agent</span></button></div>
 <h2>How it works</h2>
 <ol><li><b>Choose a method</b>Pick PayPal, Binance or card above. It takes you to our Discord.</li><li><b>Pay</b>We send you the payment details for the method you chose.</li><li><b>Get your code</b>Your personal access code arrives on Discord. Enter it in the VIP box on any locked video.</li></ol>
 <p class="note">One code per person: it works on up to 4 of your devices. If a code is shared it is blocked and cancelled. Already have a code? Open any locked video and press <b>Unlock with VIP</b>.<br>18+ only. All performers featured are adults over 18 and appear under written agreement. Questions? <a href="/discord" target="_blank" rel="noopener">Talk to us on Discord</a>.</p>
 </div></main>
-<footer class="tf2"><div class="tf2-w"><div class="tf2-cols">
+<script>(function(){var q=new URLSearchParams(location.search),amt=parseFloat(q.get('amt')),label=(q.get('label')||'').slice(0,80);if(!(amt>0)||!label)return;
+var pr=document.querySelector('.price'),h=document.querySelector('.pm h1'),ld=document.querySelector('.pm .lead'),bn=document.querySelector('[data-twk-binance]'),coins=q.get('item')==='coins',txt=function(el,t){if(el)el.textContent=t};
+txt(pr&&pr.querySelector('small'),label);txt(pr&&pr.querySelector('b'),(coins?'From $':'$')+amt.toFixed(2));txt(pr&&pr.querySelector('em'),coins?'USD · $0.50 per coin · 20-coin minimum':'USD \u00b7 one-time payment');
+if(h)h.innerHTML='Complete your <em>purchase</em>';txt(ld,'Choose how you want to pay. Your access is added to your Twerkhub account after we confirm the payment, usually within minutes.');
+if(bn)bn.setAttribute('data-twk-binance','$'+amt.toFixed(2)+' USD');document.title='Pay: '+label+' \u00b7 Twerkhub'})();</script><footer class="tf2"><div class="tf2-w"><div class="tf2-cols">
 <div><a class="tn2-logo" href="/">TWERK<b>HUB</b></a><p style="margin-top:14px;max-width:300px">If you know, you know.</p></div>
 <div><h4>Explore</h4><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/blog/">Blog</a></div>
 <div><h4>Community</h4><a href="https://discord.gg/WWn8ZgQMjn" rel="noopener">Discord</a><a href="https://t.me/+0xNr69raiIlmYWRh" rel="noopener">Telegram</a><a href="https://x.com/twerkhuboficial" rel="noopener">X</a><a href="https://www.patreon.com/twerkhuboficial" rel="noopener">Patreon</a></div>

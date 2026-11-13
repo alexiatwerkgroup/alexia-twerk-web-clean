@@ -26,11 +26,11 @@ html body .twk-btn--ghost.twk-btn--ghost,html body a[style*="background:transpar
 html body .twk-btn--ghost.twk-btn--ghost:hover,html body a[style*="background:transparent"][style*="border:1px solid rgba(255,255,255,.18)"]:hover,html body .twerkhub-btn-ghost.twerkhub-btn-ghost:hover,html body #twk18 .n.n:hover{border-color:#c99a2e!important;color:#f7dd8b!important}
 html body .twk-btn--ghost.twk-btn--ghost.twk-btn--sm{height:44px!important;min-height:44px!important}
 html body #twk18 .y.y,html body #twk18 .n.n{margin-top:10px}
-/* VIVO (.twk-btn--live): mismo molde universal, con señal de "en línea ahora": punto verde con onda, borde verde y etiqueta ONLINE. Solo para chat/agente en tiempo real. */
-html body .twk-btn--live.twk-btn--live{gap:12px!important;border-color:#2fdc72!important;background:linear-gradient(180deg,#123222,#06140c)!important;color:#fff!important;box-shadow:0 0 0 1px #2fdc7233,0 0 28px #2fdc7240!important}
-html body .twk-btn--live.twk-btn--live:hover{border-color:#6dffa4!important;color:#fff!important;box-shadow:0 0 0 1px #6dffa455,0 0 36px #2fdc7266!important}
-.twk-btn--live .twk-live-dot{position:relative;flex:none;width:12px;height:12px;border-radius:50%;background:#2fdc72;box-shadow:0 0 10px #2fdc72}
-.twk-btn--live .twk-live-dot:after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #2fdc72;animation:twkLive 2s ease-out infinite}
-.twk-btn--live .twk-live-tag{flex:none;font-style:normal;padding:4px 9px;border-radius:999px;background:#2fdc72;color:#04210f;font:800 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em}
+/* VIVO (.twk-btn--live): pildora solida verde, tipografia sans en minuscula como PayPal/WhatsApp/Stripe, punto blanco con onda = "en linea". Solo para chat/agente en tiempo real. */
+html body .twk-btn--live.twk-btn--live{gap:10px!important;border:0!important;border-radius:999px!important;background:linear-gradient(180deg,#34e07a,#1fb85c)!important;color:#04210f!important;font:700 16px/1 Inter,system-ui,-apple-system,Segoe UI,sans-serif!important;letter-spacing:0!important;text-transform:none!important;box-shadow:0 6px 18px #1fb85c40!important}
+html body .twk-btn--live.twk-btn--live:hover{background:linear-gradient(180deg,#4aea8a,#25c566)!important;color:#04210f!important;box-shadow:0 8px 22px #1fb85c66!important}
+.twk-btn--live .twk-live-dot{position:relative;flex:none;width:10px;height:10px;border-radius:50%;background:#fff}
+.twk-btn--live .twk-live-dot:after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #fff;animation:twkLive 2s ease-out infinite}
+.twk-btn--live .twk-live-tag{display:none}
 @keyframes twkLive{0%{transform:scale(1);opacity:.9}100%{transform:scale(2.6);opacity:0}}
 @media(prefers-reduced-motion:reduce){.twk-btn--live .twk-live-dot:after{animation:none;opacity:0}}
