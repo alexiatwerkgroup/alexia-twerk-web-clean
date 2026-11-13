@@ -2,11 +2,12 @@
 (function () {
   var box = document.getElementById('nov-feat'); if (!box) return;
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  fetch('/api/novinhas/featured?row=10', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+  fetch('/api/novinhas/featured?row=16', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.items || !d.items.length) return;
     var n = d.viewers | 0;
     var top = n >= 1 ? 'At least <b>' + n + '</b> ' + (n === 1 ? 'person is' : 'people are') + ' in these channels right now' : 'New drops added to these channels every day';
-    box.innerHTML = '<div class="nf-bar"><i></i><span>' + top + '</span></div><div class="nf-row">' + d.items.map(function (it) {
+    var GAP = 16, MINW = 150, W = box.clientWidth || 900, per = Math.max(2, Math.min(d.items.length, Math.floor((W + GAP) / (MINW + GAP))));
+    box.innerHTML = '<div class="nf-bar"><i></i><span>' + top + '</span></div><div class="nf-row" style="grid-template-columns:repeat(' + per + ',1fr)">' + d.items.slice(0, per).map(function (it) {
       return '<a class="nf-it" href="' + esc(it.url) + '" aria-label="' + esc(it.name) + '"><span class="nf-m"><img alt="" loading="lazy" src="' + esc(it.poster) + '"><video muted loop playsinline preload="none" data-src="' + esc(it.src) + '"></video></span>' +
         '<span class="nf-t"><span class="nf-l1">Deleted from <img class="nf-yt" alt="YouTube" src="/assets/yt-logo.png"></span><span class="nf-l2">Never forgotten</span></span></a>';
     }).join('') + '</div>';
