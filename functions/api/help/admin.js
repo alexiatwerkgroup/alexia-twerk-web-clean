@@ -1,7 +1,7 @@
 // Solo dueño. GET -> lista · GET ?chat=ID -> mensajes · POST {chat,text} responde · POST {chat,close:true} cierra
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
-import { ensureHelp, J } from '../../_lib/help.js';
+import { ensureHelp, J, flushDigest } from '../../_lib/help.js';
 async function owner(request, env) {
   const p = await authenticate(request, env); if (!p || !p.sub) return false;
   const u = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(p.sub).first();
@@ -10,6 +10,7 @@ async function owner(request, env) {
 export async function onRequest({ request, env }) {
   if (!(await owner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);
   await ensureHelp(env.DB);
+  await flushDigest(env, Math.floor(Date.now() / 1000));
   const now = Math.floor(Date.now() / 1000), url = new URL(request.url), id = url.searchParams.get('chat');
   if (request.method === 'GET') {
     if (id) {
