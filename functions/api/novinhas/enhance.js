@@ -82,6 +82,8 @@ export async function onRequest({ request, env }) {
     return J({ ok: true, left: w.owner ? 999 : Math.max(0, max - ((u2 && u2.n) || 0)), max, src: `/api/novinhas/enhance?s=1&c=${c}&v=${id}` });
   }
   if (!w.owner) return J({ error: 'forbidden' }, 403);
+  if (await env.NOVINHAS_VIDEOS.head(`${c}/hq/video-${pad(id)}.mp4`)) return J({ ok: true, dup: 'ready' });
+  if (await db.prepare('SELECT 1 FROM nv_enh WHERE slug=? AND vid=?').bind(c, id).first()) return J({ ok: true, dup: 'queued' });
   await db.prepare('INSERT OR IGNORE INTO nv_enh (slug, vid, title, added) VALUES (?,?,?,?)').bind(c, id, String(b.title || '').slice(0, 200), Date.now()).run();
   await mirror(env);
   return J({ ok: true });
