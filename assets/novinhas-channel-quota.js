@@ -5,7 +5,7 @@
   var s = document.currentScript; if (!s) return;
   var total = parseInt(s.dataset.total, 10), shown = parseInt(s.dataset.shown, 10) || 20;
   if (!(total > shown)) return;
-  var href = s.dataset.href || '/discord', price = s.dataset.price || '49.99';
+  var href = s.dataset.href || '/paymentmethods/', price = s.dataset.price || '49.99';
   var css = '.nq-b{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 16px;border-radius:999px;border:1.5px solid #e8b84a;background:linear-gradient(180deg,#2a2208,#0d0b04);color:#ffd76a;font:800 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 0 14px #e8b84a33}.nq-b i{font-style:normal;color:#fff;font-weight:600;font-size:12px;opacity:.8}' +
     '.nq-o{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(0,0,0,.78);padding:16px;overflow:auto}.nq-p{width:min(320px,100%);padding:26px 22px;border-radius:18px;border:1.5px solid #e8b84a;background:linear-gradient(180deg,#2a2208,#0d0b04);text-align:center;color:#ddd;box-shadow:0 0 60px #e8b84a55;font-family:system-ui,sans-serif}' +
     '.nq-p small{color:#e8b84a;font:800 11px system-ui;letter-spacing:.14em}.nq-p b{display:block;font:900 44px system-ui;color:#ffd76a;margin:6px 0 2px}.nq-p p{margin:0 0 6px;font:600 14px/1.5 system-ui}' +
@@ -23,7 +23,7 @@
       '<div class="nq-bar"><div style="width:' + Math.round(shown / total * 100) + '%"></div></div><p style="font-size:12px;color:#aaa">' + shown + ' of ' + total + ' unlocked</p>' +
       '<p class="nq-grow">&#9679; Always growing: we keep searching, and every new video we find of her is added to this channel. VIP members get them all, automatically.</p>' +
       '<div class="nq-price"><small>USD</small>' + price + '<span style="font:700 13px system-ui;color:#e8b84a;margin-left:6px">/ month</span></div><div class="nq-pay"><span>PayPal</span><span>Binance</span><span>Card</span></div>' +
-      '<a class="nq-btn" href="' + href + '" target="_blank" rel="noopener">GET VIP ON DISCORD</a><p class="nq-note">Pay with PayPal, Binance or card. Your access code is sent to you on Discord. One code per person: it works on up to 4 of your devices. If it is shared, it is blocked and cancelled.</p>' +
+      '<a class="nq-btn" href="' + href + '" >GET VIP ACCESS</a><p class="nq-note">Pay with PayPal, Binance or card. Your access code is sent to you on Discord. One code per person: it works on up to 4 of your devices. If it is shared, it is blocked and cancelled.</p>' +
       '<form class="nq-code"><label for="nq-in">Already have a code?</label><div class="nq-row"><input id="nq-in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Your access code"><button type="submit">ACTIVATE</button></div><div class="nq-msg" role="status"></div></form>' +
       '<button type="button" class="nq-x">Maybe later</button></div>';
     o.addEventListener('click', function (e) { if (e.target === o || e.target.className === 'nq-x') o.remove(); });
