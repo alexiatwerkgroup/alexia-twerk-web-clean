@@ -129,15 +129,16 @@ export async function onRequest({ request, env }) {
       const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/clips/c-', limit: 200 });
       const ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter((m) => m && !avoid[c.slug + ':' + m[1]]);
       if (!ks.length) return null; const m = ks[Math.floor(Math.random() * ks.length)];
-      avoid[c.slug + ':' + m[1]] = 1; return { slug: c.slug, name: c.name || c.slug, id: parseInt(m[1], 10), start: parseInt(m[2], 10) };
+      avoid[c.slug + ':' + m[1]] = 1; return { slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: parseInt(m[1], 10), start: parseInt(m[2], 10) };
     };
-    for (const c of chans) { if (items.length >= N) break; const it = await pick(c, used); if (it) items.push(it); }
-    const fb = chans.filter((c) => c.slug === 'canal-da-maryh')[0];
+    const fb = chans.filter((c) => c.slug === 'canal-da-maryh')[0], FIRST = Math.min(4, N);
+    for (let i = 0; fb && items.length < FIRST && i < 40; i++) { const it = await pick(fb, used); if (!it) break; items.push(it); }
+    for (const c of chans) { if (items.length >= N) break; if (fb && c.slug === fb.slug) continue; const it = await pick(c, used); if (it) items.push(it); }
     for (let i = 0; fb && items.length < N && i < 40; i++) { const it = await pick(fb, used); if (!it) break; items.push(it); }
     const slugs = Array.from(new Set(items.map((x) => x.slug)));
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
-    return J({ viewers, items: items.map((x) => ({ slug: x.slug, name: x.name, id: x.id, src: `/api/novinhas/featured?cs=1&c=${x.slug}&v=${x.id}&t=${x.start}`, poster: `/api/novinhas/file?k=${x.slug}/previews/poster-${pad(x.id)}.webp`, url: `/novinhas/canal/?c=${x.slug}` })) }, 200, 'public, max-age=60');
+    return J({ viewers, items: items.map((x) => ({ slug: x.slug, name: x.name, total: x.total, id: x.id, src: `/api/novinhas/featured?cs=1&c=${x.slug}&v=${x.id}&t=${x.start}`, poster: `/api/novinhas/file?k=${x.slug}/previews/poster-${pad(x.id)}.webp`, url: `/novinhas/canal/?c=${x.slug}` })) }, 200, 'public, max-age=60');
   }
   if (q.get('list')) {
     if (!(await isOwner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);
