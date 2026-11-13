@@ -24,7 +24,7 @@
       '<p class="tp-w">' + T.no + ' <a href="' + REF + '" target="_blank" rel="noopener sponsored">' + T.mk + '</a> ' + T.min + '</p>' +
       code(ID, T.o1) + code(TRC, T.o2) + code(ERC, T.o3) +
       '<p class="tp-w" style="margin-top:12px">' + T.tap + '</p><p class="tp-w">' + T.after + ' Discord ' + T.or + ' <a href="mailto:twerkhub.lat@gmail.com?subject=' + encodeURIComponent(T.subj) + '">twerkhub.lat@gmail.com</a>.</p>' +
-      '<a class="tp-d" href="/discord" target="_blank" rel="noopener">DISCORD</a></div>';
+      '<a class="tp-d" href="https://www.binance.com/en/my/wallet/account/payment/send" target="_blank" rel="noopener">ABRIR BINANCE PAY</a></div>';
     o.addEventListener('click', function (e) {
       if (e.target === o || e.target.closest('.tp-x')) { o.remove(); return; }
       var c = e.target.closest('[data-c]'); if (c) { try { navigator.clipboard.writeText(c.dataset.c); var t = c.textContent; c.textContent = T.copied; setTimeout(function () { c.textContent = t; }, 1200); } catch (_) {} }
