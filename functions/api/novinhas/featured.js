@@ -134,16 +134,15 @@ export async function onRequest({ request, env }) {
       if (!m) continue;
       items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: parseInt(m[2], 10) }); used[r.slug + ':' + r.vid] = 1;
     }
-    const pick = async (c) => {
-      const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/clips/c-', limit: 200 });
-      const ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter((m) => m && !used[c.slug + ':' + m[1]]);
-      if (!ks.length) return null; const m = ks[Math.floor(Math.random() * ks.length)];
-      used[c.slug + ':' + m[1]] = 1; return { slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: parseInt(m[1], 10), start: parseInt(m[2], 10) };
-    };
-    chans.sort(() => Math.random() - 0.5);
-    const firstSlug = '';
-    const taken = {}; items.forEach((x) => { taken[x.slug] = 1; });
-    for (const c of chans) { if (items.length >= N) break; if (taken[c.slug]) continue; const it = await pick(c); if (it) items.push(it); }
+    // solo las elegidas por el dueno (nv_feat); las dos fijas van primero y despues el resto por orden de carga
+    for (const r of all) {
+      if (items.length >= N) break;
+      if (used[r.slug + ':' + r.vid] || !(r.slug in tot)) continue;
+      const l = await env.NOVINHAS_VIDEOS.list({ prefix: r.slug + '/clips/c-' + r.vid + '-', limit: 20 });
+      const m = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter(Boolean).sort((a, b2) => Math.abs(a[2] - (r.start || 0)) - Math.abs(b2[2] - (r.start || 0)))[0];
+      if (!m) continue;
+      items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: parseInt(m[2], 10) }); used[r.slug + ':' + r.vid] = 1;
+    }
     const slugs = Array.from(new Set(items.map((x) => x.slug)));
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
