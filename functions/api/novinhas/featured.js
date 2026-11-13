@@ -22,6 +22,7 @@ async function ensure(db) {
   try { await db.prepare('ALTER TABLE nv_feat ADD COLUMN auto INTEGER DEFAULT 0').run(); } catch (e) {}
   try { await db.prepare('ALTER TABLE nv_feat ADD COLUMN start INTEGER DEFAULT 0').run(); } catch (e) {}
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_feat_state (k TEXT PRIMARY KEY, v INTEGER)').run();
+  await db.prepare("INSERT OR IGNORE INTO nv_feat_state (k, v) VALUES ('cur', 0), ('since', 0)").run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_presence (slug TEXT, dev TEXT, ts INTEGER, PRIMARY KEY (slug, dev))').run();
 }
 const getS = async (db, k) => { const r = await db.prepare('SELECT v FROM nv_feat_state WHERE k = ?').bind(k).first(); return r ? r.v : 0; };
