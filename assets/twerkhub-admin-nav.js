@@ -9,7 +9,7 @@
       h.innerHTML = '<div class="tn2-w"><a class="tn2-logo" href="/" aria-label="Twerkhub home">TWERK<b>HUB</b></a><div class="tn2-lk"><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/membership">Membership</a><a href="/account">My account</a><a class="tn2-jn" href="/jenny/">Jenny VIP</a></div></div>';
       document.body.insertBefore(h, document.body.firstChild);
     }
-    [['/assets/twk-stats-btn.js?v=2'], ['/assets/twerkhub-activity.js?v=2']].forEach(function (s) { if (!document.querySelector('script[src^="' + s[0].split('?')[0] + '"]')) { var e = document.createElement('script'); e.src = s[0]; e.defer = true; document.head.appendChild(e); } });
+    [['/assets/twk-stats-btn.js?v=20261113-pt1'], ['/assets/twerkhub-activity.js?v=2']].forEach(function (s) { if (!document.querySelector('script[src^="' + s[0].split('?')[0] + '"]')) { var e = document.createElement('script'); e.src = s[0]; e.defer = true; document.head.appendChild(e); } });
   }
   if (document.body) put(); else document.addEventListener('DOMContentLoaded', put);
 })();
