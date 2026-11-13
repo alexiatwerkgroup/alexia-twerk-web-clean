@@ -248,7 +248,7 @@
     /* resolucion + cuenta regresiva (todos) y fecha de grabacion (solo el dueño) */
     var meta = document.createElement('div'); meta.className = 'np-meta';
     var mRes = document.createElement('span'), mCd = document.createElement('span'); mCd.className = 'np-cd';
-    meta.append(mRes, mCd); box.appendChild(meta);
+    var mTech = document.createElement('span'); meta.append(mRes, mCd, mTech); box.appendChild(meta);
     /* version mejorada (IA): 1 moneda por video, cupo diario; sin descarga */
     var enh = document.createElement('button'); enh.type = 'button'; enh.style.cssText = 'display:none;pointer-events:auto;cursor:pointer;margin-top:6px;padding:8px 12px;border-radius:10px;border:1.5px solid #35e06f;background:rgba(6,40,18,.9);color:#7dffa8;font:800 12px/1.3 system-ui,sans-serif;text-align:left;max-width:230px';
     meta.appendChild(enh); var enhOn = false;
@@ -305,7 +305,7 @@
     }
     function techShow(o) {
       var el = document.getElementById('np-tech'); if (!el) { var b = document.querySelector('#info .np-info'); if (!b) return; el = document.createElement('div'); el.id = 'np-tech'; el.style.cssText = 'margin-top:6px;font:700 13px/1.5 ui-monospace,Consolas,monospace;color:#ffd76a'; b.appendChild(el); }
-      var t = []; if (o.fps) t.push('FPS: ' + o.fps.toFixed(3)); if (o.kbps) t.push('Bitrate: ' + o.kbps.toFixed(1) + ' kbps'); el.textContent = t.join('  ·  ');
+      var t = []; if (o.fps) t.push('FPS: ' + o.fps.toFixed(3)); if (o.kbps) t.push('Bitrate: ' + o.kbps.toFixed(1) + ' kbps'); el.textContent = t.join('  ·  '); mTech.textContent = t.join(' · ');
     }
     function tech() {
       var url = v.getAttribute('data-src') || cur.video; if (!url) return;
