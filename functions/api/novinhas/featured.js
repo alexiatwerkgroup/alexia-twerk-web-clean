@@ -123,22 +123,20 @@ export async function onRequest({ request, env }) {
   if (q.get('row')) {
     const N = Math.min(20, Math.max(1, parseInt(q.get('row'), 10) || 8)); let chans = [];
     try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug)); } catch (e) {}
-    chans.sort(() => Math.random() - 0.5);
-    const items = [], used = {};
-    const pick = async (c, avoid) => {
-      const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/clips/c-', limit: 200 });
-      const ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter((m) => m && !avoid[c.slug + ':' + m[1]]);
-      if (!ks.length) return null; const m = ks[Math.floor(Math.random() * ks.length)];
-      avoid[c.slug + ':' + m[1]] = 1; return { slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: parseInt(m[1], 10), start: parseInt(m[2], 10) };
-    };
-    const fb = chans.filter((c) => c.slug === 'canal-da-maryh')[0], FIRST = Math.min(4, N);
-    for (let i = 0; fb && items.length < FIRST && i < 40; i++) { const it = await pick(fb, used); if (!it) break; items.push(it); }
-    for (const c of chans) { if (items.length >= N) break; if (fb && c.slug === fb.slug) continue; const it = await pick(c, used); if (it) items.push(it); }
-    for (let i = 0; fb && items.length < N && i < 40; i++) { const it = await pick(fb, used); if (!it) break; items.push(it); }
+    const tot = {}; chans.forEach((c) => { tot[c.slug] = c.total || 0; });
+    const all = (await db.prepare('SELECT id, slug, vid, name, start FROM nv_feat ORDER BY added, id').all()).results || [];
+    const pin = (await getS(db, 'pin')) || 0; all.sort((x, y) => (y.id === pin) - (x.id === pin));
+    const items = [];
+    for (const r of all) {
+      if (items.length >= N) break;
+      if (!(r.slug in tot)) continue;
+      if (!(await env.NOVINHAS_VIDEOS.head(clipKey(r.slug, r.vid, r.start || 0)))) continue;
+      items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: r.start || 0 });
+    }
     const slugs = Array.from(new Set(items.map((x) => x.slug)));
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
-    return J({ viewers, items: items.map((x) => ({ slug: x.slug, name: x.name, total: x.total, id: x.id, src: `/api/novinhas/featured?cs=1&c=${x.slug}&v=${x.id}&t=${x.start}`, poster: `/api/novinhas/file?k=${x.slug}/previews/poster-${pad(x.id)}.webp`, url: `/novinhas/canal/?c=${x.slug}` })) }, 200, 'public, max-age=60');
+    return J({ viewers, items: items.map((x, i) => ({ first: i === 0, slug: x.slug, name: x.name, total: x.total, id: x.id, src: `/api/novinhas/featured?cs=1&c=${x.slug}&v=${x.id}&t=${x.start}`, poster: `/api/novinhas/file?k=${x.slug}/previews/poster-${pad(x.id)}.webp`, url: `/novinhas/canal/?c=${x.slug}` })) }, 200, 'public, max-age=60');
   }
   if (q.get('list')) {
     if (!(await isOwner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);
