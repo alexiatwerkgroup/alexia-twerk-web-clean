@@ -16,7 +16,7 @@ export async function onRequest({ request, env }) {
   let b = {}; try { b = await request.json(); } catch (e) {}
   const text = clean(b.text, 800); if (!text) return J({ ok: false, error: 'empty' }, 400);
   if (b.close && /^[0-9a-f]{32}$/.test(clean(b.chat, 40))) { const cid = clean(b.chat, 40); await env.DB.prepare("UPDATE help_chats SET status = 'closed', updated = ? WHERE id = ?").bind(now, cid).run(); await env.DB.prepare('INSERT INTO help_msgs (chat, role, text, ts) VALUES (?,?,?,?)').bind(cid, 'bot', 'El usuario cerro la charla.', now).run(); return J({ ok: true }); }
-  let id = clean(b.chat, 40), created = false; const iph = await ipHash(request, env);
+  let id = clean(b.chat, 40), created = false, lastTs = 0; const iph = await ipHash(request, env);
   if (id) {
     if (!/^[0-9a-f]{32}$/.test(id)) return J({ ok: false, error: 'bad_chat' }, 400);
     const c = await env.DB.prepare('SELECT id FROM help_chats WHERE id = ?').bind(id).first(); if (!c) id = '';
@@ -31,12 +31,13 @@ export async function onRequest({ request, env }) {
   } else {
     const last = await env.DB.prepare("SELECT ts FROM help_msgs WHERE chat = ? AND role = 'user' ORDER BY id DESC LIMIT 1").bind(id).first();
     if (last && now - last.ts < 1) return J({ ok: false, error: 'slow_down' }, 429);
+    lastTs = last ? last.ts : 0;
     const cnt = await env.DB.prepare('SELECT COUNT(*) n FROM help_msgs WHERE chat = ?').bind(id).first(); if (cnt && cnt.n > 300) return J({ ok: false, error: 'limit' }, 429);
     if (b.email) { await env.DB.prepare('UPDATE help_chats SET email = ? WHERE id = ?').bind(clean(b.email, 120), id).run(); if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(clean(b.email, 120))) await notifyMail(env, { subject: 'Twerkhub chat: el usuario dejo su email', text: 'Email del usuario: ' + clean(b.email, 120) + '\nMensaje: ' + text.slice(0, 500) + '\nResponder desde el panel: https://twerkhub.lat/admin/help/ (o respondele a este mail).', replyTo: clean(b.email, 120) }); }
   }
   const r = await env.DB.prepare('INSERT INTO help_msgs (chat, role, text, ts) VALUES (?,?,?,?)').bind(id, 'user', text, now).run();
   await env.DB.prepare("UPDATE help_chats SET updated = ?, unread_admin = unread_admin + 1, status = CASE WHEN status = 'open' THEN 'open' ELSE 'waiting' END WHERE id = ?").bind(now, id).run();
-  let mailSt; if (created || !b.chat) { const em = clean(b.email, 120); mailSt = await notifyMail(env, { subject: 'Nuevo chat de ayuda en Twerkhub', text: 'Mensaje: ' + text.slice(0, 500) + '\nEmail del usuario: ' + (em || '(no dejo)') + '\nIdioma: ' + clean(b.lang, 8) + ' · Pagina: ' + clean(b.path, 160) + '\nResponder: https://twerkhub.lat/admin/help/', replyTo: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em) ? em : undefined }); }
+  let mailSt; const followUp = !created && b.chat && lastTs && now - lastTs >= 120; if (created || !b.chat || followUp) { const em = clean(b.email, 120); mailSt = await notifyMail(env, { subject: followUp ? 'Nuevo mensaje en el chat de ayuda de Twerkhub' : 'Nuevo chat de ayuda en Twerkhub', text: 'Mensaje: ' + text.slice(0, 500) + '\nEmail del usuario: ' + (em || '(no dejo)') + '\nIdioma: ' + clean(b.lang, 8) + ' · Pagina: ' + clean(b.path, 160) + '\nResponder: https://twerkhub.lat/admin/help/', replyTo: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em) ? em : undefined }); }
   if (created || !b.chat) await notify(env, 'Nuevo chat de ayuda en Twerkhub: ' + text.slice(0, 200) + '\nResponder: https://twerkhub.lat/admin/help/');
   return J({ ok: true, chat: id, id: r.meta && r.meta.last_row_id, ahead: await ahead(env, id), ...(b.diag ? { mail: mailSt } : {}) });
 }
