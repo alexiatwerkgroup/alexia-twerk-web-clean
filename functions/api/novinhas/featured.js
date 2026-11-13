@@ -120,6 +120,22 @@ export async function onRequest({ request, env }) {
     const co = await env.NOVINHAS_VIDEOS.get(key, { range: { offset: a0, length: b0 - a0 + 1 } });
     return new Response(co.body, { status: sc, headers: hh });
   }
+  if (q.get('thumbs')) {
+    const rows = (await db.prepare('SELECT slug, vid, start FROM nv_feat ORDER BY added, id').all()).results || [], by = {};
+    rows.forEach((r) => { (by[r.slug] = by[r.slug] || []).push(r); });
+    const day = Math.floor((now - 10800) / 86400), out = {};
+    const hash = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h; };
+    for (const slug of Object.keys(by)) {
+      if (!SLUG.test(slug)) continue;
+      const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: 500 }), have = {};
+      (l.objects || []).forEach((o) => { const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (m) have[m[1]] = m[2]; });
+      const ok = by[slug].filter((r) => have[r.vid] != null);
+      if (!ok.length) continue;
+      const r = ok[hash(slug + ':' + day) % ok.length];
+      out[slug] = { id: r.vid, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${r.vid}&t=${have[r.vid]}` };
+    }
+    return J({ day, thumbs: out }, 200, 'public, max-age=300');
+  }
   if (q.get('row')) {
     const N = Math.min(20, Math.max(1, parseInt(q.get('row'), 10) || 8)); let chans = [];
     try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug)); } catch (e) {}
