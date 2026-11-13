@@ -20,6 +20,7 @@
   // Pre-resolucion: el desafio se resuelve en segundo plano mientras el usuario escribe; al enviar, el token ya esta listo y no se espera nada.
   var pre = null; // { action, id, box, token, ts }
   function preDrop() { if (!pre) return; try { if (pre.id !== undefined && window.turnstile) window.turnstile.remove(pre.id); } catch (e) {} try { pre.box.remove(); } catch (e) {} pre = null; }
+  function preFail(cur) { cur.fail = true; var w = cur.waiter; cur.waiter = null; if (pre === cur) preDrop(); if (w) w.fail(); }
   function preStart(action) {
     if (pre || busy) return;
     load().then(function () {
@@ -27,23 +28,24 @@
       var box = document.createElement('div');
       box.style.cssText = 'position:fixed;left:-9999px;top:0;width:300px;height:70px;overflow:hidden';
       document.body.appendChild(box);
-      var cur = pre = { action: action, id: undefined, box: box, token: null, ts: 0 };
+      var cur = pre = { action: action, id: undefined, box: box, token: null, ts: 0, fail: false, waiter: null };
       try {
         cur.id = window.turnstile.render(box, {
           sitekey: sitekey, action: action, theme: 'dark', size: 'flexible',
-          callback: function (t) { cur.token = t; cur.ts = Date.now(); },
-          'expired-callback': function () { if (pre === cur) preDrop(); },
-          'error-callback': function () { if (pre === cur) preDrop(); },
-          'timeout-callback': function () { if (pre === cur) preDrop(); }
+          callback: function (t) { cur.token = t; cur.ts = Date.now(); if (cur.waiter) cur.waiter.ok(t); },
+          'expired-callback': function () { preFail(cur); },
+          'error-callback': function () { preFail(cur); },
+          'timeout-callback': function () { preFail(cur); }
         });
-      } catch (e) { preDrop(); }
+      } catch (e) { preFail(cur); }
     }).catch(function () {});
   }
   window.twkSecurityWarm = function (action) { try { preStart(action || 'signin'); } catch (e) {} };
   window.twkSecurityCheck = function (action) {
     if (busy) return Promise.reject(Error('A security verification is already open.'));
     if (pre && pre.action === action && pre.token && Date.now() - pre.ts < 240000) { var tk = pre.token; preDrop(); return Promise.resolve(tk); }
-    preDrop();
+    var adopt = (pre && pre.action === action && !pre.fail && pre.id !== undefined) ? pre : null;
+    if (!adopt) preDrop();
     busy = true;
     return new Promise(function (resolve, reject) {
       var dialog = document.createElement('dialog'), id, done = false, waitTimer, verifiedToken = null;
@@ -53,6 +55,7 @@
       function finish(error, token) {
         if (done) return; done = true; busy = false; clearTimeout(waitTimer);
         if (id !== undefined && window.turnstile) window.turnstile.remove(id);
+        if (adopt && pre === adopt) { adopt.waiter = null; preDrop(); }
         dialog.close(); dialog.remove();
         if (error) reject(error); else resolve(token);
       }
@@ -62,7 +65,15 @@
       dialog.addEventListener('cancel', function (e) { e.preventDefault(); finish(Error('Security verification cancelled.')); });
       document.body.appendChild(dialog); dialog.showModal();
       waitTimer = setTimeout(function () { if (!done) dialog.querySelector('.twk-security-msg').textContent = 'If the check does not advance, cancel and try again.'; }, 30000);
-      load().then(function () {
+      function okTok(token) {
+        if (done) return;
+        verifiedToken = token; clearTimeout(waitTimer);
+        dialog.querySelector('.twk-security-msg').textContent = 'Verification complete. Click Continue to submit your login or registration.';
+        var next = dialog.querySelector('.twk-security-continue'); next.disabled = false; next.style.display = 'inline-block'; next.focus();
+      }
+      function renderFresh() {
+        if (done) return;
+        load().then(function () {
         if (done) return;
         id = window.turnstile.render(dialog.querySelector('.twk-security-widget'), {
           sitekey: sitekey, action: action, theme: 'dark', size: 'flexible',
@@ -82,6 +93,11 @@
           'timeout-callback': function () { dialog.querySelector('.twk-security-msg').textContent = 'Verification timed out. Please cancel and try again.'; }
         });
       }).catch(function (e) { finish(e); });
+      }
+      if (adopt) {
+        dialog.querySelector('.twk-security-msg').textContent = 'Verifying… one moment.';
+        if (adopt.token) okTok(adopt.token); else adopt.waiter = { ok: okTok, fail: renderFresh };
+      } else renderFresh();
     });
   };
 })();
