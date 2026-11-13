@@ -19,6 +19,7 @@ async function isOwner(request, env) {
 }
 async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_feat (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, vid INTEGER, title TEXT, name TEXT, queued INTEGER DEFAULT 1, added INTEGER, shown INTEGER DEFAULT 0, last INTEGER DEFAULT 0, UNIQUE(slug, vid))').run();
+  try { await db.prepare('ALTER TABLE nv_feat ADD COLUMN start INTEGER DEFAULT 0').run(); } catch (e) {}
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_feat_state (k TEXT PRIMARY KEY, v INTEGER)').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_presence (slug TEXT, dev TEXT, ts INTEGER, PRIMARY KEY (slug, dev))').run();
 }
@@ -61,7 +62,9 @@ export async function onRequest({ request, env }) {
     if (!SLUG.test(b.c || '') || !(id > 0)) return J({ error: 'bad_request' }, 400);
     const vj = await env.NOVINHAS_VIDEOS.get(b.c + '/_videos.json'); if (!vj) return J({ error: 'not_found' }, 404);
     const d = await vj.json(), v = (d.videos || []).filter((x) => x.id === id)[0]; if (!v) return J({ error: 'no_such_video' }, 404);
-    await db.prepare('INSERT OR IGNORE INTO nv_feat (slug, vid, title, name, queued, added) VALUES (?, ?, ?, ?, 1, ?)').bind(b.c, id, v.title || '', d.name || b.c, now).run();
+    const t = Math.max(0, Math.min(Math.floor(Number(b.t) || 0), Math.max(0, Math.floor((Number(v.duration) || 0) - SECS))));
+    await db.prepare('INSERT OR IGNORE INTO nv_feat (slug, vid, title, name, queued, added, start) VALUES (?, ?, ?, ?, 1, ?, ?)').bind(b.c, id, v.title || '', d.name || b.c, now, t).run();
+    await db.prepare('UPDATE nv_feat SET start = ? WHERE slug = ? AND vid = ?').bind(t, b.c, id).run();
     await db.prepare('UPDATE nv_feat SET queued = 1, added = ? WHERE slug = ? AND vid = ? AND id != ? AND queued = 0').bind(now, b.c, id, (await getS(db, 'cur')) || 0).run();
     const n = await db.prepare('SELECT COUNT(*) c FROM nv_feat WHERE queued = 1').first();
     return J({ ok: true, queued: n ? n.c : 0 });
@@ -81,7 +84,8 @@ export async function onRequest({ request, env }) {
     if (!head) return new Response('not_found', { status: 404 });
     const vj = await env.NOVINHAS_VIDEOS.get(slug + '/_videos.json'); const d = vj ? await vj.json() : { videos: [] };
     const dur = Number(((d.videos || []).filter((x) => x.id === vid)[0] || {}).duration) || 0;
-    const total = dur > SECS + 2 ? Math.min(head.size, Math.ceil(head.size * ((SECS + 2) / dur) * 1.15)) : head.size;
+    const st = (await db.prepare('SELECT start FROM nv_feat WHERE slug = ? AND vid = ?').bind(slug, vid).first() || {}).start || 0, upto = st + SECS + 2;
+    const total = dur > upto ? Math.min(head.size, Math.ceil(head.size * (upto / dur) * 1.15)) : head.size;
     const h = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': 'public, max-age=3600', 'X-Robots-Tag': 'noindex' });
     const m = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || '');
     let start = 0, end = total - 1, status = 200;
@@ -96,7 +100,7 @@ export async function onRequest({ request, env }) {
   }
   const cur = await current(db, now); if (!cur) return J({ none: true }, 200, 'public, max-age=30');
   const r = cur.row, n = (await db.prepare('SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE slug = ? AND ts > ?').bind(r.slug, now - 600).first());
-  return J({ slug: r.slug, name: r.name, id: r.vid, title: r.title, viewers: n ? n.c : 0, left: Math.max(0, HOLD - (now - cur.since)),
+  return J({ slug: r.slug, name: r.name, id: r.vid, title: r.title, viewers: n ? n.c : 0, left: Math.max(0, HOLD - (now - cur.since)), start: r.start || 0, secs: SECS,
     src: `/api/novinhas/featured?s=1&c=${r.slug}&v=${r.vid}`, poster: `/api/novinhas/file?k=${r.slug}/previews/poster-${pad(r.vid)}.webp`,
     url: `/novinhas/canal/ver/?c=${r.slug}&v=${pad(r.vid)}` }, 200, 'public, max-age=20');
 }

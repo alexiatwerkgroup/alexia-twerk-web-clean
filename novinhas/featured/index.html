@@ -7,7 +7,7 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return
 function pad(n){return String(n).padStart(2,'0')}
 function post(b){return fetch('/api/novinhas/featured',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(function(r){return r.json()})}
 function row(it,cur,d){var left=cur&&it.id===cur.id?Math.max(0,d.hold-(d.now-cur.since)):0;
- return '<div class="r'+(cur&&it.id===cur.id?' cur':'')+'"><img loading="lazy" src="/api/novinhas/file?k='+esc(it.slug)+'/previews/poster-'+pad(it.vid)+'.webp" alt=""><div><b>'+esc(it.name)+'</b> &middot; '+esc(it.title)+'<small>shown '+it.shown+' times'+(left?' &middot; live now, '+Math.ceil(left/60)+' min left':'')+'</small></div>'+
+ return '<div class="r'+(cur&&it.id===cur.id?' cur':'')+'"><img loading="lazy" src="/api/novinhas/file?k='+esc(it.slug)+'/previews/poster-'+pad(it.vid)+'.webp" alt=""><div><b>'+esc(it.name)+'</b> &middot; '+esc(it.title)+'<small>starts at '+(it.start||0)+' s &middot; shown '+it.shown+' times'+(left?' &middot; live now, '+Math.ceil(left/60)+' min left':'')+'</small></div>'+
  (cur&&it.id===cur.id?'':'<button class="g" data-a="now" data-i="'+it.id+'">Show now</button>')+(it.queued?'':'<button data-a="requeue" data-i="'+it.id+'">Queue again</button>')+'<button data-a="remove" data-i="'+it.id+'">Delete</button></div>'}
 function load(){fetch('/api/novinhas/featured?list=1',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(d){var v=document.getElementById('v');
  if(!d.ok){v.textContent='Owner only. Sign in with your owner account.';return}
