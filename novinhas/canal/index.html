@@ -6,4 +6,4 @@ fetch('/api/novinhas/channel?c='+encodeURIComponent(slug),{credentials:'same-ori
 if(d.vip&&!d.unlocked){var s=document.createElement('script');s.src='/assets/novinhas-channel-quota.js';s.dataset.total=d.total;s.dataset.shown=d.free;s.dataset.target='.banner';document.head.appendChild(s)}
 else if(d.vip){var b=document.createElement('span');b.className='vipok';b.textContent='VIP ACTIVE';document.querySelector('.banner').appendChild(b)}
 search.addEventListener('input',render);render()}).catch(function(){count.textContent='This channel is not available.'})})();
-</script></body></html>
+</script><script src="/assets/novinhas-nav.js?v=1"></script></body></html>
