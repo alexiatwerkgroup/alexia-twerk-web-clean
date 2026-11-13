@@ -10,6 +10,26 @@ const one = async (db, sql, ...a) => (await db.prepare(sql).bind(...a).first()) 
 // so it must not run on every poll. 5 min per worker instance is enough for a live counter.
 let miniCache = { t: 0, body: null };
 
+// All-time totals scan the whole tw_hits table: cache them for 10 min, cap the query at 8s,
+// and fall back to the last known value so this can never stall the panel.
+const allTimeCache = new Map();
+async function allTimeTotals(db, bots, hf) {
+  const hit = allTimeCache.get(bots);
+  if (hit && Date.now() - hit.at < 600000) return hit.v;
+  let timer;
+  try {
+    const v = await Promise.race([
+      one(db, 'SELECT COUNT(*) v, COUNT(DISTINCT vid) u, MIN(ts) first FROM tw_hits WHERE 1=1' + hf),
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('all_time_timeout')), 8000); })
+    ]);
+    allTimeCache.set(bots, { at: Date.now(), v: v || {} });
+    return v || {};
+  } catch (error) {
+    console.warn('All-time totals unavailable:', error);
+    return hit ? hit.v : {};
+  } finally { clearTimeout(timer); }
+}
+
 async function buildStats({ request, env }) {
   const p = await authenticate(request, env);
   if (!p || !p.sub) return json({ ok: false, error: 'owner_only' }, 403);
@@ -42,7 +62,7 @@ async function buildStats({ request, env }) {
   const mainResults=await db.batch([
     db.prepare(`SELECT COUNT(*) views, COUNT(DISTINCT vid) uniq, COUNT(DISTINCT CASE WHEN is_new=1 THEN vid END) newv, COUNT(DISTINCT CASE WHEN reg=1 THEN vid END) regv, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) avgdur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) avgscroll FROM tw_hits WHERE ${W}`).bind(since),
     db.prepare(`SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(*)=1)`).bind(since),
-    db.prepare('SELECT COUNT(*) v, COUNT(DISTINCT vid) u, MIN(ts) first FROM tw_hits WHERE 1=1' + hf),
+    db.prepare('SELECT 1 x'), // placeholder: all-time totals now come from allTimeTotals() (cached, scans the whole table)
     db.prepare(`SELECT date((ts/1000)+${off},'unixepoch') d, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY d ORDER BY d`).bind(since),
     db.prepare(`SELECT CAST(strftime('%H',(ts/1000)+${off},'unixepoch') AS INTEGER) h, COUNT(*) v, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY h ORDER BY h`).bind(since),
     db.prepare(`SELECT CAST(strftime('%w',(ts/1000)+${off},'unixepoch') AS INTEGER) w, CAST(strftime('%H',(ts/1000)+${off},'unixepoch') AS INTEGER) h, COUNT(*) v FROM tw_hits WHERE ${W} GROUP BY w,h`).bind(since),
@@ -91,7 +111,7 @@ async function buildStats({ request, env }) {
       }
     } catch (error) { console.warn('Session metric unavailable:', error); }
   }
-  const all=(mainResults[2].results||[])[0]||{};
+  const all=await allTimeTotals(db, bots, hf);
   const byDay=mainResults[3].results||[];
   const byHour=mainResults[4].results||[];
   const heat=mainResults[5].results||[];
