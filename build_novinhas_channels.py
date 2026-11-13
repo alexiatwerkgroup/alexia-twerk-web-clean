@@ -14,6 +14,6 @@ for c in ch:
 grid = '<div class="nov-featured-grid">\n' + '\n'.join(cards) + '\n </div>'
 s2, k = re.subn(r'<div class="nov-featured-grid">.*?\n </div>(?=\n <div class="nov-upload")', lambda m: grid, s, flags=re.S)
 assert k == 1, 'grid not found'
-s2 = re.sub(r'Kelina is live · more channels are being rebuilt\.', '%d channels are live · more are being rebuilt.' % (sum(1 for c in ch if not c.get('pending')) + 1), s2)
+s2 = re.sub(r'\d+ channels are live · more are being rebuilt\.', '%d channels are live · more are being rebuilt.' % (sum(1 for c in ch if not c.get('pending')) + 1), s2)
 open(P, 'w', encoding='utf-8').write(s2)
 print('ok', len(ch) + 1, 'cards')
