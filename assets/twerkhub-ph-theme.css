@@ -320,39 +320,7 @@ body.twerkhub-ph-theme .twerkhub-hh-mute-label { white-space: nowrap !important;
 /* ────────────────────────────────────────────────────────────────────
    6 · Buttons (universal)
    ──────────────────────────────────────────────────────────────────── */
-body.twerkhub-ph-theme .twerkhub-btn-primary,
-body.twerkhub-ph-theme .twerkhub-btn-gold,
-body.twerkhub-ph-theme .twerkhub-btn[class*="primary"],
-body.twerkhub-ph-theme button[class*="-primary"]:not([class*="ghost"]) {
-  background: #ff9000 !important;
-  background-image: none !important;
-  color: #000 !important;
-  border: none !important;
-  font-family: "Inter", sans-serif !important;
-  font-weight: 900 !important;
-  text-transform: uppercase !important;
-  letter-spacing: .1em !important;
-  box-shadow: 0 4px 14px rgba(255,144,0,.32) !important;
-}
-body.twerkhub-ph-theme .twerkhub-btn-primary:hover,
-body.twerkhub-ph-theme .twerkhub-btn-gold:hover {
-  background: #ffb04d !important;
-  box-shadow: 0 8px 22px rgba(255,144,0,.5) !important;
-}
-
-body.twerkhub-ph-theme .twerkhub-btn-ghost,
-body.twerkhub-ph-theme .twerkhub-btn[class*="ghost"] {
-  background: transparent !important;
-  color: #fff !important;
-  border: 1px solid rgba(255,144,0,.5) !important;
-  font-weight: 800 !important;
-  text-transform: uppercase !important;
-  letter-spacing: .1em !important;
-}
-body.twerkhub-ph-theme .twerkhub-btn-ghost:hover {
-  background: rgba(255,144,0,.08) !important;
-  border-color: #ff9000 !important;
-}
+/* Botones: estilo unico en /assets/twk-ui.css (primario negro+dorado, secundario .twk-btn--ghost). No definir botones aqui. */
 
 /* ────────────────────────────────────────────────────────────────────
    7 · Cards (playlists, coming, club, threads, members, tiers)

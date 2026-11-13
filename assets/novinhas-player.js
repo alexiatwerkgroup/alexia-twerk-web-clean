@@ -3,6 +3,7 @@
    Uso: TWK_NP.init({ slug, data, vid, stage, side, ... }) desde /novinhas/canal/ver/. */
 (function () {
   'use strict';
+  if (!document.querySelector('link[href*="twk-ui.css"]')) { var uil = document.createElement('link'); uil.rel = 'stylesheet'; uil.href = '/assets/twk-ui.css?v=1'; document.head.appendChild(uil); }
   var LS = {
     get: function (k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
     set: function (k, v) { try { localStorage.setItem(k, v); } catch (_) {} }
@@ -46,15 +47,13 @@
     '.np-next{position:absolute;inset:0;z-index:15;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(0,0,0,.78);text-align:center;padding:20px;font-family:system-ui,sans-serif}' +
     '.np-next.on{display:flex}.np-next small{color:#e8b84a;letter-spacing:.14em;font-weight:800;font-size:11px}.np-next b{font-size:18px;max-width:560px;line-height:1.35}' +
     '.np-next img{width:150px;max-height:110px;object-fit:cover;border-radius:10px}' +
-    '.np-btn{padding:11px 22px;border-radius:12px;border:1.5px solid #ffe08a;background:linear-gradient(180deg,#ffe08a,#c99a2e);color:#1a1200;font:900 13px system-ui;letter-spacing:.05em;cursor:pointer}' +
-    '.np-btn.g{background:#222;color:#ddd;border-color:#555}' +
-    '.np-help{position:absolute;inset:0;z-index:16;display:none;place-items:center;background:rgba(0,0,0,.82);padding:14px;overflow:auto}' +
+        '.np-help{position:absolute;inset:0;z-index:16;display:none;place-items:center;background:rgba(0,0,0,.82);padding:14px;overflow:auto}' +
     '.np-help.on{display:grid}.np-help>div{width:min(560px,100%);background:#141108;border:1.5px solid #e8b84a;border-radius:16px;padding:18px 20px;color:#ddd;font:600 13px/1.9 system-ui,sans-serif}' +
     '.np-help h3{margin:0 0 8px;color:#ffd76a;font:900 15px system-ui;letter-spacing:.06em}.np-help .r{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #ffffff12}' +
     '.np-help kbd{background:#2a2208;border:1px solid #e8b84a66;border-radius:6px;padding:1px 8px;color:#ffd76a;font:800 12px system-ui;margin-left:4px}' +
     '.np-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 4px}' +
-    '.np-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid #444;background:#1b1b1b;color:#ddd;font:700 13px system-ui;cursor:pointer}' +
-    '.np-pill:hover{border-color:#e8b84a}.np-pill.on{border-color:#e8b84a;color:#ffd76a}.np-pill i{width:30px;height:16px;border-radius:9px;background:#444;position:relative;display:inline-block}' +
+    '.np-pill i{width:30px;height:16px;border-radius:9px;background:#444;position:relative;display:inline-block;flex:none}' +
+    '.np-pill.on{border-color:#c99a2e!important;color:#f7dd8b!important}' +
     '.np-pill i:after{content:"";position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:.15s}.np-pill.on i{background:#e8b84a}.np-pill.on i:after{left:16px}' +
     '.np-side h2{font:800 16px system-ui;margin:0 0 12px;color:#fff}.np-side h2 span{color:#ffd76a}' +
     '.np-item{display:grid;grid-template-columns:168px 1fr;gap:10px;margin-bottom:12px;color:#fff;text-decoration:none;cursor:pointer}' +
@@ -66,7 +65,7 @@
     '.np-item.seen .np-th img{opacity:.55}.np-item.cur .np-th{outline:2px solid #e8b84a}' +
     '.np-item strong{display:block;font:700 14px/1.35 system-ui;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word}' +
     '.np-item span.sub{display:block;margin-top:4px;color:#999;font:600 12px system-ui}' +
-    '.np-more{width:100%;margin-top:6px}' +
+    '.np-more{margin-top:6px}' +
     '@media(max-width:980px){.np-item{grid-template-columns:140px 1fr}.np-th{height:84px}}';
 
   var LOCK = '<svg viewBox="0 0 86 104"><path d="M22 46V32a21 21 0 0 1 42 0v14" fill="none" stroke="#f7c83a" stroke-width="9" stroke-linecap="round"/><rect x="8" y="44" width="70" height="52" rx="12" fill="#f7c83a"/><circle cx="43" cy="66" r="7" fill="#1a1200"/><rect x="40" y="70" width="6" height="14" rx="3" fill="#1a1200"/></svg>';
@@ -155,7 +154,7 @@
     box.appendChild(nx); var nxT;
     function showNext() {
       if (!nextV) return;
-      var n = 5; nx.innerHTML = '<small>UP NEXT</small><img alt="" src="' + nextV.poster + '"><b></b><div><span class="np-cd" style="font:800 28px system-ui;color:#ffd76a"></span></div><div style="display:flex;gap:10px"><button class="np-btn" data-a="go">PLAY NOW</button><button class="np-btn g" data-a="no">CANCEL</button></div>';
+      var n = 5; nx.innerHTML = '<small>UP NEXT</small><img alt="" src="' + nextV.poster + '"><b></b><div><span class="np-cd" style="font:800 28px system-ui;color:#ffd76a"></span></div><div style="display:flex;gap:10px"><button class="twk-btn twk-btn--sm" data-a="go">PLAY NOW</button><button class="twk-btn twk-btn--ghost twk-btn--sm" data-a="no">CANCEL</button></div>';
       nx.querySelector('b').textContent = nextV.title; nx.classList.add('on');
       var cd = nx.querySelector('.np-cd'); cd.textContent = n;
       clearInterval(nxT); nxT = setInterval(function () { n--; cd.textContent = n; if (n <= 0) { clearInterval(nxT); location.href = urlFor(nextV, true); } }, 1000);
@@ -228,12 +227,12 @@
 
     /* ---------- barra de acciones ---------- */
     var bar = document.createElement('div'); bar.className = 'np-bar';
-    var ap = document.createElement('button'); ap.type = 'button'; ap.className = 'np-pill' + (LS.get(AUTO_KEY) !== '0' ? ' on' : ''); ap.innerHTML = 'Autoplay next <i></i>';
+    var ap = document.createElement('button'); ap.type = 'button'; ap.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm' + (LS.get(AUTO_KEY) !== '0' ? ' on' : ''); ap.innerHTML = 'Autoplay next <i></i>';
     ap.onclick = function () { var on = !ap.classList.contains('on'); ap.classList.toggle('on', on); LS.set(AUTO_KEY, on ? '1' : '0'); };
-    var pv = document.createElement('button'); pv.type = 'button'; pv.className = 'np-pill'; pv.textContent = '⏮ Previous'; pv.onclick = function () { if (prevV) location.href = urlFor(prevV, true); };
-    var nt = document.createElement('button'); nt.type = 'button'; nt.className = 'np-pill'; nt.textContent = 'Next ⏭'; nt.onclick = function () { if (nextV) location.href = urlFor(nextV, true); };
+    var pv = document.createElement('button'); pv.type = 'button'; pv.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; pv.textContent = '⏮ Previous'; pv.onclick = function () { if (prevV) location.href = urlFor(prevV, true); };
+    var nt = document.createElement('button'); nt.type = 'button'; nt.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; nt.textContent = 'Next ⏭'; nt.onclick = function () { if (nextV) location.href = urlFor(nextV, true); };
     if (!prevV) pv.style.display = 'none'; if (!nextV) nt.style.display = 'none';
-    var kb = document.createElement('button'); kb.type = 'button'; kb.className = 'np-pill'; kb.textContent = 'Keyboard shortcuts (?)'; kb.onclick = function () { help.classList.add('on'); };
+    var kb = document.createElement('button'); kb.type = 'button'; kb.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; kb.textContent = 'Keyboard shortcuts (?)'; kb.onclick = function () { help.classList.add('on'); };
     bar.append(pv, nt, ap, kb);
     if (o.bar) o.bar.replaceChildren(bar);
 
@@ -267,7 +266,7 @@
         });
         shown += 20; if (shown >= rest.length && mb.parentNode) mb.remove();
       }
-      var mb = document.createElement('button'); mb.type = 'button'; mb.className = 'np-btn g np-more'; mb.textContent = 'SHOW MORE'; mb.onclick = more;
+      var mb = document.createElement('button'); mb.type = 'button'; mb.className = 'twk-btn twk-btn--ghost twk-btn--block np-more'; mb.textContent = 'SHOW MORE'; mb.onclick = more;
       side.appendChild(mb); more();
     }
     return { video: v };

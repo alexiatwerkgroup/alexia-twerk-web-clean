@@ -1,0 +1,40 @@
+// Publico. POST {chat?, text, transcript?, email?, path?, lang?} · GET ?chat=ID&since=N
+import { ensureHelp, J, newId, ipHash, notify } from '../../_lib/help.js';
+const clean = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').trim().slice(0, n);
+export async function onRequest({ request, env }) {
+  if (!env.DB) return J({ ok: false, error: 'no_db' }, 503);
+  await ensureHelp(env.DB);
+  const now = Math.floor(Date.now() / 1000), url = new URL(request.url);
+  if (request.method === 'GET') {
+    const id = clean(url.searchParams.get('chat'), 40), since = parseInt(url.searchParams.get('since')) || 0;
+    if (!/^[0-9a-f]{32}$/.test(id)) return J({ ok: false, error: 'bad_chat' }, 400);
+    const c = await env.DB.prepare('SELECT status FROM help_chats WHERE id = ?').bind(id).first(); if (!c) return J({ ok: false, error: 'not_found' }, 404);
+    const r = (await env.DB.prepare('SELECT id, role, text, ts FROM help_msgs WHERE chat = ? AND id > ? ORDER BY id LIMIT 100').bind(id, since).all()).results || [];
+    return J({ ok: true, status: c.status, msgs: r });
+  }
+  if (request.method !== 'POST') return J({ ok: false }, 405);
+  let b = {}; try { b = await request.json(); } catch (e) {}
+  const text = clean(b.text, 800); if (!text) return J({ ok: false, error: 'empty' }, 400);
+  let id = clean(b.chat, 40), created = false; const iph = await ipHash(request, env);
+  if (id) {
+    if (!/^[0-9a-f]{32}$/.test(id)) return J({ ok: false, error: 'bad_chat' }, 400);
+    const c = await env.DB.prepare('SELECT id FROM help_chats WHERE id = ?').bind(id).first(); if (!c) id = '';
+  }
+  if (!id) {
+    if (iph) { const n = await env.DB.prepare('SELECT COUNT(*) n FROM help_chats WHERE iph = ? AND created > ?').bind(iph, now - 3600).first(); if (n && n.n >= 5) return J({ ok: false, error: 'too_many' }, 429); }
+    id = newId(); created = true;
+    await env.DB.prepare('INSERT INTO help_chats (id, created, updated, status, path, email, lang, iph, ua, unread_admin) VALUES (?,?,?,?,?,?,?,?,?,0)')
+      .bind(id, now, now, 'waiting', clean(b.path, 160), clean(b.email, 120), clean(b.lang, 8), iph, clean(request.headers.get('user-agent'), 120)).run();
+    const tr = Array.isArray(b.transcript) ? b.transcript.slice(-16) : [];
+    for (const m of tr) { const t = clean(m && m.text, 400); if (t) await env.DB.prepare('INSERT INTO help_msgs (chat, role, text, ts) VALUES (?,?,?,?)').bind(id, m.role === 'user' ? 'user' : 'bot', t, now).run(); }
+  } else {
+    const last = await env.DB.prepare("SELECT ts FROM help_msgs WHERE chat = ? AND role = 'user' ORDER BY id DESC LIMIT 1").bind(id).first();
+    if (last && now - last.ts < 1) return J({ ok: false, error: 'slow_down' }, 429);
+    const cnt = await env.DB.prepare('SELECT COUNT(*) n FROM help_msgs WHERE chat = ?').bind(id).first(); if (cnt && cnt.n > 300) return J({ ok: false, error: 'limit' }, 429);
+    if (b.email) await env.DB.prepare('UPDATE help_chats SET email = ? WHERE id = ?').bind(clean(b.email, 120), id).run();
+  }
+  const r = await env.DB.prepare('INSERT INTO help_msgs (chat, role, text, ts) VALUES (?,?,?,?)').bind(id, 'user', text, now).run();
+  await env.DB.prepare("UPDATE help_chats SET updated = ?, unread_admin = unread_admin + 1, status = CASE WHEN status = 'open' THEN 'open' ELSE 'waiting' END WHERE id = ?").bind(now, id).run();
+  if (created || !b.chat) await notify(env, 'Nuevo chat de ayuda en Twerkhub: ' + text.slice(0, 200) + '\nResponder: https://twerkhub.lat/admin/help/');
+  return J({ ok: true, chat: id, id: r.meta && r.meta.last_row_id });
+}
