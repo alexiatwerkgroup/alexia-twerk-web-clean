@@ -50,6 +50,7 @@
     '@media(max-width:540px){.twk-q-btn{height:40px}.twk-q-chip{height:40px}}' +
     '.twk-q-btn{width:auto;min-width:0;height:38px;padding:0 13px 0 11px;border-radius:999px;gap:6px;grid-auto-flow:column;border:1.5px solid #e8b84a;background:rgba(18,18,18,.82)}.twk-q-btn svg{width:18px;height:18px}.twk-q-lab{font:800 12px system-ui,sans-serif;letter-spacing:.04em}.np-stage video{cursor:pointer}.twk-q{display:none!important}.np-fs{display:none!important}' +
     '.np-qbar{display:inline-flex;align-items:center;gap:4px;padding:3px;border:1.5px solid #e8b84a;border-radius:999px;background:#1a1608}.np-qk{padding:0 8px 0 10px;font:800 10px system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#e8b84a}.np-qbar button{height:30px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:#f5e6b3;font:800 12px system-ui,sans-serif;cursor:pointer}.np-qbar button.on{background:linear-gradient(180deg,#fff0a8,#f7c83a 45%,#d99a0b);color:#2a1a00}' +
+    '.np-enh{pointer-events:auto;cursor:pointer;margin-top:8px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;max-width:240px;padding:10px 14px 9px;border-radius:12px;border:1.5px solid #35e06f;background:linear-gradient(135deg,#04200f,#0a3a1c);box-shadow:0 0 18px rgba(53,224,111,.45),inset 0 1px 0 rgba(255,255,255,.12);text-align:left;font-family:system-ui,sans-serif;animation:neglow 1.6s ease-in-out infinite}.np-enh .ne-big{font:900 22px/1 Anton,Impact,system-ui,sans-serif;letter-spacing:.08em;color:#8dffb4;text-shadow:0 0 12px #35e06f;animation:neblink 1.1s steps(2,jump-none) infinite}.np-enh .ne-sm{font:600 10.5px/1.3 system-ui,sans-serif;color:#d6ffe4;opacity:.92}.np-enh:hover{transform:scale(1.04)}.np-enh.wait,.np-enh.off{border-color:#7a8a80;box-shadow:none;animation:none;background:rgba(10,20,14,.85)}.np-enh.wait .ne-big,.np-enh.off .ne-big{color:#b9c7be;text-shadow:none;animation:none}.np-enh.on{animation:none;box-shadow:0 0 12px rgba(53,224,111,.35)}.np-enh.on .ne-big{animation:none}@keyframes neblink{0%{opacity:1}50%{opacity:.35}}@keyframes neglow{0%,100%{box-shadow:0 0 12px rgba(53,224,111,.35),inset 0 1px 0 rgba(255,255,255,.12)}50%{box-shadow:0 0 26px rgba(53,224,111,.85),inset 0 1px 0 rgba(255,255,255,.12)}}' +
     '.np-meta{position:absolute;z-index:11;left:12px;top:60px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;pointer-events:none;font-family:system-ui,sans-serif}.np-meta span{padding:4px 10px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.02em;text-shadow:0 1px 4px #000;white-space:nowrap}.np-meta .np-rec{color:#ffd76a;border:1px solid #ffd76a66}.np-meta .np-cd{font-variant-numeric:tabular-nums}' +
     /* siguiente + ayuda */
     '.np-next{position:absolute;inset:0;z-index:15;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(0,0,0,.78);text-align:center;padding:20px;font-family:system-ui,sans-serif}' +
@@ -251,24 +252,25 @@
     var mRes = document.createElement('span'), mCd = document.createElement('span'); mCd.className = 'np-cd';
     var mTech = document.createElement('span'); meta.append(mRes, mCd, mTech); box.appendChild(meta);
     /* version mejorada (IA): 1 moneda por video, cupo diario; sin descarga */
-    var enh = document.createElement('button'); enh.type = 'button'; enh.style.cssText = 'display:none;pointer-events:auto;cursor:pointer;margin-top:6px;padding:8px 12px;border-radius:10px;border:1.5px solid #35e06f;background:rgba(6,40,18,.9);color:#7dffa8;font:800 12px/1.3 system-ui,sans-serif;text-align:left;max-width:230px';
+    var enh = document.createElement('button'); enh.type = 'button'; enh.className = 'np-enh'; enh.style.display = 'none';
+    function eset(big, small, cls) { enh.className = 'np-enh' + (cls ? ' ' + cls : ''); enh.innerHTML = '<span class="ne-big">' + big + '</span><span class="ne-sm">' + small + '</span>'; }
     meta.appendChild(enh); var enhOn = false;
     enh.addEventListener('click', function (e) {
       e.stopPropagation(); if (enhOn) return; enh.disabled = true;
       fetch('/api/novinhas/enhance?use=1', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: cur.id }) })
         .then(function (r) { return r.json().then(function (j) { return { st: r.status, j: j }; }); }).then(function (o) {
-          if (o.st === 401) { enh.textContent = 'Create a free account to unlock the enhanced version'; enh.disabled = false; return; }
-          if (o.st === 402) { enh.textContent = 'No coins left today (' + o.j.max + '/day). VIP gets 3x. Come back tomorrow.'; enh.disabled = false; return; }
-          if (!o.j.ok) { enh.textContent = 'Not available right now'; enh.disabled = false; return; }
+          if (o.st === 401) { eset('SIGN UP FREE','Create a free account to unlock the enhanced version',''); enh.disabled = false; return; }
+          if (o.st === 402) { eset('NO COINS LEFT','Free limit: ' + o.j.max + '/day · VIP gets 3x · back tomorrow','off'); enh.disabled = false; return; }
+          if (!o.j.ok) { eset('NOT AVAILABLE','Try again in a moment','off'); enh.disabled = false; return; }
           var t = v.currentTime, was = !v.paused; enhOn = true; v.setAttribute('data-src', o.j.src); v.src = o.j.src;
           v.addEventListener('loadedmetadata', function f() { v.removeEventListener('loadedmetadata', f); try { v.currentTime = t; } catch (_) {} if (was) v.play().catch(function () {}); });
-          enh.textContent = 'Enhanced version playing' + (o.j.left < 900 ? ' · ' + o.j.left + ' coins left today' : ''); enh.style.opacity = '.85';
+          eset('ENHANCED ON','Now playing the upgraded version' + (o.j.left < 900 ? ' · ' + o.j.left + ' coins left today' : ''),'on');
         }).catch(function () { enh.disabled = false; });
     });
     fetch('/api/novinhas/enhance?c=' + encodeURIComponent(slug), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j) return; var id = cur.id;
-      if (j.ready.indexOf(id) >= 0) { enh.style.display = ''; enh.textContent = 'This video is available in enhanced quality. Tap to watch it now' + (j.owner ? ' (free for you)' : ' (1 coin · ' + j.left + ' of ' + j.max + ' left today)'); }
-      else if (j.queued.indexOf(id) >= 0) { enh.style.display = ''; enh.disabled = true; enh.textContent = 'Enhanced quality is being processed for this video. Check back soon'; }
+      if (j.ready.indexOf(id) >= 0) { enh.style.display = ''; eset('UPGRADE','Enhanced quality ready · tap to watch it now · ' + (j.owner ? 'free for you' : '1 coin · ' + j.left + ' of ' + j.max + ' left today'),''); }
+      else if (j.queued.indexOf(id) >= 0) { enh.style.display = ''; enh.disabled = true; eset('PROCESSING','Enhanced quality is being processed · check back soon','wait'); }
     }).catch(function () {});
     function fmtT(t) { t = Math.max(0, Math.ceil(t)); var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s2 = t % 60; return (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (s2 < 10 ? '0' : '') + s2; }
     function resTxt() {
