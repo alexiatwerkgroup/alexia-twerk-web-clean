@@ -26,9 +26,11 @@
     });
     /* Si el navegador pausa el preview en curso (ventana/pestana en segundo plano), se reanuda solo: la secuencia y el sonido siguen. */
     vids.forEach(function (v, i) { v.addEventListener('pause', function () { if (Date.now() - (v._q || 0) < 600 || i !== cur || v.ended || hov === i) return; setTimeout(function () { if (i === cur && v.paused && !v.ended) v.play().catch(function () {}); }, 150); }); });
-    function resume() { var v = vids[cur]; if (v && v.paused && !v.ended) v.play().catch(function () {}); }
+    function resume() { var v = vids[cur]; if (v && v.paused && !v.ended) { var p = v.play(); if (p && p.catch) p.catch(function () { v.muted = true; v.play().catch(function () {}); }); } }
+    var lastT = -1, stall = 0;
+    function watchdog() { var v = vids[cur]; if (!v || v.ended || hov === cur) { stall = 0; return; } if (v.currentTime === lastT) { stall++; resume(); if (stall >= 4) { stall = 0; rest(cur); next(); } } else { stall = 0; } lastT = v.currentTime; }
     document.addEventListener('visibilitychange', resume); window.addEventListener('focus', resume); window.addEventListener('blur', function () { setTimeout(resume, 200); });
-    setInterval(resume, 1500);
+    setInterval(watchdog, 1500);
     play(0);
   }).catch(function () {});
 })();
