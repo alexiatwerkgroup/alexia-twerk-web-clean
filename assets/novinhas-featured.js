@@ -4,7 +4,7 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   fetch('/api/novinhas/featured?row=8', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.items || !d.items.length) return;
-    box.innerHTML = '<div class="nf-row">' + d.items.slice(0, 8).map(function (it, i) {
+    box.innerHTML = '<div class="nf-head"><span class="nf-hl"></span><span class="nf-hc"><span class="nf-h1">Deleted from <img class="nf-hyt" alt="YouTube" src="/assets/yt-logo.png"></span><span class="nf-h2">Never forgotten</span></span><span class="nf-hl"></span></div><div class="nf-row">' + d.items.slice(0, 8).map(function (it, i) {
       return '<a class="nf-it" href="' + esc(it.url) + '" aria-label="' + esc(it.name) + '"><span class="nf-m"><img alt="" loading="lazy" src="' + esc(it.poster) + '"><video ' + (i === 0 ? 'autoplay ' : '') + 'loop playsinline preload="' + (i === 0 ? 'auto' : 'metadata') + '" data-first="' + (i === 0 ? 1 : 0) + '" data-src="' + esc(it.src) + '"' + (i === 0 ? '' : ' src="' + esc(it.src) + '#t=6"') + '></video></span>' +
         '<span class="nf-t"><span class="nf-l1">Deleted from <img class="nf-yt" alt="YouTube" src="/assets/yt-logo.png"></span><span class="nf-l2"><b>' + esc(it.name) + '</b>' + (it.total ? ' · ' + it.total + ' videos' : '') + '</span></span></a>';
     }).join('') + '</div>';
