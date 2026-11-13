@@ -22,5 +22,6 @@ export async function onRequest({ request, env }) {
   let watching = 0, likes = 0; const now = Math.floor(Date.now() / 1000);
   try { const w = await env.DB.prepare('SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ?').bind(now - 600).first(); watching = w ? w.c : 0; } catch (e) {}
   try { const l = await env.DB.prepare('SELECT COUNT(*) c FROM nv_votes').first(); likes = l ? l.c : 0; } catch (e) {}
-  return J({ channels: { done: chans.length, total: TOTAL_CHANNELS }, videos: { done: videos, total: TOTAL_VIDEOS }, enhanced: { done: enhanced, total: low }, watching, likes, free: FREE });
+  let chosen = 0; try { const c = await env.DB.prepare('SELECT COUNT(*) c FROM nv_enh').first(); chosen = c ? c.c : 0; } catch (e) {}
+  return J({ channels: { done: chans.length, total: TOTAL_CHANNELS }, videos: { done: videos, total: TOTAL_VIDEOS }, enhanced: { done: enhanced, total: Math.max(chosen, enhanced) }, watching, likes, free: FREE });
 }
