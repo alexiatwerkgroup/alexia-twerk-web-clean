@@ -21,7 +21,7 @@
     '@media(max-width:980px){.np-wrap{grid-template-columns:1fr}}' +
     '.np-stage{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9;max-height:80vh;display:grid;place-items:center}' +
     '.np-stage.np-tall{aspect-ratio:auto;height:min(80vh,calc((100vw - 10%) * 16 / 9));max-width:100%}' +
-    '.np-stage video{width:100%;height:100%;object-fit:contain;background:#000;outline:0}' +
+    '.np-stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;outline:0}' +
     '.np-stage:fullscreen,.np-stage:-webkit-full-screen{max-height:none;height:100%;border-radius:0}' +
     '.np-toast{position:absolute;left:50%;top:14%;transform:translateX(-50%);padding:10px 18px;border-radius:999px;background:rgba(0,0,0,.72);color:#fff;font:700 15px system-ui,sans-serif;pointer-events:none;opacity:0;transition:opacity .18s;z-index:14;white-space:nowrap}' +
     '.np-toast.on{opacity:1}' +
@@ -42,7 +42,11 @@
     '.twk-q-chip:hover{filter:brightness(1.2)}.twk-q-chip:active{transform:translateY(2px)}' +
     '.twk-q-chip.on{color:#2a1a00;background:linear-gradient(180deg,#fff0a8,#f7c83a 45%,#d99a0b);box-shadow:0 3px 0 #8a6205,inset 0 1px 0 rgba(255,255,255,.75)}' +
     '.twk-q-chip.off{opacity:.4;text-decoration:line-through}' +
-    '@media(max-width:540px){.twk-q-btn{height:42px}.twk-q-chip{height:40px}}' +
+    '.np-fs,.twk-q-btn{width:38px;height:38px;min-width:0;padding:0;border-radius:50%;background:rgba(18,18,18,.72);color:#fff;box-shadow:none;backdrop-filter:blur(6px);display:grid;place-items:center}.np-fs:hover,.twk-q-btn:hover{background:rgba(48,48,48,.88);transform:none}.np-fs:active,.twk-q-btn:active,.twk-q[data-open="1"] .twk-q-btn{transform:none;box-shadow:none;background:rgba(60,60,60,.92)}.twk-q-btn svg{width:20px;height:20px}.twk-q{left:auto;right:56px;perspective:none}' +
+    '.twk-q-panel{left:auto;right:0;display:none;flex-direction:column;flex-wrap:nowrap;gap:2px;width:190px;max-width:calc(100vw - 24px);padding:6px;border-radius:12px;background:rgba(28,28,28,.96);border:0;box-shadow:0 12px 30px rgba(0,0,0,.6)}.twk-q[data-open="1"] .twk-q-panel{display:flex;animation:none}' +
+    '.twk-q-h{display:flex;justify-content:space-between;padding:8px 10px;color:#aaa;font:600 12px system-ui}.twk-q-h .twk-q-v{color:#fff;font-weight:700}' +
+    '.twk-q-chip{width:100%;height:36px;padding:0 10px;text-align:left;border-radius:8px;background:transparent;box-shadow:none;color:#fff;font:600 14px system-ui;display:flex;align-items:center;gap:8px}.twk-q-chip:hover{background:rgba(255,255,255,.1);filter:none}.twk-q-chip.on{background:transparent;box-shadow:none;color:#ffd76a}.twk-q-chip.on:before{content:"\\2713"}.twk-q-chip:not(.on):before{content:"";width:1em}' +
+    '@media(max-width:540px){.twk-q-btn{height:40px;width:40px}.twk-q-chip{height:40px}}' +
     /* siguiente + ayuda */
     '.np-next{position:absolute;inset:0;z-index:15;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(0,0,0,.78);text-align:center;padding:20px;font-family:system-ui,sans-serif}' +
     '.np-next.on{display:flex}.np-next small{color:#e8b84a;letter-spacing:.14em;font-weight:800;font-size:11px}.np-next b{font-size:18px;max-width:560px;line-height:1.35}' +
@@ -87,7 +91,7 @@
     /* ---------- reproductor ---------- */
     var box = document.createElement('div'); box.className = 'np-stage' + (cur.height > cur.width ? ' np-tall' : '');
     var v = document.createElement('video');
-    v.controls = true; v.playsInline = true; v.preload = 'metadata'; v.poster = cur.poster; v.tabIndex = 0;
+    v.controls = true; v.playsInline = true; v.preload = 'auto'; v.poster = cur.poster; v.tabIndex = 0;
     v.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback'); v.setAttribute('disablePictureInPicture', ''); v.removeAttribute('disablePictureInPicture');
     v.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     var vol = parseFloat(LS.get(VOL_KEY)); if (!isNaN(vol)) v.volume = Math.min(1, Math.max(0, vol));
@@ -105,7 +109,7 @@
     function eff() { var p = pref(); if (!hasLow) return 'hd'; if (p === 'auto') return slowNet ? 'sd' : 'hd'; return p; }
     function srcFor(e) { return e === 'sd' ? cur.lowVideo : cur.video; }
     var dock = document.createElement('div'); dock.className = 'twk-q'; dock.dataset.open = '0';
-    dock.innerHTML = '<button type="button" class="twk-q-btn" aria-haspopup="true"><span class="twk-q-k">Quality</span><span class="twk-q-v">Auto</span></button><div class="twk-q-panel" role="menu">' +
+    dock.innerHTML = '<button type="button" class="twk-q-btn" aria-haspopup="true" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><div class="twk-q-panel" role="menu"><div class="twk-q-h">Quality <span class="twk-q-v">Auto</span></div>' +
       '<button type="button" class="twk-q-chip" data-q="hd">HD</button>' + (hasLow ? '<button type="button" class="twk-q-chip" data-q="sd">480p</button>' : '') +
       '<button type="button" class="twk-q-chip" data-q="auto">Auto</button></div>';
     function qRender() {
@@ -223,7 +227,7 @@
     stage.replaceChildren(box);
     applyQuality(false); qRender();
     var q = new URLSearchParams(location.search);
-    if (q.get('a') === '1') v.play().catch(function () { v.muted = true; v.play().catch(function () {}); });
+    v.play().catch(function () { v.muted = true; v.play().then(function () { say('Tap the volume to unmute'); }).catch(function () {}); });
 
     /* ---------- barra de acciones ---------- */
     var bar = document.createElement('div'); bar.className = 'np-bar';
