@@ -15,7 +15,10 @@
       if (v.getAttribute('data-first') === '1') {
         v.src = v.getAttribute('data-src'); v.classList.add('on'); v.muted = false; v.volume = 0.4;
         var go = function () { var p = v.play(); if (p && p.catch) p.catch(function () { v.muted = true; v.play().catch(function () {}); arm(); }); };
-        var arm = function () { var ev = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'mousemove']; var h = function () { ev.forEach(function (e) { window.removeEventListener(e, h, true); }); v.muted = false; v.play().catch(function () {}); }; ev.forEach(function (e) { window.addEventListener(e, h, true); }); };
+        var arm; arm = function () { var ev = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'mousemove']; var h = function () { ev.forEach(function (e) { window.removeEventListener(e, h, true); }); v.muted = false; v.play().catch(function () {}); }; ev.forEach(function (e) { window.addEventListener(e, h, true); }); };
+        var plays = 0; v.loop = false;
+        v.addEventListener('ended', function () { plays++; if (plays >= 2) v.muted = true; try { v.currentTime = 0; } catch (_) {} v.play().catch(function () {}); });
+        var _arm = arm; arm = function () { var ev = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'mousemove']; var h = function () { ev.forEach(function (e) { window.removeEventListener(e, h, true); }); if (plays < 2) v.muted = false; v.play().catch(function () {}); }; ev.forEach(function (e) { window.addEventListener(e, h, true); }); };
         go(); return;
       }
       a.addEventListener('mouseenter', function () { v.muted = true; v.classList.add('on'); v.play().catch(function () {}); });
