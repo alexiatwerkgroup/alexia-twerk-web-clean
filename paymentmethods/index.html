@@ -11,7 +11,9 @@
 .pm .note{margin-top:22px;color:#8d8d99;font-size:13px;line-height:1.6}.pm .note a{color:#e8b84a}@media(max-width:860px){.pm .grid,.pm ol{grid-template-columns:1fr}}.pm .prow{display:grid;grid-template-columns:auto 1fr;gap:18px;margin-top:30px}
 .pm .sup{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 22px;margin-top:34px;padding-top:26px;border-top:1px solid #2a2410;text-align:center}
 .pm .sup p{margin:0;color:#c9c9d3;font:500 15px/1.5 Inter,system-ui,sans-serif}.pm .sup p b{color:#fff}
-@media(max-width:700px){.pm .sup{flex-direction:column}.pm .sup .twk-btn{width:100%}.pm .card .twk-pay{margin-top:auto}.pm .ps{margin:34px 0 14px;font-size:30px}
+@media(max-width:700px){.pm .sup{flex-direction:column}.pm .sup .twk-btn{width:100%}}
+.pm .card .twk-pay{margin-top:auto}
+.pm .ps{margin:34px 0 14px;font-size:30px}
 .pm .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 .pm .opt{display:flex;flex-direction:column;gap:6px;text-align:left;padding:20px 22px;border:1.5px solid #3a3115;border-radius:16px;background:linear-gradient(180deg,#14110a,#0a0905);color:#fff;cursor:pointer;font-family:Inter,system-ui,sans-serif;transition:border-color .2s,background .2s}
 .pm .opt:hover{border-color:#8a6a1e}.pm .opt[aria-checked=true]{border-color:#e8b84a;background:linear-gradient(180deg,#2a2208,#0d0b04);box-shadow:0 0 0 1px #e8b84a55}
@@ -25,7 +27,7 @@
 .pm .chips{display:flex;gap:8px;flex-wrap:wrap}.pm .chips button{height:44px;padding:0 16px;border-radius:12px;border:1.5px solid #3a3115;background:#0d0b05;color:#f1dfa6;font:700 13px 'JetBrains Mono',monospace;cursor:pointer}.pm .chips button:hover{border-color:#e8b84a}
 .pm .amtbox p{margin:10px 0 0;color:#a99b72;font:600 13px/1.5 Inter,system-ui,sans-serif}.pm .amtbox p.bad{color:#ff8a8a}
 .pm .grid.off .twk-pay{opacity:.4;pointer-events:none}
-.pm .amtbox+.grid,.pm .opts+.grid{margin-top:26px}</style></head><body>
+.pm .amtbox+.grid,.pm .opts+.grid{margin-top:26px}.pm .twk-pay.na{opacity:.35;pointer-events:none;filter:grayscale(.6)}.pm .grid.off .twk-pay.na{opacity:.35}</style></head><body>
 <!-- TWK_SHELL_V2 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,9 +64,10 @@ if(pItem==='pack'&&pAmt>0&&pLabel){var b=document.createElement('button');b.type
 function fmt(n){return '$'+(Math.round(n*100)/100).toFixed(2)}
 function setChips(list){chips.innerHTML='';list.forEach(function(v){var c=document.createElement('button');c.type='button';c.textContent='$'+v;c.onclick=function(){inp.value=v;apply()};chips.appendChild(c)})}
 function valid(){return amt>0&&(cur!=='coins'||(amt>=10&&Math.round(amt*2)===amt*2*1))}
-function paint(){grid.classList.toggle('off',!valid());if(bn)bn.setAttribute('data-twk-binance',fmt(amt)+' USD')}
+function only(on){[].forEach.call(grid.querySelectorAll('.twk-pay:not([data-twk-binance])'),function(a){var i=a.querySelector('i');if(!a.dataset.o)a.dataset.o=i.textContent;i.textContent=on?'Binance only':a.dataset.o;a.classList.toggle('na',on);a.setAttribute('aria-disabled',on?'true':'false');a.tabIndex=on?-1:0})}
+function paint(){only(cur==='coins');grid.classList.toggle('off',!valid());if(bn)bn.setAttribute('data-twk-binance',fmt(amt)+' USD')}
 function apply(){var v=parseFloat(inp.value);amt=isNaN(v)?0:v;
- if(cur==='coins'){var ok=amt>=10&&Math.abs(amt*2-Math.round(amt*2))<1e-9;note.className=ok?'':'bad';note.textContent=ok?'= '+Math.round(amt/0.5)+' coins ($0.50 each).':'Minimum $10 (20 coins), in steps of $0.50.'}
+ if(cur==='coins'){var ok=amt>=10&&Math.abs(amt*2-Math.round(amt*2))<1e-9;note.className=ok?'':'bad';note.textContent=ok?'= '+Math.round(amt/0.5)+' coins ($0.50 each). Coins are paid with Binance only.':'Minimum $10 (20 coins), in steps of $0.50.'}
  else if(cur==='donate'){var ok2=amt>=1;note.className=ok2?'':'bad';note.textContent=ok2?'Thank you! A donation does not add access or coins.':'Minimum donation $1.'}
  paint()}
 function select(k){cur=k;[].forEach.call(box.querySelectorAll('.opt'),function(o){o.setAttribute('aria-checked',o.dataset.k===k?'true':'false')});
