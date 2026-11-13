@@ -197,22 +197,33 @@ async function buildStats({ request, env }) {
 }
 
 // Multiple open owner panels share one short-lived snapshot rather than flooding D1.
-const fullResponses=new Map(),fullFlights=new Map();
+// A build that hangs must never poison later requests: every flight has a hard timeout,
+// is dropped from fullFlights when it expires, and the last good snapshot is served as stale fallback.
+const fullResponses=new Map(),fullFlights=new Map(),BUILD_TIMEOUT_MS=20000,STALE_MS=30*60000;
 export async function onRequestGet(context){
  const {request,env}=context,url=new URL(request.url);
  if(url.searchParams.get('mini'))return buildStats(context);
  const identity=await authenticate(request,env);if(!identity?.sub)return json({ok:false,error:'owner_only'},403);
  const owner=await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();if(String(owner?.email||'').toLowerCase()!==OWNER)return json({ok:false,error:'owner_only'},403);
  const key=['days','bots','tz'].map(k=>url.searchParams.get(k)||'').join('|'),cached=fullResponses.get(key);
- const respond=record=>new Response(record.body,{status:record.status,headers:record.headers});
+ const respond=(record,stale)=>{const h=new Headers(record.headers);if(stale)h.set('X-Stats-Stale','1');return new Response(record.body,{status:record.status,headers:h})};
  if(cached&&Date.now()-cached.at<60000)return respond(cached);
  let flight=fullFlights.get(key);
  if(!flight){
-   flight=(async()=>{try{
+   const build=(async()=>{
      const response=await buildStats(context),record={at:Date.now(),body:await response.text(),status:response.status,headers:[...response.headers]};
      if(record.status===200){fullResponses.set(key,record);if(fullResponses.size>24)fullResponses.delete(fullResponses.keys().next().value)}return record;
-   }catch(error){return {body:JSON.stringify({ok:false,error:'traffic_unavailable',detail:String(error?.message||error)}),status:500,headers:{'Content-Type':'application/json','Cache-Control':'private, no-store'}}}finally{fullFlights.delete(key)}})();
+   })();
+   let timer;
+   const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('stats_build_timeout')),BUILD_TIMEOUT_MS)});
+   flight=Promise.race([build,timeout]).catch(error=>{
+     const stale=fullResponses.get(key);
+     if(stale&&Date.now()-stale.at<STALE_MS)return {...stale,stale:true};
+     return {body:JSON.stringify({ok:false,error:'traffic_unavailable',detail:String(error?.message||error)}),status:500,headers:{'Content-Type':'application/json','Cache-Control':'private, no-store'}};
+   }).finally(()=>{clearTimeout(timer);if(fullFlights.get(key)===flight)fullFlights.delete(key)});
+   build.catch(()=>{});
    fullFlights.set(key,flight);
  }
- return respond(await flight);
+ const record=await flight;
+ return respond(record,record.stale);
 }
