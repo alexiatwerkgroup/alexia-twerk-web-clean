@@ -5,18 +5,18 @@
 <style>body{margin:0;background:#000;color:#fff}.pm{font-family:Inter,system-ui,sans-serif;background:radial-gradient(900px 420px at 80% -60px,rgba(232,184,74,.16),transparent),#000;min-height:70vh}.pm *{box-sizing:border-box}.pm a{color:inherit;text-decoration:none}.pm .w{max-width:1100px;margin:0 auto;padding:56px 24px}
 .pm .eb{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#e8b84a;margin-bottom:12px}.pm h1{font:400 clamp(48px,8vw,96px)/.95 Anton,Impact,sans-serif;text-transform:uppercase;margin:0}.pm h1 em{font-style:normal;color:#ffd76a}.pm .lead{color:#c9c9d3;font-size:18px;line-height:1.55;max-width:640px;margin:16px 0 0}
 
-.pm .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}.pm .card{border:1.5px solid #3a3115;border-radius:20px;background:linear-gradient(180deg,#14110a,#0a0905);padding:26px;display:flex;flex-direction:column;gap:10px}.pm .card svg{width:44px;height:44px;color:#ffd76a}.pm h3{font:400 28px/1.05 Anton,sans-serif;text-transform:uppercase;margin:6px 0 0}.pm .card p{color:#c9c9d3;line-height:1.55;margin:0;flex:1}
+.pm .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:34px}.pm .card{border:1.5px solid #3a3115;border-radius:20px;background:linear-gradient(180deg,#14110a,#0a0905);padding:26px;display:flex;flex-direction:column;gap:10px}.pm .card svg{width:44px;height:44px;color:#ffd76a}.pm h3{font:400 28px/1.05 Anton,sans-serif;text-transform:uppercase;margin:6px 0 0}.pm .card p{color:#c9c9d3;line-height:1.55;margin:0;flex:1}
 
 .pm h2{font:400 clamp(30px,4vw,44px)/1 Anton,Impact,sans-serif;text-transform:uppercase;margin:54px 0 16px}.pm ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}.pm li{counter-increment:s;border:1.5px solid #26262c;border-radius:16px;background:#101014;padding:20px 20px 20px 64px;position:relative;line-height:1.5;color:#c9c9d3}.pm li:before{content:counter(s);position:absolute;left:18px;top:16px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#ffe08a,#c99a2e);color:#1a1200;font:900 15px system-ui}.pm li b{color:#fff;display:block}
 .pm .note{margin-top:22px;color:#8d8d99;font-size:13px;line-height:1.6}.pm .note a{color:#e8b84a}@media(max-width:860px){.pm .grid,.pm ol{grid-template-columns:1fr}}.pm .prow{display:grid;grid-template-columns:auto 1fr;gap:18px;margin-top:30px}
-.pm .card .lg{display:flex;align-items:center;height:64px}.pm .card .lg-pp{align-self:flex-start;padding:0 16px;border-radius:12px;background:#fff}.pm .card .lg-pp img{height:34px;width:auto}.pm .card .lg-bn img{height:64px;width:auto}.pm .sum{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 18px;margin-top:30px;padding-bottom:22px;border-bottom:1px solid #2a2410}
+.pm .sum{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 18px;margin-top:30px;padding-bottom:22px;border-bottom:1px solid #2a2410}
 .pm .sum small{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#e8b84a}
 .pm .sum b{font:400 52px/1 Anton,Impact,sans-serif;color:#ffd76a}
 .pm .sum em{font:600 14px Inter,system-ui,sans-serif;font-style:normal;color:#a99b72}
 .pm .sup{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 22px;margin-top:34px;padding-top:26px;border-top:1px solid #2a2410;text-align:center}
 .pm .sup p{margin:0;color:#c9c9d3;font:500 15px/1.5 Inter,system-ui,sans-serif}.pm .sup p b{color:#fff}
 @media(max-width:700px){.pm .sup{flex-direction:column}.pm .sup .twk-btn{width:100%}.pm .sum b{font-size:44px}}
-.pm .card .lg-cd img{height:44px;width:auto}</style></head><body>
+.pm .card .twk-pay{margin-top:auto}</style></head><body>
 <!-- TWK_SHELL_V2 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,9 +30,9 @@
 <p class="lead">One membership unlocks every video in every VIP channel and archive, including the new ones we keep adding. Choose how you want to pay.</p>
 <div class="sum price"><small>VIP &middot; Monthly</small><b>$49.99</b><em>USD / month &middot; cancel anytime</em></div>
 <div class="grid">
-<div class="card"><span class="lg lg-pp"><img src="/assets/paypal-logo.png" alt="PayPal" width="420" height="123" loading="lazy"></span><h3>PayPal</h3><p>Pay with your PayPal balance or any card linked to your PayPal account.</p><a class="twk-btn twk-btn--block" href="/discord" target="_blank" rel="noopener">Pay with PayPal</a></div>
-<div class="card"><span class="lg lg-bn"><img src="/assets/binance-mark.png" alt="Binance" width="185" height="178" loading="lazy"></span><h3>Binance</h3><p>Pay in crypto with Binance Pay (USDT and other supported coins). Fast and worldwide.</p><a class="twk-btn twk-btn--block" href="#binance" data-twk-binance="$49.99 USD">Pay with Binance</a></div>
-<div class="card"><span class="lg lg-cd"><img src="/assets/cards-logo.png" alt="Visa, Mastercard, Discover" width="480" height="99" loading="lazy"></span><h3>Credit &amp; debit card</h3><p>Visa, Mastercard and other major cards. Your bank may show a charge for digital content.</p><a class="twk-btn twk-btn--block" href="/discord" target="_blank" rel="noopener">Pay with card</a></div>
+<div class="card"><h3>PayPal</h3><p>Pay with your PayPal balance or any card linked to your PayPal account.</p><a class="twk-pay" href="/discord" target="_blank" rel="noopener"><span class="t"><b>Pay now</b><i>Balance or linked card</i></span><span class="lg w"><img src="/assets/paypal-logo.png" alt="PayPal" height="18"></span></a></div>
+<div class="card"><h3>Binance</h3><p>Pay in crypto with Binance Pay (USDT and other supported coins). Fast and worldwide.</p><a class="twk-pay" href="#binance" data-twk-binance="$49.99 USD"><span class="t"><b>Pay now</b><i>USDT &middot; no fees</i></span><span class="lg"><img src="/assets/binance-mark.png" alt="Binance" height="42"></span></a></div>
+<div class="card"><h3>Credit &amp; debit card</h3><p>Visa, Mastercard and other major cards. Your bank may show a charge for digital content.</p><a class="twk-pay" href="/discord" target="_blank" rel="noopener"><span class="t"><b>Pay now</b><i>Credit or debit card</i></span><span class="lg c"><img src="/assets/cards-logo.png" alt="Visa, Mastercard, Discover" height="22"></span></a></div>
 </div>
 <div class="sup"><p><b>Questions before you pay?</b> An agent answers in real time, 24/7.</p><button type="button" class="twk-btn twk-btn--sm twk-btn--live" data-twk-agent><i class="twk-live-dot"></i><span>Chat with an agent</span></button></div>
 <h2>How it works</h2>

@@ -34,3 +34,15 @@ html body .twk-btn--live.twk-btn--live:hover{background:linear-gradient(180deg,#
 .twk-btn--live .twk-live-tag{display:none}
 @keyframes twkLive{0%{transform:scale(1);opacity:.9}100%{transform:scale(2.6);opacity:0}}
 @media(prefers-reduced-motion:reduce){.twk-btn--live .twk-live-dot:after{animation:none;opacity:0}}
+/* BOTON DE PAGO (.twk-pay): el diseno original de Jenny (.vb): tarjeta negra-dorada, titulo blanco, subtitulo dorado, logo del medio de pago a la derecha. Un solo estilo para todo pago/checkout. */
+html body .twk-pay.twk-pay{display:flex!important;align-items:center;gap:14px;width:100%;min-height:76px;box-sizing:border-box;padding:12px 18px;border:1.5px solid #e8b84a!important;border-radius:14px!important;background:linear-gradient(180deg,#2a2208,#0d0b04)!important;color:#fff!important;text-align:left;text-decoration:none!important;cursor:pointer;box-shadow:none!important;transition:transform .2s,box-shadow .2s;font-family:system-ui,sans-serif}
+html body .twk-pay.twk-pay:hover{transform:translateY(-2px);box-shadow:0 8px 26px #e8b84a33!important}
+.twk-pay .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.twk-pay .t b{font:900 16px/1.2 system-ui,sans-serif;letter-spacing:.02em;color:#fff}
+.twk-pay .t i{font:600 12px/1.3 system-ui,sans-serif;font-style:normal;color:#e8c878}
+.twk-pay .lg{flex:none;display:flex;align-items:center;justify-content:center;height:42px}
+.twk-pay .lg img{display:block;height:100%;width:auto}
+.twk-pay .lg.w{padding:0 9px;border-radius:8px;background:#fff;height:30px}.twk-pay .lg.w img{height:15px}
+.twk-pay .lg.c{height:22px}
+.pc .co{margin-top:auto;padding-top:18px;display:flex;flex-direction:column;gap:12px}
+.pc .co-note{margin:0;text-align:center;color:#a99b72;font:600 12px/1.4 system-ui,sans-serif}
