@@ -263,6 +263,38 @@
       if (e && /^\d{4}-\d{2}-\d{2}$/.test(e.d)) { var p3 = e.d.split('-'); rec.textContent = 'REC ' + (+p3[2]) + ' ' + mn[+p3[1] - 1] + ' ' + p3[0] + ' · ' + (lab[e.m] || e.m); } else rec.textContent = 'REC date not found';
       meta.insertBefore(rec, meta.firstChild);
     }).catch(function () {});
+    /* ficha tecnica: FPS exactos (tabla stts del mp4) y tasa de bits (tamaño / duracion) del archivo que se esta reproduciendo */
+    var techCache = {};
+    function techParse(buf, total, dur) {
+      var u = new Uint8Array(buf), dv = new DataView(buf), out = {};
+      function at(str, from) { var n = str.length; outer: for (var i = from || 0; i < u.length - n; i++) { for (var k = 0; k < n; k++) if (u[i + k] !== str.charCodeAt(k)) continue outer; return i; } return -1; }
+      var h = -1, from = 0; for (;;) { var i = at('hdlr', from); if (i < 0) break; if (String.fromCharCode(u[i + 12], u[i + 13], u[i + 14], u[i + 15]) === 'vide') { h = i; break; } from = i + 4; }
+      if (h > 0) {
+        var m = -1; from = 0; for (;;) { var j = at('mdhd', from); if (j < 0 || j > h) break; m = j; from = j + 4; }
+        var st = at('stts', h);
+        if (m > 0 && st > 0) {
+          var ver = u[m + 4], ts = ver === 1 ? dv.getUint32(m + 24) : dv.getUint32(m + 16);
+          var n = dv.getUint32(st + 8), cnt = 0, tt = 0, p2 = st + 12;
+          for (var e = 0; e < n && p2 + 8 <= u.length; e++, p2 += 8) { var c = dv.getUint32(p2), d2 = dv.getUint32(p2 + 4); cnt += c; tt += c * d2; }
+          if (ts && tt && cnt) out.fps = cnt / (tt / ts);
+        }
+      }
+      if (total && dur) out.kbps = total * 8 / dur / 1000;
+      return out;
+    }
+    function techShow(o) {
+      var el = document.getElementById('np-tech'); if (!el) { var b = document.querySelector('#info .np-info'); if (!b) return; el = document.createElement('div'); el.id = 'np-tech'; el.style.cssText = 'margin-top:6px;font:700 13px/1.5 ui-monospace,Consolas,monospace;color:#ffd76a'; b.appendChild(el); }
+      var t = []; if (o.fps) t.push('FPS: ' + o.fps.toFixed(3)); if (o.kbps) t.push('Bitrate: ' + o.kbps.toFixed(1) + ' kbps'); el.textContent = t.join('  ·  ');
+    }
+    function tech() {
+      var url = v.getAttribute('data-src') || cur.video; if (!url) return;
+      if (techCache[url]) { techShow(techCache[url]); return; }
+      fetch(url, { headers: { Range: 'bytes=0-786431' }, credentials: 'same-origin' }).then(function (r) {
+        var cr = /\/(\d+)$/.exec(r.headers.get('Content-Range') || ''), total = cr ? +cr[1] : +r.headers.get('Content-Length') || 0;
+        return r.arrayBuffer().then(function (b) { return { b: b, total: total }; });
+      }).then(function (x) { var o = techParse(x.b, x.total, cur.duration || v.duration || 0); techCache[url] = o; techShow(o); }).catch(function () {});
+    }
+    setTimeout(tech, 600); v.addEventListener('loadedmetadata', function () { setTimeout(tech, 300); });
     /* ---------- barra de acciones ---------- */
     var bar = document.createElement('div'); bar.className = 'np-bar';
     var ap = document.createElement('button'); ap.type = 'button'; ap.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm' + (LS.get(AUTO_KEY) !== '0' ? ' on' : ''); ap.innerHTML = 'Autoplay next <i></i>';
