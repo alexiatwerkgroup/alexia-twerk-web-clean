@@ -1,7 +1,7 @@
 // Owner only. GET lista · POST {label,days} crea · POST {code,days} renueva · DELETE ?code= revoca
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
-import { ensureCodes } from '../../_lib/vip.js';
+import { ensureCodes, sha256hex } from '../../_lib/vip.js';
 const J = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 async function owner(request, env) {
   const p = await authenticate(request, env); if (!p || !p.sub) return false;
@@ -18,7 +18,7 @@ export async function onRequest({ request, env }) {
   await ensureCodes(env.DB);
   const now = Math.floor(Date.now() / 1000), url = new URL(request.url);
   if (request.method === 'GET') {
-    const r = (await env.DB.prepare('SELECT code, label, exp, created, uses, revoked FROM nv_codes ORDER BY created DESC LIMIT 1000').all()).results || [];
+    const r = (await env.DB.prepare('SELECT code, label, exp, created, uses, revoked, note, (SELECT COUNT(DISTINCT dev) FROM nv_acts a WHERE a.code = nv_codes.code AND a.ok = 1) devs, (SELECT COUNT(*) FROM nv_acts a WHERE a.code = nv_codes.code AND a.ok = 0) blocked FROM nv_codes ORDER BY created DESC LIMIT 1000').all()).results || [];
     return J({ ok: true, now, codes: r });
   }
   if (request.method === 'POST') {
@@ -28,13 +28,13 @@ export async function onRequest({ request, env }) {
       const c = String(b.code).toLowerCase();
       const r = await env.DB.prepare('SELECT exp FROM nv_codes WHERE code = ?').bind(c).first(); if (!r) return J({ ok: false, error: 'not_found' }, 404);
       const exp = Math.max(r.exp, now) + days * 86400;
-      await env.DB.prepare('UPDATE nv_codes SET exp = ?, revoked = 0 WHERE code = ?').bind(exp, c).run();
+      await env.DB.prepare('UPDATE nv_codes SET exp = ?, revoked = 0, note = NULL WHERE code = ?').bind(exp, c).run();
       return J({ ok: true, code: c, exp });
     }
     const label = String(b.label || '').slice(0, 80);
     for (let i = 0; i < 5; i++) {
       const code = gen();
-      try { await env.DB.prepare('INSERT INTO nv_codes (code,label,exp,created) VALUES (?,?,?,?)').bind(code, label, now + days * 86400, now).run(); return J({ ok: true, code, exp: now + days * 86400 }); } catch (e) {}
+      try { await env.DB.prepare('INSERT INTO nv_codes (code,label,exp,created,cid) VALUES (?,?,?,?,?)').bind(code, label, now + days * 86400, now, (await sha256hex(code)).slice(0, 12)).run(); return J({ ok: true, code, exp: now + days * 86400 }); } catch (e) {}
     }
     return J({ ok: false, error: 'gen_failed' }, 500);
   }
