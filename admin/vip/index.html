@@ -1,0 +1,20 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>VIP · códigos</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#0b0b0d;color:#f3f3f3;font:15px system-ui;padding:20px;max-width:900px;margin:auto}h1{font-size:22px;color:#e8b84a}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}input{padding:11px;border-radius:10px;border:1px solid #444;background:#16161a;color:#fff;font:inherit}
+button{padding:11px 16px;border:0;border-radius:10px;background:linear-gradient(#f6d77a,#c9962c);color:#111;font:800 14px system-ui;cursor:pointer}button.s{background:#26262c;color:#ddd;padding:6px 10px;font-weight:600}
+.new{background:#16200f;border:1px solid #6fb34a;border-radius:12px;padding:14px;margin:12px 0;display:none}.new b{font-size:24px;letter-spacing:.04em}
+table{width:100%;border-collapse:collapse;margin-top:10px}td,th{padding:8px 6px;border-bottom:1px solid #222;text-align:left;font-size:14px}.ok{color:#7ddc6a}.no{color:#ff7a7a}</style></head><body>
+<h1>Códigos VIP individuales</h1>
+<div class="row"><input id="l" placeholder="Nombre / Discord del cliente" style="flex:1;min-width:200px"><input id="d" type="number" value="30" min="1" max="400" style="width:90px" title="Días"><button id="g">Crear código</button></div>
+<div class="new" id="n"></div><div id="app">Cargando…</div>
+<script>
+var A='/api/novinhas/admin-codes';function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function fd(t){return new Date(t*1000).toLocaleDateString('es-AR')}
+function load(){fetch(A,{credentials:'same-origin',cache:'no-store'}).then(function(r){return r.json().then(function(j){return{s:r.status,j:j}})}).then(function(x){if(x.s!==200){document.getElementById('app').innerHTML='Solo para el dueño. <a href="/account.html" style="color:#e8b84a">Iniciar sesión</a>';return}
+var h='<table><tr><th>Código</th><th>Cliente</th><th>Vence</th><th>Estado</th><th></th></tr>';x.j.codes.forEach(function(c){var act=!c.revoked&&c.exp>x.j.now;h+='<tr><td><b>'+esc(c.code)+'</b></td><td>'+esc(c.label)+'</td><td>'+fd(c.exp)+'</td><td class="'+(act?'ok':'no')+'">'+(c.revoked?'Revocado':act?'Activo':'Vencido')+' · '+c.uses+' usos</td><td><button class="s" data-r="'+esc(c.code)+'">+30 días</button> <button class="s" data-x="'+esc(c.code)+'">Revocar</button></td></tr>'});
+document.getElementById('app').innerHTML=h+'</table>';
+document.querySelectorAll('[data-r]').forEach(function(b){b.onclick=function(){fetch(A,{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({code:b.dataset.r,days:30})}).then(load)}});
+document.querySelectorAll('[data-x]').forEach(function(b){b.onclick=function(){if(confirm('¿Revocar '+b.dataset.x+'?'))fetch(A+'?code='+encodeURIComponent(b.dataset.x),{method:'DELETE',credentials:'same-origin'}).then(load)}})})}
+document.getElementById('g').onclick=function(){fetch(A,{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({label:document.getElementById('l').value,days:+document.getElementById('d').value||30})}).then(function(r){return r.json()}).then(function(j){if(!j.ok)return;var n=document.getElementById('n');n.style.display='block';n.innerHTML='Código: <b>'+esc(j.code)+'</b> · vence '+fd(j.exp)+' <button class="s" id="cp">Copiar</button>';document.getElementById('cp').onclick=function(){navigator.clipboard&&navigator.clipboard.writeText(j.code)};document.getElementById('l').value='';load()})};
+load();
+</script></body></html>

@@ -20,9 +20,14 @@ export async function isVip(request, env) {
   const cc = await codesCfg(env); if (!cc || !cc.key) return false;
   return same(m[2], await hmac(cc.key, 'vip.' + (cc.epoch || 1) + '.' + m[1]));
 }
-export async function cookieFor(env) {
-  const cc = await codesCfg(env); const exp = Math.floor(Date.now() / 1000) + 30 * 86400;
-  return `twk_vip=${exp}.${await hmac(cc.key, 'vip.' + (cc.epoch || 1) + '.' + exp)}; Path=/; Max-Age=${30 * 86400}; HttpOnly; Secure; SameSite=Lax`;
+export async function cookieFor(env, expSec) {
+  const cc = await codesCfg(env); const now = Math.floor(Date.now() / 1000);
+  const exp = expSec ? Math.min(expSec, now + 400 * 86400) : now + 30 * 86400;
+  return `twk_vip=${exp}.${await hmac(cc.key, 'vip.' + (cc.epoch || 1) + '.' + exp)}; Path=/; Max-Age=${Math.max(60, exp - now)}; HttpOnly; Secure; SameSite=Lax`;
+}
+// Codigos individuales (uno por suscriptor) guardados en D1. Vencen solos.
+export async function ensureCodes(db) {
+  await db.prepare('CREATE TABLE IF NOT EXISTS nv_codes (code TEXT PRIMARY KEY, label TEXT, exp INTEGER, created INTEGER, uses INTEGER DEFAULT 0, revoked INTEGER DEFAULT 0)').run();
 }
 // Un video esta bloqueado si el canal es VIP y el id no esta en la lista de libres.
 export function isLocked(cfg, slug, id) {
