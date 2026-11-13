@@ -16,6 +16,8 @@
     });
     return scriptReady;
   }
+  // Precarga el script de Turnstile (y la conexion) antes de que el usuario toque 'Entrar', asi el chequeo arranca al instante.
+  window.twkSecurityWarm = function () { try { load().catch(function () {}); } catch (e) {} };
   window.twkSecurityCheck = function (action) {
     if (busy) return Promise.reject(Error('A security verification is already open.'));
     busy = true;
