@@ -221,7 +221,7 @@ gtag("config","G-YSFR7FHCLS", twkIsInternal ? {traffic_type:'internal'} : {});
   <div class="srow"><svg class="ic"><use href="#i-play"/></svg><b data-na-stat="videos">12,565</b><span>video files<small>across those folders</small></span></div>
  </div>
 </div></section>
-<script>(()=>{const value=document.getElementById('nov-home-pct'),fill=document.getElementById('nov-home-fill'),track=document.querySelector('.prog2-track');if(!value||!fill)return;const key='novinhas-home-progress-start';let started=Number(localStorage.getItem(key));if(!started||started>Date.now()){started=Date.now();localStorage.setItem(key,String(started))}function update(){const percent=3;value.textContent=percent+'%';fill.style.width=percent+'%';if(track)track.setAttribute('aria-valuenow',String(percent))}update();setInterval(update,60000)})();</script>
+<script>(()=>{const value=document.getElementById('nov-home-pct'),fill=document.getElementById('nov-home-fill'),track=document.querySelector('.prog2-track');if(!value||!fill)return;const BASE=3,T0=Date.UTC(2026,10,13,18,0,0),STEP=30*60*1000;function update(){const percent=Math.min(100,BASE+Math.max(0,Math.floor((Date.now()-T0)/STEP)));value.textContent=percent+'%';fill.style.width=percent+'%';if(track)track.setAttribute('aria-valuenow',String(percent))}update();setInterval(update,60000)})();</script>
 
 <section class="roster" id="roster"><div class="w">
  <div class="roster-head"><div class="eyebrow">Our exclusive dancers · 18+</div><h2>Our exclusive models.<br><em>A new one every month.</em></h2></div>
