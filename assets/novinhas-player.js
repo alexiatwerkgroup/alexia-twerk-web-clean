@@ -48,6 +48,7 @@
     '.twk-q-chip{width:100%;height:36px;padding:0 10px;text-align:left;border-radius:8px;background:transparent;box-shadow:none;color:#fff;font:600 14px system-ui;display:flex;align-items:center;gap:8px}.twk-q-chip:hover{background:rgba(255,255,255,.1);filter:none}.twk-q-chip.on{background:transparent;box-shadow:none;color:#ffd76a}.twk-q-chip.on:before{content:"\\2713"}.twk-q-chip:not(.on):before{content:"";width:1em}' +
     '@media(max-width:540px){.twk-q-btn{height:40px}.twk-q-chip{height:40px}}' +
     '.twk-q-btn{width:auto;min-width:0;height:38px;padding:0 13px 0 11px;border-radius:999px;gap:6px;grid-auto-flow:column;border:1.5px solid #e8b84a;background:rgba(18,18,18,.82)}.twk-q-btn svg{width:18px;height:18px}.twk-q-lab{font:800 12px system-ui,sans-serif;letter-spacing:.04em}.np-stage video{cursor:pointer}' +
+    '.np-qbar{display:inline-flex;align-items:center;gap:4px;padding:3px;border:1.5px solid #e8b84a;border-radius:999px;background:#1a1608}.np-qk{padding:0 8px 0 10px;font:800 10px system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#e8b84a}.np-qbar button{height:30px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:#f5e6b3;font:800 12px system-ui,sans-serif;cursor:pointer}.np-qbar button.on{background:linear-gradient(180deg,#fff0a8,#f7c83a 45%,#d99a0b);color:#2a1a00}' +
     /* siguiente + ayuda */
     '.np-next{position:absolute;inset:0;z-index:15;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(0,0,0,.78);text-align:center;padding:20px;font-family:system-ui,sans-serif}' +
     '.np-next.on{display:flex}.np-next small{color:#e8b84a;letter-spacing:.14em;font-weight:800;font-size:11px}.np-next b{font-size:18px;max-width:560px;line-height:1.35}' +
@@ -251,6 +252,12 @@
     if (!prevV) pv.style.display = 'none'; if (!nextV) nt.style.display = 'none';
     var kb = document.createElement('button'); kb.type = 'button'; kb.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; kb.textContent = 'Keyboard shortcuts (?)'; kb.onclick = function () { help.classList.add('on'); };
     bar.append(pv, nt, ap, kb);
+    /* calidad tambien en la barra de abajo (siempre visible, aunque el video se desplace) */
+    var qb = document.createElement('div'); qb.className = 'np-qbar';
+    qb.innerHTML = '<span class="np-qk">Quality</span><button type="button" data-q="hd">HD</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button>';
+    var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); [].forEach.call(qb.querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.q === p || (p !== 'auto' && b.dataset.q === e)); }); };
+    qb.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; LS.set(Q_KEY, b.dataset.q); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : 'HD')); });
+    bar.append(qb); qRender();
     if (o.bar) o.bar.replaceChildren(bar);
 
     }

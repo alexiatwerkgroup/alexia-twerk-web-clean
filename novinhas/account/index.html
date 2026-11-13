@@ -11,7 +11,7 @@ h1{font:800 28px system-ui;margin:6px 0 4px}.sub{color:#aaa;margin:0 0 18px;font
 </style></head><body><header><a href="/novinhas/">&larr; Novinhas</a><a href="/">Twerkhub</a></header><main>
 <h1>My Novinhas account</h1><p class="sub">Your watch history, liked videos and player settings. Saved on this device.</p>
 <div class="top"><a class="twk-btn twk-btn--sm" href="/account">Twerkhub account</a><a class="twk-btn twk-btn--ghost twk-btn--sm" href="/novinhas/">Browse channels</a></div>
-<div class="tabs" id="tabs"><button data-t="hist" class="on">History</button><button data-t="cont">Continue watching</button><button data-t="like">Liked videos</button><button data-t="set">Settings</button></div>
+<div class="tabs" id="tabs"><button data-t="hist" class="on">History</button><button data-t="cont">Continue watching</button><button data-t="like">Liked videos</button><button data-t="fav">Saved list</button><button data-t="set">Settings</button></div>
 <div id="view"></div></main><script src="/assets/novinhas-nav.js?v=2"></script><script>
 (function(){var LS={get:function(k){try{return localStorage.getItem(k)}catch(_){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(_){}},del:function(k){try{localStorage.removeItem(k)}catch(_){}},keys:function(){try{return Object.keys(localStorage)}catch(_){return[]}}};
 var esc=function(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
@@ -21,6 +21,7 @@ function ago(ts){var s=Math.max(1,(Date.now()-ts)/1000);if(s<3600)return Math.fl
 function chan(slug){if(!cache[slug])cache[slug]=fetch('/api/novinhas/channel?c='+encodeURIComponent(slug),{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null}).catch(function(){return null});return cache[slug]}
 function seen(){var out=[];LS.keys().forEach(function(k){if(k.indexOf('twk_nov_seen:')!==0)return;var slug=k.slice(13),m={};try{m=JSON.parse(LS.get(k)||'{}')}catch(_){}Object.keys(m).forEach(function(id){out.push({slug:slug,id:+id,ts:m[id]})})});return out.sort(function(a,b){return b.ts-a.ts})}
 function liked(){var out=[];LS.keys().forEach(function(k){var m=/^twk_nov_like:(.+):(\d+)$/.exec(k);if(m&&LS.get(k)==='1')out.push({slug:m[1],id:+m[2],ts:0})});return out}
+function favs(){var out=[];LS.keys().forEach(function(k){var m=/^twk_nov_fav:(.+):(\d+)$/.exec(k);if(m&&LS.get(k)==='1')out.push({slug:m[1],id:+m[2],ts:0})});return out}
 function pos(slug,id){return parseFloat(LS.get('twk_nov_pos:'+slug+':'+id))||0}
 function item(e,d,v,opt){var p=pos(e.slug,e.id),pc=v.duration&&p>3?Math.min(100,p/v.duration*100):0,url='/novinhas/canal/ver/?c='+encodeURIComponent(e.slug)+'&v='+pad(e.id);
  return '<div class="row"><a class="th" href="'+url+'"><img loading="lazy" alt="" src="'+esc(v.poster)+'">'+(pc?'<div class="bar"><i style="width:'+pc+'%"></i></div>':'')+'</a><div><a href="'+url+'"><strong>'+esc(v.title)+'</strong></a><small><a href="/novinhas/canal/?c='+encodeURIComponent(e.slug)+'">'+esc(d.name)+'</a>'+(e.ts?' &middot; Watched '+ago(e.ts):'')+'</small></div>'+(opt||'')+'</div>'}
@@ -32,14 +33,15 @@ function render(){[].forEach.call(document.querySelectorAll('#tabs button'),func
  if(tab==='hist')list(seen(),'hist','No watch history yet. Videos you watch will show up here.');
  else if(tab==='cont'){var c=seen().filter(function(e){return pos(e.slug,e.id)>8});list(c,'cont','Nothing to resume. Videos you stop halfway show up here.')}
  else if(tab==='like')list(liked(),'like','You have not liked any videos yet.');
+ else if(tab==='fav')list(favs(),'fav','Your saved list is empty. Press Save on any video to add it here.');
  else{var q=LS.get('twk_nov_q')||'auto',a=LS.get('twk_nov_autoplay')!=='0';
   view.innerHTML='<div class="card"><h3>Player</h3><div class="set"><div><b>Autoplay next video</b><p style="margin:2px 0 0">Starts the next video of the channel when one ends.</p></div><select id="sa"><option value="1"'+(a?' selected':'')+'>On</option><option value="0"'+(a?'':' selected')+'>Off</option></select></div><div class="set"><div><b>Default quality</b><p style="margin:2px 0 0">Auto picks HD or 480p for your connection.</p></div><select id="sq"><option value="auto"'+(q==='auto'?' selected':'')+'>Auto</option><option value="hd"'+(q==='hd'?' selected':'')+'>HD</option><option value="sd"'+(q==='sd'?' selected':'')+'>480p</option></select></div></div><div class="card"><h3>Privacy</h3><p>Watch history, likes and resume points are stored in this browser only.</p><button class="twk-btn twk-btn--ghost twk-btn--sm" id="clrall">Clear history, likes and resume points</button></div><div class="card"><h3>VIP</h3><p>VIP unlocks every video of every Novinhas channel, including new ones.</p><a class="twk-btn twk-btn--sm" href="/paymentmethods/">Get VIP</a></div>'}}
 document.getElementById('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b){tab=b.dataset.t;render()}});
 view.addEventListener('change',function(e){if(e.target.id==='sa')LS.set('twk_nov_autoplay',e.target.value);if(e.target.id==='sq')LS.set('twk_nov_q',e.target.value)});
 view.addEventListener('click',function(e){var t=e.target;if(t.id==='clr'){LS.keys().forEach(function(k){if(k.indexOf('twk_nov_seen:')===0)LS.del(k)});render();return}
- if(t.id==='clrall'){LS.keys().forEach(function(k){if(/^twk_nov_(seen|like|pos)[:]/.test(k))LS.del(k)});t.textContent='Cleared';return}
+ if(t.id==='clrall'){LS.keys().forEach(function(k){if(/^twk_nov_(seen|like|fav|pos)[:]/.test(k))LS.del(k)});t.textContent='Cleared';return}
  var r=t.dataset&&t.dataset.rm;if(!r)return;var s=t.dataset.s,i=t.dataset.i;
  if(r==='hist'){var m={};try{m=JSON.parse(LS.get('twk_nov_seen:'+s)||'{}')}catch(_){}delete m[i];LS.set('twk_nov_seen:'+s,JSON.stringify(m))}
- else if(r==='cont')LS.del('twk_nov_pos:'+s+':'+i);else if(r==='like')LS.del('twk_nov_like:'+s+':'+i);render()});
+ else if(r==='cont')LS.del('twk_nov_pos:'+s+':'+i);else if(r==='like')LS.del('twk_nov_like:'+s+':'+i);else if(r==='fav')LS.del('twk_nov_fav:'+s+':'+i);render()});
 render()})();
 </script></body></html>
