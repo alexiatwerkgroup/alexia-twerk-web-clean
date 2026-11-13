@@ -9,14 +9,9 @@
 
 .pm h2{font:400 clamp(30px,4vw,44px)/1 Anton,Impact,sans-serif;text-transform:uppercase;margin:54px 0 16px}.pm ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}.pm li{counter-increment:s;border:1.5px solid #26262c;border-radius:16px;background:#101014;padding:20px 20px 20px 64px;position:relative;line-height:1.5;color:#c9c9d3}.pm li:before{content:counter(s);position:absolute;left:18px;top:16px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#ffe08a,#c99a2e);color:#1a1200;font:900 15px system-ui}.pm li b{color:#fff;display:block}
 .pm .note{margin-top:22px;color:#8d8d99;font-size:13px;line-height:1.6}.pm .note a{color:#e8b84a}@media(max-width:860px){.pm .grid,.pm ol{grid-template-columns:1fr}}.pm .prow{display:grid;grid-template-columns:auto 1fr;gap:18px;margin-top:30px}
-.pm .sum{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 18px;margin-top:30px;padding-bottom:22px;border-bottom:1px solid #2a2410}
-.pm .sum small{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#e8b84a}
-.pm .sum b{font:400 52px/1 Anton,Impact,sans-serif;color:#ffd76a}
-.pm .sum em{font:600 14px Inter,system-ui,sans-serif;font-style:normal;color:#a99b72}
 .pm .sup{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 22px;margin-top:34px;padding-top:26px;border-top:1px solid #2a2410;text-align:center}
 .pm .sup p{margin:0;color:#c9c9d3;font:500 15px/1.5 Inter,system-ui,sans-serif}.pm .sup p b{color:#fff}
-@media(max-width:700px){.pm .sup{flex-direction:column}.pm .sup .twk-btn{width:100%}.pm .sum b{font-size:44px}}
-.pm .card .twk-pay{margin-top:auto}.pm .ps{margin:34px 0 14px;font-size:30px}
+@media(max-width:700px){.pm .sup{flex-direction:column}.pm .sup .twk-btn{width:100%}.pm .card .twk-pay{margin-top:auto}.pm .ps{margin:34px 0 14px;font-size:30px}
 .pm .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 .pm .opt{display:flex;flex-direction:column;gap:6px;text-align:left;padding:20px 22px;border:1.5px solid #3a3115;border-radius:16px;background:linear-gradient(180deg,#14110a,#0a0905);color:#fff;cursor:pointer;font-family:Inter,system-ui,sans-serif;transition:border-color .2s,background .2s}
 .pm .opt:hover{border-color:#8a6a1e}.pm .opt[aria-checked=true]{border-color:#e8b84a;background:linear-gradient(180deg,#2a2208,#0d0b04);box-shadow:0 0 0 1px #e8b84a55}
@@ -30,8 +25,7 @@
 .pm .chips{display:flex;gap:8px;flex-wrap:wrap}.pm .chips button{height:44px;padding:0 16px;border-radius:12px;border:1.5px solid #3a3115;background:#0d0b05;color:#f1dfa6;font:700 13px 'JetBrains Mono',monospace;cursor:pointer}.pm .chips button:hover{border-color:#e8b84a}
 .pm .amtbox p{margin:10px 0 0;color:#a99b72;font:600 13px/1.5 Inter,system-ui,sans-serif}.pm .amtbox p.bad{color:#ff8a8a}
 .pm .grid.off .twk-pay{opacity:.4;pointer-events:none}
-.pm .sum{margin-top:26px}
-</style></head><body>
+.pm .amtbox+.grid,.pm .opts+.grid{margin-top:26px}</style></head><body>
 <!-- TWK_SHELL_V2 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +44,6 @@
 <button type="button" class="opt" role="radio" data-k="donate"><span class="ot">Donation</span><b>Any amount</b><span class="od">Support Twerkhub. A donation does not add access or coins to your account.</span></button>
 </div>
 <div class="amtbox" id="amtbox" hidden><label for="amtin" id="amtlb">Amount (USD)</label><div class="amtrow"><span>$</span><input id="amtin" type="number" inputmode="decimal" min="10" step="0.5" value="10"><div class="chips" id="chips"></div></div><p id="amtnote"></p></div>
-<div class="sum price" id="sum"><small>VIP access &middot; Novinhas</small><b>$49.99</b><em>USD / month &middot; cancel anytime</em></div>
 <div class="grid">
 <div class="card"><h3>PayPal</h3><p>Pay with your PayPal balance or any card linked to your PayPal account.</p><a class="twk-pay" href="/discord" target="_blank" rel="noopener"><span class="t"><b>Pay now</b><i>Balance or linked card</i></span><span class="lg w"><img src="/assets/paypal-logo.png" alt="PayPal" height="18"></span></a></div>
 <div class="card"><h3>Binance</h3><p>Pay in crypto with Binance Pay (USDT and other supported coins). Fast and worldwide.</p><a class="twk-pay" href="#binance" data-twk-binance="$49.99 USD"><span class="t"><b>Pay now</b><i>USDT &middot; no fees</i></span><span class="lg"><img src="/assets/binance-mark.png" alt="Binance" height="42"></span></a></div>
@@ -63,18 +56,13 @@
 </div></main>
 <script>(function(){
 var q=new URLSearchParams(location.search),model=(q.get('model')||'').slice(0,30),pItem=q.get('item'),pAmt=parseFloat(q.get('amt')),pLabel=(q.get('label')||'').slice(0,80);
-var box=document.getElementById('opts'),sum=document.getElementById('sum'),ab=document.getElementById('amtbox'),inp=document.getElementById('amtin'),note=document.getElementById('amtnote'),lb=document.getElementById('amtlb'),chips=document.getElementById('chips'),grid=document.querySelector('.pm .grid'),bn=document.querySelector('[data-twk-binance]');
+var box=document.getElementById('opts'),ab=document.getElementById('amtbox'),inp=document.getElementById('amtin'),note=document.getElementById('amtnote'),lb=document.getElementById('amtlb'),chips=document.getElementById('chips'),grid=document.querySelector('.pm .grid'),bn=document.querySelector('[data-twk-binance]');
 var cur=null,amt=49.99;
 if(pItem==='pack'&&pAmt>0&&pLabel){var b=document.createElement('button');b.type='button';b.className='opt';b.setAttribute('role','radio');b.dataset.k='pack';b.innerHTML='<span class="ot">'+(model?model.charAt(0).toUpperCase()+model.slice(1):'Model')+' pack</span><b>$'+pAmt.toFixed(2)+'</b><span class="od"></span>';b.querySelector('.od').textContent=pLabel+'. One-time payment.';box.insertBefore(b,box.firstChild)}
 function fmt(n){return '$'+(Math.round(n*100)/100).toFixed(2)}
 function setChips(list){chips.innerHTML='';list.forEach(function(v){var c=document.createElement('button');c.type='button';c.textContent='$'+v;c.onclick=function(){inp.value=v;apply()};chips.appendChild(c)})}
 function valid(){return amt>0&&(cur!=='coins'||(amt>=10&&Math.round(amt*2)===amt*2*1))}
-function paint(){var tx=function(el,t){el.textContent=t},sm=sum.querySelector('small'),bb=sum.querySelector('b'),em=sum.querySelector('em');
- if(cur==='vip'){tx(sm,'VIP access \u00b7 Novinhas');tx(bb,'$49.99');tx(em,'USD / month \u00b7 cancel anytime')}
- else if(cur==='pack'){tx(sm,pLabel);tx(bb,fmt(pAmt));tx(em,'USD \u00b7 one-time payment')}
- else if(cur==='coins'){tx(sm,'Coins \u00b7 model pages');tx(bb,fmt(amt));tx(em,valid()?'USD \u00b7 '+Math.round(amt/0.5)+' coins added to your account':'Minimum $10 (20 coins)')}
- else{tx(sm,'Donation');tx(bb,fmt(amt));tx(em,'USD \u00b7 thank you for supporting Twerkhub')}
- grid.classList.toggle('off',!valid());if(bn)bn.setAttribute('data-twk-binance',fmt(amt)+' USD')}
+function paint(){grid.classList.toggle('off',!valid());if(bn)bn.setAttribute('data-twk-binance',fmt(amt)+' USD')}
 function apply(){var v=parseFloat(inp.value);amt=isNaN(v)?0:v;
  if(cur==='coins'){var ok=amt>=10&&Math.abs(amt*2-Math.round(amt*2))<1e-9;note.className=ok?'':'bad';note.textContent=ok?'= '+Math.round(amt/0.5)+' coins ($0.50 each).':'Minimum $10 (20 coins), in steps of $0.50.'}
  else if(cur==='donate'){var ok2=amt>=1;note.className=ok2?'':'bad';note.textContent=ok2?'Thank you! A donation does not add access or coins.':'Minimum donation $1.'}
