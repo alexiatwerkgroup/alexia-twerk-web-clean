@@ -43,7 +43,7 @@
         if (done) return; done = true; clearInterval(ti); clearTimeout(end); document.removeEventListener('mousemove', near); el.remove();
         post({ action: 'catch', id: d.id }).then(function (r) {
           var w = document.createElement('div'); w.className = 'twrw';
-          w.innerHTML = r && r.ok ? '<div><img src="/assets/rabbit.png" alt=""><br>You caught it!<b>$' + r.usd + ' in coins</b>' + r.coins + ' coins were added to your balance.<br><button>Awesome</button></div>' : '<div><img src="/assets/rabbit.png" alt=""><br>Too late: the rabbit got away this time.<br><button>Close</button></div>';
+          w.innerHTML = r && r.ok ? '<div><img src="/assets/rabbit.png" alt=""><br>You caught it!<b>$' + r.usd + ' in coins</b>' + r.coins + ' coins were added to your balance.<br><span style="display:block;margin-top:12px;font:600 12px/1.45 system-ui,sans-serif;color:#ffd76a">Dear user, a gentle reminder: some of us work rather hard for the content you enjoy every night, free of charge. Do stop jerking off for free every night and consider a small donation. It\'s the least a gentleman could do, you absolute scoundrel.</span><button>Awesome</button></div>' : '<div><img src="/assets/rabbit.png" alt=""><br>Too late: the rabbit got away this time.<br><button>Close</button></div>';
           w.addEventListener('click', function (e) { if (e.target === w || e.target.tagName === 'BUTTON') w.remove(); }); document.body.appendChild(w);
           if (r && r.ok) { var b = document.getElementById('bal'); if (b) setTimeout(function () { location.reload(); }, 2500); }
         });
