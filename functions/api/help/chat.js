@@ -1,5 +1,5 @@
 // Publico. POST {chat?, text, transcript?, email?, path?, lang?} · GET ?chat=ID&since=N
-import { ensureHelp, J, newId, ipHash, notify } from '../../_lib/help.js';
+import { ensureHelp, J, newId, ipHash, notify, notifyMail } from '../../_lib/help.js';
 const clean = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').trim().slice(0, n);
 export async function onRequest({ request, env }) {
   if (!env.DB) return J({ ok: false, error: 'no_db' }, 503);
@@ -31,10 +31,11 @@ export async function onRequest({ request, env }) {
     const last = await env.DB.prepare("SELECT ts FROM help_msgs WHERE chat = ? AND role = 'user' ORDER BY id DESC LIMIT 1").bind(id).first();
     if (last && now - last.ts < 1) return J({ ok: false, error: 'slow_down' }, 429);
     const cnt = await env.DB.prepare('SELECT COUNT(*) n FROM help_msgs WHERE chat = ?').bind(id).first(); if (cnt && cnt.n > 300) return J({ ok: false, error: 'limit' }, 429);
-    if (b.email) await env.DB.prepare('UPDATE help_chats SET email = ? WHERE id = ?').bind(clean(b.email, 120), id).run();
+    if (b.email) { await env.DB.prepare('UPDATE help_chats SET email = ? WHERE id = ?').bind(clean(b.email, 120), id).run(); if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(clean(b.email, 120))) await notifyMail(env, { subject: 'Twerkhub chat: el usuario dejo su email', text: 'Email del usuario: ' + clean(b.email, 120) + '\nMensaje: ' + text.slice(0, 500) + '\nResponder desde el panel: https://twerkhub.lat/admin/help/ (o respondele a este mail).', replyTo: clean(b.email, 120) }); }
   }
   const r = await env.DB.prepare('INSERT INTO help_msgs (chat, role, text, ts) VALUES (?,?,?,?)').bind(id, 'user', text, now).run();
   await env.DB.prepare("UPDATE help_chats SET updated = ?, unread_admin = unread_admin + 1, status = CASE WHEN status = 'open' THEN 'open' ELSE 'waiting' END WHERE id = ?").bind(now, id).run();
+  if (created || !b.chat) { const em = clean(b.email, 120); await notifyMail(env, { subject: 'Nuevo chat de ayuda en Twerkhub', text: 'Mensaje: ' + text.slice(0, 500) + '\nEmail del usuario: ' + (em || '(no dejo)') + '\nIdioma: ' + clean(b.lang, 8) + ' · Pagina: ' + clean(b.path, 160) + '\nResponder: https://twerkhub.lat/admin/help/', replyTo: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em) ? em : undefined }); }
   if (created || !b.chat) await notify(env, 'Nuevo chat de ayuda en Twerkhub: ' + text.slice(0, 200) + '\nResponder: https://twerkhub.lat/admin/help/');
   return J({ ok: true, chat: id, id: r.meta && r.meta.last_row_id, ahead: await ahead(env, id) });
 }

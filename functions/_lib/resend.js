@@ -10,7 +10,7 @@
 
 const DEFAULT_FROM = 'TWERKHUB <noreply@alexiatwerkgroup.com>';
 
-export async function sendEmail(env, { to, subject, html, text }) {
+export async function sendEmail(env, { to, subject, html, text, replyTo }) {
   const apiKey = env.RESEND_API_KEY;
   if (!apiKey) throw new Error('resend_not_configured');
   const from = env.RESEND_FROM || DEFAULT_FROM;
@@ -25,6 +25,7 @@ export async function sendEmail(env, { to, subject, html, text }) {
       from,
       to: Array.isArray(to) ? to : [to],
       subject,
+      ...(replyTo ? { reply_to: replyTo } : {}),
       html,
       text: text || stripHtml(html),
     }),

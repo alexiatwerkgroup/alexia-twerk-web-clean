@@ -21,3 +21,12 @@ export async function notify(env, text) {
   if (!env.HELP_WEBHOOK_URL) return;
   try { await fetch(env.HELP_WEBHOOK_URL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ content: text.slice(0, 1800) }) }); } catch (e) {}
 }
+
+// Aviso por mail al soporte (responder desde Gmail llega al usuario si dejo su email via reply-to).
+export async function notifyMail(env, { subject, text, replyTo }) {
+  try {
+    const { sendEmail } = await import('./resend.js');
+    const esc = (t) => String(t).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    await sendEmail(env, { to: env.HELP_NOTIFY_EMAIL || 'twerkhub.lat@gmail.com', subject, text, html: '<pre style="font:14px/1.5 system-ui;white-space:pre-wrap">' + esc(text) + '</pre>', replyTo });
+  } catch (e) {}
+}
