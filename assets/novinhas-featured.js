@@ -2,7 +2,7 @@
 (function () {
   var box = document.getElementById('nov-feat'); if (!box) return;
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  fetch('/api/novinhas/featured?row=16', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+  fetch('/api/novinhas/featured?row=8', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.items || !d.items.length) return;
     box.innerHTML = '<div class="nf-row">' + d.items.slice(0, 8).map(function (it, i) {
       return '<a class="nf-it" href="' + esc(it.url) + '" aria-label="' + esc(it.name) + '"><span class="nf-m"><img alt="" loading="lazy" src="' + esc(it.poster) + '"><video ' + (i === 0 ? 'autoplay ' : '') + 'loop playsinline preload="' + (i === 0 ? 'auto' : 'none') + '" data-first="' + (i === 0 ? 1 : 0) + '" data-src="' + esc(it.src) + '"></video></span>' +

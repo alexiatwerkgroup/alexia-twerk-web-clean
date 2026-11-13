@@ -126,13 +126,23 @@ export async function onRequest({ request, env }) {
     const tot = {}; chans.forEach((c) => { tot[c.slug] = c.total || 0; });
     const all = (await db.prepare('SELECT id, slug, vid, name, start FROM nv_feat ORDER BY added, id').all()).results || [];
     const pin = (await getS(db, 'pin')) || 0; all.sort((x, y) => (y.id === pin) - (x.id === pin));
-    const items = [];
+    const items = [], used = {};
     for (const r of all) {
-      if (items.length >= N) break;
+      if (items.length >= 1) break;
       if (!(r.slug in tot)) continue;
       if (!(await env.NOVINHAS_VIDEOS.head(clipKey(r.slug, r.vid, r.start || 0)))) continue;
-      items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: r.start || 0 });
+      items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: r.start || 0 }); used[r.slug + ':' + r.vid] = 1;
     }
+    const pick = async (c) => {
+      const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/clips/c-', limit: 200 });
+      const ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter((m) => m && !used[c.slug + ':' + m[1]]);
+      if (!ks.length) return null; const m = ks[Math.floor(Math.random() * ks.length)];
+      used[c.slug + ':' + m[1]] = 1; return { slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: parseInt(m[1], 10), start: parseInt(m[2], 10) };
+    };
+    chans.sort(() => Math.random() - 0.5);
+    const firstSlug = items.length ? items[0].slug : '';
+    for (const c of chans) { if (items.length >= N) break; if (c.slug === firstSlug) continue; const it = await pick(c); if (it) items.push(it); }
+    for (let i = 0; firstSlug && items.length < N && i < 20; i++) { const it = await pick({ slug: firstSlug, name: items[0].name, total: items[0].total }); if (!it) break; items.push(it); }
     const slugs = Array.from(new Set(items.map((x) => x.slug)));
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
