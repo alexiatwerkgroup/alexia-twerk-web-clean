@@ -13,7 +13,7 @@
       v.addEventListener('loadedmetadata', function () { if (v.videoWidth && v.videoHeight) m.style.aspectRatio = v.videoWidth + ' / ' + v.videoHeight; });
       if (v.getAttribute('data-first') !== '1') v.addEventListener('loadeddata', function () { try { if (v.paused) v.currentTime = 6; } catch (_) {} v.classList.add('on'); });
       if (v.getAttribute('data-first') === '1') {
-        v.src = v.getAttribute('data-src'); v.classList.add('on'); v.muted = false; v.volume = 0.8;
+        v.src = v.getAttribute('data-src'); v.classList.add('on'); v.muted = false; v.volume = 0.4;
         var go = function () { var p = v.play(); if (p && p.catch) p.catch(function () { v.muted = true; v.play().catch(function () {}); arm(); }); };
         var arm = function () { var ev = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'mousemove']; var h = function () { ev.forEach(function (e) { window.removeEventListener(e, h, true); }); v.muted = false; v.play().catch(function () {}); }; ev.forEach(function (e) { window.addEventListener(e, h, true); }); };
         go(); return;

@@ -125,13 +125,14 @@ export async function onRequest({ request, env }) {
     try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug)); } catch (e) {}
     const tot = {}; chans.forEach((c) => { tot[c.slug] = c.total || 0; });
     const all = (await db.prepare('SELECT id, slug, vid, name, start FROM nv_feat ORDER BY added, id').all()).results || [];
-    const pin = (await getS(db, 'pin')) || 0; all.sort((x, y) => (y.id === pin) - (x.id === pin));
     const items = [], used = {};
-    for (const r of all) {
-      if (items.length >= 1) break;
-      if (!(r.slug in tot)) continue;
-      if (!(await env.NOVINHAS_VIDEOS.head(clipKey(r.slug, r.vid, r.start || 0)))) continue;
-      items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: r.start || 0 }); used[r.slug + ':' + r.vid] = 1;
+    for (const k of ['pin1', 'pin2']) {
+      const pid = (await getS(db, k)) || 0, r = all.filter((x) => x.id === pid)[0];
+      if (!r || !(r.slug in tot)) continue;
+      const l = await env.NOVINHAS_VIDEOS.list({ prefix: r.slug + '/clips/c-' + r.vid + '-', limit: 20 });
+      const m = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter(Boolean).sort((a, b2) => Math.abs(a[2] - (r.start || 0)) - Math.abs(b2[2] - (r.start || 0)))[0];
+      if (!m) continue;
+      items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: parseInt(m[2], 10) }); used[r.slug + ':' + r.vid] = 1;
     }
     const pick = async (c) => {
       const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/clips/c-', limit: 200 });
@@ -140,9 +141,9 @@ export async function onRequest({ request, env }) {
       used[c.slug + ':' + m[1]] = 1; return { slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: parseInt(m[1], 10), start: parseInt(m[2], 10) };
     };
     chans.sort(() => Math.random() - 0.5);
-    const firstSlug = items.length ? items[0].slug : '';
-    for (const c of chans) { if (items.length >= N) break; if (c.slug === firstSlug) continue; const it = await pick(c); if (it) items.push(it); }
-    for (let i = 0; firstSlug && items.length < N && i < 20; i++) { const it = await pick({ slug: firstSlug, name: items[0].name, total: items[0].total }); if (!it) break; items.push(it); }
+    const firstSlug = '';
+    const taken = {}; items.forEach((x) => { taken[x.slug] = 1; });
+    for (const c of chans) { if (items.length >= N) break; if (taken[c.slug]) continue; const it = await pick(c); if (it) items.push(it); }
     const slugs = Array.from(new Set(items.map((x) => x.slug)));
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
