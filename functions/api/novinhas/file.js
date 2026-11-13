@@ -1,18 +1,25 @@
 // GET /api/novinhas/file?k=<canal>/<full|480h|previews>/<video-NN.mp4|poster-NN.webp>
-// Sirve videos y portadas de Novinhas desde el bucket R2 "novinhas" (binding NOVINHAS_VIDEOS). Soporta Range.
-const KEY = /^[a-z0-9-]{2,60}\/(full|480h)\/video-\d{2,3}\.mp4$|^[a-z0-9-]{2,60}\/previews\/poster-\d{2,3}\.webp$/;
+// Sirve videos y portadas de Novinhas desde el bucket R2 (binding NOVINHAS_VIDEOS). Soporta Range.
+// Los videos bloqueados (canal VIP, fuera de los libres) solo se entregan con la cookie VIP valida.
+import { vipCfg, isVip, isLocked } from '../../_lib/vip.js';
+const KEY = /^([a-z0-9-]{2,60})\/(?:(?:full|480h)\/video-(\d{2,3})\.mp4|(previews)\/poster-(\d{2,3})\.webp)$/;
 
 export async function onRequestGet({ request, env }) {
   const fail = (s, m) => new Response(m, { status: s, headers: { 'Cache-Control': 'no-store' } });
   const key = new URL(request.url).searchParams.get('k') || '';
-  if (!KEY.test(key)) return fail(400, 'bad_request');
+  const km = KEY.exec(key); if (!km) return fail(400, 'bad_request');
   if (!env.NOVINHAS_VIDEOS) return fail(500, 'not_configured');
+  const isPoster = !!km[3]; let priv = false;
+  if (!isPoster) {
+    const cfg = await vipCfg(env);
+    if (isLocked(cfg, km[1], km[2])) { if (!(await isVip(request, env))) return fail(403, 'vip_required'); priv = true; }
+  }
   const head = await env.NOVINHAS_VIDEOS.head(key);
   if (!head) return fail(404, 'not_found');
   const size = head.size, isVideo = key.endsWith('.mp4');
   const h = new Headers({
     'Content-Type': isVideo ? 'video/mp4' : 'image/webp', 'Accept-Ranges': 'bytes',
-    'Cache-Control': 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex'
+    'Cache-Control': priv ? 'private, no-store' : 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex'
   });
   const range = request.headers.get('Range');
   const m = range && /^bytes=(\d*)-(\d*)$/.exec(range);
