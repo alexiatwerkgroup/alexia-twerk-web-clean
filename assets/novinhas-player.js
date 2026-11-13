@@ -161,11 +161,7 @@
     /* siguiente video */
     var idx = vids.indexOf(cur);
     function neighbor(dir) { for (var i = idx + dir; i >= 0 && i < vids.length; i += dir) if (!vids[i].locked) return vids[i]; return null; }
-    /* Siguiente = AL AZAR (prefiere los que no viste); Anterior = el que viste antes en esta pestana. */
-    function randomNext() { var seen = getSeen(slug), pool = vids.filter(function (x) { return x !== cur && !x.locked; }), fresh = pool.filter(function (x) { return !seen[x.id]; }); if (fresh.length) pool = fresh; return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null; }
-    var hk = 'twk_nov_hist:' + slug, hist = []; try { hist = JSON.parse(sessionStorage.getItem(hk) || '[]'); } catch (_) {}
-    if (hist[hist.length - 1] !== String(cur.id)) { if (hist[hist.length - 2] === String(cur.id)) hist.pop(); else hist.push(String(cur.id)); } try { sessionStorage.setItem(hk, JSON.stringify(hist.slice(-50))); } catch (_) {}
-    var pid = hist.length > 1 ? hist[hist.length - 2] : null, prevV = pid ? vids.filter(function (x) { return String(x.id) === pid; })[0] || null : null, nextV = randomNext();
+    var nextV = neighbor(1), prevV = neighbor(-1);
     var nx = document.createElement('div'); nx.className = 'np-next';
     box.appendChild(nx); var nxT;
     function showNext() {
