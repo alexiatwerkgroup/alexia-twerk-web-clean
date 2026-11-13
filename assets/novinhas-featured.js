@@ -9,7 +9,7 @@
     box.innerHTML = '<div class="nf-card"><a class="nf-media" href="' + esc(d.url) + '" aria-label="Watch ' + esc(d.name) + '"><video muted playsinline preload="metadata" poster="' + esc(d.poster) + '"></video>' +
       '<span class="nf-fomo"><i></i>' + esc(fomo) + '</span><span class="nf-live">20s PREVIEW</span>' +
       '<span class="nf-info"><b>' + esc(d.name) + '</b></span></a>' +
-      '<div class="nf-act"><a class="gold" href="' + esc(d.url) + '">Watch now <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="nf-vault" href="/novinhas/">Enter the Vault</a></div></div>';
+      '<div class="nf-act"><a class="gold" href="' + esc(d.url) + '">Watch now <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></div>';
     var v = box.querySelector('video'); v.muted = true; v.src = d.src; var st = d.start || 0, en = st + (d.secs || 20);
     v.addEventListener('loadedmetadata', function () { if (st) { try { v.currentTime = st; } catch (_) {} } });
     v.addEventListener('timeupdate', function () { if (v.currentTime >= en || v.currentTime < st - 0.5) { try { v.currentTime = st; } catch (_) {} } });

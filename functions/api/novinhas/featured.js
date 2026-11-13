@@ -19,6 +19,7 @@ async function isOwner(request, env) {
 }
 async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_feat (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, vid INTEGER, title TEXT, name TEXT, queued INTEGER DEFAULT 1, added INTEGER, shown INTEGER DEFAULT 0, last INTEGER DEFAULT 0, UNIQUE(slug, vid))').run();
+  try { await db.prepare('ALTER TABLE nv_feat ADD COLUMN auto INTEGER DEFAULT 0').run(); } catch (e) {}
   try { await db.prepare('ALTER TABLE nv_feat ADD COLUMN start INTEGER DEFAULT 0').run(); } catch (e) {}
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_feat_state (k TEXT PRIMARY KEY, v INTEGER)').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_presence (slug TEXT, dev TEXT, ts INTEGER, PRIMARY KEY (slug, dev))').run();
@@ -26,12 +27,29 @@ async function ensure(db) {
 const getS = async (db, k) => { const r = await db.prepare('SELECT v FROM nv_feat_state WHERE k = ?').bind(k).first(); return r ? r.v : 0; };
 const setS = (db, k, v) => db.prepare('INSERT OR REPLACE INTO nv_feat_state (k, v) VALUES (?, ?)').bind(k, v).run();
 // Devuelve el destacado vigente; si ya cumplio su hora, pasa al siguiente de la cola o, sin cola, a uno al azar de los guardados.
-async function current(db, now) {
+// Sin cola: cualquier video de cualquier canal en vivo, desde un segundo al azar (se guarda como 'auto' y reemplaza al auto anterior).
+async function randomAny(env, request, db, now, cur) {
+  let chans = [];
+  try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).map((c) => c.slug).filter((x) => SLUG.test(x)); } catch (e) {}
+  for (let i = 0; i < 6 && chans.length; i++) {
+    const slug = chans[Math.floor(Math.random() * chans.length)];
+    const o = await env.NOVINHAS_VIDEOS.get(slug + '/_videos.json'); if (!o) continue;
+    const d = await o.json(), vs = d.videos || []; if (!vs.length) continue;
+    const v = vs[Math.floor(Math.random() * vs.length)], dur = Number(v.duration) || 0;
+    if (cur && cur.slug === slug && cur.vid === v.id) continue;
+    const st = dur > SECS + 4 ? Math.floor(Math.random() * (dur - SECS - 3)) : 0;
+    await db.prepare('DELETE FROM nv_feat WHERE auto = 1 AND id != ?').bind(cur ? cur.id : 0).run();
+    await db.prepare('INSERT OR REPLACE INTO nv_feat (slug, vid, title, name, queued, added, start, auto) VALUES (?, ?, ?, ?, 0, ?, ?, 1)').bind(slug, v.id, v.title || '', d.name || slug, now, st).run();
+    return await db.prepare('SELECT * FROM nv_feat WHERE slug = ? AND vid = ?').bind(slug, v.id).first();
+  }
+  return null;
+}
+async function current(env, request, db, now) {
   let cur = await getS(db, 'cur'), since = await getS(db, 'since');
   let row = cur ? await db.prepare('SELECT * FROM nv_feat WHERE id = ?').bind(cur).first() : null;
   if (row && now - since < HOLD) return { row, since };
   let next = await db.prepare('SELECT * FROM nv_feat WHERE queued = 1 ORDER BY added, id LIMIT 1').first();
-  if (!next) next = await db.prepare('SELECT * FROM nv_feat WHERE id != ? ORDER BY RANDOM() LIMIT 1').bind(cur || 0).first();
+  if (!next) next = await randomAny(env, request, db, now, row);
   if (!next) return row ? { row, since: now } : null;
   const claim = await db.prepare("UPDATE nv_feat_state SET v = ? WHERE k = 'since' AND v = ?").bind(now, since).run();
   if (!claim.meta || claim.meta.changes !== 1) { cur = await getS(db, 'cur'); since = await getS(db, 'since'); row = cur ? await db.prepare('SELECT * FROM nv_feat WHERE id = ?').bind(cur).first() : null; return row ? { row, since } : null; }
@@ -72,7 +90,7 @@ export async function onRequest({ request, env }) {
   if (q.get('me')) return J({ owner: await isOwner(request, env) });
   if (q.get('list')) {
     if (!(await isOwner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);
-    const cur = await current(db, now), all = (await db.prepare('SELECT * FROM nv_feat ORDER BY queued DESC, added, id').all()).results || [];
+    const cur = await current(env, request, db, now), all = (await db.prepare('SELECT * FROM nv_feat ORDER BY queued DESC, added, id').all()).results || [];
     return J({ ok: true, now, hold: HOLD, current: cur ? { id: cur.row.id, since: cur.since } : null, items: all });
   }
   if (q.get('s')) {
@@ -98,7 +116,7 @@ export async function onRequest({ request, env }) {
     const obj = await env.NOVINHAS_VIDEOS.get(key, { range: { offset: start, length: end - start + 1 } });
     return new Response(obj.body, { status, headers: h });
   }
-  const cur = await current(db, now); if (!cur) return J({ none: true }, 200, 'public, max-age=30');
+  const cur = await current(env, request, db, now); if (!cur) return J({ none: true }, 200, 'public, max-age=30');
   const r = cur.row, n = (await db.prepare('SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE slug = ? AND ts > ?').bind(r.slug, now - 600).first());
   return J({ slug: r.slug, name: r.name, id: r.vid, title: r.title, viewers: n ? n.c : 0, left: Math.max(0, HOLD - (now - cur.since)), start: r.start || 0, secs: SECS,
     src: `/api/novinhas/featured?s=1&c=${r.slug}&v=${r.vid}`, poster: `/api/novinhas/file?k=${r.slug}/previews/poster-${pad(r.vid)}.webp`,
