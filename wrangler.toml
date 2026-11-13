@@ -28,3 +28,8 @@ bucket_name = "jenny-videos"
 [[r2_buckets]]
 binding = "ABBI_VIDEOS"
 bucket_name = "twerkhub-abbi-videos"
+
+# Bucket R2 con los videos de Novinhas (servidos por /api/novinhas/file)
+[[r2_buckets]]
+binding = "NOVINHAS_VIDEOS"
+bucket_name = "novinhas"
