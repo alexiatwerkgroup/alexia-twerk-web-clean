@@ -49,6 +49,7 @@
     '@media(max-width:540px){.twk-q-btn{height:40px}.twk-q-chip{height:40px}}' +
     '.twk-q-btn{width:auto;min-width:0;height:38px;padding:0 13px 0 11px;border-radius:999px;gap:6px;grid-auto-flow:column;border:1.5px solid #e8b84a;background:rgba(18,18,18,.82)}.twk-q-btn svg{width:18px;height:18px}.twk-q-lab{font:800 12px system-ui,sans-serif;letter-spacing:.04em}.np-stage video{cursor:pointer}' +
     '.np-qbar{display:inline-flex;align-items:center;gap:4px;padding:3px;border:1.5px solid #e8b84a;border-radius:999px;background:#1a1608}.np-qk{padding:0 8px 0 10px;font:800 10px system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#e8b84a}.np-qbar button{height:30px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:#f5e6b3;font:800 12px system-ui,sans-serif;cursor:pointer}.np-qbar button.on{background:linear-gradient(180deg,#fff0a8,#f7c83a 45%,#d99a0b);color:#2a1a00}' +
+    '.np-meta{position:absolute;z-index:11;left:12px;top:60px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;pointer-events:none;font-family:system-ui,sans-serif}.np-meta span{padding:4px 10px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.02em;text-shadow:0 1px 4px #000;white-space:nowrap}.np-meta .np-rec{color:#ffd76a;border:1px solid #ffd76a66}.np-meta .np-cd{font-variant-numeric:tabular-nums}' +
     /* siguiente + ayuda */
     '.np-next{position:absolute;inset:0;z-index:15;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(0,0,0,.78);text-align:center;padding:20px;font-family:system-ui,sans-serif}' +
     '.np-next.on{display:flex}.np-next small{color:#e8b84a;letter-spacing:.14em;font-weight:800;font-size:11px}.np-next b{font-size:18px;max-width:560px;line-height:1.35}' +
@@ -243,6 +244,25 @@
     var q = new URLSearchParams(location.search);
     v.play().catch(function () { v.muted = true; v.play().then(function () { say('Tap the volume to unmute'); }).catch(function () {}); });
 
+    /* resolucion + cuenta regresiva (todos) y fecha de grabacion (solo el dueño) */
+    var meta = document.createElement('div'); meta.className = 'np-meta';
+    var mRes = document.createElement('span'), mCd = document.createElement('span'); mCd.className = 'np-cd';
+    meta.append(mRes, mCd); box.appendChild(meta);
+    function fmtT(t) { t = Math.max(0, Math.ceil(t)); var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s2 = t % 60; return (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (s2 < 10 ? '0' : '') + s2; }
+    function resTxt() {
+      var w = v.videoWidth || cur.width || 0, h = v.videoHeight || cur.height || 0; if (!w || !h) return '';
+      var s1 = Math.min(w, h), tag = s1 >= 2000 ? '4K' : s1 >= 1400 ? '2K' : s1 >= 1000 ? 'Full HD' : s1 >= 700 ? 'HD' : 'SD';
+      return w + ' × ' + h + ' · ' + tag;
+    }
+    function tick() { var d = v.duration || cur.duration || 0; mCd.textContent = d ? '−' + fmtT(d - v.currentTime) : ''; var r = resTxt(); if (r && mRes.textContent !== r) mRes.textContent = r; }
+    ['loadedmetadata', 'timeupdate', 'durationchange', 'seeked'].forEach(function (ev) { v.addEventListener(ev, tick); }); tick();
+    fetch('/api/novinhas/recdate?c=' + encodeURIComponent(slug), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.owner) return; var e = j.dates && j.dates[String(cur.id)];
+      var mn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], lab = { meta: 'recorded', title: 'date in title', mtime: 'file date' };
+      var rec = document.createElement('span'); rec.className = 'np-rec';
+      if (e && /^\d{4}-\d{2}-\d{2}$/.test(e.d)) { var p3 = e.d.split('-'); rec.textContent = 'REC ' + (+p3[2]) + ' ' + mn[+p3[1] - 1] + ' ' + p3[0] + ' · ' + (lab[e.m] || e.m); } else rec.textContent = 'REC date not found';
+      meta.insertBefore(rec, meta.firstChild);
+    }).catch(function () {});
     /* ---------- barra de acciones ---------- */
     var bar = document.createElement('div'); bar.className = 'np-bar';
     var ap = document.createElement('button'); ap.type = 'button'; ap.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm' + (LS.get(AUTO_KEY) !== '0' ? ' on' : ''); ap.innerHTML = 'Autoplay next <i></i>';
