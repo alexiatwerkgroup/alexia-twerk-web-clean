@@ -121,7 +121,7 @@ export async function onRequest({ request, env }) {
     return new Response(co.body, { status: sc, headers: hh });
   }
   if (q.get('row')) {
-    const N = Math.min(12, Math.max(1, parseInt(q.get('row'), 10) || 8)); let chans = [];
+    const N = Math.min(20, Math.max(1, parseInt(q.get('row'), 10) || 8)); let chans = [];
     try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug)); } catch (e) {}
     chans.sort(() => Math.random() - 0.5);
     const items = [], used = {};
