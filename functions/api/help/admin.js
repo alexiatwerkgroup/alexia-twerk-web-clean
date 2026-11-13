@@ -20,7 +20,7 @@ export async function onRequest({ request, env }) {
       await env.DB.prepare('UPDATE help_chats SET unread_admin = 0 WHERE id = ?').bind(id).run();
       return J({ ok: true, chat: c, msgs: m });
     }
-    const l = (await env.DB.prepare("SELECT c.id, c.status, c.path, c.email, c.updated, c.unread_admin, (SELECT text FROM help_msgs m WHERE m.chat = c.id AND m.role != 'bot' ORDER BY m.id DESC LIMIT 1) last FROM help_chats c WHERE c.status != 'closed' OR c.updated > ? ORDER BY CASE c.status WHEN 'waiting' THEN 0 WHEN 'open' THEN 1 ELSE 2 END, c.updated DESC LIMIT 80").bind(now - 86400 * 3).all()).results || [];
+    const l = (await env.DB.prepare("SELECT c.id, c.status, c.path, c.email, c.updated, c.unread_admin, (SELECT CASE WHEN text LIKE '[img]%' THEN '[imagen adjunta]' ELSE text END FROM help_msgs m WHERE m.chat = c.id AND m.role != 'bot' ORDER BY m.id DESC LIMIT 1) last FROM help_chats c WHERE c.status != 'closed' OR c.updated > ? ORDER BY CASE c.status WHEN 'waiting' THEN 0 WHEN 'open' THEN 1 ELSE 2 END, c.updated DESC LIMIT 80").bind(now - 86400 * 3).all()).results || [];
     return J({ ok: true, now, chats: l, waiting: l.filter(x => x.status === 'waiting').length });
   }
   if (request.method === 'POST') {

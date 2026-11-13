@@ -51,7 +51,7 @@ export async function flushDigest(env, now) {
     const chats = Object.keys(by);
     const text = rows.length + ' mensaje(s) nuevo(s) en ' + chats.length + ' chat(s) de ayuda de Twerkhub:\n\n' + chats.map(c => {
       const a = by[c], h = a[0];
-      return '— Chat ' + c.slice(0, 6) + ' · ' + (h.email || 'sin email') + ' · ' + (h.lang || '?') + ' · ' + (h.path || '') + '\n' + a.map(m => '   ' + new Date(m.ts * 1000).toISOString().slice(11, 16) + ' UTC  ' + m.text.slice(0, 400)).join('\n');
+      return '— Chat ' + c.slice(0, 6) + ' · ' + (h.email || 'sin email') + ' · ' + (h.lang || '?') + ' · ' + (h.path || '') + '\n' + a.map(m => '   ' + new Date(m.ts * 1000).toISOString().slice(11, 16) + ' UTC  ' + (m.text.indexOf('[img]') === 0 ? '[imagen adjunta]' : m.text.slice(0, 400))).join('\n');
     }).join('\n\n') + '\n\nResponder: https://twerkhub.lat/admin/help/';
     const em = chats.length === 1 && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(by[chats[0]][0].email || '') ? by[chats[0]][0].email : undefined;
     await notifyMail(env, { subject: 'Twerkhub ayuda: ' + rows.length + ' mensaje(s) nuevo(s)', text, replyTo: em });

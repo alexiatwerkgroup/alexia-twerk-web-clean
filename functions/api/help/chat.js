@@ -15,7 +15,8 @@ export async function onRequest({ request, env }) {
   }
   if (request.method !== 'POST') return J({ ok: false }, 405);
   let b = {}; try { b = await request.json(); } catch (e) {}
-  const text = clean(b.text, 800); if (!text) return J({ ok: false, error: 'empty' }, 400);
+  const isImg = typeof b.text === 'string' && b.text.length < 260000 && /^\[img\]data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(b.text);
+  const text = isImg ? b.text : clean(b.text, 800); if (!text) return J({ ok: false, error: 'empty' }, 400);
   if (b.close && /^[0-9a-f]{32}$/.test(clean(b.chat, 40))) { const cid = clean(b.chat, 40); await env.DB.prepare("UPDATE help_chats SET status = 'closed', updated = ? WHERE id = ?").bind(now, cid).run(); await env.DB.prepare('INSERT INTO help_msgs (chat, role, text, ts) VALUES (?,?,?,?)').bind(cid, 'bot', 'El usuario cerro la charla.', now).run(); return J({ ok: true }); }
   let id = clean(b.chat, 40), created = false, lastTs = 0; const iph = await ipHash(request, env);
   if (id) {
@@ -39,7 +40,7 @@ export async function onRequest({ request, env }) {
   const r = await env.DB.prepare('INSERT INTO help_msgs (chat, role, text, ts) VALUES (?,?,?,?)').bind(id, 'user', text, now).run();
   await env.DB.prepare("UPDATE help_chats SET updated = ?, unread_admin = unread_admin + 1, status = CASE WHEN status = 'open' THEN 'open' ELSE 'waiting' END WHERE id = ?").bind(now, id).run();
   await flushDigest(env, now);
-  if (created || !b.chat) await notify(env, 'Nuevo chat de ayuda en Twerkhub: ' + text.slice(0, 200) + '\nResponder: https://twerkhub.lat/admin/help/');
+  if (created || !b.chat) await notify(env, 'Nuevo chat de ayuda en Twerkhub: ' + (isImg ? '[imagen adjunta]' : text.slice(0, 200)) + '\nResponder: https://twerkhub.lat/admin/help/');
   return J({ ok: true, chat: id, id: r.meta && r.meta.last_row_id, ahead: await ahead(env, id) });
 }
 
