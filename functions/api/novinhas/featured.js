@@ -109,6 +109,36 @@ export async function onRequest({ request, env }) {
     return J({ ok: true, queued: n ? n.c : 0 });
   }
   if (q.get('me')) return J({ owner: await isOwner(request, env) });
+  if (q.get('cs')) {
+    const slug = q.get('c') || '', vid = parseInt(q.get('v'), 10), st = parseInt(q.get('t'), 10);
+    if (!SLUG.test(slug) || !(vid > 0) || !(st >= 0)) return new Response('bad_request', { status: 400 });
+    const key = clipKey(slug, vid, st), ch = await env.NOVINHAS_VIDEOS.head(key); if (!ch) return new Response('not_found', { status: 404 });
+    const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size; let a0 = 0, b0 = tot - 1, sc = 200;
+    const hh = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': 'public, max-age=3600', 'X-Robots-Tag': 'noindex' });
+    if (mm) { if (mm[1] === '') a0 = Math.max(0, tot - parseInt(mm[2], 10)); else { a0 = parseInt(mm[1], 10); if (mm[2]) b0 = Math.min(parseInt(mm[2], 10), tot - 1); } if (!(a0 <= b0) || a0 >= tot) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + tot } }); sc = 206; hh.set('Content-Range', `bytes ${a0}-${b0}/${tot}`); }
+    hh.set('Content-Length', String(b0 - a0 + 1));
+    const co = await env.NOVINHAS_VIDEOS.get(key, { range: { offset: a0, length: b0 - a0 + 1 } });
+    return new Response(co.body, { status: sc, headers: hh });
+  }
+  if (q.get('row')) {
+    const N = Math.min(12, Math.max(1, parseInt(q.get('row'), 10) || 8)); let chans = [];
+    try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug)); } catch (e) {}
+    chans.sort(() => Math.random() - 0.5);
+    const items = [], used = {};
+    const pick = async (c, avoid) => {
+      const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/clips/c-', limit: 200 });
+      const ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter((m) => m && !avoid[c.slug + ':' + m[1]]);
+      if (!ks.length) return null; const m = ks[Math.floor(Math.random() * ks.length)];
+      avoid[c.slug + ':' + m[1]] = 1; return { slug: c.slug, name: c.name || c.slug, id: parseInt(m[1], 10), start: parseInt(m[2], 10) };
+    };
+    for (const c of chans) { if (items.length >= N) break; const it = await pick(c, used); if (it) items.push(it); }
+    const fb = chans.filter((c) => c.slug === 'canal-da-maryh')[0];
+    for (let i = 0; fb && items.length < N && i < 40; i++) { const it = await pick(fb, used); if (!it) break; items.push(it); }
+    const slugs = Array.from(new Set(items.map((x) => x.slug)));
+    let viewers = 0;
+    if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
+    return J({ viewers, items: items.map((x) => ({ slug: x.slug, name: x.name, id: x.id, src: `/api/novinhas/featured?cs=1&c=${x.slug}&v=${x.id}&t=${x.start}`, poster: `/api/novinhas/file?k=${x.slug}/previews/poster-${pad(x.id)}.webp`, url: `/novinhas/canal/?c=${x.slug}` })) }, 200, 'public, max-age=60');
+  }
   if (q.get('list')) {
     if (!(await isOwner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);
     const cur = await current(env, request, db, now), all = (await db.prepare('SELECT * FROM nv_feat ORDER BY queued DESC, added, id').all()).results || [];
