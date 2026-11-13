@@ -27,7 +27,7 @@
 .pm .chips{display:flex;gap:8px;flex-wrap:wrap}.pm .chips button{height:44px;padding:0 16px;border-radius:12px;border:1.5px solid #3a3115;background:#0d0b05;color:#f1dfa6;font:700 13px 'JetBrains Mono',monospace;cursor:pointer}.pm .chips button:hover{border-color:#e8b84a}
 .pm .amtbox p{margin:10px 0 0;color:#a99b72;font:600 13px/1.5 Inter,system-ui,sans-serif}.pm .amtbox p.bad{color:#ff8a8a}
 .pm .grid.off .twk-pay{opacity:.4;pointer-events:none}
-.pm .amtbox+.grid,.pm .opts+.grid{margin-top:26px}.pm .twk-pay.na{opacity:.35;pointer-events:none;filter:grayscale(.6)}.pm .grid.off .twk-pay.na{opacity:.35}</style></head><body>
+.pm .amtbox+.grid,.pm .opts+.grid{margin-top:26px}.pm .twk-pay.na{opacity:.35;pointer-events:none;filter:grayscale(.6)}.pm .grid.off .twk-pay.na{opacity:.35}.pm .paidbar{margin:22px 0 0;padding:14px 18px;border-radius:14px;border:1.5px solid #e8b84a;background:#1a1508;color:#ffe9a8;font:600 15px/1.4 Inter,system-ui,sans-serif}.pm .paidbar.ok{border-color:#2fdc72;background:#0f2a18;color:#9dffb4}.pm .paidbar.bad{border-color:#ff6b6b;background:#2a1010;color:#ffb3b3}</style></head><body>
 <!-- TWK_SHELL_V2 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,6 +58,8 @@
 </div></main>
 <script>(function(){
 var q=new URLSearchParams(location.search),model=(q.get('model')||'').slice(0,30),pItem=q.get('item'),pAmt=parseFloat(q.get('amt')),pLabel=(q.get('label')||'').slice(0,80);
+var paid=(q.get('paid')||'').replace(/[^0-9a-zA-Z]/g,'');
+if(paid){var pb=document.createElement('div');pb.className='paidbar';pb.textContent='Checking your payment with Binance...';document.querySelector('.pm .w').insertBefore(pb,document.querySelector('.pm .eb'));var tries=0;(function chk(){fetch('/api/pay/status?o='+paid,{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){if(j.ok&&j.status==='paid'){pb.className='paidbar ok';pb.textContent='Payment confirmed. '+j.coins+' coins were added to your account.';return}if(j.ok&&j.status==='failed'){pb.className='paidbar bad';pb.textContent='The payment was not completed. You can try again below.';return}if(j.error==='login_required'){pb.className='paidbar bad';pb.textContent='Log in to see your payment status.';return}if(++tries<40)setTimeout(chk,3000);else{pb.textContent='Still waiting for Binance to confirm. Your coins are added automatically as soon as it does.'}}).catch(function(){if(++tries<40)setTimeout(chk,3000)})})()}
 var box=document.getElementById('opts'),ab=document.getElementById('amtbox'),inp=document.getElementById('amtin'),note=document.getElementById('amtnote'),lb=document.getElementById('amtlb'),chips=document.getElementById('chips'),grid=document.querySelector('.pm .grid'),bn=document.querySelector('[data-twk-binance]');
 var cur=null,amt=49.99;
 if(pItem==='pack'&&pAmt>0&&pLabel){var b=document.createElement('button');b.type='button';b.className='opt';b.setAttribute('role','radio');b.dataset.k='pack';b.innerHTML='<span class="ot">'+(model?model.charAt(0).toUpperCase()+model.slice(1):'Model')+' pack</span><b>$'+pAmt.toFixed(2)+'</b><span class="od"></span>';b.querySelector('.od').textContent=pLabel+'. One-time payment.';box.insertBefore(b,box.firstChild)}
@@ -65,7 +67,7 @@ function fmt(n){return '$'+(Math.round(n*100)/100).toFixed(2)}
 function setChips(list){chips.innerHTML='';list.forEach(function(v){var c=document.createElement('button');c.type='button';c.textContent='$'+v;c.onclick=function(){inp.value=v;apply()};chips.appendChild(c)})}
 function valid(){return amt>0&&(cur!=='coins'||(amt>=10&&Math.round(amt*2)===amt*2*1))}
 function only(on){[].forEach.call(grid.querySelectorAll('.twk-pay:not([data-twk-binance])'),function(a){var i=a.querySelector('i');if(!a.dataset.o)a.dataset.o=i.textContent;i.textContent=on?'Binance only':a.dataset.o;a.classList.toggle('na',on);a.setAttribute('aria-disabled',on?'true':'false');a.tabIndex=on?-1:0})}
-function paint(){only(cur==='coins');grid.classList.toggle('off',!valid());if(bn)bn.setAttribute('data-twk-binance',fmt(amt)+' USD')}
+function paint(){only(cur==='coins');grid.classList.toggle('off',!valid());if(bn){bn.setAttribute('data-twk-binance',fmt(amt)+' USD');if(cur==='coins'){bn.dataset.twkItem='coins';bn.dataset.twkAmt=amt}else{delete bn.dataset.twkItem;delete bn.dataset.twkAmt}}}
 function apply(){var v=parseFloat(inp.value);amt=isNaN(v)?0:v;
  if(cur==='coins'){var ok=amt>=10&&Math.abs(amt*2-Math.round(amt*2))<1e-9;note.className=ok?'':'bad';note.textContent=ok?'= '+Math.round(amt/0.5)+' coins ($0.50 each). Coins are paid with Binance only.':'Minimum $10 (20 coins), in steps of $0.50.'}
  else if(cur==='donate'){var ok2=amt>=1;note.className=ok2?'':'bad';note.textContent=ok2?'Thank you! A donation does not add access or coins.':'Minimum donation $1.'}

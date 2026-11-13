@@ -32,6 +32,18 @@
     document.addEventListener('keydown', function k(e) { if (e.key === 'Escape') { o.remove(); document.removeEventListener('keydown', k); } });
     document.body.appendChild(o);
   }
-  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-twk-binance]'); if (b) { e.preventDefault(); open(b.getAttribute('data-twk-binance')); } });
+  // Monedas: pago directo en Binance Pay (orden creada en el servidor con el monto elegido). Sin claves del comerciante o sin sesion, cae al modal manual.
+  function direct(b) {
+    var amt = b.getAttribute('data-twk-binance'); b.classList.add('na');
+    fetch('/api/pay/binance', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ item: b.dataset.twkItem, amt: b.dataset.twkAmt }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (j) {
+        if (j.ok && j.checkoutUrl) { location.href = j.checkoutUrl; return; }
+        b.classList.remove('na');
+        if (j.error === 'login_required') { location.href = '/account?next=' + encodeURIComponent(location.pathname + location.search); return; }
+        open(amt);
+      }).catch(function () { b.classList.remove('na'); open(amt); });
+  }
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-twk-binance]'); if (!b) return; e.preventDefault(); if (b.dataset.twkItem) direct(b); else open(b.getAttribute('data-twk-binance')); });
   window.TWK_PAY = { binance: open };
 })();
