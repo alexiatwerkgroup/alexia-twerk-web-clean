@@ -3,8 +3,12 @@ import { authenticate } from '../../_lib/auth.js';
 import { json } from '../../_lib/http.js';
 import { init, OWNER } from '../../_lib/analytics.js';
 
-const rows = async (db, sql, ...a) => (await db.prepare(sql).bind(...a).all()).results || [];
-const one = async (db, sql, ...a) => (await db.prepare(sql).bind(...a).first()) || {};
+// Diagnostico: ultimas consultas a D1 con su duracion (las que siguen corriendo no tienen ms). Se adjunta al error si el panel se cuelga.
+const TR = [];
+const trace = (sql, p) => { const e = { q: String(sql).replace(/\s+/g, ' ').slice(0, 70), t0: Date.now() }; TR.push(e); if (TR.length > 60) TR.shift(); return p.then(v => { e.ms = Date.now() - e.t0; return v; }, err => { e.ms = Date.now() - e.t0; e.err = String(err && err.message || err).slice(0, 80); throw err; }); };
+const traceDump = () => TR.slice(-14).map(e => ({ q: e.q, ms: e.ms == null ? 'RUNNING ' + (Date.now() - e.t0) : e.ms, ...(e.err ? { err: e.err } : {}) }));
+const rows = async (db, sql, ...a) => (await trace(sql, db.prepare(sql).bind(...a).all())).results || [];
+const one = async (db, sql, ...a) => (await trace(sql, db.prepare(sql).bind(...a).first())) || {};
 
 // Cache of the cheap "mini" counter (owner only). It scans the whole tw_hits table,
 // so it must not run on every poll. 5 min per worker instance is enough for a live counter.
@@ -57,9 +61,11 @@ async function buildStats({ request, env }) {
   }
   const bots = url.searchParams.get('bots') === '1', hf = bots ? '' : ' AND human = 1';
   const days = Math.max(1, Math.min(365, parseInt(url.searchParams.get('days')) || 30));
-  const since = now - days * 86400000;
+  // La ventana de 1 dia sin bots se colgaba en D1 (2 dias o mas responde bien): se consulta con 2 dias como minimo.
+  const winDays = Math.max(2, days);
+  const since = now - winDays * 86400000;
   const W = 'ts > ?' + hf;
-  const mainResults=await db.batch([
+  const mainResults=await trace('main batch',db.batch([
     db.prepare(`SELECT COUNT(*) views, COUNT(DISTINCT vid) uniq, COUNT(DISTINCT CASE WHEN is_new=1 THEN vid END) newv, COUNT(DISTINCT CASE WHEN reg=1 THEN vid END) regv, ROUND(AVG(CASE WHEN dur>0 THEN dur END)) avgdur, ROUND(AVG(CASE WHEN scroll>0 THEN scroll END)) avgscroll FROM tw_hits WHERE ${W}`).bind(since),
     db.prepare(`SELECT COUNT(*) n FROM (SELECT vid FROM tw_hits WHERE ${W} GROUP BY vid HAVING COUNT(*)=1)`).bind(since),
     db.prepare('SELECT 1 x'), // placeholder: all-time totals now come from allTimeTotals() (cached, scans the whole table)
@@ -88,7 +94,7 @@ async function buildStats({ request, env }) {
     db.prepare(`SELECT lang k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} AND lang<>'' GROUP BY lang ORDER BY u DESC LIMIT 10`).bind(since),
     db.prepare(`SELECT CASE WHEN ref='' THEN 'Directo / sin dato' ELSE ref END k, COUNT(DISTINCT vid) u FROM tw_hits WHERE ${W} GROUP BY k ORDER BY u DESC LIMIT 10`).bind(since),
     db.prepare(`SELECT dur meddur FROM tw_hits WHERE ${W} AND dur>0 ORDER BY dur LIMIT 1 OFFSET (SELECT (COUNT(*)-1)/2 FROM tw_hits WHERE ${W} AND dur>0)`).bind(since, since),
-  ]);
+  ]));
   const tot=(mainResults[0].results||[])[0]||{};
   const single=(mainResults[1].results||[])[0]||{};
   let sessionMetrics = { sessions: null, bounces: null };
@@ -239,7 +245,7 @@ export async function onRequestGet(context){
    flight=Promise.race([build,timeout]).catch(error=>{
      const stale=fullResponses.get(key);
      if(stale&&Date.now()-stale.at<STALE_MS)return {...stale,stale:true};
-     return {body:JSON.stringify({ok:false,error:'traffic_unavailable',detail:String(error?.message||error)}),status:500,headers:{'Content-Type':'application/json','Cache-Control':'private, no-store'}};
+     return {body:JSON.stringify({ok:false,error:'traffic_unavailable',detail:String(error?.message||error),trace:traceDump()}),status:500,headers:{'Content-Type':'application/json','Cache-Control':'private, no-store'}};
    }).finally(()=>{clearTimeout(timer);if(fullFlights.get(key)===flight)fullFlights.delete(key)});
    build.catch(()=>{});
    fullFlights.set(key,flight);
