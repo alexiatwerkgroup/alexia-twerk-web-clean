@@ -6,10 +6,12 @@
     if (!d || d.none || !d.src) return;
     var n = d.viewers | 0;
     var fomo = n >= 1 ? 'Right now at least ' + n + (n === 1 ? ' user is' : ' users are') + ' in this channel' : 'New videos added to this channel all the time';
-    box.innerHTML = '<div class="nf-card"><a class="nf-media" href="' + esc(d.url) + '" aria-label="Watch ' + esc(d.name) + '"><video muted playsinline preload="metadata" poster="' + esc(d.poster) + '"></video>' +
-      '<span class="nf-fomo"><i></i>' + esc(fomo) + '</span><span class="nf-live">20s PREVIEW</span>' +
-      '<span class="nf-info"><b>' + esc(d.name) + '</b></span></a>' +
-      '<div class="nf-act"><a class="gold" href="' + esc(d.url) + '">Watch now <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></div>';
+    var top = n >= 1 ? '<b>' + n + '</b> ' + (n === 1 ? 'person is' : 'people are') + ' watching this channel right now' : 'New drops added to this channel every day';
+    box.innerHTML = '<div class="nf-card"><div class="nf-top"><i></i><span>' + top + '</span><em>LIVE</em></div>' +
+      '<a class="nf-media" href="' + esc(d.url) + '" aria-label="Watch ' + esc(d.name) + '"><video muted playsinline preload="metadata" poster="' + esc(d.poster) + '"></video></a>' +
+      '<div class="nf-foot"><div class="nf-hook">Deleted from YouTube. <b>Only here.</b> Don\'t miss the full video before it\'s gone.</div>' +
+      '<div class="nf-meta"><span>' + esc(d.name) + '</span><div>20s preview</div></div>' +
+      '<div class="nf-act"><a class="gold" href="' + esc(d.url) + '">Watch the full video <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></div></div>';
     var v = box.querySelector('video'); v.muted = true; v.src = d.src; var st = d.start || 0, en = st + (d.secs || 20);
     v.addEventListener('loadedmetadata', function () { if (st) { try { v.currentTime = st; } catch (_) {} } });
     v.addEventListener('timeupdate', function () { if (v.currentTime >= en || v.currentTime < st - 0.5) { try { v.currentTime = st; } catch (_) {} } });
