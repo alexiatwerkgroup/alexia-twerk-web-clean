@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payment methods · Get VIP | Twerkhub</title>
-<meta name="description" content="Pay for Twerkhub VIP access with PayPal, Binance or credit card. Your access code is delivered on Discord.">
+<meta name="description" content="Pay for Twerkhub VIP access with PayPal, Binance or credit card. Your access code is delivered on Discord or by email.">
 <link rel="stylesheet" href="/assets/twk-ui.css?v=1"><link rel="canonical" href="https://twerkhub.lat/paymentmethods/"><meta name="theme-color" content="#000000">
 <meta property="og:title" content="Payment methods · Twerkhub VIP"><meta property="og:image" content="https://twerkhub.lat/logo-twerkhub.png">
 <style>body{margin:0;background:#000;color:#fff}.pm{font-family:Inter,system-ui,sans-serif;background:radial-gradient(900px 420px at 80% -60px,rgba(232,184,74,.16),transparent),#000;min-height:70vh}.pm *{box-sizing:border-box}.pm a{color:inherit;text-decoration:none}.pm .w{max-width:1100px;margin:0 auto;padding:56px 24px}
@@ -16,7 +16,22 @@
 .pm .sup{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 22px;margin-top:34px;padding-top:26px;border-top:1px solid #2a2410;text-align:center}
 .pm .sup p{margin:0;color:#c9c9d3;font:500 15px/1.5 Inter,system-ui,sans-serif}.pm .sup p b{color:#fff}
 @media(max-width:700px){.pm .sup{flex-direction:column}.pm .sup .twk-btn{width:100%}.pm .sum b{font-size:44px}}
-.pm .card .twk-pay{margin-top:auto}</style></head><body>
+.pm .card .twk-pay{margin-top:auto}.pm .ps{margin:34px 0 14px;font-size:30px}
+.pm .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.pm .opt{display:flex;flex-direction:column;gap:6px;text-align:left;padding:20px 22px;border:1.5px solid #3a3115;border-radius:16px;background:linear-gradient(180deg,#14110a,#0a0905);color:#fff;cursor:pointer;font-family:Inter,system-ui,sans-serif;transition:border-color .2s,background .2s}
+.pm .opt:hover{border-color:#8a6a1e}.pm .opt[aria-checked=true]{border-color:#e8b84a;background:linear-gradient(180deg,#2a2208,#0d0b04);box-shadow:0 0 0 1px #e8b84a55}
+.pm .opt .ot{font:700 11px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#e8b84a}
+.pm .opt b{font:400 30px/1.05 Anton,Impact,sans-serif;color:#fff}.pm .opt .od{font:500 13px/1.5 Inter,system-ui,sans-serif;color:#b9b19a}
+.pm .opt[aria-checked=true] b{color:#ffd76a}
+.pm .amtbox{margin-top:18px;padding:18px 22px;border:1.5px solid #3a3115;border-radius:16px;background:#0e0c07}.pm .amtbox[hidden]{display:none}
+.pm .amtbox label{display:block;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#e8b84a;margin-bottom:10px}
+.pm .amtrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.pm .amtrow>span{font:400 30px Anton,sans-serif;color:#ffd76a}
+.pm .amtrow input{width:130px;height:56px;padding:0 14px;border-radius:12px;border:2px solid #3a3a44;background:#000;color:#fff;font:700 20px Inter,system-ui,sans-serif}.pm .amtrow input:focus{outline:0;border-color:#c99a2e}
+.pm .chips{display:flex;gap:8px;flex-wrap:wrap}.pm .chips button{height:44px;padding:0 16px;border-radius:12px;border:1.5px solid #3a3115;background:#0d0b05;color:#f1dfa6;font:700 13px 'JetBrains Mono',monospace;cursor:pointer}.pm .chips button:hover{border-color:#e8b84a}
+.pm .amtbox p{margin:10px 0 0;color:#a99b72;font:600 13px/1.5 Inter,system-ui,sans-serif}.pm .amtbox p.bad{color:#ff8a8a}
+.pm .grid.off .twk-pay{opacity:.4;pointer-events:none}
+.pm .sum{margin-top:26px}
+</style></head><body>
 <!-- TWK_SHELL_V2 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,9 +41,16 @@
 <details><summary aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/community">Community</a><a href="/account">My account</a></nav></details></div></header>
 <script>(function(){var p=location.pathname.replace(/\/index\.html$/,'/');document.querySelectorAll('.tn2-lk a').forEach(function(a){var h=a.getAttribute('href');if(h.length>1&&h.indexOf('#')<0&&p.indexOf(h.replace(/\/$/,''))===0)a.classList.add('on')})})();</script>
 <main class="pm"><div class="w">
-<div class="eb">/ Payment methods</div><h1>Get <em>VIP</em> access</h1>
-<p class="lead">One membership unlocks every video in every VIP channel and archive, including the new ones we keep adding. Choose how you want to pay.</p>
-<div class="sum price"><small>VIP &middot; Monthly</small><b>$49.99</b><em>USD / month &middot; cancel anytime</em></div>
+<div class="eb">/ Payment methods</div><h1>Choose your <em>payment</em></h1>
+<p class="lead">Pick what you are paying for, then choose how you want to pay. Access is added to your Twerkhub account after we confirm the payment, usually within minutes.</p>
+<h2 class="ps">What are you paying for?</h2>
+<div class="opts" id="opts" role="radiogroup" aria-label="What are you paying for?">
+<button type="button" class="opt" role="radio" data-k="coins"><span class="ot">Coins</span><b>From $10</b><span class="od">1 coin = $0.50. Minimum 20 coins ($10). Use them to unlock single videos on the model pages (Jenny, Alexia, Abbi, Tainara, Lolita).</span></button>
+<button type="button" class="opt" role="radio" data-k="vip"><span class="ot">Novinhas VIP</span><b>$49.99 / month</b><span class="od">Every video of every Novinhas channel, including the new ones we keep adding. Cancel anytime.</span></button>
+<button type="button" class="opt" role="radio" data-k="donate"><span class="ot">Donation</span><b>Any amount</b><span class="od">Support Twerkhub. A donation does not add access or coins to your account.</span></button>
+</div>
+<div class="amtbox" id="amtbox" hidden><label for="amtin" id="amtlb">Amount (USD)</label><div class="amtrow"><span>$</span><input id="amtin" type="number" inputmode="decimal" min="10" step="0.5" value="10"><div class="chips" id="chips"></div></div><p id="amtnote"></p></div>
+<div class="sum price" id="sum"><small>Novinhas VIP</small><b>$49.99</b><em>USD / month &middot; cancel anytime</em></div>
 <div class="grid">
 <div class="card"><h3>PayPal</h3><p>Pay with your PayPal balance or any card linked to your PayPal account.</p><a class="twk-pay" href="/discord" target="_blank" rel="noopener"><span class="t"><b>Pay now</b><i>Balance or linked card</i></span><span class="lg w"><img src="/assets/paypal-logo.png" alt="PayPal" height="18"></span></a></div>
 <div class="card"><h3>Binance</h3><p>Pay in crypto with Binance Pay (USDT and other supported coins). Fast and worldwide.</p><a class="twk-pay" href="#binance" data-twk-binance="$49.99 USD"><span class="t"><b>Pay now</b><i>USDT &middot; no fees</i></span><span class="lg"><img src="/assets/binance-mark.png" alt="Binance" height="42"></span></a></div>
@@ -36,14 +58,35 @@
 </div>
 <div class="sup"><p><b>Questions before you pay?</b> An agent answers in real time, 24/7.</p><button type="button" class="twk-btn twk-btn--sm twk-btn--live" data-twk-agent><i class="twk-live-dot"></i><span>Chat with an agent</span></button></div>
 <h2>How it works</h2>
-<ol><li><b>Choose a method</b>Pick PayPal, Binance or card above. It takes you to our Discord.</li><li><b>Pay</b>We send you the payment details for the method you chose.</li><li><b>Get your code</b>Your personal access code arrives on Discord. Enter it in the VIP box on any locked video.</li></ol>
-<p class="note">One code per person: it works on up to 4 of your devices. If a code is shared it is blocked and cancelled. Already have a code? Open any locked video and press <b>Unlock with VIP</b>.<br>18+ only. All performers featured are adults over 18 and appear under written agreement. Questions? <a href="/discord" target="_blank" rel="noopener">Talk to us on Discord</a>.</p>
+<ol><li><b>Choose a method</b>Pick PayPal, Binance or card above. Then send us your receipt on Discord or by email.</li><li><b>Pay</b>We send you the payment details for the method you chose.</li><li><b>Get your code</b>Your personal access code arrives on Discord or by email. Enter it in the VIP box on any locked video.</li></ol>
+<p class="note">One code per person: it works on up to 4 of your devices. If a code is shared it is blocked and cancelled. Already have a code? Open any locked video and press <b>Unlock with VIP</b>.<br>18+ only. All performers featured are adults over 18 and appear under written agreement. Questions? <a href="/discord" target="_blank" rel="noopener">Talk to us on Discord</a> or write to <a href="mailto:twerkhub.lat@gmail.com">twerkhub.lat@gmail.com</a>.</p>
 </div></main>
-<script>(function(){var q=new URLSearchParams(location.search),amt=parseFloat(q.get('amt')),label=(q.get('label')||'').slice(0,80);if(!(amt>0)||!label)return;
-var pr=document.querySelector('.price'),h=document.querySelector('.pm h1'),ld=document.querySelector('.pm .lead'),bn=document.querySelector('[data-twk-binance]'),coins=q.get('item')==='coins',txt=function(el,t){if(el)el.textContent=t};
-txt(pr&&pr.querySelector('small'),label);txt(pr&&pr.querySelector('b'),(coins?'From $':'$')+amt.toFixed(2));txt(pr&&pr.querySelector('em'),coins?'USD · $0.50 per coin · 20-coin minimum':'USD \u00b7 one-time payment');
-if(h)h.innerHTML='Complete your <em>purchase</em>';txt(ld,'Choose how you want to pay. Your access is added to your Twerkhub account after we confirm the payment, usually within minutes.');
-if(bn)bn.setAttribute('data-twk-binance','$'+amt.toFixed(2)+' USD');document.title='Pay: '+label+' \u00b7 Twerkhub'})();</script><footer class="tf2"><div class="tf2-w"><div class="tf2-cols">
+<script>(function(){
+var q=new URLSearchParams(location.search),model=(q.get('model')||'').slice(0,30),pItem=q.get('item'),pAmt=parseFloat(q.get('amt')),pLabel=(q.get('label')||'').slice(0,80);
+var box=document.getElementById('opts'),sum=document.getElementById('sum'),ab=document.getElementById('amtbox'),inp=document.getElementById('amtin'),note=document.getElementById('amtnote'),lb=document.getElementById('amtlb'),chips=document.getElementById('chips'),grid=document.querySelector('.pm .grid'),bn=document.querySelector('[data-twk-binance]');
+var cur=null,amt=49.99;
+if(pItem==='pack'&&pAmt>0&&pLabel){var b=document.createElement('button');b.type='button';b.className='opt';b.setAttribute('role','radio');b.dataset.k='pack';b.innerHTML='<span class="ot">'+(model?model.charAt(0).toUpperCase()+model.slice(1):'Model')+' pack</span><b>$'+pAmt.toFixed(2)+'</b><span class="od"></span>';b.querySelector('.od').textContent=pLabel+'. One-time payment.';box.insertBefore(b,box.firstChild)}
+function fmt(n){return '$'+(Math.round(n*100)/100).toFixed(2)}
+function setChips(list){chips.innerHTML='';list.forEach(function(v){var c=document.createElement('button');c.type='button';c.textContent='$'+v;c.onclick=function(){inp.value=v;apply()};chips.appendChild(c)})}
+function valid(){return amt>0&&(cur!=='coins'||(amt>=10&&Math.round(amt*2)===amt*2*1))}
+function paint(){var tx=function(el,t){el.textContent=t},sm=sum.querySelector('small'),bb=sum.querySelector('b'),em=sum.querySelector('em');
+ if(cur==='vip'){tx(sm,'Novinhas VIP');tx(bb,'$49.99');tx(em,'USD / month \u00b7 cancel anytime')}
+ else if(cur==='pack'){tx(sm,pLabel);tx(bb,fmt(pAmt));tx(em,'USD \u00b7 one-time payment')}
+ else if(cur==='coins'){tx(sm,'Coins');tx(bb,fmt(amt));tx(em,valid()?'USD \u00b7 '+Math.round(amt/0.5)+' coins added to your account':'Minimum $10 (20 coins)')}
+ else{tx(sm,'Donation');tx(bb,fmt(amt));tx(em,'USD \u00b7 thank you for supporting Twerkhub')}
+ grid.classList.toggle('off',!valid());if(bn)bn.setAttribute('data-twk-binance',fmt(amt)+' USD')}
+function apply(){var v=parseFloat(inp.value);amt=isNaN(v)?0:v;
+ if(cur==='coins'){var ok=amt>=10&&Math.abs(amt*2-Math.round(amt*2))<1e-9;note.className=ok?'':'bad';note.textContent=ok?'= '+Math.round(amt/0.5)+' coins ($0.50 each).':'Minimum $10 (20 coins), in steps of $0.50.'}
+ else if(cur==='donate'){var ok2=amt>=1;note.className=ok2?'':'bad';note.textContent=ok2?'Thank you! A donation does not add access or coins.':'Minimum donation $1.'}
+ paint()}
+function select(k){cur=k;[].forEach.call(box.querySelectorAll('.opt'),function(o){o.setAttribute('aria-checked',o.dataset.k===k?'true':'false')});
+ if(k==='vip'){amt=49.99;ab.hidden=true}else if(k==='pack'){amt=pAmt;ab.hidden=true}
+ else{ab.hidden=false;if(k==='coins'){lb.textContent='How much do you want to add? (USD)';inp.min=10;inp.step=0.5;inp.value=(pItem==='coins'&&pAmt>=10)?pAmt:20;setChips([10,20,50,100])}else{lb.textContent='Donation amount (USD)';inp.min=1;inp.step=1;inp.value=10;setChips([5,10,25,50])}apply();return}
+ paint()}
+box.addEventListener('click',function(e){var o=e.target.closest('.opt');if(o)select(o.dataset.k)});
+inp.addEventListener('input',apply);
+select(pItem==='pack'&&pAmt>0&&pLabel?'pack':pItem==='coins'?'coins':'vip');
+})();</script><footer class="tf2"><div class="tf2-w"><div class="tf2-cols">
 <div><a class="tn2-logo" href="/">TWERK<b>HUB</b></a><p style="margin-top:14px;max-width:300px">If you know, you know.</p></div>
 <div><h4>Explore</h4><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/blog/">Blog</a></div>
 <div><h4>Community</h4><a href="https://discord.gg/WWn8ZgQMjn" rel="noopener">Discord</a><a href="https://t.me/+0xNr69raiIlmYWRh" rel="noopener">Telegram</a><a href="https://x.com/twerkhuboficial" rel="noopener">X</a><a href="https://www.patreon.com/twerkhuboficial" rel="noopener">Patreon</a></div>

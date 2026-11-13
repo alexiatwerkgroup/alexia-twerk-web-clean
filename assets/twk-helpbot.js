@@ -3,30 +3,30 @@
 (function () {
   if (window.__twkHelp || /^\/(admin|api)\b/.test(location.pathname)) return; window.__twkHelp = true;
   var lang = (function () { try { var l = localStorage.getItem('twk-lang') || navigator.language || 'en'; return /^es/i.test(l) ? 'es' : 'en'; } catch (_) { return 'en'; } })();
-  var DISCORD = '/discord', TG = 'https://t.me/+0xNr69raiIlmYWRh';
+  var MAIL = 'twerkhub.lat@gmail.com', DISCORD = '/discord', TG = 'https://t.me/+0xNr69raiIlmYWRh';
   var L = {
     en: { name: 'Twerkhub Help', on: 'Online 24/7 · replies in minutes', hi: "Hi! I'm the Twerkhub help assistant. Payments are confirmed almost instantly and our team is available 24/7. What do you need?", ph: 'Type your question...', send: 'Send', tease: 'Need help paying? We are here 24/7',
       q: { pay: 'How do I pay?', fast: 'How fast do I get access?', safe: 'Is it safe to pay?', nocode: 'I paid but have no code', code: 'How do I enter my code?', bin: 'Help with Binance', agent: 'Talk to an agent' },
-      ag: { conn: "Connecting you with an agent. Write your message below and the reply will appear right here.", wait: 'Waiting for an agent...', open: 'Agent connected', closed: 'Chat closed', ph2: 'Write to the agent...', still: 'Still waiting? You can also reach us on Discord or Telegram.', new: 'Start a new chat', agent: 'Agent', mail: 'Your email (optional, in case you close this window)', err: 'Could not send. Check your connection and try again.', many: 'Too many chats from your connection. Please use Discord.', back: 'Back to assistant' },
+      ag: { conn: "Connecting you with an agent. Write your message below and the reply will appear right here.", wait: 'Waiting for an agent', eta0: 'Estimated wait: about 1-3 min. While you wait, you can also send your receipt by email or Discord.', next: 'You are next. Estimated wait: about {t}. You can close this window: the answer will be saved here.', q1: 'You are in the queue: {n} before you. Estimated wait: about {t}. You can close this window: the answer will be saved here.', min: 'min', open: 'Agent connected', closed: 'Chat closed', ph2: 'Write to the agent...', still: 'Still waiting? You can also reach us on Discord or Telegram.', new: 'Start a new chat', agent: 'Agent', mail: 'Your email (optional, in case you close this window)', err: 'Could not send. Check your connection and try again.', many: 'Too many chats from your connection. Please use Discord.', back: 'Back to assistant' },
       a: { pay: 'VIP is <b>$49.99 USD / month</b> and unlocks every video of every VIP channel, including the new ones we keep adding. Pay with <b>PayPal</b>, <b>Binance</b> or <b>credit/debit card</b>. <a href="/paymentmethods/">Open payment methods</a>',
-        fast: 'Almost instant. Once you send your receipt on Discord, we activate your access, usually within minutes. Our team is online <b>24/7</b>, including weekends.',
+        fast: 'Almost instant. Once you send your receipt on Discord or by email (' + MAIL + '), we activate your access, usually within minutes. Our team is online <b>24/7</b>, including weekends.',
         safe: 'Yes. We never ask for your card number on this site. With Binance you can check our verified name and ID before confirming, PayPal has its own buyer protection, and your access code is personal (it works on up to 4 of your devices). If you have any doubt, ask an agent before paying.',
-        nocode: 'No problem. Send your <b>payment receipt</b> and the <b>email you use at Twerkhub</b> on Discord and an agent will activate it right away. 24/7.',
+        nocode: 'No problem. Send your <b>payment receipt</b> and the <b>email you use at Twerkhub</b> on Discord or by email (' + MAIL + ') and an agent will activate it right away. 24/7.',
         code: 'Open any locked video (the ones with a padlock), press <b>Unlock with VIP</b>, type your code in "Already have a code?" and press Activate.',
-        bin: 'Tap <b>Pay with Binance</b> on the payment page: you will see our verified Binance ID, the exact amount and the networks (Binance Pay, USDT TRC20 or ERC20). Then send the receipt on Discord. <a href="/paymentmethods/">Open payment page</a>',
+        bin: 'Tap <b>Pay with Binance</b> on the payment page: you will see our verified Binance ID, the exact amount and the networks (Binance Pay, USDT TRC20 or ERC20). Then send the receipt on Discord or by email (' + MAIL + '). <a href="/paymentmethods/">Open payment page</a>',
         agent: 'An agent is available 24/7. Choose where you prefer to talk:', def: 'I could not find that. An agent can answer it right now:' },
-      links: [['Discord (fastest)', DISCORD], ['Telegram', TG]] },
+      links: [['Discord (fastest)', DISCORD], ['Email', 'mailto:' + MAIL], ['Telegram', TG]] },
     es: { name: 'Ayuda Twerkhub', on: 'En línea 24/7 · respondemos en minutos', hi: '¡Hola! Soy el asistente de ayuda de Twerkhub. Los pagos se confirman casi al instante y nuestro equipo atiende 24/7. ¿Qué necesitás?', ph: 'Escribí tu consulta...', send: 'Enviar', tease: '¿Dudas para pagar? Estamos 24/7',
       q: { pay: '¿Cómo pago?', fast: '¿Qué tan rápido tengo acceso?', safe: '¿Es seguro pagar?', nocode: 'Pagué y no tengo código', code: '¿Cómo ingreso mi código?', bin: 'Ayuda con Binance', agent: 'Hablar con un agente' },
-      ag: { conn: 'Te conecto con un agente. Escribí tu mensaje abajo y la respuesta aparece acá mismo.', wait: 'Esperando a un agente...', open: 'Agente conectado', closed: 'Chat cerrado', ph2: 'Escribile al agente...', still: '¿Seguís esperando? También podés escribirnos por Discord o Telegram.', new: 'Iniciar un chat nuevo', agent: 'Agente', mail: 'Tu email (opcional, por si cerrás esta ventana)', err: 'No se pudo enviar. Revisá tu conexión y probá de nuevo.', many: 'Demasiados chats desde tu conexión. Usá Discord, por favor.', back: 'Volver al asistente' },
+      ag: { conn: 'Te conecto con un agente. Escribí tu mensaje abajo y la respuesta aparece acá mismo.', wait: 'Esperando a un agente', eta0: 'Espera estimada: unos 1-3 min. Mientras esperás, también podés mandar tu comprobante por email o Discord.', next: 'Sos el siguiente. Espera estimada: unos {t}. Podés cerrar esta ventana: la respuesta queda guardada acá.', q1: 'Estás en la fila: hay {n} antes que vos. Espera estimada: unos {t}. Podés cerrar esta ventana: la respuesta queda guardada acá.', min: 'min', open: 'Agente conectado', closed: 'Chat cerrado', ph2: 'Escribile al agente...', still: '¿Seguís esperando? También podés escribirnos por Discord o Telegram.', new: 'Iniciar un chat nuevo', agent: 'Agente', mail: 'Tu email (opcional, por si cerrás esta ventana)', err: 'No se pudo enviar. Revisá tu conexión y probá de nuevo.', many: 'Demasiados chats desde tu conexión. Usá Discord, por favor.', back: 'Volver al asistente' },
       a: { pay: 'El VIP cuesta <b>$49.99 USD / mes</b> y desbloquea todos los videos de todos los canales VIP, incluidos los nuevos que seguimos agregando. Pagás con <b>PayPal</b>, <b>Binance</b> o <b>tarjeta de crédito/débito</b>. <a href="/paymentmethods/">Ver medios de pago</a>',
-        fast: 'Casi al instante. Cuando mandás el comprobante por Discord activamos tu acceso, normalmente en minutos. El equipo está en línea <b>24/7</b>, también fines de semana.',
+        fast: 'Casi al instante. Cuando mandás el comprobante por Discord o por email (' + MAIL + ') activamos tu acceso, normalmente en minutos. El equipo está en línea <b>24/7</b>, también fines de semana.',
         safe: 'Sí. Nunca te pedimos el número de tu tarjeta en este sitio. Con Binance podés verificar nuestro nombre e ID antes de confirmar, PayPal tiene su propia protección al comprador, y tu código de acceso es personal (funciona hasta en 4 dispositivos tuyos). Si tenés cualquier duda, consultá a un agente antes de pagar.',
-        nocode: 'Tranquilo/a. Mandá tu <b>comprobante de pago</b> y el <b>email que usás en Twerkhub</b> por Discord y un agente lo activa enseguida. 24/7.',
+        nocode: 'Tranquilo/a. Mandá tu <b>comprobante de pago</b> y el <b>email que usás en Twerkhub</b> por Discord o por email (' + MAIL + ') y un agente lo activa enseguida. 24/7.',
         code: 'Abrí cualquier video bloqueado (los que tienen candado), tocá <b>Unlock with VIP</b>, escribí tu código en "Already have a code?" y tocá Activate.',
-        bin: 'Tocá <b>Pagar con Binance</b> en la página de pagos: vas a ver nuestro ID de Binance verificado, el monto exacto y las redes (Binance Pay, USDT TRC20 o ERC20). Después mandá el comprobante por Discord. <a href="/paymentmethods/">Abrir página de pagos</a>',
+        bin: 'Tocá <b>Pagar con Binance</b> en la página de pagos: vas a ver nuestro ID de Binance verificado, el monto exacto y las redes (Binance Pay, USDT TRC20 o ERC20). Después mandá el comprobante por Discord o por email (' + MAIL + '). <a href="/paymentmethods/">Abrir página de pagos</a>',
         agent: 'Hay un agente disponible 24/7. Elegí dónde preferís hablar:', def: 'No encontré eso. Un agente te lo responde ahora mismo:' },
-      links: [['Discord (más rápido)', DISCORD], ['Telegram', TG]] }
+      links: [['Discord (más rápido)', DISCORD], ['Email', 'mailto:' + MAIL], ['Telegram', TG]] }
   }[lang];
   var KW = [['bin', /binance|usdt|crypto|cripto|trc|erc/i], ['nocode', /pagu[eé]|paid|no code|sin c[oó]digo|didn.?t get|no recib|receipt|comprobante/i], ['code', /c[oó]digo|code|activate|activar|unlock|desbloq/i], ['safe', /segur|safe|scam|estafa|confi|trust|legit/i], ['fast', /r[aá]pid|fast|tiempo|how long|cu[aá]nto tarda|instant/i], ['pay', /pag|pay|paypal|tarjeta|card|precio|price|cost|cu[aá]nto|vip|membres/i], ['agent', /agente|agent|humano|human|persona|ayuda|help|soporte|support|contact/i]];
   if (!document.querySelector('link[href*="twk-ui.css"]')) { var uil = document.createElement('link'); uil.rel = 'stylesheet'; uil.href = '/assets/twk-ui.css?v=1'; document.head.appendChild(uil); }
@@ -54,9 +54,12 @@
   function setStat(t, on) { stat.textContent = t; stat.classList.toggle('live', !!on); }
   function setMode(m) { mode = m; input.placeholder = m === 'agent' ? L.ag.ph2 : L.ph; }
   function api(method, body, qs) { return fetch('/api/help/chat' + (qs || ''), { method: method, credentials: 'same-origin', headers: body ? { 'content-type': 'application/json' } : undefined, body: body ? JSON.stringify(body) : undefined }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j._s = r.status; return j; }); }); }
+  function eta(a) { var lo = Math.max(1, a * 3), hi = lo + 3, t = lo + '-' + hi + ' ' + L.ag.min; return { t: t, msg: (a > 0 ? L.ag.q1.replace('{n}', a) : L.ag.next).replace('{t}', t), stat: L.ag.wait + ' \u00b7 ' + t }; }
+  function showQueue(a) { var e = eta(a || 0); setStat(e.stat, false); if (!queueShown) { queueShown = true; add("th-g", e.msg); } }
+  var queueShown = false;
   function escalate() {
     if (mode === 'agent' && chat) return;
-    setMode('agent'); add('th-g', L.ag.conn); setStat(L.ag.wait, false);
+    setMode('agent'); add('th-g', L.ag.conn); add('th-g', L.ag.eta0); links(); setStat(L.ag.wait + ' \u00b7 1-3 ' + L.ag.min, false);
     if (!chat && !win.querySelector('.th-mail')) { var f = document.createElement('div'); f.className = 'th-mail'; f.innerHTML = '<input type="email" placeholder="' + esc(L.ag.mail) + '" aria-label="' + esc(L.ag.mail) + '" autocomplete="email">'; msgs.appendChild(f); }
     msgs.scrollTop = msgs.scrollHeight; input.focus({ preventScroll: true });
   }
@@ -67,7 +70,7 @@
       var got = false;
       (j.msgs || []).forEach(function (m) { lastId = Math.max(lastId, m.id); if (m.role === 'agent') { got = true; if (!win.classList.contains('on')) { unread++; markUnread(); } } if (!rendered[m.id]) { rendered[m.id] = 1; if (!(m.role === 'user' && localEcho[m.text])) bubble(m.role, m.text); else delete localEcho[m.text]; } });
       if (j.status === 'closed') { setStat(L.ag.closed, false); if (!closedShown) { closedShown = true; var d = add('th-q', '<button type="button" data-new="1">' + L.ag.new + '</button>'); } stopPoll(); }
-      else if (j.status === 'open') { setStat(L.ag.open, true); clearTimeout(waitT); } else setStat(L.ag.wait, false);
+      else if (j.status === 'open') { setStat(L.ag.open, true); clearTimeout(waitT); } else setStat(eta(j.ahead || 0).stat, false);
       if (got) clearTimeout(waitT);
     }).catch(function () {});
   }
@@ -84,7 +87,7 @@
       if (!j.ok || !j.chat) { delete localEcho[t]; add('th-g', j._s === 429 ? L.ag.many : L.ag.err); if (j._s === 429) links(); return; }
       if (!chat) { chat = j.chat; try { localStorage.setItem('twk_help_chat', chat); } catch (_) {} } if (j.id) rendered[j.id] = 1;
       var m = win.querySelector('.th-mail'); if (m) m.remove();
-      closedShown = false; setStat(L.ag.wait, false); startPoll();
+      closedShown = false; showQueue(j.ahead); startPoll();
       clearTimeout(waitT); waitT = setTimeout(function () { if (win.querySelector('.th-s.live')) return; add('th-g', L.ag.still); links(); }, 150000);
     }).catch(function () { delete localEcho[t]; add('th-g', L.ag.err); });
   }

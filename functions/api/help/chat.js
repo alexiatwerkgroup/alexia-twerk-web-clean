@@ -8,9 +8,9 @@ export async function onRequest({ request, env }) {
   if (request.method === 'GET') {
     const id = clean(url.searchParams.get('chat'), 40), since = parseInt(url.searchParams.get('since')) || 0;
     if (!/^[0-9a-f]{32}$/.test(id)) return J({ ok: false, error: 'bad_chat' }, 400);
-    const c = await env.DB.prepare('SELECT status FROM help_chats WHERE id = ?').bind(id).first(); if (!c) return J({ ok: false, error: 'not_found' }, 404);
+    const c = await env.DB.prepare('SELECT status, created FROM help_chats WHERE id = ?').bind(id).first(); if (!c) return J({ ok: false, error: 'not_found' }, 404);
     const r = (await env.DB.prepare('SELECT id, role, text, ts FROM help_msgs WHERE chat = ? AND id > ? ORDER BY id LIMIT 100').bind(id, since).all()).results || [];
-    return J({ ok: true, status: c.status, msgs: r });
+    return J({ ok: true, status: c.status, ahead: c.status === 'waiting' ? await ahead(env, id) : 0, msgs: r });
   }
   if (request.method !== 'POST') return J({ ok: false }, 405);
   let b = {}; try { b = await request.json(); } catch (e) {}
@@ -36,5 +36,8 @@ export async function onRequest({ request, env }) {
   const r = await env.DB.prepare('INSERT INTO help_msgs (chat, role, text, ts) VALUES (?,?,?,?)').bind(id, 'user', text, now).run();
   await env.DB.prepare("UPDATE help_chats SET updated = ?, unread_admin = unread_admin + 1, status = CASE WHEN status = 'open' THEN 'open' ELSE 'waiting' END WHERE id = ?").bind(now, id).run();
   if (created || !b.chat) await notify(env, 'Nuevo chat de ayuda en Twerkhub: ' + text.slice(0, 200) + '\nResponder: https://twerkhub.lat/admin/help/');
-  return J({ ok: true, chat: id, id: r.meta && r.meta.last_row_id });
+  return J({ ok: true, chat: id, id: r.meta && r.meta.last_row_id, ahead: await ahead(env, id) });
 }
+
+// Cuantos chats en espera se crearon antes que este (posicion en la fila).
+async function ahead(env, id) { const r = await env.DB.prepare("SELECT COUNT(*) n FROM help_chats WHERE status = 'waiting' AND created < (SELECT created FROM help_chats WHERE id = ?)").bind(id).first(); return (r && r.n) || 0; }
