@@ -36,9 +36,9 @@ export async function onRequest({ request, env }) {
   }
   const r = await env.DB.prepare('INSERT INTO help_msgs (chat, role, text, ts) VALUES (?,?,?,?)').bind(id, 'user', text, now).run();
   await env.DB.prepare("UPDATE help_chats SET updated = ?, unread_admin = unread_admin + 1, status = CASE WHEN status = 'open' THEN 'open' ELSE 'waiting' END WHERE id = ?").bind(now, id).run();
-  if (created || !b.chat) { const em = clean(b.email, 120); await notifyMail(env, { subject: 'Nuevo chat de ayuda en Twerkhub', text: 'Mensaje: ' + text.slice(0, 500) + '\nEmail del usuario: ' + (em || '(no dejo)') + '\nIdioma: ' + clean(b.lang, 8) + ' · Pagina: ' + clean(b.path, 160) + '\nResponder: https://twerkhub.lat/admin/help/', replyTo: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em) ? em : undefined }); }
+  let mailSt; if (created || !b.chat) { const em = clean(b.email, 120); mailSt = await notifyMail(env, { subject: 'Nuevo chat de ayuda en Twerkhub', text: 'Mensaje: ' + text.slice(0, 500) + '\nEmail del usuario: ' + (em || '(no dejo)') + '\nIdioma: ' + clean(b.lang, 8) + ' · Pagina: ' + clean(b.path, 160) + '\nResponder: https://twerkhub.lat/admin/help/', replyTo: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em) ? em : undefined }); }
   if (created || !b.chat) await notify(env, 'Nuevo chat de ayuda en Twerkhub: ' + text.slice(0, 200) + '\nResponder: https://twerkhub.lat/admin/help/');
-  return J({ ok: true, chat: id, id: r.meta && r.meta.last_row_id, ahead: await ahead(env, id) });
+  return J({ ok: true, chat: id, id: r.meta && r.meta.last_row_id, ahead: await ahead(env, id), ...(b.diag ? { mail: mailSt } : {}) });
 }
 
 // Cuantos chats en espera se crearon antes que este (posicion en la fila).

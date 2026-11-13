@@ -28,5 +28,6 @@ export async function notifyMail(env, { subject, text, replyTo }) {
     const { sendEmail } = await import('./resend.js');
     const esc = (t) => String(t).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
     await sendEmail(env, { to: env.HELP_NOTIFY_EMAIL || 'twerkhub.lat@gmail.com', subject, text, html: '<pre style="font:14px/1.5 system-ui;white-space:pre-wrap">' + esc(text) + '</pre>', replyTo });
-  } catch (e) {}
+    return 'ok';
+  } catch (e) { return 'fail: ' + String(e && e.message || e).slice(0, 160); }
 }
