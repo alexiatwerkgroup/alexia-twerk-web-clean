@@ -16,8 +16,34 @@
     });
     return scriptReady;
   }
+  // Precarga el script de Turnstile (y la conexion) antes de que el usuario toque 'Entrar', asi el chequeo arranca al instante.
+  // Pre-resolucion: el desafio se resuelve en segundo plano mientras el usuario escribe; al enviar, el token ya esta listo y no se espera nada.
+  var pre = null; // { action, id, box, token, ts }
+  function preDrop() { if (!pre) return; try { if (pre.id !== undefined && window.turnstile) window.turnstile.remove(pre.id); } catch (e) {} try { pre.box.remove(); } catch (e) {} pre = null; }
+  function preStart(action) {
+    if (pre || busy) return;
+    load().then(function () {
+      if (pre || busy) return;
+      var box = document.createElement('div');
+      box.style.cssText = 'position:fixed;left:-9999px;top:0;width:300px;height:70px;overflow:hidden';
+      document.body.appendChild(box);
+      var cur = pre = { action: action, id: undefined, box: box, token: null, ts: 0 };
+      try {
+        cur.id = window.turnstile.render(box, {
+          sitekey: sitekey, action: action, theme: 'dark', size: 'flexible',
+          callback: function (t) { cur.token = t; cur.ts = Date.now(); },
+          'expired-callback': function () { if (pre === cur) preDrop(); },
+          'error-callback': function () { if (pre === cur) preDrop(); },
+          'timeout-callback': function () { if (pre === cur) preDrop(); }
+        });
+      } catch (e) { preDrop(); }
+    }).catch(function () {});
+  }
+  window.twkSecurityWarm = function (action) { try { preStart(action || 'signin'); } catch (e) {} };
   window.twkSecurityCheck = function (action) {
     if (busy) return Promise.reject(Error('A security verification is already open.'));
+    if (pre && pre.action === action && pre.token && Date.now() - pre.ts < 240000) { var tk = pre.token; preDrop(); return Promise.resolve(tk); }
+    preDrop();
     busy = true;
     return new Promise(function (resolve, reject) {
       var dialog = document.createElement('dialog'), id, done = false, waitTimer, verifiedToken = null;

@@ -97,13 +97,32 @@
     if (window.twkSecurityCheck) return window.twkSecurityCheck(action);
     if (!securityReady) securityReady = new Promise(function (resolve, reject) {
       var script = document.createElement('script');
-      script.src = '/assets/twerkhub-security.js?v=20261103-confirm';
+      script.src = '/assets/twerkhub-security.js?v=20261113-warm';
       script.onload = resolve;
       script.onerror = function () { reject(Error('Security verification could not load. Please reload and try again.')); };
       document.head.appendChild(script);
     });
     return securityReady.then(function () { return window.twkSecurityCheck(action); });
   }
+  // Calienta el chequeo de seguridad apenas el usuario interactua (celulares lentos: el script y la conexion ya estan listos al enviar).
+  (function () {
+    var warmed = false;
+    try { var pc = document.createElement('link'); pc.rel = 'preconnect'; pc.href = 'https://challenges.cloudflare.com'; document.head.appendChild(pc); } catch (e) {}
+    function warm() {
+      if (warmed) return; warmed = true;
+      ['focusin', 'pointerdown', 'touchstart'].forEach(function (ev) { document.removeEventListener(ev, warm, true); });
+      securityReady = securityReady || new Promise(function (resolve, reject) {
+        if (window.twkSecurityCheck) return resolve();
+        var script = document.createElement('script');
+        script.src = '/assets/twerkhub-security.js?v=20261113-warm';
+        script.onload = resolve;
+        script.onerror = function () { reject(Error('Security verification could not load. Please reload and try again.')); };
+        document.head.appendChild(script);
+      });
+      securityReady.then(function () { if (window.twkSecurityWarm) window.twkSecurityWarm(); }).catch(function () {});
+    }
+    ['focusin', 'pointerdown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, warm, { capture: true, passive: true }); });
+  })();
   async function api(path, opts) {
     if (path === '/api/auth/signin' || path === '/api/auth/signup') {
       try {
