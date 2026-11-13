@@ -14,8 +14,8 @@
     if (!document.querySelector('header.tn2')) document.body.insertAdjacentHTML('afterbegin', HDR);
     var bar = document.querySelector('body > header:not(.tn2), main ~ header:not(.tn2)'); if (!bar || bar.querySelector('.nv-act')) return;
     var box = document.createElement('div'); box.className = 'nv-act';
-    box.innerHTML = '<a class="nv-home" href="/novinhas/" aria-label="Novinhas home">' + HOME + '</a><a class="twk-btn twk-btn--ghost twk-btn--sm nv-acc" href="/account" aria-label="My account">' + USER + '<span>My account</span></a>';
-    [].forEach.call(bar.querySelectorAll(':scope > a'), function (a) { var h = a.getAttribute('href'); if (h === '/' || h === '/account') a.remove(); });
+    box.innerHTML = '<a class="nv-home" href="/novinhas/" aria-label="Novinhas home">' + HOME + '</a><a class="twk-btn twk-btn--ghost twk-btn--sm nv-acc" href="/novinhas/account/" aria-label="My account">' + USER + '<span>My account</span></a>';
+    [].forEach.call(bar.querySelectorAll(':scope > a'), function (a) { var h = a.getAttribute('href'); if (h === '/' || h === '/account' || h === '/novinhas/account/') a.remove(); });
     bar.appendChild(box);
   }
   if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);

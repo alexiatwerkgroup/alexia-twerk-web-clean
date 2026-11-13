@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,follow"><title>My Novinhas account</title><link rel="stylesheet" href="/assets/twk-ui.css?v=1"><style>
+body{margin:0;background:#0f0f0f;color:#fff;font:16px Arial,sans-serif}header{padding:18px 5%;border-bottom:1px solid #333;display:flex;justify-content:space-between}a{color:inherit;text-decoration:none}main{max-width:1100px;margin:auto;padding:24px 4%}
+h1{font:800 28px system-ui;margin:6px 0 4px}.sub{color:#aaa;margin:0 0 18px;font:14px system-ui}.tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid #2a2a2a;padding-bottom:12px;margin-bottom:18px}
+.tabs button{padding:9px 16px;border-radius:999px;border:1px solid #3a3a3a;background:#181818;color:#ddd;font:700 13px system-ui;cursor:pointer}.tabs button.on{background:#f1f1f1;color:#0f0f0f;border-color:#f1f1f1}
+.row{display:grid;grid-template-columns:200px 1fr auto;gap:14px;margin-bottom:14px;align-items:start}.th{position:relative;aspect-ratio:9/16;max-height:240px;width:135px;border-radius:10px;overflow:hidden;background:#191919;justify-self:start}.th img{width:100%;height:100%;object-fit:cover}
+.row{grid-template-columns:135px 1fr auto}.row strong{display:block;font:700 15px/1.35 system-ui;word-break:break-all}.row small{color:#aaa;font:13px system-ui;display:block;margin-top:4px}
+.bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:#ffffff33}.bar i{display:block;height:100%;background:#f7c83a}.x{background:none;border:0;color:#aaa;cursor:pointer;font:700 12px system-ui;padding:6px 10px;border-radius:8px}.x:hover{background:#2a2a2a;color:#fff}
+.card{background:#181818;border:1px solid #2a2a2a;border-radius:14px;padding:16px 18px;margin-bottom:14px}.card h3{margin:0 0 6px;font:800 16px system-ui}.card p{margin:0 0 12px;color:#aaa;font:14px/1.5 system-ui}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #2a2a2a}.set:first-of-type{border-top:0}.set b{font:700 14px system-ui}.set select{background:#0f0f0f;color:#fff;border:1px solid #3a3a3a;border-radius:8px;padding:8px 10px;font:600 13px system-ui}
+.empty{color:#888;padding:30px 0;text-align:center;font:14px system-ui}.top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 18px}@media(max-width:560px){.row{grid-template-columns:100px 1fr}.row .x{grid-column:2}.th{width:100px}}
+</style></head><body><header><a href="/novinhas/">&larr; Novinhas</a><a href="/">Twerkhub</a></header><main>
+<h1>My Novinhas account</h1><p class="sub">Your watch history, liked videos and player settings. Saved on this device.</p>
+<div class="top"><a class="twk-btn twk-btn--sm" href="/account">Twerkhub account</a><a class="twk-btn twk-btn--ghost twk-btn--sm" href="/novinhas/">Browse channels</a></div>
+<div class="tabs" id="tabs"><button data-t="hist" class="on">History</button><button data-t="cont">Continue watching</button><button data-t="like">Liked videos</button><button data-t="set">Settings</button></div>
+<div id="view"></div></main><script src="/assets/novinhas-nav.js?v=2"></script><script>
+(function(){var LS={get:function(k){try{return localStorage.getItem(k)}catch(_){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(_){}},del:function(k){try{localStorage.removeItem(k)}catch(_){}},keys:function(){try{return Object.keys(localStorage)}catch(_){return[]}}};
+var esc=function(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+var cache={},tab='hist',view=document.getElementById('view');
+function pad(n){return String(n).padStart(2,'0')}
+function ago(ts){var s=Math.max(1,(Date.now()-ts)/1000);if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';return Math.floor(s/86400)+' d ago'}
+function chan(slug){if(!cache[slug])cache[slug]=fetch('/api/novinhas/channel?c='+encodeURIComponent(slug),{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null}).catch(function(){return null});return cache[slug]}
+function seen(){var out=[];LS.keys().forEach(function(k){if(k.indexOf('twk_nov_seen:')!==0)return;var slug=k.slice(13),m={};try{m=JSON.parse(LS.get(k)||'{}')}catch(_){}Object.keys(m).forEach(function(id){out.push({slug:slug,id:+id,ts:m[id]})})});return out.sort(function(a,b){return b.ts-a.ts})}
+function liked(){var out=[];LS.keys().forEach(function(k){var m=/^twk_nov_like:(.+):(\d+)$/.exec(k);if(m&&LS.get(k)==='1')out.push({slug:m[1],id:+m[2],ts:0})});return out}
+function pos(slug,id){return parseFloat(LS.get('twk_nov_pos:'+slug+':'+id))||0}
+function item(e,d,v,opt){var p=pos(e.slug,e.id),pc=v.duration&&p>3?Math.min(100,p/v.duration*100):0,url='/novinhas/canal/ver/?c='+encodeURIComponent(e.slug)+'&v='+pad(e.id);
+ return '<div class="row"><a class="th" href="'+url+'"><img loading="lazy" alt="" src="'+esc(v.poster)+'">'+(pc?'<div class="bar"><i style="width:'+pc+'%"></i></div>':'')+'</a><div><a href="'+url+'"><strong>'+esc(v.title)+'</strong></a><small><a href="/novinhas/canal/?c='+encodeURIComponent(e.slug)+'">'+esc(d.name)+'</a>'+(e.ts?' &middot; Watched '+ago(e.ts):'')+'</small></div>'+(opt||'')+'</div>'}
+function list(items,rm,emptyMsg){if(!items.length){view.innerHTML='<div class="empty">'+emptyMsg+'</div>';return}
+ view.innerHTML='<p class="empty" style="padding:0">Loading...</p>';
+ Promise.all(items.slice(0,60).map(function(e){return chan(e.slug).then(function(d){var v=d&&d.videos.filter(function(x){return x.id===e.id})[0];return v?{e:e,d:d,v:v}:null})})).then(function(rows){rows=rows.filter(Boolean);
+  view.innerHTML=(rm==='hist'?'<p style="margin:0 0 14px"><button class="x" id="clr" style="border:1px solid #3a3a3a">Clear all watch history</button></p>':'')+rows.map(function(r){return item(r.e,r.d,r.v,'<button class="x" data-rm="'+rm+'" data-s="'+esc(r.e.slug)+'" data-i="'+r.e.id+'">Remove</button>')}).join('')||'<div class="empty">'+emptyMsg+'</div>'})}
+function render(){[].forEach.call(document.querySelectorAll('#tabs button'),function(b){b.classList.toggle('on',b.dataset.t===tab)});
+ if(tab==='hist')list(seen(),'hist','No watch history yet. Videos you watch will show up here.');
+ else if(tab==='cont'){var c=seen().filter(function(e){return pos(e.slug,e.id)>8});list(c,'cont','Nothing to resume. Videos you stop halfway show up here.')}
+ else if(tab==='like')list(liked(),'like','You have not liked any videos yet.');
+ else{var q=LS.get('twk_nov_q')||'auto',a=LS.get('twk_nov_autoplay')!=='0';
+  view.innerHTML='<div class="card"><h3>Player</h3><div class="set"><div><b>Autoplay next video</b><p style="margin:2px 0 0">Starts the next video of the channel when one ends.</p></div><select id="sa"><option value="1"'+(a?' selected':'')+'>On</option><option value="0"'+(a?'':' selected')+'>Off</option></select></div><div class="set"><div><b>Default quality</b><p style="margin:2px 0 0">Auto picks HD or 480p for your connection.</p></div><select id="sq"><option value="auto"'+(q==='auto'?' selected':'')+'>Auto</option><option value="hd"'+(q==='hd'?' selected':'')+'>HD</option><option value="sd"'+(q==='sd'?' selected':'')+'>480p</option></select></div></div><div class="card"><h3>Privacy</h3><p>Watch history, likes and resume points are stored in this browser only.</p><button class="twk-btn twk-btn--ghost twk-btn--sm" id="clrall">Clear history, likes and resume points</button></div><div class="card"><h3>VIP</h3><p>VIP unlocks every video of every Novinhas channel, including new ones.</p><a class="twk-btn twk-btn--sm" href="/paymentmethods/">Get VIP</a></div>'}}
+document.getElementById('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b){tab=b.dataset.t;render()}});
+view.addEventListener('change',function(e){if(e.target.id==='sa')LS.set('twk_nov_autoplay',e.target.value);if(e.target.id==='sq')LS.set('twk_nov_q',e.target.value)});
+view.addEventListener('click',function(e){var t=e.target;if(t.id==='clr'){LS.keys().forEach(function(k){if(k.indexOf('twk_nov_seen:')===0)LS.del(k)});render();return}
+ if(t.id==='clrall'){LS.keys().forEach(function(k){if(/^twk_nov_(seen|like|pos)[:]/.test(k))LS.del(k)});t.textContent='Cleared';return}
+ var r=t.dataset&&t.dataset.rm;if(!r)return;var s=t.dataset.s,i=t.dataset.i;
+ if(r==='hist'){var m={};try{m=JSON.parse(LS.get('twk_nov_seen:'+s)||'{}')}catch(_){}delete m[i];LS.set('twk_nov_seen:'+s,JSON.stringify(m))}
+ else if(r==='cont')LS.del('twk_nov_pos:'+s+':'+i);else if(r==='like')LS.del('twk_nov_like:'+s+':'+i);render()});
+render()})();
+</script></body></html>
