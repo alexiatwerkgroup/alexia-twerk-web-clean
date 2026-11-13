@@ -20,7 +20,7 @@
     var o = document.createElement('div'); o.className = 'nq-o'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true');
     o.innerHTML = '<div class="nq-p"><small>VIP ACCESS</small><b>' + total + ' videos</b><p>This folder has ' + total + ' videos.<br>You\'re seeing the first ' + shown + '.</p>' +
       '<div class="nq-bar"><div style="width:' + Math.round(shown / total * 100) + '%"></div></div><p style="font-size:12px;color:#aaa">' + shown + ' of ' + total + ' unlocked</p>' +
-      '<div class="nq-price"><small>USD</small>' + price + '</div><div class="nq-pay"><span>PayPal</span><span>Binance</span><span>Card</span></div>' +
+      '<div class="nq-price"><small>USD</small>' + price + '<span style="font:700 13px system-ui;color:#e8b84a;margin-left:6px">/ month</span></div><div class="nq-pay"><span>PayPal</span><span>Binance</span><span>Card</span></div>' +
       '<a class="nq-btn" href="' + href + '" target="_blank" rel="noopener">GET VIP ON DISCORD</a><p class="nq-note">Pay with PayPal, Binance or card. Your access code is sent to you on Discord.</p>' +
       '<form class="nq-code"><label for="nq-in">Already have a code?</label><div class="nq-row"><input id="nq-in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Your access code"><button type="submit">ACTIVATE</button></div><div class="nq-msg" role="status"></div></form>' +
       '<button type="button" class="nq-x">Maybe later</button></div>';
