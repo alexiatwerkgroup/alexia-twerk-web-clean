@@ -143,6 +143,18 @@ export async function onRequest({ request, env }) {
       if (!m) continue;
       items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: parseInt(m[2], 10) }); used[r.slug + ':' + r.vid] = 1;
     }
+    // relleno temporal: completa hasta N con clips al azar de otros canales (se achica solo a medida que elegis mas)
+    if (items.length < N) {
+      const taken = {}; items.forEach((x) => { taken[x.slug] = 1; });
+      const rnd = chans.filter((c) => !taken[c.slug]).sort(() => Math.random() - 0.5);
+      for (const c of rnd) {
+        if (items.length >= N) break;
+        const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/clips/c-', limit: 200 });
+        const ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter(Boolean);
+        if (!ks.length) continue; const m = ks[Math.floor(Math.random() * ks.length)];
+        items.push({ slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: parseInt(m[1], 10), start: parseInt(m[2], 10) });
+      }
+    }
     const slugs = Array.from(new Set(items.map((x) => x.slug)));
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
