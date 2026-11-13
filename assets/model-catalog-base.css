@@ -126,3 +126,4 @@ body[data-model=lolita] #pricing .price{grid-template-columns:minmax(0,540px);ju
 .pc .co-pay .bn{padding:0 8px}.pc .co-pay .bn img{height:24px;width:auto;display:block}
 .pc .co-pay svg{width:16px;height:16px;margin-right:6px}
 .pc .co-note{margin:0;text-align:center;color:#a99b72;font:600 12px/1.4 system-ui,sans-serif}
+.pc .co-pay .cd{padding:0 8px}.pc .co-pay .cd img{height:22px;width:auto;display:block}
