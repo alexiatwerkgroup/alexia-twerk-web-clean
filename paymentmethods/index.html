@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payment methods · Get VIP | Twerkhub</title>
-<meta name="description" content="Pay for Twerkhub VIP access with PayPal, Binance or credit card. Your access code is delivered on Discord or by email.">
+<meta name="description" content="Pay on Twerkhub with PayPal, Binance or credit card: buy coins, a model pack, Novinhas VIP access or make a donation. Your access code is delivered on Discord or by email.">
 <link rel="stylesheet" href="/assets/twk-ui.css?v=1"><link rel="canonical" href="https://twerkhub.lat/paymentmethods/"><meta name="theme-color" content="#000000">
 <meta property="og:title" content="Payment methods · Twerkhub VIP"><meta property="og:image" content="https://twerkhub.lat/logo-twerkhub.png">
 <style>body{margin:0;background:#000;color:#fff}.pm{font-family:Inter,system-ui,sans-serif;background:radial-gradient(900px 420px at 80% -60px,rgba(232,184,74,.16),transparent),#000;min-height:70vh}.pm *{box-sizing:border-box}.pm a{color:inherit;text-decoration:none}.pm .w{max-width:1100px;margin:0 auto;padding:56px 24px}
@@ -41,16 +41,16 @@
 <details><summary aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/community">Community</a><a href="/account">My account</a></nav></details></div></header>
 <script>(function(){var p=location.pathname.replace(/\/index\.html$/,'/');document.querySelectorAll('.tn2-lk a').forEach(function(a){var h=a.getAttribute('href');if(h.length>1&&h.indexOf('#')<0&&p.indexOf(h.replace(/\/$/,''))===0)a.classList.add('on')})})();</script>
 <main class="pm"><div class="w">
-<div class="eb">/ Payment methods</div><h1>Choose your <em>payment</em></h1>
-<p class="lead">Pick what you are paying for, then choose how you want to pay. Access is added to your Twerkhub account after we confirm the payment, usually within minutes.</p>
+<div class="eb">/ Payment methods</div><h1>Twerkhub <em>payments</em></h1>
+<p class="lead">Choose what you want to pay for (coins, a model pack, Novinhas VIP or a donation), then choose how you want to pay. Access is added to your Twerkhub account after we confirm the payment, usually within minutes.</p>
 <h2 class="ps">What are you paying for?</h2>
 <div class="opts" id="opts" role="radiogroup" aria-label="What are you paying for?">
-<button type="button" class="opt" role="radio" data-k="coins"><span class="ot">Coins</span><b>From $10</b><span class="od">1 coin = $0.50. Minimum 20 coins ($10). Use them to unlock single videos on the model pages (Jenny, Alexia, Abbi, Tainara, Lolita).</span></button>
-<button type="button" class="opt" role="radio" data-k="vip"><span class="ot">Novinhas VIP</span><b>$49.99 / month</b><span class="od">Every video of every Novinhas channel, including the new ones we keep adding. Cancel anytime.</span></button>
+<button type="button" class="opt" role="radio" data-k="coins"><span class="ot">Coins &middot; model pages</span><b>From $10</b><span class="od">1 coin = $0.50, minimum 20 coins ($10). Use them to unlock individual videos on the exclusive model pages (Jenny, Alexia, Abbi, Tainara, Lolita). Not valid for Novinhas VIP.</span></button>
+<button type="button" class="opt" role="radio" data-k="vip"><span class="ot">VIP access &middot; Novinhas</span><b>$49.99 / month</b><span class="od">Monthly membership for the Novinhas video channels: every video of every channel, including the new ones we keep adding. Does not include coins or model packs. Cancel anytime.</span></button>
 <button type="button" class="opt" role="radio" data-k="donate"><span class="ot">Donation</span><b>Any amount</b><span class="od">Support Twerkhub. A donation does not add access or coins to your account.</span></button>
 </div>
 <div class="amtbox" id="amtbox" hidden><label for="amtin" id="amtlb">Amount (USD)</label><div class="amtrow"><span>$</span><input id="amtin" type="number" inputmode="decimal" min="10" step="0.5" value="10"><div class="chips" id="chips"></div></div><p id="amtnote"></p></div>
-<div class="sum price" id="sum"><small>Novinhas VIP</small><b>$49.99</b><em>USD / month &middot; cancel anytime</em></div>
+<div class="sum price" id="sum"><small>VIP access &middot; Novinhas</small><b>$49.99</b><em>USD / month &middot; cancel anytime</em></div>
 <div class="grid">
 <div class="card"><h3>PayPal</h3><p>Pay with your PayPal balance or any card linked to your PayPal account.</p><a class="twk-pay" href="/discord" target="_blank" rel="noopener"><span class="t"><b>Pay now</b><i>Balance or linked card</i></span><span class="lg w"><img src="/assets/paypal-logo.png" alt="PayPal" height="18"></span></a></div>
 <div class="card"><h3>Binance</h3><p>Pay in crypto with Binance Pay (USDT and other supported coins). Fast and worldwide.</p><a class="twk-pay" href="#binance" data-twk-binance="$49.99 USD"><span class="t"><b>Pay now</b><i>USDT &middot; no fees</i></span><span class="lg"><img src="/assets/binance-mark.png" alt="Binance" height="42"></span></a></div>
@@ -70,9 +70,9 @@ function fmt(n){return '$'+(Math.round(n*100)/100).toFixed(2)}
 function setChips(list){chips.innerHTML='';list.forEach(function(v){var c=document.createElement('button');c.type='button';c.textContent='$'+v;c.onclick=function(){inp.value=v;apply()};chips.appendChild(c)})}
 function valid(){return amt>0&&(cur!=='coins'||(amt>=10&&Math.round(amt*2)===amt*2*1))}
 function paint(){var tx=function(el,t){el.textContent=t},sm=sum.querySelector('small'),bb=sum.querySelector('b'),em=sum.querySelector('em');
- if(cur==='vip'){tx(sm,'Novinhas VIP');tx(bb,'$49.99');tx(em,'USD / month \u00b7 cancel anytime')}
+ if(cur==='vip'){tx(sm,'VIP access \u00b7 Novinhas');tx(bb,'$49.99');tx(em,'USD / month \u00b7 cancel anytime')}
  else if(cur==='pack'){tx(sm,pLabel);tx(bb,fmt(pAmt));tx(em,'USD \u00b7 one-time payment')}
- else if(cur==='coins'){tx(sm,'Coins');tx(bb,fmt(amt));tx(em,valid()?'USD \u00b7 '+Math.round(amt/0.5)+' coins added to your account':'Minimum $10 (20 coins)')}
+ else if(cur==='coins'){tx(sm,'Coins \u00b7 model pages');tx(bb,fmt(amt));tx(em,valid()?'USD \u00b7 '+Math.round(amt/0.5)+' coins added to your account':'Minimum $10 (20 coins)')}
  else{tx(sm,'Donation');tx(bb,fmt(amt));tx(em,'USD \u00b7 thank you for supporting Twerkhub')}
  grid.classList.toggle('off',!valid());if(bn)bn.setAttribute('data-twk-binance',fmt(amt)+' USD')}
 function apply(){var v=parseFloat(inp.value);amt=isNaN(v)?0:v;
