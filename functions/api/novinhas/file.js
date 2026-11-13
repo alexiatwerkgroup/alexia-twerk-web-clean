@@ -4,10 +4,13 @@
 import { vipCfg, isVip, isLocked } from '../../_lib/vip.js';
 const KEY = /^([a-z0-9-]{2,60})\/(?:(?:full|480h)\/video-(\d{2,3})\.mp4|(previews)\/poster-(\d{2,3})\.webp)$/;
 
+// Canales retirados del sitio: no se sirven aunque sus archivos sigan en el bucket.
+const REMOVED = new Set(['carol-videos']);
 export async function onRequestGet({ request, env }) {
   const fail = (s, m) => new Response(m, { status: s, headers: { 'Cache-Control': 'no-store' } });
   const key = new URL(request.url).searchParams.get('k') || '';
   const km = KEY.exec(key); if (!km) return fail(400, 'bad_request');
+  if (REMOVED.has(km[1])) return fail(404, 'not_found');
   if (!env.NOVINHAS_VIDEOS) return fail(500, 'not_configured');
   const isPoster = !!km[3]; let priv = false;
   if (!isPoster) {
