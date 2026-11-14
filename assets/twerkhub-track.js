@@ -25,12 +25,21 @@
   document.addEventListener('play', function (e) {
     if (location.pathname.indexOf('/novinhas/watch') === 0 && e.target && e.target.id === 'player') add('nov_play');
   }, true);
+  // Tiempo real de reproducción en la página de video: segundos reproducidos y punto más lejano alcanzado (% del video).
+  var vPlay = 0, vMax = 0, vDur = 0, vLast = -1, vSent = 0;
+  document.addEventListener('timeupdate', function (e) {
+    var v = e.target; if (!v || v.id !== 'player' || location.pathname.indexOf('/novinhas/watch') !== 0) return;
+    var c = v.currentTime || 0; if (vLast >= 0 && c > vLast && c - vLast < 2) vPlay += c - vLast; vLast = c;
+    if (c > vMax) vMax = c; if (v.duration && isFinite(v.duration)) vDur = v.duration; touch();
+  }, true);
+  document.addEventListener('seeking', function (e) { if (e.target && e.target.id === 'player') vLast = -1; }, true);
+  function vidEvent() { if (vPlay < 1 || vPlay === vSent) return; vSent = vPlay; var pc = vDur ? Math.min(100, Math.round(100 * vMax / vDur)) : 0; ev = ev.filter(function (x) { return x.n !== 'vid_time'; }); ev.push({ n: 'vid_time', d: Math.round(vPlay) + 's ' + pc + '%' }); }
   document.addEventListener('twk:signup-success', function (e) {
     var source = String(e.detail && e.detail.source || '');
     add(source.indexOf('novinhas_') === 0 ? 'nov_signup' : 'signup_done', source);
     send();
   });
-  function send() { tick(); scr(); var b = JSON.stringify({ h: h, d: Math.round(vis / 1000), s: maxS, u: hum, i: interaction > lastSentInteraction ? interaction : 0, ev: ev }); lastSentInteraction = interaction; ev = []; sent++; try { navigator.sendBeacon('/api/analytics/track', new Blob([b], { type: 'application/json' })); } catch (e) {} }
+  function send() { tick(); scr(); vidEvent(); var b = JSON.stringify({ h: h, d: Math.round(vis / 1000), s: maxS, u: hum, i: interaction > lastSentInteraction ? interaction : 0, ev: ev }); lastSentInteraction = interaction; ev = []; sent++; try { navigator.sendBeacon('/api/analytics/track', new Blob([b], { type: 'application/json' })); } catch (e) {} }
   document.addEventListener('visibilitychange', function () { tick(); shown = !document.hidden; last = Date.now(); if (document.hidden) send(); });
   addEventListener('pagehide', send);
   setTimeout(send, 15000);

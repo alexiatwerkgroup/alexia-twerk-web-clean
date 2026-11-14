@@ -20,6 +20,6 @@ export async function onRequestPost({ request, env }) {
   await env.DB.prepare("UPDATE tw_hits SET dur = MAX(dur, ?), scroll = MAX(scroll, ?), human = MAX(human, ?), last_active = ?, last_engaged = CASE WHEN ? IS NULL THEN last_engaged ELSE MAX(COALESCE(last_engaged, 0), ?) END, country = COALESCE(NULLIF(?, ''), country), region = COALESCE(NULLIF(?, ''), region), city = COALESCE(NULLIF(?, ''), city), tz = COALESCE(NULLIF(?, ''), tz), lat = COALESCE(?, lat), lon = COALESCE(?, lon) WHERE hid = ?")
     .bind(d, s, b.u ? 1 : 0, now, engaged, engaged, country, region, city, timezone, lat, lon, h).run();
   const ev = Array.isArray(b.ev) ? b.ev.slice(0, 12) : [];
-  for (const e of ev) { const n = String(e && e.n || ''); if (!/^[a-z_]{2,24}$/.test(n)) continue; await env.DB.prepare('INSERT INTO tw_events (ts, hid, vid, name, detail) VALUES (?,?,?,?,?)').bind(Date.now(), h, row.vid, n, String(e.d || '').slice(0, 40)).run(); }
+  for (const e of ev) { const n = String(e && e.n || ''); if (!/^[a-z_]{2,24}$/.test(n)) continue; if (n === 'vid_time') await env.DB.prepare("DELETE FROM tw_events WHERE hid = ? AND name = 'vid_time'").bind(h).run(); await env.DB.prepare('INSERT INTO tw_events (ts, hid, vid, name, detail) VALUES (?,?,?,?,?)').bind(Date.now(), h, row.vid, n, String(e.d || '').slice(0, 40)).run(); }
   return json({ ok: true });
 }
