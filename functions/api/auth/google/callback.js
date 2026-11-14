@@ -136,8 +136,8 @@ export async function onRequest(context) {
       await env.DB.batch([
         env.DB.prepare('INSERT INTO users (id, email, password_hash, email_verified) VALUES (?, ?, ?, 1)').bind(userId, email, passwordHash),
         env.DB.prepare(
-          'INSERT INTO profiles (id, email, username, last_active_at, last_seen_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)'
-        ).bind(userId, email, username),
+          'INSERT INTO profiles (id, email, username, last_active_at, last_seen_at, country) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)'
+        ).bind(userId, email, username, String((request.cf && request.cf.country) || '').slice(0, 2) || null),
       ]);
     } catch (e) {
       const r = redirect(siteOrigin, '?oauth_error=signup_failed');

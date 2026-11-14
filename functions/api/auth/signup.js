@@ -73,8 +73,8 @@ export async function onRequest(context) {
         passwordHash
       ),
       env.DB.prepare(
-        'INSERT INTO profiles (id, email, username, last_active_at, last_seen_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)'
-      ).bind(id, email, usernameRaw || null),
+        'INSERT INTO profiles (id, email, username, last_active_at, last_seen_at, country) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)'
+      ).bind(id, email, usernameRaw || null, String((request.cf && request.cf.country) || '').slice(0, 2) || null),
     ]);
   } catch (e) {
     console.error('signup insert failed', e && e.message);
