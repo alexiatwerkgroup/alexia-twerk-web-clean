@@ -92,7 +92,7 @@
 .nvp .nov-channel-card { display: flex; align-items: center; gap: 14px; min-width: 0; min-height: 146px; padding: 14px; border: 1px solid #3d3b40; border-radius: 17px; background: #141317; }
 .nvp a.nov-channel-live { border-color: #ff9a25; background: linear-gradient(110deg, #24150b, #171218); box-shadow: 0 8px 24px #ff8f0026; }
 .nvp a.nov-channel-live:hover { border-color: #ffd37d; background: linear-gradient(110deg, #352010, #21151d); }
-.nvp .nov-channel-card img, .nvp .nov-channel-art { width: 82px; height: 112px; flex: none; border-radius: 9px; object-fit: cover; object-position: center; }
+.nvp .nov-channel-card img, .nvp .nov-channel-card video, .nvp .nov-channel-art { width: 82px; height: 112px; flex: none; border-radius: 9px; object-fit: cover; object-position: center; }
 .nvp .nov-channel-art { display: grid; place-items: center; background: linear-gradient(140deg, #3d1b32, #18121b); color: #ff72b4; font: 400 56px Anton, Impact, sans-serif; }
 .nvp .nov-channel-art-alt { background: linear-gradient(140deg, #453215, #18151a); color: #ffc06d; }
 .nvp .nov-channel-card > div { display: grid; align-content: center; gap: 5px; min-width: 0; }
@@ -115,7 +115,7 @@
   .nvp .nov-featured-heading { align-items: start; flex-direction: column; gap: 6px; }
   .nvp .nov-featured-grid { grid-template-columns: 1fr; }
   .nvp .nov-channel-card { min-height: 115px; }
-  .nvp .nov-channel-card img, .nvp .nov-channel-art { width: 72px; height: 92px; }
+  .nvp .nov-channel-card img, .nvp .nov-channel-card video, .nvp .nov-channel-art { width: 72px; height: 92px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .nvp .nov-primary:hover { transform: none; }
