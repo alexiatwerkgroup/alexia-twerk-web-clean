@@ -49,7 +49,7 @@
       e_login: 'Iniciá sesión o creá una cuenta gratis primero.', e_limit: 'Demasiados envíos seguidos. Probá de nuevo en una hora.', e_name_short: 'Escribí el nombre (mínimo 3 letras).', e_duplicate: 'Ya enviaste ese nombre.', e_no_file: 'Elegí un archivo de video.', e_adults_required: 'Confirmá que todos en el video son mayores de 18.', e_bad_type: 'Ese tipo de archivo no es compatible (usá MP4, MOV o WebM).', e_too_big: 'El video es demasiado grande (máx. 80 MB).', e_generic: 'Algo salió mal, probá de nuevo.', e_net: 'Error de conexión, probá de nuevo.'
     }
   };
-  var lang = 'pt'; try { var sv = localStorage.getItem('nvLang'); if (T[sv]) lang = sv; } catch (e) {}
+  var lang = 'pt'; try { var sv = localStorage.getItem('twk-lang') || localStorage.getItem('nvLang'); if (T[sv]) lang = sv; } catch (e) {}
   var tab = 'name', stats = null, lastMsg = null, counts = { videos: 0, names: 0 }, $ = function (i) { return document.getElementById(i); };
   function t(k) { return T[lang][k]; }
   function f(n) { return Number(n).toLocaleString(lang === 'en' ? 'en-US' : lang === 'es' ? 'es-AR' : 'pt-BR'); }
@@ -76,7 +76,8 @@
   /* selector de idioma en el texto del home */
   var nt = document.querySelector('#novinhas .nt'); 
   if (nt && !nt.querySelector('.nv-lang')) { var bar = document.createElement('div'); bar.className = 'nv-lang'; bar.innerHTML = '<button type="button" data-l="pt">PT</button><button type="button" data-l="en">EN</button><button type="button" data-l="es">ES</button>'; var firstP = nt.querySelector('p'); if (firstP) nt.insertBefore(bar, firstP); }
-  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.nv-lang button,.nvi .lg button'); if (b) setLang(b.dataset.l); });
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.nv-lang button,.nvi .lg button'); if (b) { setLang(b.dataset.l); if (window.TwkI18n && window.TwkI18n.setLang && e.target.closest('.nv-lang')) window.TwkI18n.setLang(b.dataset.l); } });
+  window.addEventListener('twk:language', function (e) { if (e.detail && T[e.detail] && e.detail !== lang) setLang(e.detail); });
   /* estadisticas reales */
   if (document.querySelector('[data-i="real"]')) fetch('/api/novinhas/stats').then(function (r) { return r.json(); }).then(function (d) { stats = d; fillNums(); }).catch(function () {});
   function status() { fetch('/api/novinhas/identify', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) { if (!d.auth) msg('login', 'er'); else msg(''); if (d.videos != null) { counts = { videos: d.videos, names: d.names }; paintCounts(); } }).catch(function () {}); }
