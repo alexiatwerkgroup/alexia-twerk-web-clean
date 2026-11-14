@@ -9,6 +9,12 @@
 #    (Google treats them as soft-404). Those URLs now return a clean 404.
 #  - Keep splat rules at the END of this file.
 
+# Canal Kelina Kessia eliminado (14 nov 2026): se vuelve a subir mas adelante
+/novinhas/kelina  /novinhas/  302
+/novinhas/kelina/  /novinhas/  302
+/novinhas/watch  /novinhas/  302
+/novinhas/watch/  /novinhas/  302
+
 /membership  /tokens/  301
 /membership/  /tokens/  301
 /membership.html  /tokens/  301

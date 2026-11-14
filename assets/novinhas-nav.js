@@ -12,6 +12,8 @@
   '@keyframes nvLogoShimmer{0%,100%{filter:drop-shadow(0 0 0px #ffd76a00)}50%{filter:drop-shadow(0 0 10px #ffd76acc)}}' +
   '.tn2-logo img{animation:nvLogoIn .55s cubic-bezier(.22,1,.36,1) both,nvLogoShimmer 3s ease-in-out .6s infinite}';
   document.head.appendChild(st);
+  var lgst = document.createElement('style'); lgst.textContent = ".nv-logo{display:flex;align-items:center;gap:14px;color:#f1f1f1;text-decoration:none!important;white-space:nowrap}.nv-logo .nv-ham{width:40px;height:40px;border-radius:50%;display:grid;place-items:center}.nv-logo .nv-ham svg{width:24px;height:24px;fill:currentColor}.nv-logo:hover .nv-ham{background:#272727}.nv-logo b{display:flex;align-items:center;gap:4px;font:700 20px/1 Roboto,Arial,sans-serif;letter-spacing:-1.1px;color:#f1f1f1}.nv-logo .nv-mark{width:34px;height:24px;border-radius:8px;background:#f03;display:grid;place-items:center}.nv-logo .nv-mark svg{width:15px;height:15px;fill:#fff}.nv-logo small{font:700 10px Arial,sans-serif;color:#aaa;letter-spacing:0;align-self:flex-start;margin:2px 0 0 2px}@media(max-width:620px){.nv-logo{gap:6px}.nv-logo b{font-size:16px}.nv-logo .nv-mark{width:29px;height:20px;border-radius:6px}.nv-logo small{display:none}}"; document.head.appendChild(lgst);
+  var LOGO = '<a class="nv-logo" href="/novinhas/" aria-label="Novinhas - back to all channels"><span class="nv-ham"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg></span><b><span class="nv-mark"><svg viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg></span>Novinhas<small>DEMO</small></b></a>';
   var HDR = '<header class="tn2 site-nav"><div class="tn2-w"><a class="tn2-logo" href="/" aria-label="Twerkhub home"><img src="/assets/patreon-logo-final.png" alt="Twerkhub.lat" width="190" height="43"></a><div class="tn2-lk"><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/account">My account</a><a class="tn2-jn" href="/novinhas/">Novinhas</a></div><details><summary aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav><a href="/">Home</a><a href="/novinhas/">Novinhas</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/account">My account</a></nav></details></div></header>';
   var USER = '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 3a3.2 3.2 0 1 1 0 6.4A3.2 3.2 0 0 1 12 5zm0 14.5a7.5 7.5 0 0 1-5.9-2.9C6.7 14.6 8.9 13 12 13s5.3 1.6 5.9 3.6a7.5 7.5 0 0 1-5.9 2.9z"/></svg>';
   var HOME = '<svg viewBox="0 0 24 24"><path d="M12 3 2 12h3v9h6v-6h2v6h6v-9h3z"/></svg>';
@@ -32,6 +34,13 @@
   function mount() {
     if (!document.querySelector('header.tn2')) document.body.insertAdjacentHTML('afterbegin', HDR);
     if (!document.querySelector('.nv-brand')) { var th = document.querySelector('header.tn2'); if (th) th.insertAdjacentHTML('afterend', BRAND); else document.body.insertAdjacentHTML('afterbegin', BRAND); var v = document.querySelector('.nv-brand video'); if (v) nvLogo(v); }
+    if (/^\/novinhas\/(canal|channel)(\/|$)/.test(location.pathname)) {
+      var lb = document.querySelector('body > header:not(.tn2), main ~ header:not(.tn2)');
+      if (lb && !lb.querySelector('.nv-logo')) {
+        [].forEach.call(lb.querySelectorAll(':scope > a'), function (a) { if (a.getAttribute('href') === '/novinhas/' && a.id !== 'back' && /^\u2190|^&larr;/.test(a.textContent.trim())) a.remove(); });
+        lb.insertAdjacentHTML('afterbegin', LOGO); lb.style.alignItems = 'center';
+      }
+    }
     if (/^\/novinhas\/watch/.test(location.pathname)) return;
     var bar = document.querySelector('body > header:not(.tn2), main ~ header:not(.tn2)'); if (!bar || bar.querySelector('.nv-act')) return;
     var box = document.createElement('div'); box.className = 'nv-act';
