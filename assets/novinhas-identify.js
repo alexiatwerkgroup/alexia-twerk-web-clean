@@ -73,10 +73,7 @@
     $('nvi-go').textContent = t(tab === 'name' ? 'sendN' : 'sendV'); paintCounts(); fillNums(); if (lastMsg) msg(lastMsg.k, lastMsg.c);
   }
   function setLang(l) { if (!T[l]) return; lang = l; try { localStorage.setItem('nvLang', l); } catch (e) {} apply(); }
-  /* selector de idioma en el texto del home */
-  var nt = document.querySelector('#novinhas .nt'); 
-  if (nt && !nt.querySelector('.nv-lang')) { var bar = document.createElement('div'); bar.className = 'nv-lang'; bar.innerHTML = '<button type="button" data-l="pt">PT</button><button type="button" data-l="en">EN</button><button type="button" data-l="es">ES</button>'; var firstP = nt.querySelector('p'); if (firstP) nt.insertBefore(bar, firstP); }
-  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.nv-lang button,.nvi .lg button'); if (b) { setLang(b.dataset.l); if (window.TwkI18n && window.TwkI18n.setLang && e.target.closest('.nv-lang')) window.TwkI18n.setLang(b.dataset.l); } });
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.nv-lang button,.nvi .lg button'); if (b) { setLang(b.dataset.l); if (window.TwkI18n && window.TwkI18n.setLang) window.TwkI18n.setLang(b.dataset.l); } });
   window.addEventListener('twk:language', function (e) { if (e.detail && T[e.detail] && e.detail !== lang) setLang(e.detail); });
   /* estadisticas reales */
   if (document.querySelector('[data-i="real"]')) fetch('/api/novinhas/stats').then(function (r) { return r.json(); }).then(function (d) { stats = d; fillNums(); }).catch(function () {});
