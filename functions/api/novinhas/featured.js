@@ -123,7 +123,7 @@ export async function onRequest({ request, env }) {
   if (q.get('thumbs')) {
     const rows = (await db.prepare('SELECT slug, vid, start FROM nv_feat ORDER BY added, id').all()).results || [], by = {};
     rows.forEach((r) => { (by[r.slug] = by[r.slug] || []).push(r); });
-    const day = Math.floor((now - 10800) / 86400), out = {};
+    const day = Math.floor(now / 3600), out = {}; // rota entre los elegidos del canal: 1 hora minimo cada uno
     const hash = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h; };
     for (const slug of Object.keys(by)) {
       if (!SLUG.test(slug)) continue;
