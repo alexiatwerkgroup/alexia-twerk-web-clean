@@ -94,6 +94,7 @@ export async function onRequest({ request, env }) {
     if (!(await isOwner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);
     if (b.action === 'next') { await setS(db, 'since', 0); return J({ ok: true }); }
     if (b.action === 'remove') { await db.prepare('DELETE FROM nv_feat WHERE id = ?').bind(+b.item || 0).run(); return J({ ok: true }); }
+    if (b.action === 'thumbpin') { if (!SLUG.test(b.c || '')) return J({ error: 'bad_request' }, 400); await setS(db, 'thumbpin:' + b.c, +b.item || 0); return J({ ok: true }); }
     if (b.action === 'requeue') { await db.prepare('UPDATE nv_feat SET queued = 1, added = ? WHERE id = ?').bind(now, +b.item || 0).run(); return J({ ok: true }); }
     if (b.action === 'now') { const it = +b.item || 0; await setS(db, 'cur', it); await setS(db, 'since', now); await db.prepare('UPDATE nv_feat SET queued = 0, shown = shown + 1, last = ? WHERE id = ?').bind(now, it).run(); return J({ ok: true }); }
     const id = parseInt(b.id, 10);
@@ -121,7 +122,7 @@ export async function onRequest({ request, env }) {
     return new Response(co.body, { status: sc, headers: hh });
   }
   if (q.get('thumbs')) {
-    const rows = (await db.prepare('SELECT slug, vid, start FROM nv_feat ORDER BY added, id').all()).results || [], by = {};
+    const rows = (await db.prepare('SELECT id, slug, vid, start FROM nv_feat ORDER BY added, id').all()).results || [], by = {};
     rows.forEach((r) => { (by[r.slug] = by[r.slug] || []).push(r); });
     const day = Math.floor(now / 3600), out = {}; // rota entre los elegidos del canal: 1 hora minimo cada uno
     const hash = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h; };
@@ -131,7 +132,10 @@ export async function onRequest({ request, env }) {
       (l.objects || []).forEach((o) => { const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (m) have[m[1]] = m[2]; });
       const ok = by[slug].filter((r) => have[r.vid] != null);
       if (!ok.length) continue;
-      const r = ok[hash(slug + ':' + day) % ok.length];
+      // Pin por canal: 'thumbpin:<slug>' (id de nv_feat) fija ese preview hasta que el dueño lo cambie
+      let r = null; const pin = await getS(db, 'thumbpin:' + slug);
+      if (pin) r = ok.filter((x) => x.id === pin)[0] || null;
+      if (!r) r = ok[hash(slug + ':' + day) % ok.length];
       out[slug] = { id: r.vid, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${r.vid}&t=${have[r.vid]}` };
     }
     return J({ day, thumbs: out }, 200, 'public, max-age=300');
