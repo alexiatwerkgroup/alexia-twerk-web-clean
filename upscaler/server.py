@@ -84,4 +84,9 @@ def delete(jid):
 if __name__ == '__main__':
     threading.Thread(target=worker, daemon=True).start()
     from waitress import serve
-    serve(app, host='0.0.0.0', port=PORT, threads=8, max_request_body_size=6 * 1024 ** 3, channel_timeout=900)
+    opts = dict(threads=8, max_request_body_size=6 * 1024 ** 3, channel_timeout=900)
+    try:
+        serve(app, listen='[::]:%d' % PORT, **opts)  # Salad entra por IPv6; en Linux '::' tambien atiende IPv4
+    except OSError as e:
+        print('IPv6 no disponible (%s), sigo solo con IPv4' % e, flush=True)
+        serve(app, host='0.0.0.0', port=PORT, **opts)
