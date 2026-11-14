@@ -310,5 +310,35 @@
 "total": 9,
 "poster": 4,
 "name": "Velvet Valerina"
+},
+{
+"slug": "b-m-lima",
+"name": "b m lima",
+"total": 1,
+"poster": 1
+},
+{
+"slug": "barbara-silva-oficial",
+"name": "Bárbara Silva Oficial",
+"total": 2,
+"poster": 1
+},
+{
+"slug": "byella-silva",
+"name": "Byella Silva",
+"total": 2,
+"poster": 1
+},
+{
+"slug": "dalila-tomaz",
+"name": "Dalila Tomaz",
+"total": 2,
+"poster": 1
+},
+{
+"slug": "dancar-day",
+"name": "Dançar Day",
+"total": 1,
+"poster": 1
 }
 ]
