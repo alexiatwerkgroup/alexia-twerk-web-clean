@@ -8,6 +8,8 @@
 //  POST /api/novinhas/featured?hb=<slug> {d}  -> latido de presencia (cuantos estan viendo el canal)
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
+// Previews de tarjeta de canal fijados por el dueño (slug -> id de video). Siempre mudos (los clips se reproducen con muted).
+const FIXED_THUMBS = { 'canal-da-maryh': 45 };
 const HOLD = 3600, SECS = 20, SLUG = /^[a-z0-9-]{2,60}$/;
 const J = (o, s = 200, cc = 'no-store') => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': cc, 'X-Robots-Tag': 'noindex' } });
 async function isOwner(request, env) {
@@ -130,6 +132,8 @@ export async function onRequest({ request, env }) {
       if (!SLUG.test(slug)) continue;
       const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: 500 }), have = {};
       (l.objects || []).forEach((o) => { const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (m) have[m[1]] = m[2]; });
+      // Preview fijo (orden del dueño 14 nov 2026): no rota ni lo pisa 'thumbpin'. Solo se cambia si el dueño lo pide.
+      const fx = FIXED_THUMBS[slug]; if (fx && have[fx] != null) { out[slug] = { id: fx, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${fx}&t=${have[fx]}` }; continue; }
       const ok = by[slug].filter((r) => have[r.vid] != null);
       if (!ok.length) continue;
       // Pin por canal: 'thumbpin:<slug>' (id de nv_feat) fija ese preview hasta que el dueño lo cambie
