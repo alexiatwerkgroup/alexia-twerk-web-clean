@@ -328,8 +328,8 @@
     var bar = document.createElement('div'); bar.className = 'np-bar';
     var ap = document.createElement('button'); ap.type = 'button'; ap.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm' + (LS.get(AUTO_KEY) !== '0' ? ' on' : ''); ap.innerHTML = 'Autoplay next <i></i>';
     ap.onclick = function () { var on = !ap.classList.contains('on'); ap.classList.toggle('on', on); LS.set(AUTO_KEY, on ? '1' : '0'); };
-    var pv = document.createElement('button'); pv.type = 'button'; pv.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; pv.textContent = '⏮ Previous'; pv.onclick = function () { if (prevV) location.href = urlFor(prevV, true); };
-    var nt = document.createElement('button'); nt.type = 'button'; nt.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; nt.textContent = 'Next ⏭'; nt.onclick = function () { if (nextV) location.href = urlFor(nextV, true); };
+    var pv = document.createElement('button'); pv.type = 'button'; pv.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; pv.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 6v12z"/></svg>Previous'; pv.onclick = function () { if (prevV) location.href = urlFor(prevV, true); };
+    var nt = document.createElement('button'); nt.type = 'button'; nt.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; nt.innerHTML = 'Next<svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18V6l8.5 6z"/></svg>'; nt.onclick = function () { if (nextV) location.href = urlFor(nextV, true); };
     if (!prevV) pv.style.display = 'none'; if (!nextV) nt.style.display = 'none';
     var kb = document.createElement('button'); kb.type = 'button'; kb.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; kb.textContent = 'Keyboard shortcuts (?)'; kb.onclick = function () { help.classList.add('on'); };
     bar.append(pv, nt, ap, kb);
