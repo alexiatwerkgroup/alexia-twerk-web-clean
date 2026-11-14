@@ -1,5 +1,5 @@
 /* Novinhas: texto del home + boton "Busca / Identificacao" (home y /novinhas/). PT por defecto, con PT / EN / ES.
-   Recompensa en tokens: 50 por nombre, 100 por video (max 20 de cada tipo). */
+   Recompensa en tokens: 50 por nombre, 100 por video. */
 (function () {
   if (window.__nvIdent) return; window.__nvIdent = true;
   var T = {
