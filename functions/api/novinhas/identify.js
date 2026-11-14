@@ -1,11 +1,10 @@
 // Busqueda / identificacion de bailarinas Novinhas.
 //  GET  /api/novinhas/identify          -> { auth, videos, names, max } (lo enviado por el usuario; max 20 de cada tipo)
-//  POST /api/novinhas/identify          (multipart) kind=name  + name [+ handle]            -> 1 moneda por nombre nuevo (max 20)
-//                                       kind=video + file(video) + adults=1 [+ names]       -> 1 moneda por video (max 20)
-// Requiere cuenta. Todo queda en estado "pending" para revision del dueno; los videos van a R2 (_ident/), nunca publicos.
+//  POST /api/novinhas/identify          (multipart) kind=name  + name [+ handle]            -> 50 tokens por nombre nuevo (max 20)
+//                                       kind=video + file(video) + adults=1 [+ names]       -> 100 tokens por video (max 20)
+// Recompensa en TOKENS (profiles.tokens): 50 por nombre, 100 por video. Requiere cuenta. Todo queda en estado "pending" para revision del dueno; los videos van a R2 (_ident/), nunca publicos.
 import { authenticate } from '../../_lib/auth.js';
-import { ensureCoinLedger, recordCoinMovement } from '../../_lib/coin-ledger.js';
-const MAX = 20, MAX_BYTES = 80 * 1024 * 1024, VID = /^video\/(mp4|quicktime|webm|x-matroska|x-msvideo)$/;
+const REWARD = { name: 50, video: 100 }, MAX = 20, MAX_BYTES = 80 * 1024 * 1024, VID = /^video\/(mp4|quicktime|webm|x-matroska|x-msvideo)$/;
 const J = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
 async function who(request, env) {
   try {
@@ -51,12 +50,10 @@ export async function onRequest({ request, env }) {
     key = '_ident/' + me.uid + '/' + id + '.' + (file.type.split('/')[1] === 'quicktime' ? 'mov' : file.type.split('/')[1].replace('x-', ''));
     await env.NOVINHAS_VIDEOS.put(key, file.stream(), { httpMetadata: { contentType: file.type } });
   }
-  await ensureCoinLedger(env.DB);
   await env.DB.batch([
     env.DB.prepare('INSERT INTO nv_ident (id, uid, email, kind, name, handle, r2key, ts) VALUES (?,?,?,?,?,?,?,?)').bind(id, me.uid, me.email, kind, name, handle, key, ts),
-    env.DB.prepare('INSERT INTO jenny_coins (email,coins) VALUES (?,1) ON CONFLICT(email) DO UPDATE SET coins=coins+1').bind(me.email),
-    recordCoinMovement(env.DB, me.email, 1, 'novinhas_identify', id),
+    env.DB.prepare('UPDATE profiles SET tokens = COALESCE(tokens,0) + ?, total_earned = COALESCE(total_earned,0) + ? WHERE id = ?').bind(REWARD[kind], REWARD[kind], me.uid),
   ]);
   const n = await counts(env.DB, me.uid);
-  return J({ ok: true, coins: 1, videos: n.video, names: n.name, max: MAX });
+  return J({ ok: true, tokens: REWARD[kind], videos: n.video, names: n.name, max: MAX });
 }
