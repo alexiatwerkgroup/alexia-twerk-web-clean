@@ -3,7 +3,7 @@
    El clip se reproduce solo (mudo, en loop) mientras la tarjeta está a la vista. */
 (function () {
   var cards = [].slice.call(document.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]')); if (!cards.length) return;
-  fetch('/api/novinhas/featured?thumbs=1').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+  fetch('/api/novinhas/featured?thumbs=1&n=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.thumbs) return;
     var vids = [];
     cards.forEach(function (a) {
