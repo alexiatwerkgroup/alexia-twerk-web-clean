@@ -2,12 +2,14 @@
    ("Add to home preview queue"). Si eligió varios en un canal, rotan 1 por hora.
    El clip se reproduce solo (mudo, en loop) mientras la tarjeta está a la vista. */
 (function () {
+  /* Previews FIJADOS por el dueño (14 nov 2026): se usan siempre, sin depender de lo que conteste la API ni de caches. Solo cambian si el dueño lo ordena. */
+  var FIJOS = { 'canal-da-maryh': { id: 45, src: '/api/novinhas/featured?cs=1&c=canal-da-maryh&v=45&t=16' } };
   var cards = [].slice.call(document.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]')); if (!cards.length) return;
   fetch('/api/novinhas/featured?thumbs=1&n=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.thumbs) return;
     var vids = [];
     cards.forEach(function (a) {
-      var m = /[?&]c=([^&]+)/.exec(a.getAttribute('href')), t = m && d.thumbs[decodeURIComponent(m[1])], img = a.querySelector('img'); if (!t || !img) return;
+      var m = /[?&]c=([^&]+)/.exec(a.getAttribute('href')), t = m && (FIJOS[decodeURIComponent(m[1])] || d.thumbs[decodeURIComponent(m[1])]), img = a.querySelector('img'); if (!t || !img) return;
       var v = document.createElement('video');
       v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata'; v.src = t.src;
       v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
