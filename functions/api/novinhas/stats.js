@@ -1,7 +1,9 @@
 // Estadisticas reales de Novinhas para la home. GET /api/novinhas/stats -> {channels:{done,total}, videos:{done,total}, enhanced:{done,total}, watching, likes, free}
-const TOTAL_CHANNELS = 1061, TOTAL_VIDEOS = 12565, FREE = 10, SLUG = /^[a-z0-9-]{2,60}$/;
+let TOTAL_CHANNELS = 1061, TOTAL_VIDEOS = 12565; const FREE = 10, SLUG = /^[a-z0-9-]{2,60}$/;
 const J = (o) => new Response(JSON.stringify(o), { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=120', 'X-Robots-Tag': 'noindex' } });
 export async function onRequest({ request, env }) {
+  /* Inventario real (novinhas/inventory.json): total = E:\NOVINHAS +20 y -10 videos; hecho = E:\canales con logo */
+  let inv = {}; try { const r0 = await env.ASSETS.fetch(new URL('/novinhas/inventory.json', request.url)); inv = await r0.json(); if (inv.folders > 0) TOTAL_CHANNELS = inv.folders; if (inv.videos > 0) TOTAL_VIDEOS = inv.videos; } catch (e) {}
   let chans = [];
   try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug)); } catch (e) {}
   let cached = null;
@@ -23,5 +25,5 @@ export async function onRequest({ request, env }) {
   try { const w = await env.DB.prepare('SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ?').bind(now - 600).first(); watching = w ? w.c : 0; } catch (e) {}
   try { const l = await env.DB.prepare('SELECT COUNT(*) c FROM nv_votes').first(); likes = l ? l.c : 0; } catch (e) {}
   let chosen = 0; try { const c = await env.DB.prepare('SELECT COUNT(*) c FROM nv_enh').first(); chosen = c ? c.c : 0; } catch (e) {}
-  return J({ channels: { done: chans.length, total: TOTAL_CHANNELS }, videos: { done: videos, total: TOTAL_VIDEOS }, enhanced: { done: enhanced, total: Math.max(chosen, enhanced) }, watching, likes, free: FREE });
+  return J({ channels: { done: inv.doneChannels || chans.length, total: TOTAL_CHANNELS }, videos: { done: inv.doneVideos || videos, total: TOTAL_VIDEOS }, enhanced: { done: enhanced, total: Math.max(chosen, enhanced) }, watching, likes, free: FREE });
 }

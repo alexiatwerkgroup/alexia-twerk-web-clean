@@ -15,20 +15,19 @@
   var HDR = '<header class="tn2 site-nav"><div class="tn2-w"><a class="tn2-logo" href="/" aria-label="Twerkhub home"><img src="/assets/patreon-logo-final.png" alt="Twerkhub.lat" width="190" height="43"></a><div class="tn2-lk"><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/account">My account</a><a class="tn2-jn" href="/novinhas/">Novinhas</a></div><details><summary aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav><a href="/">Home</a><a href="/novinhas/">Novinhas</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/account">My account</a></nav></details></div></header>';
   var USER = '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 3a3.2 3.2 0 1 1 0 6.4A3.2 3.2 0 0 1 12 5zm0 14.5a7.5 7.5 0 0 1-5.9-2.9C6.7 14.6 8.9 13 12 13s5.3 1.6 5.9 3.6a7.5 7.5 0 0 1-5.9 2.9z"/></svg>';
   var HOME = '<svg viewBox="0 0 24 24"><path d="M12 3 2 12h3v9h6v-6h2v6h6v-9h3z"/></svg>';
-  var BRAND = '<a class="nv-brand" href="/novinhas/" aria-label="Twerkhub Novinhas - banned from YouTube - all channels"><span class="nv-bt"><span class="nv-bl"><video class="nv-vid" autoplay playsinline preload="auto" poster="/assets/twerkhub-logo-leche-poster.png" aria-label="Twerkhub"><source src="/assets/twerkhub-logo-leche.webm" type="video/webm"></video></span><svg class="nv-bn" viewBox="0 0 330 100" role="img" aria-label="Novinhas"><defs><linearGradient id="nvp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb3d6"/><stop offset="1" stop-color="#ff4f9a"/></linearGradient></defs><text x="0" y="72" textLength="330" lengthAdjust="spacingAndGlyphs" fill="url(#nvp)">Novinhas</text></svg></span><span class="nv-bh"><span>Banned from</span><img alt="YouTube" src="/assets/yt-logo.png"></span></a>';
-  /* Mismo comportamiento que el logo del home: suena una vez (con sonido, o al primer gesto si el navegador lo bloquea) y despues loop mudo. Sonido una sola vez por sesion para que no suene en cada canal. */
+  var BRAND = '<a class="nv-brand" href="/novinhas/" aria-label="Twerkhub Novinhas - banned from YouTube - all channels"><span class="nv-bt"><span class="nv-bl"><video class="nv-vid" playsinline preload="auto" poster="/assets/twerkhub-logo-leche-poster.png" aria-label="Twerkhub"><source src="/assets/twerkhub-logo-leche.webm" type="video/webm"></video></span><svg class="nv-bn" viewBox="0 0 330 100" role="img" aria-label="Novinhas"><defs><linearGradient id="nvp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb3d6"/><stop offset="1" stop-color="#ff4f9a"/></linearGradient></defs><text x="0" y="72" textLength="330" lengthAdjust="spacingAndGlyphs" fill="url(#nvp)">Novinhas</text></svg></span><span class="nv-bh"><span>Banned from</span><img alt="YouTube" src="/assets/yt-logo.png"></span></a>';
+  /* El logo suena UNA sola vez (con sonido, o al primer gesto si el navegador lo bloquea) y queda quieto en la imagen final. En el resto de la sesion se muestra directo la imagen final. */
   function nvLogo(v) {
-    var heard = false, seen = false;
-    try { seen = sessionStorage.getItem('nvLogoHeard') === '1'; } catch (e) {}
-    v.volume = .5;
-    function loop() { v.muted = true; try { v.currentTime = 0; } catch (e) {} var q = v.play(); if (q && q.catch) q.catch(function () {}); }
-    v.addEventListener('ended', function () { heard = true; try { sessionStorage.setItem('nvLogoHeard', '1'); } catch (e) {} loop(); });
-    if (seen) { loop(); return; }
-    var ev = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'mousemove'];
-    function h() { ev.forEach(function (e) { window.removeEventListener(e, h, true); }); if (!heard) { v.muted = false; try { v.currentTime = 0; } catch (e) {} var q = v.play(); if (q && q.catch) q.catch(function () { v.muted = true; }); } }
+    var K = "nvLogoHeard", seen = false;
+    try { seen = sessionStorage.getItem(K) === "1"; } catch (e) {}
+    function rest() { try { v.currentTime = 1e6; } catch (e) {} v.pause(); }
+    if (seen) { if (v.readyState >= 1) rest(); else v.addEventListener("loadedmetadata", rest); return; }
+    v.volume = .5; v.addEventListener("ended", function () { try { sessionStorage.setItem(K, "1"); } catch (e) {} });
+    var ev = ["pointerdown", "keydown", "touchstart", "wheel", "mousemove"];
+    function h() { ev.forEach(function (e) { window.removeEventListener(e, h, true); }); v.muted = false; try { v.currentTime = 0; } catch (e) {} var q = v.play(); if (q && q.catch) q.catch(function () {}); }
     function arm() { ev.forEach(function (e) { window.addEventListener(e, h, true); }); }
     v.muted = false; var p = v.play();
-    if (p && p.catch) p.catch(function () { v.muted = true; var q = v.play(); if (q && q.catch) q.catch(function () {}); arm(); });
+    if (p && p.catch) p.catch(function () { v.pause(); try { v.currentTime = 0; } catch (e) {} arm(); });
   }
   function mount() {
     if (!document.querySelector('header.tn2')) document.body.insertAdjacentHTML('afterbegin', HDR);
