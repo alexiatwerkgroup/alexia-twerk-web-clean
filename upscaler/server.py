@@ -16,6 +16,15 @@ def probe(path):
     out = subprocess.check_output(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0:s=x', path]).decode().strip()
     w, h = out.split('x'); return int(w), int(h)
 
+def even_scale(w, h, esc):
+    """El script calcula la salida como int(w*s) x int(h*s) y libx264/yuv420p exige medidas pares: busco la escala mas cercana que de pares."""
+    cands = [esc]
+    for k in range(1, 400):
+        cands += [round(esc + k * 0.0005, 4), round(esc - k * 0.0005, 4)]
+    for c in cands:
+        if c > 1 and int(w * c) % 2 == 0 and int(h * c) % 2 == 0: return c
+    return esc
+
 def set_job(jid, **kw):
     with LOCK: JOBS[jid].update(kw)
 
@@ -25,6 +34,7 @@ def worker():
         try:
             j = JOBS[jid]; src = j['src']; lado = j['lado']; dn = j['dn']
             w, h = probe(src); esc = round(lado / min(w, h), 2)
+            if esc > 1.05: esc = even_scale(w, h, esc)
             set_job(jid, status='running', width=w, height=h, scale=esc, started=time.time())
             outdir = os.path.join(DATA, jid, 'out'); os.makedirs(outdir, exist_ok=True)
             if esc <= 1.05:
