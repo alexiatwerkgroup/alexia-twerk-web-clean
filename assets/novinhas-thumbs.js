@@ -11,7 +11,7 @@
       var cs = getComputedStyle(img), v = document.createElement('video');
       v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata'; v.src = t.src;
       v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
-      v.style.cssText = 'width:' + cs.width + ';height:' + cs.height + ';object-fit:cover;flex:none;border-radius:' + cs.borderRadius + ';background:#000;display:none';
+      v.style.cssText = 'width:' + cs.width + ';height:' + cs.height + ';object-fit:cover;flex:none;border-radius:' + cs.borderRadius + ';background:#000;display:none;pointer-events:none;cursor:pointer';
       v.addEventListener('loadeddata', function () { v.style.display = ''; img.style.display = 'none'; });
       v.addEventListener('error', function () { img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); });
       img.parentNode.insertBefore(v, img);
