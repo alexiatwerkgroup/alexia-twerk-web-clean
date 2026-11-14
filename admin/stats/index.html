@@ -47,7 +47,7 @@ function flag(c) { return c && c.length === 2 ? String.fromCodePoint.apply(null,
 function cn(c) { try { return new Intl.DisplayNames(['es'], { type: 'region' }).of(c) || c; } catch (e) { return c; } }
 function place(country, city) { return flag(country) + ' ' + (country ? esc(cn(country)) : 'País sin dato') + (city ? ' · ' + esc(city) : ''); }
 function pl(path) { var p = String(path || '/'); return '<a class="pl" href="' + esc(p.split('?')[0]) + '" target="_blank" rel="noopener noreferrer">' + esc(p.length > 46 ? p.slice(0, 46) + '…' : p) + '</a>'; }
-function badges(reasons) { var m = { tiempo: ['pt', '60 s+ en una página'], cuenta: ['pa', 'con cuenta'], 'acción': ['pc', 'hizo una acción'] }; return reasons.map(function (r) { return '<span class="pill ' + m[r][0] + '">' + m[r][1] + '</span>'; }).join(''); }
+function badges(reasons) { var m = { tiempo: ['pt', '30 s+ en una página'], cuenta: ['pa', 'con cuenta'], 'acción': ['pc', 'hizo una acción'] }; return reasons.map(function (r) { return '<span class="pill ' + m[r][0] + '">' + m[r][1] + '</span>'; }).join(''); }
 function bars(rows, key, label) { var max = Math.max.apply(null, rows.map(function (r) { return r[key]; }).concat([1])); return rows.length ? rows.map(function (r) { return '<div class="bar"><span class="n" title="' + esc(label(r)) + '">' + esc(label(r)) + '</span><span class="t"><u style="width:' + Math.max(2, 100 * r[key] / max) + '%"></u></span><span class="v">' + F(r[key]) + '</span></div>'; }).join('') : '<div class="m">Sin datos en este período</div>'; }
 
 function api(path) {
@@ -77,6 +77,7 @@ function dayChart(r) {
   var ds = [], d0 = new Date(r.fromTs + r.tz * 60000); d0.setUTCHours(0, 0, 0, 0);
   var end = new Date(r.now + r.tz * 60000); end.setUTCHours(0, 0, 0, 0);
   for (var t = d0.getTime(); t <= end.getTime(); t += 86400000) ds.push(new Date(t).toISOString().slice(0, 10));
+  var imap = {}; (r.interestedByDay || []).forEach(function (x) { imap[x.d] = x.u; });
   var prev = {}; if (r.prev) r.prev.byIndex.forEach(function (x) { prev[x.i] = x.u; });
   var W = 900, H = 220, p = 28, mx = Math.max.apply(null, ds.map(function (d, i) { return Math.max(map[d] || 0, prev[i] || 0); }).concat([1])), bw = (W - 2 * p) / ds.length, ex = Math.min(5, bw / 3);
   var markDay = {}; r.marks.forEach(function (k) { var d = new Date(k.ts + r.tz * 60000).toISOString().slice(0, 10); (markDay[d] = markDay[d] || []).push(k.channel || 'promo'); });
@@ -86,7 +87,8 @@ function dayChart(r) {
     if (v) {
       s += '<polygon points="' + (x + w) + ',' + y + ' ' + (x + w + ex) + ',' + (y - ex) + ' ' + (x + w + ex) + ',' + (H - p - ex) + ' ' + (x + w) + ',' + (H - p) + '" fill="#7a4c0a"/>' +
         '<polygon points="' + x + ',' + y + ' ' + (x + ex) + ',' + (y - ex) + ' ' + (x + w + ex) + ',' + (y - ex) + ' ' + (x + w) + ',' + y + '" fill="#fff1a8"/>' +
-        '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="url(#gF)"><title>' + d + ': ' + v + ' visitantes confirmados</title></rect>';
+        '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="url(#gF)"><title>' + d + ': ' + v + ' visitantes reales</title></rect>';
+      var iv = imap[d] || 0; if (iv) s += '<rect x="' + (x + w * .25) + '" y="' + (H - p - (H - 2 * p) * iv / mx) + '" width="' + (w * .5) + '" height="' + ((H - 2 * p) * iv / mx) + '" fill="#fffbe0" opacity=".85"><title>' + iv + ' interesados</title></rect>';
       if (ds.length <= 45) s += '<text x="' + (x + w / 2) + '" y="' + (y - ex - 3) + '" text-anchor="middle">' + v + '</text>';
     }
     if (markDay[d]) s += '<path d="M' + (x + bw / 2) + ' ' + (H - p + 4) + ' l5 9 h-10 z" fill="#35d6ff"><title>' + esc(markDay[d].join(', ')) + '</title></path>';
@@ -102,38 +104,37 @@ function hourChart(rows) {
 
 /* ---------- secciones ---------- */
 function defBox() {
-  var s = (live && live.confirmSeconds) || 60;
+  var s = (live && live.confirmSeconds) || 30;
   return '<details class="def"><summary>Cómo se cuenta cada número (leer una vez)</summary><ul>' +
-    '<li><b>Carga</b>: una página que se abrió y quedó registrada. <b>Cookie</b>: un navegador distinto.</li>' +
-    '<li><b>Visitante confirmado</b>: una cookie que cumple al menos una de estas tres cosas: tuvo <b>' + s + ' s o más de tiempo activo seguidos en una misma página</b> (con la pestaña visible; los segundos de páginas distintas no se suman), <b>tiene una cuenta</b> con sesión iniciada, o <b>hizo una acción medida</b> (clic en pago o desbloqueo, reproducir un video de Novinhas, registrarse, etc.).</li>' +
-    '<li>Las cookies que solo cargaron páginas, sin ninguna de esas tres cosas, <b>no se cuentan como visitantes</b>. Se muestran aparte como «cargas sin confirmar», con su número real, para que nada quede escondido.</li>' +
-    '<li><b>Ahora en el sitio</b>: pestañas que mandaron señal en los últimos 90 s (la pestaña avisa cada 30 s mientras está visible). Cada una indica si ya está confirmada y por qué.</li>' +
-    '<li>Todos los números con «Hoy» cuentan desde las 00:00 de tu zona horaria. Los del período cuentan hacia atrás desde ahora.</li></ul></details>';
+    '<li><b>Visitante real</b>: una persona con la página abierta. Se detecta porque su pestaña mandó señal (estuvo visible), tocó o scrolleó, tiene cuenta o hizo un clic medido.</li>' +
+    '<li><b>Interesado</b>: un visitante real que además estuvo <b>' + s + ' s o más</b> en una misma página, tiene cuenta o hizo una acción.</li>' +
+    '<li><b>Tráfico automático</b>: cargas que nunca dieron señal (robots y escáneres de EE.UU., Países Bajos, Singapur, China, o rebotes instantáneos). <b>No son visitantes</b>: se muestran en gris solo para que veas cuánto ruido hay.</li>' +
+    '<li><b>Ahora en el sitio</b>: visitantes reales con señal en los últimos 90 s.</li>' +
+    '<li>«Hoy» cuenta desde las 00:00 de tu zona horaria.</li></ul></details>';
 }
 function liveKpis(d) {
-  var onC = (d.online || []).filter(function (o) { return o.confirmed; }).length, onAll = d.onlineCookies;
+  var onC = (d.online || []).length, bot = Math.max(0, d.today.cookies - d.today.confirmed);
   return '<div class="kp">' +
-    '<div class="k"><span>Ahora en el sitio</span><b>' + F(onC) + '</b><i>confirmados · ' + F(onAll) + ' pestañas con señal en los últimos ' + d.onlineSeconds + ' s</i></div>' +
-    '<div class="k"><span>Hoy · visitantes confirmados</span><b>' + F(d.today.confirmed) + '</b><i>' + F(d.today.loads) + ' cargas de ' + F(d.today.cookies) + ' cookies desde las 00:00</i></div>' +
-    '<div class="k"><span>Última hora · confirmados</span><b>' + F(d.lastHour.confirmed) + '</b><i>' + F(d.lastHour.loads) + ' cargas de ' + F(d.lastHour.cookies) + ' cookies</i></div>' +
+    '<div class="k"><span>Ahora en el sitio</span><b>' + F(d.onlineCookies) + '</b><i>visitantes reales con señal en los últimos ' + d.onlineSeconds + ' s</i></div>' +
+    '<div class="k"><span>Hoy · visitantes reales</span><b>' + F(d.today.confirmed) + '</b><i>' + F(d.today.interested) + ' interesados · <span class="m">' + F(bot) + ' cargas automáticas ignoradas</span></i></div>' +
+    '<div class="k"><span>Última hora · reales</span><b>' + F(d.lastHour.confirmed) + '</b><i>' + F(d.lastHour.interested) + ' interesados</i></div>' +
     '<div class="k"><span>Cuentas nuevas hoy</span><b>' + F(d.accounts.today) + '</b><i>' + F(d.accounts.total) + ' cuentas en total</i></div>' +
     '<div class="k"><span>Acciones hoy</span><b>' + F(d.today.actions) + '</b><i>clics medidos de intención y registro</i></div></div>';
 }
 function onlineTable(list, d, emptyMsg) {
   var rows = list.map(function (o) {
-    var state = o.confirmed ? badges(o.reasons) : '<span class="pill pw">sin confirmar</span><br><span class="m">' + Math.min(o.maxDur24h, 999) + ' s en su mejor página, de ' + d.confirmSeconds + ' s</span>';
+    var state = o.reasons.length ? badges(o.reasons) : '<span class="pill pw">mirando</span><br><span class="m">' + Math.min(o.maxDur24h, 999) + ' s en su mejor página</span>';
     var who = (o.user ? '<b>' + esc(o.user) + '</b><br>' : '<b>Visitante sin cuenta</b><br>') + '<span class="m">' + place(o.country, o.city) + ' · ' + esc([o.device, o.browser, o.os].filter(Boolean).join(' · ')) + '</span>';
     var ev = o.events.length ? o.events.map(function (e) { return esc(EV[e.name] || e.name) + ' <span class="m">(hace ' + ago(e.ts) + ')</span>'; }).join('<br>') : '<span class="m">solo mirando</span>';
     return '<tr><td>' + who + '</td><td>' + pl(o.path) + '</td><td>' + state + '</td><td>hace ' + ago(o.lastSignal) + '</td><td>' + T(o.dur) + ' · ' + o.scroll + '%</td><td>' + esc(o.ref || 'directo') + '</td><td>' + ev + '</td></tr>';
   }).join('');
-  return '<div class="tw"><table><tr><th>Quién</th><th>Dónde está</th><th>Estado</th><th>Última señal</th><th>Tiempo / scroll en esta página</th><th>Vino de</th><th>Qué hizo</th></tr>' + (rows || '<tr><td colspan="7" class="m">' + emptyMsg + '</td></tr>') + '</table></div>';
+  return '<div class="tw"><table><tr><th>Quién</th><th>Dónde está</th><th>Interés</th><th>Última señal</th><th>Tiempo / scroll en esta página</th><th>Vino de</th><th>Qué hizo</th></tr>' + (rows || '<tr><td colspan="7" class="m">' + emptyMsg + '</td></tr>') + '</table></div>';
 }
 function liveHtml(d) {
   var acts = (d.recentActions || []).map(function (e) { return '<div>' + esc(EV[e.name] || e.name) + (e.detail && e.name !== 'nov_watch' && e.name !== 'nov_play' ? ' · ' + esc(e.detail) : '') + '<br><small>' + (e.user ? esc(e.user) + ' · ' : '') + place(e.country, e.city) + ' · hace ' + ago(e.ts) + '</small></div>'; }).join('') || '<div class="m">Todavía no hay acciones</div>';
   var accs = (d.latestAccounts || []).map(function (a) { var t = new Date(String(a.registered_at).replace(' ', 'T') + 'Z'); return '<div><b>' + esc(a.username || 'sin nombre') + '</b> <span class="pill pw">' + esc(a.tier || '—') + '</span><br><small>registrada ' + (isNaN(t) ? esc(a.registered_at) : 'hace ' + ago(t.getTime())) + '</small></div>'; }).join('');
-  var conf = (d.online || []).filter(function (o) { return o.confirmed; }), unc = (d.online || []).filter(function (o) { return !o.confirmed; });
-  var uncBox = '<details id="unc"' + (uncOpen ? ' open' : '') + ' style="margin-top:14px"><summary class="m" style="cursor:pointer">Ver las ' + unc.length + ' pestañas con señal que todavía no están confirmadas (menos de ' + d.confirmSeconds + ' s, sin cuenta y sin acción)</summary>' + onlineTable(unc, d, 'Ninguna') + '</details>';
-  return liveKpis(d) + '<div class="g"><div class="c s12"><h2>Quién está en el sitio ahora<small>confirmados · se actualiza cada 5 segundos</small></h2>' + onlineTable(conf, d, 'Ningún visitante confirmado en este momento') + uncBox + '</div>' +
+  var conf = d.online || [];
+  return liveKpis(d) + '<div class="g"><div class="c s12"><h2>Quién está en el sitio ahora<small>visitantes reales · se actualiza cada 5 segundos</small></h2>' + onlineTable(conf, d, 'Ningún visitante real en este momento') + '</div>' +
     '<div class="c s6"><h2>Últimas acciones</h2><div class="feed">' + acts + '</div></div>' +
     '<div class="c s6"><h2>Últimas cuentas creadas</h2><div class="feed">' + accs + '</div></div></div>';
 }
@@ -146,30 +147,32 @@ function delta(cur, prev, r) {
 function titulo(r) { return r.range === 'today' ? 'Hoy' : r.range === 'month' ? 'Mes actual' : r.range === 'all' ? 'Histórico completo' : 'Últimos ' + r.range + ' días'; }
 function repHtml(r) {
   var k = r.kpi, pct = k.cookies ? (100 * k.confirmed / k.cookies).toFixed(1).replace('.', ',') : '0';
+  var bots = Math.max(0, k.cookies - k.confirmed), pctI = k.confirmed ? Math.round(100 * k.interested / k.confirmed) : 0;
   var kp = '<div class="kp">' +
-    '<div class="k"><span>Visitantes confirmados</span><b>' + F(k.confirmed) + '</b><i>de ' + F(k.cookies) + ' cookies (' + pct + '%)' + delta(k.confirmed, r.prev && r.prev.confirmed, r) + '</i></div>' +
-    '<div class="k"><span>Por qué están confirmados</span><b style="font-size:20px;line-height:1.5">' + F(k.byTime) + ' por tiempo<br>' + F(k.byAccount) + ' con cuenta<br>' + F(k.byAction) + ' por acción</b><i>una misma persona puede cumplir varias</i></div>' +
-    '<div class="k"><span>Tiempo activo por confirmado</span><b>' + T(k.avgSeconds) + '</b><i>promedio en el período</i></div>' +
-    '<div class="k"><span>Cuentas nuevas</span><b>' + F(k.accountsInPeriod) + '</b><i>' + F(k.accountsTotal) + ' en total' + delta(k.accountsInPeriod, r.prev && r.prev.accounts, r) + '</i></div>' +
-    '<div class="k"><span>Acciones medidas</span><b>' + F(k.actions) + '</b><i>clics de intención y registro' + delta(k.actions, r.prev && r.prev.actions, r) + '</i></div>' +
-    '<div class="k"><span>Intención de compra</span><b>' + F(k.intentPeople) + '</b><i>personas que hicieron clic en desbloquear, pago o Binance (' + F(k.intent) + ' clics). <b>No son ventas confirmadas.</b>' + delta(k.intentPeople, r.prev && r.prev.intentPeople, r) + '</i></div>' +
-    '<div class="k"><span>Cargas sin confirmar</span><b>' + F(k.unconfirmedLoads) + '</b><i>de ' + F(k.unconfirmedCookies) + ' cookies sin 60 s, cuenta ni acción · no cuentan como visitantes</i></div></div>';
+    '<div class="k"><span>Visitantes reales</span><b>' + F(k.confirmed) + '</b><i>' + F(k.newReal) + ' nuevos · ' + F(Math.max(0, k.confirmed - k.newReal)) + ' que ya habían venido' + delta(k.confirmed, r.prev && r.prev.confirmed, r) + '</i></div>' +
+    '<div class="k"><span>Interesados</span><b>' + F(k.interested) + '</b><i>' + pctI + '% de los reales se quedó ' + r.confirmSeconds + ' s+, tiene cuenta o hizo una acción' + delta(k.interested, r.prev && r.prev.interested, r) + '</i></div>' +
+    '<div class="k" style="opacity:.85"><span>Tráfico automático (ignorado)</span><b style="color:#9a9aaa;text-shadow:none">' + F(bots) + '</b><i>cookies que cargaron y nunca dieron señal: robots y rebotes instantáneos. No cuentan como visitantes.</i></div>' +
+    '<div class="k"><span>Intención de compra</span><b>' + F(k.intentPeople) + '</b><i>personas con clic en desbloquear, pago o Binance (' + F(k.intent) + ' clics). <b>No son ventas confirmadas.</b>' + delta(k.intentPeople, r.prev && r.prev.intentPeople, r) + '</i></div>' +
+    '<div class="k"><span>Registros</span><b>' + F(k.signups) + '</b><i>cuentas creadas en el período: ' + F(k.accountsInPeriod) + ' · ' + F(k.accountsTotal) + ' en total' + delta(k.accountsInPeriod, r.prev && r.prev.accounts, r) + '</i></div>' +
+    '<div class="k"><span>Tiempo activo</span><b>' + T(k.avgSeconds) + '</b><i>promedio por visitante real</i></div></div>';
+  var funnel = bars([{ n: 'Visitantes reales', u: k.confirmed }, { n: 'Interesados', u: k.interested }, { n: 'Intención de compra', u: k.intentPeople }, { n: 'Se registraron', u: k.signups }], 'u', function (x) { return x.n; });
   var marks = r.marks.slice(0, 8).map(function (m) { return '<div class="mk"><span class="pill pw">' + esc(m.channel || 'promo') + '</span><span>' + esc(m.label) + '</span><span class="m">' + new Date(m.ts).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</span><u data-del="' + Number(m.id) + '">borrar</u></div>'; }).join('');
   var vis = r.visitors.map(function (v) {
     var who = (v.user ? '<b>' + esc(v.user) + '</b><br>' : '') + '<span class="m">' + place(v.country, v.city) + '</span>';
     return '<tr><td>' + new Date(v.last).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</td><td>' + who + '</td><td>' + esc([v.device, v.browser, v.os].filter(Boolean).join(' · ')) + '</td><td>' + esc(v.ref || 'directo') + '</td><td>' + badges(v.reasons) + '</td><td>' + T(v.dur) + '</td><td>' + F(v.loads) + '</td><td>' + v.pages.map(pl).join('<br>') + (v.morePages ? '<br><span class="m">+' + v.morePages + ' más</span>' : '') + '</td><td>' + (v.events.length ? v.events.map(function (e) { return esc(EV[e.split(' · ')[0]] || e); }).join('<br>') : '<span class="m">—</span>') + '</td></tr>';
   }).join('');
   return '<div class="top" style="margin-top:22px"><h1 style="font-size:20px">' + titulo(r) + '</h1><span class="m">' + (k.lastHit ? 'Última visita registrada hace ' + ago(k.lastHit) + (Date.now() - k.lastHit > 1800000 ? ' <b class="bad">· revisar: hace rato que no entra nada</b>' : '') + ' · ' : '') + 'Se actualiza cada 1 hora · calculado ' + new Date(r.now).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) + '</span></div>' + kp +
-    '<div class="g"><div class="c s12"><h2>Visitantes confirmados por día<small>' + (r.prev ? 'línea celeste punteada = ' + esc(r.cmpLabel) + ' · ' : '') + '▲ celeste = promo marcada</small></h2>' + dayChart(r) +
+    '<div class="g"><div class="c s12"><h2>Visitantes reales por día<small>' + 'barra dorada = reales · barra clara = interesados · '+ '' + (r.prev ? 'línea celeste punteada = ' + esc(r.cmpLabel) + ' · ' : '') + '▲ celeste = promo marcada</small></h2>' + dayChart(r) +
     '<div class="frm"><input type="text" id="ml" placeholder="Qué publicaste (ej: post en Reddit)" maxlength="80"><select id="mc"><option>reddit</option><option>x</option><option>telegram</option><option>instagram</option><option>foro</option><option>otro</option></select><input type="datetime-local" id="mt"><button class="btn" id="ma" type="button">Marcar promo</button></div>' + marks + '</div>' +
-    '<div class="c s6"><h2>Horas del día<small>visitantes confirmados, en tu hora</small></h2>' + hourChart(r.byHour) + '</div>' +
-    '<div class="c s6"><h2>De dónde llegan<small>origen de la primera visita de cada confirmado</small></h2>' + bars(r.refs, 'u', function (x) { return x.k; }) + '</div>' +
+    '<div class="c s6"><h2>Del visitante al registro<small>embudo del período</small></h2>' + funnel + '</div>' +
+    '<div class="c s6"><h2>Horas del día<small>visitantes reales, en tu hora</small></h2>' + hourChart(r.byHour) + '</div>' +
+    '<div class="c s12"><h2>De dónde llegan<small>origen de la primera visita de cada visitante real</small></h2>' + bars(r.refs, 'u', function (x) { return x.k; }) + '</div>' +
     '<div class="c s4"><h2>Países</h2>' + bars(r.countries, 'u', function (x) { return flag(x.c) + ' ' + cn(x.c); }) + '</div>' +
     '<div class="c s4"><h2>Ciudades</h2>' + bars(r.cities, 'u', function (x) { return flag(x.c) + ' ' + x.city; }) + '</div>' +
     '<div class="c s4"><h2>Dispositivos</h2>' + bars(r.devices, 'u', function (x) { return x.k; }) + '<h2 style="margin-top:14px">Sistemas</h2>' + bars(r.oses, 'u', function (x) { return x.k; }) + '<h2 style="margin-top:14px">Navegadores</h2>' + bars(r.browsers, 'u', function (x) { return x.k; }) + '</div>' +
-    '<div class="c s8"><h2>Páginas que ven los confirmados</h2><div class="tw"><table><tr><th>Página</th><th>Personas</th><th>Cargas</th><th>Tiempo por carga</th></tr>' + r.pages.map(function (x) { return '<tr><td>' + pl(x.path) + '</td><td>' + F(x.u) + '</td><td>' + F(x.v) + '</td><td>' + (x.dur ? T(x.dur) : '—') + '</td></tr>'; }).join('') + '</table></div></div>' +
+    '<div class="c s8"><h2>Páginas que ven los visitantes reales</h2><div class="tw"><table><tr><th>Página</th><th>Personas</th><th>Cargas</th><th>Tiempo por carga</th></tr>' + r.pages.map(function (x) { return '<tr><td>' + pl(x.path) + '</td><td>' + F(x.u) + '</td><td>' + F(x.v) + '</td><td>' + (x.dur ? T(x.dur) : '—') + '</td></tr>'; }).join('') + '</table></div></div>' +
     '<div class="c s4"><h2>Acciones medidas</h2><div class="tw"><table><tr><th>Acción</th><th>Veces</th><th>Personas</th></tr>' + (r.actions.map(function (x) { return '<tr><td>' + esc(EV[x.name] || x.name) + '</td><td>' + F(x.n) + '</td><td>' + F(x.u) + '</td></tr>'; }).join('') || '<tr><td colspan="3" class="m">Sin acciones</td></tr>') + '</table></div></div>' +
-    '<div class="c s12"><h2>Los visitantes confirmados, uno por uno<small>los 60 más recientes del período · cada uno muestra por qué cuenta</small></h2><div class="tw"><table><tr><th>Última vez</th><th>Quién</th><th>Equipo</th><th>Llegó desde</th><th>Por qué cuenta</th><th>Tiempo activo</th><th>Cargas</th><th>Páginas</th><th>Acciones</th></tr>' + (vis || '<tr><td colspan="9" class="m">Todavía no hay visitantes confirmados en este período</td></tr>') + '</table></div></div></div>';
+    '<div class="c s12"><h2>Los visitantes reales, uno por uno<small>los 60 más recientes del período · cada uno muestra por qué cuenta</small></h2><div class="tw"><table><tr><th>Última vez</th><th>Quién</th><th>Equipo</th><th>Llegó desde</th><th>Por qué cuenta</th><th>Tiempo activo</th><th>Cargas</th><th>Páginas</th><th>Acciones</th></tr>' + (vis || '<tr><td colspan="9" class="m">Todavía no hay visitantes reales en este período</td></tr>') + '</table></div></div></div>';
 }
 
 /* ---------- pantalla ---------- */

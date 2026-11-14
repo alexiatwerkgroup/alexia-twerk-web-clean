@@ -25,7 +25,7 @@ export async function onRequestGet({ request, env }) {
   const D = `date(ts/1000+${off},'unixepoch')`;
   const INTENT_SQL = INTENT.map(n => `'${n}'`).join(',');
   const res = await db.batch([
-    /*0*/ q(`SELECT (SELECT COUNT(*) FROM tw_hits WHERE ts > ?1) loads, (SELECT COUNT(DISTINCT vid) FROM tw_hits WHERE ts > ?1) cookies, (SELECT COUNT(*) FROM cv) confirmed,
+    /*0*/ q(`SELECT (SELECT COUNT(*) FROM ci) interested, (SELECT COUNT(DISTINCT CASE WHEN is_new = 1 THEN vid END) FROM tw_hits WHERE ts > ?1 AND vid IN cv) newReal, (SELECT COUNT(*) FROM tw_hits WHERE ts > ?1) loads, (SELECT COUNT(DISTINCT vid) FROM tw_hits WHERE ts > ?1) cookies, (SELECT COUNT(*) FROM cv) confirmed,
       (SELECT COUNT(*) FROM tw_hits WHERE ts > ?1 AND vid IN cv) confirmedLoads,
       (SELECT COUNT(*) FROM (SELECT vid FROM tw_hits WHERE ts > ?1 GROUP BY vid HAVING MAX(dur) >= ${CONFIRM_SECONDS})) byTime,
       (SELECT COUNT(*) FROM (SELECT vid FROM tw_hits WHERE ts > ?1 GROUP BY vid HAVING MAX(uid IS NOT NULL) = 1)) byAccount,
@@ -33,7 +33,7 @@ export async function onRequestGet({ request, env }) {
       (SELECT COUNT(*) FROM tw_events WHERE ts > ?1 AND name <> 'vid_time') actions,
       (SELECT ROUND(AVG(t)) FROM (SELECT SUM(dur) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid)) avgSeconds`),
     /*1*/ q(`SELECT d, COUNT(*) u FROM (
-        SELECT ${D} d, vid FROM tw_hits WHERE ts > ?1 GROUP BY d, vid HAVING MAX(dur) >= ${CONFIRM_SECONDS} OR MAX(uid IS NOT NULL) = 1
+        SELECT ${D} d, vid FROM tw_hits WHERE ts > ?1 GROUP BY d, vid HAVING MAX(dur) > 0 OR MAX(human) = 1 OR MAX(uid IS NOT NULL) = 1
         UNION
         SELECT ${D} d, vid FROM tw_events WHERE ts > ?1 AND name <> 'vid_time'
       ) GROUP BY d ORDER BY d`),
@@ -54,20 +54,28 @@ export async function onRequestGet({ request, env }) {
     /*15*/ q(`SELECT vid, MIN(ts) first, MAX(COALESCE(last_active, ts)) last, COUNT(*) loads, SUM(dur) dur, MAX(dur) maxdur, MAX(uid) uid, MAX(country) country, MAX(city) city, MAX(device) device, MAX(browser) browser, MAX(os) os, group_concat(DISTINCT path) paths
         FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid ORDER BY last DESC LIMIT 60`),
     /*16*/ db.prepare("SELECT MIN(ts) first FROM tw_hits"),
-    /*17*/ db.prepare(`SELECT COUNT(*) n, COUNT(DISTINCT vid) u, (SELECT MAX(ts) FROM tw_hits) lastHit FROM tw_events WHERE ts > ?1 AND name IN (${INTENT_SQL})`).bind(since),
+    /*17*/ db.prepare(`SELECT COUNT(*) n, COUNT(DISTINCT vid) u, (SELECT MAX(ts) FROM tw_hits) lastHit, (SELECT COUNT(DISTINCT vid) FROM tw_events WHERE ts > ?1 AND name IN ('signup_done','nov_signup')) signups FROM tw_events WHERE ts > ?1 AND name IN (${INTENT_SQL})`).bind(since),
+    /*18*/ q(`SELECT d, COUNT(*) u FROM (
+        SELECT ${D} d, vid FROM tw_hits WHERE ts > ?1 GROUP BY d, vid HAVING MAX(dur) >= ${CONFIRM_SECONDS} OR MAX(uid IS NOT NULL) = 1
+        UNION
+        SELECT ${D} d, vid FROM tw_events WHERE ts > ?1 AND name <> 'vid_time'
+      ) GROUP BY d ORDER BY d`),
   ].concat(prevSince == null ? [] : [
-    /*18*/ db.prepare(`WITH cvp AS (
+    /*19*/ db.prepare(`WITH cvp AS (
+        SELECT vid FROM tw_hits WHERE ts > ?1 AND ts <= ?2 GROUP BY vid HAVING MAX(dur) > 0 OR MAX(human) = 1 OR MAX(uid IS NOT NULL) = 1
+        UNION SELECT vid FROM tw_events WHERE ts > ?1 AND ts <= ?2 AND name <> 'vid_time'),
+      cip AS (
         SELECT vid FROM tw_hits WHERE ts > ?1 AND ts <= ?2 GROUP BY vid HAVING MAX(dur) >= ${CONFIRM_SECONDS} OR MAX(uid IS NOT NULL) = 1
         UNION SELECT vid FROM tw_events WHERE ts > ?1 AND ts <= ?2 AND name <> 'vid_time')
-      SELECT (SELECT COUNT(*) FROM cvp) confirmed,
+      SELECT (SELECT COUNT(*) FROM cvp) confirmed, (SELECT COUNT(*) FROM cip) interested,
         (SELECT COUNT(*) FROM tw_hits WHERE ts > ?1 AND ts <= ?2) loads,
         (SELECT COUNT(DISTINCT vid) FROM tw_hits WHERE ts > ?1 AND ts <= ?2) cookies,
         (SELECT COUNT(*) FROM tw_events WHERE ts > ?1 AND ts <= ?2 AND name <> 'vid_time') actions,
         (SELECT COUNT(*) FROM tw_events WHERE ts > ?1 AND ts <= ?2 AND name IN (${INTENT_SQL})) intent,
         (SELECT COUNT(DISTINCT vid) FROM tw_events WHERE ts > ?1 AND ts <= ?2 AND name IN (${INTENT_SQL})) intentPeople,
         (SELECT COUNT(*) FROM profiles WHERE registered_at >= datetime(?1/1000, 'unixepoch') AND registered_at < datetime(?2/1000, 'unixepoch')) accounts`).bind(prevSince, prevUntil),
-    /*19*/ db.prepare(`SELECT CAST((ts - ?1) / 86400000 AS INTEGER) i, COUNT(*) u FROM (
-        SELECT MIN(ts) ts FROM tw_hits WHERE ts > ?1 AND ts <= ?2 GROUP BY date(ts/1000+${off},'unixepoch'), vid HAVING MAX(dur) >= ${CONFIRM_SECONDS} OR MAX(uid IS NOT NULL) = 1
+    /*20*/ db.prepare(`SELECT CAST((ts - ?1) / 86400000 AS INTEGER) i, COUNT(*) u FROM (
+        SELECT MIN(ts) ts FROM tw_hits WHERE ts > ?1 AND ts <= ?2 GROUP BY date(ts/1000+${off},'unixepoch'), vid HAVING MAX(dur) > 0 OR MAX(human) = 1 OR MAX(uid IS NOT NULL) = 1
         UNION ALL
         SELECT MIN(ts) ts FROM tw_events WHERE ts > ?1 AND ts <= ?2 AND name <> 'vid_time' GROUP BY date(ts/1000+${off},'unixepoch'), vid
       ) GROUP BY i ORDER BY i`).bind(prevSince, prevUntil),
@@ -97,11 +105,11 @@ export async function onRequestGet({ request, env }) {
   return json({
     ok: true, now, range, tz, fromTs: since || (one(16).first) || now, cmpLabel, confirmSeconds: CONFIRM_SECONDS, since: (one(16).first) || null,
     kpi: { loads, cookies: k.cookies || 0, confirmed: k.confirmed || 0, byTime: k.byTime || 0, byAccount: k.byAccount || 0, byAction: k.byAction || 0, actions: k.actions || 0,
-      avgSeconds: k.avgSeconds || 0, unconfirmedLoads: Math.max(0, loads - confirmedLoads), unconfirmedCookies: Math.max(0, (k.cookies || 0) - (k.confirmed || 0)),
+      interested: k.interested || 0, newReal: k.newReal || 0, avgSeconds: k.avgSeconds || 0, unconfirmedLoads: Math.max(0, loads - confirmedLoads), unconfirmedCookies: Math.max(0, (k.cookies || 0) - (k.confirmed || 0)),
       accountsTotal: one(12).total || 0, accountsInPeriod: (res[13].results || []).reduce((a, r) => a + r.n, 0),
-      lastHit: one(17).lastHit || null, intent: one(17).n || 0, intentPeople: one(17).u || 0 },
-    prev: prevSince == null ? null : { since: prevSince, until: prevUntil, ...one(18), byIndex: res[19].results || [] },
-    byDay: res[1].results || [], loadsByDay: res[2].results || [], byHour: res[3].results || [], countries: res[4].results || [], cities: res[5].results || [],
+      lastHit: one(17).lastHit || null, signups: one(17).signups || 0, intent: one(17).n || 0, intentPeople: one(17).u || 0 },
+    prev: prevSince == null ? null : { since: prevSince, until: prevUntil, ...one(19), byIndex: res[20].results || [] },
+    byDay: res[1].results || [], interestedByDay: res[18].results || [], loadsByDay: res[2].results || [], byHour: res[3].results || [], countries: res[4].results || [], cities: res[5].results || [],
     refs: res[6].results || [], pages: res[7].results || [], devices: res[8].results || [], browsers: res[9].results || [], oses: res[10].results || [],
     actions: res[11].results || [], accountsByDay: res[13].results || [], marks: res[14].results || [], visitors: list,
   }, 200, '', NO_STORE);

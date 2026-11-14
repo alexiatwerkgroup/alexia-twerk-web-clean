@@ -3,20 +3,27 @@
 //
 //  CARGA        = una página cargada y registrada (fila de tw_hits).
 //  COOKIE       = navegador distinto (vid).
-//  CONFIRMADO   = una cookie que, dentro de la ventana consultada, cumple AL MENOS UNA de estas tres cosas:
-//                   a) tuvo 60 s o más de tiempo activo (pestaña visible) EN UNA MISMA página (no se suman páginas: así un visitante que solo pasa 25 s por cada una no se confirma);
-//                   b) tiene sesión iniciada con una cuenta;
-//                   c) hizo una acción medida (clic en pago/desbloqueo/seguir, reproducir en Novinhas, registro, etc.).
-//                 Las cookies que solo cargaron páginas sin ninguna de las tres NO se cuentan como visitantes.
+//  VISITANTE REAL (cv) = una cookie que dio señal de que hay una persona con la página abierta: al menos UNA de
+//                   a) la pestaña mandó señal (tiempo activo mayor a 0 s: solo pasa si el JavaScript corrió y la pestaña estuvo visible),
+//                   b) interactuó (human = 1: scroll, clic, toque),
+//                   c) tiene sesión iniciada con una cuenta,
+//                   d) hizo una acción medida (clic en pago/desbloqueo, reproducir en Novinhas, registro, etc.).
+//  TRÁFICO AUTOMÁTICO = cookies que cargaron una página y NUNCA dieron señal (casi todas: 1 sola carga, desde datacenters de EE.UU./Países Bajos/Singapur/China).
+//                   No son visitantes: se muestran aparte, en gris, para que se vea cuánto ruido hay.
+//  INTERESADO (ci) = un visitante real que además tuvo 30 s o más activos EN UNA misma página, o tiene cuenta, o hizo una acción.
 import { authenticate } from './auth.js';
 import { json } from './http.js';
 import { init, OWNER } from './analytics.js';
 
-export const CONFIRM_SECONDS = 60;
+export const CONFIRM_SECONDS = 30; // segundos activos en una misma página para ser INTERESADO
 export const ONLINE_MS = 90000; // la pestaña manda señal cada 30 s mientras está visible
 
-// CTE "cv": cookies confirmadas desde ?1 (ms). Se usa como  WITH cv AS (...)
+// CTEs desde ?1 (ms): cv = visitantes reales, ci = interesados (subconjunto de cv). Se usan como  WITH ${REAL_CTE}
 export const REAL_CTE = `cv AS (
+  SELECT vid FROM tw_hits WHERE ts > ?1 GROUP BY vid HAVING MAX(dur) > 0 OR MAX(human) = 1 OR MAX(uid IS NOT NULL) = 1
+  UNION
+  SELECT vid FROM tw_events WHERE ts > ?1 AND name <> 'vid_time'),
+ci AS (
   SELECT vid FROM tw_hits WHERE ts > ?1 GROUP BY vid HAVING MAX(dur) >= ${CONFIRM_SECONDS} OR MAX(uid IS NOT NULL) = 1
   UNION
   SELECT vid FROM tw_events WHERE ts > ?1 AND name <> 'vid_time')`;
