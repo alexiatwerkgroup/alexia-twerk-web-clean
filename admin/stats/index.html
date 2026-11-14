@@ -16,7 +16,7 @@ h2 small{font:500 12px Manrope;letter-spacing:0;text-transform:none;color:var(--
 .k{padding:16px;border-radius:16px;background:linear-gradient(180deg,#1b1608,#0b0905);border:1.5px solid #6a5420;box-shadow:0 0 22px #e8b84a18}
 .k b{display:block;font:900 34px/1.1 "Arial Black",system-ui;color:var(--g1);text-shadow:0 2px 0 #7a4c0a}.k span{font:800 11px Manrope;letter-spacing:.1em;text-transform:uppercase;color:#c9b27a}.k i{display:block;font:500 12px Manrope;color:var(--mut);font-style:normal;margin-top:3px}
 .g{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;margin-bottom:14px}.c{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}.s12{grid-column:span 12}.s8{grid-column:span 8}.s6{grid-column:span 6}.s4{grid-column:span 4}@media(max-width:900px){.s8,.s6,.s4{grid-column:span 12}}
-.bar{display:grid;grid-template-columns:minmax(90px,170px) 1fr 52px;gap:10px;align-items:center;margin:6px 0;font-size:13px}.bar .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bar .t{height:12px;border-radius:99px;background:#1a1a22;overflow:hidden}.bar .t u{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--g3),var(--g2),var(--g1))}.bar .v{text-align:right;color:var(--mut);font-variant-numeric:tabular-nums}
+.bar{display:grid;grid-template-columns:minmax(90px,170px) 1fr 96px;gap:10px;align-items:center;margin:6px 0;font-size:13px}.bar .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bar .t{height:12px;border-radius:99px;background:#1a1a22;overflow:hidden}.bar .t u{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--g3),var(--g2),var(--g1))}.bar .v{text-align:right;color:var(--mut);font-variant-numeric:tabular-nums}
 table{width:100%;border-collapse:collapse;font-size:12.5px}th{font:800 10px Manrope;letter-spacing:.1em;text-transform:uppercase;color:var(--g2);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}td{padding:7px 8px;border-bottom:1px solid #1c1c24;vertical-align:top}.tw{overflow-x:auto}
 .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:800;margin:1px 3px 1px 0}.pc{background:#12301c;color:var(--ok)}.pw{background:#2a2a34;color:#ccc}.pa{background:#2b1a4a;color:#c8a8ff}.pt{background:#2a2208;color:var(--g1)}
 .m{color:var(--mut)}.feed div{padding:7px 0;border-bottom:1px solid #1c1c24;font-size:13px}.feed small{color:var(--mut)}
@@ -24,6 +24,12 @@ a.pl{color:var(--g1);text-decoration:underline;text-underline-offset:3px}
 svg text{fill:#9a9aaa;font:600 10px Manrope}
 .frm{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px}.frm input,.frm select{background:#14141c;color:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:600 13px Manrope}.frm input[type=text]{flex:1;min-width:160px}
 .mk{display:flex;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid #1c1c24;font-size:13px}.mk u{margin-left:auto;color:var(--mut);cursor:pointer}
+.who{cursor:help;border-bottom:1px dotted var(--g2)}
+#wc{position:fixed;z-index:10000;width:360px;max-height:82vh;overflow:auto;background:#0b0b11f7;border:1px solid var(--g2);border-radius:14px;padding:14px 16px;box-shadow:0 14px 44px #000d;font-size:12.5px;display:none}
+#wc h3{margin:0 0 2px;font:800 17px Manrope;color:var(--g1)}#wc .sec{font:800 10px Manrope;letter-spacing:.12em;text-transform:uppercase;color:var(--g2);margin:11px 0 4px}
+#wc .row{display:flex;justify-content:space-between;gap:12px;padding:3px 0;border-bottom:1px solid #1c1c24}#wc .row span:first-child{color:var(--mut)}#wc .row span:last-child{text-align:right}
+.pk{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;padding:10px 0;border-bottom:1px solid #1c1c24}.pk .vd{display:inline-block;padding:2px 9px;border-radius:99px;font-weight:800;font-size:11px}.vd.r{background:#3a1414;color:var(--bad)}.vd.p{background:#12301c;color:var(--ok)}.vd.m{background:#2a2208;color:var(--g1)}
+@media(max-width:700px){.pk{grid-template-columns:1fr}}
 .gate{max-width:480px;margin:90px auto;text-align:center;padding:30px;border:1.5px solid #6a5420;border-radius:18px;background:#0e0b05}
 .admin-ai{position:fixed;right:20px;bottom:22px;z-index:10001}.admin-ai>button{padding:12px 18px;border:1px solid var(--g2);border-radius:10px;background:#11121bea;color:var(--g1);font:800 12px monospace;cursor:pointer}.admin-ai-menu{position:absolute;bottom:52px;right:0;min-width:210px;padding:8px;background:#0e1019e8;border:1px solid var(--g2);backdrop-filter:blur(18px);border-radius:10px}.admin-ai-menu button{display:block;width:100%;background:transparent;border:0;color:var(--g1);text-align:left;padding:12px;cursor:pointer;font:700 13px monospace}.admin-ai-menu button:hover{background:#ffffff0b}
 body[data-admin-mode=matrix]{--bg:#030905;--card:#06180bb0;--line:#1a6337;--fg:#baffcc;--mut:#74ae84;--g1:#b3ffca;--g2:#39f17b;--g3:#0d6132;--ok:#4eff91;background:radial-gradient(ellipse at 45% 0,#0a2512,#020704 70%);font-family:Consolas,monospace}body[data-admin-mode=matrix] .c,body[data-admin-mode=matrix] .k{background:#05180d9c;border-color:#23824780;box-shadow:none}body[data-admin-mode=matrix] .btn.on{background:#153d23;color:#c5ffd6}body[data-admin-mode=matrix] .k b{color:#84ffab;text-shadow:none}
@@ -48,7 +54,9 @@ function cn(c) { try { return new Intl.DisplayNames(['es'], { type: 'region' }).
 function place(country, city) { return flag(country) + ' ' + (country ? esc(cn(country)) : 'País sin dato') + (city ? ' · ' + esc(city) : ''); }
 function pl(path) { var p = String(path || '/'); return '<a class="pl" href="' + esc(p.split('?')[0]) + '" target="_blank" rel="noopener noreferrer">' + esc(p.length > 46 ? p.slice(0, 46) + '…' : p) + '</a>'; }
 function badges(reasons) { var m = { tiempo: ['pt', '30 s+ en una página'], cuenta: ['pa', 'con cuenta'], 'acción': ['pc', 'hizo una acción'] }; return reasons.map(function (r) { return '<span class="pill ' + m[r][0] + '">' + m[r][1] + '</span>'; }).join(''); }
-function bars(rows, key, label) { var max = Math.max.apply(null, rows.map(function (r) { return r[key]; }).concat([1])); return rows.length ? rows.map(function (r) { return '<div class="bar"><span class="n" title="' + esc(label(r)) + '">' + esc(label(r)) + '</span><span class="t"><u style="width:' + Math.max(2, 100 * r[key] / max) + '%"></u></span><span class="v">' + F(r[key]) + '</span></div>'; }).join('') : '<div class="m">Sin datos en este período</div>'; }
+function whoSpan(name, uid, vid) { var label = name || ('Visitante ' + String(vid || '').slice(0, 6)); return '<span class="who" data-uid="' + esc(uid || '') + '" data-vid="' + esc(vid || '') + '">' + esc(label) + '</span>'; }
+function dlt(cur, prev) { if (prev == null) return ''; var d = cur - prev; return d === 0 ? ' <span class="m">=</span>' : ' <span style="color:' + (d > 0 ? 'var(--ok)' : 'var(--bad)') + ';font-size:11px">' + (d > 0 ? '▲' : '▼') + Math.abs(d) + '</span>'; }
+function bars(rows, key, label, prevOf) { var max = Math.max.apply(null, rows.map(function (r) { return r[key]; }).concat([1])); return rows.length ? rows.map(function (r) { return '<div class="bar"><span class="n" title="' + esc(label(r)) + '">' + esc(label(r)) + '</span><span class="t"><u style="width:' + Math.max(2, 100 * r[key] / max) + '%"></u></span><span class="v">' + F(r[key]) + (prevOf ? dlt(r[key], prevOf(r)) : '') + '</span></div>'; }).join('') : '<div class="m">Sin datos en este período</div>'; }
 
 function api(path) {
   return fetch(path, { credentials: 'same-origin', cache: 'no-store', signal: AbortSignal.timeout(30000) }).then(function (r) {
@@ -77,6 +85,7 @@ function dayChart(r) {
   var ds = [], d0 = new Date(r.fromTs + r.tz * 60000); d0.setUTCHours(0, 0, 0, 0);
   var end = new Date(r.now + r.tz * 60000); end.setUTCHours(0, 0, 0, 0);
   for (var t = d0.getTime(); t <= end.getTime(); t += 86400000) ds.push(new Date(t).toISOString().slice(0, 10));
+  var bmap = {}; (r.botsByDay || []).forEach(function (x) { bmap[x.d] = x.u; });
   var imap = {}; (r.interestedByDay || []).forEach(function (x) { imap[x.d] = x.u; });
   var prev = {}; if (r.prev) r.prev.byIndex.forEach(function (x) { prev[x.i] = x.u; });
   var W = 900, H = 220, p = 28, mx = Math.max.apply(null, ds.map(function (d, i) { return Math.max(map[d] || 0, prev[i] || 0); }).concat([1])), bw = (W - 2 * p) / ds.length, ex = Math.min(5, bw / 3);
@@ -91,9 +100,36 @@ function dayChart(r) {
       var iv = imap[d] || 0; if (iv) s += '<rect x="' + (x + w * .25) + '" y="' + (H - p - (H - 2 * p) * iv / mx) + '" width="' + (w * .5) + '" height="' + ((H - 2 * p) * iv / mx) + '" fill="#fffbe0" opacity=".85"><title>' + iv + ' interesados</title></rect>';
       if (ds.length <= 45) s += '<text x="' + (x + w / 2) + '" y="' + (y - ex - 3) + '" text-anchor="middle">' + v + '</text>';
     }
+    if (bmap[d] >= 15) s += '<circle cx="' + (x + bw / 2) + '" cy="12" r="' + Math.min(9, 3 + bmap[d] / 70) + '" fill="#ff6b6b" opacity=".85"><title>' + F(bmap[d]) + ' robots descartados este día (entraron con señal, pero en ola)</title></circle>';
     if (markDay[d]) s += '<path d="M' + (x + bw / 2) + ' ' + (H - p + 4) + ' l5 9 h-10 z" fill="#35d6ff"><title>' + esc(markDay[d].join(', ')) + '</title></path>';
     if (i % Math.ceil(ds.length / 10) === 0) s += '<text x="' + x + '" y="' + (H - 4) + '">' + d.slice(ds.length > 120 ? 2 : 5) + '</text>'; });
   return s + '</svg>';
+}
+function heatChart(rows) {
+  var m = {}, mx = 1; rows.forEach(function (x) { m[x.w + '_' + x.h] = x.u; mx = Math.max(mx, x.u); });
+  var order = [1, 2, 3, 4, 5, 6, 0], sv = '<svg viewBox="0 0 800 200" width="100%" role="img">';
+  order.forEach(function (w, ri) { sv += '<text x="0" y="' + (ri * 24 + 20) + '">' + DOW[w] + '</text>'; for (var h = 0; h < 24; h++) { var u = m[w + '_' + h] || 0; sv += '<rect x="' + (38 + h * 31) + '" y="' + (ri * 24 + 4) + '" width="28" height="20" rx="4" fill="#e8b84a" opacity="' + (u ? .12 + .88 * u / mx : .05) + '"><title>' + DOW[w] + ' ' + h + ':00 · ' + u + ' visitantes reales</title></rect>'; } });
+  for (var h2 = 0; h2 < 24; h2 += 3) sv += '<text x="' + (38 + h2 * 31 + 14) + '" y="190" text-anchor="middle">' + h2 + '</text>';
+  return sv + '</svg>';
+}
+function donut(rows) {
+  var tot = rows.reduce(function (a, r) { return a + r.u; }, 0), cols = ['#e8b84a', '#35d6ff', '#c8a8ff', '#5df08a', '#ff9f6b', '#9a9aaa'], a0 = -Math.PI / 2, sv = '<svg viewBox="0 0 120 120" width="120" height="120">';
+  if (!tot) return '<div class="m">Sin datos en este período</div>';
+  rows.slice(0, 6).forEach(function (r, i) { var a1 = a0 + 2 * Math.PI * r.u / tot, big = a1 - a0 > Math.PI ? 1 : 0; if (r.u === tot) sv += '<circle cx="60" cy="60" r="44" fill="none" stroke="' + cols[i] + '" stroke-width="22"/>'; else sv += '<path d="M' + (60 + 44 * Math.cos(a0)) + ' ' + (60 + 44 * Math.sin(a0)) + ' A44 44 0 ' + big + ' 1 ' + (60 + 44 * Math.cos(a1)) + ' ' + (60 + 44 * Math.sin(a1)) + '" fill="none" stroke="' + cols[i] + '" stroke-width="22"><title>' + esc(r.k) + ': ' + r.u + '</title></path>'; a0 = a1; });
+  return '<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">' + sv + '</svg><div>' + rows.slice(0, 6).map(function (r, i) { return '<div><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:' + cols[i] + ';margin-right:7px"></i>' + esc(r.k) + ' <b>' + Math.round(100 * r.u / tot) + '%</b> <span class="m">(' + F(r.u) + ')</span></div>'; }).join('') + '</div></div>';
+}
+function pm(rows, key) { var m = {}; (rows || []).forEach(function (x) { m[x[key]] = x.u; }); return m; }
+function peaksHtml(r) {
+  var pk = (r.peaks || []).filter(function (x) { return x.bots > 0 || x.raw >= 25; });
+  if (!pk.length) return '<div class="m">No hubo picos fuera de lo normal en este período.</div>';
+  var VD = { robots: ['r', 'Ola de robots (descartada)'], real: ['p', 'Gente real'], mixto: ['m', 'Mezcla de gente y robots'] };
+  return pk.map(function (x) {
+    var d = x.k.split(' '), dd = d[0].split('-'), v = VD[x.verdict] || VD.mixto;
+    var cs = x.countries.map(function (c) { return flag(c.c) + ' ' + esc(cn(c.c)) + ' <span class="m">' + c.u + '</span>'; }).join(' · ');
+    var why = x.verdict === 'robots' ? 'Cientos de cookies casi idénticas entraron juntas' + (x.windowSeconds ? ' en ' + x.windowSeconds + ' segundos' : '') + (x.fingerprint ? ' (todas ' + esc(x.fingerprint.fp) + ')' : '') + ', sin tocar ni scrollear como una persona. No son visitantes: ya están fuera de los números.' : x.verdict === 'real' ? 'Casi todos dieron señales humanas. Probablemente una promo, un mail o un post que funcionó.' : 'Parte es gente (' + F(x.real) + ') y parte robots (' + F(x.bots) + '). Los robots ya están descartados.';
+    return '<div class="pk"><div><b>' + DOW[new Date(+dd[0], +dd[1] - 1, +dd[2]).getDay()] + ' ' + dd[2] + '/' + dd[1] + ' · ' + d[1] + ' h</b><br><span class="vd ' + v[0] + '">' + v[1] + '</span></div>' +
+      '<div><b>' + F(x.raw) + '</b> cookies con señal → <b style="color:var(--ok)">' + F(x.real) + ' reales</b>' + (x.bots ? ' · <b style="color:var(--bad)">' + F(x.bots) + ' robots</b>' : '') + '<br><span class="m">' + why + '</span><br>' + (cs ? '<span class="m">De dónde: </span>' + cs : '') + '</div></div>';
+  }).join('');
 }
 function hourChart(rows) {
   var a = []; for (var h = 0; h < 24; h++) a.push(0); rows.forEach(function (x) { a[x.h] = x.u; });
@@ -124,15 +160,15 @@ function liveKpis(d) {
 function onlineTable(list, d, emptyMsg) {
   var rows = list.map(function (o) {
     var state = o.reasons.length ? badges(o.reasons) : '<span class="pill pw">mirando</span><br><span class="m">' + Math.min(o.maxDur24h, 999) + ' s en su mejor página</span>';
-    var who = (o.user ? '<b>' + esc(o.user) + '</b><br>' : '<b>Visitante sin cuenta</b><br>') + '<span class="m">' + place(o.country, o.city) + ' · ' + esc([o.device, o.browser, o.os].filter(Boolean).join(' · ')) + '</span>';
+    var who = '<b>' + whoSpan(o.user, o.uid, o.vidFull) + '</b><br>' + '<span class="m">' + place(o.country, o.city) + ' · ' + esc([o.device, o.browser, o.os].filter(Boolean).join(' · ')) + '</span>';
     var ev = o.events.length ? o.events.map(function (e) { return esc(EV[e.name] || e.name) + ' <span class="m">(hace ' + ago(e.ts) + ')</span>'; }).join('<br>') : '<span class="m">solo mirando</span>';
     return '<tr><td>' + who + '</td><td>' + pl(o.path) + '</td><td>' + state + '</td><td>hace ' + ago(o.lastSignal) + '</td><td>' + T(o.dur) + ' · ' + o.scroll + '%</td><td>' + esc(o.ref || 'directo') + '</td><td>' + ev + '</td></tr>';
   }).join('');
   return '<div class="tw"><table><tr><th>Quién</th><th>Dónde está</th><th>Interés</th><th>Última señal</th><th>Tiempo / scroll en esta página</th><th>Vino de</th><th>Qué hizo</th></tr>' + (rows || '<tr><td colspan="7" class="m">' + emptyMsg + '</td></tr>') + '</table></div>';
 }
 function liveHtml(d) {
-  var acts = (d.recentActions || []).map(function (e) { return '<div>' + esc(EV[e.name] || e.name) + (e.detail && e.name !== 'nov_watch' && e.name !== 'nov_play' ? ' · ' + esc(e.detail) : '') + '<br><small>' + (e.user ? esc(e.user) + ' · ' : '') + place(e.country, e.city) + ' · hace ' + ago(e.ts) + '</small></div>'; }).join('') || '<div class="m">Todavía no hay acciones</div>';
-  var accs = (d.latestAccounts || []).map(function (a) { var t = new Date(String(a.registered_at).replace(' ', 'T') + 'Z'); return '<div><b>' + esc(a.username || 'sin nombre') + '</b> <span class="pill pw">' + esc(a.tier || '—') + '</span><br><small>registrada ' + (isNaN(t) ? esc(a.registered_at) : 'hace ' + ago(t.getTime())) + '</small></div>'; }).join('');
+  var acts = (d.recentActions || []).map(function (e) { return '<div>' + esc(EV[e.name] || e.name) + (e.detail && e.name !== 'nov_watch' && e.name !== 'nov_play' ? ' · ' + esc(e.detail) : '') + '<br><small>' + whoSpan(e.user, e.uid, e.vid) + ' · ' + place(e.country, e.city) + ' · hace ' + ago(e.ts) + '</small></div>'; }).join('') || '<div class="m">Todavía no hay acciones</div>';
+  var accs = (d.latestAccounts || []).map(function (a) { var t = new Date(String(a.registered_at).replace(' ', 'T') + 'Z'); return '<div><b>' + whoSpan(a.username || 'sin nombre', a.id, '') + '</b> <span class="pill pw">' + esc(a.tier || '—') + '</span><br><small>registrada ' + (isNaN(t) ? esc(a.registered_at) : 'hace ' + ago(t.getTime())) + '</small></div>'; }).join('');
   var conf = d.online || [];
   return liveKpis(d) + '<div class="g"><div class="c s12"><h2>Quién está en el sitio ahora<small>visitantes reales · se actualiza cada 5 segundos</small></h2>' + onlineTable(conf, d, 'Ningún visitante real en este momento') + '</div>' +
     '<div class="c s6"><h2>Últimas acciones</h2><div class="feed">' + acts + '</div></div>' +
@@ -144,7 +180,7 @@ function delta(cur, prev, r) {
   var p = Math.round(100 * (cur - prev) / prev), up = p >= 0;
   return '<br><span style="color:' + (p === 0 ? 'var(--mut)' : up ? 'var(--ok)' : 'var(--bad)') + '">' + (p === 0 ? '=' : up ? '▲ +' + F(p) + '%' : '▼ ' + F(p) + '%') + '</span> <span class="m">· ' + esc(r.cmpLabel) + ': ' + F(prev) + '</span>';
 }
-function titulo(r) { return r.range === 'today' ? 'Hoy' : r.range === 'month' ? 'Mes actual' : r.range === 'all' ? 'Histórico completo' : 'Últimos ' + r.range + ' días'; }
+function titulo(r) { return r.range === 'today' ? 'Hoy' : r.range === 'week' ? 'Últimos 7 días' : r.range === 'month' ? 'Mes actual' : r.range === 'all' ? 'Histórico completo' : 'Últimos ' + r.range + ' días'; }
 function repHtml(r) {
   var k = r.kpi, pct = k.cookies ? (100 * k.confirmed / k.cookies).toFixed(1).replace('.', ',') : '0';
   var bots = Math.max(0, k.cookies - k.confirmed), pctI = k.confirmed ? Math.round(100 * k.interested / k.confirmed) : 0;
@@ -158,19 +194,22 @@ function repHtml(r) {
   var funnel = bars([{ n: 'Visitantes reales', u: k.confirmed }, { n: 'Interesados', u: k.interested }, { n: 'Intención de compra', u: k.intentPeople }, { n: 'Se registraron', u: k.signups }], 'u', function (x) { return x.n; });
   var marks = r.marks.slice(0, 8).map(function (m) { return '<div class="mk"><span class="pill pw">' + esc(m.channel || 'promo') + '</span><span>' + esc(m.label) + '</span><span class="m">' + new Date(m.ts).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</span><u data-del="' + Number(m.id) + '">borrar</u></div>'; }).join('');
   var vis = r.visitors.map(function (v) {
-    var who = (v.user ? '<b>' + esc(v.user) + '</b><br>' : '') + '<span class="m">' + place(v.country, v.city) + '</span>';
+    var who = '<b>' + whoSpan(v.user, v.uid, v.vid) + '</b><br>' + '<span class="m">' + place(v.country, v.city) + '</span>';
     return '<tr><td>' + new Date(v.last).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</td><td>' + who + '</td><td>' + esc([v.device, v.browser, v.os].filter(Boolean).join(' · ')) + '</td><td>' + esc(v.ref || 'directo') + '</td><td>' + badges(v.reasons) + '</td><td>' + T(v.dur) + '</td><td>' + F(v.loads) + '</td><td>' + v.pages.map(pl).join('<br>') + (v.morePages ? '<br><span class="m">+' + v.morePages + ' más</span>' : '') + '</td><td>' + (v.events.length ? v.events.map(function (e) { return esc(EV[e.split(' · ')[0]] || e); }).join('<br>') : '<span class="m">—</span>') + '</td></tr>';
   }).join('');
   return '<div class="top" style="margin-top:22px"><h1 style="font-size:20px">' + titulo(r) + '</h1><span class="m">' + (k.lastHit ? 'Última visita registrada hace ' + ago(k.lastHit) + (Date.now() - k.lastHit > 1800000 ? ' <b class="bad">· revisar: hace rato que no entra nada</b>' : '') + ' · ' : '') + 'Se actualiza cada 1 hora · calculado ' + new Date(r.now).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) + '</span></div>' + kp +
-    '<div class="g"><div class="c s12"><h2>Visitantes reales por día<small>' + 'barra dorada = reales · barra clara = interesados · '+ '' + (r.prev ? 'línea celeste punteada = ' + esc(r.cmpLabel) + ' · ' : '') + '▲ celeste = promo marcada</small></h2>' + dayChart(r) +
+    '<div class="g"><div class="c s12"><h2>Visitantes reales por día<small>' + 'barra dorada = reales · barra clara = interesados · '+ '' + (r.prev ? 'línea celeste punteada = ' + esc(r.cmpLabel) + ' · ' : '') + '▲ celeste = promo marcada · ● roja = robots descartados</small></h2>' + dayChart(r) +
     '<div class="frm"><input type="text" id="ml" placeholder="Qué publicaste (ej: post en Reddit)" maxlength="80"><select id="mc"><option>reddit</option><option>x</option><option>telegram</option><option>instagram</option><option>foro</option><option>otro</option></select><input type="datetime-local" id="mt"><button class="btn" id="ma" type="button">Marcar promo</button></div>' + marks + '</div>' +
+    '<div class="c s12"><h2>Picos: ¿gente real o robots?<small>las horas con más movimiento y qué había detrás</small></h2>' + peaksHtml(r) + '</div>' +
+    '<div class="c s6"><h2>Robots descartados<small>entraron con señal pero en ola · no cuentan</small></h2><div style="font:900 30px Manrope;color:var(--bad)">' + F(r.burst.cookies) + '</div><div class="m" style="margin-bottom:10px">cookies en ' + F(r.burst.minutes) + ' minutos de ola (' + r.burst.min + '+ cookies iguales por minuto)</div>' + bars(r.botCountries || [], 'u', function (x) { return flag(x.c) + ' ' + cn(x.c); }) + '</div>' +
+    '<div class="c s6"><h2>Cuándo entra tu gente<small>día de la semana × hora, visitantes reales</small></h2>' + heatChart(r.heat || []) + '</div>' +
     '<div class="c s6"><h2>Del visitante al registro<small>embudo del período</small></h2>' + funnel + '</div>' +
     '<div class="c s6"><h2>Horas del día<small>visitantes reales, en tu hora</small></h2>' + hourChart(r.byHour) + '</div>' +
-    '<div class="c s12"><h2>De dónde llegan<small>origen de la primera visita de cada visitante real</small></h2>' + bars(r.refs, 'u', function (x) { return x.k; }) + '</div>' +
-    '<div class="c s4"><h2>Países</h2>' + bars(r.countries, 'u', function (x) { return flag(x.c) + ' ' + cn(x.c); }) + '</div>' +
+    '<div class="c s12"><h2>De dónde llegan<small>origen de la primera visita de cada visitante real</small></h2>' + bars(r.refs, 'u', function (x) { return x.k; }, r.prev && function (x) { var m = pm(r.prev.refs, 'k'); return m[x.k] || 0; }) + '</div>' +
+    '<div class="c s4"><h2>Países</h2>' + bars(r.countries, 'u', function (x) { return flag(x.c) + ' ' + cn(x.c); }, r.prev && function (x) { var m = pm(r.prev.countries, 'c'); return m[x.c] || 0; }) + '</div>' +
     '<div class="c s4"><h2>Ciudades</h2>' + bars(r.cities, 'u', function (x) { return flag(x.c) + ' ' + x.city; }) + '</div>' +
-    '<div class="c s4"><h2>Dispositivos</h2>' + bars(r.devices, 'u', function (x) { return x.k; }) + '<h2 style="margin-top:14px">Sistemas</h2>' + bars(r.oses, 'u', function (x) { return x.k; }) + '<h2 style="margin-top:14px">Navegadores</h2>' + bars(r.browsers, 'u', function (x) { return x.k; }) + '</div>' +
-    '<div class="c s8"><h2>Páginas que ven los visitantes reales</h2><div class="tw"><table><tr><th>Página</th><th>Personas</th><th>Cargas</th><th>Tiempo por carga</th></tr>' + r.pages.map(function (x) { return '<tr><td>' + pl(x.path) + '</td><td>' + F(x.u) + '</td><td>' + F(x.v) + '</td><td>' + (x.dur ? T(x.dur) : '—') + '</td></tr>'; }).join('') + '</table></div></div>' +
+    '<div class="c s4"><h2>Dispositivos</h2>' + donut(r.devices) + '<h2 style="margin-top:14px">Sistemas</h2>' + bars(r.oses, 'u', function (x) { return x.k; }) + '<h2 style="margin-top:14px">Navegadores</h2>' + bars(r.browsers, 'u', function (x) { return x.k; }) + '</div>' +
+    '<div class="c s8"><h2>Páginas que ven los visitantes reales</h2><div class="tw"><table><tr><th>Página</th><th>Personas</th><th>Cargas</th><th>Tiempo por carga</th></tr>' + r.pages.map(function (x) { return '<tr><td>' + pl(x.path) + '</td><td>' + F(x.u) + (r.prev ? dlt(x.u, pm(r.prev.pages, 'path')[x.path] || 0) : '') + '</td><td>' + F(x.v) + '</td><td>' + (x.dur ? T(x.dur) : '—') + '</td></tr>'; }).join('') + '</table></div></div>' +
     '<div class="c s4"><h2>Acciones medidas</h2><div class="tw"><table><tr><th>Acción</th><th>Veces</th><th>Personas</th></tr>' + (r.actions.map(function (x) { return '<tr><td>' + esc(EV[x.name] || x.name) + '</td><td>' + F(x.n) + '</td><td>' + F(x.u) + '</td></tr>'; }).join('') || '<tr><td colspan="3" class="m">Sin acciones</td></tr>') + '</table></div></div>' +
     '<div class="c s12"><h2>Los visitantes reales, uno por uno<small>los 60 más recientes del período · cada uno muestra por qué cuenta</small></h2><div class="tw"><table><tr><th>Última vez</th><th>Quién</th><th>Equipo</th><th>Llegó desde</th><th>Por qué cuenta</th><th>Tiempo activo</th><th>Cargas</th><th>Páginas</th><th>Acciones</th></tr>' + (vis || '<tr><td colspan="9" class="m">Todavía no hay visitantes reales en este período</td></tr>') + '</table></div></div></div>';
 }
@@ -179,9 +218,9 @@ function repHtml(r) {
 function shell() {
   var app = document.getElementById('app');
   app.innerHTML = '<div class="top"><div><h1>Estadísticas de Twerkhub</h1></div><div class="sel" id="sel">' +
-    [['today', 'Hoy'], ['month', 'Mes actual'], ['all', 'Histórico']].map(function (p) { return '<button type="button" class="btn' + (p[0] === range ? ' on' : '') + '" data-d="' + p[0] + '">' + p[1] + '</button>'; }).join('') +
+    [['today', 'Hoy'], ['week', '7 días'], ['month', 'Mes actual'], ['all', 'Histórico']].map(function (p) { return '<button type="button" class="btn' + (p[0] === range ? ' on' : '') + '" data-d="' + p[0] + '">' + p[1] + '</button>'; }).join('') +
     '<button type="button" class="btn" id="refresh">Actualizar histórico ahora</button><button type="button" class="btn" id="snd"></button><a class="btn" href="/admin-users.html">Todos los usuarios</a></div></div>' +
-    '<div class="status" id="status"></div><div id="def"></div><div id="live"><div class="gate">Consultando…</div></div><div id="rep"></div>';
+    '<div class="status" id="status"></div><div id="def"></div><div id="live"><div class="gate">Consultando…</div></div><div id="rep"></div><div id="wc"></div>';
   document.getElementById('sel').onclick = function (e) { var b = e.target.closest('[data-d]'); if (!b) return; range = b.dataset.d; document.querySelectorAll('#sel [data-d]').forEach(function (x) { x.classList.toggle('on', x === b); }); loadReport(); };
   document.getElementById('refresh').onclick = function () { loadReport(); };
   var snd = document.getElementById('snd');
@@ -215,6 +254,46 @@ function loadReport() {
     .catch(function () { repFail++; })
     .finally(function () { repBusy = false; var b = document.getElementById('refresh'); if (b) b.textContent = 'Actualizar histórico ahora'; paintStatus(); });
 }
+
+
+/* ---------- ficha de cada persona al pasar el mouse ---------- */
+var wcache = {}, wTimer = null, wHide = null, wEl = null, wBox = null;
+function dt(v) { if (!v) return '—'; var t = typeof v === 'number' ? new Date(v) : new Date(String(v).replace(' ', 'T') + 'Z'); return isNaN(t) ? esc(v) : t.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+function ro(a, b) { return '<div class="row"><span>' + a + '</span><span>' + b + '</span></div>'; }
+function whoHtml(d, name) {
+  var v = d.visits, P = d.profile, A = d.account, vd = d.verdict, ok = vd === 'persona';
+  var h = '<h3>' + esc(name) + '</h3><span class="pill ' + (ok ? 'pc' : 'pw') + '">' + esc(vd) + '</span>' + (P ? ' <span class="pill pa">' + esc(P.tier || 'sin nivel') + '</span>' : '') +
+    '<div class="m" style="margin-top:4px">' + (ok ? 'Dio señales de ser una persona (cuenta, interacción o acciones).' : 'No dio señales claras de persona: cuidado, puede ser un robot.') + '</div>';
+  if (P) h += '<div class="sec">Cuenta</div>' + ro('Registrada', dt(P.registered)) + ro('Última vez', dt(P.lastSeen)) + ro('Monedas ahora / ganadas', F(P.coins) + ' / ' + F(P.earned)) + ro('Racha', F(P.streak) + ' días') + ro('Tiempo total en el sitio', T(P.secondsOnSite)) + ro('Cuts vistos', F(P.cutsWatched)) + (P.country ? ro('País de la cuenta', flag(P.country) + ' ' + esc(cn(P.country))) : '');
+  h += '<div class="sec">Actividad medida</div>' + ro('Cargas de página', F(v.loads) + (v.cookies > 1 ? ' · ' + v.cookies + ' navegadores' : '')) + ro('Días distintos', F(v.days)) + ro('Primera / última', dt(v.first) + '<br>' + dt(v.last)) + ro('Tiempo activo total', T(v.seconds)) + ro('Mejor página', T(v.maxSeconds)) + ro('Scroll promedio', (v.scroll || 0) + '%') + ro('Interactuó (clic/scroll)', v.interacted ? 'sí' : 'no');
+  h += '<div class="sec">Dónde y con qué</div>' + ro('País', d.countries.map(function (c) { return flag(c.c) + ' ' + esc(cn(c.c)); }).join(', ') || '—') + ro('Ciudad', d.cities.map(function (c) { return esc(c.city); }).join(', ') || '—') + ro('Equipo', d.devices.map(function (x) { return esc([x.device, x.browser, x.os].filter(Boolean).join(' · ')); }).join('<br>') || '—') + ro('Llegó desde', esc(d.firstRef || 'directo'));
+  if (d.pages.length) h += '<div class="sec">Páginas que más mira</div>' + d.pages.map(function (x) { return ro(pl(x.path), F(x.loads) + ' · ' + T(x.dur)); }).join('');
+  if (d.eventCounts.length) h += '<div class="sec">Acciones</div>' + d.eventCounts.map(function (x) { return ro(esc(EV[x.name] || x.name), '×' + x.n); }).join('');
+  if (A) h += '<div class="sec">Compras y uso</div>' + ro('Desbloqueos Jenny', F(A.unlocks) + (A.unlocks ? ' (' + Object.keys(A.unlocksVia).map(function (k) { return esc(k) + ' ' + A.unlocksVia[k]; }).join(', ') + ')' : '')) + ro('Desbloqueos de catálogo', F(A.catalogUnlocks)) + ro('Comentarios', F(A.comments)) + ro('Videos vistos', F(A.videoViews) + ' (' + F(A.videosDistinct) + ' distintos)') + (A.coinMoves.length ? '<div class="m" style="margin-top:4px">Últimos movimientos de monedas</div>' + A.coinMoves.slice(0, 6).map(function (m) { return ro(esc(m.kind) + ' <span class="m">' + dt(m.created_at) + '</span>', (m.delta > 0 ? '+' : '') + m.delta); }).join('') : '');
+  if (d.last.length) h += '<div class="sec">Últimas páginas</div>' + d.last.slice(0, 6).map(function (x) { return ro(pl(x.path), 'hace ' + ago(x.ts) + ' · ' + T(x.dur)); }).join('');
+  if (d.events.length) h += '<div class="sec">Últimas acciones</div>' + d.events.slice(0, 6).map(function (e) { return ro(esc(EV[e.name] || e.name) + (e.detail ? ' <span class="m">' + esc(e.detail) + '</span>' : ''), 'hace ' + ago(e.ts)); }).join('');
+  return h;
+}
+function placeCard(el) {
+  var r = el.getBoundingClientRect(), w = wBox.offsetWidth || 360, hh = wBox.offsetHeight || 300;
+  var x = Math.min(window.innerWidth - w - 12, Math.max(8, r.left)), y = r.bottom + 8; if (y + hh > window.innerHeight - 8) y = Math.max(8, r.top - hh - 8);
+  wBox.style.left = x + 'px'; wBox.style.top = y + 'px';
+}
+function showWho(el) {
+  var uid = el.dataset.uid, vid = el.dataset.vid, key = uid ? 'u:' + uid : 'v:' + vid; if (!uid && !vid) return;
+  wBox = document.getElementById('wc'); wEl = el; var name = el.textContent;
+  wBox.style.display = 'block'; wBox.innerHTML = '<div class="m">Cargando ficha de ' + esc(name) + '…</div>'; placeCard(el);
+  var done = function (d) { if (wEl !== el) return; wBox.innerHTML = whoHtml(d, name); placeCard(el); };
+  if (wcache[key] && Date.now() - wcache[key].t < 60000) return done(wcache[key].d);
+  api('/api/stats/who?' + (uid ? 'uid=' + encodeURIComponent(uid) : 'vid=' + encodeURIComponent(vid))).then(function (d) { wcache[key] = { t: Date.now(), d: d }; done(d); }).catch(function () { if (wEl === el) wBox.innerHTML = '<div class="m">No se pudo cargar la ficha. Probá de nuevo.</div>'; });
+}
+function hideWho() { clearTimeout(wTimer); wHide = setTimeout(function () { var b = document.getElementById('wc'); if (b) b.style.display = 'none'; wEl = null; }, 250); }
+document.addEventListener('mouseover', function (e) {
+  var w = e.target.closest && e.target.closest('.who'), box = e.target.closest && e.target.closest('#wc');
+  if (box) { clearTimeout(wHide); return; }
+  if (w) { clearTimeout(wHide); if (w === wEl) return; clearTimeout(wTimer); wTimer = setTimeout(function () { showWho(w); }, 220); }
+});
+document.addEventListener('mouseout', function (e) { var w = e.target.closest && e.target.closest('.who'), box = e.target.closest && e.target.closest('#wc'); if (w || box) hideWho(); });
 
 shell(); loadLive(); loadReport();
 setInterval(loadLive, LIVE_MS);

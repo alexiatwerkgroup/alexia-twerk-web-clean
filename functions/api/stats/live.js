@@ -14,12 +14,12 @@ export async function onRequestGet({ request, env }) {
     counts(todayStart),
     counts(hourAgo),
     db.prepare("SELECT COUNT(*) total, SUM(CASE WHEN registered_at >= datetime(?1/1000,'unixepoch') THEN 1 ELSE 0 END) today FROM profiles").bind(todayStart),
-    db.prepare('SELECT COUNT(DISTINCT vid) n FROM tw_hits WHERE last_active > ?1 AND (dur > 0 OR human = 1 OR last_engaged IS NOT NULL OR uid IS NOT NULL OR last_active - ts > 2000)').bind(onlineSince),
+    db.prepare(`WITH ${REAL_CTE} SELECT COUNT(DISTINCT vid) n FROM tw_hits WHERE last_active > ${onlineSince} AND (dur > 0 OR human = 1 OR last_engaged IS NOT NULL OR uid IS NOT NULL OR last_active - ts > 2000) AND vid IN cv`).bind(now - 3 * 3600000),
   ];
   if (!lite) stmts.push(
-    db.prepare(`SELECT h.vid, h.path, h.country, h.city, h.device, h.browser, h.os, h.ref, h.dur, h.scroll, h.uid, h.ts, h.last_active, h.last_engaged
-      FROM tw_hits h JOIN (SELECT vid, MAX(last_active) la FROM tw_hits WHERE last_active > ?1 AND (dur > 0 OR human = 1 OR last_engaged IS NOT NULL OR uid IS NOT NULL OR last_active - ts > 2000) GROUP BY vid) x ON x.vid = h.vid AND x.la = h.last_active
-      ORDER BY h.last_active DESC LIMIT 80`).bind(onlineSince),
+    db.prepare(`WITH ${REAL_CTE} SELECT h.vid, h.path, h.country, h.city, h.device, h.browser, h.os, h.ref, h.dur, h.scroll, h.uid, h.ts, h.last_active, h.last_engaged
+      FROM tw_hits h JOIN (SELECT vid, MAX(last_active) la FROM tw_hits WHERE last_active > ${onlineSince} AND (dur > 0 OR human = 1 OR last_engaged IS NOT NULL OR uid IS NOT NULL OR last_active - ts > 2000) GROUP BY vid) x ON x.vid = h.vid AND x.la = h.last_active
+      WHERE h.vid IN cv ORDER BY h.last_active DESC LIMIT 80`).bind(now - 3 * 3600000),
     db.prepare(`SELECT e.ts, e.name, e.detail, e.vid, h.uid, h.country, h.city FROM tw_events e LEFT JOIN tw_hits h ON h.hid = e.hid WHERE e.name <> 'vid_time' ORDER BY e.ts DESC LIMIT 15`),
     db.prepare('SELECT id, username, country, registered_at, tier FROM profiles ORDER BY registered_at DESC LIMIT 6'),
   );
@@ -55,10 +55,10 @@ export async function onRequestGet({ request, env }) {
     if ((d.maxdur || 0) >= CONFIRM_SECONDS) reasons.push('tiempo');
     if (r.uid || d.acc) reasons.push('cuenta');
     if (events.length) reasons.push('acción');
-    return { vid: r.vid.slice(0, 6), user: r.uid ? names[r.uid] || '' : '', country: r.country, city: r.city, device: r.device, browser: r.browser, os: r.os, ref: r.ref, path: r.path,
+    return { vid: r.vid.slice(0, 6), vidFull: r.vid, uid: r.uid || '', user: r.uid ? names[r.uid] || '' : '', country: r.country, city: r.city, device: r.device, browser: r.browser, os: r.os, ref: r.ref, path: r.path,
       enteredAt: r.ts, lastSignal: r.last_active, lastEngaged: r.last_engaged || null, dur: r.dur || 0, scroll: r.scroll || 0, maxDur24h: d.maxdur || 0, loads24h: d.loads || 1, events: events.slice(0, 4), confirmed: true, reasons };
   });
-  body.recentActions = (res[5].results || []).map(e => ({ ts: e.ts, name: e.name, detail: e.detail, country: e.country, city: e.city, user: e.uid ? names[e.uid] || '' : '' }));
+  body.recentActions = (res[5].results || []).map(e => ({ vid: e.vid, uid: e.uid || '', ts: e.ts, name: e.name, detail: e.detail, country: e.country, city: e.city, user: e.uid ? names[e.uid] || '' : '' }));
   body.latestAccounts = res[6].results || [];
   return json(body, 200, '', NO_STORE);
 }
