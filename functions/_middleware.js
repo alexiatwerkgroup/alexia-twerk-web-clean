@@ -48,14 +48,17 @@ export async function onRequest(context) {
       let reg = 0, owner = false, uid = null; try { const p = await authenticate(request, env); reg = p && p.sub ? 1 : 0; uid = reg ? String(p.sub) : null; if (reg) { const u = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(p.sub).first(); owner = !!u && String(u.email).toLowerCase() === OWNER; } } catch (e) {}
       let ref = ''; try { const r = request.headers.get('referer'); if (r) { const rh = new URL(r).hostname.replace(/^www\./, ''); if (rh !== url.hostname.replace(/^www\./, '')) ref = rh; } } catch (e) {}
       const utm = url.searchParams.get('utm_source'); if (utm) ref = (ref ? ref + ' · ' : '') + 'utm:' + utm.slice(0, 30);
+      // En la página de video se guarda también el video/canal (?c=..&v=..) para saber qué se mira; se descartan utm/fbclid y similares.
+      let hitPath = url.pathname.slice(0, 200);
+      if (url.pathname.indexOf('/novinhas/watch') === 0) { const keep = []; url.searchParams.forEach((val, k) => { if (/^[a-z_]{1,12}$/i.test(k) && !/^(utm_|fbclid|gclid|ref)/i.test(k) && keep.length < 3) keep.push(k + '=' + String(val).slice(0, 40)); }); if (keep.length) hitPath = (hitPath + '?' + keep.join('&')).slice(0, 200); }
       const u = parseUA(ua), lang = (request.headers.get('accept-language') || '').split(',')[0].slice(0, 10);
       context.waitUntil((async () => {
         if (owner) return; try { await init(env.DB); const seenAt = Date.now();
         let iph = null; try { const ip = request.headers.get('CF-Connecting-IP') || ''; if (ip) { const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode((env.IP_HASH_SALT || 'twerkhub-ip-v1') + '|' + ip)); iph = Array.from(new Uint8Array(buf)).slice(0, 8).map(x => x.toString(16).padStart(2, '0')).join(''); } } catch (e) {}
         await env.DB.prepare('INSERT INTO tw_hits (hid, ts, last_active, vid, path, country, region, city, tz, device, browser, os, lang, ref, is_new, reg, lat, lon, uid, iph) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-          .bind(hid, seenAt, seenAt, vid, url.pathname.slice(0, 200), cf.country || '', cf.region || '', cf.city || '', cf.timezone || '', u.device, u.browser, u.os, lang, ref, isNew, reg, cf.latitude ? Math.round(cf.latitude * 10) / 10 : null, cf.longitude ? Math.round(cf.longitude * 10) / 10 : null, uid, iph).run(); } catch (e) {}
+          .bind(hid, seenAt, seenAt, vid, hitPath, cf.country || '', cf.region || '', cf.city || '', cf.timezone || '', u.device, u.browser, u.os, lang, ref, isNew, reg, cf.latitude ? Math.round(cf.latitude * 10) / 10 : null, cf.longitude ? Math.round(cf.longitude * 10) / 10 : null, uid, iph).run(); } catch (e) {}
       })());
-      add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=5" defer></script>';
+      add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=6" defer></script>';
     }
     add += '<script src="/assets/twerkhub-counter.js?v=20261105-owner-auth" defer></script>';
     add += '<script>(function(){document.querySelectorAll(".tn2-lk a,.tn2 details nav a,.tf2 a").forEach(function(a){var h=a.getAttribute("href")||"";if(h.indexOf("/membership")===0||h.indexOf("/pt/membership")===0){a.href="/tokens/";a.textContent="BALANCE"}})})();</script>';
