@@ -32,7 +32,7 @@ body[data-admin-mode=matrix]{--bg:#030905;--card:#06180bb0;--line:#1a6337;--fg:#
 (function () {
 'use strict';
 var LIVE_MS = 5000, REPORT_MS = 3600000;
-var days = 30, TZ = -new Date().getTimezoneOffset();
+var range = 'month', TZ = -new Date().getTimezoneOffset();
 var live = null, rep = null, liveOkAt = 0, repOkAt = 0, liveBusy = false, repBusy = false, liveFail = 0, repFail = 0;
 var uncOpen = false, denied = false, seenActionTs = 0, seenOnline = null, soundOn = false, audio = null;
 try { soundOn = localStorage.getItem('twk-visitor-sound') === '1'; } catch (e) {}
@@ -74,16 +74,23 @@ function checkSound(d) {
 /* ---------- gráficos ---------- */
 function dayChart(r) {
   var map = {}; r.byDay.forEach(function (x) { map[x.d] = x.u; });
-  var ds = []; var end = new Date(r.now + r.tz * 60000); end.setUTCHours(0, 0, 0, 0);
-  for (var i = r.days - 1; i >= 0; i--) { var dt = new Date(end.getTime() - i * 86400000); ds.push(dt.toISOString().slice(0, 10)); }
-  var W = 900, H = 200, p = 28, m = Math.max.apply(null, ds.map(function (d) { return map[d] || 0; }).concat([1])), bw = (W - 2 * p) / ds.length;
+  var ds = [], d0 = new Date(r.fromTs + r.tz * 60000); d0.setUTCHours(0, 0, 0, 0);
+  var end = new Date(r.now + r.tz * 60000); end.setUTCHours(0, 0, 0, 0);
+  for (var t = d0.getTime(); t <= end.getTime(); t += 86400000) ds.push(new Date(t).toISOString().slice(0, 10));
+  var prev = {}; if (r.prev) r.prev.byIndex.forEach(function (x) { prev[x.i] = x.u; });
+  var W = 900, H = 220, p = 28, mx = Math.max.apply(null, ds.map(function (d, i) { return Math.max(map[d] || 0, prev[i] || 0); }).concat([1])), bw = (W - 2 * p) / ds.length, ex = Math.min(5, bw / 3);
   var markDay = {}; r.marks.forEach(function (k) { var d = new Date(k.ts + r.tz * 60000).toISOString().slice(0, 10); (markDay[d] = markDay[d] || []).push(k.channel || 'promo'); });
-  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img">';
-  ds.forEach(function (d, i) { var v = map[d] || 0, h = (H - 2 * p) * v / m, x = p + i * bw;
-    s += '<rect x="' + (x + 1) + '" y="' + (H - p - h) + '" width="' + Math.max(2, bw - 3) + '" height="' + h + '" rx="3" fill="#e8b84a"><title>' + d + ': ' + v + ' visitantes confirmados</title></rect>';
-    if (v) s += '<text x="' + (x + bw / 2) + '" y="' + (H - p - h - 4) + '" text-anchor="middle">' + v + '</text>';
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img"><defs><linearGradient id="gF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1a8"/><stop offset=".45" stop-color="#e8b84a"/><stop offset="1" stop-color="#9a6410"/></linearGradient></defs>';
+  ds.forEach(function (d, i) { var v = map[d] || 0, h = (H - 2 * p) * v / mx, x = p + i * bw, w = Math.max(2, bw - 3 - ex), y = H - p - h, pv = prev[i] || 0;
+    if (r.prev) { var hp = (H - 2 * p) * pv / mx; s += '<rect x="' + x + '" y="' + (H - p - hp) + '" width="' + (w + ex) + '" height="' + hp + '" rx="2" fill="none" stroke="#35d6ff" stroke-width="1" stroke-dasharray="3 2" opacity=".7"><title>' + pv + ' en ' + esc(r.cmpLabel) + '</title></rect>'; }
+    if (v) {
+      s += '<polygon points="' + (x + w) + ',' + y + ' ' + (x + w + ex) + ',' + (y - ex) + ' ' + (x + w + ex) + ',' + (H - p - ex) + ' ' + (x + w) + ',' + (H - p) + '" fill="#7a4c0a"/>' +
+        '<polygon points="' + x + ',' + y + ' ' + (x + ex) + ',' + (y - ex) + ' ' + (x + w + ex) + ',' + (y - ex) + ' ' + (x + w) + ',' + y + '" fill="#fff1a8"/>' +
+        '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="url(#gF)"><title>' + d + ': ' + v + ' visitantes confirmados</title></rect>';
+      if (ds.length <= 45) s += '<text x="' + (x + w / 2) + '" y="' + (y - ex - 3) + '" text-anchor="middle">' + v + '</text>';
+    }
     if (markDay[d]) s += '<path d="M' + (x + bw / 2) + ' ' + (H - p + 4) + ' l5 9 h-10 z" fill="#35d6ff"><title>' + esc(markDay[d].join(', ')) + '</title></path>';
-    if (i % Math.ceil(ds.length / 10) === 0) s += '<text x="' + x + '" y="' + (H - 4) + '">' + d.slice(5) + '</text>'; });
+    if (i % Math.ceil(ds.length / 10) === 0) s += '<text x="' + x + '" y="' + (H - 4) + '">' + d.slice(ds.length > 120 ? 2 : 5) + '</text>'; });
   return s + '</svg>';
 }
 function hourChart(rows) {
@@ -130,22 +137,30 @@ function liveHtml(d) {
     '<div class="c s6"><h2>Últimas acciones</h2><div class="feed">' + acts + '</div></div>' +
     '<div class="c s6"><h2>Últimas cuentas creadas</h2><div class="feed">' + accs + '</div></div></div>';
 }
+function delta(cur, prev, r) {
+  if (!r.prev) return '';
+  if (!prev) return cur ? '<br><span style="color:var(--ok)">▲ nuevo</span> <span class="m">· antes: 0</span>' : '<br><span class="m">antes: 0</span>';
+  var p = Math.round(100 * (cur - prev) / prev), up = p >= 0;
+  return '<br><span style="color:' + (p === 0 ? 'var(--mut)' : up ? 'var(--ok)' : 'var(--bad)') + '">' + (p === 0 ? '=' : up ? '▲ +' + F(p) + '%' : '▼ ' + F(p) + '%') + '</span> <span class="m">· ' + esc(r.cmpLabel) + ': ' + F(prev) + '</span>';
+}
+function titulo(r) { return r.range === 'today' ? 'Hoy' : r.range === 'month' ? 'Mes actual' : r.range === 'all' ? 'Histórico completo' : 'Últimos ' + r.range + ' días'; }
 function repHtml(r) {
   var k = r.kpi, pct = k.cookies ? (100 * k.confirmed / k.cookies).toFixed(1).replace('.', ',') : '0';
   var kp = '<div class="kp">' +
-    '<div class="k"><span>Visitantes confirmados</span><b>' + F(k.confirmed) + '</b><i>de ' + F(k.cookies) + ' cookies (' + pct + '%)</i></div>' +
+    '<div class="k"><span>Visitantes confirmados</span><b>' + F(k.confirmed) + '</b><i>de ' + F(k.cookies) + ' cookies (' + pct + '%)' + delta(k.confirmed, r.prev && r.prev.confirmed, r) + '</i></div>' +
     '<div class="k"><span>Por qué están confirmados</span><b style="font-size:20px;line-height:1.5">' + F(k.byTime) + ' por tiempo<br>' + F(k.byAccount) + ' con cuenta<br>' + F(k.byAction) + ' por acción</b><i>una misma persona puede cumplir varias</i></div>' +
     '<div class="k"><span>Tiempo activo por confirmado</span><b>' + T(k.avgSeconds) + '</b><i>promedio en el período</i></div>' +
-    '<div class="k"><span>Cuentas nuevas</span><b>' + F(k.accountsInPeriod) + '</b><i>' + F(k.accountsTotal) + ' en total</i></div>' +
-    '<div class="k"><span>Acciones medidas</span><b>' + F(k.actions) + '</b><i>clics de intención y registro</i></div>' +
+    '<div class="k"><span>Cuentas nuevas</span><b>' + F(k.accountsInPeriod) + '</b><i>' + F(k.accountsTotal) + ' en total' + delta(k.accountsInPeriod, r.prev && r.prev.accounts, r) + '</i></div>' +
+    '<div class="k"><span>Acciones medidas</span><b>' + F(k.actions) + '</b><i>clics de intención y registro' + delta(k.actions, r.prev && r.prev.actions, r) + '</i></div>' +
+    '<div class="k"><span>Intención de compra</span><b>' + F(k.intentPeople) + '</b><i>personas que hicieron clic en desbloquear, pago o Binance (' + F(k.intent) + ' clics). <b>No son ventas confirmadas.</b>' + delta(k.intentPeople, r.prev && r.prev.intentPeople, r) + '</i></div>' +
     '<div class="k"><span>Cargas sin confirmar</span><b>' + F(k.unconfirmedLoads) + '</b><i>de ' + F(k.unconfirmedCookies) + ' cookies sin 60 s, cuenta ni acción · no cuentan como visitantes</i></div></div>';
   var marks = r.marks.slice(0, 8).map(function (m) { return '<div class="mk"><span class="pill pw">' + esc(m.channel || 'promo') + '</span><span>' + esc(m.label) + '</span><span class="m">' + new Date(m.ts).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</span><u data-del="' + Number(m.id) + '">borrar</u></div>'; }).join('');
   var vis = r.visitors.map(function (v) {
     var who = (v.user ? '<b>' + esc(v.user) + '</b><br>' : '') + '<span class="m">' + place(v.country, v.city) + '</span>';
     return '<tr><td>' + new Date(v.last).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</td><td>' + who + '</td><td>' + esc([v.device, v.browser, v.os].filter(Boolean).join(' · ')) + '</td><td>' + esc(v.ref || 'directo') + '</td><td>' + badges(v.reasons) + '</td><td>' + T(v.dur) + '</td><td>' + F(v.loads) + '</td><td>' + v.pages.map(pl).join('<br>') + (v.morePages ? '<br><span class="m">+' + v.morePages + ' más</span>' : '') + '</td><td>' + (v.events.length ? v.events.map(function (e) { return esc(EV[e.split(' · ')[0]] || e); }).join('<br>') : '<span class="m">—</span>') + '</td></tr>';
   }).join('');
-  return '<div class="top" style="margin-top:22px"><h1 style="font-size:20px">Histórico · últimos ' + (r.days === 1 ? '24 horas' : r.days + ' días') + '</h1><span class="m">Se actualiza cada 1 hora · calculado ' + new Date(r.now).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) + '</span></div>' + kp +
-    '<div class="g"><div class="c s12"><h2>Visitantes confirmados por día<small>▲ celeste = promo marcada</small></h2>' + dayChart(r) +
+  return '<div class="top" style="margin-top:22px"><h1 style="font-size:20px">' + titulo(r) + '</h1><span class="m">' + (k.lastHit ? 'Última visita registrada hace ' + ago(k.lastHit) + (Date.now() - k.lastHit > 1800000 ? ' <b class="bad">· revisar: hace rato que no entra nada</b>' : '') + ' · ' : '') + 'Se actualiza cada 1 hora · calculado ' + new Date(r.now).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) + '</span></div>' + kp +
+    '<div class="g"><div class="c s12"><h2>Visitantes confirmados por día<small>' + (r.prev ? 'línea celeste punteada = ' + esc(r.cmpLabel) + ' · ' : '') + '▲ celeste = promo marcada</small></h2>' + dayChart(r) +
     '<div class="frm"><input type="text" id="ml" placeholder="Qué publicaste (ej: post en Reddit)" maxlength="80"><select id="mc"><option>reddit</option><option>x</option><option>telegram</option><option>instagram</option><option>foro</option><option>otro</option></select><input type="datetime-local" id="mt"><button class="btn" id="ma" type="button">Marcar promo</button></div>' + marks + '</div>' +
     '<div class="c s6"><h2>Horas del día<small>visitantes confirmados, en tu hora</small></h2>' + hourChart(r.byHour) + '</div>' +
     '<div class="c s6"><h2>De dónde llegan<small>origen de la primera visita de cada confirmado</small></h2>' + bars(r.refs, 'u', function (x) { return x.k; }) + '</div>' +
@@ -161,10 +176,10 @@ function repHtml(r) {
 function shell() {
   var app = document.getElementById('app');
   app.innerHTML = '<div class="top"><div><h1>Estadísticas de Twerkhub</h1></div><div class="sel" id="sel">' +
-    [[1, '24 h'], [7, '7 días'], [30, '30 días'], [90, '90 días']].map(function (p) { return '<button type="button" class="btn' + (p[0] === days ? ' on' : '') + '" data-d="' + p[0] + '">' + p[1] + '</button>'; }).join('') +
+    [['today', 'Hoy'], ['month', 'Mes actual'], ['all', 'Histórico']].map(function (p) { return '<button type="button" class="btn' + (p[0] === range ? ' on' : '') + '" data-d="' + p[0] + '">' + p[1] + '</button>'; }).join('') +
     '<button type="button" class="btn" id="refresh">Actualizar histórico ahora</button><button type="button" class="btn" id="snd"></button><a class="btn" href="/admin-users.html">Todos los usuarios</a></div></div>' +
     '<div class="status" id="status"></div><div id="def"></div><div id="live"><div class="gate">Consultando…</div></div><div id="rep"></div>';
-  document.getElementById('sel').onclick = function (e) { var b = e.target.closest('[data-d]'); if (!b) return; days = +b.dataset.d; document.querySelectorAll('#sel [data-d]').forEach(function (x) { x.classList.toggle('on', x === b); }); loadReport(); };
+  document.getElementById('sel').onclick = function (e) { var b = e.target.closest('[data-d]'); if (!b) return; range = b.dataset.d; document.querySelectorAll('#sel [data-d]').forEach(function (x) { x.classList.toggle('on', x === b); }); loadReport(); };
   document.getElementById('refresh').onclick = function () { loadReport(); };
   var snd = document.getElementById('snd');
   function paint() { snd.textContent = soundOn ? '🔔 Sonido: activado' : '🔕 Activar sonido'; snd.classList.toggle('on', soundOn); }
@@ -193,7 +208,7 @@ function loadLive() {
 }
 function loadReport() {
   if (repBusy || denied) return; repBusy = true; document.getElementById('refresh').textContent = 'Actualizando…';
-  api('/api/stats/report?days=' + days + '&tz=' + TZ).then(function (r) { rep = r; repOkAt = Date.now(); repFail = 0; keepForm(function () { document.getElementById('rep').innerHTML = repHtml(r); wireReport(); }); })
+  api('/api/stats/report?range=' + range + '&tz=' + TZ).then(function (r) { rep = r; repOkAt = Date.now(); repFail = 0; keepForm(function () { document.getElementById('rep').innerHTML = repHtml(r); wireReport(); }); })
     .catch(function () { repFail++; })
     .finally(function () { repBusy = false; var b = document.getElementById('refresh'); if (b) b.textContent = 'Actualizar histórico ahora'; paintStatus(); });
 }
