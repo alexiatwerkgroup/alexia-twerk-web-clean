@@ -89,7 +89,7 @@ function dayChart(r) {
   var imap = {}; (r.interestedByDay || []).forEach(function (x) { imap[x.d] = x.u; });
   var prev = {}; if (r.prev) r.prev.byIndex.forEach(function (x) { prev[x.i] = x.u; });
   var W = 900, H = 220, p = 28, mx = Math.max.apply(null, ds.map(function (d, i) { return Math.max(map[d] || 0, prev[i] || 0); }).concat([1])), bw = (W - 2 * p) / ds.length, ex = Math.min(5, bw / 3);
-  var markDay = {}; r.marks.forEach(function (k) { var d = new Date(k.ts + r.tz * 60000).toISOString().slice(0, 10); (markDay[d] = markDay[d] || []).push(k.channel || 'promo'); });
+  var markDay = {}; r.marks.forEach(function (k) { var d = new Date(k.ts + r.tz * 60000).toISOString().slice(0, 10); (markDay[d] = markDay[d] || []).push((k.label || k.channel || 'promo') + ' · ' + new Date(k.ts).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })); });
   var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img"><defs><linearGradient id="gF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1a8"/><stop offset=".45" stop-color="#e8b84a"/><stop offset="1" stop-color="#9a6410"/></linearGradient></defs>';
   ds.forEach(function (d, i) { var v = map[d] || 0, h = (H - 2 * p) * v / mx, x = p + i * bw, w = Math.max(2, bw - 3 - ex), y = H - p - h, pv = prev[i] || 0;
     if (r.prev) { var hp = (H - 2 * p) * pv / mx; s += '<rect x="' + x + '" y="' + (H - p - hp) + '" width="' + (w + ex) + '" height="' + hp + '" rx="2" fill="none" stroke="#35d6ff" stroke-width="1" stroke-dasharray="3 2" opacity=".7"><title>' + pv + ' en ' + esc(r.cmpLabel) + '</title></rect>'; }
@@ -101,7 +101,7 @@ function dayChart(r) {
       if (ds.length <= 45) s += '<text x="' + (x + w / 2) + '" y="' + (y - ex - 3) + '" text-anchor="middle">' + v + '</text>';
     }
     if (bmap[d] >= 15) s += '<circle cx="' + (x + bw / 2) + '" cy="12" r="' + Math.min(9, 3 + bmap[d] / 70) + '" fill="#ff6b6b" opacity=".85"><title>' + F(bmap[d]) + ' robots descartados este día (entraron con señal, pero en ola)</title></circle>';
-    if (markDay[d]) s += '<path d="M' + (x + bw / 2) + ' ' + (H - p + 4) + ' l5 9 h-10 z" fill="#35d6ff"><title>' + esc(markDay[d].join(', ')) + '</title></path>';
+    if (markDay[d]) { var mk = markDay[d], mkx, mw = Math.min(14, Math.max(7, bw / mk.length)), mkx = x + bw / 2 - mw * (mk.length - 1) / 2; mk.forEach(function (t, q) { var cx = mkx + q * mw; s += '<path d="M' + cx + ' ' + (H - p + 4) + ' l4 8 h-8 z" fill="#35d6ff"><title>' + esc(mk.join(' | ')) + '</title></path>'; }); if (mk.length > 1) s += '<text x="' + (x + bw / 2) + '" y="' + (H - p + 22) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#35d6ff">' + mk.length + '</text>'; }
     if (i % Math.ceil(ds.length / 10) === 0) s += '<text x="' + x + '" y="' + (H - 4) + '">' + d.slice(ds.length > 120 ? 2 : 5) + '</text>'; });
   return s + '</svg>';
 }
