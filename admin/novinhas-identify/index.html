@@ -1,0 +1,21 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Novinhas · Búsqueda / Identificación</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#0b0b0d;color:#f3f3f3;font:15px system-ui;padding:20px;max-width:1000px;margin:auto}h1{font-size:22px;color:#e8b84a;margin:0 0 4px}.s{color:#aaa;margin:0 0 16px}
+.f{display:flex;gap:8px;margin:12px 0}.f button{padding:9px 14px;border:0;border-radius:10px;background:#26262c;color:#ddd;font:700 13px system-ui;cursor:pointer}.f button.on{background:linear-gradient(#f6d77a,#c9962c);color:#111}
+.it{display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:start;border:1px solid #2a2a33;background:#14141a;border-radius:12px;padding:12px;margin:8px 0}.it.done{opacity:.6}.k{font:800 11px system-ui;letter-spacing:.08em;text-transform:uppercase;border-radius:8px;padding:6px 8px;text-align:center}.k.name{background:#4a2a8a}.k.video{background:#0f6d5f}
+.n{font-weight:700;font-size:16px}.m{color:#9a9aa6;font-size:13px}video{width:100%;max-width:340px;border-radius:10px;margin-top:8px;background:#000}.b{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.b button{padding:7px 11px;border:0;border-radius:9px;font:700 12px system-ui;cursor:pointer;background:#26262c;color:#ddd}.b .ok{background:#1f6f43;color:#fff}.b .no{background:#7a1f1f;color:#fff}
+@media(max-width:640px){.it{grid-template-columns:1fr}.b{justify-content:flex-start}}</style></head><body>
+<h1>Búsqueda / Identificación</h1><p class="s" id="s">Cargando…</p>
+<div class="f"><button data-f="pending" class="on">Pendientes</button><button data-f="all">Todos</button><button data-f="video">Videos</button><button data-f="name">Nombres</button></div>
+<div id="app"></div>
+<script>
+var A='/api/novinhas/identify-admin',ALL=[],F='pending';
+function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function fd(t){return new Date(t*1000).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
+function load(){fetch(A,{credentials:'same-origin',cache:'no-store'}).then(function(r){return r.json().then(function(j){return{s:r.status,j:j}})}).then(function(x){if(x.s!==200){document.getElementById('s').textContent='Entrá con tu cuenta de dueño para ver esto.';return}ALL=x.j.items;draw()}).catch(function(){document.getElementById('s').textContent='Error de conexión'})}
+function draw(){var l=ALL.filter(function(i){return F==='all'||(F==='pending'&&i.status==='pending')||F===i.kind});var p=ALL.filter(function(i){return i.status==='pending'}).length;document.getElementById('s').textContent=ALL.length+' envíos en total · '+p+' pendientes';
+document.getElementById('app').innerHTML=l.length?l.map(function(i){return '<div class="it '+(i.status==='done'?'done':'')+'"><div class="k '+i.kind+'">'+(i.kind==='video'?'Video':'Nombre')+'</div><div><div class="n">'+esc(i.name||'(sin nombre)')+'</div><div class="m">'+(i.handle?esc(i.handle)+' · ':'')+esc(i.email)+' · '+fd(i.ts)+' · '+esc(i.status)+'</div>'+(i.hasVideo?'<video controls preload="none" src="'+A+'?v='+i.id+'"></video>':'')+'</div><div class="b"><button class="ok" data-d="'+i.id+'">Listo</button><button data-p="'+i.id+'">Pendiente</button><button class="no" data-x="'+i.id+'">Borrar</button></div></div>'}).join(''):'<p class="s">No hay envíos en esta vista.</p>';
+[].forEach.call(document.querySelectorAll('[data-d],[data-p]'),function(b){b.onclick=function(){var id=b.dataset.d||b.dataset.p;fetch(A,{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({id:id,status:b.dataset.d?'done':'pending'})}).then(load)}});
+[].forEach.call(document.querySelectorAll('[data-x]'),function(b){b.onclick=function(){if(confirm('¿Borrar este envío y su video?'))fetch(A+'?id='+b.dataset.x,{method:'DELETE',credentials:'same-origin'}).then(load)}})}
+[].forEach.call(document.querySelectorAll('.f button'),function(b){b.onclick=function(){F=b.dataset.f;[].forEach.call(document.querySelectorAll('.f button'),function(x){x.classList.toggle('on',x===b)});draw()}});
+load();
+</script></body></html>

@@ -1,10 +1,10 @@
 // Busqueda / identificacion de bailarinas Novinhas.
-//  GET  /api/novinhas/identify          -> { auth, videos, names, max } (lo enviado por el usuario; max 20 de cada tipo)
-//  POST /api/novinhas/identify          (multipart) kind=name  + name [+ handle]            -> 50 tokens por nombre nuevo (max 20)
-//                                       kind=video + file(video) + adults=1 [+ names]       -> 100 tokens por video (max 20)
+//  GET  /api/novinhas/identify          -> { auth, videos, names, max } (lo enviado por el usuario)
+//  POST /api/novinhas/identify          (multipart) kind=name  + name [+ handle]            -> 50 tokens por nombre nuevo
+//                                       kind=video + file(video) + adults=1 [+ names]       -> 100 tokens por video
 // Recompensa en TOKENS (profiles.tokens): 50 por nombre, 100 por video. Requiere cuenta. Todo queda en estado "pending" para revision del dueno; los videos van a R2 (_ident/), nunca publicos.
 import { authenticate } from '../../_lib/auth.js';
-const REWARD = { name: 50, video: 100 }, MAX = 20, MAX_BYTES = 80 * 1024 * 1024, VID = /^video\/(mp4|quicktime|webm|x-matroska|x-msvideo)$/;
+const REWARD = { name: 50, video: 100 }, MAX_PER_HOUR = 30, MAX_BYTES = 80 * 1024 * 1024, VID = /^video\/(mp4|quicktime|webm|x-matroska|x-msvideo)$/;
 const J = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
 async function who(request, env) {
   try {
@@ -27,14 +27,15 @@ export async function onRequest({ request, env }) {
   await ensure(env.DB);
   const me = await who(request, env);
   if (request.method !== 'POST') {
-    if (!me) return J({ auth: false, max: MAX });
-    const c = await counts(env.DB, me.uid); return J({ auth: true, videos: c.video, names: c.name, max: MAX });
+    if (!me) return J({ auth: false });
+    const c = await counts(env.DB, me.uid); return J({ auth: true, videos: c.video, names: c.name });
   }
   if (!me) return J({ error: 'login' }, 401);
   let f; try { f = await request.formData(); } catch (e) { return J({ error: 'bad_request' }, 400); }
   const kind = f.get('kind') === 'video' ? 'video' : 'name';
   const c = await counts(env.DB, me.uid);
-  if (c[kind] >= MAX) return J({ error: 'limit', videos: c.video, names: c.name, max: MAX }, 429);
+  const hr = await env.DB.prepare('SELECT COUNT(*) c FROM nv_ident WHERE uid = ? AND ts > ?').bind(me.uid, Math.floor(Date.now() / 1000) - 3600).first();
+  if (hr && hr.c >= MAX_PER_HOUR) return J({ error: 'limit', videos: c.video, names: c.name }, 429);
   const id = crypto.randomUUID(), ts = Math.floor(Date.now() / 1000);
   let name = clean(f.get('name') || f.get('names'), 160), handle = clean(f.get('handle'), 80), key = '';
   if (kind === 'name') {
@@ -55,5 +56,5 @@ export async function onRequest({ request, env }) {
     env.DB.prepare('UPDATE profiles SET tokens = COALESCE(tokens,0) + ?, total_earned = COALESCE(total_earned,0) + ? WHERE id = ?').bind(REWARD[kind], REWARD[kind], me.uid),
   ]);
   const n = await counts(env.DB, me.uid);
-  return J({ ok: true, tokens: REWARD[kind], videos: n.video, names: n.name, max: MAX });
+  return J({ ok: true, tokens: REWARD[kind], videos: n.video, names: n.name });
 }
