@@ -7,6 +7,6 @@ var pr=document.createElement('p');pr.id='nprog';pr.style.cssText='margin:16px 0
 function upProg(){var sn={};try{sn=JSON.parse(localStorage.getItem('twk_nov_seen:'+slug)||'{}')}catch(_){}var seen=all.filter(function(v){return sn[v.id]}).length;pr.textContent=d.total+' VIDEOS · WATCHED '+seen+' OF '+d.total;}
 upProg();window.addEventListener('pageshow',upProg);window.addEventListener('focus',upProg);
 if(d.vip&&!d.unlocked){var s=document.createElement('script');s.src='/assets/novinhas-channel-quota.js';s.dataset.total=d.total;s.dataset.shown=d.free;s.dataset.target='.banner';document.head.appendChild(s)}
-else if(d.vip){var b=document.createElement('span');b.className='vipok';b.textContent='VIP ACTIVE';document.querySelector('.banner').appendChild(b)}
+else if(d.vip){var b=document.createElement('span');b.className='vipok';b.textContent='✦ ACCESO PREMIUM';document.querySelector('.banner').appendChild(b)}
 search.addEventListener('input',render);render()}).catch(function(){count.textContent='This channel is not available.'})})();
 </script><script src="/assets/novinhas-nav.js?v=2"></script></body></html>

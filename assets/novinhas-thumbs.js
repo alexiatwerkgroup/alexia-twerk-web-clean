@@ -8,10 +8,10 @@
     var vids = [];
     cards.forEach(function (a) {
       var m = /[?&]c=([^&]+)/.exec(a.getAttribute('href')), t = m && d.thumbs[decodeURIComponent(m[1])], img = a.querySelector('img'); if (!t || !img) return;
-      var cs = getComputedStyle(img), v = document.createElement('video');
+      var v = document.createElement('video');
       v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata'; v.src = t.src;
       v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
-      v.style.cssText = 'width:' + cs.width + ';height:' + cs.height + ';object-fit:cover;flex:none;border-radius:' + cs.borderRadius + ';background:#000;display:none;pointer-events:none;cursor:pointer';
+      v.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;display:none;pointer-events:none;cursor:pointer';
       v.addEventListener('loadeddata', function () { v.style.display = ''; img.style.display = 'none'; });
       v.addEventListener('error', function () { img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); });
       img.parentNode.insertBefore(v, img);
