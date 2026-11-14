@@ -86,6 +86,7 @@ export async function onRequestGet({ request, env }) {
     /*E2*/ q(`SELECT CAST(strftime('%w', ts/1000+${off}, 'unixepoch') AS INTEGER) w, CAST(strftime('%H', ts/1000+${off}, 'unixepoch') AS INTEGER) h, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY w, h`),
     /*E3*/ q(`SELECT country c, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?1 AND vid IN burst AND country <> '' GROUP BY country ORDER BY u DESC LIMIT 8`),
     /*E4*/ q(`SELECT (SELECT COUNT(DISTINCT vid) FROM tw_hits WHERE ts > ?1 AND vid IN burst) burstCookies, (SELECT COUNT(*) FROM bm) burstMinutes`),
+    /*E5*/ q(`SELECT COUNT(DISTINCT vid) total, COUNT(DISTINCT CASE WHEN ref IS NOT NULL AND ref <> '' THEN vid END) conRef FROM tw_hits WHERE ts > ?1 AND vid NOT IN cv AND vid NOT IN burst`),
   ]));
   const one = i => (res[i].results || [])[0] || {};
   const base = 19 + (prevSince == null ? 0 : 5);
@@ -135,7 +136,7 @@ export async function onRequestGet({ request, env }) {
       accountsTotal: one(12).total || 0, accountsInPeriod: (res[13].results || []).reduce((a, r) => a + r.n, 0),
       lastHit: one(17).lastHit || null, signups: one(17).signups || 0, intent: one(17).n || 0, intentPeople: one(17).u || 0 },
     prev: prevSince == null ? null : { since: prevSince, until: prevUntil, ...one(19), byIndex: res[20].results || [], countries: res[21].results || [], refs: res[22].results || [], pages: res[23].results || [] },
-    peaks, botsByDay: res[base + 1].results || [], heat: res[base + 2].results || [], botCountries: res[base + 3].results || [], burst: { cookies: ((res[base + 4].results || [])[0] || {}).burstCookies || 0, minutes: ((res[base + 4].results || [])[0] || {}).burstMinutes || 0, min: BURST_MIN },
+    peaks, botsByDay: res[base + 1].results || [], heat: res[base + 2].results || [], botCountries: res[base + 3].results || [], noSignal: { total: ((res[base + 5].results || [])[0] || {}).total || 0, conRef: ((res[base + 5].results || [])[0] || {}).conRef || 0 }, burst: { cookies: ((res[base + 4].results || [])[0] || {}).burstCookies || 0, minutes: ((res[base + 4].results || [])[0] || {}).burstMinutes || 0, min: BURST_MIN },
     byDay: res[1].results || [], interestedByDay: res[18].results || [], loadsByDay: res[2].results || [], byHour: res[3].results || [], countries: res[4].results || [], cities: res[5].results || [],
     refs: res[6].results || [], pages: res[7].results || [], devices: res[8].results || [], browsers: res[9].results || [], oses: res[10].results || [],
     actions: res[11].results || [], accountsByDay: res[13].results || [], marks: res[14].results || [], visitors: list,
