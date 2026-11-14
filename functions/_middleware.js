@@ -60,7 +60,7 @@ export async function onRequest(context) {
       })());
       add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=6" defer></script>';
     }
-    add += '<script src="/assets/twerkhub-counter.js?v=20261105-owner-auth" defer></script>';
+    add += '<script src="/assets/twerkhub-counter.js?v=20261114-stats2" defer></script>';
     add += '<script>(function(){document.querySelectorAll(".tn2-lk a,.tn2 details nav a,.tf2 a").forEach(function(a){var h=a.getAttribute("href")||"";if(h.indexOf("/membership")===0||h.indexOf("/pt/membership")===0){a.href="/tokens/";a.textContent="BALANCE"}})})();</script>';
     if (!html.includes('/assets/twk-ui.css')) add += '<link rel="stylesheet" href="/assets/twk-ui.css?v=1">';
     if (!html.includes('/assets/twk-helpbot.js')) add += '<script src="/assets/twk-helpbot.js?v=3" defer></script>';
