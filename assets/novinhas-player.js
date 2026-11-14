@@ -165,7 +165,7 @@
     box.appendChild(nx); var nxT;
     function showNext() {
       if (!nextV) return;
-      var n = 5; nx.innerHTML = '<small>UP NEXT</small><img alt="" src="' + nextV.poster + '"><b></b><div><span class="np-cd" style="font:800 28px system-ui;color:#ffd76a"></span></div><div style="display:flex;gap:10px"><button class="twk-btn twk-btn--sm" data-a="go">PLAY NOW</button><button class="twk-btn twk-btn--ghost twk-btn--sm" data-a="no">CANCEL</button></div>';
+      var n = 3; nx.innerHTML = '<small>UP NEXT</small><img alt="" src="' + nextV.poster + '"><b></b><div><span class="np-cd" style="font:800 28px system-ui;color:#ffd76a"></span></div><div style="display:flex;gap:10px"><button class="twk-btn twk-btn--sm" data-a="go">PLAY NOW</button><button class="twk-btn twk-btn--ghost twk-btn--sm" data-a="no">CANCEL</button></div>';
       nx.querySelector('b').textContent = nextV.title; nx.classList.add('on');
       var cd = nx.querySelector('.np-cd'); cd.textContent = n;
       clearInterval(nxT); nxT = setInterval(function () { n--; cd.textContent = n; if (n <= 0) { clearInterval(nxT); location.href = urlFor(nextV, true); } }, 1000);

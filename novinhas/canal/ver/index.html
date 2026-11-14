@@ -4,14 +4,12 @@
 /* Botonera moderna: todos los botones iguales (alto, radio, tipografia) con colores vivos */
 .np-act .twk-btn,.np-bar .twk-btn,.np-bar .np-pill,.np-qbar{height:42px!important;border-radius:12px!important;border:0!important;padding:0 16px!important;min-width:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px;font:800 12px/1 system-ui,sans-serif!important;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;color:#fff!important;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:transform .12s,box-shadow .12s;cursor:pointer}
 .np-act .twk-btn:hover,.np-bar .twk-btn:hover,.np-bar .np-pill:hover{transform:translateY(-1px)}
-.np-act>a.twk-btn{background:linear-gradient(135deg,#ffc94d,#ff8f00)!important;color:#1d0f00!important}
-#nlike{background:linear-gradient(135deg,#ff2e88,#ff6aae)!important}
-#nlike.on{box-shadow:0 0 0 2px #fff inset,0 4px 16px rgba(255,46,136,.55)!important}
-#nfav{background:linear-gradient(135deg,#00c6a7,#00a3ff)!important}
-#nfav.on{box-shadow:0 0 0 2px #fff inset,0 4px 16px rgba(0,198,167,.55)!important}
-#nshare{background:linear-gradient(135deg,#8a5cff,#c04cff)!important}
-#nfeat{background:linear-gradient(135deg,#ffd200,#ff9100)!important;color:#1d0f00!important;max-width:300px;overflow:hidden;text-overflow:ellipsis}
-#ndel{background:linear-gradient(135deg,#ff5252,#c40024)!important}
+.np-act>a.twk-btn{background:linear-gradient(135deg,#2a2208,#1a1500)!important;border:1.5px solid #c8970a!important;color:#ffe9a6!important}
+#nlike,#nfav,#nshare,#nfeat{background:linear-gradient(135deg,#23232b,#15151a)!important;box-shadow:0 0 0 1.5px #3a3a46 inset,0 4px 14px rgba(0,0,0,.4)!important}
+#nlike.on{box-shadow:0 0 0 2px #ffd76a inset,0 4px 16px rgba(255,215,106,.22)!important}
+#nfav.on{box-shadow:0 0 0 2px #ffd76a inset,0 4px 16px rgba(255,215,106,.22)!important}
+#nfeat{max-width:300px;overflow:hidden;text-overflow:ellipsis}
+#ndel{background:linear-gradient(135deg,#28100e,#1a0808)!important;box-shadow:0 0 0 1.5px #4a1e1e inset,0 4px 14px rgba(0,0,0,.4)!important}
 .np-act .twk-btn svg,.np-act .twk-btn svg *{fill:currentColor!important;stroke:none!important;width:17px;height:17px;margin:0!important}
 .np-bar .np-pill,.np-bar .twk-btn,.np-qbar{background:linear-gradient(135deg,#23232b,#15151a)!important;box-shadow:0 0 0 1.5px #3a3a46 inset,0 4px 14px rgba(0,0,0,.4)}
 </style></head><body><header><a id="back" href="/novinhas/">&larr; Channel</a><a href="/">Twerkhub</a></header><main><div class="np-wrap" id="wrap"><div><div id="stage"></div><h1 id="title"></h1><div id="chan"></div><div id="bar"></div><div id="info"></div><p id="msg"></p></div><aside class="np-side" id="side"></aside></div><p class="foot">18+ only. All performers featured are adults over 18 and appear under written agreement.</p></main><script src="/assets/novinhas-player.js?v=15"></script><script>
@@ -36,7 +34,7 @@ var fk='twk_nov_fav:'+slug+':'+v.id,faved=false;try{faved=localStorage.getItem(f
 function hb(){if(document.hidden)return;fetch('/api/novinhas/featured?hb='+encodeURIComponent(slug),{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({d:dev})}).catch(function(){})}hb();setInterval(hb,120000);
 fetch('/api/novinhas/featured?me=1',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){if(!j.owner)return;var b=document.getElementById('nfeat');b.style.display='';b.onclick=function(){b.disabled=true;fetch('/api/novinhas/enhance',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,id:v.id,title:v.title||''})}).catch(function(){});fetch('/api/novinhas/featured',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,id:v.id,t:(document.querySelector('.np-stage video')||{}).currentTime||0})}).then(function(r){return r.json()}).then(function(x){b.textContent=x.ok?'✓ Preview · '+x.queued:'Error: '+(x.error||'')}).catch(function(){b.textContent='Error';b.disabled=false})};
 var db=document.createElement('button');db.type='button';db.className='twk-btn twk-btn--sm';db.id='ndel';db.textContent='Delete';b.parentNode.appendChild(db);var arm=0;
-db.onclick=function(){if(!arm){arm=1;db.textContent='Sure? Click again';setTimeout(function(){arm=0;db.textContent='Delete'},4000);return}
+db.onclick=function(){if(!arm){arm=1;db.textContent='Sure? Click again';var vEl=document.querySelector('.np-stage video');if(vEl)vEl.pause();var noBtn=document.querySelector('.np-next .twk-btn--ghost');if(noBtn)noBtn.click();setTimeout(function(){arm=0;db.textContent='Delete'},4000);return}
 db.disabled=true;db.textContent='Deleting…';fetch('/api/novinhas/delete',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:slug,id:v.id})}).then(function(r){return r.json()}).then(function(x){if(x.ok){location.href='/novinhas/canal/?c='+encodeURIComponent(slug)}else{db.textContent='Error: '+(x.error||'');db.disabled=false}}).catch(function(){db.textContent='Error';db.disabled=false})}}).catch(function(){})})();
 [].forEach.call(document.querySelectorAll('.np-act .twk-btn svg'),function(x){x.style.setProperty('fill','#fff','important');x.style.setProperty('stroke','none','important');x.style.setProperty('width','18px','important');x.style.setProperty('height','18px','important')});
 document.getElementById('nshare').onclick=function(){var u=location.origin+'/novinhas/canal/ver/?c='+encodeURIComponent(slug)+'&v='+String(v.id).padStart(2,'0'),b=this.querySelector('span');if(navigator.share){navigator.share({title:v.title,url:u}).catch(function(){})}else if(navigator.clipboard){navigator.clipboard.writeText(u).then(function(){b.textContent='Link copied';setTimeout(function(){b.textContent='Share'},1800)})}};
