@@ -1,0 +1,21 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Cazadores · panel</title>
+<style>body{margin:0;background:#0b0b0d;color:#f4efe2;font:14px/1.5 Inter,system-ui,Arial,sans-serif;padding:24px}h1{font-size:22px;color:#f0b90b;margin:0 0 4px}h2{font-size:15px;color:#f0b90b;margin:26px 0 8px;letter-spacing:.06em;text-transform:uppercase}.k{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.k div{background:#16120a;border:1px solid #4a3d16;border-radius:10px;padding:10px 16px}.k b{display:block;font-size:22px;color:#f0b90b}table{border-collapse:collapse;width:100%;max-width:900px}td,th{border-bottom:1px solid #2a2310;padding:7px 10px;text-align:left}th{color:#a89c78;font-size:11px;letter-spacing:.1em;text-transform:uppercase}button{background:#f0b90b;color:#1a1100;border:0;border-radius:8px;padding:8px 14px;font-weight:800;cursor:pointer;margin:6px 8px 0 0}.m{color:#a89c78}</style></head><body>
+<h1>Cazadores</h1><div class="m" id="s">Cargando...</div><div class="k" id="k"></div>
+<h2>Ganadores de moneda de platino (sean o no hunters)</h2><div id="w"></div><button id="cw">Copiar mails</button>
+<h2>Quieren ser hunters</h2><div id="l"></div><button id="cl">Copiar mails</button>
+<script>
+(function(){var a={};try{a=JSON.parse(localStorage.getItem('alexia-auth-v3')||'{}')||{}}catch(e){}var h=a.token?{Authorization:'Bearer '+a.token}:{};
+function g(q){return fetch('/api/novinhas/hunt?'+q,{credentials:'same-origin',headers:h,cache:'no-store'}).then(function(r){return r.json().then(function(j){return{st:r.status,j:j}})})}
+function esc(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function d(t){return t?new Date(t).toLocaleString('es-AR',{timeZone:'America/Argentina/Buenos_Aires'}):''}
+function tbl(rows,cols){return '<table><tr>'+cols.map(function(c){return'<th>'+c[0]+'</th>'}).join('')+'</tr>'+rows.map(function(r){return'<tr>'+cols.map(function(c){return'<td>'+esc(c[1](r))+'</td>'}).join('')+'</tr>'}).join('')+'</table>'}
+function cp(id,list){document.getElementById(id).onclick=function(){navigator.clipboard.writeText(list().map(function(r){return r.email}).join('\n'));this.textContent='Copiado'}}
+Promise.all([g('winners=1'),g('list=1'),g('stats=1')]).then(function(r){
+ if(r[0].st===403){document.getElementById('s').textContent='Solo el dueño puede ver este panel. Entrá con tu cuenta.';return}
+ var w=r[0].j.list||[],l=r[1].j.list||[],s=r[2].j;document.getElementById('s').textContent='Datos en vivo';
+ document.getElementById('k').innerHTML=[['Sesiones que vieron el cartel',s.plays],['Encontraron el conejo',s.hits+' ('+s.pct+'%)'],['Gran logro',s.greats+' ('+s.pctGreat+'%)'],['Ganadores con cuenta',w.length],['Quieren ser hunters',l.length]].map(function(x){return'<div><b>'+x[1]+'</b>'+x[0]+'</div>'}).join('');
+ document.getElementById('w').innerHTML=tbl(w,[['Mail',function(x){return x.email}],['Usuario',function(x){return x.username}],['Platino',function(x){return x.coins}],['Voucher VIP',function(x){return x.voucher?'sí':''}],['Hunter',function(x){return x.hunter?'sí':'no'}],['Fecha',function(x){return d(x.ts)}]]);
+ document.getElementById('l').innerHTML=tbl(l,[['Mail',function(x){return x.email}],['Usuario',function(x){return x.username}],['Fecha',function(x){return d(x.ts)}]]);
+ cp('cw',function(){return w});cp('cl',function(){return l});
+}).catch(function(){document.getElementById('s').textContent='Error de conexión.'});})();
+</script></body></html>

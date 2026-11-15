@@ -50,6 +50,9 @@
       '.bill{display:inline-grid;place-items:center;width:20px;height:12px;border-radius:2px;background:linear-gradient(135deg,#2e8b4a,#8be3a0 55%,#2e8b4a);border:1px solid #bff5cb;color:#0b3d1c;font:900 8px Inter,sans-serif;flex:none;position:relative}.bill:after{content:"";position:absolute;inset:2px;border:1px solid rgba(11,61,28,.45);border-radius:1px}' +
       '.gcoin{display:inline-block;width:16px;height:16px;perspective:200px;flex:none}.gcoin i{display:block;width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:gcs 9s linear infinite}.gcoin b{position:absolute;inset:0;border-radius:50%;background:url(/assets/bunny-engraved.png) center/72% no-repeat,radial-gradient(circle at 35% 30%,#fff3b0,#f6c343 40%,#b9770e 80%,#7a4a06);border:1.5px solid #fbd46b;backface-visibility:hidden}.gcoin b:nth-child(2){transform:rotateY(180deg)}' +
       '@keyframes gcs{to{transform:rotateY(360deg)}}' +
+      '.twk-coin .wr.pl{display:none}.twk-coin.hp .wr.pl{display:flex}.twk-coin .plc{display:inline-block;width:16px;height:16px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#fff,#d9dde5 45%,#737986);border:1.5px solid #e6e9ef;box-shadow:0 0 8px rgba(220,225,235,.55);animation:plg 2.6s ease-in-out infinite}.twk-coin .tcp{color:#e7eaf0;min-width:1.4ch;font-variant-numeric:tabular-nums}' +
+      '.twk-coin .vch{display:none;align-self:flex-start;margin-top:2px;padding:2px 6px;border-radius:4px;background:linear-gradient(135deg,#fff0a8,#f0b90b 55%,#a87a08);color:#111;font:800 8px/1.2 "JetBrains Mono",monospace;letter-spacing:.06em;white-space:nowrap}.twk-coin.hv .vch{display:block}' +
+      '@keyframes plg{50%{box-shadow:0 0 14px rgba(240,244,255,.95)}}' +
       '.twk-coin.win{animation:tcw 1.3s ease-out}.twk-coin.win .pig{animation:pw .6s ease-out}@keyframes pw{30%{transform:scale(1.25) rotate(-6deg)}}' +
       '@keyframes tcw{0%{transform:scale(1)}15%{transform:scale(1.14);box-shadow:0 0 50px rgba(255,210,90,.95)}100%{transform:scale(1)}}' +
       '.tcf{position:fixed;z-index:100000;pointer-events:none;font:400 30px Anton,sans-serif;color:#9dffb1;text-shadow:0 0 14px #1fbf55,0 2px 0 #0b3d1c;animation:tcup 1.6s ease-out forwards}.tcf.g{color:#ffe08a;text-shadow:0 0 14px #ff8f00,0 2px 0 #7a4a06}' +
@@ -89,7 +92,7 @@
     var w = document.querySelector('.tn2-w'); if (!w) return;
     document.querySelectorAll('.twk-nav-v1-tokens,.twk-tokens-pill,#twk-tokens-pill').forEach(function (x) { x.remove(); });
     el = document.createElement('a'); el.className = 'twk-coin'; el.href = '/tokens/'; el.setAttribute('aria-label', 'My tokens');
-    el.innerHTML = '<span class="pig"><svg viewBox="0 0 320 260"><defs><linearGradient id="wpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset=".55" stop-color="#ff8f00"/><stop offset="1" stop-color="#b25400"/></linearGradient></defs><rect x="86" y="190" width="34" height="42" rx="10" fill="#b25400"/><rect x="196" y="190" width="34" height="42" rx="10" fill="#b25400"/><path d="M262 120c26-6 40 8 30 24-6 10-18 6-14-4 3-8-8-10-16-6z" fill="none" stroke="#ff8f00" stroke-width="10" stroke-linecap="round"/><ellipse cx="158" cy="130" rx="118" ry="84" fill="url(#wpg)"/><path d="M70 88c10-30 38-36 52-30-14 10-24 20-26 44z" fill="#ffb347"/><ellipse cx="44" cy="140" rx="32" ry="26" fill="#ff9f1f"/><circle cx="94" cy="108" r="9" fill="#150a00"/><rect x="120" y="54" width="72" height="14" rx="7" fill="#4a2200"/></svg></span><span class="wb"><span class="wallet-heading">BALANCE</span><span class="wr"><span class="wl">TOKENS</span><span class="bill">T</span><span class="tcv">0</span></span><span class="wr"><span class="wl">COINS</span><span class="gcoin"><i><b></b><b></b></i></span><span class="tcc2">0</span></span></span>';
+    el.innerHTML = '<span class="pc" style="display:flex;flex-direction:column;align-items:center;gap:3px"><span class="pig"><svg viewBox="0 0 320 260"><defs><linearGradient id="wpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset=".55" stop-color="#ff8f00"/><stop offset="1" stop-color="#b25400"/></linearGradient></defs><rect x="86" y="190" width="34" height="42" rx="10" fill="#b25400"/><rect x="196" y="190" width="34" height="42" rx="10" fill="#b25400"/><path d="M262 120c26-6 40 8 30 24-6 10-18 6-14-4 3-8-8-10-16-6z" fill="none" stroke="#ff8f00" stroke-width="10" stroke-linecap="round"/><ellipse cx="158" cy="130" rx="118" ry="84" fill="url(#wpg)"/><path d="M70 88c10-30 38-36 52-30-14 10-24 20-26 44z" fill="#ffb347"/><ellipse cx="44" cy="140" rx="32" ry="26" fill="#ff9f1f"/><circle cx="94" cy="108" r="9" fill="#150a00"/><rect x="120" y="54" width="72" height="14" rx="7" fill="#4a2200"/></svg></span><span class="vch">VIP VOUCHER</span></span><span class="wb"><span class="wallet-heading">BALANCE</span><span class="wr"><span class="wl">TOKENS</span><span class="bill">T</span><span class="tcv">0</span></span><span class="wr"><span class="wl">COINS</span><span class="gcoin"><i><b></b><b></b></i></span><span class="tcc2">0</span></span><span class="wr pl"><span class="wl">PLATINUM</span><span class="plc"></span><span class="tcp">0</span></span></span>';
     val = el.querySelector('.tcv'); cval = el.querySelector('.tcc2'); el.title = 'My wallet: tokens and coins';
     var d = w.querySelector('details'); if (d) w.insertBefore(el, d); else w.appendChild(el);
     var cur = Math.round(st().balance || 0), seen = NaN; try { seen = parseInt(localStorage.getItem('twk_coin_seen'), 10); } catch (e) {}
@@ -107,6 +110,22 @@
       }).catch(function () {});
     }
     try { var u0 = JSON.parse(localStorage.getItem('alexia_current_user') || '{}'), cc = JSON.parse(localStorage.getItem('twk_coins_cache_v1') || '{}'); if (u0.email && String(cc.email || '').toLowerCase() === String(u0.email).toLowerCase() && Number.isFinite(Number(cc.coins))) { cshown = Number(cc.coins); cval.textContent = cshown; } } catch (e) {}
+    function setPlat(p, v) {
+      p = Number(p) || 0; v = Number(v) || 0; var pe = el.querySelector('.tcp'); if (pe) pe.textContent = String(p);
+      el.classList.toggle('hp', p > 0); el.classList.toggle('hv', v > 0);
+      el.title = p > 0 ? 'Platinum coins: the reward is not ready to redeem yet. It will be available soon.' : 'My wallet: tokens and coins';
+      try { localStorage.setItem('twk_plat_cache_v1', JSON.stringify({ p: p, v: v })); } catch (er) {}
+    }
+    function pullPlat() {
+      var auth = {}; try { auth = JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}; } catch (e) {}
+      var headers = auth.token ? { Authorization: 'Bearer ' + auth.token } : {};
+      fetch('/api/novinhas/hunt', { credentials: 'same-origin', headers: headers }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+        if (d && d.auth && d.wallet) setPlat(d.wallet.platinum, d.wallet.voucher);
+      }).catch(function () {});
+    }
+    try { var pc0 = JSON.parse(localStorage.getItem('twk_plat_cache_v1') || '{}'); if (pc0.p > 0) setPlat(pc0.p, pc0.v); } catch (e) {}
+    addEventListener('twk-platinum-changed', function (e) { var d = e.detail || {}; setPlat(d.platinum, d.voucher); });
+    pullPlat();
     pullCoins(); setInterval(pullCoins, 60000); addEventListener('focus', pullCoins);
     addEventListener('alexia-tokens-changed', function (e) {
       var b = Math.round(((e.detail || st()).balance) || 0), diff = b - shown;
