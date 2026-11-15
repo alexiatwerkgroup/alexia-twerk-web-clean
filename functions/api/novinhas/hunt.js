@@ -1,6 +1,6 @@
 // Concurso "cazador" (Novinhas). Participan usuarios registrados que marcan "quiero participar".
 //  GET            -> {auth, joined}
-//  POST {join}    -> guarda/quita la participacion del usuario logueado (con su email, para contactarlo si resulta elegido)
+//  POST {join, cat:'content'|'money'}    -> guarda/quita la participacion del usuario logueado (con su email, para contactarlo si resulta elegido)
 //  GET ?list=1    -> (dueño) lista de participantes {email, username, ts}
 //  GET ?stats=1   -> {plays, hits, pct}  (porcentaje REAL = sesiones que acertaron / sesiones que jugaron)
 //  GET ?winners=1 -> (dueño) mails que ganaron monedas de platino (5 o 20), sean o no hunters
@@ -12,6 +12,7 @@ async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_hunt_ev (sid TEXT NOT NULL, kind TEXT NOT NULL, ts INTEGER, PRIMARY KEY (sid, kind))').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_plat (uid TEXT PRIMARY KEY, email TEXT, username TEXT, coins INTEGER DEFAULT 0, tier TEXT, voucher INTEGER DEFAULT 0, ts INTEGER)').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_hunt (uid TEXT PRIMARY KEY, email TEXT, username TEXT, joined INTEGER DEFAULT 1, ts INTEGER)').run();
+  try { await db.prepare('ALTER TABLE nv_hunt ADD COLUMN cat TEXT').run(); } catch (e) {}
 }
 async function me(request, env) {
   try {
@@ -27,7 +28,7 @@ export async function onRequest({ request, env }) {
   if (request.method === 'GET') {
     if (url.searchParams.get('list')) {
       if (!u || u.email.toLowerCase() !== OWNER) return J({ error: 'forbidden' }, 403);
-      const r = await env.DB.prepare('SELECT email, username, ts FROM nv_hunt WHERE joined = 1 ORDER BY ts').all();
+      const r = await env.DB.prepare('SELECT email, username, cat, ts FROM nv_hunt WHERE joined = 1 ORDER BY ts').all();
       return J({ ok: true, count: (r.results || []).length, list: r.results || [] });
     }
     if (url.searchParams.get('winners')) {
@@ -44,12 +45,12 @@ export async function onRequest({ request, env }) {
       return J({ ok: true, plays, hits, greats, pct: pc(hits), pctGreat: pc(greats) });
     }
     if (!u) return J({ auth: false, joined: false });
-    const row = await env.DB.prepare('SELECT joined FROM nv_hunt WHERE uid = ?').bind(u.uid).first();
+    const row = await env.DB.prepare('SELECT joined, cat FROM nv_hunt WHERE uid = ?').bind(u.uid).first();
     let tokens = 0, coins = 0;
     try { const t = await env.DB.prepare('SELECT tokens FROM profiles WHERE id = ?').bind(u.uid).first(); tokens = (t && t.tokens) || 0; } catch (e) {}
     try { const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE lower(email) = lower(?)').bind(u.email).first(); coins = (c && c.coins) || 0; } catch (e) {}
     const w = await env.DB.prepare('SELECT coins, voucher FROM nv_plat WHERE uid = ?').bind(u.uid).first();
-    return J({ auth: true, joined: !!(row && row.joined), wallet: { tokens, coins, platinum: (w && w.coins) || 0, voucher: (w && w.voucher) || 0 } });
+    return J({ auth: true, joined: !!(row && row.joined), cat: (row && row.cat) || '', wallet: { tokens, coins, platinum: (w && w.coins) || 0, voucher: (w && w.voucher) || 0 } });
   }
   if (request.method !== 'POST') return J({ error: 'method' }, 405);
   let b = {}; try { b = await request.json(); } catch (e) {}
@@ -68,8 +69,9 @@ export async function onRequest({ request, env }) {
     return J({ ok: true, auth: !!u, platinum, voucher });
   }
   if (!u) return J({ error: 'login' }, 401);
-  const join = b.join ? 1 : 0;
-  await env.DB.prepare('INSERT INTO nv_hunt (uid, email, username, joined, ts) VALUES (?,?,?,?,?) ON CONFLICT(uid) DO UPDATE SET joined = excluded.joined, email = excluded.email, username = excluded.username, ts = CASE WHEN excluded.joined = 1 THEN excluded.ts ELSE nv_hunt.ts END')
-    .bind(u.uid, u.email, u.username, join, Date.now()).run();
+  const join = b.join ? 1 : 0, cat = b.cat === 'money' ? 'money' : (b.cat === 'content' ? 'content' : null);
+  if (join && !cat) return J({ error: 'cat' }, 400);
+  await env.DB.prepare('INSERT INTO nv_hunt (uid, email, username, joined, cat, ts) VALUES (?,?,?,?,?,?) ON CONFLICT(uid) DO UPDATE SET cat = COALESCE(excluded.cat, nv_hunt.cat), joined = excluded.joined, email = excluded.email, username = excluded.username, ts = CASE WHEN excluded.joined = 1 THEN excluded.ts ELSE nv_hunt.ts END')
+    .bind(u.uid, u.email, u.username, join, cat, Date.now()).run();
   return J({ ok: true, joined: !!join });
 }

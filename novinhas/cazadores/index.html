@@ -15,7 +15,7 @@ Promise.all([g('winners=1'),g('list=1'),g('stats=1')]).then(function(r){
  var w=r[0].j.list||[],l=r[1].j.list||[],s=r[2].j;document.getElementById('s').textContent='Datos en vivo';
  document.getElementById('k').innerHTML=[['Sesiones que vieron el cartel',s.plays],['Encontraron el conejo',s.hits+' ('+s.pct+'%)'],['Gran logro',s.greats+' ('+s.pctGreat+'%)'],['Ganadores con cuenta',w.length],['Quieren ser hunters',l.length]].map(function(x){return'<div><b>'+x[1]+'</b>'+x[0]+'</div>'}).join('');
  document.getElementById('w').innerHTML=tbl(w,[['Mail',function(x){return x.email}],['Usuario',function(x){return x.username}],['Platino',function(x){return x.coins}],['Voucher VIP',function(x){return x.voucher?'sí':''}],['Hunter',function(x){return x.hunter?'sí':'no'}],['Fecha',function(x){return d(x.ts)}]]);
- document.getElementById('l').innerHTML=tbl(l,[['Mail',function(x){return x.email}],['Usuario',function(x){return x.username}],['Fecha',function(x){return d(x.ts)}]]);
+ document.getElementById('l').innerHTML=tbl(l,[['Mail',function(x){return x.email}],['Usuario',function(x){return x.username}],['Categoría',function(x){return x.cat==='money'?'dinero (Binance/PayPal)':(x.cat==='content'?'contenido':'')}],['Fecha',function(x){return d(x.ts)}]]);
  cp('cw',function(){return w});cp('cl',function(){return l});
 }).catch(function(){document.getElementById('s').textContent='Error de conexión.'});})();
 </script></body></html>
