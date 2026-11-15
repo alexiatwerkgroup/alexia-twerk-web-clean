@@ -449,8 +449,8 @@
     var rb = document.createElement('button'); rb.type = 'button'; rb.className = BTN + ' np-rb'; rb.innerHTML = '<i></i><span>REC</span>'; rb.hidden = true;
     sr.append(slowBtn, rb); bar.append(pv, nt, ap, kb, qw, sr); qRender();
     fetch('/api/novinhas/mini?me=1', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-      if (!j || !j.owner) return; mini.owner = true;
-      rb.hidden = false; rb.title = 'Record a 30 s miniclip from the current moment (with slow motion if it is on)';
+      if (!j || !(j.owner || j.user)) return; mini.owner = !!j.owner; var canSlow = !!(j.owner || j.vip);
+      rb.hidden = false; rb.title = canSlow ? 'Record a 30 s miniclip from the current moment (with slow motion if it is on)' : 'Record a 30 s miniclip from the current moment' + (j.left != null ? ' · ' + j.left + ' left today' : '');
       var lab = rb.querySelector('span'), rt;
       var recQ = null, recT = 0, recN = 0; // grabacion en curso: 30 s de cuenta regresiva; tocar REC de nuevo la cancela
       function recEnd(txt, cls) { clearInterval(recT); recQ = null; rb.classList.remove('busy', 'rec', 'ok'); if (cls) rb.classList.add(cls); lab.textContent = txt; clearTimeout(rt); rt = setTimeout(function () { rb.classList.remove('ok'); lab.textContent = 'REC'; }, 2600); }
@@ -466,6 +466,7 @@
         }, 4000);
       }
       rb.onclick = function () {
+        if (recQ && !mini.owner) { say('Your miniclip is being prepared'); return; }
         if (recQ) { // segundo toque: cancela el miniclip y lo borra
           var q0 = recQ; clearInterval(waitT); rb.classList.add('busy'); lab.textContent = 'Canceling…';
           fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: q0.c, id: q0.id, start: q0.start, slow: q0.slow }) }).then(function (r) { return r.json(); }).then(function (x) {
@@ -473,14 +474,16 @@
           }).catch(function () { recEnd('Error'); });
           return;
         }
-        var slow = v.playbackRate < 1; rb.classList.add('busy'); lab.textContent = 'Saving…';
+        var slow = v.playbackRate < 1;
+        if (slow && !canSlow) { say('Slow motion miniclips are VIP only'); lab.textContent = 'VIP only'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); return; }
+        rb.classList.add('busy'); lab.textContent = 'Saving…';
         fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: cur.id, t: Math.floor(v.currentTime || 0), slow: slow }) }).then(function (r) { return r.json(); }).then(function (x) {
           rb.classList.remove('busy');
           if (x && x.ok) {
             recQ = { c: slug, id: cur.id, start: x.start, slow: slow ? 1 : 0 }; recN = 30; rb.classList.add('rec'); waitMini(recQ); say('Miniclip saved (' + (slow ? 'slow motion · ' : '') + '30 s from ' + x.start + ' s) · tap REC again to cancel');
             var draw = function () { lab.textContent = recN + ' s · cancel'; rb.title = 'Recording a 30 s miniclip. Tap again to cancel it'; }; draw();
             clearTimeout(rt); clearInterval(recT); recT = setInterval(function () { recN--; if (recN <= 0) { recEnd('Saved · ' + (slow ? 'slow ' : '') + '30 s', 'ok'); } else draw(); }, 1000);
-          } else { lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); }
+          } else { var er = x && x.error; lab.textContent = er === 'daily_limit' ? 'Limit today' : er === 'total_limit' ? 'Limit reached' : er === 'vip_only_slow' ? 'VIP only' : 'Error'; if (er === 'daily_limit') say('Daily limit reached: 3 miniclips per day'); else if (er === 'total_limit') say('You reached the 30 miniclip limit'); clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); }
         }).catch(function () { rb.classList.remove('busy'); lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); });
       };
     }).catch(function () {});
