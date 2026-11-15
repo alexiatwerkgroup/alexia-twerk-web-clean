@@ -1,4 +1,4 @@
-// Miniclips: clips de 30 s con el boton REC del reproductor. Cuentas normales: 3/dia y 30 en total, sin camara lenta (solo VIP) y sin borrar; el dueño sin limites.
+// Miniclips: clips de 30 s con el boton REC del reproductor. Cuentas normales: 10/dia y 100 en total, sin camara lenta (solo VIP) y sin borrar; el dueño sin limites.
 //  POST /api/novinhas/mini {c,id,t,slow}                -> (cuenta) marca un miniclip; la cola se refleja en R2 _config/mini-queue.json
 //  POST /api/novinhas/mini {action:'remove',c,id,start,slow} -> (dueño) borra un miniclip (fila + archivos)
 //  GET  /api/novinhas/mini?me=1                         -> {owner,user,vip,left}
@@ -8,7 +8,7 @@
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
 import { isVip } from '../../_lib/vip.js';
-const DAY_MAX = 3, TOTAL_MAX = 30; // cuentas normales: 3 miniclips por dia y 30 en total (el dueño no tiene tope)
+const DAY_MAX = 10, TOTAL_MAX = 100; // cuentas normales: 10 miniclips por dia y 100 en total (el dueño no tiene tope)
 const SLUG = /^[a-z0-9-]{2,60}$/, KEY = /^([a-z0-9-]{2,60})\/mini\/m-(\d+)-(\d+)-([ns])\.(mp4|webp)$/, SECS = 30;
 const J = (o, s = 200, cc = 'no-store') => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': cc, 'X-Robots-Tag': 'noindex' } });
 // Usuario con cuenta: {id, owner}. Sin sesion -> null.
