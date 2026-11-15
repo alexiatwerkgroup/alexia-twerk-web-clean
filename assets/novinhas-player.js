@@ -117,7 +117,7 @@
 
     var toast = document.createElement('div'); toast.className = 'np-toast'; box.appendChild(toast);
     /* ---------- miniclips (30 s) en el espacio libre de la derecha del video vertical ---------- */
-    var mini = { box: document.createElement('div'), grid: document.createElement('div'), items: [], owner: false };
+    var mini = { box: document.createElement('div'), grid: document.createElement('div'), items: [], owner: false, vip: false };
     mini.box.className = 'np-minis'; mini.box.innerHTML = '<div class="np-mh"><i></i>Miniclips</div>'; mini.grid.className = 'np-mg'; mini.box.appendChild(mini.grid); box.appendChild(mini.box);
     var mbox = document.createElement('div'); mbox.className = 'np-mbox'; mbox.innerHTML = '<div><button type="button" class="mx" aria-label="Close">&times;</button><div class="mi"></div></div>'; document.body.appendChild(mbox);
     function mclose() { var mv = mbox.querySelector('video'); if (mv) { mv.pause(); mv.remove(); } mbox.classList.remove('on'); }
@@ -128,7 +128,8 @@
       var mv = document.createElement('video'); mv.src = it.src; mv.controls = true; mv.loop = true; mv.playsInline = true; mv.autoplay = true; mv.setAttribute('controlsList', 'nodownload noremoteplayback'); mv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
       holder.insertBefore(mv, holder.firstChild);
       var mi = holder.querySelector('.mi'); mi.innerHTML = '<span>' + (it.slow ? 'Slow motion · ' : '') + '30 s · @' + String(it.name).replace(/[<>&"]/g, '') + '</span>'; var go = document.createElement('a'); go.href = it.url; go.textContent = 'Full video'; mi.appendChild(go);
-      if (mini.owner) { var dl = document.createElement('a'); dl.href = it.src; dl.setAttribute('download', it.c + '-' + it.id + '-' + it.start + (it.slow ? '-slow' : '') + '.mp4'); dl.textContent = 'Download'; mi.appendChild(dl); var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = 'Delete'; rm.onclick = function () { rm.disabled = true; fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: it.c, id: it.id, start: it.start, slow: it.slow }) }).then(function () { mclose(); minisLoad(); }).catch(function () { rm.disabled = false; }); }; mi.appendChild(rm); }
+      if (mini.owner || mini.vip) { var dl = document.createElement('a'); dl.href = it.src; dl.setAttribute('download', it.c + '-' + it.id + '-' + it.start + (it.slow ? '-slow' : '') + '.mp4'); dl.textContent = 'Download'; mi.appendChild(dl); }
+      if (mini.owner) { var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = 'Delete'; rm.onclick = function () { rm.disabled = true; fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: it.c, id: it.id, start: it.start, slow: it.slow }) }).then(function () { mclose(); minisLoad(); }).catch(function () { rm.disabled = false; }); }; mi.appendChild(rm); }
       mbox.classList.add('on'); try { v.pause(); } catch (_) {} mv.play().catch(function () {});
     }
     function minisLayout() {
@@ -449,8 +450,8 @@
     var rb = document.createElement('button'); rb.type = 'button'; rb.className = BTN + ' np-rb'; rb.innerHTML = '<i></i><span>REC</span>'; rb.hidden = true;
     sr.append(slowBtn, rb); bar.append(pv, nt, ap, kb, qw, sr); qRender();
     fetch('/api/novinhas/mini?me=1', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-      if (!j || !(j.owner || j.user)) return; mini.owner = !!j.owner; var canSlow = !!(j.owner || j.vip);
-      rb.hidden = false; rb.title = canSlow ? 'Record a 30 s miniclip from the current moment (with slow motion if it is on)' : 'Record a 30 s miniclip from the current moment' + (j.left != null ? ' · ' + j.left + ' left today' : '');
+      if (!j) return; mini.owner = !!j.owner; mini.vip = !!(j.owner || j.vip); var canSlow = mini.vip, guest = !(j.owner || j.user);
+      rb.hidden = false; rb.title = guest ? 'Create a free account to record 30 s miniclips' : canSlow ? 'Record a 30 s miniclip from the current moment (with slow motion if it is on)' : 'Record a 30 s miniclip from the current moment' + (j.left != null ? ' · ' + j.left + ' left today' : '');
       var lab = rb.querySelector('span'), rt;
       var recQ = null, recT = 0, recN = 0; // grabacion en curso: 30 s de cuenta regresiva; tocar REC de nuevo la cancela
       function recEnd(txt, cls) { clearInterval(recT); recQ = null; rb.classList.remove('busy', 'rec', 'ok'); if (cls) rb.classList.add(cls); lab.textContent = txt; clearTimeout(rt); rt = setTimeout(function () { rb.classList.remove('ok'); lab.textContent = 'REC'; }, 2600); }
@@ -466,6 +467,7 @@
         }, 4000);
       }
       rb.onclick = function () {
+        if (guest) { say('Create a free account to record miniclips'); lab.textContent = 'Sign up'; setTimeout(function () { location.href = '/account'; }, 900); return; }
         if (recQ && !mini.owner) { say('Your miniclip is being prepared'); return; }
         if (recQ) { // segundo toque: cancela el miniclip y lo borra
           var q0 = recQ; clearInterval(waitT); rb.classList.add('busy'); lab.textContent = 'Canceling…';

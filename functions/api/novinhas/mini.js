@@ -77,7 +77,7 @@ export async function onRequest({ request, env }) {
     return J({ ok: true, start: t, slow, secs: SECS, total: n });
   }
   if (q.get('me')) {
-    const me = await who(request, env); if (!me) return J({ owner: false, user: false });
+    const me = await who(request, env); if (!me) return J({ owner: false, user: false, vip: await isVip(request, env) });
     if (me.owner) return J({ owner: true, user: true, vip: true });
     await ensure(db); const vip = await isVip(request, env), ql = await quota(db, me.id, now, vip);
     return J({ owner: false, user: true, vip, left: Math.min(ql.today, ql.total), day: ql.day, total: ql.max });
