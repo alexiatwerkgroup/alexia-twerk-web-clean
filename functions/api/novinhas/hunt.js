@@ -83,6 +83,16 @@ export async function onRequest(ctx) {
   }
   if (request.method !== 'POST') return J({ error: 'method' }, 405);
   let b = {}; try { b = await request.json(); } catch (e) {}
+  // Registro de cada aparicion/accion del cartel (sin deduplicar), atado a la cookie de visitante (twv) para verlo en /admin/stats/.
+  try {
+    const KINDS = { play: 1, later: 1, close: 1, reg: 1, cat1: 1, cat2: 1, contact: 1, hit: 1, great: 1 };
+    if (KINDS[b.ev]) {
+      const mv = /(?:^|;\s*)twv=([^;]+)/.exec(request.headers.get('Cookie') || ''), lv = mv ? mv[1].slice(0, 64) : '';
+      await env.DB.prepare('CREATE TABLE IF NOT EXISTS nv_hunt_log (id INTEGER PRIMARY KEY AUTOINCREMENT, vid TEXT, sid TEXT, kind TEXT, ts INTEGER)').run();
+      await env.DB.prepare('CREATE INDEX IF NOT EXISTS nv_hunt_log_vid ON nv_hunt_log (vid)').run();
+      await env.DB.prepare('INSERT INTO nv_hunt_log (vid, sid, kind, ts) VALUES (?,?,?,?)').bind(lv, String(b.sid || '').slice(0, 64), b.ev, Date.now()).run();
+    }
+  } catch (e) {}
   if (b.ev === 'later' || b.ev === 'close' || b.ev === 'reg' || b.ev === 'cat1' || b.ev === 'cat2') {
     const sid2 = String(b.sid || '').slice(0, 64);
     if (!/^[A-Za-z0-9_-]{8,64}$/.test(sid2)) return J({ error: 'sid' }, 400);

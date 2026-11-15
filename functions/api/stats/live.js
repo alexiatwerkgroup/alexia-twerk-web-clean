@@ -74,11 +74,14 @@ export async function onRequestGet({ request, env }) {
         for (const p of await all(db, `SELECT id, username, country, registered_at FROM profiles WHERE id IN (${uph})`, ...ruids)) prof[p.id] = p;
         try { for (const h of await all(db, `SELECT uid, joined, cat FROM nv_hunt WHERE uid IN (${uph})`, ...ruids)) hunt[h.uid] = h; } catch (e) {}
       }
+      const hl = {};
+      try { for (const h of await all(db, `SELECT vid, kind, COUNT(*) n, MAX(ts) last FROM nv_hunt_log WHERE vid IN (${rph.replace(/\?(\d+)/g, (m, d) => '?' + (Number(d) - 1))}) GROUP BY vid, kind`, ...rids)) { (hl[h.vid] = hl[h.vid] || {})[h.kind] = h; } } catch (e) {}
       body.recent = rv.map(r => {
         const hs = byV[r.vid] || [], f = hs[0] || {}, pr = r.uid ? prof[r.uid] : null, hu = r.uid ? hunt[r.uid] : null;
         return { vid: r.vid.slice(0, 6), vidFull: r.vid, uid: r.uid || '', user: pr ? pr.username || '' : '', registered: !!r.uid, registeredAt: pr ? pr.registered_at : null,
           hunter: !!(hu && hu.joined), hunterCat: hu ? String(hu.cat || '') : '', country: f.country || '', city: f.city || '', device: f.device, browser: f.browser, os: f.os, ref: f.ref || '',
           firstAt: r.first, lastAt: r.la, loads: r.loads, dur: r.dur || 0,
+          banner: (() => { const x = hl[r.vid] || {}, c1 = x.cat1, c2 = x.cat2; return { shown: x.play ? x.play.n : 0, choice: c1 || c2 ? ((c1 ? c1.last : 0) >= (c2 ? c2.last : 0) ? 'content' : 'money') : '', closed: x.close ? x.close.n : 0, later: x.later ? x.later.n : 0, reg: x.reg ? x.reg.n : 0, contact: x.contact ? x.contact.n : 0 }; })(),
           journey: hs.slice(-8).map(h => ({ path: h.path, ts: h.ts, dur: h.dur || 0, scroll: h.scroll || 0 })) };
       });
     }

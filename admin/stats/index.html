@@ -180,15 +180,22 @@ function recentTable(list) {
     var jn = '<div class="rc"><div class="jn">' + (o.journey || []).map(function (j, i) { return (i ? '<i>→</i>' : '') + '<span class="st">' + pl(j.path) + ' <span class="m">' + T(j.dur) + '</span></span>'; }).join('') + '</div></div>';
     var reg = o.registered ? '<span class="pill yes">Sí</span>' + (o.user ? '<br><span class="m">' + esc(o.user) + '</span>' : '') : '<span class="pill no">No</span>';
     var hun = o.hunter ? '<span class="pill hun">Hunter</span>' + (o.hunterCat ? '<br><span class="m">' + (o.hunterCat === 'content' ? 'Categoría 1 · contenido' : o.hunterCat === 'money' ? 'Categoría 2 · donación' : esc(o.hunterCat)) + '</span>' : '') : '<span class="pill no">No</span>';
-    return '<tr><td>hace ' + ago(o.lastAt) + '</td><td>' + who + '</td><td>' + place(o.country, o.city) + '</td><td>' + esc(o.ref || 'directo') + '</td><td>' + jn + '</td><td>' + T(o.dur) + '<br><span class="m">' + F(o.loads) + ' cargas</span></td><td>' + reg + '</td><td>' + hun + '</td></tr>';
+    var bn = o.banner || {}, bt;
+    if (bn.shown) {
+      bt = '<span class="pill hun">' + bn.shown + (bn.shown === 1 ? ' vez' : ' veces') + '</span><br><span class="m">' +
+        (bn.choice === 'content' ? 'Eligió: Categoría 1 · contenido' : bn.choice === 'money' ? 'Eligió: Categoría 2 · donación' : 'No eligió categoría') + '</span>' +
+        (bn.reg ? '<br><span class="m">tocó "Entrar o crear cuenta"</span>' : '') + (bn.contact ? '<br><span class="m">dejó mensaje de contacto</span>' : '') +
+        (bn.later ? '<br><span class="m">"Agora não" ×' + bn.later + '</span>' : '') + (bn.closed ? '<br><span class="m">cerró con X ×' + bn.closed + '</span>' : '');
+    } else bt = '<span class="pill no">Sin registro</span>';
+    return '<tr><td>hace ' + ago(o.lastAt) + '</td><td>' + who + '</td><td>' + place(o.country, o.city) + '</td><td>' + esc(o.ref || 'directo') + '</td><td>' + jn + '</td><td>' + T(o.dur) + '<br><span class="m">' + F(o.loads) + ' cargas</span></td><td>' + reg + '</td><td>' + hun + '</td><td>' + bt + '</td></tr>';
   }).join('');
-  return '<div class="tw"><table><tr><th>Última vez</th><th>Quién</th><th>País / ciudad</th><th>Fuente</th><th>Recorrido (páginas y tiempo)</th><th>Tiempo total</th><th>¿Registrado?</th><th>¿Hunter?</th></tr>' + (rows || '<tr><td colspan="8" class="m">Todavía no hay visitantes en las últimas 24 h</td></tr>') + '</table></div>';
+  return '<div class="tw"><table><tr><th>Última vez</th><th>Quién</th><th>País / ciudad</th><th>Fuente</th><th>Recorrido (páginas y tiempo)</th><th>Tiempo total</th><th>¿Registrado?</th><th>¿Hunter?</th><th>Cartel hunter</th></tr>' + (rows || '<tr><td colspan="9" class="m">Todavía no hay visitantes en las últimas 24 h</td></tr>') + '</table></div>';
 }
 function liveHtml(d) {
   var acts = (d.recentActions || []).map(function (e) { return '<div>' + esc(EV[e.name] || e.name) + (e.detail && e.name !== 'nov_watch' && e.name !== 'nov_play' ? ' · ' + esc(e.detail) : '') + '<br><small>' + whoSpan(e.user, e.uid, e.vid) + ' · ' + place(e.country, e.city) + ' · hace ' + ago(e.ts) + '</small></div>'; }).join('') || '<div class="m">Todavía no hay acciones</div>';
   var accs = (d.latestAccounts || []).map(function (a) { var t = new Date(String(a.registered_at).replace(' ', 'T') + 'Z'); return '<div><b>' + whoSpan(a.username || 'sin nombre', a.id, '') + '</b> <span class="pill pw">' + esc(a.tier || '—') + '</span><br><small>registrada ' + (isNaN(t) ? esc(a.registered_at) : 'hace ' + ago(t.getTime())) + '</small></div>'; }).join('');
   var conf = d.online || [];
-  return liveKpis(d) + '<div class="g"><div class="c s12"><h2>Quién está en el sitio ahora<small>visitantes reales · se actualiza cada 5 segundos</small></h2>' + onlineTable(conf, d, 'Ningún visitante real en este momento') + '<h2 style="margin-top:22px">Últimos conectados<small>últimas 24 h · recorrido completo, país, fuente, tiempo, registro y hunter</small></h2>' + recentTable(d.recent) + '</div>' +
+  return liveKpis(d) + '<div class="g"><div class="c s12"><h2>Quién está en el sitio ahora<small>visitantes reales · se actualiza cada 5 segundos</small></h2>' + onlineTable(conf, d, 'Ningún visitante real en este momento') + '<h2 style="margin-top:22px">Últimos conectados<small>últimas 24 h · recorrido completo, país, fuente, tiempo, registro, hunter y cartel (el conteo del cartel empieza desde hoy)</small></h2>' + recentTable(d.recent) + '</div>' +
     '<div class="c s6"><h2>Últimas acciones</h2><div class="feed">' + acts + '</div></div>' +
     '<div class="c s6"><h2>Últimas cuentas creadas</h2><div class="feed">' + accs + '</div></div></div>';
 }
