@@ -74,6 +74,7 @@
     '@media(prefers-reduced-motion:reduce){#twkh .ov{transition:none}}';
   function p2(n) { return n < 10 ? '0' + n : '' + n; }
   function api(body) {
+    body = Object.assign({ lang: L }, body);
     var h = { 'Content-Type': 'application/json' }, a = {}; try { a = JSON.parse(ls('alexia-auth-v3') || '{}') || {}; } catch (e) {} if (a.token) h.Authorization = 'Bearer ' + a.token;
     return fetch('/api/novinhas/hunt', { method: 'POST', credentials: 'same-origin', headers: h, body: JSON.stringify(body) }).then(function (r) { return r.json().then(function (j) { return { st: r.status, j: j }; }); });
   }

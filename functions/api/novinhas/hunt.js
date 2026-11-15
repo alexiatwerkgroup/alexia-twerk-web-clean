@@ -7,12 +7,14 @@
 //  POST {ev:'play'|'hit'|'great', sid} -> registra el evento (una vez por sesion). 'hit' = conejo (+5 platino), 'great' = conejo+Binance+PayPal o 3 previews (+20 platino +1 voucher VIP). Con cuenta se acredita y se guarda el mail
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
+import { sendEmail } from '../../_lib/resend.js';
 const J = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
 async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_hunt_ev (sid TEXT NOT NULL, kind TEXT NOT NULL, ts INTEGER, PRIMARY KEY (sid, kind))').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_plat (uid TEXT PRIMARY KEY, email TEXT, username TEXT, coins INTEGER DEFAULT 0, tier TEXT, voucher INTEGER DEFAULT 0, ts INTEGER)').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_hunt (uid TEXT PRIMARY KEY, email TEXT, username TEXT, joined INTEGER DEFAULT 1, ts INTEGER)').run();
   try { await db.prepare('ALTER TABLE nv_hunt ADD COLUMN cat TEXT').run(); } catch (e) {}
+  try { await db.prepare('ALTER TABLE nv_hunt ADD COLUMN mailed INTEGER').run(); } catch (e) {}
 }
 async function me(request, env) {
   try {
@@ -21,7 +23,25 @@ async function me(request, env) {
     return u ? { uid: String(p.sub), email: String(u.email || ''), username: String(u.username || '') } : null;
   } catch (e) { return null; }
 }
-export async function onRequest({ request, env }) {
+
+const MT = {
+  pt: { s: 'Você está participando: Caçador Twerkhub', h: 'Olá', a: 'Sua participação no concurso de caçadores do Twerkhub foi registrada.', c1: 'Categoria 1: quem mais doar conteúdo. Se você for escolhido, entraremos em contato por este e-mail.', c2: 'Categoria 2: top doadores. Para confirmar sua doação e sua participação no sorteio, envie uma captura do pagamento pelo Discord ou por e-mail (twerkhub.lat@gmail.com).', f: 'Acesso grátis a todo o conteúdo para os escolhidos. Boa sorte!' },
+  es: { s: 'Estás participando: Cazador Twerkhub', h: 'Hola', a: 'Tu participación en el concurso de cazadores de Twerkhub quedó registrada.', c1: 'Categoría 1: los que más contenido donen. Si resultás elegido, te vamos a contactar a este mail.', c2: 'Categoría 2: top donantes. Para confirmar tu donación y tu participación en el sorteo, enviá una captura del pago por Discord o por mail (twerkhub.lat@gmail.com).', f: 'Acceso gratis a todo el contenido para los elegidos. ¡Suerte!' },
+  en: { s: "You're in: Twerkhub Hunter", h: 'Hi', a: 'Your entry in the Twerkhub hunter contest has been registered.', c1: 'Category 1: top content donors. If you are chosen, we will contact you at this email.', c2: 'Category 2: top donors. To confirm your donation and your entry in the draw, send a screenshot of the payment on Discord or by email (twerkhub.lat@gmail.com).', f: 'Free access to all content for the chosen ones. Good luck!' }
+};
+const esc = (v) => String(v == null ? '' : v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+async function mailJoin(env, db, u, cat, lang) {
+  try {
+    const r = await db.prepare('SELECT mailed FROM nv_hunt WHERE uid = ?').bind(u.uid).first();
+    if (!u.email || (r && r.mailed)) return;
+    const t = MT[lang] || MT.pt;
+    const html = '<div style="font-family:system-ui,Arial,sans-serif;background:#0b0b0d;color:#f4efe2;padding:28px;max-width:520px;margin:auto;border:1px solid #6b5316;border-radius:14px"><h2 style="color:#f0b90b;margin:0 0 14px">' + esc(t.s) + '</h2><p>' + esc(t.h) + ' ' + esc(u.username || '') + ',</p><p>' + esc(t.a) + '</p><p>' + esc(cat === 'money' ? t.c2 : t.c1) + '</p><p style="color:#a89c78">' + esc(t.f) + '</p><p style="margin-top:22px"><a href="https://twerkhub.lat/discord" style="background:#f0b90b;color:#1a1100;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700">Discord</a></p></div>';
+    await sendEmail(env, { to: u.email, subject: t.s, html, replyTo: 'twerkhub.lat@gmail.com' });
+    await db.prepare('UPDATE nv_hunt SET mailed = ? WHERE uid = ?').bind(Date.now(), u.uid).run();
+  } catch (e) {}
+}
+export async function onRequest(ctx) {
+  const { request, env } = ctx;
   if (!env.DB) return J({ error: 'not_configured' }, 500);
   await ensure(env.DB);
   const url = new URL(request.url), u = await me(request, env);
@@ -81,5 +101,6 @@ export async function onRequest({ request, env }) {
   if (join && !cat) return J({ error: 'cat' }, 400);
   await env.DB.prepare('INSERT INTO nv_hunt (uid, email, username, joined, cat, ts) VALUES (?,?,?,?,?,?) ON CONFLICT(uid) DO UPDATE SET cat = COALESCE(excluded.cat, nv_hunt.cat), joined = excluded.joined, email = excluded.email, username = excluded.username, ts = CASE WHEN excluded.joined = 1 THEN excluded.ts ELSE nv_hunt.ts END')
     .bind(u.uid, u.email, u.username, join, cat, Date.now()).run();
+  if (join) { const lg = ['pt', 'es', 'en'].indexOf(b.lang) >= 0 ? b.lang : 'pt', job = mailJoin(env, env.DB, u, cat, lg); if (ctx.waitUntil) ctx.waitUntil(job); else await job; }
   return J({ ok: true, joined: !!join });
 }
