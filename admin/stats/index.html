@@ -127,7 +127,7 @@ function peaksHtml(r) {
     var d = x.k.split(' '), dd = d[0].split('-'), v = VD[x.verdict] || VD.mixto;
     var cs = x.countries.map(function (c) { return flag(c.c) + ' ' + esc(cn(c.c)) + ' <span class="m">' + c.u + '</span>'; }).join(' · ');
     var why = x.verdict === 'robots' ? 'Cientos de cookies casi idénticas entraron juntas' + (x.windowSeconds ? ' en ' + x.windowSeconds + ' segundos' : '') + (x.fingerprint ? ' (todas ' + esc(x.fingerprint.fp) + ')' : '') + ', sin tocar ni scrollear como una persona. No son visitantes: ya están fuera de los números.' : x.verdict === 'real' ? 'Casi todos dieron señales humanas. Probablemente una promo, un mail o un post que funcionó.' : 'Parte es gente (' + F(x.real) + ') y parte robots (' + F(x.bots) + '). Los robots ya están descartados.';
-    return '<div class="pk"><div><b>' + DOW[new Date(+dd[0], +dd[1] - 1, +dd[2]).getDay()] + ' ' + dd[2] + '/' + dd[1] + (d[1] ? ' · ' + d[1] + ' h' : '') + '</b>'<br><span class="vd ' + v[0] + '">' + v[1] + '</span></div>' +
+    return '<div class="pk"><div><b>' + DOW[new Date(+dd[0], +dd[1] - 1, +dd[2]).getDay()] + ' ' + dd[2] + '/' + dd[1] + (d[1] ? ' · ' + d[1] + ' h' : '') + '</b><br><span class="vd ' + v[0] + '">' + v[1] + '</span></div>' +
       '<div><b>' + F(x.raw) + '</b> cookies con señal → <b style="color:var(--ok)">' + F(x.real) + ' reales</b>' + (x.bots ? ' · <b style="color:var(--bad)">' + F(x.bots) + ' robots</b>' : '') + '<br><span class="m">' + why + '</span><br>' + (cs ? '<span class="m">De dónde: </span>' + cs : '') + '</div></div>';
   }).join('');
 }
