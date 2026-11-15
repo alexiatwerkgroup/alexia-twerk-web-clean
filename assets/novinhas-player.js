@@ -140,7 +140,7 @@
       mini.box.classList.add('on');
     }
     function minisLoad() {
-      fetch('/api/novinhas/mini?c=' + encodeURIComponent(slug) + '&n=9', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }).then(function (j) {
+      fetch('/api/novinhas/mini?c=' + encodeURIComponent(slug) + '&n=9&t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }).then(function (j) {
         mini.items = (j && j.items) || []; mini.grid.innerHTML = '';
         mini.items.forEach(function (it) {
           var b = document.createElement('button'); b.type = 'button'; b.className = 'np-mc'; b.setAttribute('aria-label', 'Miniclip @' + it.name);
@@ -443,9 +443,20 @@
       var lab = rb.querySelector('span'), rt;
       var recQ = null, recT = 0, recN = 0; // grabacion en curso: 30 s de cuenta regresiva; tocar REC de nuevo la cancela
       function recEnd(txt, cls) { clearInterval(recT); recQ = null; rb.classList.remove('busy', 'rec', 'ok'); if (cls) rb.classList.add(cls); lab.textContent = txt; clearTimeout(rt); rt = setTimeout(function () { rb.classList.remove('ok'); lab.textContent = 'REC'; }, 2600); }
+      var waitT = 0; // espera a que el miniclip este cortado y subido; apenas existe lo muestra sin recargar
+      function waitMini(q) {
+        clearInterval(waitT); var tries = 0;
+        waitT = setInterval(function () {
+          if (++tries > 150) { clearInterval(waitT); return; }
+          fetch('/api/novinhas/mini?c=' + encodeURIComponent(q.c) + '&n=12&t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+            var ok = j && (j.items || []).some(function (it) { return it.c === q.c && +it.id === +q.id && +it.start === +q.start && (it.slow ? 1 : 0) === q.slow; });
+            if (ok) { clearInterval(waitT); minisLoad(); say('Miniclip ready'); }
+          }).catch(function () {});
+        }, 4000);
+      }
       rb.onclick = function () {
         if (recQ) { // segundo toque: cancela el miniclip y lo borra
-          var q0 = recQ; rb.classList.add('busy'); lab.textContent = 'Canceling…';
+          var q0 = recQ; clearInterval(waitT); rb.classList.add('busy'); lab.textContent = 'Canceling…';
           fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: q0.c, id: q0.id, start: q0.start, slow: q0.slow }) }).then(function (r) { return r.json(); }).then(function (x) {
             recEnd(x && x.ok ? 'Canceled' : 'Error', x && x.ok ? 'ok' : ''); if (x && x.ok) { say('Miniclip canceled'); minisLoad(); }
           }).catch(function () { recEnd('Error'); });
@@ -455,7 +466,7 @@
         fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: cur.id, t: Math.floor(v.currentTime || 0), slow: slow }) }).then(function (r) { return r.json(); }).then(function (x) {
           rb.classList.remove('busy');
           if (x && x.ok) {
-            recQ = { c: slug, id: cur.id, start: x.start, slow: slow ? 1 : 0 }; recN = 30; rb.classList.add('rec'); say('Miniclip saved (' + (slow ? 'slow motion · ' : '') + '30 s from ' + x.start + ' s) · tap REC again to cancel');
+            recQ = { c: slug, id: cur.id, start: x.start, slow: slow ? 1 : 0 }; recN = 30; rb.classList.add('rec'); waitMini(recQ); say('Miniclip saved (' + (slow ? 'slow motion · ' : '') + '30 s from ' + x.start + ' s) · tap REC again to cancel');
             var draw = function () { lab.textContent = recN + ' s · cancel'; rb.title = 'Recording a 30 s miniclip. Tap again to cancel it'; }; draw();
             clearTimeout(rt); clearInterval(recT); recT = setInterval(function () { recN--; if (recN <= 0) { recEnd('Saved · ' + (slow ? 'slow ' : '') + '30 s', 'ok'); } else draw(); }, 1000);
           } else { lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); }
