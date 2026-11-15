@@ -270,6 +270,6 @@
     });
   }
   if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
-  /* panel sticky de donadores en Novinhas (se cierra con la X y queda una pastilla) */
-  if (/^\/novinhas/.test(location.pathname)) setTimeout(function () { if (window.TWK_DON) return; var sc = document.createElement('script'); sc.src = '/assets/twk-donor-rank.js?v=20261115-r1'; document.head.appendChild(sc); }, 2500);
+  /* panel sticky de donadores en todo el sitio (menos admin/pagos/cuenta); se cierra con la X y queda una pastilla */
+  if (!/^\/(admin|paymentmethods|account|login|auth)/.test(location.pathname)) setTimeout(function () { if (window.TWK_DON) return; var sc = document.createElement('script'); sc.src = '/assets/twk-donor-rank.js?v=20261115-r1'; document.head.appendChild(sc); }, 2500);
 })();
