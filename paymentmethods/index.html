@@ -43,7 +43,7 @@
 <div class="opts" id="opts" role="radiogroup" aria-label="What are you paying for?">
 <button type="button" class="opt" role="radio" data-k="coins"><span class="ot">Coins &middot; model pages</span><b>From $10</b><span class="od">1 coin = $0.50, minimum 20 coins ($10). Use them to unlock individual videos on the exclusive model pages (Jenny, Alexia, Abbi, Tainara, Lolita). Not valid for Novinhas VIP.</span></button>
 <button type="button" class="opt" role="radio" data-k="vip"><span class="ot">VIP access &middot; Novinhas</span><b>$49.99 / month</b><span class="od">Monthly membership for the Novinhas video channels: every video of every channel, including the new ones we keep adding. Does not include coins or model packs. Cancel anytime.</span></button>
-<button type="button" class="opt" role="radio" data-k="donate"><span class="ot">Donation</span><b>Any amount</b><span class="od">Support Twerkhub. A donation does not add access or coins to your account.</span></button>
+<button type="button" class="opt" role="radio" data-k="donate"><span class="ot">Donation</span><b>Any amount</b><span class="od">Support Twerkhub. A donation does not add access or coins to your account. After paying, send a screenshot of the payment on Discord or by email to confirm it and your entry in the draw.</span></button>
 </div>
 <div class="amtbox" id="amtbox" hidden><label for="amtin" id="amtlb">Amount (USD)</label><div class="amtrow"><span>$</span><input id="amtin" type="number" inputmode="decimal" min="10" step="0.5" value="10"><div class="chips" id="chips"></div></div><p id="amtnote"></p></div>
 <div class="grid">
@@ -74,7 +74,7 @@ function methods(){var pp=grid.querySelector('[data-m=paypal]'),cd=grid.querySel
 function paint(){methods();grid.classList.toggle('off',!valid());if(bn){bn.setAttribute('data-twk-binance',fmt(amt)+' USD');if(cur==='coins'){bn.dataset.twkItem='coins';bn.dataset.twkAmt=amt}else{delete bn.dataset.twkItem;delete bn.dataset.twkAmt}}}
 function apply(){var v=parseFloat(inp.value);amt=isNaN(v)?0:v;
  if(cur==='coins'){var ok=amt>=10&&Math.abs(amt*2-Math.round(amt*2))<1e-9;note.className=ok?'':'bad';note.textContent=ok?'= '+Math.round(amt/0.5)+' coins ($0.50 each). Coins are paid with Binance only.':'Minimum $10 (20 coins), in steps of $0.50.'}
- else if(cur==='donate'){var ok2=amt>=1;note.className=ok2?'':'bad';note.textContent=ok2?'Thank you! A donation does not add access or coins.':'Minimum donation $1.'}
+ else if(cur==='donate'){var ok2=amt>=1;note.className=ok2?'':'bad';note.textContent=ok2?'Thank you! A donation does not add access or coins. To confirm your payment and your entry in the draw, send a screenshot of it on Discord or by email (twerkhub.lat@gmail.com).':'Minimum donation $1.'}
  paint()}
 function select(k){cur=k;[].forEach.call(box.querySelectorAll('.opt'),function(o){o.setAttribute('aria-checked',o.dataset.k===k?'true':'false')});
  if(k==='vip'){amt=49.99;ab.hidden=true}else if(k==='pack'){amt=pAmt;ab.hidden=true}
@@ -82,7 +82,7 @@ function select(k){cur=k;[].forEach.call(box.querySelectorAll('.opt'),function(o
  paint()}
 box.addEventListener('click',function(e){var o=e.target.closest('.opt');if(o)select(o.dataset.k)});
 inp.addEventListener('input',apply);
-select(pItem==='pack'&&pAmt>0&&pLabel?'pack':pItem==='coins'?'coins':'vip');
+select(pItem==='pack'&&pAmt>0&&pLabel?'pack':pItem==='coins'?'coins':pItem==='donate'?'donate':'vip');if(pItem==='donate'&&pAmt>=1){inp.value=pAmt;apply()}
 })();</script><footer class="tf2"><div class="tf2-w"><div class="tf2-cols">
 <div><a class="tn2-logo" href="/">TWERK<b>HUB</b></a><p style="margin-top:14px;max-width:300px">If you know, you know.</p></div>
 <div><h4>Explore</h4><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/blog/">Blog</a></div>
