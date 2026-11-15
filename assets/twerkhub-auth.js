@@ -290,6 +290,7 @@
     '.twk-auth-google svg{width:18px;height:18px}' +
     '.twk-auth-toggle{margin-top:6px;width:100%;padding:10px;border-radius:10px;background:transparent;color:#ff7eb0;font:700 11.5px/1 Inter,sans-serif;border:1px solid rgba(255,45,135,.25);cursor:pointer;}' +
     '.twk-auth-toggle:hover{background:rgba(255,45,135,.08);color:#fff;}' +
+    '.twk-auth-toggle.twk-auth-switch{margin-top:12px;padding:15px 10px;border-radius:12px;font:800 13.5px/1 Inter,sans-serif;letter-spacing:.04em;color:#fff;background:rgba(255,45,135,.14);border:1.5px solid rgba(255,45,135,.7);box-shadow:0 0 18px rgba(255,45,135,.18)}.twk-auth-toggle.twk-auth-switch:hover{background:rgba(255,45,135,.28);color:#fff}' +
     '.twk-auth-skip{margin-top:6px;width:100%;padding:10px;border-radius:10px;background:transparent;color:rgba(244,243,247,.55);font:600 11px/1 Inter,sans-serif;border:1px solid rgba(255,255,255,.08);cursor:pointer;}' +
     '.twk-auth-skip:hover{color:#fff;}' +
     '.twk-auth-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(244,243,247,.7);font:400 22px/1 Inter,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}' +
@@ -358,12 +359,12 @@
         '<p class="twk-auth-error" id="twk-auth-error"></p>' +
         '<p class="twk-auth-success" id="twk-auth-success"></p>' +
         '<button type="submit" class="twk-auth-submit">Create account · +200 tokens</button>' +
+        '<button type="button" class="twk-auth-toggle twk-auth-switch" data-toggle-mode="signin">Already a member? · Sign in</button>' +
         '<div class="twk-auth-divider"><span>OR</span></div>' +
         '<a href="/api/auth/google/start" class="twk-auth-google" target="_blank" rel="noopener">' +
           '<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.13-.85 2.08-1.81 2.72v2.27h2.92c1.71-1.57 2.69-3.88 2.69-6.63z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.81 5.96-2.18l-2.92-2.27c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.32C2.45 15.98 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.97 10.71c-.18-.54-.28-1.12-.28-1.71s.1-1.17.28-1.71V4.97H.96C.35 6.18 0 7.55 0 9s.35 2.82.96 4.03l3.01-2.32z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.45 2.02.96 4.97l3.01 2.32C4.68 5.18 6.66 3.58 9 3.58z"/></svg>' +
           'Continue with Google' +
         '</a>' +
-        '<button type="button" class="twk-auth-toggle" data-toggle-mode="signin">Already a member? · Sign in</button>' +
         '<button type="button" class="twk-auth-skip">Maybe later</button>' +
         '<p class="twk-auth-tos">By entering, you confirm you are 18+ and accept our <a href="/tos.html">terms</a> and <a href="/privacy.html">privacy</a>. We will email you a confirmation link.</p>' +
       '</div><p class="twk-auth-legal">© Alexia Twerk Group · 18+</p></form>';
