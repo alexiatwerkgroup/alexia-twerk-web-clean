@@ -161,6 +161,22 @@
     var idx = vids.indexOf(cur);
     function neighbor(dir) { for (var i = idx + dir; i >= 0 && i < vids.length; i += dir) if (!vids[i].locked) return vids[i]; return null; }
     var nextV = neighbor(1), prevV = neighbor(-1);
+    /* Cambio de video SIN recargar cuando esta en pantalla completa (si no, el navegador sale del fullscreen).
+       Al salir de pantalla completa se re-sincroniza la pagina (titulo, lista, likes) con el video actual. */
+    var needSync = false;
+    function goTo(x, auto) {
+      if (!x) return;
+      if (!isFs() || x.locked) { location.href = urlFor(x, auto); return; }
+      clearInterval(nxT); nx.classList.remove('on'); markSeen(slug, cur.id);
+      cur = x; hasLow = !!cur.lowVideo && cur.lowVideo !== cur.video; idx = vids.indexOf(cur); nextV = neighbor(1); prevV = neighbor(-1);
+      posKey = 'twk_nov_pos:' + slug + ':' + cur.id; delete v.dataset.resumed;
+      box.className = 'np-stage' + (cur.height > cur.width ? ' np-tall' : ''); v.poster = cur.poster;
+      v.removeAttribute('data-src'); applyQuality(false); v.play().catch(function () {});
+      try { history.replaceState(null, '', urlFor(cur, false)); } catch (_) {}
+      needSync = true; say(cur.title || 'Next');
+    }
+    function onFsChange() { if (needSync && !document.fullscreenElement && !document.webkitFullscreenElement) { needSync = false; location.replace(urlFor(cur, false)); } }
+    document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
     var nx = document.createElement('div'); nx.className = 'np-next';
     box.appendChild(nx); var nxT;
     function showNext() {
@@ -168,8 +184,8 @@
       var n = 3; nx.innerHTML = '<small>UP NEXT</small><img alt="" src="' + nextV.poster + '"><b></b><div><span class="np-cd" style="font:800 28px system-ui;color:#ffd76a"></span></div><div style="display:flex;gap:10px"><button class="twk-btn twk-btn--sm" data-a="go">PLAY NOW</button><button class="twk-btn twk-btn--ghost twk-btn--sm" data-a="no">CANCEL</button></div>';
       nx.querySelector('b').textContent = nextV.title; nx.classList.add('on');
       var cd = nx.querySelector('.np-cd'); cd.textContent = n;
-      clearInterval(nxT); nxT = setInterval(function () { n--; cd.textContent = n; if (n <= 0) { clearInterval(nxT); location.href = urlFor(nextV, true); } }, 1000);
-      nx.onclick = function (e) { var a = e.target.dataset && e.target.dataset.a; if (a === 'go') location.href = urlFor(nextV, true); if (a === 'no') { clearInterval(nxT); nx.classList.remove('on'); } };
+      clearInterval(nxT); nxT = setInterval(function () { n--; cd.textContent = n; if (n <= 0) { clearInterval(nxT); goTo(nextV, true); } }, 1000);
+      nx.onclick = function (e) { var a = e.target.dataset && e.target.dataset.a; if (a === 'go') goTo(nextV, true); if (a === 'no') { clearInterval(nxT); nx.classList.remove('on'); } };
     }
     v.addEventListener('ended', function () { if (LS.get(AUTO_KEY) !== '0') showNext(); });
 
@@ -217,8 +233,8 @@
       else if (k === 'Home') { v.currentTime = 0; say('Start'); } else if (k === 'End') { if (v.duration) v.currentTime = v.duration - 0.1; say('End'); }
       else if ((k === ',' || k === '.') && v.paused) { v.currentTime = Math.max(0, v.currentTime + (k === '.' ? 1 : -1) / 30); say('Frame ' + (k === '.' ? '+1' : '-1')); }
       else if (k === '<' || k === '>') { var i = SPEEDS.indexOf(v.playbackRate); if (i < 0) i = 3; i = Math.min(SPEEDS.length - 1, Math.max(0, i + (k === '>' ? 1 : -1))); v.playbackRate = SPEEDS[i]; say('Speed ' + SPEEDS[i] + 'x'); }
-      else if (e.shiftKey && (k === 'N' || k === 'n')) { if (nextV) location.href = urlFor(nextV, true); else say('Last video'); }
-      else if (e.shiftKey && (k === 'P' || k === 'p')) { if (prevV) location.href = urlFor(prevV, true); else say('First video'); }
+      else if (e.shiftKey && (k === 'N' || k === 'n')) { if (nextV) goTo(nextV, true); else say('Last video'); }
+      else if (e.shiftKey && (k === 'P' || k === 'p')) { if (prevV) goTo(prevV, true); else say('First video'); }
       else if (k === 'q' || k === 'Q') dock.dataset.open = dock.dataset.open === '1' ? '0' : '1';
       else if (k === 'i' || k === 'I') { if (document.pictureInPictureElement) document.exitPictureInPicture(); else if (v.requestPictureInPicture) v.requestPictureInPicture().catch(function () {}); }
       else if (k === '?' || k === 'h' || k === 'H') help.classList.add('on');
@@ -328,8 +344,8 @@
     var bar = document.createElement('div'); bar.className = 'np-bar';
     var ap = document.createElement('button'); ap.type = 'button'; ap.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm' + (LS.get(AUTO_KEY) !== '0' ? ' on' : ''); ap.innerHTML = 'Autoplay next <i></i>';
     ap.onclick = function () { var on = !ap.classList.contains('on'); ap.classList.toggle('on', on); LS.set(AUTO_KEY, on ? '1' : '0'); };
-    var pv = document.createElement('button'); pv.type = 'button'; pv.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; pv.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 6v12z"/></svg>Previous'; pv.onclick = function () { if (prevV) location.href = urlFor(prevV, true); };
-    var nt = document.createElement('button'); nt.type = 'button'; nt.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; nt.innerHTML = 'Next<svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18V6l8.5 6z"/></svg>'; nt.onclick = function () { if (nextV) location.href = urlFor(nextV, true); };
+    var pv = document.createElement('button'); pv.type = 'button'; pv.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; pv.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 6v12z"/></svg>Previous'; pv.onclick = function () { if (prevV) goTo(prevV, true); };
+    var nt = document.createElement('button'); nt.type = 'button'; nt.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; nt.innerHTML = 'Next<svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18V6l8.5 6z"/></svg>'; nt.onclick = function () { if (nextV) goTo(nextV, true); };
     if (!prevV) pv.style.display = 'none'; if (!nextV) nt.style.display = 'none';
     var kb = document.createElement('button'); kb.type = 'button'; kb.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; kb.textContent = 'Keyboard shortcuts (?)'; kb.onclick = function () { help.classList.add('on'); };
     bar.append(pv, nt, ap, kb);
