@@ -141,7 +141,7 @@
 
     /* pantalla completa (sobre el contenedor para que el dock y los avisos sigan visibles) */
     var fsBtn = document.createElement('button'); fsBtn.type = 'button'; fsBtn.className = 'np-fs'; fsBtn.setAttribute('aria-label', 'Fullscreen'); fsBtn.innerHTML = FS_ICON;
-    function isFs() { return document.fullscreenElement === box || document.webkitFullscreenElement === box; }
+    function isFs() { var f = document.fullscreenElement || document.webkitFullscreenElement; return !!f && (f === box || f === v || box.contains(f)); }
     function toggleFs() {
       if (isFs()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
       var req = box.requestFullscreen || box.webkitRequestFullscreen;
