@@ -9,7 +9,7 @@
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
 // Previews de tarjeta de canal fijados por el dueño (slug -> id de video). Siempre mudos (los clips se reproducen con muted).
-const FIXED_THUMBS = { 'canal-da-maryh': 45, '083-clarinha-2020-7-1-9-41-20': 60, 'danadinhasdofunk': 3, 'as-mais-tops-do-funk': 96, 'moniquegomes48': 80 };
+const FIXED_THUMBS = { 'canal-da-maryh': 45 }; // unico fijo (orden del dueño 15 nov 2026); el resto rota al azar entre los elegidos
 const HOLD = 3600, SECS = 20, SLUG = /^[a-z0-9-]{2,60}$/;
 const J = (o, s = 200, cc = 'no-store') => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': cc, 'X-Robots-Tag': 'noindex' } });
 async function isOwner(request, env) {
@@ -167,6 +167,11 @@ export async function onRequest({ request, env }) {
       if (!m) continue;
       items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: parseInt(m[2], 10) }); used[r.slug + ':' + r.vid] = 1;
     }
+    // azar por hora: el preview fijo de Maryh (45) va primero; los demas se mezclan (semilla = hora, estable dentro de la hora)
+    { let sd = Math.floor(now / 3600) >>> 0; const rn = () => { sd = (Math.imul(sd, 1664525) + 1013904223) >>> 0; return sd / 4294967296; };
+      const fi = items.findIndex((x) => x.slug === 'canal-da-maryh' && x.id === FIXED_THUMBS['canal-da-maryh']), fx0 = fi >= 0 ? items.splice(fi, 1)[0] : null;
+      for (let i = items.length - 1; i > 0; i--) { const j = Math.floor(rn() * (i + 1)); const t = items[i]; items[i] = items[j]; items[j] = t; }
+      if (fx0) items.unshift(fx0); }
     // relleno temporal: completa hasta N con clips al azar de otros canales (se achica solo a medida que elegis mas)
     if (items.length < N) {
       const taken = {}; items.forEach((x) => { taken[x.slug] = 1; });
