@@ -30,18 +30,15 @@
     if (!soundOn() || !ac() || ctx.state !== 'running') return;
     try {
       if (!nbuf) { nbuf = ctx.createBuffer(1, ctx.sampleRate * .3, ctx.sampleRate); var d = nbuf.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
-      var t0 = ctx.currentTime, n = 3 + Math.round(Math.random() * 3 * k), i2, t = t0;
-      for (i2 = 0; i2 < n; i2++) {
-        var src = ctx.createBufferSource(); src.buffer = nbuf;
-        var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2200 + Math.random() * 4800; bp.Q.value = .7 + Math.random() * .8;
-        var g = ctx.createGain(), pk = (.05 + Math.random() * .05) * k, dc = .03 + Math.random() * .06;
-        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(pk, t + .004); g.gain.exponentialRampToValueAtTime(.0001, t + dc);
-        src.connect(bp); bp.connect(g); g.connect(ctx.destination); src.start(t, Math.random() * .2, dc + .02);
-        t += .018 + Math.random() * .055;
+      var t0 = ctx.currentTime + .005, n = Math.round(14 + 20 * k), span = .12 + .22 * k, m = ctx.createGain(); m.gain.value = .7; m.connect(ctx.destination);
+      for (var q = 0; q < n; q++) {
+        var t = t0 + span * Math.pow(Math.random(), 1.7), dur = .004 + Math.random() * .014, crack = Math.random() < .14,
+          src = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
+        src.buffer = nbuf; hp.type = 'highpass'; hp.frequency.value = 1400 + Math.random() * 1800; lp.type = 'lowpass'; lp.frequency.value = 7000 + Math.random() * 4000;
+        var pk = (.05 + Math.random() * .09) * k * (crack ? 2.2 : 1);
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(pk, t + .0007); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+        src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(m); src.start(t, Math.random() * .25, dur + .01);
       }
-      var r = ctx.createBufferSource(); r.buffer = nbuf; var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
-      var rg = ctx.createGain(); rg.gain.setValueAtTime(0, t0); rg.gain.linearRampToValueAtTime(.035 * k, t0 + .05); rg.gain.exponentialRampToValueAtTime(.0001, t + .08);
-      r.connect(lp); lp.connect(rg); rg.connect(ctx.destination); r.start(t0, 0, t - t0 + .12);
     } catch (e) {}
   }
   function sound(big) {
