@@ -72,7 +72,7 @@
     '#twkh .cx{margin-top:10px;width:120px;height:34px;line-height:32px;border-radius:8px;border:1px solid #f0b90b;color:#f0b90b;background:#0b0b0d;font-size:13px;font-weight:700;cursor:pointer}' +
     '@media(max-width:560px){#twkh{padding:8px}#twkh .b{padding:12px 12px 16px}#twkh .t3{font-size:13px;height:80px}#twkh .c{height:210px;padding:10px}#twkh .ct{font-size:12px}#twkh .u{width:60px}#twkh .b1{width:190px}#twkh .b2{width:110px}#twkh .lgf{flex-wrap:wrap;gap:6px}}' +
     '#twkh .fm{position:absolute;inset:0;border-radius:18px;background:radial-gradient(ellipse at 50% 0,#2a2006,#0b0b0d 60%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:18px;z-index:6;gap:9px;text-align:center}' +
-    '#twkh .fm h3{margin:0;font-size:22px;font-weight:800;color:#fff}#twkh .fm p{margin:0;font-size:13px;line-height:18px;color:#d9d2bd;max-width:420px}#twkh .fm .nf{font-size:12px;color:#f0b90b;font-weight:700}' +
+    '#twkh .fm h3{margin:0;font-size:22px;font-weight:800;color:#fff}#twkh .fm p{margin:0;font-size:13px;line-height:18px;color:#d9d2bd;max-width:420px}#twkh .fm .nf{font-size:12px;color:#f0b90b;font-weight:700}#twkh .fm .dl{display:inline-block;font:800 14px system-ui;color:#f0b90b;text-decoration:underline;text-underline-offset:3px}#twkh .fm .dl:hover{color:#ffe27a}' +
     '#twkh .fm input,#twkh .fm textarea{width:100%;max-width:420px;background:#0b0b0d;border:1px solid #6b5316;border-radius:9px;color:#f4efe2;font:500 14px system-ui;padding:10px 12px;outline:0}#twkh .fm input:focus,#twkh .fm textarea:focus{border-color:#f0b90b}#twkh .fm textarea{height:96px;resize:none}' +
     '#twkh .fm .rw2{display:flex;gap:8px;justify-content:center}#twkh .fm .go{width:170px;height:42px;border:0;border-radius:9px;font-weight:800;font-size:14px;color:#1a1100;cursor:pointer;background:linear-gradient(180deg,#ffe27a 0%,#f0b90b 48%,#c98f00 100%)}#twkh .fm .no{width:110px;height:42px;border-radius:9px;font-weight:700;font-size:14px;color:#f0b90b;background:#0b0b0d;border:1px solid #f0b90b;cursor:pointer}#twkh .fm .fs{min-height:18px;font-size:13px;color:#f0d27a}#twkh .fm .fs.ok{color:#5be08a;font-weight:600}' +
     '@media(prefers-reduced-motion:reduce){#twkh .ov{transition:none}}';
@@ -90,7 +90,7 @@
   function openForm() {
     if (!root) return; var f = root.querySelector('.fm'); if (!f) {
       f = document.createElement('div'); f.className = 'fm';
-      f.innerHTML = '<h3></h3><p></p><input type="text" maxlength="120" autocomplete="off"><textarea maxlength="800"></textarea><div class="rw2"><button type="button" class="go"></button><button type="button" class="no"></button></div><div class="fs" aria-live="polite"></div>';
+      f.innerHTML = '<h3></h3><p></p><a class="dl" href="https://twerkhub.lat/discord" target="_blank" rel="noopener">Discord: twerkhub.lat/discord</a><input type="text" maxlength="120" autocomplete="off"><textarea maxlength="800"></textarea><div class="rw2"><button type="button" class="go"></button><button type="button" class="no"></button></div><div class="fs" aria-live="polite"></div>';
       root.querySelector('.b').appendChild(f);
       f.querySelector('.no').onclick = function () { f.style.display = 'none'; };
       f.querySelector('.go').onclick = function () {
