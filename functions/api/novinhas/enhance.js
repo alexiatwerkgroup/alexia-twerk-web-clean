@@ -19,6 +19,8 @@ async function who(request, env) {
 }
 async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_enh (slug TEXT, vid INTEGER, title TEXT, added INTEGER, PRIMARY KEY (slug, vid))').run();
+  try { await db.prepare('ALTER TABLE nv_enh ADD COLUMN start INTEGER DEFAULT 0').run(); } catch (e) {}
+  try { await db.prepare('ALTER TABLE nv_enh ADD COLUMN slow INTEGER DEFAULT 0').run(); } catch (e) {}
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_coin (uid TEXT, day TEXT, slug TEXT, vid INTEGER, PRIMARY KEY (uid, day, slug, vid))').run();
 }
 async function readyIds(env, slug) {
@@ -31,8 +33,8 @@ async function readyIds(env, slug) {
   return out;
 }
 async function mirror(env) {
-  const r = await env.DB.prepare('SELECT slug, vid, title FROM nv_enh ORDER BY added').all();
-  await env.NOVINHAS_VIDEOS.put('_config/enh-queue.json', JSON.stringify({ updated: Date.now(), items: (r.results || []).map((x) => ({ c: x.slug, id: x.vid, title: x.title })) }), { httpMetadata: { contentType: 'application/json' } });
+  const r = await env.DB.prepare('SELECT slug, vid, title, start, slow FROM nv_enh ORDER BY added').all();
+  await env.NOVINHAS_VIDEOS.put('_config/enh-queue.json', JSON.stringify({ updated: Date.now(), items: (r.results || []).map((x) => (x.slow ? { c: x.slug, id: x.vid, title: x.title, clip: { start: x.start || 0, secs: 30 } } : { c: x.slug, id: x.vid, title: x.title })) }), { httpMetadata: { contentType: 'application/json' } });
 }
 export async function onRequest({ request, env }) {
   const url = new URL(request.url), db = env.DB; await ensure(db);
@@ -83,8 +85,12 @@ export async function onRequest({ request, env }) {
   }
   if (!w.owner) return J({ error: 'forbidden' }, 403);
   if (await env.NOVINHAS_VIDEOS.head(`${c}/hq/video-${pad(id)}.mp4`)) return J({ ok: true, dup: 'ready' });
-  if (await db.prepare('SELECT 1 FROM nv_enh WHERE slug=? AND vid=?').bind(c, id).first()) return J({ ok: true, dup: 'queued' });
-  await db.prepare('INSERT OR IGNORE INTO nv_enh (slug, vid, title, added) VALUES (?,?,?,?)').bind(c, id, String(b.title || '').slice(0, 200), Date.now()).run();
+  const st0 = Math.max(0, Math.floor(Number(b.t) || 0)), sl0 = b.slow ? 1 : 0;
+  if (await db.prepare('SELECT 1 FROM nv_enh WHERE slug=? AND vid=?').bind(c, id).first()) {
+    if (sl0) { await db.prepare('UPDATE nv_enh SET start=?, slow=1 WHERE slug=? AND vid=?').bind(st0, c, id).run(); await mirror(env); return J({ ok: true, dup: 'queued', clip: true }); }
+    return J({ ok: true, dup: 'queued' });
+  }
+  await db.prepare('INSERT OR IGNORE INTO nv_enh (slug, vid, title, added, start, slow) VALUES (?,?,?,?,?,?)').bind(c, id, String(b.title || '').slice(0, 200), Date.now(), sl0 ? st0 : 0, sl0).run();
   await mirror(env);
   return J({ ok: true });
 }

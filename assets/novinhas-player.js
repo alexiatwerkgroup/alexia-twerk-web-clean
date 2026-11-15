@@ -307,8 +307,8 @@
     }
     function enhQueue() {
       if (!enhJ || !enhJ.owner) { say('No enhanced version'); return; }
-      fetch('/api/novinhas/enhance', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: cur.id, title: cur.title || '' }) })
-        .then(function (r) { return r.json(); }).then(function (o) { if (o && o.ok) { if (enhJ.queued.indexOf(cur.id) < 0) enhJ.queued.push(cur.id); enhRefresh(); say('Added · being processed, come back later'); } else say('Could not add'); }).catch(function () { say('Could not add'); });
+      fetch('/api/novinhas/enhance', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: cur.id, title: cur.title || '', t: Math.floor(v.currentTime || 0), slow: v.playbackRate < 1 ? 1 : 0 }) })
+        .then(function (r) { return r.json(); }).then(function (o) { if (o && o.ok) { if (enhJ.queued.indexOf(cur.id) < 0) enhJ.queued.push(cur.id); enhRefresh(); say(v.playbackRate < 1 ? 'Added · 30 s clip from here · being processed' : 'Added · being processed, come back later'); } else say('Could not add'); }).catch(function () { say('Could not add'); });
     }
     fetch('/api/novinhas/enhance?c=' + encodeURIComponent(slug), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j) return; enhJ = j; enhRefresh();
