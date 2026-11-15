@@ -1,6 +1,9 @@
 name: mini-clips
 # Corta los miniclips que se marcan con REC y los sube a R2 (sin depender de ninguna PC).
 on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/mini-clips.yml', 'tools/mini_worker.py']
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
