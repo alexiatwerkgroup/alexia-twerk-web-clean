@@ -17,7 +17,7 @@ h2{font:400 clamp(30px,4.4vw,48px)/1 Anton,Impact,sans-serif;text-transform:uppe
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}.pr{position:relative;border:1.5px solid var(--line);border-radius:20px;background:linear-gradient(160deg,#2a0b07,#0f0606 60%);padding:24px 22px;overflow:hidden}.pr:before{content:"";position:absolute;inset:auto -30% -60% -30%;height:70%;background:radial-gradient(50% 100% at 50% 100%,rgba(255,70,20,.25),transparent)}
 .pr b{display:block;font:400 54px/1 Anton,sans-serif;color:#ffcf5a;text-shadow:0 0 16px rgba(240,185,11,.4)}.pr h3{position:relative;font:400 24px/1.05 Anton,sans-serif;text-transform:uppercase;margin:8px 0 8px;color:#fff}.pr p{position:relative;margin:0;color:#d9c6bc;line-height:1.5;font-size:15px}
 .pr.hot{border-color:#ff4a2a;box-shadow:0 0 30px rgba(255,60,30,.3)}
-.mods{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.mods span{padding:9px 15px;border-radius:99px;border:1px solid #6a2a18;background:#1a0a07;font:700 13px system-ui;color:#ffe9d9}.mods span.on{border-color:#f0b90b;color:#ffe27a;background:#241705}.mh{font:800 11px 'JetBrains Mono',monospace;letter-spacing:.18em;color:#b9a89e;text-transform:uppercase;margin:22px 0 0}
+.mods{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.mods span{padding:9px 15px;border-radius:99px;border:1px solid #6a2a18;background:#1a0a07;font:700 13px system-ui;color:#ffe9d9}.mods span small{font:600 10.5px system-ui;color:#b99a62;margin-left:6px;letter-spacing:.2px}.mods span.on{border-color:#f0b90b;color:#ffe27a;background:#241705}.mh{font:800 11px 'JetBrains Mono',monospace;letter-spacing:.18em;color:#b9a89e;text-transform:uppercase;margin:22px 0 0}
 .how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.st{border:1.5px solid var(--line);border-radius:18px;background:var(--card);padding:22px}.st i{font:400 40px Anton,sans-serif;color:#ff4a2a;font-style:normal}.st h3{font:400 22px Anton,sans-serif;text-transform:uppercase;margin:6px 0}.st p{margin:0;color:#d9c6bc;font-size:15px;line-height:1.5}
 .tz{margin-top:24px;border:1.5px dashed #6a2a18;border-radius:20px;padding:30px;text-align:center;color:#b9a89e}.tz video{width:100%;border-radius:16px;max-height:70vh;background:#000}
 .fine{color:#9c8b82;font-size:13px;line-height:1.6;max-width:760px}
@@ -72,13 +72,13 @@ tz:'A teaser with all the models, coming soon.',
 e3:'How to take part',h3:'Donate, <em>climb</em> and win',
 s:[['1','Donate','Pick your step on the Donor ladder and donate with the payment methods on the site.'],['2','Climb the ranking','Your spot shows anonymously in the ranking, 1st to 10th. The top 5 have the prize secured; 6th to 10th are qualifying.'],['3','Take it all','Whoever finishes on top gets the prize and we arrange the details directly with you.']],
 f:'Adults only. Everyone who appears in original Twerkhub content is over 18 and takes part under a written agreement. The ranking is based on real, confirmed donations. Delivery details and the choice of model are arranged directly with the winner.'}};
-var ACT=['Maki','Milu','Abbi'],OLD=['Alexia','Lolita','Vegan','Pocahontas','Victoria Secret','Nier Automata','Dorita','Tainara','Dinna'];
+var ACT=['Maki','Milu','Abbi','Estrella'],CS={pt:'em breve no Patreon',es:'muy pronto en Patreon',en:'coming soon on Patreon'},OLD=['Alexia','Carla','Lolita','Vegan','Pocahontas','Victoria Secret','Nier Automata','Dorita','Tainara','Dinna'];
 var L='pt';try{var q=new URLSearchParams(location.search).get('l');L=(q||localStorage.getItem('twk-hunt-lang')||'pt');if(!D[L])L='pt'}catch(e){}
 function $(i){return document.getElementById(i)}
 function draw(){var o=D[L];$('pill').textContent=o.pill;$('big').textContent='U$D 5.000';$('sub').textContent=o.sub;$('bd').textContent=o.d;$('br').textContent=o.r;
 ['e1','h1','l1','e2','h2','l2','m1','m2','e3','h3'].forEach(function(k){$(k).innerHTML=o[k]});$('tzt').textContent=o.tz;$('fn').textContent=o.f;
 $('gr').innerHTML=o.p.map(function(x){return '<div class="pr'+(x[3]?' hot':'')+'"><b>'+x[0]+'</b><h3>'+x[1]+'</h3><p>'+x[2]+'</p></div>'}).join('');
-$('ma').innerHTML=ACT.map(function(n){return '<span class="on">'+n+'</span>'}).join('');$('mb').innerHTML=OLD.map(function(n){return '<span>'+n+'</span>'}).join('')+'<span>…</span>';
+$('ma').innerHTML=ACT.map(function(n){return '<span class="on">'+n+(n==='Estrella'?' <small>'+CS[L]+'</small>':'')+'</span>'}).join('');$('mb').innerHTML=OLD.map(function(n){return '<span>'+n+'</span>'}).join('')+'<span>…</span>';
 $('hw').innerHTML=o.s.map(function(x){return '<div class="st"><i>'+x[0]+'</i><h3>'+x[1]+'</h3><p>'+x[2]+'</p></div>'}).join('');
 [].forEach.call(document.querySelectorAll('#lg button'),function(b){b.classList.toggle('on',b.dataset.l===L)});try{localStorage.setItem('twk-hunt-lang',L)}catch(e){}document.documentElement.lang=L}
 $('lg').onclick=function(e){var l=e.target.dataset&&e.target.dataset.l;if(l){L=l;draw()}};
