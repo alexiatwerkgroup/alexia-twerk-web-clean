@@ -15,6 +15,7 @@ async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_hunt (uid TEXT PRIMARY KEY, email TEXT, username TEXT, joined INTEGER DEFAULT 1, ts INTEGER)').run();
   try { await db.prepare('ALTER TABLE nv_hunt ADD COLUMN cat TEXT').run(); } catch (e) {}
   try { await db.prepare('ALTER TABLE nv_hunt ADD COLUMN mailed INTEGER').run(); } catch (e) {}
+  await db.prepare('CREATE TABLE IF NOT EXISTS nv_hunt_msg (id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT, email TEXT, username TEXT, contact TEXT, msg TEXT, ts INTEGER)').run();
 }
 async function me(request, env) {
   try {
@@ -25,9 +26,9 @@ async function me(request, env) {
 }
 
 const MT = {
-  pt: { s: 'Você está participando: Caçador Twerkhub', h: 'Olá', a: 'Sua participação no concurso de caçadores do Twerkhub foi registrada.', c1: 'Categoria 1: quem mais doar conteúdo. Se você for escolhido, entraremos em contato por este e-mail.', c2: 'Categoria 2: top doadores. Para confirmar sua doação e sua participação no sorteio, envie uma captura do pagamento pelo Discord ou por e-mail (twerkhub.lat@gmail.com).', f: 'Acesso grátis a todo o conteúdo para os escolhidos. Boa sorte!' },
-  es: { s: 'Estás participando: Cazador Twerkhub', h: 'Hola', a: 'Tu participación en el concurso de cazadores de Twerkhub quedó registrada.', c1: 'Categoría 1: los que más contenido donen. Si resultás elegido, te vamos a contactar a este mail.', c2: 'Categoría 2: top donantes. Para confirmar tu donación y tu participación en el sorteo, enviá una captura del pago por Discord o por mail (twerkhub.lat@gmail.com).', f: 'Acceso gratis a todo el contenido para los elegidos. ¡Suerte!' },
-  en: { s: "You're in: Twerkhub Hunter", h: 'Hi', a: 'Your entry in the Twerkhub hunter contest has been registered.', c1: 'Category 1: top content donors. If you are chosen, we will contact you at this email.', c2: 'Category 2: top donors. To confirm your donation and your entry in the draw, send a screenshot of the payment on Discord or by email (twerkhub.lat@gmail.com).', f: 'Free access to all content for the chosen ones. Good luck!' }
+  pt: { s: 'Você está participando: Caçador Twerkhub', h: 'Olá', a: 'Sua participação no concurso de caçadores do Twerkhub foi registrada.', c1: 'Categoria 1: quem mais doar conteúdo. Se você for escolhido, entraremos em contato por este e-mail. Se quiser falar agora, responda este e-mail ou entre no Discord.', c2: 'Categoria 2: top doadores. Para confirmar sua doação e sua participação no sorteio, envie uma captura do pagamento pelo Discord ou por e-mail (twerkhub.lat@gmail.com).', f: 'Acesso grátis a todo o conteúdo para os escolhidos. Boa sorte!' },
+  es: { s: 'Estás participando: Cazador Twerkhub', h: 'Hola', a: 'Tu participación en el concurso de cazadores de Twerkhub quedó registrada.', c1: 'Categoría 1: los que más contenido donen. Si resultás elegido, te vamos a contactar a este mail. Si querés hablar ya, respondé este mail o entrá al Discord.', c2: 'Categoría 2: top donantes. Para confirmar tu donación y tu participación en el sorteo, enviá una captura del pago por Discord o por mail (twerkhub.lat@gmail.com).', f: 'Acceso gratis a todo el contenido para los elegidos. ¡Suerte!' },
+  en: { s: "You're in: Twerkhub Hunter", h: 'Hi', a: 'Your entry in the Twerkhub hunter contest has been registered.', c1: 'Category 1: top content donors. If you are chosen, we will contact you at this email. If you want to talk now, reply to this email or join our Discord.', c2: 'Category 2: top donors. To confirm your donation and your entry in the draw, send a screenshot of the payment on Discord or by email (twerkhub.lat@gmail.com).', f: 'Free access to all content for the chosen ones. Good luck!' }
 };
 const esc = (v) => String(v == null ? '' : v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 async function mailJoin(env, db, u, cat, lang) {
@@ -49,6 +50,11 @@ export async function onRequest(ctx) {
     if (url.searchParams.get('list')) {
       if (!u || u.email.toLowerCase() !== OWNER) return J({ error: 'forbidden' }, 403);
       const r = await env.DB.prepare('SELECT email, username, cat, ts FROM nv_hunt WHERE joined = 1 ORDER BY ts').all();
+      return J({ ok: true, count: (r.results || []).length, list: r.results || [] });
+    }
+    if (url.searchParams.get('msgs')) {
+      if (!u || u.email.toLowerCase() !== OWNER) return J({ error: 'forbidden' }, 403);
+      const r = await env.DB.prepare('SELECT username, email, contact, msg, ts FROM nv_hunt_msg ORDER BY ts DESC LIMIT 300').all();
       return J({ ok: true, count: (r.results || []).length, list: r.results || [] });
     }
     if (url.searchParams.get('winners')) {
@@ -95,6 +101,15 @@ export async function onRequest(ctx) {
       platinum = (w && w.coins) || coins; voucher = (w && w.voucher) || 0;
     }
     return J({ ok: true, auth: !!u, platinum, voucher });
+  }
+  if (b.ev === 'contact') {
+    if (!u) return J({ error: 'login' }, 401);
+    const contact = String(b.contact || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 120), msg = String(b.msg || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, 800);
+    if (contact.length < 3) return J({ error: 'contact' }, 400);
+    const n = await env.DB.prepare('SELECT COUNT(*) n FROM nv_hunt_msg WHERE uid = ? AND ts > ?').bind(u.uid, Date.now() - 86400000).first();
+    if (n && n.n >= 5) return J({ error: 'limit' }, 429);
+    await env.DB.prepare('INSERT INTO nv_hunt_msg (uid, email, username, contact, msg, ts) VALUES (?,?,?,?,?,?)').bind(u.uid, u.email, u.username, contact, msg, Date.now()).run();
+    return J({ ok: true });
   }
   if (!u) return J({ error: 'login' }, 401);
   const join = b.join ? 1 : 0, cat = b.cat === 'money' ? 'money' : (b.cat === 'content' ? 'content' : null);

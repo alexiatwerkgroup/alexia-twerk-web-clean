@@ -71,12 +71,40 @@
     '#twkh .pk .n{height:36px;line-height:18px}#twkh .pk .f{display:block;min-height:34px;font-size:11px;line-height:17px;color:#a89c78;border-top:1px solid #2a2310;padding-top:6px;overflow:hidden}' +
     '#twkh .cx{margin-top:10px;width:120px;height:34px;line-height:32px;border-radius:8px;border:1px solid #f0b90b;color:#f0b90b;background:#0b0b0d;font-size:13px;font-weight:700;cursor:pointer}' +
     '@media(max-width:560px){#twkh{padding:8px}#twkh .b{padding:12px 12px 16px}#twkh .t3{font-size:13px;height:80px}#twkh .c{height:210px;padding:10px}#twkh .ct{font-size:12px}#twkh .u{width:60px}#twkh .b1{width:190px}#twkh .b2{width:110px}#twkh .lgf{flex-wrap:wrap;gap:6px}}' +
+    '#twkh .fm{position:absolute;inset:0;border-radius:18px;background:radial-gradient(ellipse at 50% 0,#2a2006,#0b0b0d 60%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:18px;z-index:6;gap:9px;text-align:center}' +
+    '#twkh .fm h3{margin:0;font-size:22px;font-weight:800;color:#fff}#twkh .fm p{margin:0;font-size:13px;line-height:18px;color:#d9d2bd;max-width:420px}#twkh .fm .nf{font-size:12px;color:#f0b90b;font-weight:700}' +
+    '#twkh .fm input,#twkh .fm textarea{width:100%;max-width:420px;background:#0b0b0d;border:1px solid #6b5316;border-radius:9px;color:#f4efe2;font:500 14px system-ui;padding:10px 12px;outline:0}#twkh .fm input:focus,#twkh .fm textarea:focus{border-color:#f0b90b}#twkh .fm textarea{height:96px;resize:none}' +
+    '#twkh .fm .rw2{display:flex;gap:8px;justify-content:center}#twkh .fm .go{width:170px;height:42px;border:0;border-radius:9px;font-weight:800;font-size:14px;color:#1a1100;cursor:pointer;background:linear-gradient(180deg,#ffe27a 0%,#f0b90b 48%,#c98f00 100%)}#twkh .fm .no{width:110px;height:42px;border-radius:9px;font-weight:700;font-size:14px;color:#f0b90b;background:#0b0b0d;border:1px solid #f0b90b;cursor:pointer}#twkh .fm .fs{min-height:18px;font-size:13px;color:#f0d27a}#twkh .fm .fs.ok{color:#5be08a;font-weight:600}' +
     '@media(prefers-reduced-motion:reduce){#twkh .ov{transition:none}}';
   function p2(n) { return n < 10 ? '0' + n : '' + n; }
   function api(body) {
     body = Object.assign({ lang: L }, body);
     var h = { 'Content-Type': 'application/json' }, a = {}; try { a = JSON.parse(ls('alexia-auth-v3') || '{}') || {}; } catch (e) {} if (a.token) h.Authorization = 'Bearer ' + a.token;
     return fetch('/api/novinhas/hunt', { method: 'POST', credentials: 'same-origin', headers: h, body: JSON.stringify(body) }).then(function (r) { return r.json().then(function (j) { return { st: r.status, j: j }; }); });
+  }
+  var FT = {
+    pt: { h: 'Fale com a gente', p: 'Deixe seu Discord ou e-mail e uma mensagem. Nós falamos com você direto. Não envie vídeos nem fotos por aqui.', c: 'Seu Discord ou e-mail', m: 'Mensagem (opcional)', s: 'Enviar', x: 'Voltar', ok: 'Recebido! Entraremos em contato.', e: 'Digite seu Discord ou e-mail.', er: 'Não foi possível enviar. Tente de novo.', l: 'Muitas mensagens hoje. Tente amanhã.' },
+    es: { h: 'Hablá con nosotros', p: 'Dejá tu Discord o mail y un mensaje. Hablamos con vos directamente. No envíes videos ni fotos por acá.', c: 'Tu Discord o mail', m: 'Mensaje (opcional)', s: 'Enviar', x: 'Volver', ok: '¡Recibido! Te vamos a contactar.', e: 'Escribí tu Discord o mail.', er: 'No se pudo enviar. Probá de nuevo.', l: 'Muchos mensajes hoy. Probá mañana.' },
+    en: { h: 'Talk to us', p: 'Leave your Discord or email and a message. We will talk to you directly. Do not send videos or photos here.', c: 'Your Discord or email', m: 'Message (optional)', s: 'Send', x: 'Back', ok: 'Received! We will contact you.', e: 'Enter your Discord or email.', er: 'Could not send. Try again.', l: 'Too many messages today. Try tomorrow.' }
+  };
+  function openForm() {
+    if (!root) return; var f = root.querySelector('.fm'); if (!f) {
+      f = document.createElement('div'); f.className = 'fm';
+      f.innerHTML = '<h3></h3><p></p><input type="text" maxlength="120" autocomplete="off"><textarea maxlength="800"></textarea><div class="rw2"><button type="button" class="go"></button><button type="button" class="no"></button></div><div class="fs" aria-live="polite"></div>';
+      root.querySelector('.b').appendChild(f);
+      f.querySelector('.no').onclick = function () { f.style.display = 'none'; };
+      f.querySelector('.go').onclick = function () {
+        var t = FT[L] || FT.pt, c = f.querySelector('input').value.trim(), st = f.querySelector('.fs'); st.className = 'fs';
+        if (c.length < 3) { st.textContent = t.e; return; }
+        st.textContent = '…'; f.querySelector('.go').disabled = true;
+        api({ ev: 'contact', contact: c, msg: f.querySelector('textarea').value }).then(function (o) {
+          f.querySelector('.go').disabled = false;
+          if (o.j && o.j.ok) { st.className = 'fs ok'; st.textContent = t.ok; f.querySelector('textarea').value = ''; } else { st.textContent = o.st === 429 ? t.l : t.er; }
+        }).catch(function () { f.querySelector('.go').disabled = false; st.textContent = t.er; });
+      };
+    }
+    var t2 = FT[L] || FT.pt; f.querySelector('h3').textContent = t2.h; f.querySelector('p').textContent = t2.p; f.querySelector('input').placeholder = t2.c; f.querySelector('textarea').placeholder = t2.m; f.querySelector('.go').textContent = t2.s; f.querySelector('.no').textContent = t2.x; f.querySelector('.fs').textContent = '';
+    f.style.display = 'flex'; try { f.querySelector('input').focus(); } catch (e) {}
   }
   function build() {
     var st = document.createElement('style'); st.id = 'twkhs'; st.textContent = CSS; document.head.appendChild(st);
@@ -103,7 +131,7 @@
     document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape' && root) { if (ovOpen()) closeOv(); else dismiss(); } });
     root.querySelector('#twkh-c').addEventListener('change', onCheck);
     root.querySelector('.b1').addEventListener('click', function () { api({ ev: 'reg', sid: sid }).catch(function () {}); });
-    root.querySelector('.b1').addEventListener('click', function (e) { if (auth) { e.preventDefault(); var c = root.querySelector('#twkh-c'); if (!cat) { msg('pick'); return; } if (cat === 'money') { var go2 = function () { location.href = '/paymentmethods/?item=donate'; }; if (joined) { go2(); } else { api({ join: 1, cat: cat }).then(function (o) { if (o.j && o.j.ok) { joined = true; ls(JK, '1'); } go2(); }).catch(go2); } return; } if (!c.checked) { c.checked = true; onCheck({ target: c }); } } else { if (!cat) { e.preventDefault(); msg('pick'); return; } ls(PK, '1'); } });
+    root.querySelector('.b1').addEventListener('click', function (e) { if (auth) { e.preventDefault(); var c = root.querySelector('#twkh-c'); if (!cat) { msg('pick'); return; } if (cat === 'money') { var go2 = function () { location.href = '/paymentmethods/?item=donate'; }; if (joined) { go2(); } else { api({ join: 1, cat: cat }).then(function (o) { if (o.j && o.j.ok) { joined = true; ls(JK, '1'); } go2(); }).catch(go2); } return; } if (!c.checked) { c.checked = true; onCheck({ target: c }); } openForm(); } else { if (!cat) { e.preventDefault(); msg('pick'); return; } ls(PK, '1'); } });
     previews(); egg(); setCat(cat, false); [].forEach.call(root.querySelectorAll('.c'), function (e) { e.addEventListener('click', function () { api({ ev: e.dataset.cat === 'money' ? 'cat2' : 'cat1', sid: sid }).catch(function () {}); setCat(e.dataset.cat, true); if (joined && auth) api({ join: 1, cat: cat }).catch(function () {}); }); e.addEventListener('keydown', function (k) { if (k.key === 'Enter' || k.key === ' ') { k.preventDefault(); e.click(); } }); }); paint(); tick(); tmr = setInterval(tick, 1000);
     if (joined) { root.querySelector('#twkh-c').checked = true; msg('ok'); }
     api({ ev: 'play', sid: sid }).catch(function () {});
