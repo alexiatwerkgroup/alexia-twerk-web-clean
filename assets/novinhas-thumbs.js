@@ -4,7 +4,7 @@
 (function () {
   /* Previews FIJADOS por el dueño (14 nov 2026): se usan siempre, sin depender de lo que conteste la API ni de caches. Solo cambian si el dueño lo ordena. */
   var FIJOS = { 'canal-da-maryh': { id: 45, src: '/api/novinhas/featured?cs=1&c=canal-da-maryh&v=45&t=16' },
-    'danadinhasdofunk': {id:3,src:'/api/novinhas/featured?cs=1&c=danadinhasdofunk&v=3&t=0'}, '083-clarinha-2020-7-1-9-41-20': { id: 60, src: '/api/novinhas/featured?cs=1&c=083-clarinha-2020-7-1-9-41-20&v=60&t=0' } };
+    'as-mais-tops-do-funk': {id:96,src:'/api/novinhas/featured?cs=1&c=as-mais-tops-do-funk&v=96&t=23'}, 'danadinhasdofunk': {id:3,src:'/api/novinhas/featured?cs=1&c=danadinhasdofunk&v=3&t=0'}, '083-clarinha-2020-7-1-9-41-20': { id: 60, src: '/api/novinhas/featured?cs=1&c=083-clarinha-2020-7-1-9-41-20&v=60&t=0' } };
   var cards = [].slice.call(document.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]')); if (!cards.length) return;
   fetch('/api/novinhas/featured?thumbs=1&n=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.thumbs) return;
