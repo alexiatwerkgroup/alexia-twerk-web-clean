@@ -70,6 +70,7 @@
       '.gcoin{display:inline-block;width:16px;height:16px;perspective:200px;flex:none}.gcoin i{display:block;width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:gcs 9s linear infinite}.gcoin b{position:absolute;inset:0;border-radius:50%;background:url(/assets/bunny-engraved.png) center/72% no-repeat,radial-gradient(circle at 35% 30%,#fff3b0,#f6c343 40%,#b9770e 80%,#7a4a06);border:1.5px solid #fbd46b;backface-visibility:hidden}.gcoin b:nth-child(2){transform:rotateY(180deg)}' +
       '@keyframes gcs{to{transform:rotateY(360deg)}}' +
       '.twk-coin .wr.pl{display:none}.twk-coin.hp .wr.pl{display:flex}.twk-coin .plc{display:inline-block;width:16px;height:16px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#fff,#d9dde5 45%,#737986);border:1.5px solid #e6e9ef;box-shadow:0 0 8px rgba(220,225,235,.55);animation:plg 2.6s ease-in-out infinite}.twk-coin .tcp{color:#e7eaf0;min-width:1.4ch;font-variant-numeric:tabular-nums}' +
+      '.twk-coin .wr .bill,.twk-coin .wr .gcoin,.twk-coin .wr .plc{transition:transform .16s ease,filter .16s ease;transform:perspective(90px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--s,1))}.twk-coin .wr.hov .bill,.twk-coin .wr.hov .gcoin,.twk-coin .wr.hov .plc{position:relative;z-index:6}.twk-coin .wr.hov .bill{filter:brightness(1.25) drop-shadow(0 0 6px rgba(120,255,170,.7))}.twk-coin .wr.hov .gcoin{filter:brightness(1.2) drop-shadow(0 0 6px rgba(255,200,80,.85))}.twk-coin .wr.hov .plc{filter:brightness(1.18) drop-shadow(0 0 7px rgba(230,236,255,.9))}' +
       '.twk-coin .vch{display:none;width:33px;margin-top:2px;position:relative;z-index:5;transform-origin:0 0;transition:transform .25s ease,filter .25s ease}.twk-coin .vch:hover{transform:scale(4.4);filter:drop-shadow(0 8px 22px rgba(0,0,0,.6))}.twk-coin.hv .vch{display:block}.gtk svg{display:block;width:100%;height:auto;overflow:visible}.gtk .sh{animation:gtsh 7s ease-in-out infinite}@keyframes gtsh{0%,62%{transform:translateX(-140px)}100%{transform:translateX(460px)}}#vgt{perspective:700px;width:min(380px,92%);margin:16px auto 0;filter:drop-shadow(0 6px 26px rgba(246,195,67,.38));cursor:help}#vgt[hidden]{display:none}@media(prefers-reduced-motion:reduce){.gtk .sh{animation:none}}' +
       '@keyframes plg{50%{box-shadow:0 0 14px rgba(240,244,255,.95)}}' +
       '.twk-coin.win{animation:tcw 1.3s ease-out}.twk-coin.win .pig{animation:pw .6s ease-out}@keyframes pw{30%{transform:scale(1.25) rotate(-6deg)}}' +
@@ -112,6 +113,20 @@
     document.querySelectorAll('.twk-nav-v1-tokens,.twk-tokens-pill,#twk-tokens-pill').forEach(function (x) { x.remove(); });
     el = document.createElement('a'); el.className = 'twk-coin'; el.href = '/tokens/'; el.setAttribute('aria-label', 'My tokens');
     el.innerHTML = '<span class="pc" style="display:flex;flex-direction:column;align-items:center;gap:3px"><span class="pig"><svg viewBox="0 0 320 260"><defs><linearGradient id="wpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset=".55" stop-color="#ff8f00"/><stop offset="1" stop-color="#b25400"/></linearGradient></defs><rect x="86" y="190" width="34" height="42" rx="10" fill="#b25400"/><rect x="196" y="190" width="34" height="42" rx="10" fill="#b25400"/><path d="M262 120c26-6 40 8 30 24-6 10-18 6-14-4 3-8-8-10-16-6z" fill="none" stroke="#ff8f00" stroke-width="10" stroke-linecap="round"/><ellipse cx="158" cy="130" rx="118" ry="84" fill="url(#wpg)"/><path d="M70 88c10-30 38-36 52-30-14 10-24 20-26 44z" fill="#ffb347"/><ellipse cx="44" cy="140" rx="32" ry="26" fill="#ff9f1f"/><circle cx="94" cy="108" r="9" fill="#150a00"/><rect x="120" y="54" width="72" height="14" rx="7" fill="#4a2200"/></svg></span><span class="vch gtk" aria-label="Golden Ticket"></span></span><span class="wb"><span class="wallet-heading">BALANCE</span><span class="wr"><span class="wl">TOKENS</span><span class="bill">T</span><span class="tcv">0</span></span><span class="wr"><span class="wl">COINS</span><span class="gcoin"><i><b></b><b></b></i></span><span class="tcc2">0</span></span><span class="wr pl"><span class="wl">PLATINUM</span><span class="plc"></span><span class="tcp">0</span></span></span>';
+    (function () {
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+      var lastSnd = 0;
+      [].forEach.call(el.querySelectorAll('.wr'), function (row) {
+        var ic = row.querySelector('.bill,.gcoin,.plc'); if (!ic) return;
+        row.addEventListener('pointerenter', function () { row.classList.add('hov'); var n = Date.now(); if (n - lastSnd > 450) { lastSnd = n; try { sound(false); } catch (e) {} } });
+        row.addEventListener('pointermove', function (e) {
+          var r = ic.getBoundingClientRect(), nx = (e.clientX - (r.left + r.width / 2)) / 40, ny = (e.clientY - (r.top + r.height / 2)) / 24;
+          nx = Math.max(-1, Math.min(1, nx)); ny = Math.max(-1, Math.min(1, ny));
+          ic.style.setProperty('--ry', (nx * 38).toFixed(1) + 'deg'); ic.style.setProperty('--rx', (-ny * 30).toFixed(1) + 'deg'); ic.style.setProperty('--s', '2.6');
+        });
+        row.addEventListener('pointerleave', function () { row.classList.remove('hov'); ic.style.setProperty('--ry', '0deg'); ic.style.setProperty('--rx', '0deg'); ic.style.setProperty('--s', '1'); });
+      });
+    })();
     val = el.querySelector('.tcv'); cval = el.querySelector('.tcc2'); el.title = 'My wallet: tokens and coins';
     var d = w.querySelector('details'); if (d) w.insertBefore(el, d); else w.appendChild(el);
     var cur = Math.round(st().balance || 0), seen = NaN; try { seen = parseInt(localStorage.getItem('twk_coin_seen'), 10); } catch (e) {}
