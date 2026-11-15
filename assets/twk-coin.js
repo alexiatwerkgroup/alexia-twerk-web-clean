@@ -112,10 +112,9 @@
     el.innerHTML = '<span class="pc" style="display:flex;flex-direction:column;align-items:center;gap:3px"><span class="pig"><svg viewBox="0 0 320 260"><defs><linearGradient id="wpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset=".55" stop-color="#ff8f00"/><stop offset="1" stop-color="#b25400"/></linearGradient></defs><rect x="86" y="190" width="34" height="42" rx="10" fill="#b25400"/><rect x="196" y="190" width="34" height="42" rx="10" fill="#b25400"/><path d="M262 120c26-6 40 8 30 24-6 10-18 6-14-4 3-8-8-10-16-6z" fill="none" stroke="#ff8f00" stroke-width="10" stroke-linecap="round"/><ellipse cx="158" cy="130" rx="118" ry="84" fill="url(#wpg)"/><path d="M70 88c10-30 38-36 52-30-14 10-24 20-26 44z" fill="#ffb347"/><ellipse cx="44" cy="140" rx="32" ry="26" fill="#ff9f1f"/><circle cx="94" cy="108" r="9" fill="#150a00"/><rect x="120" y="54" width="72" height="14" rx="7" fill="#4a2200"/></svg></span><span class="vch gtk" aria-label="Golden Ticket"></span></span><span class="wb"><span class="wallet-heading">BALANCE</span><span class="wr"><span class="wl">TOKENS</span><span class="bill">T</span><span class="tcv">0</span></span><span class="wr"><span class="wl">COINS</span><span class="gcoin"><i><b></b><b></b></i></span><span class="tcc2">0</span></span><span class="wr pl"><span class="wl">PLATINUM</span><span class="plc"></span><span class="tcp">0</span></span></span>';
     (function () {
       if (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-      var lastSnd = 0;
       [].forEach.call(el.querySelectorAll('.wr'), function (row) {
         var ic = row.querySelector('.bill,.gcoin,.plc'); if (!ic) return;
-        row.addEventListener('pointerenter', function () { row.classList.add('hov'); var n = Date.now(); if (n - lastSnd > 450) { lastSnd = n; try { sound(false); } catch (e) {} } });
+        row.addEventListener('pointerenter', function () { row.classList.add('hov'); });
         row.addEventListener('pointermove', function (e) {
           var r = ic.getBoundingClientRect(), nx = (e.clientX - (r.left + r.width / 2)) / 40, ny = (e.clientY - (r.top + r.height / 2)) / 24;
           nx = Math.max(-1, Math.min(1, nx)); ny = Math.max(-1, Math.min(1, ny));
@@ -163,10 +162,16 @@
         '<path d="M80 66H200" stroke="#6b4206" stroke-opacity=".6" stroke-width="1"/><text x="140" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="800" font-size="8.5" letter-spacing="2.4" fill="#5a3500">VIP VOUCHER · TWERKHUB</text>' +
         (big ? '<circle class="gtdr" r="34" cx="150" cy="55" fill="url(#gtr' + n + ')" opacity="0"/><circle class="gtdd" r="30" cx="150" cy="55" fill="url(#gtd' + n + ')" opacity="0"/>' : '') + '<rect class="sh" x="-60" y="-10" width="46" height="130" fill="url(#' + h + ')" transform="skewX(-18)"/></g></g></svg>';
     }
+    var TKP = { '#fff6c2': '#dcffe9', '#f9d24f': '#6fe29a', '#cf8f0c': '#1c9a52', '#f6c546': '#6fe29a', '#fff0a0': '#c8ffe0', '#7a4a06': '#0b4a24', '#5a3500': '#0b3d1c', '#6b4206': '#0b4a24', '#4d2d00': '#07301a', '#fff3b0': '#e8fff1', '#fff4b0': '#e8fff1', '#fff6c8': '#eafff2' };
+    function TK(big, kind) {
+      var x = GT(big); if (kind !== 'token') return x;
+      Object.keys(TKP).forEach(function (k) { x = x.split(k).join(TKP[k]); });
+      x = x.split('GOLDEN TICKET').join('TOKEN').split('font-size="26"').join('font-size="36"').split('VIP VOUCHER · TWERKHUB').join('TWERKHUB · VAULT POINTS').split('Nº 0001').join('PTS').split('>ADMIT<').join('>EARN<').split('aria-label="Golden Ticket"').join('aria-label="Token"');
+      return x.replace(/<image href="\/assets\/bunny-engraved.png"[^>]*\/>/, '<text x="40" y="64" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="34" fill="#0b3d1c" fill-opacity=".85">T</text>');
+    }
     function tactile(host) {
-      if (host._tc || (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches)) return; host._tc = 1;
-      var svg = host.querySelector('svg'), grp = svg.querySelector('.gtw'), fl = svg.querySelector('filter'), dm = fl.querySelector('feDisplacementMap'),
-        dd = svg.querySelector('.gtdd'), dr = svg.querySelector('.gtdr'), fid = fl.id;
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return; if (host._tc) { host._rf(); return; } host._tc = 1;
+      var svg, grp, fl, dm, dd, dr, fid; function rf() { svg = host.querySelector('svg'); grp = svg.querySelector('.gtw'); fl = svg.querySelector('filter'); dm = fl.querySelector('feDisplacementMap'); dd = svg.querySelector('.gtdd'); dr = svg.querySelector('.gtdr'); fid = fl.id; } host._rf = rf; rf();
       var tx = 0, ty = 0, ta = 0, cx = 0, cy = 0, ca = 0, px = 150, py = 55, raf = 0;
       function loop() {
         cx += (tx - cx) * .16; cy += (ty - cy) * .16; ca += (ta - ca) * .12;
@@ -193,7 +198,7 @@
       p = Number(p) || 0; v = Number(v) || 0; var pe = el.querySelector('.tcp'); if (pe) pe.textContent = String(p);
       el.classList.toggle('hp', p > 0); el.classList.toggle('hv', v > 0);
       var vc = el.querySelector('.vch'); if (v > 0 && vc && !vc.firstChild) vc.innerHTML = GT(); if (vc) vc.title = VT;
-      var pg = document.getElementById('vgt'); if (pg) { if (v > 0 && !pg.firstChild) { pg.innerHTML = GT(true); tactile(pg); } pg.hidden = v <= 0; pg.title = VT; }
+      var pg = document.getElementById('vgt'); if (pg) { var kd = v > 0 ? 'gold' : 'token'; if (pg._k !== kd) { pg.innerHTML = TK(true, kd); pg._k = kd; tactile(pg); } pg.hidden = false; pg.title = v > 0 ? VT : 'Your tokens. You earn them just by being here.'; }
       el.title = p > 0 ? 'Platinum coins: the reward is not ready to redeem yet. It will be available soon.' : 'My wallet: tokens and coins';
       try { localStorage.setItem('twk_plat_cache_v1', JSON.stringify({ p: p, v: v })); } catch (er) {}
     }
@@ -207,7 +212,7 @@
             fetch('/api/novinhas/hunt', { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': 'application/json' }, headers), body: JSON.stringify({ ev: pe, sid: sid }) }).then(function (r) { return r.ok ? r.json() : null; }).then(function (o) { if (o && o.auth) { try { localStorage.removeItem('twk-hunt-pending-egg'); } catch (e) {} setPlat(o.platinum, o.voucher); } }).catch(function () {}); } }
       }).catch(function () {});
     }
-    try { var pc0 = JSON.parse(localStorage.getItem('twk_plat_cache_v1') || '{}'); if (pc0.p > 0) setPlat(pc0.p, pc0.v); } catch (e) {}
+    try { var pc0 = JSON.parse(localStorage.getItem('twk_plat_cache_v1') || '{}'); if (pc0.p > 0) setPlat(pc0.p, pc0.v); else setPlat(0, 0); } catch (e) { setPlat(0, 0); }
     addEventListener('twk-platinum-changed', function (e) { var d = e.detail || {}; setPlat(d.platinum, d.voucher); });
     pullPlat();
     pullCoins(); setInterval(pullCoins, 60000); addEventListener('focus', pullCoins);
