@@ -71,7 +71,10 @@ export async function onRequest(ctx) {
       const greats = (g && g.n) || 0, pc = (n) => plays > 0 ? Math.round(n * 1000 / plays) / 10 : 0;
       const ck = async (k) => { const r = await env.DB.prepare('SELECT COUNT(*) n FROM nv_hunt_ev WHERE kind = ?').bind(k).first(); return (r && r.n) || 0; };
       const [later, close, reg, cat1, cat2] = await Promise.all([ck('later'), ck('close'), ck('reg'), ck('cat1'), ck('cat2')]);
-      return J({ ok: true, plays, hits, greats, pct: pc(hits), pctGreat: pc(greats), later, close, reg, cat1, cat2 });
+      // Sesiones que abrieron el cartel y no hicieron NINGUNA accion (se fueron o lo ignoraron). Una sesion puede hacer varias acciones, por eso las filas no se suman entre si.
+      const ix = await env.DB.prepare("SELECT COUNT(*) n FROM nv_hunt_ev p WHERE p.kind = 'play' AND NOT EXISTS (SELECT 1 FROM nv_hunt_ev x WHERE x.sid = p.sid AND x.kind IN ('later','close','reg','cat1','cat2','hit','great'))").first();
+      const idle = (ix && ix.n) || 0;
+      return J({ ok: true, plays, hits, greats, pct: pc(hits), pctGreat: pc(greats), later, close, reg, cat1, cat2, idle, acted: Math.max(0, plays - idle) });
     }
     if (!u) return J({ auth: false, joined: false });
     const row = await env.DB.prepare('SELECT joined, cat FROM nv_hunt WHERE uid = ?').bind(u.uid).first();
