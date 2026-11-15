@@ -2,7 +2,13 @@
 import os, sys, json, subprocess, boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
-s3 = boto3.client('s3', endpoint_url=os.environ['R2_ENDPOINT'], aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'], aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'], region_name='auto', config=Config(retries={'max_attempts': 3}))
+def env(k):
+    v = (os.environ.get(k) or '').strip().strip('"\'').strip()
+    print(k, 'len', len(v), 'vacio' if not v else 'ok', flush=True)
+    return v
+EP, AK, SK = env('R2_ENDPOINT'), env('AWS_ACCESS_KEY_ID'), env('AWS_SECRET_ACCESS_KEY')
+if EP and not EP.startswith('https://'): print('R2_ENDPOINT no empieza con https:// ->', EP[:12]); sys.exit(1)
+s3 = boto3.client('s3', endpoint_url=EP, aws_access_key_id=AK, aws_secret_access_key=SK, region_name='auto', config=Config(retries={'max_attempts': 3}))
 B = 'novinhas'
 def has(k):
     try: s3.head_object(Bucket=B, Key=k); return True
