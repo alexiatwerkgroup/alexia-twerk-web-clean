@@ -25,6 +25,25 @@
     s.connect(fl); fl.connect(g); g.connect(c.destination); s.start(t);
   }
   // big = more coins + chord. Casino "coins dropping" run + ka-ching.
+  var nbuf = null;
+  function paper(k) {
+    if (!soundOn() || !ac() || ctx.state !== 'running') return;
+    try {
+      if (!nbuf) { nbuf = ctx.createBuffer(1, ctx.sampleRate * .3, ctx.sampleRate); var d = nbuf.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+      var t0 = ctx.currentTime, n = 3 + Math.round(Math.random() * 3 * k), i2, t = t0;
+      for (i2 = 0; i2 < n; i2++) {
+        var src = ctx.createBufferSource(); src.buffer = nbuf;
+        var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2200 + Math.random() * 4800; bp.Q.value = .7 + Math.random() * .8;
+        var g = ctx.createGain(), pk = (.05 + Math.random() * .05) * k, dc = .03 + Math.random() * .06;
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(pk, t + .004); g.gain.exponentialRampToValueAtTime(.0001, t + dc);
+        src.connect(bp); bp.connect(g); g.connect(ctx.destination); src.start(t, Math.random() * .2, dc + .02);
+        t += .018 + Math.random() * .055;
+      }
+      var r = ctx.createBufferSource(); r.buffer = nbuf; var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+      var rg = ctx.createGain(); rg.gain.setValueAtTime(0, t0); rg.gain.linearRampToValueAtTime(.035 * k, t0 + .05); rg.gain.exponentialRampToValueAtTime(.0001, t + .08);
+      r.connect(lp); lp.connect(rg); rg.connect(ctx.destination); r.start(t0, 0, t - t0 + .12);
+    } catch (e) {}
+  }
   function sound(big) {
     if (!soundOn() || !ac() || ctx.state !== 'running') return;
     var t = ctx.currentTime + .02, n = big ? 16 : 9, i;
@@ -51,7 +70,7 @@
       '.gcoin{display:inline-block;width:16px;height:16px;perspective:200px;flex:none}.gcoin i{display:block;width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:gcs 9s linear infinite}.gcoin b{position:absolute;inset:0;border-radius:50%;background:url(/assets/bunny-engraved.png) center/72% no-repeat,radial-gradient(circle at 35% 30%,#fff3b0,#f6c343 40%,#b9770e 80%,#7a4a06);border:1.5px solid #fbd46b;backface-visibility:hidden}.gcoin b:nth-child(2){transform:rotateY(180deg)}' +
       '@keyframes gcs{to{transform:rotateY(360deg)}}' +
       '.twk-coin .wr.pl{display:none}.twk-coin.hp .wr.pl{display:flex}.twk-coin .plc{display:inline-block;width:16px;height:16px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#fff,#d9dde5 45%,#737986);border:1.5px solid #e6e9ef;box-shadow:0 0 8px rgba(220,225,235,.55);animation:plg 2.6s ease-in-out infinite}.twk-coin .tcp{color:#e7eaf0;min-width:1.4ch;font-variant-numeric:tabular-nums}' +
-      '.twk-coin .vch{display:none;width:33px;margin-top:2px;position:relative;z-index:5;transform-origin:0 0;transition:transform .25s ease,filter .25s ease}.twk-coin .vch:hover{transform:scale(4.4);filter:drop-shadow(0 8px 22px rgba(0,0,0,.6))}.twk-coin.hv .vch{display:block}.gtk svg{display:block;width:100%;height:auto;overflow:visible}.gtk .sh{animation:gtsh 7s ease-in-out infinite}@keyframes gtsh{0%,62%{transform:translateX(-140px)}100%{transform:translateX(460px)}}#vgt{width:min(380px,92%);margin:16px auto 0;filter:drop-shadow(0 6px 26px rgba(246,195,67,.38));cursor:help}#vgt[hidden]{display:none}@media(prefers-reduced-motion:reduce){.gtk .sh{animation:none}}' +
+      '.twk-coin .vch{display:none;width:33px;margin-top:2px;position:relative;z-index:5;transform-origin:0 0;transition:transform .25s ease,filter .25s ease}.twk-coin .vch:hover{transform:scale(4.4);filter:drop-shadow(0 8px 22px rgba(0,0,0,.6))}.twk-coin.hv .vch{display:block}.gtk svg{display:block;width:100%;height:auto;overflow:visible}.gtk .sh{animation:gtsh 7s ease-in-out infinite}@keyframes gtsh{0%,62%{transform:translateX(-140px)}100%{transform:translateX(460px)}}#vgt{perspective:700px;width:min(380px,92%);margin:16px auto 0;filter:drop-shadow(0 6px 26px rgba(246,195,67,.38));cursor:help}#vgt[hidden]{display:none}@media(prefers-reduced-motion:reduce){.gtk .sh{animation:none}}' +
       '@keyframes plg{50%{box-shadow:0 0 14px rgba(240,244,255,.95)}}' +
       '.twk-coin.win{animation:tcw 1.3s ease-out}.twk-coin.win .pig{animation:pw .6s ease-out}@keyframes pw{30%{transform:scale(1.25) rotate(-6deg)}}' +
       '@keyframes tcw{0%{transform:scale(1)}15%{transform:scale(1.14);box-shadow:0 0 50px rgba(255,210,90,.95)}100%{transform:scale(1)}}' +
@@ -110,8 +129,8 @@
       }).catch(function () {});
     }
     try { var u0 = JSON.parse(localStorage.getItem('alexia_current_user') || '{}'), cc = JSON.parse(localStorage.getItem('twk_coins_cache_v1') || '{}'); if (u0.email && String(cc.email || '').toLowerCase() === String(u0.email).toLowerCase() && Number.isFinite(Number(cc.coins))) { cshown = Number(cc.coins); cval.textContent = cshown; } } catch (e) {}
-    var gtN = 0;
-    function GT() {
+    var gtN = 0, VT = 'Very rare voucher · Easter egg. Not ready to redeem yet, it will be available soon.';
+    function GT(big) {
       var n = ++gtN, g = 'gtg' + n, c = 'gtc' + n, h = 'gth' + n, l = 'gtl' + n, m = 'gtm' + n;
       var P = 'M0 9Q0 0 9 0H291Q300 0 300 9V44a11 11 0 0 0 0 22V101Q300 110 291 110H9Q0 110 0 101V66a11 11 0 0 0 0-22Z';
       var bars = '', bx = 244, bw = [2, 1, 3, 1, 2, 1, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2];
@@ -121,7 +140,7 @@
         '<pattern id="' + l + '" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><path d="M0 2H4" stroke="#7a4a06" stroke-opacity=".16" stroke-width=".7"/></pattern>' +
         '<linearGradient id="' + m + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#5a3500" stop-opacity=".28"/></linearGradient>' +
         '<linearGradient id="' + h + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
-        '<clipPath id="' + c + '"><path d="' + P + '"/></clipPath></defs>' +
+        '<clipPath id="' + c + '"><path d="' + P + '"/></clipPath>' + (big ? '<filter id="gtf' + n + '" x="-4%" y="-8%" width="108%" height="116%"><feTurbulence type="fractalNoise" baseFrequency=".008 .014" numOctaves="1" seed="7" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter><radialGradient id="gtd' + n + '"><stop offset="0" stop-color="#3a2300" stop-opacity=".55"/><stop offset=".55" stop-color="#3a2300" stop-opacity=".18"/><stop offset="1" stop-color="#3a2300" stop-opacity="0"/></radialGradient><radialGradient id="gtr' + n + '"><stop offset=".6" stop-color="#fff" stop-opacity="0"/><stop offset=".82" stop-color="#fff7c8" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>' : '') + '</defs><g class="gtw">' +
         '<path d="' + P + '" fill="url(#' + g + ')"/><path d="' + P + '" fill="url(#' + l + ')"/><path d="' + P + '" fill="url(#' + m + ')"/><path d="' + P + '" fill="none" stroke="#fff4b0" stroke-width="2"/>' +
         '<g clip-path="url(#' + c + ')">' +
         '<path d="M14 12H286V98H14Z" fill="none" stroke="#6b4206" stroke-opacity=".6" stroke-width="1.3"/><path d="M18 16H282V94H18Z" fill="none" stroke="#fff3b0" stroke-opacity=".7" stroke-width=".8" stroke-dasharray="1.5 2.5"/>' +
@@ -130,13 +149,39 @@
         '<text x="264" y="56" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="800" font-size="6.5" letter-spacing="1" fill="#5a3500" fill-opacity=".85">Nº 0001</text><text x="264" y="44" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="800" font-size="6.5" letter-spacing="1.2" fill="#5a3500" fill-opacity=".75">ADMIT</text>' +
         '<text x="140" y="56" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="26" letter-spacing="1.2" fill="#fff6c8" fill-opacity=".9" transform="translate(.9,1.4)">GOLDEN TICKET</text><text x="140" y="56" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="26" letter-spacing="1.2" fill="#4d2d00">GOLDEN TICKET</text>' +
         '<path d="M80 66H200" stroke="#6b4206" stroke-opacity=".6" stroke-width="1"/><text x="140" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="800" font-size="8.5" letter-spacing="2.4" fill="#5a3500">VIP VOUCHER · TWERKHUB</text>' +
-        '<rect class="sh" x="-60" y="-10" width="46" height="130" fill="url(#' + h + ')" transform="skewX(-18)"/></g></svg>';
+        (big ? '<circle class="gtdr" r="34" cx="150" cy="55" fill="url(#gtr' + n + ')" opacity="0"/><circle class="gtdd" r="30" cx="150" cy="55" fill="url(#gtd' + n + ')" opacity="0"/>' : '') + '<rect class="sh" x="-60" y="-10" width="46" height="130" fill="url(#' + h + ')" transform="skewX(-18)"/></g></g></svg>';
+    }
+    function tactile(host) {
+      if (host._tc || (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches)) return; host._tc = 1;
+      var svg = host.querySelector('svg'), grp = svg.querySelector('.gtw'), fl = svg.querySelector('filter'), dm = fl.querySelector('feDisplacementMap'),
+        dd = svg.querySelector('.gtdd'), dr = svg.querySelector('.gtdr'), fid = fl.id;
+      var tx = 0, ty = 0, ta = 0, cx = 0, cy = 0, ca = 0, px = 150, py = 55, raf = 0;
+      function loop() {
+        cx += (tx - cx) * .16; cy += (ty - cy) * .16; ca += (ta - ca) * .12;
+        svg.style.transform = 'perspective(700px) rotateX(' + (-cy * 9).toFixed(2) + 'deg) rotateY(' + (cx * 11).toFixed(2) + 'deg) scale(' + (1 + ca * .025).toFixed(4) + ')';
+        dm.setAttribute('scale', (ca * 2.4).toFixed(2));
+        if (ca > .02) grp.setAttribute('filter', 'url(#' + fid + ')'); else grp.removeAttribute('filter');
+        dd.setAttribute('cx', px); dd.setAttribute('cy', py); dr.setAttribute('cx', px - 1.5); dr.setAttribute('cy', py - 1.5);
+        dd.setAttribute('opacity', ca.toFixed(2)); dr.setAttribute('opacity', (ca * .8).toFixed(2));
+        if (ta === 0 && ca < .01 && Math.abs(cx) < .01 && Math.abs(cy) < .01) { svg.style.transform = ''; grp.removeAttribute('filter'); raf = 0; return; }
+        raf = requestAnimationFrame(loop);
+      }
+      function go() { if (!raf) raf = requestAnimationFrame(loop); }
+      var lx = 0, ly = 0, lt = 0;
+      host.addEventListener('pointerenter', function () { paper(1); });
+      host.addEventListener('pointermove', function (e) {
+        var r = svg.getBoundingClientRect(); if (!r.width) return;
+        var nowT = Date.now(), mv = Math.abs(e.clientX - lx) + Math.abs(e.clientY - ly); if (nowT - lt > 140 && mv > 14) { paper(.55); lt = nowT; lx = e.clientX; ly = e.clientY; }
+        var nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
+        tx = Math.max(-1, Math.min(1, (nx - .5) * 2)); ty = Math.max(-1, Math.min(1, (ny - .5) * 2)); px = nx * 300; py = ny * 110; ta = 1; go();
+      });
+      host.addEventListener('pointerleave', function () { tx = 0; ty = 0; ta = 0; go(); });
     }
     function setPlat(p, v) {
       p = Number(p) || 0; v = Number(v) || 0; var pe = el.querySelector('.tcp'); if (pe) pe.textContent = String(p);
       el.classList.toggle('hp', p > 0); el.classList.toggle('hv', v > 0);
-      var vc = el.querySelector('.vch'); if (v > 0 && vc && !vc.firstChild) vc.innerHTML = GT();
-      var pg = document.getElementById('vgt'); if (pg) { if (v > 0 && !pg.firstChild) pg.innerHTML = GT(); pg.hidden = v <= 0; pg.title = 'Golden Ticket: the reward is not ready to redeem yet. It will be available soon.'; }
+      var vc = el.querySelector('.vch'); if (v > 0 && vc && !vc.firstChild) vc.innerHTML = GT(); if (vc) vc.title = VT;
+      var pg = document.getElementById('vgt'); if (pg) { if (v > 0 && !pg.firstChild) { pg.innerHTML = GT(true); tactile(pg); } pg.hidden = v <= 0; pg.title = VT; }
       el.title = p > 0 ? 'Platinum coins: the reward is not ready to redeem yet. It will be available soon.' : 'My wallet: tokens and coins';
       try { localStorage.setItem('twk_plat_cache_v1', JSON.stringify({ p: p, v: v })); } catch (er) {}
     }
@@ -167,7 +212,7 @@
     addEventListener('storage', function () { var b = Math.round(st().balance || 0); if (b !== shown) countTo(b, 500); });
   }
   try { var q = new URLSearchParams(location.search).get('ref'); if (q && !localStorage.getItem('twk_ref')) { localStorage.setItem('twk_ref', q.slice(0, 60)); localStorage.setItem('twk_ref_at', String(Date.now())); } } catch (e) {}
-  window.TwkCoin = { refresh: function () {}, celebrate: celebrate, sound: sound, soundOn: soundOn, setSound: function (on) { try { localStorage.setItem(NSK, on ? 'on' : 'off'); } catch (e) {} }, mount: mount };
+  window.TwkCoin = { refresh: function () {}, celebrate: celebrate, paper: paper, sound: sound, soundOn: soundOn, setSound: function (on) { try { localStorage.setItem(NSK, on ? 'on' : 'off'); } catch (e) {} }, mount: mount };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
   setTimeout(mount, 800);
   if (!window.AlexiaTokens && !document.querySelector('script[src*="token-system"]')) { var s = document.createElement('script'); s.src = '/assets/token-system.js'; s.defer = true; s.onload = function () { if (el && window.AlexiaTokens) { shown = Math.round(st().balance || 0); val.textContent = fmt(shown); } }; document.head.appendChild(s); }
