@@ -121,13 +121,13 @@ function donut(rows) {
 function pm(rows, key) { var m = {}; (rows || []).forEach(function (x) { m[x[key]] = x.u; }); return m; }
 function peaksHtml(r) {
   var pk = (r.peaks || []).filter(function (x) { return x.bots > 0 || x.raw >= 25; });
-  if (!pk.length) return '<div class="m">No hubo picos fuera de lo normal en este período.</div>';
+  if (!pk.length) return '<div class="m">No hubo días con movimiento fuera de lo normal en este período.</div>';
   var VD = { robots: ['r', 'Ola de robots (descartada)'], real: ['p', 'Gente real'], mixto: ['m', 'Mezcla de gente y robots'] };
   return pk.map(function (x) {
     var d = x.k.split(' '), dd = d[0].split('-'), v = VD[x.verdict] || VD.mixto;
     var cs = x.countries.map(function (c) { return flag(c.c) + ' ' + esc(cn(c.c)) + ' <span class="m">' + c.u + '</span>'; }).join(' · ');
     var why = x.verdict === 'robots' ? 'Cientos de cookies casi idénticas entraron juntas' + (x.windowSeconds ? ' en ' + x.windowSeconds + ' segundos' : '') + (x.fingerprint ? ' (todas ' + esc(x.fingerprint.fp) + ')' : '') + ', sin tocar ni scrollear como una persona. No son visitantes: ya están fuera de los números.' : x.verdict === 'real' ? 'Casi todos dieron señales humanas. Probablemente una promo, un mail o un post que funcionó.' : 'Parte es gente (' + F(x.real) + ') y parte robots (' + F(x.bots) + '). Los robots ya están descartados.';
-    return '<div class="pk"><div><b>' + DOW[new Date(+dd[0], +dd[1] - 1, +dd[2]).getDay()] + ' ' + dd[2] + '/' + dd[1] + ' · ' + d[1] + ' h</b><br><span class="vd ' + v[0] + '">' + v[1] + '</span></div>' +
+    return '<div class="pk"><div><b>' + DOW[new Date(+dd[0], +dd[1] - 1, +dd[2]).getDay()] + ' ' + dd[2] + '/' + dd[1] + (d[1] ? ' · ' + d[1] + ' h' : '') + '</b>'<br><span class="vd ' + v[0] + '">' + v[1] + '</span></div>' +
       '<div><b>' + F(x.raw) + '</b> cookies con señal → <b style="color:var(--ok)">' + F(x.real) + ' reales</b>' + (x.bots ? ' · <b style="color:var(--bad)">' + F(x.bots) + ' robots</b>' : '') + '<br><span class="m">' + why + '</span><br>' + (cs ? '<span class="m">De dónde: </span>' + cs : '') + '</div></div>';
   }).join('');
 }
@@ -200,7 +200,7 @@ function repHtml(r) {
   return '<div class="top" style="margin-top:22px"><h1 style="font-size:20px">' + titulo(r) + '</h1><span class="m">' + (k.lastHit ? 'Última visita registrada hace ' + ago(k.lastHit) + (Date.now() - k.lastHit > 1800000 ? ' <b class="bad">· revisar: hace rato que no entra nada</b>' : '') + ' · ' : '') + 'Se actualiza cada 1 hora · calculado ' + new Date(r.now).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) + '</span></div>' + kp +
     '<div class="g"><div class="c s12"><h2>Visitantes reales por día<small>' + 'barra dorada = reales · barra clara = interesados · '+ '' + (r.prev ? 'línea celeste punteada = ' + esc(r.cmpLabel) + ' · ' : '') + '▲ celeste = promo marcada · ● roja = robots descartados</small></h2>' + dayChart(r) +
     '<div class="frm"><input type="text" id="ml" placeholder="Qué publicaste (ej: post en Reddit)" maxlength="80"><select id="mc"><option>reddit</option><option>x</option><option>telegram</option><option>instagram</option><option>foro</option><option>otro</option></select><input type="datetime-local" id="mt"><button class="btn" id="ma" type="button">Marcar promo</button></div>' + marks + '</div>' +
-    '<div class="c s12"><h2>Picos: ¿gente real o robots?<small>las horas con más movimiento y qué había detrás</small></h2>' + peaksHtml(r) + '</div>' +
+    '<div class="c s12"><h2>Días con más movimiento: ¿gente real o robots?<small>un resumen por día, del más reciente al más antiguo</small></h2>' + peaksHtml(r) + '</div>' +
     '<div class="c s6"><h2>Robots descartados<small>entraron con señal pero en ola · no cuentan</small></h2><div style="font:900 30px Manrope;color:var(--bad)">' + F(r.burst.cookies) + '</div><div class="m" style="margin-bottom:10px">cookies en ' + F(r.burst.minutes) + ' minutos de ola (' + r.burst.min + '+ cookies iguales por minuto)</div>' + bars(r.botCountries || [], 'u', function (x) { return flag(x.c) + ' ' + cn(x.c); }) + '</div>' +
     '<div class="c s6"><h2>Cuándo entra tu gente<small>día de la semana × hora, visitantes reales</small></h2>' + heatChart(r.heat || []) + '</div>' +
     '<div class="c s6"><h2>Del visitante al registro<small>embudo del período</small></h2>' + funnel + '</div>' +

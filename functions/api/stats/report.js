@@ -81,7 +81,7 @@ export async function onRequestGet({ request, env }) {
         (SELECT vid, ref, ROW_NUMBER() OVER (PARTITION BY vid ORDER BY ts) rn FROM tw_hits WHERE ts > ?1 AND ts <= ?2 AND vid IN cv) WHERE rn = 1 GROUP BY k`),
     /*23*/ qp(`SELECT CASE WHEN instr(path,'?') > 0 THEN substr(path,1,instr(path,'?')-1) ELSE path END path, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?1 AND ts <= ?2 AND vid IN cv AND path NOT LIKE '/admin%' GROUP BY 1`),
   ]).concat([
-    /*E0*/ q(`SELECT strftime('%Y-%m-%d %H', ts/1000+${off}, 'unixepoch') k, COUNT(DISTINCT vid) raw, COUNT(DISTINCT CASE WHEN vid IN cv THEN vid END) real FROM tw_hits WHERE ts > ?1 AND (dur > 0 OR human = 1 OR uid IS NOT NULL) GROUP BY k HAVING raw >= 12 ORDER BY raw DESC LIMIT 6`),
+    /*E0*/ q(`SELECT strftime('%Y-%m-%d', ts/1000+${off}, 'unixepoch') k, COUNT(DISTINCT vid) raw, COUNT(DISTINCT CASE WHEN vid IN cv THEN vid END) real FROM tw_hits WHERE ts > ?1 AND (dur > 0 OR human = 1 OR uid IS NOT NULL) GROUP BY k HAVING raw >= 12 ORDER BY k DESC LIMIT 10`),
     /*E1*/ q(`SELECT ${D} d, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?1 AND vid IN burst AND (dur > 0 OR human = 1) GROUP BY d ORDER BY d`),
     /*E2*/ q(`SELECT CAST(strftime('%w', ts/1000+${off}, 'unixepoch') AS INTEGER) w, CAST(strftime('%H', ts/1000+${off}, 'unixepoch') AS INTEGER) h, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY w, h`),
     /*E3*/ q(`SELECT country c, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?1 AND vid IN burst AND country <> '' GROUP BY country ORDER BY u DESC LIMIT 8`),
@@ -94,7 +94,7 @@ export async function onRequestGet({ request, env }) {
   const peaks = [];
   if (peakRows.length) {
     const ks = peakRows.map(r => r.k), ph2 = ks.map((_, i) => `?${i + 2}`).join(',');
-    const KB = `strftime('%Y-%m-%d %H', ts/1000+${off}, 'unixepoch')`;
+    const KB = `strftime('%Y-%m-%d', ts/1000+${off}, 'unixepoch')`;
     const [pc, pf, pw] = await Promise.all([
       all(db, `WITH ${REAL_CTE} SELECT ${KB} k, country c, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?1 AND (dur > 0 OR human = 1 OR uid IS NOT NULL) AND country <> '' AND ${KB} IN (${ph2}) GROUP BY k, c ORDER BY u DESC`, since, ...ks),
       all(db, `WITH ${REAL_CTE} SELECT ${KB} k, browser || ' · ' || os || ' · ' || device fp, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?1 AND vid IN burst AND ${KB} IN (${ph2}) GROUP BY k, fp ORDER BY u DESC`, since, ...ks),
@@ -102,11 +102,11 @@ export async function onRequestGet({ request, env }) {
     ]);
     for (const r of peakRows) {
       const bots = Math.max(0, r.raw - r.real), share = r.raw ? bots / r.raw : 0, w = pw.find(x => x.k === r.k) || {}, fp = pf.find(x => x.k === r.k);
-      peaks.push({ k: r.k, raw: r.raw, real: r.real, bots, burst: w.u || 0, windowSeconds: w.a ? Math.max(1, Math.round((w.b - w.a) / 1000)) : 0,
+      peaks.push({ k: r.k, raw: r.raw, real: r.real, bots, burst: w.u || 0, windowSeconds: w.a && (w.b - w.a) <= 3600000 ? Math.max(1, Math.round((w.b - w.a) / 1000)) : 0,
         verdict: share >= 0.5 ? 'robots' : share <= 0.15 ? 'real' : 'mixto',
         countries: pc.filter(x => x.k === r.k).slice(0, 4).map(x => ({ c: x.c, u: x.u })), fingerprint: fp ? { fp: fp.fp, u: fp.u } : null });
     }
-    peaks.sort((x, y) => y.bots - x.bots || y.raw - x.raw);
+    peaks.sort((x, y) => (x.k < y.k ? 1 : -1));
   }
   const k = one(0);
   const visitors = res[15].results || [];
