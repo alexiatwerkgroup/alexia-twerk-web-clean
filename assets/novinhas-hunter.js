@@ -3,7 +3,7 @@
 (function () {
   var END = Date.UTC(2026, 11, 1, 3, 0, 0);
   if (Date.now() >= END || window.__twkHunt) return; window.__twkHunt = 1;
-  var LK = 'twk-hunt-lang', XK = 'twk-hunt-x', PK = 'twk-hunt-pending', JK = 'twk-hunt-joined', EK = 'twk-hunt-egg', SK = 'twk-hunt-sid';
+  var LK = 'twk-hunt-lang', XK = 'twk-hunt-x2', PK = 'twk-hunt-pending', JK = 'twk-hunt-joined', EK = 'twk-hunt-egg', SK = 'twk-hunt-sid';
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} return null; }
   var T = {
     pt: { t1: 'Quer ser caçador?', t2: 'Acesso grátis a todo o conteúdo', t3: 'Mês que vem, 5 a 10 vagas para quem mais doar conteúdo ao Novinhas: vídeos e canais em recuperação ainda não publicados.', c1h: 'Categoria 1', c1t: 'Quem mais doar conteúdo. Grátis, só por mérito.', c2h: 'Categoria 2', c2t: 'Top doadores Binance e PayPal. Mesmo privilégio, categoria à parte.', t4: 'Esta é a sua chance de ganhar de graça.', cl: 'Termina em', t5: 'Quero participar', t6: 'Requisito: conta registrada, para falarmos com você se for escolhido.', b1: 'Entrar ou criar conta', b1a: 'Participar agora', b2: 'Agora não', u: ['dias', 'h', 'min', 'seg'], o1: 'Conquista oculta', o2: 'Grande conquista oculta', eg: 'Só X% dos visitantes achou este easter egg', r5: '+5 moedas de platina', r20: '+20 moedas de platina', vr: '+ 1 voucher VIP', ak: 'Já estão na sua carteira.', gst: 'Entre ou crie sua conta para receber o seu prêmio.', et: 'Emblemas do concurso Caçador', cond: 'Só se você for escolhido como doador de conteúdo ou de dinheiro:', p1: 'Acesso grátis a todo o conteúdo.', p2: 'Emblema especial no fórum.', p3: 'Privilégios de moderador, administrador e líder dos hunters.', p4: 'Os privilégios só se tiver interesse. Se quiser só o conteúdo grátis, vale 100%.', cls: 'Fechar', need: 'Entre ou crie sua conta para participar.', pick: 'Escolha uma categoria para participar.', sel: 'Escolhida', ok: 'Pronto! Você está participando. Entraremos em contato por e-mail.', err: 'Algo deu errado. Tente novamente.' },
@@ -93,9 +93,11 @@
     root.querySelector('.gr').innerHTML = EM.map(function (s) { return '<div><img alt="" src="' + s + '"></div>'; }).join('');
     root.querySelector('.lg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; L = b.dataset.l; ls(LK, L); paint(); });
     root.querySelector('.x').onclick = root.querySelector('.b2').onclick = dismiss;
-    root.querySelector('.cx').onclick = function () { var t = tier, au = auth; dismiss(); if (t && au) setTimeout(function () { try { window.TwkCoin && window.TwkCoin.celebrate(t === 'great' ? 20 : 5, true, 'coin'); } catch (e) {} }, 400); };
-    root.addEventListener('click', function (e) { if (e.target === root) dismiss(); });
-    document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape' && root) dismiss(); });
+    function ovOpen() { var o = root && root.querySelector('.ov'); return !!(o && o.style.display === 'flex'); }
+    function closeOv() { var o = root && root.querySelector('.ov'); if (!o) return; o.style.opacity = '0'; setTimeout(function () { o.style.display = 'none'; }, 220); var t = tier, au = auth; if (t && au) setTimeout(function () { try { window.TwkCoin && window.TwkCoin.celebrate(t === 'great' ? 20 : 5, true, 'coin'); } catch (e) {} }, 400); }
+    root.querySelector('.cx').onclick = closeOv;
+    root.addEventListener('click', function (e) { if (e.target === root && !ovOpen()) dismiss(); });
+    document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape' && root) { if (ovOpen()) closeOv(); else dismiss(); } });
     root.querySelector('#twkh-c').addEventListener('change', onCheck);
     root.querySelector('.b1').addEventListener('click', function (e) { if (auth) { e.preventDefault(); var c = root.querySelector('#twkh-c'); if (!cat) { msg('pick'); return; } if (!c.checked) { c.checked = true; onCheck({ target: c }); } } else { if (!cat) { e.preventDefault(); msg('pick'); return; } ls(PK, '1'); } });
     previews(); egg(); setCat(cat, false); [].forEach.call(root.querySelectorAll('.c'), function (e) { e.addEventListener('click', function () { setCat(e.dataset.cat, true); if (joined && auth) api({ join: 1, cat: cat }).catch(function () {}); }); e.addEventListener('keydown', function (k) { if (k.key === 'Enter' || k.key === ' ') { k.preventDefault(); e.click(); } }); }); paint(); tick(); tmr = setInterval(tick, 1000);
