@@ -105,6 +105,15 @@ body.hv3{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Inter,syst
 #iam{position:fixed;right:16px;bottom:72px;z-index:9990;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;display:none;min-width:190px}#iam.o{display:block}#iam button{display:block;width:100%;margin:4px 0;padding:11px 14px;border:0;border-radius:10px;background:#ffffff12;color:var(--fg);cursor:pointer;text-align:left;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase}#iam button.on{background:var(--ac);color:var(--on)}
 body[data-mode=neon] .m,body[data-mode=neon] .vg,body[data-mode=neon] .ns div{box-shadow:0 0 18px var(--glow)}body[data-mode=neon] h1,body[data-mode=neon] h2{text-shadow:0 0 28px var(--glow)}
 body[data-mode=gold] h1,body[data-mode=gold] h2,body[data-mode=gold] .mi h3{font-family:Anton,sans-serif;letter-spacing:.02em}body[data-mode=gold] .m{border-radius:14px}
+/* Gold Vault: identidad propia (negro profundo + oro metalico), bien distinta de Casero Club (naranja) y Neon Pulse (cian) */
+body[data-mode=gold]{background-color:#050403;background-image:radial-gradient(1100px 520px at 50% -140px,rgba(240,185,11,.2),transparent 70%),linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px)}
+body[data-mode=gold] h1,body[data-mode=gold] h2,body[data-mode=gold] .monthly{background:linear-gradient(180deg,#fff6c2 0%,#f0b90b 48%,#b57e00 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 2px 0 rgba(90,53,0,.55))}
+body[data-mode=gold] h1 em,body[data-mode=gold] h2 em{color:transparent;text-shadow:none;-webkit-text-fill-color:transparent}
+body[data-mode=gold] .eyebrow,body[data-mode=gold] .hv3 .eyebrow{color:#f0b90b!important;text-shadow:0 0 14px rgba(240,185,11,.45)}
+body[data-mode=gold] .btn,body[data-mode=gold] .btn.k{background:linear-gradient(180deg,#ffe27a 0%,#f0b90b 48%,#c98f00 100%);border-color:#ffe27a;color:#1a1204;box-shadow:0 0 26px rgba(240,185,11,.4),inset 0 1px 0 rgba(255,255,255,.55)}
+body[data-mode=gold] #ia{background:linear-gradient(180deg,#ffe27a,#f0b90b 50%,#c98f00)!important;color:#1a1204!important;box-shadow:0 8px 30px rgba(240,185,11,.45)}
+body[data-mode=gold] .m,body[data-mode=gold] .vg,body[data-mode=gold] .wc,body[data-mode=gold] .mi,body[data-mode=gold] .srow{border-color:#7a5e1c;background-image:linear-gradient(160deg,rgba(240,185,11,.07),transparent 45%)}
+body[data-mode=gold] .tn2{border-bottom-color:#f0b90b}
 @media(max-width:1200px){.roster .grid{grid-auto-columns:calc((100% - 28px)/3)}.pls{grid-template-columns:1fr 1fr}}
 @media(max-width:800px){.roster .grid{grid-auto-columns:calc((100% - 10px)/2);gap:10px}.ng{grid-template-columns:1fr}.pls{grid-template-columns:1fr}.vg{padding:24px}.hv3 .w{padding:0 16px}.mi h3{font-size:24px}.coin3d{width:90px;height:90px}.hint{display:none}}
 @media(prefers-reduced-motion:reduce){.coin3d i{animation:none}}
