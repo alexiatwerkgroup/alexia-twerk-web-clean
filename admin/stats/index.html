@@ -250,7 +250,7 @@ function shell() {
   app.innerHTML = '<div class="top"><div><h1>Estadísticas de Twerkhub</h1></div><div class="sel" id="sel">' +
     [['today', 'Hoy'], ['week', '7 días'], ['month', 'Mes actual'], ['all', 'Histórico']].map(function (p) { return '<button type="button" class="btn vb' + (p[0] === range ? ' on' : '') + '" data-d="' + p[0] + '">' + p[1] + '</button>'; }).join('') +
     '<button type="button" class="btn vb" id="refresh">Actualizar histórico ahora</button><button type="button" class="btn vb" id="snd"></button><a class="btn vb" href="/admin-users.html">Registrados</a><a class="btn vb" href="/admin/hunters/">Hunters</a></div></div>' +
-    '<div class="status" id="status"></div><div id="def"></div><div id="live"><div class="gate">Consultando…</div></div><div id="rep"></div><div id="wc"></div>';
+    '<div class="status" id="status"></div><div id="def"></div><div id="live"><div class="gate">Consultando…</div></div><div id="money"></div><div id="rep"></div><div id="wc"></div>';
   document.getElementById('sel').onclick = function (e) { var b = e.target.closest('[data-d]'); if (!b) return; range = b.dataset.d; document.querySelectorAll('#sel [data-d]').forEach(function (x) { x.classList.toggle('on', x === b); }); loadReport(); };
   document.getElementById('refresh').onclick = function () { loadReport(); };
   var snd = document.getElementById('snd');
@@ -278,6 +278,32 @@ function loadLive() {
     .catch(function (e) { liveFail++; if (denied) document.getElementById('app').innerHTML = '<div class="gate">Esta página es solo para el dueño. Iniciá sesión con tu cuenta de dueño.</div>'; })
     .finally(function () { liveBusy = false; paintStatus(); });
 }
+/* ---------- dinero generado (ventas cargadas a mano; nv_don NO cuenta: es de prueba) ---------- */
+var money = null, moneyBusy = false;
+function U(n) { return 'US$ ' + Number(n || 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function moneyHtml(m) {
+  var t = m.totals, ks = [['Hoy', t.today], ['Últimos 7 días', t.week], ['Mes actual', t.month], ['Total', t.all]].map(function (x) { return '<div class="k"><span>' + x[0] + '</span><b>' + U(x[1].amount) + '</b><i>' + F(x[1].n) + (x[1].n === 1 ? ' venta' : ' ventas') + '</i></div>'; }).join('');
+  var via = (m.byVia || []).map(function (v) { return '<span class="pill pw">' + esc(v.via) + ' · ' + U(v.s) + ' (' + F(v.n) + ')</span>'; }).join(' ') || '<span class="m">Sin ventas cargadas</span>';
+  var rows = (m.items || []).slice(0, 12).map(function (x) { return '<tr><td>' + dt(x.ts) + '</td><td><b>' + U(x.amount) + '</b></td><td>' + esc(x.concept || '—') + '</td><td>' + esc(x.via || '—') + '</td><td><u data-sdel="' + Number(x.id) + '" style="cursor:pointer" class="m">borrar</u></td></tr>'; }).join('');
+  return '<div class="c s12" style="margin:16px 0"><h2>Dinero generado<small>ventas confirmadas · se cargan a mano (PayPal, Binance, Patreon, etc.)</small></h2><div class="kp">' + ks + '</div><div style="margin:6px 0 10px">' + via + '</div>' +
+    '<div class="tw"><table><tr><th>Fecha</th><th>Monto</th><th>Concepto</th><th>Medio</th><th></th></tr>' + (rows || '<tr><td colspan="5" class="m">Todavía no hay ventas</td></tr>') + '</table></div>' +
+    '<div class="frm"><input id="sa" type="number" step="0.01" min="0" placeholder="Monto US$" style="width:120px"><input id="sc" placeholder="Concepto (ej. VIP 30 días · usuario)" style="flex:1;min-width:200px"><select id="sv"><option>PayPal</option><option>Binance</option><option>Patreon</option><option>Discord</option><option>Otro</option></select><button class="btn on" id="sadd">Agregar venta</button></div><div class="m" id="smsg"></div></div>';
+}
+function loadMoney(force) {
+  if (moneyBusy || denied) return; var ae = document.activeElement; if (!force && ae && /^(sa|sc|sv)$/.test(ae.id)) return; moneyBusy = true;
+  api('/api/stats/sales?tz=' + TZ).then(function (m) { money = m; var box = document.getElementById('money'); if (box) box.innerHTML = moneyHtml(m); })
+    .catch(function () {}).finally(function () { moneyBusy = false; });
+}
+document.addEventListener('click', function (e) {
+  var d = e.target.closest && e.target.closest('[data-sdel]');
+  if (d) { fetch('/api/stats/sales?id=' + d.dataset.sdel, { method: 'DELETE', credentials: 'same-origin' }).then(function () { loadMoney(true); }); return; }
+  if (e.target && e.target.id === 'sadd') {
+    var a = parseFloat(document.getElementById('sa').value), msg = document.getElementById('smsg');
+    if (!(a > 0)) { msg.textContent = 'Poné un monto mayor a 0.'; return; }
+    fetch('/api/stats/sales', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ amount: a, concept: document.getElementById('sc').value, via: document.getElementById('sv').value }) })
+      .then(function (r) { return r.json(); }).then(function (j) { if (j && j.ok) loadMoney(true); else msg.textContent = 'No se pudo guardar.'; }).catch(function () { msg.textContent = 'No se pudo guardar.'; });
+  }
+});
 function loadReport() {
   if (repBusy || denied) return; repBusy = true; document.getElementById('refresh').textContent = 'Actualizando…';
   api('/api/stats/report?range=' + range + '&tz=' + TZ).then(function (r) { rep = r; repOkAt = Date.now(); repFail = 0; keepForm(function () { document.getElementById('rep').innerHTML = repHtml(r); wireReport(); }); })
@@ -325,7 +351,8 @@ document.addEventListener('mouseover', function (e) {
 });
 document.addEventListener('mouseout', function (e) { var w = e.target.closest && e.target.closest('.who'), box = e.target.closest && e.target.closest('#wc'); if (w || box) hideWho(); });
 
-shell(); loadLive(); loadReport();
+shell(); loadLive(); loadReport(); loadMoney(true);
+setInterval(loadMoney, 60000);
 setInterval(loadLive, LIVE_MS);
 setInterval(loadReport, REPORT_MS);
 setInterval(paintStatus, 1000);
