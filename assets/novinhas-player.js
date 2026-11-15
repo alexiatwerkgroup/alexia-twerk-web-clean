@@ -66,7 +66,7 @@
     '.np-mbox{position:fixed;inset:0;z-index:2147483000;display:none;place-items:center;background:rgba(0,0,0,.88)}.np-mbox.on{display:grid}' +
     '.np-mbox>div{position:relative;height:min(88vh,760px);aspect-ratio:9/16;max-width:94vw;background:#000;border-radius:14px;overflow:hidden;border:1.5px solid #e8b84a}.np-mbox video{width:100%;height:100%;object-fit:contain;background:#000}' +
     '.np-mbox .mx{position:absolute;right:8px;top:8px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;font:900 20px/1 system-ui;cursor:pointer;z-index:2}' +
-    '.np-mbox .mi{position:absolute;left:0;right:0;bottom:46px;padding:22px 12px 8px;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);display:flex;gap:8px;align-items:center;justify-content:space-between;font:800 12px system-ui;color:#fff;z-index:2;pointer-events:none}.np-mbox .mi a,.np-mbox .mi button{pointer-events:auto;color:#1a1100;background:linear-gradient(180deg,#ffe27a,#f0b90b 55%,#c98f00);border:0;border-radius:8px;padding:8px 12px;font:800 11px system-ui;letter-spacing:.06em;text-decoration:none;cursor:pointer}.np-mbox .mi button.rm{background:linear-gradient(180deg,#ff5148,#a30f0f);color:#fff}' +
+    '.np-mbox .mi{position:absolute;left:0;right:0;bottom:46px;padding:22px 12px 8px;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font:800 12px system-ui;color:#fff;z-index:2;pointer-events:none}.np-mbox .mi a,.np-mbox .mi button{pointer-events:auto;color:#1a1100;background:linear-gradient(180deg,#ffe27a,#f0b90b 55%,#c98f00);border:0;border-radius:8px;padding:8px 12px;font:800 11px system-ui;letter-spacing:.06em;text-decoration:none;cursor:pointer}.np-mbox .mi button.rm{background:linear-gradient(180deg,#ff5148,#a30f0f);color:#fff}' +
     '.np-rb{display:inline-flex;align-items:center;justify-content:center;gap:7px}.np-rb i{width:11px;height:11px;border-radius:50%;background:#ff2d2d;box-shadow:0 0 8px #ff2d2d;flex:none}.np-rb.busy{opacity:.6;pointer-events:none}.np-rb.ok i{background:#35e06f;box-shadow:0 0 8px #35e06f}' +
     '.np-help.on{display:grid}.np-help>div{width:min(560px,100%);background:#141108;border:1.5px solid #e8b84a;border-radius:16px;padding:18px 20px;color:#ddd;font:600 13px/1.9 system-ui,sans-serif}' +
     '.np-help h3{margin:0 0 8px;color:#ffd76a;font:900 15px system-ui;letter-spacing:.06em}.np-help .r{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #ffffff12}' +
@@ -127,7 +127,7 @@
       var mv = document.createElement('video'); mv.src = it.src; mv.controls = true; mv.loop = true; mv.playsInline = true; mv.autoplay = true; mv.setAttribute('controlsList', 'nodownload noremoteplayback'); mv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
       holder.insertBefore(mv, holder.firstChild);
       var mi = holder.querySelector('.mi'); mi.innerHTML = '<span>' + (it.slow ? 'Slow motion · ' : '') + '30 s · @' + String(it.name).replace(/[<>&"]/g, '') + '</span>'; var go = document.createElement('a'); go.href = it.url; go.textContent = 'Full video'; mi.appendChild(go);
-      if (mini.owner) { var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = 'Remove'; rm.onclick = function () { rm.disabled = true; fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: it.c, id: it.id, start: it.start, slow: it.slow }) }).then(function () { mclose(); minisLoad(); }).catch(function () { rm.disabled = false; }); }; mi.appendChild(rm); }
+      if (mini.owner) { var dl = document.createElement('a'); dl.href = it.src; dl.setAttribute('download', it.c + '-' + it.id + '-' + it.start + (it.slow ? '-slow' : '') + '.mp4'); dl.textContent = 'Download'; mi.appendChild(dl); var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = 'Delete'; rm.onclick = function () { rm.disabled = true; fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: it.c, id: it.id, start: it.start, slow: it.slow }) }).then(function () { mclose(); minisLoad(); }).catch(function () { rm.disabled = false; }); }; mi.appendChild(rm); }
       mbox.classList.add('on'); try { v.pause(); } catch (_) {} mv.play().catch(function () {});
     }
     function minisLayout() {
@@ -157,6 +157,7 @@
     var tt; function say(t) { toast.textContent = t; toast.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { toast.classList.remove('on'); }, 900); }
 
     /* calidad */
+    function hdLabel() { var m = Math.min(cur.width || 0, cur.height || 0); return m >= 2000 ? '4K' : m >= 1400 ? '1440p' : m >= 1000 ? '1080p' : m >= 700 ? '720p' : 'HD'; }
     var hasLow = !!cur.lowVideo && cur.lowVideo !== cur.video;
     var conn = navigator.connection || {};
     var slowNet = !!(conn.saveData || /(^|-)(2g|3g)$/.test(conn.effectiveType || ''));
@@ -165,12 +166,12 @@
     function srcFor(e) { return e === 'sd' ? cur.lowVideo : cur.video; }
     var dock = document.createElement('div'); dock.className = 'twk-q'; dock.dataset.open = '0';
     dock.innerHTML = '<button type="button" class="twk-q-btn" aria-haspopup="true" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="twk-q-lab"></span></button><div class="twk-q-panel" role="menu"><div class="twk-q-h">Quality <span class="twk-q-v">Auto</span></div>' +
-      '<button type="button" class="twk-q-chip" data-q="hd">HD</button>' + (hasLow ? '<button type="button" class="twk-q-chip" data-q="sd">480p</button>' : '') +
+      '<button type="button" class="twk-q-chip" data-q="hd">' + hdLabel() + '</button>' + (hasLow ? '<button type="button" class="twk-q-chip" data-q="sd">480p</button>' : '') +
       '<button type="button" class="twk-q-chip" data-q="auto">Auto</button></div>';
     function qRender() {
       var p = pref(), e = eff();
-      var lab = dock.querySelector('.twk-q-lab'); if (lab) lab.textContent = (e === 'sd' ? '480p' : 'HD');
-      dock.querySelector('.twk-q-v').textContent = p === 'auto' ? 'Auto · ' + (e === 'sd' ? '480p' : 'HD') : (e === 'sd' ? '480p' : 'HD');
+      var lab = dock.querySelector('.twk-q-lab'); if (lab) lab.textContent = (e === 'sd' ? '480p' : hdLabel());
+      dock.querySelector('.twk-q-v').textContent = p === 'auto' ? 'Auto · ' + (e === 'sd' ? '480p' : hdLabel()) : (e === 'sd' ? '480p' : hdLabel());
       [].forEach.call(dock.querySelectorAll('.twk-q-chip'), function (c) { c.classList.toggle('on', c.dataset.q === p || (p !== 'auto' && c.dataset.q === e)); });
     }
     function applyQuality(keepTime) {
@@ -183,7 +184,7 @@
     dock.addEventListener('click', function (e) {
       e.stopPropagation();
       var c = e.target.closest('.twk-q-chip');
-      if (c) { LS.set(Q_KEY, c.dataset.q); dock.dataset.open = '0'; applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : 'HD')); return; }
+      if (c) { LS.set(Q_KEY, c.dataset.q); dock.dataset.open = '0'; applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : hdLabel())); return; }
       if (e.target.closest('.twk-q-btn')) dock.dataset.open = dock.dataset.open === '1' ? '0' : '1';
     });
     document.addEventListener('click', function (e) { if (!dock.contains(e.target)) dock.dataset.open = '0'; });
@@ -425,16 +426,17 @@
     var kb = document.createElement('button'); kb.type = 'button'; kb.className = BTN + ' np-kb'; kb.textContent = 'Keyboard shortcuts'; kb.onclick = function () { help.classList.add('on'); };
     var qw = document.createElement('div'); qw.className = 'np-qw';
     var qbtn = document.createElement('button'); qbtn.type = 'button'; qbtn.className = BTN + ' np-qbtn'; qbtn.setAttribute('aria-haspopup', 'true'); qbtn.innerHTML = '<span class="ql">HD</span><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>';
-    var qm = document.createElement('div'); qm.className = 'np-qm'; qm.innerHTML = '<button type="button" data-q="hd">HD · Original</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button>';
+    var qm = document.createElement('div'); qm.className = 'np-qm'; qm.innerHTML = '<button type="button" data-q="hd">' + hdLabel() + ' · Original</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button>';
     qw.append(qbtn, qm);
-    var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); qbtn.querySelector('.ql').textContent = p === 'auto' ? 'Auto · ' + (e === 'sd' ? '480p' : 'HD') : (e === 'sd' ? '480p' : 'HD'); [].forEach.call(qm.querySelectorAll('button[data-q]'), function (b) { b.classList.toggle('on', b.dataset.q === p); }); };
+    var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); qbtn.querySelector('.ql').textContent = p === 'auto' ? 'Auto · ' + (e === 'sd' ? '480p' : hdLabel()) : (e === 'sd' ? '480p' : hdLabel()); [].forEach.call(qm.querySelectorAll('button[data-q]'), function (b) { b.classList.toggle('on', b.dataset.q === p); }); };
     qbtn.onclick = function (e) { e.stopPropagation(); qw.classList.toggle('open'); };
-    qm.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; LS.set(Q_KEY, b.dataset.q); qw.classList.remove('open'); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : 'HD')); });
+    qm.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; LS.set(Q_KEY, b.dataset.q); qw.classList.remove('open'); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : hdLabel())); });
     document.addEventListener('click', function (e) { if (!qw.contains(e.target)) qw.classList.remove('open'); });
-    slowBtn = document.createElement('button'); slowBtn.type = 'button'; slowBtn.className = BTN; slowBtn.textContent = 'Slow motion'; slowBtn.classList.toggle('on', v.playbackRate < 1);
+    var sr = document.createElement('div'); sr.className = 'np-sr';
+    slowBtn = document.createElement('button'); slowBtn.type = 'button'; slowBtn.className = BTN + ' np-sl'; slowBtn.textContent = 'Slow motion'; slowBtn.classList.toggle('on', v.playbackRate < 1);
     slowBtn.onclick = function () { toggleSlow(); };
     var rb = document.createElement('button'); rb.type = 'button'; rb.className = BTN + ' np-rb'; rb.innerHTML = '<i></i><span>REC</span>'; rb.hidden = true;
-    bar.append(pv, nt, ap, kb, qw, slowBtn, rb); qRender();
+    sr.append(slowBtn, rb); bar.append(pv, nt, ap, kb, qw, sr); qRender();
     fetch('/api/novinhas/mini?me=1', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || !j.owner) return; mini.owner = true;
       rb.hidden = false; rb.title = 'Record a 30 s miniclip from the current moment (with slow motion if it is on)';
