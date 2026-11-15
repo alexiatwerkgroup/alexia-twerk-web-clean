@@ -57,6 +57,17 @@
     '.np-next.on{display:flex}.np-next small{color:#e8b84a;letter-spacing:.14em;font-weight:800;font-size:11px}.np-next b{font-size:18px;max-width:560px;line-height:1.35}' +
     '.np-next img{width:150px;max-height:110px;object-fit:cover;border-radius:10px}' +
         '.np-help{position:absolute;inset:0;z-index:16;display:none;place-items:center;background:rgba(0,0,0,.82);padding:14px;overflow:auto}' +
+    '.np-minis{position:absolute;z-index:6;right:8px;top:8px;bottom:60px;display:none;flex-direction:column;gap:6px;pointer-events:none;font-family:system-ui,sans-serif}.np-minis.on{display:flex}' +
+    '.np-mh{display:flex;align-items:center;gap:6px;font:900 10px/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#ffd76a;text-shadow:0 1px 3px #000}.np-mh i{width:8px;height:8px;border-radius:50%;background:#ff2d2d;box-shadow:0 0 6px #ff2d2d}' +
+    '.np-mg{display:grid;gap:8px;align-content:start;justify-content:end}' +
+    '.np-mc{position:relative;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:#111;border:1.5px solid #e8b84a;pointer-events:auto;cursor:pointer;padding:0;box-shadow:0 4px 14px rgba(0,0,0,.6);transition:transform .12s,filter .12s}.np-mc:hover{transform:translateY(-2px);filter:brightness(1.1)}' +
+    '.np-mc img,.np-mc video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.np-mc video{background:#000}' +
+    '.np-mc b{position:absolute;left:6px;bottom:6px;padding:3px 7px;border-radius:6px;background:rgba(0,0,0,.72);color:#fff;font:800 10px/1 system-ui,sans-serif;letter-spacing:.06em}.np-mc b.sl{background:linear-gradient(180deg,#9b5cff,#5b21b6)}' +
+    '.np-mbox{position:fixed;inset:0;z-index:2147483000;display:none;place-items:center;background:rgba(0,0,0,.88)}.np-mbox.on{display:grid}' +
+    '.np-mbox>div{position:relative;height:min(88vh,760px);aspect-ratio:9/16;max-width:94vw;background:#000;border-radius:14px;overflow:hidden;border:1.5px solid #e8b84a}.np-mbox video{width:100%;height:100%;object-fit:contain;background:#000}' +
+    '.np-mbox .mx{position:absolute;right:8px;top:8px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;font:900 20px/1 system-ui;cursor:pointer;z-index:2}' +
+    '.np-mbox .mi{position:absolute;left:0;right:0;bottom:46px;padding:22px 12px 8px;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);display:flex;gap:8px;align-items:center;justify-content:space-between;font:800 12px system-ui;color:#fff;z-index:2;pointer-events:none}.np-mbox .mi a,.np-mbox .mi button{pointer-events:auto;color:#1a1100;background:linear-gradient(180deg,#ffe27a,#f0b90b 55%,#c98f00);border:0;border-radius:8px;padding:8px 12px;font:800 11px system-ui;letter-spacing:.06em;text-decoration:none;cursor:pointer}.np-mbox .mi button.rm{background:linear-gradient(180deg,#ff5148,#a30f0f);color:#fff}' +
+    '.np-rb{display:inline-flex;align-items:center;justify-content:center;gap:7px}.np-rb i{width:11px;height:11px;border-radius:50%;background:#ff2d2d;box-shadow:0 0 8px #ff2d2d;flex:none}.np-rb.busy{opacity:.6;pointer-events:none}.np-rb.ok i{background:#35e06f;box-shadow:0 0 8px #35e06f}' +
     '.np-help.on{display:grid}.np-help>div{width:min(560px,100%);background:#141108;border:1.5px solid #e8b84a;border-radius:16px;padding:18px 20px;color:#ddd;font:600 13px/1.9 system-ui,sans-serif}' +
     '.np-help h3{margin:0 0 8px;color:#ffd76a;font:900 15px system-ui;letter-spacing:.06em}.np-help .r{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #ffffff12}' +
     '.np-help kbd{background:#2a2208;border:1px solid #e8b84a66;border-radius:6px;padding:1px 8px;color:#ffd76a;font:800 12px system-ui;margin-left:4px}' +
@@ -104,6 +115,45 @@
     box.appendChild(v);
 
     var toast = document.createElement('div'); toast.className = 'np-toast'; box.appendChild(toast);
+    /* ---------- miniclips (30 s) en el espacio libre de la derecha del video vertical ---------- */
+    var mini = { box: document.createElement('div'), grid: document.createElement('div'), items: [], owner: false };
+    mini.box.className = 'np-minis'; mini.box.innerHTML = '<div class="np-mh"><i></i>Miniclips</div>'; mini.grid.className = 'np-mg'; mini.box.appendChild(mini.grid); box.appendChild(mini.box);
+    var mbox = document.createElement('div'); mbox.className = 'np-mbox'; mbox.innerHTML = '<div><button type="button" class="mx" aria-label="Close">&times;</button><div class="mi"></div></div>'; document.body.appendChild(mbox);
+    function mclose() { var mv = mbox.querySelector('video'); if (mv) { mv.pause(); mv.remove(); } mbox.classList.remove('on'); }
+    mbox.addEventListener('click', function (e) { if (e.target === mbox || e.target.classList.contains('mx')) mclose(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && mbox.classList.contains('on')) mclose(); });
+    function mopen(it) {
+      var holder = mbox.firstChild, old = holder.querySelector('video'); if (old) old.remove();
+      var mv = document.createElement('video'); mv.src = it.src; mv.controls = true; mv.loop = true; mv.playsInline = true; mv.autoplay = true; mv.setAttribute('controlsList', 'nodownload noremoteplayback'); mv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+      holder.insertBefore(mv, holder.firstChild);
+      var mi = holder.querySelector('.mi'); mi.innerHTML = '<span>' + (it.slow ? 'Slow motion · ' : '') + '30 s · @' + String(it.name).replace(/[<>&"]/g, '') + '</span>'; var go = document.createElement('a'); go.href = it.url; go.textContent = 'Full video'; mi.appendChild(go);
+      if (mini.owner) { var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = 'Remove'; rm.onclick = function () { rm.disabled = true; fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: it.c, id: it.id, start: it.start, slow: it.slow }) }).then(function () { mclose(); minisLoad(); }).catch(function () { rm.disabled = false; }); }; mi.appendChild(rm); }
+      mbox.classList.add('on'); try { v.pause(); } catch (_) {} mv.play().catch(function () {});
+    }
+    function minisLayout() {
+      var n = mini.items.length; if (!n || !cur || !(cur.height > cur.width) || !v.videoWidth) { mini.box.classList.remove('on'); return; }
+      var W = box.clientWidth, H = box.clientHeight, vw = Math.min(W, H * v.videoWidth / v.videoHeight), free = Math.floor((W - vw) / 2) - 14;
+      if (free < 96) { mini.box.classList.remove('on'); return; }
+      var cols = free >= 200 ? 2 : 1, gap = 8, cw = Math.floor((Math.min(free, 260) - gap * (cols - 1)) / cols), ch = Math.round(cw * 16 / 9), avail = H - 68 - 18, rows = Math.max(1, Math.floor((avail + gap) / (ch + gap))), cnt = Math.min(n, cols * rows);
+      mini.box.style.width = (cw * cols + gap * (cols - 1)) + 'px'; mini.grid.style.gridTemplateColumns = 'repeat(' + cols + ',' + cw + 'px)';
+      [].forEach.call(mini.grid.children, function (c, i) { c.style.display = i < cnt ? '' : 'none'; });
+      mini.box.classList.add('on');
+    }
+    function minisLoad() {
+      fetch('/api/novinhas/mini?c=' + encodeURIComponent(slug) + '&n=6', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }).then(function (j) {
+        mini.items = (j && j.items) || []; mini.grid.innerHTML = '';
+        mini.items.forEach(function (it) {
+          var b = document.createElement('button'); b.type = 'button'; b.className = 'np-mc'; b.setAttribute('aria-label', 'Miniclip @' + it.name);
+          b.innerHTML = (it.poster ? '<img alt="" loading="lazy" src="' + it.poster + '">' : '') + '<b' + (it.slow ? ' class="sl"' : '') + '>' + (it.slow ? 'SLOW · 30s' : '30s') + '</b>';
+          var pv2 = null;
+          b.addEventListener('mouseenter', function () { if (pv2 || !window.matchMedia('(hover:hover)').matches) return; pv2 = document.createElement('video'); pv2.src = it.src; pv2.muted = true; pv2.loop = true; pv2.playsInline = true; pv2.preload = 'metadata'; b.insertBefore(pv2, b.firstChild); pv2.play().catch(function () {}); });
+          b.addEventListener('mouseleave', function () { if (pv2) { pv2.pause(); pv2.remove(); pv2 = null; } });
+          b.addEventListener('click', function () { if (pv2) { pv2.pause(); pv2.remove(); pv2 = null; } mopen(it); });
+          mini.grid.appendChild(b);
+        });
+        minisLayout();
+      }).catch(function () {});
+    }
     var tt; function say(t) { toast.textContent = t; toast.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { toast.classList.remove('on'); }, 900); }
 
     /* calidad */
@@ -372,13 +422,29 @@
     if (!prevV) pv.style.display = 'none'; if (!nextV) nt.style.display = 'none';
     var kb = document.createElement('button'); kb.type = 'button'; kb.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; kb.textContent = 'Keyboard shortcuts (?)'; kb.onclick = function () { help.classList.add('on'); };
     bar.append(pv, nt, ap, kb);
-    /* calidad tambien en la barra de abajo (siempre visible, aunque el video se desplace) */
+    /* barra de abajo: dos grupos iguales. Calidad por un lado; Slow motion + REC (miniclip de 30 s, solo dueño) por el otro */
     var qb = document.createElement('div'); qb.className = 'np-qbar';
-    qb.innerHTML = '<span class="np-qk">Quality</span><button type="button" data-q="hd">HD</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button><button type="button" data-sm="1">Slow motion</button>';
+    qb.innerHTML = '<span class="np-qk">Quality</span><button type="button" data-q="hd">HD</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button>';
     var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); [].forEach.call(qb.querySelectorAll('button[data-q]'), function (b) { b.classList.toggle('on', b.dataset.q === p || (p !== 'auto' && b.dataset.q === e)); }); };
-    slowBtn = qb.querySelector('[data-sm]'); slowBtn.classList.toggle('on', v.playbackRate < 1);
-    qb.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; if (b.dataset.sm) { toggleSlow(); return; } LS.set(Q_KEY, b.dataset.q); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : 'HD')); });
-    bar.append(qb); qRender();
+    qb.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; LS.set(Q_KEY, b.dataset.q); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : 'HD')); });
+    var sb = document.createElement('div'); sb.className = 'np-qbar np-sbar'; sb.innerHTML = '<button type="button" data-sm="1">Slow motion</button>';
+    slowBtn = sb.querySelector('[data-sm]'); slowBtn.classList.toggle('on', v.playbackRate < 1);
+    sb.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; if (b.dataset.sm) toggleSlow(); });
+    bar.append(qb, sb); qRender();
+    fetch('/api/novinhas/mini?me=1', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.owner) return; mini.owner = true;
+      var rb = document.createElement('button'); rb.type = 'button'; rb.className = 'np-rb'; rb.innerHTML = '<i></i><span>REC</span>'; rb.title = 'Record a 30 s miniclip from the current moment (with slow motion if it is on)';
+      var lab = rb.querySelector('span'), rt;
+      rb.onclick = function () {
+        var slow = v.playbackRate < 1; rb.classList.add('busy'); lab.textContent = 'Saving…';
+        fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: cur.id, t: Math.floor(v.currentTime || 0), slow: slow }) }).then(function (r) { return r.json(); }).then(function (x) {
+          rb.classList.remove('busy'); if (x && x.ok) { rb.classList.add('ok'); lab.textContent = 'Saved · ' + (slow ? 'slow ' : '') + '30 s'; say('Miniclip saved (' + (slow ? 'slow motion · ' : '') + '30 s from ' + x.start + ' s)'); } else lab.textContent = 'Error';
+          clearTimeout(rt); rt = setTimeout(function () { rb.classList.remove('ok'); lab.textContent = 'REC'; }, 2600);
+        }).catch(function () { rb.classList.remove('busy'); lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); });
+      };
+      sb.appendChild(rb);
+    }).catch(function () {});
+    minisLoad(); try { new ResizeObserver(minisLayout).observe(box); } catch (_) { window.addEventListener('resize', minisLayout); } v.addEventListener('loadedmetadata', minisLayout);
     if (o.bar) o.bar.replaceChildren(bar);
 
     }
