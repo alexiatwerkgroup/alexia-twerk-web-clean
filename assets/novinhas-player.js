@@ -97,7 +97,7 @@
     var box = document.createElement('div'); box.className = 'np-stage' + (cur.height > cur.width ? ' np-tall' : '');
     var v = document.createElement('video');
     v.controls = true; v.playsInline = true; v.preload = 'auto'; v.poster = cur.poster; v.tabIndex = 0;
-    v.setAttribute('controlsList', 'nodownload noremoteplayback'); v.setAttribute('disablePictureInPicture', ''); v.removeAttribute('disablePictureInPicture');
+    v.setAttribute('controlsList', 'nodownload noremoteplayback nofullscreen'); v.setAttribute('disablePictureInPicture', ''); v.removeAttribute('disablePictureInPicture');
     v.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     var vol = parseFloat(LS.get(VOL_KEY)); if (!isNaN(vol)) v.volume = Math.min(1, Math.max(0, vol));
     var sp = parseFloat(LS.get(SPEED_KEY)); if (sp > 0) v.playbackRate = sp;
@@ -173,7 +173,7 @@
       box.className = 'np-stage' + (cur.height > cur.width ? ' np-tall' : ''); v.poster = cur.poster;
       v.removeAttribute('data-src'); applyQuality(false); v.play().catch(function () {});
       try { history.replaceState(null, '', urlFor(cur, false)); } catch (_) {}
-      needSync = true; say(cur.title || 'Next');
+      needSync = true; try { setRec(); tech(); mRes.textContent = ''; tick(); } catch (_) {} say(cur.title || 'Next');
     }
     function onFsChange() { if (needSync && !document.fullscreenElement && !document.webkitFullscreenElement) { needSync = false; location.replace(urlFor(cur, false)); } }
     document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
@@ -303,12 +303,15 @@
     }
     function tick() { var d = v.duration || cur.duration || 0; mCd.textContent = d ? '−' + fmtT(d - v.currentTime) : ''; var r = resTxt(); if (r && mRes.textContent !== r) mRes.textContent = r; }
     ['loadedmetadata', 'timeupdate', 'durationchange', 'seeked'].forEach(function (ev) { v.addEventListener(ev, tick); }); tick();
-    fetch('/api/novinhas/recdate?c=' + encodeURIComponent(slug), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-      if (!j || !j.owner) return; var e = j.dates && j.dates[String(cur.id)];
+    var recJ = null, recEl = null;
+    function setRec() {
+      if (!recJ || !recEl) return; var e = recJ.dates && recJ.dates[String(cur.id)];
       var mn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], lab = { meta: 'recorded', title: 'date in title', mtime: 'file date' };
-      var rec = document.createElement('span'); rec.className = 'np-rec';
-      if (e && /^\d{4}-\d{2}-\d{2}$/.test(e.d)) { var p3 = e.d.split('-'); rec.textContent = 'REC ' + (+p3[2]) + ' ' + mn[+p3[1] - 1] + ' ' + p3[0] + ' · ' + (lab[e.m] || e.m); } else rec.textContent = 'REC date not found';
-      meta.insertBefore(rec, meta.firstChild);
+      if (e && /^\d{4}-\d{2}-\d{2}$/.test(e.d)) { var p3 = e.d.split('-'); recEl.textContent = 'REC ' + (+p3[2]) + ' ' + mn[+p3[1] - 1] + ' ' + p3[0] + ' · ' + (lab[e.m] || e.m); } else recEl.textContent = 'REC date not found';
+    }
+    fetch('/api/novinhas/recdate?c=' + encodeURIComponent(slug), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.owner) return; recJ = j;
+      recEl = document.createElement('span'); recEl.className = 'np-rec'; meta.insertBefore(recEl, meta.firstChild); setRec();
     }).catch(function () {});
     /* ficha tecnica: FPS exactos (tabla stts del mp4) y tasa de bits (tamaño / duracion) del archivo que se esta reproduciendo */
     var techCache = {};
