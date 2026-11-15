@@ -218,6 +218,7 @@
       var tg = e.target, tag = tg && tg.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (tg && tg.isContentEditable)) return;
       if (document.querySelector('.nq-o')) return;
+      if (e.code === 'ControlRight' && !e.repeat) { e.preventDefault(); if (nextV) goTo(nextV, true); else say('Last video'); return; }
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (tag === 'BUTTON' && (e.code === 'Space' || e.code === 'Enter') && !box.contains(tg)) return;
       var k = e.key, code = e.code, h = true;
