@@ -219,7 +219,7 @@ function shell() {
   var app = document.getElementById('app');
   app.innerHTML = '<div class="top"><div><h1>Estadísticas de Twerkhub</h1></div><div class="sel" id="sel">' +
     [['today', 'Hoy'], ['week', '7 días'], ['month', 'Mes actual'], ['all', 'Histórico']].map(function (p) { return '<button type="button" class="btn' + (p[0] === range ? ' on' : '') + '" data-d="' + p[0] + '">' + p[1] + '</button>'; }).join('') +
-    '<button type="button" class="btn" id="refresh">Actualizar histórico ahora</button><button type="button" class="btn" id="snd"></button><a class="btn" href="/admin-users.html">Todos los usuarios</a></div></div>' +
+    '<button type="button" class="btn" id="refresh">Actualizar histórico ahora</button><button type="button" class="btn" id="snd"></button><a class="btn" href="/admin-users.html">Registrados</a><a class="btn" href="/admin/hunters/">Hunters</a></div></div>' +
     '<div class="status" id="status"></div><div id="def"></div><div id="live"><div class="gate">Consultando…</div></div><div id="rep"></div><div id="wc"></div>';
   document.getElementById('sel').onclick = function (e) { var b = e.target.closest('[data-d]'); if (!b) return; range = b.dataset.d; document.querySelectorAll('#sel [data-d]').forEach(function (x) { x.classList.toggle('on', x === b); }); loadReport(); };
   document.getElementById('refresh').onclick = function () { loadReport(); };

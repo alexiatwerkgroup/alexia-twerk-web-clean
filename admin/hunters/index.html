@@ -1,0 +1,31 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Hunters · Twerkhub</title>
+<style>
+:root{--bg:#07070b;--card:#0e0e14;--line:#2a2a34;--fg:#f4f4f8;--mut:#9a9aaa;--g1:#fff1a8;--g2:#e8b84a;--ok:#5df08a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,sans-serif;padding:20px 16px 80px}
+.w{max-width:1100px;margin:auto}h1{margin:0;font-size:24px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.btn{background:#14141c;color:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 14px;font:800 12px system-ui;cursor:pointer;text-decoration:none;display:inline-block;margin-left:6px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px;overflow:auto}h2{font:800 12px system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--g2);margin:0 0 12px}
+table{width:100%;border-collapse:collapse;font-size:13px}th{font:800 10px system-ui;letter-spacing:.1em;text-transform:uppercase;color:var(--g2);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}td{padding:7px 8px;border-bottom:1px solid #1b1b24}
+.m{color:var(--mut)}.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:800;background:#12301c;color:var(--ok)}
+</style></head><body><div class="w">
+<div class="top"><h1>Hunters</h1><div><a class="btn" href="/admin/stats/">← Estadísticas</a><a class="btn" href="/admin-users.html">Registrados</a></div></div>
+<div id="msg" class="m">Cargando…</div>
+<div class="c" id="c1" hidden><h2>Participantes del concurso <span class="m" id="n1"></span></h2><table><thead><tr><th>#</th><th>Usuario</th><th>Email</th><th>Categoría</th><th>Desde</th></tr></thead><tbody id="b1"></tbody></table></div>
+<div class="c" id="c2" hidden><h2>Ganaron monedas de platino <span class="m" id="n2"></span></h2><table><thead><tr><th>#</th><th>Usuario</th><th>Email</th><th>Platino</th><th>Voucher</th><th>Hunter</th><th>Fecha</th></tr></thead><tbody id="b2"></tbody></table></div>
+</div><script>
+(function(){
+var h={};try{var a=JSON.parse(localStorage.getItem('alexia-auth-v3')||'{}')||{};if(a.token)h.Authorization='Bearer '+a.token}catch(e){}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function dt(t){return t?new Date(t).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'}
+function get(q){return fetch('/api/novinhas/hunt?'+q,{credentials:'same-origin',cache:'no-store',headers:h}).then(function(r){return r.ok?r.json():null})}
+Promise.all([get('list=1'),get('winners=1')]).then(function(x){
+ var l=x[0],w=x[1],m=document.getElementById('msg');
+ if(!l&&!w){m.textContent='Esta página es solo para el dueño. Iniciá sesión con tu cuenta de dueño.';return}
+ m.hidden=true;
+ if(l){document.getElementById('c1').hidden=false;document.getElementById('n1').textContent='· '+l.count;
+  document.getElementById('b1').innerHTML=l.list.map(function(u,i){return'<tr><td>'+(i+1)+'</td><td>'+esc(u.username)+'</td><td>'+esc(u.email)+'</td><td>'+esc(u.cat==='money'?'Dinero':u.cat==='content'?'Contenido':u.cat||'—')+'</td><td class="m">'+dt(u.ts)+'</td></tr>'}).join('')||'<tr><td colspan="5" class="m">Todavía no hay hunters.</td></tr>'}
+ if(w){document.getElementById('c2').hidden=false;document.getElementById('n2').textContent='· '+w.count;
+  document.getElementById('b2').innerHTML=w.list.map(function(u,i){return'<tr><td>'+(i+1)+'</td><td>'+esc(u.username)+'</td><td>'+esc(u.email)+'</td><td>'+esc(u.coins)+'</td><td>'+(u.voucher?'<span class="pill">Golden Ticket</span>':'—')+'</td><td>'+(u.hunter?'Sí':'No')+'</td><td class="m">'+dt(u.ts)+'</td></tr>'}).join('')||'<tr><td colspan="7" class="m">Sin ganadores todavía.</td></tr>'}
+});
+})();
+</script></body></html>
