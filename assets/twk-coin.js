@@ -164,16 +164,39 @@
     }
     var TKP = { '#fff6c2': '#dcffe9', '#f9d24f': '#6fe29a', '#cf8f0c': '#1c9a52', '#f6c546': '#6fe29a', '#fff0a0': '#c8ffe0', '#7a4a06': '#0b4a24', '#5a3500': '#0b3d1c', '#6b4206': '#0b4a24', '#4d2d00': '#07301a', '#fff3b0': '#e8fff1', '#fff4b0': '#e8fff1', '#fff6c8': '#eafff2' };
     function TKB(big) {
-      var n = ++gtN, g = 'gtg' + n, c = 'gtc' + n, h = 'gth' + n, m = 'gtm' + n, P = 'M10 0H290Q300 0 300 10V170Q300 180 290 180H10Q0 180 0 170V10Q0 0 10 0Z';
-      return '<svg viewBox="0 0 300 180" role="img" aria-label="Token"><defs>' +
-        '<linearGradient id="' + g + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2e8b4a"/><stop offset=".55" stop-color="#8be3a0"/><stop offset="1" stop-color="#2e8b4a"/></linearGradient>' +
-        '<linearGradient id="' + m + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#0b3d1c" stop-opacity=".25"/></linearGradient>' +
-        '<linearGradient id="' + h + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
-        '<clipPath id="' + c + '"><path d="' + P + '"/></clipPath>' + (big ? '<filter id="gtf' + n + '" x="-4%" y="-8%" width="108%" height="116%"><feTurbulence type="fractalNoise" baseFrequency=".008 .014" numOctaves="1" seed="7" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter><radialGradient id="gtd' + n + '"><stop offset="0" stop-color="#05200f" stop-opacity=".55"/><stop offset=".55" stop-color="#05200f" stop-opacity=".18"/><stop offset="1" stop-color="#05200f" stop-opacity="0"/></radialGradient><radialGradient id="gtr' + n + '"><stop offset=".6" stop-color="#fff" stop-opacity="0"/><stop offset=".82" stop-color="#e8fff1" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>' : '') + '</defs><g class="gtw">' +
-        '<path d="' + P + '" fill="url(#' + g + ')"/><path d="' + P + '" fill="url(#' + m + ')"/><path d="' + P + '" fill="none" stroke="#bff5cb" stroke-width="3"/>' +
-        '<g clip-path="url(#' + c + ')"><rect x="18" y="18" width="264" height="144" rx="4" fill="none" stroke="#0b3d1c" stroke-opacity=".45" stroke-width="2.5"/>' +
-        '<text x="150" y="128" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-weight="900" font-size="104" fill="#e8fff1" fill-opacity=".8" transform="translate(1.5,2.5)">T</text><text x="150" y="128" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-weight="900" font-size="104" fill="#0b3d1c">T</text>' +
-        (big ? '<circle class="gtdr" r="46" cx="150" cy="90" fill="url(#gtr' + n + ')" opacity="0"/><circle class="gtdd" r="40" cx="150" cy="90" fill="url(#gtd' + n + ')" opacity="0"/>' : '') + '<rect class="sh" x="-60" y="-10" width="46" height="210" fill="url(#' + h + ')" transform="skewX(-18)"/></g></g></svg>';
+      var n = ++gtN, g = 'gtg' + n, c = 'gtc' + n, h = 'gth' + n, m = 'gtm' + n, l = 'gtl' + n, k = 'gtk' + n, W = 300, H = 150, tt = 3, st = 6, i, y, P = 'M10 2H290Q298 2 298 10';
+      for (y = 10; y < H - 12; y += st) P += 'V' + y + 'a' + tt + ' ' + tt + ' 0 0 1 0 ' + st; // dientes del troquel (lado derecho)
+      P += 'V140Q298 148 290 148H10Q2 148 2 140';
+      for (y = H - 10; y > 12; y -= st) P += 'V' + y + 'a' + tt + ' ' + tt + ' 0 0 1 0 -' + st; // dientes del troquel (lado izquierdo)
+      P += 'V10Q2 2 10 2Z';
+      function star(cx, cy, R, r) { var d = '', a; for (var q = 0; q < 10; q++) { a = -Math.PI / 2 + q * Math.PI / 5; d += (q ? 'L' : 'M') + (cx + (q % 2 ? r : R) * Math.cos(a)).toFixed(1) + ' ' + (cy + (q % 2 ? r : R) * Math.sin(a)).toFixed(1); } return d + 'Z'; }
+      var stars = '', sp = [[112, 33, 3.2], [128, 28, 3.8], [150, 24, 6], [172, 28, 3.8], [188, 33, 3.2]];
+      for (i = 0; i < sp.length; i++) stars += '<path d="' + star(sp[i][0], sp[i][1], sp[i][2], sp[i][2] * 0.42) + '" fill="#0b4a24" fill-opacity=".55" stroke="#e8fff1" stroke-opacity=".55" stroke-width=".5"/>';
+      var gl = '', sd = 11; for (i = 0; i < 46; i++) { sd = (sd * 1103515245 + 12345) & 0x7fffffff; var gx = 6 + (sd % 2880) / 10; sd = (sd * 1103515245 + 12345) & 0x7fffffff; var gy = 6 + (sd % 1380) / 10; gl += '<circle cx="' + gx.toFixed(1) + '" cy="' + gy.toFixed(1) + '" r="' + (0.35 + (i % 3) * 0.25) + '" fill="#fff" fill-opacity="' + (0.35 + (i % 4) * 0.12).toFixed(2) + '"/>'; }
+      var ser = 'font-family="JetBrains Mono,monospace" font-weight="800" font-size="8" letter-spacing="2.6" fill="#0b3d1c" fill-opacity=".85" text-anchor="middle"';
+      var f1 = 'M58 14H242L252 24V126L242 136H58L48 126V24Z', f2 = 'M60 18H240L248 26V124L240 132H60L52 124V26Z';
+      return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Token"><defs>' +
+        (big ? '<filter id="gtf' + n + '" x="-4%" y="-8%" width="108%" height="116%"><feTurbulence type="fractalNoise" baseFrequency=".008 .014" numOctaves="1" seed="7" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>' : '') +
+        '<filter id="' + k + '" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="3" result="nz"/><feColorMatrix in="nz" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 -.28"/></filter>' +
+        '<linearGradient id="' + g + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d5ffe4"/><stop offset=".2" stop-color="#7fe3a2"/><stop offset=".5" stop-color="#2e9d58"/><stop offset=".74" stop-color="#8be3a0"/><stop offset="1" stop-color="#2a8a4b"/></linearGradient>' +
+        '<pattern id="' + l + '" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><path d="M0 2H4" stroke="#0b4a24" stroke-opacity=".16" stroke-width=".7"/></pattern>' +
+        '<linearGradient id="' + m + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#0b3d1c" stop-opacity=".3"/></linearGradient>' +
+        '<linearGradient id="' + h + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
+        '<clipPath id="' + c + '"><path d="' + P + '"/></clipPath>' +
+        (big ? '<radialGradient id="gtd' + n + '"><stop offset="0" stop-color="#05200f" stop-opacity=".55"/><stop offset=".55" stop-color="#05200f" stop-opacity=".18"/><stop offset="1" stop-color="#05200f" stop-opacity="0"/></radialGradient><radialGradient id="gtr' + n + '"><stop offset=".6" stop-color="#fff" stop-opacity="0"/><stop offset=".82" stop-color="#e8fff1" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>' : '') +
+        '</defs><g class="gtw">' +
+        '<path d="' + P + '" fill="url(#' + g + ')"/><path d="' + P + '" fill="url(#' + l + ')"/><path d="' + P + '" fill="url(#' + m + ')"/>' +
+        '<g clip-path="url(#' + c + ')"><rect width="' + W + '" height="' + H + '" filter="url(#' + k + ')" opacity=".55"/>' + gl +
+        '<rect x="12" y="12" width="30" height="126" rx="4" fill="#0b4a24" fill-opacity=".1" stroke="#0b4a24" stroke-opacity=".6" stroke-width="1.1"/><rect x="258" y="12" width="30" height="126" rx="4" fill="#0b4a24" fill-opacity=".1" stroke="#0b4a24" stroke-opacity=".6" stroke-width="1.1"/>' +
+        '<text transform="translate(31 75) rotate(-90)" ' + ser + '>TWK · VAULT 0001</text><text transform="translate(271 75) rotate(-90)" ' + ser + '>TWK · FREE 0001</text>' +
+        '<path d="' + f1 + '" fill="none" stroke="#0b4a24" stroke-opacity=".7" stroke-width="1.4"/><path d="' + f2 + '" fill="none" stroke="#e8fff1" stroke-opacity=".7" stroke-width=".8"/>' + stars +
+        '<path d="M70 41H230M70 85H230" stroke="#0b4a24" stroke-opacity=".6" stroke-width="1"/>' +
+        '<text x="150" y="74" text-anchor="middle" font-family="Playfair Display,Georgia,Times New Roman,serif" font-weight="700" font-size="38" letter-spacing="2" fill="#e8fff1" fill-opacity=".85" transform="translate(.9,1.3)">TOKEN</text><text x="150" y="74" text-anchor="middle" font-family="Playfair Display,Georgia,Times New Roman,serif" font-weight="700" font-size="38" letter-spacing="2" fill="#2e9d58" stroke="#0b3d1c" stroke-width="1.1">TOKEN</text>' +
+        '<text x="150" y="101" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="13" letter-spacing="2.6" fill="#0b3d1c" fill-opacity=".9">FREE ACCESS</text>' +
+        '<path d="M64 108H140M160 108H236M64 125H140M160 125H236M150 110V123" stroke="#0b4a24" stroke-opacity=".6" stroke-width="1"/>' +
+        '<text x="102" y="120" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="11" letter-spacing="1.6" fill="#0b3d1c" fill-opacity=".9">EARNED</text><text x="198" y="120" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="800" font-size="8.5" letter-spacing="1.6" fill="#0b3d1c" fill-opacity=".9">VAULT POINTS</text>' +
+        (big ? '<circle class="gtdr" r="46" cx="150" cy="75" fill="url(#gtr' + n + ')" opacity="0"/><circle class="gtdd" r="40" cx="150" cy="75" fill="url(#gtd' + n + ')" opacity="0"/>' : '') + '<rect class="sh" x="-60" y="-10" width="46" height="170" fill="url(#' + h + ')" transform="skewX(-18)"/></g>' +
+        '<path d="' + P + '" fill="none" stroke="#e8fff1" stroke-opacity=".85" stroke-width="1.6"/></g></svg>';
     }
     function TK(big, kind) {
       if (kind === 'token') return TKB(big);
