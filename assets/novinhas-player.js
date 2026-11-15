@@ -48,7 +48,7 @@
     '.twk-q-chip{width:100%;height:36px;padding:0 10px;text-align:left;border-radius:8px;background:transparent;box-shadow:none;color:#fff;font:600 14px system-ui;display:flex;align-items:center;gap:8px}.twk-q-chip:hover{background:rgba(255,255,255,.1);filter:none}.twk-q-chip.on{background:transparent;box-shadow:none;color:#ffd76a}.twk-q-chip.on:before{content:"\\2713"}.twk-q-chip:not(.on):before{content:"";width:1em}' +
     '@media(max-width:540px){.twk-q-btn{height:40px}.twk-q-chip{height:40px}}' +
     '.twk-q-btn{width:auto;min-width:0;height:38px;padding:0 13px 0 11px;border-radius:999px;gap:6px;grid-auto-flow:column;border:1.5px solid #e8b84a;background:rgba(18,18,18,.82)}.twk-q-btn svg{width:18px;height:18px}.twk-q-lab{font:800 12px system-ui,sans-serif;letter-spacing:.04em}.np-stage video{cursor:pointer}.twk-q{display:none!important}.np-fs{display:none!important}' +
-    '.np-qbar{display:inline-flex;align-items:center;gap:4px;padding:3px;border:1.5px solid #e8b84a;border-radius:999px;background:#1a1608}.np-qk{padding:0 8px 0 10px;font:800 10px system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#e8b84a}.np-qbar button{height:30px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:#f5e6b3;font:800 12px system-ui,sans-serif;cursor:pointer}.np-qbar button.on{background:linear-gradient(180deg,#fff0a8,#f7c83a 45%,#d99a0b);color:#2a1a00}' +
+    '.np-qw{position:relative}.np-qm{position:absolute;left:0;right:0;bottom:calc(100% + 8px);display:none;flex-direction:column;gap:3px;padding:6px;border-radius:12px;background:rgba(18,16,8,.98);border:1.5px solid #e8b84a;box-shadow:0 12px 30px rgba(0,0,0,.7);z-index:30}.np-qw.open .np-qm{display:flex}.np-qm button{height:38px;border:0;border-radius:8px;background:transparent;color:#f5e6b3;font:800 12px system-ui,sans-serif;letter-spacing:.06em;cursor:pointer}.np-qm button:hover{background:rgba(255,255,255,.1)}.np-qm button.on{background:linear-gradient(180deg,#fff0a8,#f7c83a 45%,#d99a0b);color:#2a1a00}.np-qbtn svg{width:16px;height:16px}' +
     '.np-enh{pointer-events:auto;cursor:pointer;margin-top:8px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;max-width:240px;padding:10px 14px 9px;border-radius:12px;border:1.5px solid #35e06f;background:linear-gradient(135deg,#04200f,#0a3a1c);box-shadow:0 0 18px rgba(53,224,111,.45),inset 0 1px 0 rgba(255,255,255,.12);text-align:left;font-family:system-ui,sans-serif;animation:neglow 1.6s ease-in-out infinite}.np-enh .ne-big{font:900 22px/1 Anton,Impact,system-ui,sans-serif;letter-spacing:.08em;color:#8dffb4;text-shadow:0 0 12px #35e06f;animation:neblink 1.1s steps(2,jump-none) infinite}.np-enh .ne-sm{font:600 10.5px/1.3 system-ui,sans-serif;color:#d6ffe4;opacity:.92}.np-enh:hover{transform:scale(1.04)}.np-enh.wait,.np-enh.off{border-color:#7a8a80;box-shadow:none;animation:none;background:rgba(10,20,14,.85)}.np-enh.wait .ne-big,.np-enh.off .ne-big{color:#b9c7be;text-shadow:none;animation:none}.np-enh.on{animation:none;box-shadow:0 0 12px rgba(53,224,111,.35)}.np-enh.on .ne-big{animation:none}@keyframes neblink{0%{opacity:1}50%{opacity:.35}}@keyframes neglow{0%,100%{box-shadow:0 0 12px rgba(53,224,111,.35),inset 0 1px 0 rgba(255,255,255,.12)}50%{box-shadow:0 0 26px rgba(53,224,111,.85),inset 0 1px 0 rgba(255,255,255,.12)}}' +
     '.np-meta{max-width:250px}.np-meta span{white-space:normal!important}.np-enh span{background:none!important;padding:0!important;border-radius:0!important;white-space:normal!important}.np-enh .ne-big{white-space:nowrap!important}' +
         '.np-meta{position:absolute;z-index:11;left:12px;top:60px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;pointer-events:none;font-family:system-ui,sans-serif}.np-meta span{padding:4px 10px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.02em;text-shadow:0 1px 4px #000;white-space:nowrap}.np-meta .np-rec{color:#ffd76a;border:1px solid #ffd76a66}.np-meta .np-cd{font-variant-numeric:tabular-nums}' +
@@ -419,21 +419,25 @@
     ap.onclick = function () { var on = !ap.classList.contains('on'); ap.classList.toggle('on', on); LS.set(AUTO_KEY, on ? '1' : '0'); };
     var pv = document.createElement('button'); pv.type = 'button'; pv.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; pv.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 6v12z"/></svg>Previous'; pv.onclick = function () { if (prevV) goTo(prevV, true); };
     var nt = document.createElement('button'); nt.type = 'button'; nt.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; nt.innerHTML = 'Next<svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18V6l8.5 6z"/></svg>'; nt.onclick = function () { if (nextV) goTo(nextV, true); };
-    if (!prevV) pv.style.display = 'none'; if (!nextV) nt.style.display = 'none';
-    var kb = document.createElement('button'); kb.type = 'button'; kb.className = 'np-pill twk-btn twk-btn--ghost twk-btn--sm'; kb.textContent = 'Keyboard shortcuts (?)'; kb.onclick = function () { help.classList.add('on'); };
-    bar.append(pv, nt, ap, kb);
+    if (!prevV) pv.disabled = true; if (!nextV) nt.disabled = true;
     /* barra de abajo: dos grupos iguales. Calidad por un lado; Slow motion + REC (miniclip de 30 s, solo dueño) por el otro */
-    var qb = document.createElement('div'); qb.className = 'np-qbar';
-    qb.innerHTML = '<span class="np-qk">Quality</span><button type="button" data-q="hd">HD</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button>';
-    var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); [].forEach.call(qb.querySelectorAll('button[data-q]'), function (b) { b.classList.toggle('on', b.dataset.q === p || (p !== 'auto' && b.dataset.q === e)); }); };
-    qb.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; LS.set(Q_KEY, b.dataset.q); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : 'HD')); });
-    var sb = document.createElement('div'); sb.className = 'np-qbar np-sbar'; sb.innerHTML = '<button type="button" data-sm="1">Slow motion</button>';
-    slowBtn = sb.querySelector('[data-sm]'); slowBtn.classList.toggle('on', v.playbackRate < 1);
-    sb.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; if (b.dataset.sm) toggleSlow(); });
-    bar.append(qb, sb); qRender();
+    var BTN = 'np-pill twk-btn twk-btn--ghost twk-btn--sm';
+    var kb = document.createElement('button'); kb.type = 'button'; kb.className = BTN + ' np-kb'; kb.textContent = 'Keyboard shortcuts'; kb.onclick = function () { help.classList.add('on'); };
+    var qw = document.createElement('div'); qw.className = 'np-qw';
+    var qbtn = document.createElement('button'); qbtn.type = 'button'; qbtn.className = BTN + ' np-qbtn'; qbtn.setAttribute('aria-haspopup', 'true'); qbtn.innerHTML = '<span class="ql">HD</span><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>';
+    var qm = document.createElement('div'); qm.className = 'np-qm'; qm.innerHTML = '<button type="button" data-q="hd">HD · Original</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button>';
+    qw.append(qbtn, qm);
+    var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); qbtn.querySelector('.ql').textContent = p === 'auto' ? 'Auto · ' + (e === 'sd' ? '480p' : 'HD') : (e === 'sd' ? '480p' : 'HD'); [].forEach.call(qm.querySelectorAll('button[data-q]'), function (b) { b.classList.toggle('on', b.dataset.q === p); }); };
+    qbtn.onclick = function (e) { e.stopPropagation(); qw.classList.toggle('open'); };
+    qm.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; LS.set(Q_KEY, b.dataset.q); qw.classList.remove('open'); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : 'HD')); });
+    document.addEventListener('click', function (e) { if (!qw.contains(e.target)) qw.classList.remove('open'); });
+    slowBtn = document.createElement('button'); slowBtn.type = 'button'; slowBtn.className = BTN; slowBtn.textContent = 'Slow motion'; slowBtn.classList.toggle('on', v.playbackRate < 1);
+    slowBtn.onclick = function () { toggleSlow(); };
+    var rb = document.createElement('button'); rb.type = 'button'; rb.className = BTN + ' np-rb'; rb.innerHTML = '<i></i><span>REC</span>'; rb.style.display = 'none';
+    bar.append(pv, nt, ap, kb, qw, slowBtn, rb); qRender();
     fetch('/api/novinhas/mini?me=1', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || !j.owner) return; mini.owner = true;
-      var rb = document.createElement('button'); rb.type = 'button'; rb.className = 'np-rb'; rb.innerHTML = '<i></i><span>REC</span>'; rb.title = 'Record a 30 s miniclip from the current moment (with slow motion if it is on)';
+      rb.style.display = ''; rb.title = 'Record a 30 s miniclip from the current moment (with slow motion if it is on)';
       var lab = rb.querySelector('span'), rt;
       var recQ = null, recT = 0, recN = 0; // grabacion en curso: 30 s de cuenta regresiva; tocar REC de nuevo la cancela
       function recEnd(txt, cls) { clearInterval(recT); recQ = null; rb.classList.remove('busy', 'rec', 'ok'); if (cls) rb.classList.add(cls); lab.textContent = txt; clearTimeout(rt); rt = setTimeout(function () { rb.classList.remove('ok'); lab.textContent = 'REC'; }, 2600); }
@@ -455,7 +459,6 @@
           } else { lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); }
         }).catch(function () { rb.classList.remove('busy'); lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); });
       };
-      sb.appendChild(rb);
     }).catch(function () {});
     minisLoad(); try { new ResizeObserver(minisLayout).observe(box); } catch (_) { window.addEventListener('resize', minisLayout); } v.addEventListener('loadedmetadata', minisLayout);
     if (o.bar) o.bar.replaceChildren(bar);
