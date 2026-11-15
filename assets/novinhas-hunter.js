@@ -245,8 +245,9 @@
     fetch('/api/novinhas/hunt', { credentials: 'same-origin', cache: 'no-store', headers: ah }).then(function (r) { return r.ok ? r.json() : { auth: false }; }).catch(function () { return { auth: false }; }).then(function (j) {
       auth = !!j.auth; who = auth ? String(j.uid || 'u') : 'g'; joined = !!j.joined; if (j.cat) { cat = j.cat; ls('twk-hunt-cat', cat); }
       if (auth && !joined && ls(PK) === '1') { ls(PK, null); api({ join: 1, cat: cat || 'content' }).then(function (o) { if (o.j && o.j.ok) { joined = true; ls(JK, '1'); } afterGate(build); }).catch(function () {}); return; }
-      if (joined) return; /* ya eligio ser donador (cat. 1 o 2): no vuelve a verlo */
-      var x = +ls(XK) || 0; if (x >= FORCE && Date.now() - x < EVERY && (ls('twk-hunt-xu') || 'g') === who) return;
+      var force = /[?&]cazador=1(&|$)/.test(location.search); /* enlace de prueba del dueño: siempre abre */
+      if (joined && !force) return; /* ya eligio ser donador (cat. 1 o 2): no vuelve a verlo */
+      var x = +ls(XK) || 0; if (!force && x >= FORCE && Date.now() - x < EVERY && (ls('twk-hunt-xu') || 'g') === who) return;
       afterGate(build);
     });
   }

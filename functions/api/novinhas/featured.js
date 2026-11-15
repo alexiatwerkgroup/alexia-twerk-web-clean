@@ -116,7 +116,18 @@ export async function onRequest({ request, env }) {
     const n = await db.prepare('SELECT COUNT(*) c FROM nv_feat WHERE queued = 1').first();
     return J({ ok: true, queued: n ? n.c : 0 });
   }
-  if (q.get('me')) return J({ owner: await isOwner(request, env) });
+  if (q.get('me')) {
+    const ow = await isOwner(request, env), out = { owner: ow };
+    if (ow && env.DB) {
+      try {
+        await env.DB.prepare('CREATE TABLE IF NOT EXISTS nv_row_bad (slug TEXT, vid INTEGER, ts INTEGER, PRIMARY KEY (slug, vid))').run();
+        await env.DB.prepare('CREATE TABLE IF NOT EXISTS nv_row_pin (slug TEXT PRIMARY KEY, vid INTEGER, ts INTEGER)').run();
+        out.hidden = ((await env.DB.prepare('SELECT slug, vid FROM nv_row_bad').all()).results || []).map((r) => r.slug + ':' + r.vid).concat(Object.keys(ROW_BAD));
+        out.pinned = ((await env.DB.prepare('SELECT slug, vid FROM nv_row_pin').all()).results || []).map((r) => r.slug + ':' + r.vid);
+      } catch (e) {}
+    }
+    return J(out);
+  }
   if (q.get('cs')) {
     const slug = q.get('c') || '', vid = parseInt(q.get('v'), 10), st = parseInt(q.get('t'), 10);
     if (!SLUG.test(slug) || !(vid > 0) || !(st >= 0)) return new Response('bad_request', { status: 400 });
