@@ -293,7 +293,7 @@
     fetch('/api/novinhas/enhance?c=' + encodeURIComponent(slug), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j) return; var id = cur.id;
       if (j.ready.indexOf(id) >= 0) { enh.style.display = ''; eset('UPGRADE','Enhanced quality ready · tap to watch it now · ' + (j.owner ? 'free for you' : '1 coin · ' + j.left + ' of ' + j.max + ' left today'),''); }
-      else if (j.queued.indexOf(id) >= 0) { enh.style.display = ''; enh.disabled = true; eset('PROCESSING','Enhanced quality is being processed · check back soon','wait'); }
+      else if (j.queued.indexOf(id) >= 0) { enh.style.display = ''; enh.disabled = true; enh.style.cursor = 'default'; eset('ENHANCED','Upgrade in progress · coming soon',''); }
     }).catch(function () {});
     function fmtT(t) { t = Math.max(0, Math.ceil(t)); var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s2 = t % 60; return (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (s2 < 10 ? '0' : '') + s2; }
     function resTxt() {
