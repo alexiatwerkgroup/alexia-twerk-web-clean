@@ -33,6 +33,14 @@ svg text{fill:#9a9aaa;font:600 10px Manrope}
 .gate{max-width:480px;margin:90px auto;text-align:center;padding:30px;border:1.5px solid #6a5420;border-radius:18px;background:#0e0b05}
 .admin-ai{position:fixed;right:20px;bottom:22px;z-index:10001}.admin-ai>button{padding:12px 18px;border:1px solid var(--g2);border-radius:10px;background:#11121bea;color:var(--g1);font:800 12px monospace;cursor:pointer}.admin-ai-menu{position:absolute;bottom:52px;right:0;min-width:210px;padding:8px;background:#0e1019e8;border:1px solid var(--g2);backdrop-filter:blur(18px);border-radius:10px}.admin-ai-menu button{display:block;width:100%;background:transparent;border:0;color:var(--g1);text-align:left;padding:12px;cursor:pointer;font:700 13px monospace}.admin-ai-menu button:hover{background:#ffffff0b}
 body[data-admin-mode=matrix]{--bg:#030905;--card:#06180bb0;--line:#1a6337;--fg:#baffcc;--mut:#74ae84;--g1:#b3ffca;--g2:#39f17b;--g3:#0d6132;--ok:#4eff91;background:radial-gradient(ellipse at 45% 0,#0a2512,#020704 70%);font-family:Consolas,monospace}body[data-admin-mode=matrix] .c,body[data-admin-mode=matrix] .k{background:#05180d9c;border-color:#23824780;box-shadow:none}body[data-admin-mode=matrix] .btn.on{background:#153d23;color:#c5ffd6}body[data-admin-mode=matrix] .k b{color:#84ffab;text-shadow:none}
+
+/* Botones: SOLO el elegido va dorado; el resto neutro. Se usa la clase vb para salir del dorado global de twk-shell-v2 */
+html body #sel .btn.vb{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 18px;border-radius:12px;background:#14141c;border:1px solid #3a3a46;color:#b9b6ae;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;box-shadow:none;transition:border-color .15s,color .15s}
+html body #sel .btn.vb:hover{border-color:#8a7430;color:#fff}
+html body #sel .btn.vb.on{background:linear-gradient(180deg,#ffe27a 0%,#f0b90b 50%,#c98f00 100%);border-color:#fff0a8;color:#1a1100;box-shadow:0 0 14px rgba(240,185,11,.35)}
+html body #sel .btn.vb.sw{color:#7dffa3;border-color:#1f5a35}
+.rc{display:grid;gap:3px}.rc .jn{display:flex;flex-wrap:wrap;gap:4px;align-items:center}.rc .jn span.st{background:#1a1a22;border:1px solid #2c2c38;border-radius:6px;padding:2px 6px;font-size:11px}.rc .jn i{color:#6b6b78;font-style:normal}
+.pill.yes{background:#0f3a22;color:#7dffa3;border:1px solid #1f6a3a}.pill.no{background:#1a1a22;color:#8d8d99;border:1px solid #2c2c38}.pill.hun{background:#3a2a06;color:#ffe27a;border:1px solid #8a6a14}
 </style></head><body><div class="w" id="app"><div class="gate">Cargando estadísticas…</div></div>
 <script>
 (function () {
@@ -166,11 +174,21 @@ function onlineTable(list, d, emptyMsg) {
   }).join('');
   return '<div class="tw"><table><tr><th>Quién</th><th>Dónde está</th><th>Interés</th><th>Última señal</th><th>Tiempo / scroll en esta página</th><th>Vino de</th><th>Qué hizo</th></tr>' + (rows || '<tr><td colspan="7" class="m">' + emptyMsg + '</td></tr>') + '</table></div>';
 }
+function recentTable(list) {
+  var rows = (list || []).map(function (o) {
+    var who = '<b>' + (o.user ? whoSpan(o.user, o.uid, o.vidFull) : whoSpan('visitante ' + o.vid, '', o.vidFull)) + '</b><br><span class="m">' + esc([o.device, o.browser, o.os].filter(Boolean).join(' · ')) + '</span>';
+    var jn = '<div class="rc"><div class="jn">' + (o.journey || []).map(function (j, i) { return (i ? '<i>→</i>' : '') + '<span class="st">' + pl(j.path) + ' <span class="m">' + T(j.dur) + '</span></span>'; }).join('') + '</div></div>';
+    var reg = o.registered ? '<span class="pill yes">Sí</span>' + (o.user ? '<br><span class="m">' + esc(o.user) + '</span>' : '') : '<span class="pill no">No</span>';
+    var hun = o.hunter ? '<span class="pill hun">Hunter</span>' + (o.hunterCat ? '<br><span class="m">categoría ' + o.hunterCat + '</span>' : '') : '<span class="pill no">No</span>';
+    return '<tr><td>hace ' + ago(o.lastAt) + '</td><td>' + who + '</td><td>' + place(o.country, o.city) + '</td><td>' + esc(o.ref || 'directo') + '</td><td>' + jn + '</td><td>' + T(o.dur) + '<br><span class="m">' + F(o.loads) + ' cargas</span></td><td>' + reg + '</td><td>' + hun + '</td></tr>';
+  }).join('');
+  return '<div class="tw"><table><tr><th>Última vez</th><th>Quién</th><th>País / ciudad</th><th>Fuente</th><th>Recorrido (páginas y tiempo)</th><th>Tiempo total</th><th>¿Registrado?</th><th>¿Hunter?</th></tr>' + (rows || '<tr><td colspan="8" class="m">Todavía no hay visitantes en las últimas 24 h</td></tr>') + '</table></div>';
+}
 function liveHtml(d) {
   var acts = (d.recentActions || []).map(function (e) { return '<div>' + esc(EV[e.name] || e.name) + (e.detail && e.name !== 'nov_watch' && e.name !== 'nov_play' ? ' · ' + esc(e.detail) : '') + '<br><small>' + whoSpan(e.user, e.uid, e.vid) + ' · ' + place(e.country, e.city) + ' · hace ' + ago(e.ts) + '</small></div>'; }).join('') || '<div class="m">Todavía no hay acciones</div>';
   var accs = (d.latestAccounts || []).map(function (a) { var t = new Date(String(a.registered_at).replace(' ', 'T') + 'Z'); return '<div><b>' + whoSpan(a.username || 'sin nombre', a.id, '') + '</b> <span class="pill pw">' + esc(a.tier || '—') + '</span><br><small>registrada ' + (isNaN(t) ? esc(a.registered_at) : 'hace ' + ago(t.getTime())) + '</small></div>'; }).join('');
   var conf = d.online || [];
-  return liveKpis(d) + '<div class="g"><div class="c s12"><h2>Quién está en el sitio ahora<small>visitantes reales · se actualiza cada 5 segundos</small></h2>' + onlineTable(conf, d, 'Ningún visitante real en este momento') + '</div>' +
+  return liveKpis(d) + '<div class="g"><div class="c s12"><h2>Quién está en el sitio ahora<small>visitantes reales · se actualiza cada 5 segundos</small></h2>' + onlineTable(conf, d, 'Ningún visitante real en este momento') + '<h2 style="margin-top:22px">Últimos conectados<small>últimas 24 h · recorrido completo, país, fuente, tiempo, registro y hunter</small></h2>' + recentTable(d.recent) + '</div>' +
     '<div class="c s6"><h2>Últimas acciones</h2><div class="feed">' + acts + '</div></div>' +
     '<div class="c s6"><h2>Últimas cuentas creadas</h2><div class="feed">' + accs + '</div></div></div>';
 }
@@ -218,13 +236,13 @@ function repHtml(r) {
 function shell() {
   var app = document.getElementById('app');
   app.innerHTML = '<div class="top"><div><h1>Estadísticas de Twerkhub</h1></div><div class="sel" id="sel">' +
-    [['today', 'Hoy'], ['week', '7 días'], ['month', 'Mes actual'], ['all', 'Histórico']].map(function (p) { return '<button type="button" class="btn' + (p[0] === range ? ' on' : '') + '" data-d="' + p[0] + '">' + p[1] + '</button>'; }).join('') +
-    '<button type="button" class="btn" id="refresh">Actualizar histórico ahora</button><button type="button" class="btn" id="snd"></button><a class="btn" href="/admin-users.html">Registrados</a><a class="btn" href="/admin/hunters/">Hunters</a></div></div>' +
+    [['today', 'Hoy'], ['week', '7 días'], ['month', 'Mes actual'], ['all', 'Histórico']].map(function (p) { return '<button type="button" class="btn vb' + (p[0] === range ? ' on' : '') + '" data-d="' + p[0] + '">' + p[1] + '</button>'; }).join('') +
+    '<button type="button" class="btn vb" id="refresh">Actualizar histórico ahora</button><button type="button" class="btn vb" id="snd"></button><a class="btn vb" href="/admin-users.html">Registrados</a><a class="btn vb" href="/admin/hunters/">Hunters</a></div></div>' +
     '<div class="status" id="status"></div><div id="def"></div><div id="live"><div class="gate">Consultando…</div></div><div id="rep"></div><div id="wc"></div>';
   document.getElementById('sel').onclick = function (e) { var b = e.target.closest('[data-d]'); if (!b) return; range = b.dataset.d; document.querySelectorAll('#sel [data-d]').forEach(function (x) { x.classList.toggle('on', x === b); }); loadReport(); };
   document.getElementById('refresh').onclick = function () { loadReport(); };
   var snd = document.getElementById('snd');
-  function paint() { snd.textContent = soundOn ? '🔔 Sonido: activado' : '🔕 Activar sonido'; snd.classList.toggle('on', soundOn); }
+  function paint() { snd.textContent = soundOn ? '🔔 Sonido: activado' : '🔕 Activar sonido'; snd.classList.toggle('sw', soundOn); }
   snd.onclick = function () { soundOn = !soundOn; try { localStorage.setItem('twk-visitor-sound', soundOn ? '1' : '0'); } catch (e) {} if (soundOn) { armAudio(); setTimeout(bubble, 150); } paint(); };
   paint(); armAudio();
 }

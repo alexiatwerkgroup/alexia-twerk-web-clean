@@ -58,6 +58,31 @@ export async function onRequestGet({ request, env }) {
     return { vid: r.vid.slice(0, 6), vidFull: r.vid, uid: r.uid || '', user: r.uid ? names[r.uid] || '' : '', country: r.country, city: r.city, device: r.device, browser: r.browser, os: r.os, ref: r.ref, path: r.path,
       enteredAt: r.ts, lastSignal: r.last_active, lastEngaged: r.last_engaged || null, dur: r.dur || 0, scroll: r.scroll || 0, maxDur24h: d.maxdur || 0, loads24h: d.loads || 1, events: events.slice(0, 4), confirmed: true, reasons };
   });
+  // Últimos conectados (24 h): UNA fila por visitante real, con recorrido, tiempo, registro y si es hunter.
+  body.recent = [];
+  try {
+    const rv = await all(db, `WITH ${REAL_CTE} SELECT vid, MAX(last_active) la, MIN(ts) first, MAX(uid) uid, COUNT(*) loads, SUM(dur) dur FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid ORDER BY la DESC LIMIT 40`, now - 86400000);
+    const rids = rv.map(r => r.vid);
+    if (rids.length) {
+      const rph = rids.map((_, i) => `?${i + 2}`).join(',');
+      const pages = await all(db, `SELECT vid, path, ts, dur, scroll, country, city, device, browser, os, ref, uid FROM tw_hits WHERE ts > ?1 AND vid IN (${rph}) ORDER BY ts ASC`, now - 86400000, ...rids);
+      const byV = {}; pages.forEach(h => { (byV[h.vid] = byV[h.vid] || []).push(h); });
+      const ruids = [...new Set(rv.map(r => r.uid).filter(Boolean))];
+      const prof = {}, hunt = {};
+      if (ruids.length) {
+        const uph = ruids.map((_, i) => `?${i + 1}`).join(',');
+        for (const p of await all(db, `SELECT id, username, country, registered_at FROM profiles WHERE id IN (${uph})`, ...ruids)) prof[p.id] = p;
+        try { for (const h of await all(db, `SELECT uid, joined, cat FROM nv_hunt WHERE uid IN (${uph})`, ...ruids)) hunt[h.uid] = h; } catch (e) {}
+      }
+      body.recent = rv.map(r => {
+        const hs = byV[r.vid] || [], f = hs[0] || {}, pr = r.uid ? prof[r.uid] : null, hu = r.uid ? hunt[r.uid] : null;
+        return { vid: r.vid.slice(0, 6), vidFull: r.vid, uid: r.uid || '', user: pr ? pr.username || '' : '', registered: !!r.uid, registeredAt: pr ? pr.registered_at : null,
+          hunter: !!(hu && hu.joined), hunterCat: hu ? (hu.cat || 0) : 0, country: f.country || '', city: f.city || '', device: f.device, browser: f.browser, os: f.os, ref: f.ref || '',
+          firstAt: r.first, lastAt: r.la, loads: r.loads, dur: r.dur || 0,
+          journey: hs.slice(-8).map(h => ({ path: h.path, ts: h.ts, dur: h.dur || 0, scroll: h.scroll || 0 })) };
+      });
+    }
+  } catch (e) { body.recentErr = String(e && e.message || e).slice(0, 120); }
   body.recentActions = (res[5].results || []).map(e => ({ vid: e.vid, uid: e.uid || '', ts: e.ts, name: e.name, detail: e.detail, country: e.country, city: e.city, user: e.uid ? names[e.uid] || '' : '' }));
   body.latestAccounts = res[6].results || [];
   return json(body, 200, '', NO_STORE);
