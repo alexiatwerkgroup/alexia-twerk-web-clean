@@ -2,6 +2,17 @@
 import { json } from '../../_lib/http.js';
 import { REAL_CTE, ONLINE_MS, CONFIRM_SECONDS, ownerOnly, NO_STORE, tzInfo, all } from '../../_lib/stats-core.js';
 
+// Hoy / semana (7 dias) / total: se recalcula cada 2 min (el panel pide /live cada 5 s y el total recorre toda la tabla).
+let PCACHE = { t: 0, v: null };
+async function periods(db, todayStart) {
+  if (PCACHE.v && Date.now() - PCACHE.t < 120000 && PCACHE.d === todayStart) return PCACHE.v;
+  const per = since => db.prepare(`WITH ${REAL_CTE} SELECT (SELECT COUNT(*) FROM cv) confirmed, (SELECT COUNT(*) FROM ci) interested, (SELECT COUNT(*) FROM tw_events WHERE ts > ?1 AND name <> 'vid_time') actions, (SELECT ROUND(AVG(t)) FROM (SELECT SUM(dur) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid)) avgSeconds`).bind(since);
+  const r = await db.batch([per(todayStart), per(todayStart - 6 * 86400000), per(0), db.prepare("SELECT SUM(CASE WHEN registered_at >= datetime(?1/1000,'unixepoch') THEN 1 ELSE 0 END) week FROM profiles").bind(todayStart - 6 * 86400000)]);
+  const g = i => (r[i].results || [])[0] || {};
+  const m = o => ({ confirmed: o.confirmed || 0, interested: o.interested || 0, actions: o.actions || 0, avgSeconds: o.avgSeconds || 0 });
+  PCACHE = { t: Date.now(), d: todayStart, v: { today: m(g(0)), week: m(g(1)), all: m(g(2)), accountsWeek: g(3).week || 0 } };
+  return PCACHE.v;
+}
 export async function onRequestGet({ request, env }) {
   const denied = await ownerOnly(request, env);
   if (denied) return denied;
@@ -33,6 +44,7 @@ export async function onRequestGet({ request, env }) {
     accounts: { total: acc.total || 0, today: acc.today || 0 },
     onlineCookies: on.n || 0,
   };
+  try { body.periods = await periods(db, todayStart); } catch (e) { body.periodsErr = String(e && e.message || e).slice(0, 120); }
   if (lite) return json(body, 200, '', NO_STORE);
 
   // ---- quién está ahora, con la evidencia de cada uno (últimas 24 h) ----

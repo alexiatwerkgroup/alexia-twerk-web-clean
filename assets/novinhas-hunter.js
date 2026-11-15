@@ -266,6 +266,7 @@
       var force = /[?&]cazador=1(&|$)/.test(location.search); /* enlace de prueba del dueño: siempre abre */
       if (joined && !force) return; /* ya eligio ser donador (cat. 1 o 2): no vuelve a verlo */
       var x = +ls(XK) || 0; if (!force && x >= FORCE && Date.now() - x < EVERY && (ls('twk-hunt-xu') || 'g') === who) return;
+      if (!force) { var shown = 0; try { shown = +sessionStorage.getItem('twk-hunt-n') || 0; } catch (e) {} if (shown >= 2) return; /* maximo 2 veces por sesion del navegador */ try { sessionStorage.setItem('twk-hunt-n', String(shown + 1)); } catch (e) {} }
       afterGate(build);
     });
   }

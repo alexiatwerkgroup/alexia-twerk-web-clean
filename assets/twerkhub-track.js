@@ -3,7 +3,9 @@
   var h = window.__twh; if (!h || window.__twt) return; window.__twt = 1;
   var hum = 0, vis = 0, last = Date.now(), shown = !document.hidden, maxS = 0, ev = [], sent = 0, interaction = 0, lastSentInteraction = 0;
   function touch() { hum = 1; interaction = Date.now(); }
-  function tick() { if (shown) vis += Date.now() - last; last = Date.now(); }
+  // Tiempo activo = pestaña visible O un video reproduciéndose (mirar con el navegador tapado o en segundo plano también es tiempo en la página).
+  function playing() { try { var vs = document.getElementsByTagName('video'); for (var i = 0; i < vs.length; i++) { var q = vs[i]; if (!q.paused && !q.ended && q.readyState > 2) return true; } } catch (e) {} return false; }
+  function tick() { if (shown || playing()) vis += Date.now() - last; last = Date.now(); }
   function scr() { var d = document.documentElement, t = (window.scrollY || 0) + innerHeight, p = Math.round(100 * t / Math.max(d.scrollHeight, 1)); if (p > maxS) maxS = Math.min(100, p); }
   addEventListener('scroll', function () { touch(); scr(); }, { passive: true }); scr();
   ['pointermove', 'touchstart', 'keydown', 'mousedown'].forEach(function (t) { addEventListener(t, touch, { passive: true }); });
@@ -44,5 +46,5 @@
   addEventListener('pagehide', send);
   setTimeout(send, 15000);
   // Heartbeat keeps active time, current IP country and online status fresh while the tab stays open.
-  setInterval(function () { if (shown) send(); }, 30000);
+  setInterval(function () { if (shown || playing()) send(); }, 30000);
 })();

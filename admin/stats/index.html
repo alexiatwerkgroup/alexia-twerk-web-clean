@@ -156,14 +156,18 @@ function defBox() {
     '<li><b>Ahora en el sitio</b>: visitantes reales con señal en los últimos 90 s.</li>' +
     '<li>«Hoy» cuenta desde las 00:00 de tu zona horaria.</li></ul></details>';
 }
+var LIVE_P = null; // hoy / semana / total (lo manda /api/stats/live)
+function pr(fn, fmt) { if (!LIVE_P) return ''; return ' <span class="m">(sem. ' + (fmt || F)(fn(LIVE_P.week)) + ' · total ' + (fmt || F)(fn(LIVE_P.all)) + ')</span>'; }
 function liveKpis(d) {
+  LIVE_P = d.periods || LIVE_P;
   var onC = (d.online || []).length, bot = Math.max(0, d.today.cookies - d.today.confirmed);
   return '<div class="kp">' +
     '<div class="k"><span>Ahora en el sitio</span><b>' + F(d.onlineCookies) + '</b><i>visitantes reales con señal en los últimos ' + d.onlineSeconds + ' s</i></div>' +
-    '<div class="k"><span>Hoy · visitantes reales</span><b>' + F(d.today.confirmed) + '</b><i>' + F(d.today.interested) + ' interesados · <span class="m">' + F(bot) + ' cargas automáticas ignoradas</span></i></div>' +
+    '<div class="k"><span>Hoy · visitantes reales</span><b>' + F(d.today.confirmed) + '</b><i>' + pr(function (x) { return x.confirmed; }) + '<br>' + F(d.today.interested) + ' interesados' + pr(function (x) { return x.interested; }) + ' · <span class="m">' + F(bot) + ' cargas automáticas ignoradas</span></i></div>' +
     '<div class="k"><span>Última hora · reales</span><b>' + F(d.lastHour.confirmed) + '</b><i>' + F(d.lastHour.interested) + ' interesados</i></div>' +
-    '<div class="k"><span>Cuentas nuevas hoy</span><b>' + F(d.accounts.today) + '</b><i>' + F(d.accounts.total) + ' cuentas en total</i></div>' +
-    '<div class="k"><span>Acciones hoy</span><b>' + F(d.today.actions) + '</b><i>clics medidos de intención y registro</i></div></div>';
+    '<div class="k"><span>Cuentas nuevas hoy</span><b>' + F(d.accounts.today) + '</b><i>(sem. ' + F(LIVE_P ? LIVE_P.accountsWeek : 0) + ' · total ' + F(d.accounts.total) + ')</i></div>' +
+    '<div class="k"><span>Acciones hoy</span><b>' + F(d.today.actions) + '</b><i>clics medidos de intención y registro' + pr(function (x) { return x.actions; }) + '</i></div>' +
+    '<div class="k"><span>Tiempo activo · promedio</span><b>' + T(LIVE_P ? LIVE_P.today.avgSeconds : 0) + '</b><i>por visitante real, hoy' + pr(function (x) { return x.avgSeconds; }, T) + '</i></div></div>';
 }
 function onlineTable(list, d, emptyMsg) {
   var rows = list.map(function (o) {
@@ -215,7 +219,7 @@ function repHtml(r) {
     '<div class="k" style="opacity:.85"><span>Tráfico automático (ignorado)</span><b style="color:#9a9aaa;text-shadow:none">' + F(bots) + '</b><i>cargaron y nunca dieron señal. No cuentan como visitantes. ' + (r.noSignal ? '<b>' + F(r.noSignal.conRef) + '</b> llegaron desde un link (pueden ser rebotes de gente real) y <b>' + F(Math.max(0, r.noSignal.total - r.noSignal.conRef)) + '</b> entraron directo sin señal (casi seguro robots).' : '') + '</i></div>' +
     '<div class="k"><span>Intención de compra</span><b>' + F(k.intentPeople) + '</b><i>personas con clic en desbloquear, pago o Binance (' + F(k.intent) + ' clics). <b>No son ventas confirmadas.</b>' + delta(k.intentPeople, r.prev && r.prev.intentPeople, r) + '</i></div>' +
     '<div class="k"><span>Registros</span><b>' + F(k.signups) + '</b><i>cuentas creadas en el período: ' + F(k.accountsInPeriod) + ' · ' + F(k.accountsTotal) + ' en total' + delta(k.accountsInPeriod, r.prev && r.prev.accounts, r) + '</i></div>' +
-    '<div class="k"><span>Tiempo activo</span><b>' + T(k.avgSeconds) + '</b><i>promedio por visitante real</i></div></div>';
+    '<div class="k"><span>Tiempo activo</span><b>' + T(k.avgSeconds) + '</b><i>promedio por visitante real · cuenta pestaña visible o video reproduciéndose</i></div></div>';
   var funnel = bars([{ n: 'Visitantes reales', u: k.confirmed }, { n: 'Interesados', u: k.interested }, { n: 'Intención de compra', u: k.intentPeople }, { n: 'Se registraron', u: k.signups }], 'u', function (x) { return x.n; });
   var marks = r.marks.slice(0, 8).map(function (m) { return '<div class="mk"><span class="pill pw">' + esc(m.channel || 'promo') + '</span><span>' + esc(m.label) + '</span><span class="m">' + new Date(m.ts).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</span><u data-del="' + Number(m.id) + '">borrar</u></div>'; }).join('');
   var vis = r.visitors.map(function (v) {
