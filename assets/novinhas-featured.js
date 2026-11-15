@@ -8,6 +8,17 @@
       return '<a class="nf-it" href="' + esc(it.url) + '" aria-label="' + esc(it.name) + '"><span class="nf-m"><img alt="" loading="lazy" src="' + esc(it.poster) + '"><video loop="false" playsinline preload="metadata" src="' + esc(it.src) + '#t=6"></video></span>' +
         '<span class="nf-t"><span class="nf-l1">Deleted from <img class="nf-yt" alt="YouTube" src="/assets/yt-logo.png"></span><span class="nf-l2"><b class="nf-nm">' + esc(it.name) + '</b><span class="nf-ct">' + (it.total ? ' · ' + it.total + ' videos' : '') + '</span></span></span></a>';
     }).join('') + '</div>';
+    fetch('/api/novinhas/featured?me=1', { credentials: 'same-origin', cache: 'no-store', headers: (function () { var h = {}; try { var t = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token; if (t) h.Authorization = 'Bearer ' + t; } catch (e) {} return h; })() }).then(function (r) { return r.ok ? r.json() : null; }).then(function (m) {
+      if (!m || !m.owner) return;
+      [].forEach.call(box.querySelectorAll('.nf-it'), function (a, i) {
+        var it = d.items[i]; if (!it) return; var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Sacar de la fila'; b.setAttribute('aria-label', 'Sacar este video de la fila');
+        b.style.cssText = 'position:absolute;top:8px;left:8px;z-index:5;background:#000c;color:#ffd27a;border:1px solid #b88a2a;border-radius:8px;padding:5px 9px;font:800 11px system-ui;cursor:pointer';
+        b.onclick = function (e) { e.preventDefault(); e.stopPropagation(); var h = { 'Content-Type': 'application/json' }; try { var t = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token; if (t) h.Authorization = 'Bearer ' + t; } catch (x) {} b.textContent = '…'; fetch('/api/novinhas/featured', { method: 'POST', credentials: 'same-origin', headers: h, body: JSON.stringify({ action: 'rowhide', slug: it.slug, id: it.id }) }).then(function (r) { if (r.ok) a.style.display = 'none'; else b.textContent = 'Error'; }); };
+        var pb = document.createElement('button'); pb.type = 'button'; pb.textContent = 'Fijar en la fila'; pb.style.cssText = b.style.cssText.replace('top:8px', 'top:40px');
+        pb.onclick = function (e) { e.preventDefault(); e.stopPropagation(); var h = { 'Content-Type': 'application/json' }; try { var t = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token; if (t) h.Authorization = 'Bearer ' + t; } catch (x) {} pb.textContent = '…'; fetch('/api/novinhas/featured', { method: 'POST', credentials: 'same-origin', headers: h, body: JSON.stringify({ action: 'rowpin', slug: it.slug, id: it.id }) }).then(function (r) { pb.textContent = r.ok ? 'Fijado' : 'Error'; }); };
+        var m2 = a.querySelector('.nf-m'); if (m2) { m2.style.position = 'relative'; m2.appendChild(b); m2.appendChild(pb); }
+      });
+    }).catch(function () {});
     var cards = [].slice.call(box.querySelectorAll('.nf-it')), vids = cards.map(function (a) { return a.querySelector('video'); }), hov = -1, cur = -1, pass = 0, started = false;
     vids.forEach(function (v) { v.loop = false; v.addEventListener('loadeddata', function () { if (v.paused && vids.indexOf(v) !== cur) { try { v.currentTime = 6; } catch (_) {} v.classList.add('on'); } }); });
     function rest(i) { var v = vids[i]; v._q = Date.now(); v.pause(); v.muted = true; try { v.currentTime = 6; } catch (_) {} if (i !== hov) v.classList.add('on'); }

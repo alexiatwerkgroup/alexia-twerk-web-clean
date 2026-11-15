@@ -96,6 +96,8 @@ export async function onRequest({ request, env }) {
       return J({ ok: true });
     }
     if (!(await isOwner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);
+    if (b.action === 'rowhide') { if (!SLUG.test(b.slug || '') || !(+b.id > 0)) return J({ error: 'bad_request' }, 400); await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_bad (slug TEXT, vid INTEGER, ts INTEGER, PRIMARY KEY (slug, vid))').run(); await db.prepare('INSERT OR REPLACE INTO nv_row_bad (slug, vid, ts) VALUES (?, ?, ?)').bind(b.slug, +b.id, now).run(); return J({ ok: true }); }
+    if (b.action === 'rowpin') { if (!SLUG.test(b.slug || '') || !(+b.id > 0)) return J({ error: 'bad_request' }, 400); await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_pin (slug TEXT PRIMARY KEY, vid INTEGER, ts INTEGER)').run(); await db.prepare('INSERT OR REPLACE INTO nv_row_pin (slug, vid, ts) VALUES (?, ?, ?)').bind(b.slug, +b.id, now).run(); return J({ ok: true }); }
     if (b.action === 'next') { await setS(db, 'since', 0); return J({ ok: true }); }
     if (b.action === 'remove') { await db.prepare('DELETE FROM nv_feat WHERE id = ?').bind(+b.item || 0).run(); return J({ ok: true }); }
     if (b.action === 'thumbpin') { if (!SLUG.test(b.c || '')) return J({ error: 'bad_request' }, 400); await setS(db, 'thumbpin:' + b.c, +b.item || 0); return J({ ok: true }); }
@@ -151,13 +153,15 @@ export async function onRequest({ request, env }) {
     const N = Math.min(20, Math.max(1, parseInt(q.get('row'), 10) || 8)); let chans = [];
     try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug)); } catch (e) {}
     const tot = {}; chans.forEach((c) => { tot[c.slug] = c.total || 0; });
+    const bad = Object.assign({}, ROW_BAD); try { await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_bad (slug TEXT, vid INTEGER, ts INTEGER, PRIMARY KEY (slug, vid))').run(); ((await db.prepare('SELECT slug, vid FROM nv_row_bad').all()).results || []).forEach((r) => { bad[r.slug + ':' + r.vid] = 1; }); } catch (e) {}
     const all = (await db.prepare('SELECT id, slug, vid, name, start FROM nv_feat ORDER BY added, id').all()).results || [];
     const items = [], used = {};
     // Fijo unico: Maryh (45) primero. El resto: azar entre TODOS los canales (un clip por canal, semilla nueva en cada carga: sale distinto cada vez)
     let sd = (Math.floor(Math.random() * 4294967296) ^ now) >>> 0; const rn = () => { sd = (Math.imul(sd, 1664525) + 1013904223) >>> 0; return sd / 4294967296; };
-    const clipsOf = async (slug) => { const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: 500 }), h = {}; (l.objects || []).forEach((o) => { const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (m && !ROW_BAD[slug + ':' + m[1]]) h[m[1]] = parseInt(m[2], 10); }); return h; };
+    const clipsOf = async (slug) => { const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: 500 }), h = {}; (l.objects || []).forEach((o) => { const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (m && !bad[slug + ':' + m[1]]) h[m[1]] = parseInt(m[2], 10); }); return h; };
     const fixSlug = 'canal-da-maryh', fixId = FIXED_THUMBS[fixSlug];
     { const h = await clipsOf(fixSlug); if (fixId && h[fixId] != null && fixSlug in tot) { const r = all.filter((x) => x.slug === fixSlug && x.vid === fixId)[0]; items.push({ slug: fixSlug, name: (r && r.name) || fixSlug, total: tot[fixSlug], id: fixId, start: h[fixId] }); used[fixSlug] = 1; } }
+    try { await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_pin (slug TEXT PRIMARY KEY, vid INTEGER, ts INTEGER)').run(); const pins = (await db.prepare('SELECT slug, vid FROM nv_row_pin').all()).results || []; for (const pn of pins) { if (used[pn.slug] || !(pn.slug in tot) || bad[pn.slug + ':' + pn.vid]) continue; const h = await clipsOf(pn.slug); if (h[pn.vid] == null) continue; const r = all.filter((x) => x.slug === pn.slug)[0], cc = chans.filter((c) => c.slug === pn.slug)[0] || {}; items.push({ slug: pn.slug, name: (r && r.name) || cc.name || pn.slug, total: tot[pn.slug], id: pn.vid, start: h[pn.vid], pin: 1 }); used[pn.slug] = 1; } } catch (e) {}
     const marked = {}; all.forEach((x) => { marked[x.slug] = 1; });
     const rest = chans.filter((c) => !used[c.slug]).map((c) => ({ c, k: rn() })).sort((x, y) => x.k - y.k).map((x) => x.c);
     for (const c of rest) {
@@ -174,11 +178,12 @@ export async function onRequest({ request, env }) {
       for (const c of rnd) {
         if (items.length >= N) break;
         const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/clips/c-', limit: 200 });
-        const ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter((m) => m && !ROW_BAD[c.slug + ':' + m[1]]);
+        const ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter((m) => m && !bad[c.slug + ':' + m[1]]);
         if (!ks.length) continue; const m = ks[Math.floor(Math.random() * ks.length)];
         items.push({ slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: parseInt(m[1], 10), start: parseInt(m[2], 10) });
       }
     }
+    for (let i = items.length - 1; i > 1; i--) { const j = 1 + Math.floor(Math.random() * i); const t = items[i]; items[i] = items[j]; items[j] = t; } // el primero (fijo) queda; el resto, incluidos los fijados, en posicion al azar
     const slugs = Array.from(new Set(items.map((x) => x.slug)));
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
