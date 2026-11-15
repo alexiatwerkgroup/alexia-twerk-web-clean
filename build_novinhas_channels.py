@@ -20,5 +20,5 @@ print('ok', len(ch), 'cards')
 
 # mantener inventory.json (contadores de home y /novinhas) igual a lo realmente publicado
 _inv = json.load(open('novinhas/inventory.json', encoding='utf-8'))
-_inv['doneChannels'] = len(ch); _inv['doneVideos'] = sum(c['total'] for c in ch)
+# doneChannels/doneVideos = lo HECHO en E:\canales con logo (regla del dueño); NO se pisa con lo publicado
 json.dump(_inv, open('novinhas/inventory.json', 'w', encoding='utf-8'), ensure_ascii=False)
