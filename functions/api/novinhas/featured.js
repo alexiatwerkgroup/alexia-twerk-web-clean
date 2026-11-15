@@ -80,7 +80,15 @@ const pad = (n) => String(n).padStart(2, '0');
 const clipKey = (slug, vid, st) => `${slug}/clips/c-${vid}-${st}.mp4`;
 // Lista los clips de un canal con UN solo clip por video: el que el dueño marcó (nv_feat); si no hay marca, el subido más recientemente.
 // (Antes se quedaba con el último en orden alfabético de la clave, y 'c-80-5' le ganaba a 'c-80-10'.)
-async function clipList(env, db, slug, limit) {
+// Cache por aislado (2 min): la lista de clips de un canal casi no cambia; evita ~57 listados R2 + 57 consultas D1 seguidos en cada carga de la fila.
+const CL_CACHE = new Map();
+function clipList(env, db, slug, limit) {
+  const k = slug + ':' + (limit || 500), now = Date.now(), h = CL_CACHE.get(k);
+  if (h && now - h.t < 120000) return h.p;
+  const p = clipListRaw(env, db, slug, limit).catch((e) => { CL_CACHE.delete(k); throw e; });
+  CL_CACHE.set(k, { t: now, p }); return p;
+}
+async function clipListRaw(env, db, slug, limit) {
   const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: limit || 500 }), mk = {};
   try { ((await db.prepare('SELECT vid, start FROM nv_feat WHERE slug = ? AND auto = 0 ORDER BY added').bind(slug).all()).results || []).forEach((r) => { mk[r.vid] = r.start || 0; }); } catch (e) {}
   const best = {};
@@ -187,6 +195,7 @@ export async function onRequest({ request, env }) {
     const N = Math.min(20, Math.max(1, parseInt(q.get('row'), 10) || 8)); let chans = [];
     try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug)); } catch (e) {}
     const tot = {}; chans.forEach((c) => { tot[c.slug] = c.total || 0; });
+    await Promise.all(chans.map((c) => clipList(env, db, c.slug, 500).catch(() => null))); // precarga en paralelo (luego cada clipsOf sale de cache)
     const bad = Object.assign({}, ROW_BAD); try { await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_bad (slug TEXT, vid INTEGER, ts INTEGER, PRIMARY KEY (slug, vid))').run(); ((await db.prepare('SELECT slug, vid FROM nv_row_bad').all()).results || []).forEach((r) => { bad[r.slug + ':' + r.vid] = 1; }); } catch (e) {}
     const all = (await db.prepare('SELECT id, slug, vid, name, start FROM nv_feat ORDER BY added, id').all()).results || [];
     const items = [], used = {};
@@ -216,7 +225,7 @@ export async function onRequest({ request, env }) {
         items.push({ slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: m.v, start: m.st });
       }
     }
-    for (let i = items.length - 1; i > 1; i--) { const j = 1 + Math.floor(Math.random() * i); const t = items[i]; items[i] = items[j]; items[j] = t; } // el primero (fijo) queda; el resto, incluidos los fijados, en posicion al azar
+    for (let i = items.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = items[i]; items[i] = items[j]; items[j] = t; } // todos en posicion al azar, incluido el primero (Maryh sigue siempre dentro de la fila)
     const slugs = Array.from(new Set(items.map((x) => x.slug)));
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
