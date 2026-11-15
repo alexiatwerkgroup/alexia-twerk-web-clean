@@ -51,5 +51,9 @@
   function load() { fetch('/api/novinhas/donors', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { if (j && j.items) { var on = root.classList.contains('on'); data = j; render(); if (on) root.classList.add('on'); } }).catch(function () {}); }
   window.TWK_DON = { open: function (mid) { root.classList.add('on'); if (mid) root.classList.add('mid'); } };
   render(); if (ls(CK) !== '1' && window.innerWidth > 520) root.classList.add('on');
+  if (/[?&]donpreview=1(&|$)/.test(location.search)) { /* vista previa del dueño con montos de EJEMPLO (no se guardan ni los ve nadie sin este enlace) */
+    data = { items: [50, 42, 35, 30, 25, 20, 15].map(function (a, i) { return { n: ['7F3A', 'C21B', '9D40', 'A8E6', '3B7C', 'E15F', '60D2'][i], amt: a }; }), tiers: { 1000: { cap: 1, used: 0 }, 500: { cap: 5, used: 0 }, 100: { cap: 7, used: 0 } } };
+    render(); root.classList.add('on'); return;
+  }
   load(); setInterval(load, 5 * 60 * 1000);
 })();
