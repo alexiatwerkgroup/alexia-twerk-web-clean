@@ -207,6 +207,7 @@
       });
       host.addEventListener('pointerleave', function () { tx = 0; ty = 0; ta = 0; go(); });
     }
+    if (window.TwkCoin) window.TwkCoin.token = function (host) { if (!host) return; host.innerHTML = TK(true, 'token'); host._k = 'token'; tactile(host); }; /* mismo token del perfil, reutilizable en el home */
     function setPlat(p, v) {
       p = Number(p) || 0; v = Number(v) || 0; var pe = el.querySelector('.tcp'); if (pe) pe.textContent = String(p);
       el.classList.toggle('hp', p > 0); el.classList.toggle('hv', v > 0);
