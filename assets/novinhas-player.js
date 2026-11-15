@@ -134,13 +134,13 @@
       var n = mini.items.length; if (!n || !cur || !(cur.height > cur.width) || !v.videoWidth) { mini.box.classList.remove('on'); return; }
       var W = box.clientWidth, H = box.clientHeight, vw = Math.min(W, H * v.videoWidth / v.videoHeight), free = Math.floor((W - vw) / 2) - 14;
       if (free < 96) { mini.box.classList.remove('on'); return; }
-      var cols = free >= 200 ? 2 : 1, gap = 8, cw = Math.floor((Math.min(free, 260) - gap * (cols - 1)) / cols), ch = Math.round(cw * 16 / 9), avail = H - 68 - 18, rows = Math.max(1, Math.floor((avail + gap) / (ch + gap))), cnt = Math.min(n, cols * rows);
+      var cols = free >= 150 ? 3 : (free >= 100 ? 2 : 1), gap = 6, cw = Math.floor((Math.min(free, 420) - gap * (cols - 1)) / cols), ch = Math.round(cw * 16 / 9), avail = H - 68 - 18, rows = Math.max(1, Math.floor((avail + gap) / (ch + gap))), cnt = Math.min(n, cols * rows);
       mini.box.style.width = (cw * cols + gap * (cols - 1)) + 'px'; mini.grid.style.gridTemplateColumns = 'repeat(' + cols + ',' + cw + 'px)';
       [].forEach.call(mini.grid.children, function (c, i) { c.style.display = i < cnt ? '' : 'none'; });
       mini.box.classList.add('on');
     }
     function minisLoad() {
-      fetch('/api/novinhas/mini?c=' + encodeURIComponent(slug) + '&n=6', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }).then(function (j) {
+      fetch('/api/novinhas/mini?c=' + encodeURIComponent(slug) + '&n=9', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }).then(function (j) {
         mini.items = (j && j.items) || []; mini.grid.innerHTML = '';
         mini.items.forEach(function (it) {
           var b = document.createElement('button'); b.type = 'button'; b.className = 'np-mc'; b.setAttribute('aria-label', 'Miniclip @' + it.name);
