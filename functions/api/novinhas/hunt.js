@@ -15,6 +15,7 @@ async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_hunt (uid TEXT PRIMARY KEY, email TEXT, username TEXT, joined INTEGER DEFAULT 1, ts INTEGER)').run();
   try { await db.prepare('ALTER TABLE nv_hunt ADD COLUMN cat TEXT').run(); } catch (e) {}
   try { await db.prepare('ALTER TABLE nv_hunt ADD COLUMN mailed INTEGER').run(); } catch (e) {}
+  try { await db.prepare('ALTER TABLE nv_hunt ADD COLUMN mail_err TEXT').run(); } catch (e) {}
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_hunt_msg (id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT, email TEXT, username TEXT, contact TEXT, msg TEXT, ts INTEGER)').run();
 }
 async function me(request, env) {
@@ -39,7 +40,7 @@ async function mailJoin(env, db, u, cat, lang) {
     const html = '<div style="font-family:system-ui,Arial,sans-serif;background:#0b0b0d;color:#f4efe2;padding:28px;max-width:520px;margin:auto;border:1px solid #6b5316;border-radius:14px"><h2 style="color:#f0b90b;margin:0 0 14px">' + esc(t.s) + '</h2><p>' + esc(t.h) + ' ' + esc(u.username || '') + ',</p><p>' + esc(t.a) + '</p><p>' + esc(cat === 'money' ? t.c2 : t.c1) + '</p><p style="color:#a89c78">' + esc(t.f) + '</p><p style="margin-top:22px"><a href="https://twerkhub.lat/discord" style="background:#f0b90b;color:#1a1100;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700">Discord</a></p></div>';
     await sendEmail(env, { to: u.email, subject: t.s, html, replyTo: 'twerkhub.lat@gmail.com' });
     await db.prepare('UPDATE nv_hunt SET mailed = ? WHERE uid = ?').bind(Date.now(), u.uid).run();
-  } catch (e) {}
+  } catch (e) { try { await db.prepare('UPDATE nv_hunt SET mail_err = ? WHERE uid = ?').bind(String((e && e.message) || e).slice(0, 300), u.uid).run(); } catch (x) {} }
 }
 export async function onRequest(ctx) {
   const { request, env } = ctx;
