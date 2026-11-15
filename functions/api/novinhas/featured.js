@@ -150,28 +150,20 @@ export async function onRequest({ request, env }) {
     const tot = {}; chans.forEach((c) => { tot[c.slug] = c.total || 0; });
     const all = (await db.prepare('SELECT id, slug, vid, name, start FROM nv_feat ORDER BY added, id').all()).results || [];
     const items = [], used = {};
-    for (const k of ['pin1', 'pin2']) {
-      const pid = (await getS(db, k)) || 0, r = all.filter((x) => x.id === pid)[0];
-      if (!r || !(r.slug in tot)) continue;
-      const l = await env.NOVINHAS_VIDEOS.list({ prefix: r.slug + '/clips/c-' + r.vid + '-', limit: 20 });
-      const m = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter(Boolean).sort((a, b2) => Math.abs(a[2] - (r.start || 0)) - Math.abs(b2[2] - (r.start || 0)))[0];
-      if (!m) continue;
-      items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: parseInt(m[2], 10) }); used[r.slug + ':' + r.vid] = 1;
-    }
-    // solo las elegidas por el dueno (nv_feat); las dos fijas van primero y despues el resto por orden de carga
-    for (const r of all) {
+    // Fijo unico: Maryh (45) primero. El resto: azar entre TODOS los canales (un clip por canal, semilla = hora para que no cambie en cada recarga)
+    let sd = Math.floor(now / 3600) >>> 0; const rn = () => { sd = (Math.imul(sd, 1664525) + 1013904223) >>> 0; return sd / 4294967296; };
+    const clipsOf = async (slug) => { const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: 500 }), h = {}; (l.objects || []).forEach((o) => { const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (m) h[m[1]] = parseInt(m[2], 10); }); return h; };
+    const fixSlug = 'canal-da-maryh', fixId = FIXED_THUMBS[fixSlug];
+    { const h = await clipsOf(fixSlug); if (fixId && h[fixId] != null && fixSlug in tot) { const r = all.filter((x) => x.slug === fixSlug && x.vid === fixId)[0]; items.push({ slug: fixSlug, name: (r && r.name) || fixSlug, total: tot[fixSlug], id: fixId, start: h[fixId] }); used[fixSlug] = 1; } }
+    const marked = {}; all.forEach((x) => { marked[x.slug] = 1; });
+    const rest = chans.filter((c) => !used[c.slug] && marked[c.slug]).map((c) => ({ c, k: rn() })).sort((x, y) => x.k - y.k).map((x) => x.c);
+    for (const c of rest) {
       if (items.length >= N) break;
-      if (used[r.slug + ':' + r.vid] || !(r.slug in tot)) continue;
-      const l = await env.NOVINHAS_VIDEOS.list({ prefix: r.slug + '/clips/c-' + r.vid + '-', limit: 20 });
-      const m = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter(Boolean).sort((a, b2) => Math.abs(a[2] - (r.start || 0)) - Math.abs(b2[2] - (r.start || 0)))[0];
-      if (!m) continue;
-      items.push({ slug: r.slug, name: r.name || r.slug, total: tot[r.slug], id: r.vid, start: parseInt(m[2], 10) }); used[r.slug + ':' + r.vid] = 1;
+      const h = await clipsOf(c.slug), ks = Object.keys(h); if (!ks.length) continue;
+      const mine = all.filter((x) => x.slug === c.slug && h[x.vid] != null), pool = mine.length ? mine.map((x) => String(x.vid)) : ks, v = pool[Math.floor(rn() * pool.length)];
+      const nm = (all.filter((x) => x.slug === c.slug)[0] || {}).name;
+      items.push({ slug: c.slug, name: nm || c.name || c.slug, total: tot[c.slug] || c.total || 0, id: parseInt(v, 10), start: h[v] }); used[c.slug] = 1;
     }
-    // azar por hora: el preview fijo de Maryh (45) va primero; los demas se mezclan (semilla = hora, estable dentro de la hora)
-    { let sd = Math.floor(now / 3600) >>> 0; const rn = () => { sd = (Math.imul(sd, 1664525) + 1013904223) >>> 0; return sd / 4294967296; };
-      const fi = items.findIndex((x) => x.slug === 'canal-da-maryh' && x.id === FIXED_THUMBS['canal-da-maryh']), fx0 = fi >= 0 ? items.splice(fi, 1)[0] : null;
-      for (let i = items.length - 1; i > 0; i--) { const j = Math.floor(rn() * (i + 1)); const t = items[i]; items[i] = items[j]; items[j] = t; }
-      if (fx0) items.unshift(fx0); }
     // relleno temporal: completa hasta N con clips al azar de otros canales (se achica solo a medida que elegis mas)
     if (items.length < N) {
       const taken = {}; items.forEach((x) => { taken[x.slug] = 1; });
