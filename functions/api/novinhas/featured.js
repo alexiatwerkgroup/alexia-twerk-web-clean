@@ -152,13 +152,13 @@ export async function onRequest({ request, env }) {
     const tot = {}; chans.forEach((c) => { tot[c.slug] = c.total || 0; });
     const all = (await db.prepare('SELECT id, slug, vid, name, start FROM nv_feat ORDER BY added, id').all()).results || [];
     const items = [], used = {};
-    // Fijo unico: Maryh (45) primero. El resto: azar entre TODOS los canales (un clip por canal, semilla = hora para que no cambie en cada recarga)
-    let sd = Math.floor(now / 3600) >>> 0; const rn = () => { sd = (Math.imul(sd, 1664525) + 1013904223) >>> 0; return sd / 4294967296; };
+    // Fijo unico: Maryh (45) primero. El resto: azar entre TODOS los canales (un clip por canal, semilla nueva en cada carga: sale distinto cada vez)
+    let sd = (Math.floor(Math.random() * 4294967296) ^ now) >>> 0; const rn = () => { sd = (Math.imul(sd, 1664525) + 1013904223) >>> 0; return sd / 4294967296; };
     const clipsOf = async (slug) => { const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: 500 }), h = {}; (l.objects || []).forEach((o) => { const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (m) h[m[1]] = parseInt(m[2], 10); }); return h; };
     const fixSlug = 'canal-da-maryh', fixId = FIXED_THUMBS[fixSlug];
     { const h = await clipsOf(fixSlug); if (fixId && h[fixId] != null && fixSlug in tot) { const r = all.filter((x) => x.slug === fixSlug && x.vid === fixId)[0]; items.push({ slug: fixSlug, name: (r && r.name) || fixSlug, total: tot[fixSlug], id: fixId, start: h[fixId] }); used[fixSlug] = 1; } }
     const marked = {}; all.forEach((x) => { marked[x.slug] = 1; });
-    const rest = chans.filter((c) => !used[c.slug] && marked[c.slug]).map((c) => ({ c, k: rn() })).sort((x, y) => x.k - y.k).map((x) => x.c);
+    const rest = chans.filter((c) => !used[c.slug]).map((c) => ({ c, k: rn() })).sort((x, y) => x.k - y.k).map((x) => x.c);
     for (const c of rest) {
       if (items.length >= N) break;
       const h = await clipsOf(c.slug), ks = Object.keys(h); if (!ks.length) continue;
@@ -182,7 +182,7 @@ export async function onRequest({ request, env }) {
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
     const cleanName = (n) => String(n || '').replace(/[\s_.-]*\d{4}[_-]\d{1,2}[_-]\d{1,2}([_-]\d{1,2}){2,3}.*$/, '');
-    return J({ viewers, items: items.map((x, i) => ({ first: i === 0, slug: x.slug, name: cleanName(x.name), total: x.total, id: x.id, src: `/api/novinhas/featured?cs=1&c=${x.slug}&v=${x.id}&t=${x.start}`, poster: `/api/novinhas/file?k=${x.slug}/previews/poster-${pad(x.id)}.webp`, url: `/novinhas/canal/?c=${x.slug}` })) }, 200, 'public, max-age=60');
+    return J({ viewers, items: items.map((x, i) => ({ first: i === 0, slug: x.slug, name: cleanName(x.name), total: x.total, id: x.id, src: `/api/novinhas/featured?cs=1&c=${x.slug}&v=${x.id}&t=${x.start}`, poster: `/api/novinhas/file?k=${x.slug}/previews/poster-${pad(x.id)}.webp`, url: `/novinhas/canal/?c=${x.slug}` })) }, 200, 'no-store');
   }
   if (q.get('list')) {
     if (!(await isOwner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);
