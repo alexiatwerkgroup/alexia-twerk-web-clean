@@ -179,7 +179,8 @@ export async function onRequest({ request, env }) {
     const slugs = Array.from(new Set(items.map((x) => x.slug)));
     let viewers = 0;
     if (slugs.length) { const ph = slugs.map(() => '?').join(','); const v = await db.prepare(`SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ? AND slug IN (${ph})`).bind(now - 600, ...slugs).first(); viewers = v ? v.c : 0; }
-    return J({ viewers, items: items.map((x, i) => ({ first: i === 0, slug: x.slug, name: x.name, total: x.total, id: x.id, src: `/api/novinhas/featured?cs=1&c=${x.slug}&v=${x.id}&t=${x.start}`, poster: `/api/novinhas/file?k=${x.slug}/previews/poster-${pad(x.id)}.webp`, url: `/novinhas/canal/?c=${x.slug}` })) }, 200, 'public, max-age=60');
+    const cleanName = (n) => String(n || '').replace(/[\s_.-]*\d{4}[_-]\d{1,2}[_-]\d{1,2}([_-]\d{1,2}){2,3}.*$/, '');
+    return J({ viewers, items: items.map((x, i) => ({ first: i === 0, slug: x.slug, name: cleanName(x.name), total: x.total, id: x.id, src: `/api/novinhas/featured?cs=1&c=${x.slug}&v=${x.id}&t=${x.start}`, poster: `/api/novinhas/file?k=${x.slug}/previews/poster-${pad(x.id)}.webp`, url: `/novinhas/canal/?c=${x.slug}` })) }, 200, 'public, max-age=60');
   }
   if (q.get('list')) {
     if (!(await isOwner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);

@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Regenera la grilla 'Featured channels' de /novinhas/ desde novinhas/channels-live.json."""
 import json, html, re
+
 P = 'novinhas/index.html'
 ch = json.load(open('novinhas/channels-live.json', encoding='utf-8'))
+# nombre visible sin la fecha/hora del scraping (ej. daayya.reis_2020_2_13_8_39_22 -> daayya.reis)
+for c in ch: c['name'] = re.sub(r'[\s_.-]*\d{4}[_-]\d{1,2}[_-]\d{1,2}([_-]\d{1,2}){2,3}.*$', '', c['name'])
 s = open(P, encoding='utf-8').read()
 cards = []
 for c in ch:
