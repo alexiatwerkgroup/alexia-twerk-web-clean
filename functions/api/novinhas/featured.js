@@ -10,6 +10,7 @@ import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
 // Previews de tarjeta de canal fijados por el dueño (slug -> id de video). Siempre mudos (los clips se reproducen con muted).
 const FIXED_THUMBS = { 'canal-da-maryh': 45 }; // unico fijo (orden del dueño 15 nov 2026); el resto rota al azar entre los elegidos
+const ROW_EXCLUDE = { 'canal-e9651a': 1, 'alessandra-lourinha': 1 }; // fuera de la fila "Never forgotten" (orden del dueño 15 nov 2026)
 const HOLD = 3600, SECS = 20, SLUG = /^[a-z0-9-]{2,60}$/;
 const J = (o, s = 200, cc = 'no-store') => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': cc, 'X-Robots-Tag': 'noindex' } });
 async function isOwner(request, env) {
@@ -148,7 +149,7 @@ export async function onRequest({ request, env }) {
   }
   if (q.get('row')) {
     const N = Math.min(20, Math.max(1, parseInt(q.get('row'), 10) || 8)); let chans = [];
-    try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug)); } catch (e) {}
+    try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug) && !ROW_EXCLUDE[c.slug]); } catch (e) {}
     const tot = {}; chans.forEach((c) => { tot[c.slug] = c.total || 0; });
     const all = (await db.prepare('SELECT id, slug, vid, name, start FROM nv_feat ORDER BY added, id').all()).results || [];
     const items = [], used = {};
