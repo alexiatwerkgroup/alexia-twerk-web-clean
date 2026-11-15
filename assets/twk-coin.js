@@ -121,6 +121,9 @@
       var headers = auth.token ? { Authorization: 'Bearer ' + auth.token } : {};
       fetch('/api/novinhas/hunt', { credentials: 'same-origin', headers: headers }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
         if (d && d.auth && d.wallet) setPlat(d.wallet.platinum, d.wallet.voucher);
+        if (d && d.auth) { var pe = null; try { pe = localStorage.getItem('twk-hunt-pending-egg'); } catch (e) {}
+          if (pe === 'hit' || pe === 'great') { var sid = ''; try { sid = localStorage.getItem('twk-hunt-sid') || ''; } catch (e) {}
+            fetch('/api/novinhas/hunt', { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': 'application/json' }, headers), body: JSON.stringify({ ev: pe, sid: sid }) }).then(function (r) { return r.ok ? r.json() : null; }).then(function (o) { if (o && o.auth) { try { localStorage.removeItem('twk-hunt-pending-egg'); } catch (e) {} setPlat(o.platinum, o.voucher); } }).catch(function () {}); } }
       }).catch(function () {});
     }
     try { var pc0 = JSON.parse(localStorage.getItem('twk_plat_cache_v1') || '{}'); if (pc0.p > 0) setPlat(pc0.p, pc0.v); } catch (e) {}

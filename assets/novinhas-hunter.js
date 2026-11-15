@@ -207,10 +207,9 @@
     mo.observe(document.body, { childList: true });
   }
   function start() {
-    fetch('/api/novinhas/hunt', { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { auth: false }; }).catch(function () { return { auth: false }; }).then(function (j) {
+    var ah = {}; try { var au0 = JSON.parse(ls('alexia-auth-v3') || '{}') || {}; if (au0.token) ah.Authorization = 'Bearer ' + au0.token; } catch (e) {}
+    fetch('/api/novinhas/hunt', { credentials: 'same-origin', cache: 'no-store', headers: ah }).then(function (r) { return r.ok ? r.json() : { auth: false }; }).catch(function () { return { auth: false }; }).then(function (j) {
       auth = !!j.auth; joined = !!j.joined; if (j.cat) { cat = j.cat; ls('twk-hunt-cat', cat); }
-      var pe = ls(PK + '-egg');
-      if (auth && pe) { ls(PK + '-egg', null); api({ ev: pe, sid: sid }).then(function (o) { if (o.j && o.j.auth) { try { window.dispatchEvent(new CustomEvent('twk-platinum-changed', { detail: { platinum: o.j.platinum, voucher: o.j.voucher } })); } catch (e) {} } }).catch(function () {}); }
       if (auth && !joined && ls(PK) === '1') { ls(PK, null); api({ join: 1, cat: cat || 'content' }).then(function (o) { if (o.j && o.j.ok) { joined = true; ls(JK, '1'); } afterGate(build); }).catch(function () {}); return; }
       if (joined) return;
       var x = +ls(XK) || 0; if (Date.now() - x < 12 * 3600 * 1000) return;
