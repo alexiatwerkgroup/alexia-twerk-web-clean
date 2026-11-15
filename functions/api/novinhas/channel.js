@@ -9,7 +9,15 @@ export async function onRequestGet({ request, env }) {
   if (REMOVED.has(slug)) return json({ error: 'not_found' }, 404);
   if (!env.NOVINHAS_VIDEOS) return json({ error: 'not_configured' }, 500);
   const o = await env.NOVINHAS_VIDEOS.get(slug + '/_videos.json'); if (!o) return json({ error: 'not_found' }, 404);
-  const data = await o.json(); const cfg = await vipCfg(env); const c = cfg && cfg.channels && cfg.channels[slug];
+  const data = await o.json();
+  // ?prune=1: quita del canal las entradas cuyo poster Y video ya no existen en el bucket (videos borrados). Solo limpia entradas muertas; es idempotente.
+  if (new URL(request.url).searchParams.get('prune') === '1' && Array.isArray(data.videos) && data.videos.length <= 150) {
+    const dead = [];
+    await Promise.all(data.videos.map(async (v) => { const n = String(v.id).padStart(2, '0'); try { const [a, b] = await Promise.all([env.NOVINHAS_VIDEOS.head(`${slug}/previews/poster-${n}.webp`), env.NOVINHAS_VIDEOS.head(`${slug}/full/video-${n}.mp4`)]); if (!a && !b) dead.push(v.id); } catch (e) {} }));
+    if (dead.length) { data.videos = data.videos.filter((v) => dead.indexOf(v.id) < 0); if ('count' in data) data.count = data.videos.length; await env.NOVINHAS_VIDEOS.put(slug + '/_videos.json', JSON.stringify(data), { httpMetadata: { contentType: 'application/json' } }); }
+    return json({ pruned: dead, left: data.videos.length });
+  }
+  const cfg = await vipCfg(env); const c = cfg && cfg.channels && cfg.channels[slug];
   const vipChannel = !!(c && c.vip), unlocked = !vipChannel || (await isVip(request, env));
   const K = (k) => '/api/novinhas/file?k=' + k;
   const videos = (data.videos || []).map((v) => { const n = String(v.id).padStart(2, '0'); return {
