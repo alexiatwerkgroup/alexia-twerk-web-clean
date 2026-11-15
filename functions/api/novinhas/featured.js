@@ -10,7 +10,7 @@ import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
 // Previews de tarjeta de canal fijados por el dueño (slug -> id de video). Siempre mudos (los clips se reproducen con muted).
 const FIXED_THUMBS = { 'canal-da-maryh': 45 }; // unico fijo (orden del dueño 15 nov 2026); el resto rota al azar entre los elegidos
-const ROW_EXCLUDE = { 'canal-e9651a': 1, 'alessandra-lourinha': 1, 'an-blouse': 1 }; // fuera de la fila "Never forgotten" (orden del dueño 15 nov 2026)
+const ROW_EXCLUDE = { 'canal-e9651a': 1, 'alessandra-lourinha': 1, 'an-blouse': 1, '00-lyss': 1 }; // fuera de la fila "Never forgotten" (orden del dueño 15 nov 2026)
 const HOLD = 3600, SECS = 20, SLUG = /^[a-z0-9-]{2,60}$/;
 const J = (o, s = 200, cc = 'no-store') => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': cc, 'X-Robots-Tag': 'noindex' } });
 async function isOwner(request, env) {
