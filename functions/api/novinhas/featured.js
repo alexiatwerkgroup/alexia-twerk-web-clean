@@ -23,6 +23,7 @@ async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_feat (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, vid INTEGER, title TEXT, name TEXT, queued INTEGER DEFAULT 1, added INTEGER, shown INTEGER DEFAULT 0, last INTEGER DEFAULT 0, UNIQUE(slug, vid))').run();
   try { await db.prepare('ALTER TABLE nv_feat ADD COLUMN auto INTEGER DEFAULT 0').run(); } catch (e) {}
   try { await db.prepare('ALTER TABLE nv_feat ADD COLUMN start INTEGER DEFAULT 0').run(); } catch (e) {}
+  try { await db.prepare('ALTER TABLE nv_feat ADD COLUMN slow INTEGER DEFAULT 0').run(); } catch (e) {}
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_feat_state (k TEXT PRIMARY KEY, v INTEGER)').run();
   await db.prepare("INSERT OR IGNORE INTO nv_feat_state (k, v) VALUES ('cur', 0), ('since', 0)").run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_presence (slug TEXT, dev TEXT, ts INTEGER, PRIMARY KEY (slug, dev))').run();
@@ -77,8 +78,8 @@ async function current(env, request, db, now) {
 const pad = (n) => String(n).padStart(2, '0');
 const clipKey = (slug, vid, st) => `${slug}/clips/c-${vid}-${st}.mp4`;
 async function mirrorClips(env, db) {
-  const r = await db.prepare('SELECT slug, vid, start FROM nv_feat').all();
-  await env.NOVINHAS_VIDEOS.put('_config/feat-clips.json', JSON.stringify({ updated: Date.now(), items: (r.results || []).map((x) => ({ c: x.slug, id: x.vid, start: x.start || 0 })) }), { httpMetadata: { contentType: 'application/json' } });
+  const r = await db.prepare('SELECT slug, vid, start, slow FROM nv_feat').all();
+  await env.NOVINHAS_VIDEOS.put('_config/feat-clips.json', JSON.stringify({ updated: Date.now(), items: (r.results || []).map((x) => ({ c: x.slug, id: x.vid, start: x.start || 0, slow: x.slow ? 1 : 0 })) }), { httpMetadata: { contentType: 'application/json' } });
 }
 export async function onRequest({ request, env }) {
   if (!env.NOVINHAS_VIDEOS || !env.DB) return J({ error: 'not_configured' }, 500);
@@ -106,7 +107,8 @@ export async function onRequest({ request, env }) {
     const t = Math.max(0, Math.min(Math.floor(Number(b.t) || 0), Math.max(0, Math.floor((Number(v.duration) || 0) - SECS))));
     await db.prepare('INSERT OR IGNORE INTO nv_feat (slug, vid, title, name, queued, added, start) VALUES (?, ?, ?, ?, 1, ?, ?)').bind(b.c, id, v.title || '', d.name || b.c, now, t).run();
     try { await mirrorClips(env, db); } catch (e) {}
-    await db.prepare('UPDATE nv_feat SET start = ? WHERE slug = ? AND vid = ?').bind(t, b.c, id).run();
+    await db.prepare('UPDATE nv_feat SET start = ?, slow = ? WHERE slug = ? AND vid = ?').bind(t, b.slow ? 1 : 0, b.c, id).run();
+    try { await mirrorClips(env, db); } catch (e) {}
     await db.prepare('UPDATE nv_feat SET queued = 1, added = ? WHERE slug = ? AND vid = ? AND id != ? AND queued = 0').bind(now, b.c, id, (await getS(db, 'cur')) || 0).run();
     const n = await db.prepare('SELECT COUNT(*) c FROM nv_feat WHERE queued = 1').first();
     return J({ ok: true, queued: n ? n.c : 0 });
