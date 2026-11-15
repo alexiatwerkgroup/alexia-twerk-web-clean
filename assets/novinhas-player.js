@@ -81,7 +81,7 @@
   var FS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
   var KEYS = [
     ['Play / Pause', 'Space · K'], ['Fullscreen', 'F · Enter'], ['Mute', 'M'], ['Back / forward 5 s', '← →'], ['Back / forward 10 s', 'J · L'],
-    ['Volume', '↑ ↓'], ['Jump to 0%–90%', '0 – 9'], ['Start / end', 'Home · End'], ['Frame step (paused)', ', .'], ['Speed down / up', '- + · < >'],
+    ['Volume', '↑ ↓'], ['Jump to 0%–90%', '0 – 9'], ['Start / end', 'Home · End'], ['Frame step (paused)', ', .'], ['Speed down / up', '- + · < >'], ['Slow motion', 'S'],
     ['Next / previous video', 'Shift+N · Shift+P · Right Ctrl'], ['Enhanced version', 'E'], ['Quality menu', 'Q'], ['Picture in picture', 'I'], ['This help', '? · H']
   ];
 
@@ -238,6 +238,7 @@
       else if (/^Digit[0-9]$/.test(code) && !e.shiftKey) { if (v.duration) { v.currentTime = v.duration * (+code.slice(5)) / 10; say(code.slice(5) + '0%'.replace('00%', '0%').replace(/^0%$/, '0%')); } }
       else if (k === 'Home') { v.currentTime = 0; say('Start'); } else if (k === 'End') { if (v.duration) v.currentTime = v.duration - 0.1; say('End'); }
       else if ((k === ',' || k === '.') && v.paused) { v.currentTime = Math.max(0, v.currentTime + (k === '.' ? 1 : -1) / 30); say('Frame ' + (k === '.' ? '+1' : '-1')); }
+      else if ((k === 's' || k === 'S') && !e.shiftKey) toggleSlow();
       else if (k === '+' || k === '=' || code === 'NumpadAdd') stepSpeed(1);
       else if (k === '-' || k === '_' || code === 'NumpadSubtract') stepSpeed(-1);
       else if (k === '<' || k === '>') { var i = SPEEDS.indexOf(v.playbackRate); if (i < 0) i = 3; i = Math.min(SPEEDS.length - 1, Math.max(0, i + (k === '>' ? 1 : -1))); v.playbackRate = SPEEDS[i]; say('Speed ' + SPEEDS[i] + 'x'); }
