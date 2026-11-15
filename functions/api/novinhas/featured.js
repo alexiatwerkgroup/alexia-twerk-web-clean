@@ -39,9 +39,9 @@ async function randomAny(env, request, db, now, cur) {
   for (let i = 0; i < 8 && chans.length; i++) {
     const slug = chans[Math.floor(Math.random() * chans.length)];
     try {
-      const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: 200 }), ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter(Boolean);
+      const ks = await clipList(env, db, slug, 200);
       if (ks.length) {
-        const m = ks[Math.floor(Math.random() * ks.length)], pv = parseInt(m[1], 10), ps = parseInt(m[2], 10);
+        const m = ks[Math.floor(Math.random() * ks.length)], pv = m.v, ps = m.st;
         if (!(cur && cur.slug === slug && cur.vid === pv)) {
           const po = await env.NOVINHAS_VIDEOS.get(slug + '/_videos.json'), pd = po ? await po.json() : { videos: [] }, pvv = (pd.videos || []).filter((x) => x.id === pv)[0];
           if (pvv) {
@@ -78,6 +78,19 @@ async function current(env, request, db, now) {
 }
 const pad = (n) => String(n).padStart(2, '0');
 const clipKey = (slug, vid, st) => `${slug}/clips/c-${vid}-${st}.mp4`;
+// Lista los clips de un canal con UN solo clip por video: el que el dueño marcó (nv_feat); si no hay marca, el subido más recientemente.
+// (Antes se quedaba con el último en orden alfabético de la clave, y 'c-80-5' le ganaba a 'c-80-10'.)
+async function clipList(env, db, slug, limit) {
+  const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: limit || 500 }), mk = {};
+  try { ((await db.prepare('SELECT vid, start FROM nv_feat WHERE slug = ? AND auto = 0 ORDER BY added').bind(slug).all()).results || []).forEach((r) => { mk[r.vid] = r.start || 0; }); } catch (e) {}
+  const best = {};
+  for (const o of (l.objects || [])) {
+    const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (!m) continue;
+    const v = parseInt(m[1], 10), st = parseInt(m[2], 10), up = +new Date(o.uploaded || 0), isMk = mk[v] === st, cu = best[v];
+    if (!cu || (isMk && !cu.mk) || (isMk === cu.mk && up > cu.up)) best[v] = { v, st, up, mk: isMk };
+  }
+  return Object.keys(best).map((k) => best[k]);
+}
 async function mirrorClips(env, db) {
   const r = await db.prepare('SELECT slug, vid, start, slow FROM nv_feat').all();
   await env.NOVINHAS_VIDEOS.put('_config/feat-clips.json', JSON.stringify({ updated: Date.now(), items: (r.results || []).map((x) => ({ c: x.slug, id: x.vid, start: x.start || 0, slow: x.slow ? 1 : 0 })) }), { httpMetadata: { contentType: 'application/json' } });
@@ -146,8 +159,8 @@ export async function onRequest({ request, env }) {
     const hash = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h; };
     for (const slug of Object.keys(by)) {
       if (!SLUG.test(slug)) continue;
-      const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: 500 }), have = {};
-      (l.objects || []).forEach((o) => { const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (m) have[m[1]] = m[2]; });
+      const have = {};
+      (await clipList(env, db, slug, 500)).forEach((c) => { have[c.v] = String(c.st); });
       // Preview fijo (orden del dueño 14 nov 2026): no rota ni lo pisa 'thumbpin'. Solo se cambia si el dueño lo pide.
       const fx = FIXED_THUMBS[slug]; if (fx && have[fx] != null) { out[slug] = { id: fx, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${fx}&t=${have[fx]}` }; continue; }
       const ok = by[slug].filter((r) => have[r.vid] != null);
@@ -169,7 +182,7 @@ export async function onRequest({ request, env }) {
     const items = [], used = {};
     // Fijo unico: Maryh (45) primero. El resto: azar entre TODOS los canales (un clip por canal, semilla nueva en cada carga: sale distinto cada vez)
     let sd = (Math.floor(Math.random() * 4294967296) ^ now) >>> 0; const rn = () => { sd = (Math.imul(sd, 1664525) + 1013904223) >>> 0; return sd / 4294967296; };
-    const clipsOf = async (slug) => { const l = await env.NOVINHAS_VIDEOS.list({ prefix: slug + '/clips/c-', limit: 500 }), h = {}; (l.objects || []).forEach((o) => { const m = /c-(\d+)-(\d+)\.mp4$/.exec(o.key); if (m && !bad[slug + ':' + m[1]]) h[m[1]] = parseInt(m[2], 10); }); return h; };
+    const clipsOf = async (slug) => { const h = {}; (await clipList(env, db, slug, 500)).forEach((c) => { if (!bad[slug + ':' + c.v]) h[c.v] = c.st; }); return h; };
     const fixSlug = 'canal-da-maryh', fixId = FIXED_THUMBS[fixSlug];
     { const h = await clipsOf(fixSlug); if (fixId && h[fixId] != null && fixSlug in tot) { const r = all.filter((x) => x.slug === fixSlug && x.vid === fixId)[0]; items.push({ slug: fixSlug, name: (r && r.name) || fixSlug, total: tot[fixSlug], id: fixId, start: h[fixId] }); used[fixSlug] = 1; } }
     try { await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_pin (slug TEXT PRIMARY KEY, vid INTEGER, ts INTEGER)').run(); const pins = (await db.prepare('SELECT slug, vid FROM nv_row_pin').all()).results || []; for (const pn of pins) { if (used[pn.slug] || !(pn.slug in tot) || bad[pn.slug + ':' + pn.vid]) continue; const h = await clipsOf(pn.slug); if (h[pn.vid] == null) continue; const r = all.filter((x) => x.slug === pn.slug)[0], cc = chans.filter((c) => c.slug === pn.slug)[0] || {}; items.push({ slug: pn.slug, name: (r && r.name) || cc.name || pn.slug, total: tot[pn.slug], id: pn.vid, start: h[pn.vid], pin: 1 }); used[pn.slug] = 1; } } catch (e) {}
@@ -188,10 +201,9 @@ export async function onRequest({ request, env }) {
       const rnd = chans.filter((c) => !taken[c.slug]).sort(() => Math.random() - 0.5);
       for (const c of rnd) {
         if (items.length >= N) break;
-        const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/clips/c-', limit: 200 });
-        const ks = (l.objects || []).map((o) => /c-(\d+)-(\d+)\.mp4$/.exec(o.key)).filter((m) => m && !bad[c.slug + ':' + m[1]]);
+        const ks = (await clipList(env, db, c.slug, 200)).filter((m) => !bad[c.slug + ':' + m.v]);
         if (!ks.length) continue; const m = ks[Math.floor(Math.random() * ks.length)];
-        items.push({ slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: parseInt(m[1], 10), start: parseInt(m[2], 10) });
+        items.push({ slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: m.v, start: m.st });
       }
     }
     for (let i = items.length - 1; i > 1; i--) { const j = 1 + Math.floor(Math.random() * i); const t = items[i]; items[i] = items[j]; items[j] = t; } // el primero (fijo) queda; el resto, incluidos los fijados, en posicion al azar
