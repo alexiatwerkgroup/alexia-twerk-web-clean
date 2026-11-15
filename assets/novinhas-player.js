@@ -173,7 +173,7 @@
       box.className = 'np-stage' + (cur.height > cur.width ? ' np-tall' : ''); v.poster = cur.poster;
       v.removeAttribute('data-src'); applyQuality(false); v.play().catch(function () {});
       try { history.replaceState(null, '', urlFor(cur, false)); } catch (_) {}
-      needSync = true; try { setRec(); tech(); mRes.textContent = ''; tick(); } catch (_) {} say(cur.title || 'Next');
+      needSync = true; try { posTxt(); setRec(); tech(); mRes.textContent = ''; tick(); } catch (_) {} say(cur.title || 'Next');
     }
     function onFsChange() { if (needSync && !document.fullscreenElement && !document.webkitFullscreenElement) { needSync = false; location.replace(urlFor(cur, false)); } }
     document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
@@ -273,7 +273,7 @@
     /* resolucion + cuenta regresiva (todos) y fecha de grabacion (solo el dueño) */
     var meta = document.createElement('div'); meta.className = 'np-meta';
     var mRes = document.createElement('span'), mCd = document.createElement('span'); mCd.className = 'np-cd';
-    var mTech = document.createElement('span'); meta.append(mRes, mCd, mTech); box.appendChild(meta);
+    var mTech = document.createElement('span'); var mPos = document.createElement('span'); function posTxt() { mPos.textContent = 'Video ' + (vids.indexOf(cur) + 1) + ' of ' + vids.length; } posTxt(); meta.append(mPos, mRes, mCd, mTech); box.appendChild(meta);
     /* version mejorada (IA): 1 moneda por video, cupo diario; sin descarga */
     var enh = document.createElement('button'); enh.type = 'button'; enh.className = 'np-enh'; enh.style.display = 'none';
     function eset(big, small, cls) { enh.className = 'np-enh' + (cls ? ' ' + cls : ''); enh.innerHTML = '<span class="ne-big">' + big + '</span><span class="ne-sm">' + small + '</span>'; }
