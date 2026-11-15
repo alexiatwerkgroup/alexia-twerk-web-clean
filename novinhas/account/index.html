@@ -44,4 +44,4 @@ view.addEventListener('click',function(e){var t=e.target;if(t.id==='clr'){LS.key
  if(r==='hist'){var m={};try{m=JSON.parse(LS.get('twk_nov_seen:'+s)||'{}')}catch(_){}delete m[i];LS.set('twk_nov_seen:'+s,JSON.stringify(m))}
  else if(r==='cont')LS.del('twk_nov_pos:'+s+':'+i);else if(r==='like')LS.del('twk_nov_like:'+s+':'+i);else if(r==='fav')LS.del('twk_nov_fav:'+s+':'+i);render()});
 render()})();
-</script></body></html>
+</script><script src="/assets/novinhas-hunter.js?v=20261115-rep1" defer></script></body></html>
