@@ -158,6 +158,7 @@ function defBox() {
 }
 var LIVE_P = null; // hoy / semana / total (lo manda /api/stats/live)
 function pr(fn, fmt) { if (!LIVE_P) return ''; return ' <span class="m">(sem. ' + (fmt || F)(fn(LIVE_P.week)) + ' · total ' + (fmt || F)(fn(LIVE_P.all)) + ')</span>'; }
+function pr3(fn, fmt) { if (!LIVE_P) return ''; var f = fmt || F; return '<br><span class="m">(hoy ' + f(fn(LIVE_P.today)) + ' · sem. ' + f(fn(LIVE_P.week)) + ' · total ' + f(fn(LIVE_P.all)) + ')</span>'; }
 function liveKpis(d) {
   LIVE_P = d.periods || LIVE_P;
   var onC = (d.online || []).length, bot = Math.max(0, d.today.cookies - d.today.confirmed);
@@ -214,12 +215,12 @@ function repHtml(r) {
   var k = r.kpi, pct = k.cookies ? (100 * k.confirmed / k.cookies).toFixed(1).replace('.', ',') : '0';
   var bots = Math.max(0, k.cookies - k.confirmed), pctI = k.confirmed ? Math.round(100 * k.interested / k.confirmed) : 0;
   var kp = '<div class="kp">' +
-    '<div class="k"><span>Visitantes reales</span><b>' + F(k.confirmed) + '</b><i>' + F(k.newReal) + ' nuevos · ' + F(Math.max(0, k.confirmed - k.newReal)) + ' que ya habían venido' + delta(k.confirmed, r.prev && r.prev.confirmed, r) + '</i></div>' +
-    '<div class="k"><span>Interesados</span><b>' + F(k.interested) + '</b><i>' + pctI + '% de los reales se quedó ' + r.confirmSeconds + ' s+, tiene cuenta o hizo una acción' + delta(k.interested, r.prev && r.prev.interested, r) + '</i></div>' +
+    '<div class="k"><span>Visitantes reales</span><b>' + F(k.confirmed) + '</b><i>' + F(k.newReal) + ' nuevos · ' + F(Math.max(0, k.confirmed - k.newReal)) + ' que ya habían venido' + pr3(function (x) { return x.confirmed; }) + delta(k.confirmed, r.prev && r.prev.confirmed, r) + '</i></div>' +
+    '<div class="k"><span>Interesados</span><b>' + F(k.interested) + '</b><i>' + pctI + '% de los reales se quedó ' + r.confirmSeconds + ' s+, tiene cuenta o hizo una acción' + pr3(function (x) { return x.interested; }) + delta(k.interested, r.prev && r.prev.interested, r) + '</i></div>' +
     '<div class="k" style="opacity:.85"><span>Tráfico automático (ignorado)</span><b style="color:#9a9aaa;text-shadow:none">' + F(bots) + '</b><i>cargaron y nunca dieron señal. No cuentan como visitantes. ' + (r.noSignal ? '<b>' + F(r.noSignal.conRef) + '</b> llegaron desde un link (pueden ser rebotes de gente real) y <b>' + F(Math.max(0, r.noSignal.total - r.noSignal.conRef)) + '</b> entraron directo sin señal (casi seguro robots).' : '') + '</i></div>' +
     '<div class="k"><span>Intención de compra</span><b>' + F(k.intentPeople) + '</b><i>personas con clic en desbloquear, pago o Binance (' + F(k.intent) + ' clics). <b>No son ventas confirmadas.</b>' + delta(k.intentPeople, r.prev && r.prev.intentPeople, r) + '</i></div>' +
     '<div class="k"><span>Registros</span><b>' + F(k.signups) + '</b><i>cuentas creadas en el período: ' + F(k.accountsInPeriod) + ' · ' + F(k.accountsTotal) + ' en total' + delta(k.accountsInPeriod, r.prev && r.prev.accounts, r) + '</i></div>' +
-    '<div class="k"><span>Tiempo activo</span><b>' + T(k.avgSeconds) + '</b><i>promedio por visitante real · cuenta pestaña visible o video reproduciéndose</i></div></div>';
+    '<div class="k"><span>Tiempo activo</span><b>' + T(k.avgSeconds) + '</b><i>promedio por visitante real · cuenta pestaña visible o video reproduciéndose' + pr3(function (x) { return x.avgSeconds; }, T) + '</i></div></div>';
   var funnel = bars([{ n: 'Visitantes reales', u: k.confirmed }, { n: 'Interesados', u: k.interested }, { n: 'Intención de compra', u: k.intentPeople }, { n: 'Se registraron', u: k.signups }], 'u', function (x) { return x.n; });
   var marks = r.marks.slice(0, 8).map(function (m) { return '<div class="mk"><span class="pill pw">' + esc(m.channel || 'promo') + '</span><span>' + esc(m.label) + '</span><span class="m">' + new Date(m.ts).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</span><u data-del="' + Number(m.id) + '">borrar</u></div>'; }).join('');
   var vis = r.visitors.map(function (v) {
