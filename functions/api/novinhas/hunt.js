@@ -52,7 +52,7 @@ export async function onRequest({ request, env }) {
     try { const t = await env.DB.prepare('SELECT tokens FROM profiles WHERE id = ?').bind(u.uid).first(); tokens = (t && t.tokens) || 0; } catch (e) {}
     try { const c = await env.DB.prepare('SELECT coins FROM jenny_coins WHERE lower(email) = lower(?)').bind(u.email).first(); coins = (c && c.coins) || 0; } catch (e) {}
     const w = await env.DB.prepare('SELECT coins, voucher FROM nv_plat WHERE uid = ?').bind(u.uid).first();
-    return J({ auth: true, joined: !!(row && row.joined), cat: (row && row.cat) || '', wallet: { tokens, coins, platinum: (w && w.coins) || 0, voucher: (w && w.voucher) || 0 } });
+    return J({ auth: true, uid: u.uid, joined: !!(row && row.joined), cat: (row && row.cat) || '', wallet: { tokens, coins, platinum: (w && w.coins) || 0, voucher: (w && w.voucher) || 0 } });
   }
   if (request.method !== 'POST') return J({ error: 'method' }, 405);
   let b = {}; try { b = await request.json(); } catch (e) {}
