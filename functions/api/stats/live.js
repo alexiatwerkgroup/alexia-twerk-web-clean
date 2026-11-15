@@ -77,7 +77,7 @@ export async function onRequestGet({ request, env }) {
       body.recent = rv.map(r => {
         const hs = byV[r.vid] || [], f = hs[0] || {}, pr = r.uid ? prof[r.uid] : null, hu = r.uid ? hunt[r.uid] : null;
         return { vid: r.vid.slice(0, 6), vidFull: r.vid, uid: r.uid || '', user: pr ? pr.username || '' : '', registered: !!r.uid, registeredAt: pr ? pr.registered_at : null,
-          hunter: !!(hu && hu.joined), hunterCat: hu ? (hu.cat || 0) : 0, country: f.country || '', city: f.city || '', device: f.device, browser: f.browser, os: f.os, ref: f.ref || '',
+          hunter: !!(hu && hu.joined), hunterCat: hu ? String(hu.cat || '') : '', country: f.country || '', city: f.city || '', device: f.device, browser: f.browser, os: f.os, ref: f.ref || '',
           firstAt: r.first, lastAt: r.la, loads: r.loads, dur: r.dur || 0,
           journey: hs.slice(-8).map(h => ({ path: h.path, ts: h.ts, dur: h.dur || 0, scroll: h.scroll || 0 })) };
       });

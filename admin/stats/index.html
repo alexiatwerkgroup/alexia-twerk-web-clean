@@ -179,7 +179,7 @@ function recentTable(list) {
     var who = '<b>' + (o.user ? whoSpan(o.user, o.uid, o.vidFull) : whoSpan('visitante ' + o.vid, '', o.vidFull)) + '</b><br><span class="m">' + esc([o.device, o.browser, o.os].filter(Boolean).join(' · ')) + '</span>';
     var jn = '<div class="rc"><div class="jn">' + (o.journey || []).map(function (j, i) { return (i ? '<i>→</i>' : '') + '<span class="st">' + pl(j.path) + ' <span class="m">' + T(j.dur) + '</span></span>'; }).join('') + '</div></div>';
     var reg = o.registered ? '<span class="pill yes">Sí</span>' + (o.user ? '<br><span class="m">' + esc(o.user) + '</span>' : '') : '<span class="pill no">No</span>';
-    var hun = o.hunter ? '<span class="pill hun">Hunter</span>' + (o.hunterCat ? '<br><span class="m">categoría ' + o.hunterCat + '</span>' : '') : '<span class="pill no">No</span>';
+    var hun = o.hunter ? '<span class="pill hun">Hunter</span>' + (o.hunterCat ? '<br><span class="m">' + (o.hunterCat === 'content' ? 'Categoría 1 · contenido' : o.hunterCat === 'money' ? 'Categoría 2 · donación' : esc(o.hunterCat)) + '</span>' : '') : '<span class="pill no">No</span>';
     return '<tr><td>hace ' + ago(o.lastAt) + '</td><td>' + who + '</td><td>' + place(o.country, o.city) + '</td><td>' + esc(o.ref || 'directo') + '</td><td>' + jn + '</td><td>' + T(o.dur) + '<br><span class="m">' + F(o.loads) + ' cargas</span></td><td>' + reg + '</td><td>' + hun + '</td></tr>';
   }).join('');
   return '<div class="tw"><table><tr><th>Última vez</th><th>Quién</th><th>País / ciudad</th><th>Fuente</th><th>Recorrido (páginas y tiempo)</th><th>Tiempo total</th><th>¿Registrado?</th><th>¿Hunter?</th></tr>' + (rows || '<tr><td colspan="8" class="m">Todavía no hay visitantes en las últimas 24 h</td></tr>') + '</table></div>';
