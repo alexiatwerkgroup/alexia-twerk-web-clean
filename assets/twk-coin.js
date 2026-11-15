@@ -163,7 +163,20 @@
         (big ? '<circle class="gtdr" r="34" cx="150" cy="55" fill="url(#gtr' + n + ')" opacity="0"/><circle class="gtdd" r="30" cx="150" cy="55" fill="url(#gtd' + n + ')" opacity="0"/>' : '') + '<rect class="sh" x="-60" y="-10" width="46" height="130" fill="url(#' + h + ')" transform="skewX(-18)"/></g></g></svg>';
     }
     var TKP = { '#fff6c2': '#dcffe9', '#f9d24f': '#6fe29a', '#cf8f0c': '#1c9a52', '#f6c546': '#6fe29a', '#fff0a0': '#c8ffe0', '#7a4a06': '#0b4a24', '#5a3500': '#0b3d1c', '#6b4206': '#0b4a24', '#4d2d00': '#07301a', '#fff3b0': '#e8fff1', '#fff4b0': '#e8fff1', '#fff6c8': '#eafff2' };
+    function TKB(big) {
+      var n = ++gtN, g = 'gtg' + n, c = 'gtc' + n, h = 'gth' + n, m = 'gtm' + n, P = 'M10 0H290Q300 0 300 10V170Q300 180 290 180H10Q0 180 0 170V10Q0 0 10 0Z';
+      return '<svg viewBox="0 0 300 180" role="img" aria-label="Token"><defs>' +
+        '<linearGradient id="' + g + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2e8b4a"/><stop offset=".55" stop-color="#8be3a0"/><stop offset="1" stop-color="#2e8b4a"/></linearGradient>' +
+        '<linearGradient id="' + m + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#0b3d1c" stop-opacity=".25"/></linearGradient>' +
+        '<linearGradient id="' + h + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
+        '<clipPath id="' + c + '"><path d="' + P + '"/></clipPath>' + (big ? '<filter id="gtf' + n + '" x="-4%" y="-8%" width="108%" height="116%"><feTurbulence type="fractalNoise" baseFrequency=".008 .014" numOctaves="1" seed="7" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter><radialGradient id="gtd' + n + '"><stop offset="0" stop-color="#05200f" stop-opacity=".55"/><stop offset=".55" stop-color="#05200f" stop-opacity=".18"/><stop offset="1" stop-color="#05200f" stop-opacity="0"/></radialGradient><radialGradient id="gtr' + n + '"><stop offset=".6" stop-color="#fff" stop-opacity="0"/><stop offset=".82" stop-color="#e8fff1" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>' : '') + '</defs><g class="gtw">' +
+        '<path d="' + P + '" fill="url(#' + g + ')"/><path d="' + P + '" fill="url(#' + m + ')"/><path d="' + P + '" fill="none" stroke="#bff5cb" stroke-width="3"/>' +
+        '<g clip-path="url(#' + c + ')"><rect x="18" y="18" width="264" height="144" rx="4" fill="none" stroke="#0b3d1c" stroke-opacity=".45" stroke-width="2.5"/>' +
+        '<text x="150" y="128" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-weight="900" font-size="104" fill="#e8fff1" fill-opacity=".8" transform="translate(1.5,2.5)">T</text><text x="150" y="128" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-weight="900" font-size="104" fill="#0b3d1c">T</text>' +
+        (big ? '<circle class="gtdr" r="46" cx="150" cy="90" fill="url(#gtr' + n + ')" opacity="0"/><circle class="gtdd" r="40" cx="150" cy="90" fill="url(#gtd' + n + ')" opacity="0"/>' : '') + '<rect class="sh" x="-60" y="-10" width="46" height="210" fill="url(#' + h + ')" transform="skewX(-18)"/></g></g></svg>';
+    }
     function TK(big, kind) {
+      if (kind === 'token') return TKB(big);
       var x = GT(big); if (kind !== 'token') return x;
       Object.keys(TKP).forEach(function (k) { x = x.split(k).join(TKP[k]); });
       x = x.split('GOLDEN TICKET').join('TOKEN').split('font-size="26"').join('font-size="36"').split('VIP VOUCHER · TWERKHUB').join('TWERKHUB · VAULT POINTS').split('Nº 0001').join('PTS').split('>ADMIT<').join('>EARN<').split('aria-label="Golden Ticket"').join('aria-label="Token"');
@@ -190,7 +203,7 @@
         var r = svg.getBoundingClientRect(); if (!r.width) return;
         var nowT = Date.now(), mv = Math.abs(e.clientX - lx) + Math.abs(e.clientY - ly); if (nowT - lt > 140 && mv > 14) { paper(.55); lt = nowT; lx = e.clientX; ly = e.clientY; }
         var nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
-        tx = Math.max(-1, Math.min(1, (nx - .5) * 2)); ty = Math.max(-1, Math.min(1, (ny - .5) * 2)); px = nx * 300; py = ny * 110; ta = 1; go();
+        tx = Math.max(-1, Math.min(1, (nx - .5) * 2)); ty = Math.max(-1, Math.min(1, (ny - .5) * 2)); px = nx * 300; py = ny * ((svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.height) || 110); ta = 1; go();
       });
       host.addEventListener('pointerleave', function () { tx = 0; ty = 0; ta = 0; go(); });
     }
