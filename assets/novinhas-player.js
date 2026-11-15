@@ -81,7 +81,7 @@
   var FS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
   var KEYS = [
     ['Play / Pause', 'Space · K'], ['Fullscreen', 'F · Enter'], ['Mute', 'M'], ['Back / forward 5 s', '← →'], ['Back / forward 10 s', 'J · L'],
-    ['Volume', '↑ ↓'], ['Jump to 0%–90%', '0 – 9'], ['Start / end', 'Home · End'], ['Frame step (paused)', ', .'], ['Speed down / up', '< >'],
+    ['Volume', '↑ ↓'], ['Jump to 0%–90%', '0 – 9'], ['Start / end', 'Home · End'], ['Frame step (paused)', ', .'], ['Speed down / up', '- + · < >'],
     ['Next / previous video', 'Shift+N · Shift+P · Right Ctrl'], ['Enhanced version', 'E'], ['Quality menu', 'Q'], ['Picture in picture', 'I'], ['This help', '? · H']
   ];
 
@@ -214,6 +214,10 @@
     var SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
     function seek(dt) { var t = Math.min(Math.max(0, v.currentTime + dt), v.duration || 1e9); v.currentTime = t; say((dt > 0 ? '+' : '') + dt + ' s  ·  ' + fmt(t)); }
     function playPause() { if (v.paused) { v.play().catch(function () {}); say('Play'); } else { v.pause(); say('Pause'); } }
+    var slowBtn = null;
+    function setRate(r) { v.defaultPlaybackRate = r; v.playbackRate = r; if (slowBtn) slowBtn.classList.toggle('on', r < 1); say('Speed ' + r + 'x' + (r === 0.5 ? ' · slow motion' : '')); }
+    function stepSpeed(dir) { var i = SPEEDS.indexOf(v.playbackRate); if (i < 0) { i = 0; while (i < SPEEDS.length - 1 && SPEEDS[i] < v.playbackRate) i++; } i = Math.min(SPEEDS.length - 1, Math.max(0, i + dir)); setRate(SPEEDS[i]); }
+    function toggleSlow() { setRate(v.playbackRate === 0.5 ? 1 : 0.5); }
     function onKey(e) {
       var tg = e.target, tag = tg && tg.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (tg && tg.isContentEditable)) return;
@@ -234,6 +238,8 @@
       else if (/^Digit[0-9]$/.test(code) && !e.shiftKey) { if (v.duration) { v.currentTime = v.duration * (+code.slice(5)) / 10; say(code.slice(5) + '0%'.replace('00%', '0%').replace(/^0%$/, '0%')); } }
       else if (k === 'Home') { v.currentTime = 0; say('Start'); } else if (k === 'End') { if (v.duration) v.currentTime = v.duration - 0.1; say('End'); }
       else if ((k === ',' || k === '.') && v.paused) { v.currentTime = Math.max(0, v.currentTime + (k === '.' ? 1 : -1) / 30); say('Frame ' + (k === '.' ? '+1' : '-1')); }
+      else if (k === '+' || k === '=' || code === 'NumpadAdd') stepSpeed(1);
+      else if (k === '-' || k === '_' || code === 'NumpadSubtract') stepSpeed(-1);
       else if (k === '<' || k === '>') { var i = SPEEDS.indexOf(v.playbackRate); if (i < 0) i = 3; i = Math.min(SPEEDS.length - 1, Math.max(0, i + (k === '>' ? 1 : -1))); v.playbackRate = SPEEDS[i]; say('Speed ' + SPEEDS[i] + 'x'); }
       else if (e.shiftKey && (k === 'N' || k === 'n')) { if (nextV) goTo(nextV, true); else say('Last video'); }
       else if (e.shiftKey && (k === 'P' || k === 'p')) { if (prevV) goTo(prevV, true); else say('First video'); }
@@ -367,9 +373,10 @@
     bar.append(pv, nt, ap, kb);
     /* calidad tambien en la barra de abajo (siempre visible, aunque el video se desplace) */
     var qb = document.createElement('div'); qb.className = 'np-qbar';
-    qb.innerHTML = '<span class="np-qk">Quality</span><button type="button" data-q="hd">HD</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button>';
-    var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); [].forEach.call(qb.querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.q === p || (p !== 'auto' && b.dataset.q === e)); }); };
-    qb.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; LS.set(Q_KEY, b.dataset.q); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : 'HD')); });
+    qb.innerHTML = '<span class="np-qk">Quality</span><button type="button" data-q="hd">HD</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button><button type="button" data-sm="1">Slow motion</button>';
+    var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); [].forEach.call(qb.querySelectorAll('button[data-q]'), function (b) { b.classList.toggle('on', b.dataset.q === p || (p !== 'auto' && b.dataset.q === e)); }); };
+    slowBtn = qb.querySelector('[data-sm]'); slowBtn.classList.toggle('on', v.playbackRate < 1);
+    qb.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; if (b.dataset.sm) { toggleSlow(); return; } LS.set(Q_KEY, b.dataset.q); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : 'HD')); });
     bar.append(qb); qRender();
     if (o.bar) o.bar.replaceChildren(bar);
 
