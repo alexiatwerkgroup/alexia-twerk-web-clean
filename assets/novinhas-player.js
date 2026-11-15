@@ -285,6 +285,7 @@
           if (!o.j.ok) { eset('NOT AVAILABLE','Try again in a moment','off'); enh.disabled = false; return; }
           var t = v.currentTime, was = !v.paused; enhOn = true; v.setAttribute('data-src', o.j.src); v.src = o.j.src;
           v.addEventListener('loadedmetadata', function f() { v.removeEventListener('loadedmetadata', f); try { v.currentTime = t; } catch (_) {} if (was) v.play().catch(function () {}); });
+          v.addEventListener('error', function ef() { v.removeEventListener('error', ef); if (!enhOn) return; enhOn = false; v.removeAttribute('data-src'); applyQuality(false); v.play().catch(function () {}); eset('NOT AVAILABLE','Upgraded file failed to load · playing original','off'); enh.disabled = true; });
           eset('ENHANCED ON','Now playing the upgraded version' + (o.j.left < 900 ? ' · ' + o.j.left + ' coins left today' : ''),'on');
         }).catch(function () { enh.disabled = false; });
     });
