@@ -129,7 +129,7 @@
       holder.insertBefore(mv, holder.firstChild);
       var mi = holder.querySelector('.mi'); mi.innerHTML = '<span>' + (it.slow ? 'Slow motion · ' : '') + '30 s · @' + String(it.name).replace(/[<>&"]/g, '') + '</span>'; var go = document.createElement('a'); go.href = it.url; go.textContent = 'Full video'; mi.appendChild(go);
       if (mini.owner || mini.vip) { var dl = document.createElement('a'); dl.href = it.src; dl.setAttribute('download', it.c + '-' + it.id + '-' + it.start + (it.slow ? '-slow' : '') + '.mp4'); dl.textContent = 'Download'; mi.appendChild(dl); }
-      if (mini.owner) { var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = 'Delete'; rm.onclick = function () { rm.disabled = true; fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: it.c, id: it.id, start: it.start, slow: it.slow }) }).then(function () { mclose(); minisLoad(); }).catch(function () { rm.disabled = false; }); }; mi.appendChild(rm); }
+      if (mini.owner || (mini.vip && it.mine)) { var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = 'Delete'; rm.onclick = function () { rm.disabled = true; fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: it.c, id: it.id, start: it.start, slow: it.slow }) }).then(function () { mclose(); minisLoad(); }).catch(function () { rm.disabled = false; }); }; mi.appendChild(rm); }
       mbox.classList.add('on'); try { v.pause(); } catch (_) {} mv.play().catch(function () {});
     }
     function minisLayout() {
@@ -468,7 +468,7 @@
       }
       rb.onclick = function () {
         if (guest) { say('Create a free account to record miniclips'); lab.textContent = 'Sign up'; setTimeout(function () { location.href = '/account'; }, 900); return; }
-        if (recQ && !mini.owner) { say('Your miniclip is being prepared'); return; }
+        if (recQ && !mini.vip) { say('Your miniclip is being prepared'); return; }
         if (recQ) { // segundo toque: cancela el miniclip y lo borra
           var q0 = recQ; clearInterval(waitT); rb.classList.add('busy'); lab.textContent = 'Canceling…';
           fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: q0.c, id: q0.id, start: q0.start, slow: q0.slow }) }).then(function (r) { return r.json(); }).then(function (x) {

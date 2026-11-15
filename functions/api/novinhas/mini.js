@@ -1,4 +1,4 @@
-// Miniclips: clips de 30 s con el boton REC del reproductor. Cuentas normales: 3/dia y 30 en total (VIP 10/100), sin camara lenta (solo VIP) y sin borrar; el dueño sin limites.
+// Miniclips: clips de 30 s con el boton REC del reproductor. Cuentas normales: 3/dia y 30 en total (VIP 10/100), sin camara lenta (solo VIP); borrar: dueño y VIP (solo los suyos, libera R2); el dueño sin limites.
 //  POST /api/novinhas/mini {c,id,t,slow}                -> (cuenta) marca un miniclip; la cola se refleja en R2 _config/mini-queue.json
 //  POST /api/novinhas/mini {action:'remove',c,id,start,slow} -> (dueño) borra un miniclip (fila + archivos)
 //  GET  /api/novinhas/mini?me=1                         -> {owner,user,vip,left}
@@ -22,16 +22,17 @@ async function who(request, env) {
 async function quota(db, uid, now, vip) {
   const L = vip ? LIM.v : LIM.n;
   const d = await db.prepare('SELECT COUNT(*) n FROM nv_mini WHERE uid = ? AND added >= ?').bind(uid, now - 86400).first();
-  const t = await db.prepare('SELECT COUNT(*) n FROM nv_mini WHERE uid = ?').bind(uid).first();
+  const t = await db.prepare('SELECT COUNT(*) n FROM nv_mini WHERE uid = ? AND COALESCE(gone, 0) = 0').bind(uid).first();
   return { today: Math.max(0, L.day - ((d && d.n) || 0)), total: Math.max(0, L.total - ((t && t.n) || 0)), day: L.day, max: L.total };
 }
 async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_mini (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, vid INTEGER, start INTEGER, slow INTEGER DEFAULT 0, title TEXT, name TEXT, added INTEGER, UNIQUE(slug, vid, start, slow))').run();
   try { await db.prepare('ALTER TABLE nv_mini ADD COLUMN uid TEXT').run(); } catch (e) {}
+  try { await db.prepare('ALTER TABLE nv_mini ADD COLUMN gone INTEGER DEFAULT 0').run(); } catch (e) {}
 }
 const base = (slug, vid, st, slow) => `${slug}/mini/m-${vid}-${st}-${slow ? 's' : 'n'}`;
 async function mirror(env, db) {
-  const r = (await db.prepare('SELECT slug, vid, start, slow FROM nv_mini ORDER BY id').all()).results || [];
+  const r = (await db.prepare('SELECT slug, vid, start, slow FROM nv_mini WHERE COALESCE(gone, 0) = 0 ORDER BY id').all()).results || [];
   await env.NOVINHAS_VIDEOS.put('_config/mini-queue.json', JSON.stringify({ updated: Date.now(), secs: SECS, items: r.map((x) => ({ c: x.slug, id: x.vid, start: x.start || 0, slow: x.slow ? 1 : 0 })) }), { httpMetadata: { contentType: 'application/json' } });
   return r.length;
 }
@@ -53,13 +54,19 @@ export async function onRequest({ request, env }) {
   if (request.method === 'POST') {
     const me = await who(request, env); if (!me) return J({ ok: false, error: 'login' }, 401);
     let b = {}; try { b = await request.json(); } catch (e) {}
-    if (b.action === 'remove' && !me.owner) return J({ ok: false, error: 'owner_only' }, 403);
+    const vipU = me.owner || (b.action === 'remove' && (await isVip(request, env)));
+    if (b.action === 'remove' && !vipU) return J({ ok: false, error: 'vip_only' }, 403);
     const id = parseInt(b.id, 10);
     if (!SLUG.test(b.c || '') || !(id > 0)) return J({ error: 'bad_request' }, 400);
     await ensure(db);
     if (b.action === 'remove') {
       const st = Math.max(0, parseInt(b.start, 10) || 0), sl = b.slow ? 1 : 0, bk = base(b.c, id, st, sl);
-      await db.prepare('DELETE FROM nv_mini WHERE slug = ? AND vid = ? AND start = ? AND slow = ?').bind(b.c, id, st, sl).run();
+      if (me.owner) await db.prepare('DELETE FROM nv_mini WHERE slug = ? AND vid = ? AND start = ? AND slow = ?').bind(b.c, id, st, sl).run();
+      else { // VIP: solo borra los suyos; la fila queda marcada para que el tope diario no se reinicie
+        const mine = await db.prepare('SELECT 1 x FROM nv_mini WHERE slug = ? AND vid = ? AND start = ? AND slow = ? AND uid = ? AND COALESCE(gone, 0) = 0').bind(b.c, id, st, sl, me.id).first();
+        if (!mine) return J({ ok: false, error: 'not_yours' }, 403);
+        await db.prepare('UPDATE nv_mini SET gone = 1 WHERE slug = ? AND vid = ? AND start = ? AND slow = ? AND uid = ?').bind(b.c, id, st, sl, me.id).run();
+      }
       try { await env.NOVINHAS_VIDEOS.delete([bk + '.mp4', bk + '.webp']); } catch (e) {}
       try { await mirror(env, db); } catch (e) {}
       return J({ ok: true });
@@ -72,7 +79,7 @@ export async function onRequest({ request, env }) {
     if (!me.owner) { const ql = await quota(db, me.id, now, vip); if (ql.today <= 0) return J({ ok: false, error: 'daily_limit', max: ql.day }, 429); if (ql.total <= 0) return J({ ok: false, error: 'total_limit', max: ql.max }, 429); }
     const src = slow ? SECS / 2 : SECS; // en camara lenta (0.5x) 15 s de video original ocupan 30 s
     const t = Math.max(0, Math.min(Math.floor(Number(b.t) || 0), Math.max(0, Math.floor((Number(v.duration) || 0) - src))));
-    await db.prepare('INSERT OR IGNORE INTO nv_mini (slug, vid, start, slow, title, name, added, uid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').bind(b.c, id, t, slow, v.title || '', d.name || b.c, now, me.id).run();
+    await db.prepare('INSERT INTO nv_mini (slug, vid, start, slow, title, name, added, uid) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(slug, vid, start, slow) DO UPDATE SET gone = 0, uid = excluded.uid, added = excluded.added WHERE COALESCE(nv_mini.gone, 0) = 1').bind(b.c, id, t, slow, v.title || '', d.name || b.c, now, me.id).run();
     const n = await mirror(env, db);
     return J({ ok: true, start: t, slow, secs: SECS, total: n });
   }
@@ -99,6 +106,7 @@ export async function onRequest({ request, env }) {
   const slug = q.get('c') || '', N = Math.min(12, Math.max(1, parseInt(q.get('n'), 10) || 6));
   if (slug && !SLUG.test(slug)) return J({ error: 'bad_request' }, 400);
   await ensure(db);
+  const mine = {}; try { const me = /twk_jwt=|Authorization/i.test((request.headers.get('Cookie') || '') + (request.headers.get('Authorization') ? 'Authorization' : '')) ? await who(request, env) : null; if (me) ((await db.prepare('SELECT slug, vid, start, slow FROM nv_mini WHERE uid = ? AND COALESCE(gone, 0) = 0').bind(me.id).all()).results || []).forEach((r) => { mine[`${r.slug}/${r.vid}/${r.start}/${r.slow ? 1 : 0}`] = 1; }); } catch (e) {}
   const names = {}; try { ((await db.prepare('SELECT slug, name FROM nv_mini').all()).results || []).forEach((r) => { names[r.slug] = r.name; }); } catch (e) {}
   const items = [], seen = {};
   const push = (r) => { const k = r.key; if (seen[k] || items.length >= N) return; seen[k] = 1; items.push(r); };
@@ -108,5 +116,5 @@ export async function onRequest({ request, env }) {
     chans.sort(() => Math.random() - 0.5);
     for (const c of chans.slice(0, 10)) { if (items.length >= N) break; try { const rs = await readyOf(env, c.slug); rs.forEach((r) => { names[c.slug] = names[c.slug] || c.name; }); rs.sort(() => Math.random() - 0.5).slice(0, 2).forEach(push); } catch (e) {} }
   }
-  return J({ items: items.map((r) => ({ c: r.c, id: r.id, start: r.start, slow: r.slow, name: String(names[r.c] || r.c).replace(/^@/, ''), src: `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.key)}`, poster: r.poster ? `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.poster)}` : '', url: `/novinhas/canal/ver/?c=${r.c}&v=${String(r.id).padStart(2, '0')}` })) }, 200, 'public, max-age=60');
+  return J({ items: items.map((r) => ({ c: r.c, id: r.id, start: r.start, slow: r.slow, name: String(names[r.c] || r.c).replace(/^@/, ''), src: `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.key)}`, poster: r.poster ? `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.poster)}` : '', url: `/novinhas/canal/ver/?c=${r.c}&v=${String(r.id).padStart(2, '0')}`, mine: mine[`${r.c}/${r.id}/${r.start}/${r.slow ? 1 : 0}`] ? 1 : 0 })) }, 200, /twk_jwt=/.test(request.headers.get('Cookie') || '') || request.headers.get('Authorization') ? 'private, no-store' : 'public, max-age=60');
 }
