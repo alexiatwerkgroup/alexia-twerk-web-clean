@@ -433,11 +433,11 @@
     document.addEventListener('click', function (e) { if (!qw.contains(e.target)) qw.classList.remove('open'); });
     slowBtn = document.createElement('button'); slowBtn.type = 'button'; slowBtn.className = BTN; slowBtn.textContent = 'Slow motion'; slowBtn.classList.toggle('on', v.playbackRate < 1);
     slowBtn.onclick = function () { toggleSlow(); };
-    var rb = document.createElement('button'); rb.type = 'button'; rb.className = BTN + ' np-rb'; rb.innerHTML = '<i></i><span>REC</span>'; rb.style.display = 'none';
+    var rb = document.createElement('button'); rb.type = 'button'; rb.className = BTN + ' np-rb'; rb.innerHTML = '<i></i><span>REC</span>'; rb.hidden = true;
     bar.append(pv, nt, ap, kb, qw, slowBtn, rb); qRender();
     fetch('/api/novinhas/mini?me=1', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || !j.owner) return; mini.owner = true;
-      rb.style.display = ''; rb.title = 'Record a 30 s miniclip from the current moment (with slow motion if it is on)';
+      rb.hidden = false; rb.title = 'Record a 30 s miniclip from the current moment (with slow motion if it is on)';
       var lab = rb.querySelector('span'), rt;
       var recQ = null, recT = 0, recN = 0; // grabacion en curso: 30 s de cuenta regresiva; tocar REC de nuevo la cancela
       function recEnd(txt, cls) { clearInterval(recT); recQ = null; rb.classList.remove('busy', 'rec', 'ok'); if (cls) rb.classList.add(cls); lab.textContent = txt; clearTimeout(rt); rt = setTimeout(function () { rb.classList.remove('ok'); lab.textContent = 'REC'; }, 2600); }
