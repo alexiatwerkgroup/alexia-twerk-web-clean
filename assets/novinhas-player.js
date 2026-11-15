@@ -82,7 +82,7 @@
   var KEYS = [
     ['Play / Pause', 'Space · K'], ['Fullscreen', 'F · Enter'], ['Mute', 'M'], ['Back / forward 5 s', '← →'], ['Back / forward 10 s', 'J · L'],
     ['Volume', '↑ ↓'], ['Jump to 0%–90%', '0 – 9'], ['Start / end', 'Home · End'], ['Frame step (paused)', ', .'], ['Speed down / up', '< >'],
-    ['Next / previous video', 'Shift+N · Shift+P'], ['Quality menu', 'Q'], ['Picture in picture', 'I'], ['This help', '? · H']
+    ['Next / previous video', 'Shift+N · Shift+P · Right Ctrl'], ['Enhanced version', 'E'], ['Quality menu', 'Q'], ['Picture in picture', 'I'], ['This help', '? · H']
   ];
 
   function init(o) {
@@ -225,6 +225,7 @@
       if (help.classList.contains('on')) { if (k === 'Escape' || k === '?' || k === 'h' || k === 'H') help.classList.remove('on'); e.preventDefault(); return; }
       if (code === 'Space' || k === 'k' || k === 'K') playPause();
       else if (k === 'Enter' || k === 'f' || k === 'F') toggleFs();
+      else if ((k === 'e' || k === 'E') && !e.shiftKey) { if (typeof enh !== 'undefined' && enh && enh.style.display !== 'none') { if (enh.disabled) say(enhOn ? 'Enhanced already on' : 'Upgrade in progress'); else enh.click(); } else say('No enhanced version'); }
       else if (k === 'm' || k === 'M') { v.muted = !v.muted; say(v.muted ? 'Muted' : 'Volume ' + Math.round(v.volume * 100) + '%'); }
       else if (k === 'ArrowLeft') seek(-5); else if (k === 'ArrowRight') seek(5);
       else if (k === 'j' || k === 'J') seek(-10); else if (k === 'l' || k === 'L') seek(10);
