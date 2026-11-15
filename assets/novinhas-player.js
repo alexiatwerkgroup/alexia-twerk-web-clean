@@ -428,7 +428,7 @@
     var qbtn = document.createElement('button'); qbtn.type = 'button'; qbtn.className = BTN + ' np-qbtn'; qbtn.setAttribute('aria-haspopup', 'true'); qbtn.innerHTML = '<span class="ql">HD</span><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>';
     var qm = document.createElement('div'); qm.className = 'np-qm'; qm.innerHTML = '<button type="button" data-q="hd">' + hdLabel() + ' · Original</button>' + (hasLow ? '<button type="button" data-q="sd">480p</button>' : '') + '<button type="button" data-q="auto">Auto</button>';
     qw.append(qbtn, qm);
-    var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); qbtn.querySelector('.ql').textContent = p === 'auto' ? 'Auto · ' + (e === 'sd' ? '480p' : hdLabel()) : (e === 'sd' ? '480p' : hdLabel()); [].forEach.call(qm.querySelectorAll('button[data-q]'), function (b) { b.classList.toggle('on', b.dataset.q === p); }); };
+    var qRender0 = qRender; qRender = function () { qRender0(); var p = pref(), e = eff(); qbtn.querySelector('.ql').textContent = (e === 'sd' ? '480p' : hdLabel()); qbtn.title = p === 'auto' ? 'Auto' : ''; [].forEach.call(qm.querySelectorAll('button[data-q]'), function (b) { b.classList.toggle('on', b.dataset.q === p); }); };
     qbtn.onclick = function (e) { e.stopPropagation(); qw.classList.toggle('open'); };
     qm.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; LS.set(Q_KEY, b.dataset.q); qw.classList.remove('open'); applyQuality(true); say('Quality: ' + (eff() === 'sd' ? '480p' : hdLabel())); });
     document.addEventListener('click', function (e) { if (!qw.contains(e.target)) qw.classList.remove('open'); });
