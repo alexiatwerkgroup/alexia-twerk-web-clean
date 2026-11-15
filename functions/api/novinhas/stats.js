@@ -1,7 +1,21 @@
 // Estadisticas reales de Novinhas para la home. GET /api/novinhas/stats -> {channels:{done,total}, videos:{done,total}, enhanced:{done,total}, watching, likes, free}
 let TOTAL_CHANNELS = 1061, TOTAL_VIDEOS = 12565; const FREE = 10, SLUG = /^[a-z0-9-]{2,60}$/;
-const J = (o) => new Response(JSON.stringify(o), { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=120', 'X-Robots-Tag': 'noindex' } });
-export async function onRequest({ request, env }) {
+const J = (o) => new Response(JSON.stringify(o), { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=900', 'X-Robots-Tag': 'noindex' } });
+async function scan(env, chans) {
+  let low = 0, videos = 0, enhanced = 0;
+  const one = async (c) => {
+    try {
+      const o = await env.NOVINHAS_VIDEOS.get(c.slug + '/_videos.json');
+      if (o) { const vs = (await o.json()).videos || []; videos += vs.length; for (const v of vs) if (Math.min(Number(v.width) || 0, Number(v.height) || 0) <= 576) low++; }
+    } catch (e) {}
+    try { let cur; do { const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/hq/', cursor: cur }); enhanced += (l.objects || []).filter((x) => /video-\d+\.mp4$/.test(x.key)).length; cur = l.truncated ? l.cursor : null; } while (cur); } catch (e) {}
+  };
+  for (let i = 0; i < chans.length; i += 12) await Promise.all(chans.slice(i, i + 12).map(one));
+  const out = { t: Date.now(), n: chans.length, low, videos, enhanced };
+  try { await env.NOVINHAS_VIDEOS.put('_config/stats-cache.json', JSON.stringify(out), { httpMetadata: { contentType: 'application/json' } }); } catch (e) {}
+  return out;
+}
+export async function onRequest({ request, env, waitUntil }) {
   /* Inventario real (novinhas/inventory.json): total = E:\NOVINHAS +20 y -10 videos; hecho = E:\canales con logo */
   let inv = {}; try { const r0 = await env.ASSETS.fetch(new URL('/novinhas/inventory.json', request.url)); inv = await r0.json(); if (inv.folders > 0) TOTAL_CHANNELS = inv.folders; if (inv.videos > 0) TOTAL_VIDEOS = inv.videos; } catch (e) {}
   let chans = [];
@@ -9,18 +23,10 @@ export async function onRequest({ request, env }) {
   let cached = null;
   try { const o = await env.NOVINHAS_VIDEOS.get('_config/stats-cache.json'); if (o) cached = await o.json(); } catch (e) {}
   let low = 0, videos = 0, enhanced = 0;
-  if (cached && Date.now() - cached.t < 600000 && cached.n === chans.length) { low = cached.low; videos = cached.videos; enhanced = cached.enhanced; }
-  else {
-    for (const c of chans) {
-      try {
-        const o = await env.NOVINHAS_VIDEOS.get(c.slug + '/_videos.json'); if (!o) continue;
-        const vs = (await o.json()).videos || []; videos += vs.length;
-        for (const v of vs) if (Math.min(Number(v.width) || 0, Number(v.height) || 0) <= 576) low++;
-      } catch (e) {}
-      try { let cur; do { const l = await env.NOVINHAS_VIDEOS.list({ prefix: c.slug + '/hq/', cursor: cur }); enhanced += (l.objects || []).filter((x) => /video-\d+\.mp4$/.test(x.key)).length; cur = l.truncated ? l.cursor : null; } while (cur); } catch (e) {}
-    }
-    try { await env.NOVINHAS_VIDEOS.put('_config/stats-cache.json', JSON.stringify({ t: Date.now(), n: chans.length, low, videos, enhanced }), { httpMetadata: { contentType: 'application/json' } }); } catch (e) {}
-  }
+  if (cached) {
+    low = cached.low; videos = cached.videos; enhanced = cached.enhanced;
+    if ((Date.now() - cached.t >= 600000 || cached.n !== chans.length) && waitUntil) waitUntil(scan(env, chans));
+  } else { const r = await scan(env, chans); low = r.low; videos = r.videos; enhanced = r.enhanced; }
   let watching = 0, likes = 0; const now = Math.floor(Date.now() / 1000);
   try { const w = await env.DB.prepare('SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ?').bind(now - 600).first(); watching = w ? w.c : 0; } catch (e) {}
   try { const l = await env.DB.prepare('SELECT COUNT(*) c FROM nv_votes').first(); likes = l ? l.c : 0; } catch (e) {}
