@@ -173,7 +173,7 @@
       box.className = 'np-stage' + (cur.height > cur.width ? ' np-tall' : ''); v.poster = cur.poster;
       v.removeAttribute('data-src'); applyQuality(false); v.play().catch(function () {});
       try { history.replaceState(null, '', urlFor(cur, false)); } catch (_) {}
-      needSync = true; try { posTxt(); setRec(); tech(); mRes.textContent = ''; tick(); } catch (_) {} say(cur.title || 'Next');
+      needSync = true; try { enhRefresh(); posTxt(); setRec(); tech(); mRes.textContent = ''; tick(); } catch (_) {} say(cur.title || 'Next');
     }
     function onFsChange() { if (needSync && !document.fullscreenElement && !document.webkitFullscreenElement) { needSync = false; location.replace(urlFor(cur, false)); } }
     document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
@@ -225,7 +225,7 @@
       if (help.classList.contains('on')) { if (k === 'Escape' || k === '?' || k === 'h' || k === 'H') help.classList.remove('on'); e.preventDefault(); return; }
       if (code === 'Space' || k === 'k' || k === 'K') playPause();
       else if (k === 'Enter' || k === 'f' || k === 'F') toggleFs();
-      else if ((k === 'e' || k === 'E') && !e.shiftKey) { if (typeof enh !== 'undefined' && enh && enh.style.display !== 'none') { if (enh.disabled) say(enhOn ? 'Enhanced already on' : 'Upgrade in progress'); else enh.click(); } else say('No enhanced version'); }
+      else if ((k === 'e' || k === 'E') && !e.shiftKey) { if (typeof enh !== 'undefined' && enh && enh.style.display !== 'none') { if (enh.disabled) say(enhOn ? 'Enhanced already on' : 'Upgrade in progress'); else enh.click(); } else enhQueue(); }
       else if (k === 'm' || k === 'M') { v.muted = !v.muted; say(v.muted ? 'Muted' : 'Volume ' + Math.round(v.volume * 100) + '%'); }
       else if (k === 'ArrowLeft') seek(-5); else if (k === 'ArrowRight') seek(5);
       else if (k === 'j' || k === 'J') seek(-10); else if (k === 'l' || k === 'L') seek(10);
@@ -291,10 +291,20 @@
           eset('ENHANCED ON','Now playing the upgraded version' + (o.j.left < 900 ? ' · ' + o.j.left + ' coins left today' : ''),'on');
         }).catch(function () { enh.disabled = false; });
     });
-    fetch('/api/novinhas/enhance?c=' + encodeURIComponent(slug), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-      if (!j) return; var id = cur.id;
+    var enhJ = null;
+    function enhRefresh() {
+      if (!enhJ) return; var j = enhJ, id = cur.id; enhOn = false; enh.disabled = false; enh.style.cursor = '';
       if (j.ready.indexOf(id) >= 0) { enh.style.display = ''; eset('UPGRADE','Enhanced quality ready · tap to watch it now · ' + (j.owner ? 'free for you' : '1 coin · ' + j.left + ' of ' + j.max + ' left today'),''); }
-      else if (j.queued.indexOf(id) >= 0) { enh.style.display = ''; enh.disabled = true; enh.style.cursor = 'default'; eset('ENHANCED','Upgrade in progress · coming soon',''); }
+      else if (j.queued.indexOf(id) >= 0) { enh.style.display = ''; enh.disabled = true; enh.style.cursor = 'default'; eset('ENHANCED','Being processed · come back later',''); }
+      else enh.style.display = 'none';
+    }
+    function enhQueue() {
+      if (!enhJ || !enhJ.owner) { say('No enhanced version'); return; }
+      fetch('/api/novinhas/enhance', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: cur.id, title: cur.title || '' }) })
+        .then(function (r) { return r.json(); }).then(function (o) { if (o && o.ok) { if (enhJ.queued.indexOf(cur.id) < 0) enhJ.queued.push(cur.id); enhRefresh(); say('Added · being processed, come back later'); } else say('Could not add'); }).catch(function () { say('Could not add'); });
+    }
+    fetch('/api/novinhas/enhance?c=' + encodeURIComponent(slug), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j) return; enhJ = j; enhRefresh();
     }).catch(function () {});
     function fmtT(t) { t = Math.max(0, Math.ceil(t)); var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s2 = t % 60; return (h ? h + ':' + (m < 10 ? '0' : '') : '') + m + ':' + (s2 < 10 ? '0' : '') + s2; }
     function resTxt() {
