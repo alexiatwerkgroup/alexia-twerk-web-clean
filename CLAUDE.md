@@ -48,6 +48,7 @@ Sistema data-driven. NO editar el HTML a mano.
    - En la página de la playlist: el hero `All <em>N</em> ... cuts.` (N = cantidad real de tarjetas `vcard`).
    - En el **home** (`index.html`), la tarjeta promo de esa playlist: `N cuts · <categoría>` y `N carefully curated drops` (y cualquier `N videos`/`N cuts` que la referencie).
    - Revisar cross-links en otras páginas que muestren "N videos/cuts" de esa playlist.
+   - **Novinhas (/novinhas/ y home):** tras subir canales nuevos, actualizar siempre `novinhas/inventory.json` (folders, videos, doneChannels, doneVideos) — alimenta los bloques "canales recuperados", "videos recuperados" y el texto "N archivos de video" (también en `assets/twk-i18n.js`). El bloque inferior de /novinhas/ muestra: bailarinas archivadas · videos recuperados · canales recuperados (ya no hay dos números iguales).
    Nunca dejar un contador viejo (ej. quedó "191"/"53" cuando ya eran 285). Verificar que no quede el número anterior en ningún lado.
 5. **Push**: `git add` del JSON + carpeta de playlist regenerada → commit → `git push origin main`.
 

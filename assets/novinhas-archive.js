@@ -21,6 +21,7 @@
   }
   function paintStats(data){
     [['folders',data.folderCount],['videos',data.videoFiles],['listed',data.publicRecords],['folders-with-videos',data.foldersWithVideos]].forEach(function(pair){document.querySelectorAll('[data-na-stat="'+pair[0]+'"]').forEach(function(el){animateStat(el,Number(pair[1])||0)})});
+    fetch('/novinhas/inventory.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(inv){[['folders',inv.folders],['done-videos',inv.doneVideos],['done-channels',inv.doneChannels]].forEach(function(pair){document.querySelectorAll('[data-na-stat="'+pair[0]+'"]').forEach(function(el){if(Number(pair[1])>0)animateStat(el,Number(pair[1]))})})}).catch(function(){});
     document.querySelectorAll('[data-cat-count]').forEach(function(el){var key=el.dataset.catCount;var total=key==='all'?data.records.length:data.records.filter(function(r){return Array.isArray(r.categories)&&r.categories.indexOf(key)>=0}).length;el.textContent=number(total)});
   }
   var inventory=fetch('/novinhas/catalog.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('inventory unavailable');return r.json()});
