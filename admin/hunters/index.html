@@ -10,6 +10,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{font:800 10px system
 </style></head><body><div class="w">
 <div class="top"><h1>Hunters</h1><div><a class="btn" href="/admin/stats/">← Estadísticas</a><a class="btn" href="/admin-users.html">Registrados</a></div></div>
 <div id="msg" class="m">Cargando…</div>
+<div class="c" id="c0" hidden><h2>Qué hacen con el cartel <span class="m">· sesiones únicas, desde ahora</span></h2><table><tbody id="b0"></tbody></table></div>
 <div class="c" id="c1" hidden><h2>Participantes del concurso <span class="m" id="n1"></span></h2><table><thead><tr><th>#</th><th>Usuario</th><th>Email</th><th>Categoría</th><th>Desde</th></tr></thead><tbody id="b1"></tbody></table></div>
 <div class="c" id="c2" hidden><h2>Ganaron monedas de platino <span class="m" id="n2"></span></h2><table><thead><tr><th>#</th><th>Usuario</th><th>Email</th><th>Platino</th><th>Voucher</th><th>Hunter</th><th>Fecha</th></tr></thead><tbody id="b2"></tbody></table></div>
 </div><script>
@@ -18,6 +19,8 @@ var h={};try{var a=JSON.parse(localStorage.getItem('alexia-auth-v3')||'{}')||{};
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function dt(t){return t?new Date(t).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'}
 function get(q){return fetch('/api/novinhas/hunt?'+q,{credentials:'same-origin',cache:'no-store',headers:h}).then(function(r){return r.ok?r.json():null})}
+get('stats=1').then(function(s){if(!s)return;var rows=[['Abrieron el cartel',s.plays],['Maybe later',s.later],['Cerraron con la X',s.close],['Tocaron Registrar / Sign up',s.reg],['Eligieron Categoría 1 (contenido)',s.cat1],['Eligieron Categoría 2 (dinero)',s.cat2],['Acertaron el conejo',s.hits],['Ganaron el gran premio',s.greats]];
+ document.getElementById('c0').hidden=false;document.getElementById('b0').innerHTML=rows.map(function(r){return'<tr><td>'+r[0]+'</td><td><b>'+(r[1]||0)+'</b></td></tr>'}).join('')});
 Promise.all([get('list=1'),get('winners=1')]).then(function(x){
  var l=x[0],w=x[1],m=document.getElementById('msg');
  if(!l&&!w){m.textContent='Esta página es solo para el dueño. Iniciá sesión con tu cuenta de dueño.';return}

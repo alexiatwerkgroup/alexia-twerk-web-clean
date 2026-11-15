@@ -92,15 +92,17 @@
     document.body.appendChild(root);
     root.querySelector('.gr').innerHTML = EM.map(function (s) { return '<div><img alt="" src="' + s + '"></div>'; }).join('');
     root.querySelector('.lg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; L = b.dataset.l; ls(LK, L); paint(); });
-    root.querySelector('.x').onclick = root.querySelector('.b2').onclick = dismiss;
+    root.querySelector('.x').onclick = function () { api({ ev: 'close', sid: sid }).catch(function () {}); dismiss(); };
+    root.querySelector('.b2').onclick = function () { api({ ev: 'later', sid: sid }).catch(function () {}); dismiss(); };
     function ovOpen() { var o = root && root.querySelector('.ov'); return !!(o && o.style.display === 'flex'); }
     function closeOv() { var o = root && root.querySelector('.ov'); if (!o) return; o.style.opacity = '0'; setTimeout(function () { o.style.display = 'none'; }, 220); var t = tier, au = auth; if (t && au) setTimeout(function () { try { window.TwkCoin && window.TwkCoin.celebrate(t === 'great' ? 20 : 5, true, 'coin'); } catch (e) {} }, 400); }
     root.querySelector('.cx').onclick = closeOv;
     root.addEventListener('click', function (e) { if (e.target === root && !ovOpen()) dismiss(); });
     document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape' && root) { if (ovOpen()) closeOv(); else dismiss(); } });
     root.querySelector('#twkh-c').addEventListener('change', onCheck);
+    root.querySelector('.b1').addEventListener('click', function () { api({ ev: 'reg', sid: sid }).catch(function () {}); });
     root.querySelector('.b1').addEventListener('click', function (e) { if (auth) { e.preventDefault(); var c = root.querySelector('#twkh-c'); if (!cat) { msg('pick'); return; } if (!c.checked) { c.checked = true; onCheck({ target: c }); } } else { if (!cat) { e.preventDefault(); msg('pick'); return; } ls(PK, '1'); } });
-    previews(); egg(); setCat(cat, false); [].forEach.call(root.querySelectorAll('.c'), function (e) { e.addEventListener('click', function () { setCat(e.dataset.cat, true); if (joined && auth) api({ join: 1, cat: cat }).catch(function () {}); }); e.addEventListener('keydown', function (k) { if (k.key === 'Enter' || k.key === ' ') { k.preventDefault(); e.click(); } }); }); paint(); tick(); tmr = setInterval(tick, 1000);
+    previews(); egg(); setCat(cat, false); [].forEach.call(root.querySelectorAll('.c'), function (e) { e.addEventListener('click', function () { api({ ev: e.dataset.cat === 'money' ? 'cat2' : 'cat1', sid: sid }).catch(function () {}); setCat(e.dataset.cat, true); if (joined && auth) api({ join: 1, cat: cat }).catch(function () {}); }); e.addEventListener('keydown', function (k) { if (k.key === 'Enter' || k.key === ' ') { k.preventDefault(); e.click(); } }); }); paint(); tick(); tmr = setInterval(tick, 1000);
     if (joined) { root.querySelector('#twkh-c').checked = true; msg('ok'); }
     api({ ev: 'play', sid: sid }).catch(function () {});
   }

@@ -42,7 +42,9 @@ export async function onRequest({ request, env }) {
       const plays = (a && a.n) || 0, hits = (h && h.n) || 0;
       const g = await env.DB.prepare("SELECT COUNT(*) n FROM nv_hunt_ev WHERE kind = 'great'").first();
       const greats = (g && g.n) || 0, pc = (n) => plays > 0 ? Math.round(n * 1000 / plays) / 10 : 0;
-      return J({ ok: true, plays, hits, greats, pct: pc(hits), pctGreat: pc(greats) });
+      const ck = async (k) => { const r = await env.DB.prepare('SELECT COUNT(*) n FROM nv_hunt_ev WHERE kind = ?').bind(k).first(); return (r && r.n) || 0; };
+      const [later, close, reg, cat1, cat2] = await Promise.all([ck('later'), ck('close'), ck('reg'), ck('cat1'), ck('cat2')]);
+      return J({ ok: true, plays, hits, greats, pct: pc(hits), pctGreat: pc(greats), later, close, reg, cat1, cat2 });
     }
     if (!u) return J({ auth: false, joined: false });
     const row = await env.DB.prepare('SELECT joined, cat FROM nv_hunt WHERE uid = ?').bind(u.uid).first();
@@ -54,6 +56,12 @@ export async function onRequest({ request, env }) {
   }
   if (request.method !== 'POST') return J({ error: 'method' }, 405);
   let b = {}; try { b = await request.json(); } catch (e) {}
+  if (b.ev === 'later' || b.ev === 'close' || b.ev === 'reg' || b.ev === 'cat1' || b.ev === 'cat2') {
+    const sid2 = String(b.sid || '').slice(0, 64);
+    if (!/^[A-Za-z0-9_-]{8,64}$/.test(sid2)) return J({ error: 'sid' }, 400);
+    await env.DB.prepare('INSERT OR IGNORE INTO nv_hunt_ev (sid, kind, ts) VALUES (?,?,?)').bind(sid2, b.ev, Date.now()).run();
+    return J({ ok: true });
+  }
   if (b.ev === 'play' || b.ev === 'hit' || b.ev === 'great') {
     const sid = String(b.sid || '').slice(0, 64);
     if (!/^[A-Za-z0-9_-]{8,64}$/.test(sid)) return J({ error: 'sid' }, 400);
