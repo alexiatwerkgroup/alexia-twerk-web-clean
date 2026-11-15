@@ -435,11 +435,24 @@
       if (!j || !j.owner) return; mini.owner = true;
       var rb = document.createElement('button'); rb.type = 'button'; rb.className = 'np-rb'; rb.innerHTML = '<i></i><span>REC</span>'; rb.title = 'Record a 30 s miniclip from the current moment (with slow motion if it is on)';
       var lab = rb.querySelector('span'), rt;
+      var recQ = null, recT = 0, recN = 0; // grabacion en curso: 30 s de cuenta regresiva; tocar REC de nuevo la cancela
+      function recEnd(txt, cls) { clearInterval(recT); recQ = null; rb.classList.remove('busy', 'rec', 'ok'); if (cls) rb.classList.add(cls); lab.textContent = txt; clearTimeout(rt); rt = setTimeout(function () { rb.classList.remove('ok'); lab.textContent = 'REC'; }, 2600); }
       rb.onclick = function () {
+        if (recQ) { // segundo toque: cancela el miniclip y lo borra
+          var q0 = recQ; rb.classList.add('busy'); lab.textContent = 'Canceling…';
+          fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'remove', c: q0.c, id: q0.id, start: q0.start, slow: q0.slow }) }).then(function (r) { return r.json(); }).then(function (x) {
+            recEnd(x && x.ok ? 'Canceled' : 'Error', x && x.ok ? 'ok' : ''); if (x && x.ok) { say('Miniclip canceled'); minisLoad(); }
+          }).catch(function () { recEnd('Error'); });
+          return;
+        }
         var slow = v.playbackRate < 1; rb.classList.add('busy'); lab.textContent = 'Saving…';
         fetch('/api/novinhas/mini', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: cur.id, t: Math.floor(v.currentTime || 0), slow: slow }) }).then(function (r) { return r.json(); }).then(function (x) {
-          rb.classList.remove('busy'); if (x && x.ok) { rb.classList.add('ok'); lab.textContent = 'Saved · ' + (slow ? 'slow ' : '') + '30 s'; say('Miniclip saved (' + (slow ? 'slow motion · ' : '') + '30 s from ' + x.start + ' s)'); } else lab.textContent = 'Error';
-          clearTimeout(rt); rt = setTimeout(function () { rb.classList.remove('ok'); lab.textContent = 'REC'; }, 2600);
+          rb.classList.remove('busy');
+          if (x && x.ok) {
+            recQ = { c: slug, id: cur.id, start: x.start, slow: slow ? 1 : 0 }; recN = 30; rb.classList.add('rec'); say('Miniclip saved (' + (slow ? 'slow motion · ' : '') + '30 s from ' + x.start + ' s) · tap REC again to cancel');
+            var draw = function () { lab.textContent = recN + ' s · cancel'; rb.title = 'Recording a 30 s miniclip. Tap again to cancel it'; }; draw();
+            clearTimeout(rt); clearInterval(recT); recT = setInterval(function () { recN--; if (recN <= 0) { recEnd('Saved · ' + (slow ? 'slow ' : '') + '30 s', 'ok'); } else draw(); }, 1000);
+          } else { lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); }
         }).catch(function () { rb.classList.remove('busy'); lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); });
       };
       sb.appendChild(rb);
