@@ -483,7 +483,7 @@
             recQ = { c: slug, id: cur.id, start: x.start, slow: slow ? 1 : 0 }; recN = 30; rb.classList.add('rec'); waitMini(recQ); say('Miniclip saved (' + (slow ? 'slow motion · ' : '') + '30 s from ' + x.start + ' s) · tap REC again to cancel');
             var draw = function () { lab.textContent = recN + ' s · cancel'; rb.title = 'Recording a 30 s miniclip. Tap again to cancel it'; }; draw();
             clearTimeout(rt); clearInterval(recT); recT = setInterval(function () { recN--; if (recN <= 0) { recEnd('Saved · ' + (slow ? 'slow ' : '') + '30 s', 'ok'); } else draw(); }, 1000);
-          } else { var er = x && x.error; lab.textContent = er === 'daily_limit' ? 'Limit today' : er === 'total_limit' ? 'Limit reached' : er === 'vip_only_slow' ? 'VIP only' : 'Error'; if (er === 'daily_limit') say('Daily limit reached: 10 miniclips per day'); else if (er === 'total_limit') say('You reached the 100 miniclip limit'); clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); }
+          } else { var er = x && x.error; lab.textContent = er === 'daily_limit' ? 'Limit today' : er === 'total_limit' ? 'Limit reached' : er === 'vip_only_slow' ? 'VIP only' : 'Error'; if (er === 'daily_limit') say('Daily limit reached: ' + (x.max || '') + ' miniclips per day'); else if (er === 'total_limit') say('You reached the ' + (x.max || '') + ' miniclip limit'); clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); }
         }).catch(function () { rb.classList.remove('busy'); lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); });
       };
     }).catch(function () {});

@@ -1,4 +1,4 @@
-// Miniclips: clips de 30 s con el boton REC del reproductor. Cuentas normales: 10/dia y 100 en total, sin camara lenta (solo VIP) y sin borrar; el dueño sin limites.
+// Miniclips: clips de 30 s con el boton REC del reproductor. Cuentas normales: 3/dia y 30 en total (VIP 10/100), sin camara lenta (solo VIP) y sin borrar; el dueño sin limites.
 //  POST /api/novinhas/mini {c,id,t,slow}                -> (cuenta) marca un miniclip; la cola se refleja en R2 _config/mini-queue.json
 //  POST /api/novinhas/mini {action:'remove',c,id,start,slow} -> (dueño) borra un miniclip (fila + archivos)
 //  GET  /api/novinhas/mini?me=1                         -> {owner,user,vip,left}
@@ -8,7 +8,7 @@
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
 import { isVip } from '../../_lib/vip.js';
-const DAY_MAX = 10, TOTAL_MAX = 100; // cuentas normales: 10 miniclips por dia y 100 en total (el dueño no tiene tope)
+const LIM = { n: { day: 3, total: 30 }, v: { day: 10, total: 100 } }; // cuentas normales 3 por dia y 30 en total, VIP 10 y 100 (el dueño no tiene tope)
 const SLUG = /^[a-z0-9-]{2,60}$/, KEY = /^([a-z0-9-]{2,60})\/mini\/m-(\d+)-(\d+)-([ns])\.(mp4|webp)$/, SECS = 30;
 const J = (o, s = 200, cc = 'no-store') => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': cc, 'X-Robots-Tag': 'noindex' } });
 // Usuario con cuenta: {id, owner}. Sin sesion -> null.
@@ -19,10 +19,11 @@ async function who(request, env) {
     return { id: String(p.sub), owner: String(u.email).toLowerCase() === OWNER };
   } catch (e) { return null; }
 }
-async function quota(db, uid, now) {
+async function quota(db, uid, now, vip) {
+  const L = vip ? LIM.v : LIM.n;
   const d = await db.prepare('SELECT COUNT(*) n FROM nv_mini WHERE uid = ? AND added >= ?').bind(uid, now - 86400).first();
   const t = await db.prepare('SELECT COUNT(*) n FROM nv_mini WHERE uid = ?').bind(uid).first();
-  return { today: Math.max(0, DAY_MAX - ((d && d.n) || 0)), total: Math.max(0, TOTAL_MAX - ((t && t.n) || 0)) };
+  return { today: Math.max(0, L.day - ((d && d.n) || 0)), total: Math.max(0, L.total - ((t && t.n) || 0)), day: L.day, max: L.total };
 }
 async function ensure(db) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_mini (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, vid INTEGER, start INTEGER, slow INTEGER DEFAULT 0, title TEXT, name TEXT, added INTEGER, UNIQUE(slug, vid, start, slow))').run();
@@ -66,8 +67,9 @@ export async function onRequest({ request, env }) {
     const vj = await env.NOVINHAS_VIDEOS.get(b.c + '/_videos.json'); if (!vj) return J({ error: 'not_found' }, 404);
     const d = await vj.json(), v = (d.videos || []).filter((x) => x.id === id)[0]; if (!v) return J({ error: 'no_such_video' }, 404);
     const slow = b.slow ? 1 : 0;
-    if (slow && !me.owner && !(await isVip(request, env))) return J({ ok: false, error: 'vip_only_slow' }, 403);
-    if (!me.owner) { const ql = await quota(db, me.id, now); if (ql.today <= 0) return J({ ok: false, error: 'daily_limit', max: DAY_MAX }, 429); if (ql.total <= 0) return J({ ok: false, error: 'total_limit', max: TOTAL_MAX }, 429); }
+    const vip = me.owner || (await isVip(request, env));
+    if (slow && !vip) return J({ ok: false, error: 'vip_only_slow' }, 403);
+    if (!me.owner) { const ql = await quota(db, me.id, now, vip); if (ql.today <= 0) return J({ ok: false, error: 'daily_limit', max: ql.day }, 429); if (ql.total <= 0) return J({ ok: false, error: 'total_limit', max: ql.max }, 429); }
     const src = slow ? SECS / 2 : SECS; // en camara lenta (0.5x) 15 s de video original ocupan 30 s
     const t = Math.max(0, Math.min(Math.floor(Number(b.t) || 0), Math.max(0, Math.floor((Number(v.duration) || 0) - src))));
     await db.prepare('INSERT OR IGNORE INTO nv_mini (slug, vid, start, slow, title, name, added, uid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').bind(b.c, id, t, slow, v.title || '', d.name || b.c, now, me.id).run();
@@ -77,8 +79,8 @@ export async function onRequest({ request, env }) {
   if (q.get('me')) {
     const me = await who(request, env); if (!me) return J({ owner: false, user: false });
     if (me.owner) return J({ owner: true, user: true, vip: true });
-    await ensure(db); const ql = await quota(db, me.id, now);
-    return J({ owner: false, user: true, vip: await isVip(request, env), left: Math.min(ql.today, ql.total), day: DAY_MAX, total: TOTAL_MAX });
+    await ensure(db); const vip = await isVip(request, env), ql = await quota(db, me.id, now, vip);
+    return J({ owner: false, user: true, vip, left: Math.min(ql.today, ql.total), day: ql.day, total: ql.max });
   }
   if (q.get('s')) {
     const key = q.get('k') || '', m = KEY.exec(key);
