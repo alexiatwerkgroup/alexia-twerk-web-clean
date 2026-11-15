@@ -14,12 +14,20 @@
     fetch('/api/novinhas/featured?me=1', { credentials: 'same-origin', cache: 'no-store', headers: (function () { var h = {}; try { var t = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token; if (t) h.Authorization = 'Bearer ' + t; } catch (e) {} return h; })() }).then(function (r) { return r.ok ? r.json() : null; }).then(function (m) {
       if (!m || !m.owner) return;
       [].forEach.call(box.querySelectorAll('.nf-it'), function (a, i) {
-        var it = d.items[i]; if (!it) return; var b = document.createElement('button'); b.type = 'button'; b.innerHTML = dot('#33d17a') + 'Sacar de la fila'; b.setAttribute('aria-label', 'Sacar este video de la fila');
-        b.style.cssText = 'position:absolute;top:8px;left:8px;z-index:5;background:#000c;color:#ffd27a;border:1px solid #b88a2a;border-radius:8px;padding:5px 9px;font:800 11px system-ui;cursor:pointer';
-        b.onclick = function (e) { e.preventDefault(); e.stopPropagation(); var h = { 'Content-Type': 'application/json' }; try { var t = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token; if (t) h.Authorization = 'Bearer ' + t; } catch (x) {} b.innerHTML = dot('#f5b301') + '…'; fetch('/api/novinhas/featured', { method: 'POST', credentials: 'same-origin', headers: h, body: JSON.stringify({ action: 'rowhide', slug: it.slug, id: it.id }) }).then(function (r) { if (!r.ok) { b.innerHTML = dot('#ff3b30') + 'Error'; return; } return ownerState().then(function (st) { var out = !!(st && st.hidden && st.hidden.indexOf(it.slug + ':' + it.id) >= 0); b.innerHTML = out ? dot('#ff3b30') + 'Fuera de la fila' : dot('#33d17a') + 'Sigue en la fila'; if (out) a.style.opacity = '.4'; }); }); };
-        var pb = document.createElement('button'); pb.type = 'button'; pb.textContent = 'Fijar en la fila'; if (m.pinned && m.pinned.indexOf(it.slug + ':' + it.id) >= 0) pb.innerHTML = dot('#f0b90b') + 'Fijado'; pb.style.cssText = 'position:absolute;top:42px;left:8px;z-index:5;background:#000c;color:#ffd27a;border:1px solid #b88a2a;border-radius:8px;padding:5px 9px;font:800 11px system-ui;cursor:pointer';
-        pb.onclick = function (e) { e.preventDefault(); e.stopPropagation(); var h = { 'Content-Type': 'application/json' }; try { var t = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token; if (t) h.Authorization = 'Bearer ' + t; } catch (x) {} pb.textContent = '…'; fetch('/api/novinhas/featured', { method: 'POST', credentials: 'same-origin', headers: h, body: JSON.stringify({ action: 'rowpin', slug: it.slug, id: it.id }) }).then(function (r) { if (!r.ok) { pb.textContent = 'Error'; return; } return ownerState().then(function (st) { var on = !!(st && st.pinned && st.pinned.indexOf(it.slug + ':' + it.id) >= 0); pb.innerHTML = on ? dot('#f0b90b') + 'Fijado' : 'No se fijó'; }); }); };
-        var m2 = a.querySelector('.nf-m'); if (m2) { m2.style.position = 'relative'; m2.appendChild(b); m2.appendChild(pb); }
+        var it = d.items[i]; if (!it) return; var key = it.slug + ':' + it.id, m2 = a.querySelector('.nf-m'); if (!m2) return;
+        var state = (m.pinned && m.pinned.indexOf(key) >= 0) ? 'pin' : (m.hidden && m.hidden.indexOf(key) >= 0) ? 'hide' : 'free';
+        var OPT = [['pin', 'Fijado', '#f0b90b', 8], ['free', 'Al azar', '#33d17a', 42], ['hide', 'Fuera', '#ff3b30', 76]], btns = {};
+        function paint() { OPT.forEach(function (o) { var on = o[0] === state; btns[o[0]].innerHTML = (on ? dot(o[2]) : '') + o[1]; btns[o[0]].style.opacity = on ? '1' : '.75'; btns[o[0]].style.borderColor = on ? o[2] : '#b88a2a'; }); a.style.opacity = state === 'hide' ? '.4' : ''; }
+        OPT.forEach(function (o) {
+          var bt = document.createElement('button'); bt.type = 'button'; bt.setAttribute('aria-label', o[1]);
+          bt.style.cssText = 'position:absolute;top:' + o[3] + 'px;left:8px;z-index:5;background:#000c;color:#ffd27a;border:1px solid #b88a2a;border-radius:8px;padding:5px 9px;font:800 11px system-ui;cursor:pointer';
+          bt.onclick = function (e) {
+            e.preventDefault(); e.stopPropagation(); var h = ownerHdr(); h['Content-Type'] = 'application/json'; var prev = state; bt.textContent = '…';
+            fetch('/api/novinhas/featured', { method: 'POST', credentials: 'same-origin', headers: h, body: JSON.stringify({ action: 'rowset', slug: it.slug, id: it.id, state: o[0] }) }).then(function (r) { state = r.ok ? o[0] : prev; paint(); if (!r.ok) bt.textContent = 'Error'; }).catch(function () { state = prev; paint(); });
+          };
+          btns[o[0]] = bt; m2.style.position = 'relative'; m2.appendChild(bt);
+        });
+        paint();
       });
     }).catch(function () {});
     var cards = [].slice.call(box.querySelectorAll('.nf-it')), vids = cards.map(function (a) { return a.querySelector('video'); }), hov = -1, cur = -1, pass = 0, started = false;

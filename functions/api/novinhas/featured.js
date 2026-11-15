@@ -109,6 +109,16 @@ export async function onRequest({ request, env }) {
       return J({ ok: true });
     }
     if (!(await isOwner(request, env))) return J({ ok: false, error: 'owner_only' }, 403);
+    if (b.action === 'rowset') { // 3 estados de un clip de la fila: pin (fijado) / free (en la rotacion al azar) / hide (fuera)
+      if (!SLUG.test(b.slug || '') || !(+b.id > 0) || ['pin', 'free', 'hide'].indexOf(b.state) < 0) return J({ error: 'bad_request' }, 400);
+      await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_bad (slug TEXT, vid INTEGER, ts INTEGER, PRIMARY KEY (slug, vid))').run();
+      await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_pin (slug TEXT PRIMARY KEY, vid INTEGER, ts INTEGER)').run();
+      await db.prepare('DELETE FROM nv_row_bad WHERE slug = ? AND vid = ?').bind(b.slug, +b.id).run();
+      await db.prepare('DELETE FROM nv_row_pin WHERE slug = ? AND vid = ?').bind(b.slug, +b.id).run();
+      if (b.state === 'pin') await db.prepare('INSERT OR REPLACE INTO nv_row_pin (slug, vid, ts) VALUES (?, ?, ?)').bind(b.slug, +b.id, now).run();
+      if (b.state === 'hide') await db.prepare('INSERT OR REPLACE INTO nv_row_bad (slug, vid, ts) VALUES (?, ?, ?)').bind(b.slug, +b.id, now).run();
+      return J({ ok: true });
+    }
     if (b.action === 'rowhide') { if (!SLUG.test(b.slug || '') || !(+b.id > 0)) return J({ error: 'bad_request' }, 400); await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_bad (slug TEXT, vid INTEGER, ts INTEGER, PRIMARY KEY (slug, vid))').run(); await db.prepare('INSERT OR REPLACE INTO nv_row_bad (slug, vid, ts) VALUES (?, ?, ?)').bind(b.slug, +b.id, now).run(); return J({ ok: true }); }
     if (b.action === 'rowpin') { if (!SLUG.test(b.slug || '') || !(+b.id > 0)) return J({ error: 'bad_request' }, 400); await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_pin (slug TEXT PRIMARY KEY, vid INTEGER, ts INTEGER)').run(); await db.prepare('INSERT OR REPLACE INTO nv_row_pin (slug, vid, ts) VALUES (?, ?, ?)').bind(b.slug, +b.id, now).run(); return J({ ok: true }); }
     if (b.action === 'next') { await setS(db, 'since', 0); return J({ ok: true }); }
