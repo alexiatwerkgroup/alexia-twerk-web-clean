@@ -46,3 +46,4 @@ except Exception as e:
     print('::error title=mini_worker::' + msg)
     traceback.print_exc()
     sys.exit(1)
+# relanzado 23:12
