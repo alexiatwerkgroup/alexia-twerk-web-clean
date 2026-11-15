@@ -1,9 +1,9 @@
 /* Panel sticky "Escalera de donadores" (novinhas). Datos reales desde /api/novinhas/donors. Se puede cerrar y queda una pastilla para reabrir. */
 (function () {
   if (window.__twkDon) return; window.__twkDon = 1;
-  var LK = 'twk-hunt-lang', CK = 'twk-don-closed';
-  function ls(k, v) { try { var S = k === CK ? sessionStorage : localStorage; if (v === undefined) return S.getItem(k); S.setItem(k, v); } catch (e) {} return null; }
-  try { localStorage.removeItem('twk-don-closed'); } catch (e) {}
+  var LK = 'twk-hunt-lang';
+  function ls(k, v) { try { var S = localStorage; if (v === undefined) return S.getItem(k); S.setItem(k, v); } catch (e) {} return null; }
+  try { localStorage.removeItem('twk-don-closed'); sessionStorage.removeItem('twk-don-closed'); } catch (e) {}
   var T = {
     pt: { go: 'Ver todos os prêmios', pr: 'EM CONTEÚDO EXCLUSIVO', pb: '+ benefícios únicos para toda a vida', ti: 'Escada de doadores', su: 'Escolha seu degrau. Vagas limitadas.', one: 'livre', many: 'livres', pz: 'Prêmio garantido', ql: 'Classificando', em: 'Vazio', ld: 'Líder', an: 'Anônimo', d: 'Doar', inc: 'Aumentar minha doação', hid: 'Seu nome fica oculto', pill: 'Ranking de doadores', x: 'Minimizar', first: 'Ainda ninguém. Seja o primeiro.', pl: 'seu lugar' },
     es: { go: 'Ver todos los premios', pr: 'EN CONTENIDO EXCLUSIVO', pb: '+ beneficios únicos de por vida', ti: 'Escalera de donadores', su: 'Elige tu escalón. Cupos limitados.', one: 'libre', many: 'libres', pz: 'Premio asegurado', ql: 'Clasificando', em: 'Vacío', ld: 'Líder', an: 'Anónimo', d: 'Donar', inc: 'Aumentar mi donación', hid: 'Tu nombre queda oculto', pill: 'Ranking de donadores', x: 'Minimizar', first: 'Todavía nadie. Sé el primero.', pl: 'tu lugar' },
@@ -50,8 +50,8 @@
     h += '<a class="b1" href="' + go() + '">' + o.d + '</a><a class="b2" href="' + go(top ? Math.floor(top) + 1 : 0) + '">' + o.inc + '</a><div class="hd">' + o.hid + '</div></div>';
     h += '<button type="button" class="pl">' + o.pill + '</button>';
     root.innerHTML = h;
-    root.querySelector('.xx').onclick = function () { root.classList.remove('on', 'mid'); ls(CK, '1'); };
-    root.querySelector('.pl').onclick = function () { root.classList.add('on'); ls(CK, '0'); };
+    root.querySelector('.xx').onclick = function () { root.classList.remove('on', 'mid'); };
+    root.querySelector('.pl').onclick = function () { root.classList.add('on'); };
     [].forEach.call(root.querySelectorAll('.lg button'), function (b) { b.onclick = function () { L = b.dataset.l; ls(LK, L); render(); root.classList.add('on'); }; });
   }
   function load() { fetch('/api/novinhas/donors', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { if (j && j.items) { var on = root.classList.contains('on'); data = j; render(); if (on) root.classList.add('on'); } }).catch(function () {}); }
@@ -62,7 +62,7 @@
   }
   place(); setTimeout(place, 1500); window.addEventListener('resize', place); try { new MutationObserver(place).observe(root, { attributes: true, attributeFilter: ['class'], childList: true }); } catch (e) {}
   window.TWK_DON = { open: function (mid) { root.classList.add('on'); if (mid) root.classList.add('mid'); } };
-  render(); if (ls(CK) !== '1' && window.innerWidth > 520) root.classList.add('on');
+  render(); if (window.innerWidth > 520) root.classList.add('on');
   if (/[?&]donpreview=1(&|$)/.test(location.search)) { /* vista previa del dueño con montos de EJEMPLO (no se guardan ni los ve nadie sin este enlace) */
     data = { items: [50, 42, 35, 30, 25, 20, 15].map(function (a, i) { return { n: ['7F3A', 'C21B', '9D40', 'A8E6', '3B7C', 'E15F', '60D2'][i], amt: a }; }), tiers: { 1000: { cap: 1, used: 0 }, 500: { cap: 5, used: 0 }, 100: { cap: 7, used: 0 } } };
     render(); root.classList.add('on'); return;

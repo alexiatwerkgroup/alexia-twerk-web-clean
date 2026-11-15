@@ -127,7 +127,7 @@
     root.querySelector('.b3').onclick = function () {
       function op() { if (window.TWK_DON) window.TWK_DON.open(true); }
       if (window.TWK_DON) { op(); return; }
-      var sc = document.createElement('script'); sc.src = '/assets/twk-donor-rank.js?v=20261115-r7'; sc.onload = op; document.head.appendChild(sc);
+      var sc = document.createElement('script'); sc.src = '/assets/twk-donor-rank.js?v=20261115-r8'; sc.onload = op; document.head.appendChild(sc);
     };
     root.querySelector('.b2').onclick = function () { api({ ev: 'later', sid: sid }).catch(function () {}); dismiss(); };
     function ovOpen() { var o = root && root.querySelector('.ov'); return !!(o && o.style.display === 'flex'); }
@@ -271,5 +271,5 @@
   }
   if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
   /* panel sticky de donadores en todo el sitio (menos admin/pagos/cuenta); se cierra con la X y queda una pastilla */
-  if (!/^\/(admin|paymentmethods|account|login|auth)/.test(location.pathname)) setTimeout(function () { if (window.TWK_DON) return; var sc = document.createElement('script'); sc.src = '/assets/twk-donor-rank.js?v=20261115-r7'; document.head.appendChild(sc); }, 2500);
+  if (!/^\/(admin|paymentmethods|account|login|auth)/.test(location.pathname)) setTimeout(function () { if (window.TWK_DON) return; var sc = document.createElement('script'); sc.src = '/assets/twk-donor-rank.js?v=20261115-r8'; document.head.appendChild(sc); }, 2500);
 })();
