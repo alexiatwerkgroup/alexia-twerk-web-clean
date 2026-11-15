@@ -527,13 +527,17 @@
         avatarData = await resizeImage(file);
         var av = $('avatar-preview');
         if (av && avatarData) av.innerHTML = '<img src="' + esc(avatarData) + '" alt="Avatar">';
-        setStatus('Avatar ready. Click Save to apply.', 'ok');
+        setStatus('Saving photo…', '');
+        if (saveBtn) saveBtn.click();
       } catch (e) {
         avatarData = '';
         setStatus(e && e.message ? e.message : 'Could not process image.', 'err');
       }
       ev.target.value = '';
     });
+
+    var heroRing = $('hero-avatar-ring');
+    if (heroRing && fileInput) heroRing.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.av-edit')) return; fileInput.click(); });
 
     if (removeBtn) removeBtn.addEventListener('click', function(){
       avatarData = '';

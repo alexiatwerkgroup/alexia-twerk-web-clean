@@ -124,6 +124,7 @@ body::before{
   transition:transform .4s cubic-bezier(.2,1.2,.3,1), box-shadow .4s;
   animation:ringSpin 18s linear infinite;
 }
+.avatar-ring{cursor:pointer}.av-edit{position:absolute;right:-2px;bottom:-2px;z-index:5;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:#2b1a00;background:linear-gradient(135deg,#fff0a8,#f0b90b 55%,#a87a08);border:2px solid #0b0b10;box-shadow:0 4px 16px rgba(0,0,0,.55),0 0 0 1px rgba(255,214,102,.6);transition:transform .2s ease,filter .2s ease}.av-edit:hover{transform:scale(1.12);filter:brightness(1.1)}
 .avatar-ring:hover{transform:scale(1.04);box-shadow:0 0 0 1px rgba(255,255,255,.15),0 18px 60px rgba(255,45,135,.55),0 0 90px rgba(255,180,84,.32)}
 @keyframes ringSpin{to{background:conic-gradient(from 500deg, var(--pink), var(--gold), var(--purple), var(--pink))}}
 
@@ -595,6 +596,7 @@ a.twk-hero-affiliate-overlay,
   <section class="hero">
     <div class="avatar-ring" id="hero-avatar-ring" aria-label="Your avatar">
       <div class="avatar-preview" id="avatar-preview">?</div>
+      <label class="av-edit" for="avatar-file" title="Change photo" aria-label="Change photo"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.6-2.4h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.6"/></svg></label>
     </div>
     <div class="hero-kicker" id="hero-kicker"><span>// member</span></div>
     <h1 id="hero-name">Guest</h1>
@@ -851,7 +853,7 @@ a.twk-hero-affiliate-overlay,
 <!-- Existing functional scripts — profile-page.js hooks into the IDs/classes above -->
 <!-- Supabase SDK removed 2026-05-08: migrated to Cloudflare D1. supabase-config.js
      now provides window.__twkSupabase as a thin shim over /api/* Pages Functions. -->
-<script defer src="/assets/profile-page.js?v=20260509-d1-p9-emailonly-founder"></script>
+<script defer src="/assets/profile-page.js?v=20261115-av1"></script>
 <!-- 2026-05-08: enter-now-widget removed from profile page (had a syntax error
      at line 218 that was breaking the script chain). Not critical for profile UX. -->
 <!---->
