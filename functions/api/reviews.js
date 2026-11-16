@@ -1,4 +1,4 @@
-// Reviews de compradores (reales). Solo los envian cuentas con VIP/compra; el dueño aprueba antes de que se vean.
+// Reviews de compradores (reales). Las envia cualquier cuenta con sesion (verificada si es VIP/compra); el dueño aprueba antes de que se vean.
 //  GET  /api/reviews                  -> {items:[{id,name,stars,text,product,verified,ts}], n, avg}   (solo aprobadas, publico)
 //  GET  /api/reviews?me=1             -> {user, vip, owner, mine:{stars,text,status}|null}
 //  GET  /api/reviews?all=1            -> (dueño) todas, con pendientes
@@ -46,11 +46,11 @@ export async function onRequest({ request, env }) {
       await db.prepare("INSERT INTO nv_reviews (uid, name, stars, text, product, verified, status, ts) VALUES (NULL, ?, ?, ?, ?, 1, 'ok', ?)").bind(clean(b.name, 24) || 'Buyer', stars, text, clean(b.product, 40), now).run();
       return J({ ok: true });
     }
-    if (!me.owner && !(await isVip(request, env))) return J({ ok: false, error: 'vip_only' }, 403);
+    const vipBuyer = me.owner || (await isVip(request, env));
     const name = clean(b.name, 24) || clean(me.name, 24) || 'Member';
     const old = await db.prepare('SELECT id FROM nv_reviews WHERE uid = ?').bind(me.id).first();
     if (old) await db.prepare("UPDATE nv_reviews SET name = ?, stars = ?, text = ?, status = 'pending', ts = ? WHERE id = ?").bind(name, stars, text, now, old.id).run();
-    else await db.prepare("INSERT INTO nv_reviews (uid, name, stars, text, product, verified, status, ts) VALUES (?, ?, ?, ?, 'VIP', 1, 'pending', ?)").bind(me.id, name, stars, text, now).run();
+    else await db.prepare("INSERT INTO nv_reviews (uid, name, stars, text, product, verified, status, ts) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?)").bind(me.id, name, stars, text, vipBuyer ? 'VIP' : '', vipBuyer ? 1 : 0, now).run();
     return J({ ok: true, status: 'pending' });
   }
 
