@@ -18,7 +18,8 @@
 
   function render(pub, me, all) {
     var items = (pub && pub.items) || [], canWrite = me && me.vip, isOwner = me && me.owner;
-    if (!items.length && !canWrite && !isOwner) { host.hidden = true; return; }
+    var standalone = host.hasAttribute('data-page');
+    if (!items.length && !canWrite && !isOwner && !standalone) { host.hidden = true; return; }
     host.hidden = false;
     var h = '<div class="w"><div class="rv-top"><div><div class="eyebrow">Buyer reviews</div><h2>What buyers say</h2></div>' +
       (items.length ? '<div class="rv-avg">' + pub.avg.toFixed(1) + ' <span style="font-size:.55em">' + star(Math.round(pub.avg)) + '</span><small>' + items.length + ' REVIEWS</small></div>' : '') + '</div>';
@@ -28,6 +29,9 @@
       h += '<form class="rv-f" id="rv-form"><h3>' + (m ? 'Update your review' : 'Leave your review') + '</h3><div class="rv-pick" id="rv-pick">' + [1, 2, 3, 4, 5].map(function (i) { return '<button type="button" data-v="' + i + '" class="' + (m && i <= m.stars ? 'on' : '') + '">★</button>'; }).join('') + '</div>' +
         '<input id="rv-name" maxlength="24" placeholder="Name to show (optional)" value="' + esc(m ? m.name : '') + '"><textarea id="rv-text" maxlength="500" placeholder="What did you get and how was it? (min. 15 characters)">' + esc(m ? m.text : '') + '</textarea>' +
         '<div><button class="btn k" type="submit">Send review</button></div><div class="rv-m" id="rv-msg">' + (m ? (m.status === 'ok' ? 'Your review is published.' : 'Your review is waiting for approval.') : 'Reviews are checked before they appear.') + '</div></form>';
+    }
+    if (standalone && !canWrite && !isOwner) {
+      h += '<div class="rv-f"><h3>Leave your review</h3><div class="rv-m">' + (me && me.user ? 'Reviews can be left by VIP buyers. Activate your VIP on this browser and come back to this page.' : 'Log in with your Twerkhub account to leave your review.') + '</div>' + (me && me.user ? '' : '<div><a class="btn k" href="/account?next=/reviews/">Log in</a></div>') + '</div>';
     }
     if (isOwner) {
       h += '<div class="rv-adm"><div class="rv-m">OWNER · pending reviews and add a buyer review</div>' +
