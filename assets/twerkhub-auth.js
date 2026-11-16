@@ -478,7 +478,7 @@
           var path = (location.pathname || '').toLowerCase();
           if (path.indexOf('/account') === 0 || path.indexOf('/profile') === 0) {
             var next = new URLSearchParams(location.search).get('next') || '';
-            location.href = /^\/novinhas\/(?:watch\/(?:#video-\d{2})?)?$/.test(next) ? next : '/';
+            location.href = /^\/(?:novinhas\/(?:watch\/(?:#video-\d{2})?)?|reviews\/)$/.test(next) ? next : '/';
           } else {
             location.reload();
           }
