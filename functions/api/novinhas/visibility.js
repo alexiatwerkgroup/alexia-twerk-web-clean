@@ -15,7 +15,10 @@ export async function onRequest({ request, env }) {
   if (['mini', 'preview', 'enhanced'].includes(kind)) {
     const start = Math.max(0, Number(body.start ?? q.get('start')) || 0), slow = Number(body.slow ?? q.get('slow')) ? 1 : 0;
     let key = kind === 'mini' ? `${slug}/mini/m-${id}-${start}-${slow ? 's' : 'n'}.mp4` : kind === 'preview' ? `${slug}/clips/c-${id}-${start}.mp4` : `${slug}/hq/video-${String(id).padStart(2, '0')}.mp4`;
-    if (!(await env.NOVINHAS_VIDEOS.head(key))) return J({ ok: false, error: 'clip_not_found' }, 404);
+    if (!(await env.NOVINHAS_VIDEOS.head(key))) {
+      const queued = kind === 'preview' ? await env.DB.prepare('SELECT 1 FROM nv_feat WHERE slug=? AND vid=? AND start=? AND auto=0').bind(slug, id, start).first() : kind === 'enhanced' ? await env.DB.prepare('SELECT 1 FROM nv_enh WHERE slug=? AND vid=?').bind(slug, id).first() : null;
+      if (!queued) return J({ ok: false, error: 'clip_not_found' }, 404);
+    }
     if (request.method === 'POST') {
       if (body.access !== 'public' && body.access !== 'vip') return J({ ok: false, error: 'bad_access' }, 400);
       await changeClipAccess(request, env, kind, slug, id, start, slow, body.access);

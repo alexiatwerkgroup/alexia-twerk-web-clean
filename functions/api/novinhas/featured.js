@@ -179,9 +179,16 @@ export async function onRequest({ request, env }) {
   }
   if (q.get('library')) {
     const slug = q.get('c') || ''; if (!SLUG.test(slug)) return J({ error: 'bad_request' }, 400);
-    const rows = await clipList(env, db, slug, 500), access = await clipAccessMap(db, 'preview', slug), items = [];
-    for (const r of rows) if (await clipCanView(request, env, 'preview', slug, r.v, r.st, 0)) items.push({ c: slug, id: r.v, start: r.st, slow: 0, kind: 'preview', access: access[`${r.v}/${r.st}/0`] || 'public', name: slug, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${r.v}&t=${r.st}`, poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(r.v)}.webp`, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(r.v)}` });
-    return J({ items, owner: await isOwner(request, env) });
+    const rows = (await db.prepare('SELECT vid,title,name,start,queued FROM nv_feat WHERE slug=? AND auto=0 ORDER BY added DESC').bind(slug).all()).results || [], ready = await clipList(env, db, slug, 500), readyByVideo = {};
+    ready.forEach((r) => { readyByVideo[r.v] = r.st; });
+    const access = await clipAccessMap(db, 'preview', slug), owner = await isOwner(request, env), items = [];
+    for (const r of rows) {
+      const start = readyByVideo[r.vid] == null ? (r.start || 0) : readyByVideo[r.vid], hasFile = readyByVideo[r.vid] != null;
+      if (!hasFile && !owner) continue;
+      if (hasFile && !(await clipCanView(request, env, 'preview', slug, r.vid, start, 0))) continue;
+      items.push({ c: slug, id: r.vid, start, slow: 0, kind: 'preview', access: access[`${r.vid}/${start}/0`] || 'public', pending: !hasFile, name: r.name || slug, title: r.title || '', src: hasFile ? `/api/novinhas/featured?cs=1&c=${slug}&v=${r.vid}&t=${start}` : '', poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(r.vid)}.webp`, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(r.vid)}` });
+    }
+    return J({ items, owner });
   }
   if (q.get('thumbs')) {
     const rows = (await db.prepare('SELECT id, slug, vid, start FROM nv_feat ORDER BY added, id').all()).results || [], by = {};

@@ -163,7 +163,7 @@
         var mj = res[0] || {}, pj = res[1] || {}, ej = res[2] || {};
         mini.owner = mini.owner || !!pj.owner || !!ej.owner; mini.vip = mini.vip || !!ej.vip || mini.owner;
         mini.items = (mj.items || []).map(function (x) { x.kind = 'mini'; return x; });
-        var enhancedItems = (ej.readyItems || []).map(function (x) { x.kind = 'enhanced'; return x; });
+        var enhancedItems = (ej.readyItems || []).map(function (x) { x.kind = 'enhanced'; return x; }).concat(ej.queuedItems || []);
         var all = [ { label: 'MINICLIPS', items: mini.items }, { label: 'PREVIEWS', items: (pj.items || []) }, { label: 'ENHANCED', items: enhancedItems } ];
         mini.grid.innerHTML = '';
         all.forEach(function (section) {
@@ -171,17 +171,17 @@
           var head = document.createElement('div'); head.className = 'np-mh np-msec'; head.textContent = section.label; mini.grid.appendChild(head);
           section.items.forEach(function (it) {
           var b = document.createElement('button'); b.type = 'button'; b.className = 'np-mc'; b.setAttribute('aria-label', 'Miniclip @' + it.name);
-          var label = it.kind === 'preview' ? 'PREVIEW' : it.kind === 'enhanced' ? 'ENHANCED' : it.slow ? 'SLOW · 30s' : '30s';
+          var label = it.pending ? (it.kind === 'preview' ? 'PREVIEW · EN COLA' : 'ENHANCED · EN COLA') : it.kind === 'preview' ? 'PREVIEW' : it.kind === 'enhanced' ? 'ENHANCED' : it.slow ? 'SLOW · 30s' : '30s';
           b.innerHTML = (it.poster ? '<img alt="" loading="lazy" src="' + it.poster + '">' : '') + '<b' + (it.slow ? ' class="sl"' : '') + '>' + label + '</b>';
           var pv2 = null;
-          b.addEventListener('mouseenter', function () { if (!mini.vip || pv2 || !window.matchMedia('(hover:hover)').matches) return; pv2 = document.createElement('video'); pv2.src = it.src; pv2.muted = true; pv2.loop = true; pv2.playsInline = true; pv2.preload = 'metadata'; b.insertBefore(pv2, b.firstChild); pv2.play().catch(function () {}); });
+          b.addEventListener('mouseenter', function () { if (it.pending || !mini.vip || pv2 || !window.matchMedia('(hover:hover)').matches) return; pv2 = document.createElement('video'); pv2.src = it.src; pv2.muted = true; pv2.loop = true; pv2.playsInline = true; pv2.preload = 'metadata'; b.insertBefore(pv2, b.firstChild); pv2.play().catch(function () {}); });
           b.addEventListener('mouseleave', function () { if (pv2) { pv2.pause(); pv2.remove(); pv2 = null; } });
           if (mini.owner) {
             var accessBtn = document.createElement('span'); accessBtn.className = 'np-maccess'; accessBtn.textContent = (it.access === 'vip' ? 'VIP 🔒' : 'PUBLICO') + ' · ' + (it.access === 'vip' ? 'Hacer público' : 'Hacer VIP');
             accessBtn.onclick = function (e) { e.stopPropagation(); var next = it.access === 'vip' ? 'public' : 'vip'; accessBtn.textContent = 'Guardando…'; fetch('/api/novinhas/visibility', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: it.c || slug, id: it.id, start: it.start || 0, slow: it.slow || 0, kind: it.kind || 'mini', access: next }) }).then(function (r) { return r.json(); }).then(function (j) { if (!j.ok) throw Error(); it.access = j.access; accessBtn.textContent = (it.access === 'vip' ? 'VIP 🔒' : 'PUBLICO') + ' · ' + (it.access === 'vip' ? 'Hacer público' : 'Hacer VIP'); }).catch(function () { accessBtn.textContent = 'No se pudo guardar'; }); };
             b.appendChild(accessBtn);
           }
-          b.addEventListener('click', function () { if (pv2) { pv2.pause(); pv2.remove(); pv2 = null; } if (it.kind === 'enhanced') { fetch('/api/novinhas/enhance?use=1', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: it.id }) }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); }).then(function (x) { if (!x.ok || !x.body.ok) { if (!mini.user) location.href = '/account'; else if (window.TWK_NQ) window.TWK_NQ.open(); return; } it.src = x.body.src; mopen(it); }).catch(function () { say('Could not open clip'); }); return; } mopen(it); });
+          b.addEventListener('click', function () { if (pv2) { pv2.pause(); pv2.remove(); pv2 = null; } if (it.pending) { say(it.kind === 'preview' ? 'Preview still processing' : 'Enhanced version still processing'); return; } if (it.kind === 'enhanced') { fetch('/api/novinhas/enhance?use=1', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ c: slug, id: it.id }) }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); }).then(function (x) { if (!x.ok || !x.body.ok) { if (!mini.user) location.href = '/account'; else if (window.TWK_NQ) window.TWK_NQ.open(); return; } it.src = x.body.src; mopen(it); }).catch(function () { say('Could not open clip'); }); return; } mopen(it); });
           mini.grid.appendChild(b);
           });
         });

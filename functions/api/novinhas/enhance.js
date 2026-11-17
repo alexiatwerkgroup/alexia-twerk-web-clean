@@ -75,7 +75,10 @@ export async function onRequest({ request, env }) {
     if (w.uid) { const u = await db.prepare('SELECT COUNT(*) n FROM nv_coin WHERE uid=? AND day=?').bind(w.uid, day()).first(); left = Math.max(0, max - ((u && u.n) || 0)); }
     const access = await clipAccessMap(db, 'enhanced', slug), readyItems = [], visibleReady = [];
     for (const vid of ready) if (await clipCanView(request, env, 'enhanced', slug, vid, 0, 0)) { visibleReady.push(vid); readyItems.push({ id: vid, start: 0, slow: 0, access: access[`${vid}/0/0`] || 'public', src: `/api/novinhas/enhance?s=1&c=${slug}&v=${vid}`, poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(vid)}.webp`, name: slug, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(vid)}` }); }
-    return J({ ready: visibleReady, readyItems, queued: (q.results || []).map((x) => x.vid).filter((x) => ready.indexOf(x) < 0), left: w.owner ? 999 : left, max, vip: !!vip, owner: w.owner, auth: !!w.uid });
+    const queuedItems = w.owner ? (q.results || []).filter((x) => ready.indexOf(x.vid) < 0).map((x) => ({ id: x.vid, start: 0, slow: 0, access: access[`${x.vid}/0/0`] || 'public', kind: 'enhanced', pending: true, name: slug, poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(x.vid)}.webp`, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(x.vid)}` })) : [];
+    const queued = [];
+    for (const x of (q.results || [])) if (ready.indexOf(x.vid) < 0 && (w.owner || await clipCanView(request, env, 'enhanced', slug, x.vid, 0, 0))) queued.push(x.vid);
+    return J({ ready: visibleReady, readyItems, queued, queuedItems, left: w.owner ? 999 : left, max, vip: !!vip, owner: w.owner, auth: !!w.uid });
   }
   if (request.method !== 'POST') return J({ error: 'method' }, 405);
   let b = {}; try { b = await request.json(); } catch (e) {}
