@@ -1,7 +1,6 @@
-"""Process one missing Enhanced video from the R2 queue using the private upscaler image."""
+"""Process one missing Enhanced video from R2 through the Salad GPU upscaler."""
 import json
 import os
-import secrets
 import subprocess
 import sys
 import time
@@ -21,8 +20,10 @@ def env(name):
 endpoint = env("R2_ENDPOINT")
 access_key = env("AWS_ACCESS_KEY_ID")
 secret_key = env("AWS_SECRET_ACCESS_KEY")
-if not endpoint.startswith("https://") or not access_key or not secret_key:
-    sys.exit("R2 credentials are incomplete")
+upscaler_url = env("SALAD_UPSCALER_URL").rstrip("/")
+upscaler_token = env("SALAD_UPSCALER_TOKEN")
+if not endpoint.startswith("https://") or not access_key or not secret_key or not upscaler_url.startswith("https://") or not upscaler_token:
+    sys.exit("R2 or Salad upscaler credentials are incomplete")
 
 s3 = boto3.client(
     "s3", endpoint_url=endpoint, aws_access_key_id=access_key,
@@ -93,68 +94,59 @@ for folder in ("full", "480h"):
 if not downloaded:
     sys.exit(f"Source video is missing for {slug} #{number}; leaving it queued")
 
-token = secrets.token_urlsafe(36)
-container = "twk-enhance-" + secrets.token_hex(4)
-image = "ghcr.io/alexiatwerkgroup/twerkhub-upscaler:latest"
-subprocess.run(
-    ["docker", "run", "--detach", "--rm", "--name", container,
-     "--publish", "127.0.0.1:8000:8000", "--env", "UPSCALER_TOKEN=" + token, image],
-    check=True,
-)
-try:
-    base = "http://127.0.0.1:8000"
-    health_deadline = time.time() + 180
-    while time.time() < health_deadline:
-        try:
-            if requests.get(base + "/health", timeout=5).ok:
-                break
-        except requests.RequestException:
-            pass
-        time.sleep(3)
-    else:
-        sys.exit("Local upscaler did not become ready")
-
-    with open(source, "rb") as stream:
-        response = requests.post(
-            base + "/jobs?lado=1080&dn=0", data=stream,
-            headers={"X-Token": token, "Content-Type": "video/mp4"},
-            timeout=(30, 6 * 60 * 60),
-        )
-    response.raise_for_status()
-    job_id = response.json()["id"]
-    print("Enhanced job started for", slug, number, flush=True)
-    deadline = time.time() + 5 * 60 * 60
-    while time.time() < deadline:
-        status = requests.get(base + "/jobs/" + job_id, headers={"X-Token": token}, timeout=30)
-        status.raise_for_status()
-        state = status.json()
-        if state.get("status") == "error":
-            raise RuntimeError(state.get("error", "Upscaler failed"))
-        if state.get("status") == "done":
+base = upscaler_url
+headers = {"X-Token": upscaler_token}
+health_deadline = time.time() + 15 * 60
+while time.time() < health_deadline:
+    try:
+        if requests.get(base + "/health", timeout=10).ok:
             break
-        print("Enhanced job status:", state.get("status", "unknown"), flush=True)
-        time.sleep(20)
-    else:
-        raise TimeoutError("Upscaler job exceeded the five-hour processing window")
+    except requests.RequestException:
+        pass
+    print("Waiting for Salad GPU endpoint", flush=True)
+    time.sleep(15)
+else:
+    sys.exit("Salad GPU endpoint did not become ready")
 
-    with requests.get(base + "/jobs/" + job_id + "/result", headers={"X-Token": token}, stream=True, timeout=900) as response:
-        response.raise_for_status()
-        with open(result, "wb") as stream:
-            for block in response.iter_content(1024 * 1024):
-                if block:
-                    stream.write(block)
-    if os.path.getsize(result) < 1024:
-        raise RuntimeError("Upscaler returned an empty video")
+with open(source, "rb") as stream:
+    response = requests.post(
+        base + "/jobs?lado=1080&dn=0", data=stream,
+        headers={**headers, "Content-Type": "video/mp4"},
+        timeout=(30, 15 * 60),
+    )
+response.raise_for_status()
+job_id = response.json()["id"]
+print("Enhanced job started for", slug, number, flush=True)
+deadline = time.time() + 5 * 60 * 60
+while time.time() < deadline:
+    status = requests.get(base + "/jobs/" + job_id, headers=headers, timeout=30)
+    status.raise_for_status()
+    state = status.json()
+    if state.get("status") == "error":
+        raise RuntimeError(state.get("error", "Upscaler failed"))
+    if state.get("status") == "done":
+        break
+    print("Enhanced job status:", state.get("status", "unknown"), flush=True)
+    time.sleep(20)
+else:
+    raise TimeoutError("Upscaler job exceeded the five-hour processing window")
 
-    s3.upload_file(result, bucket, output_key, ExtraArgs={"ContentType": "video/mp4"})
-    poster_key = f"{slug}/previews/poster-{number}.webp"
-    if not exists(poster_key):
-        poster = "/tmp/enhanced-poster.webp"
-        poster_cmd = ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", result,
-                      "-ss", "2", "-frames:v", "1", "-vf", "scale=-2:640", "-c:v", "libwebp",
-                      "-quality", "88", poster]
-        if subprocess.run(poster_cmd).returncode == 0 and os.path.exists(poster):
-            s3.upload_file(poster, bucket, poster_key, ExtraArgs={"ContentType": "image/webp"})
-    print("READY Enhanced:", output_key, flush=True)
-finally:
-    subprocess.run(["docker", "stop", container], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+with requests.get(base + "/jobs/" + job_id + "/result", headers=headers, stream=True, timeout=900) as response:
+    response.raise_for_status()
+    with open(result, "wb") as stream:
+        for block in response.iter_content(1024 * 1024):
+            if block:
+                stream.write(block)
+if os.path.getsize(result) < 1024:
+    raise RuntimeError("Upscaler returned an empty video")
+
+s3.upload_file(result, bucket, output_key, ExtraArgs={"ContentType": "video/mp4"})
+poster_key = f"{slug}/previews/poster-{number}.webp"
+if not exists(poster_key):
+    poster = "/tmp/enhanced-poster.webp"
+    poster_cmd = ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", result,
+                  "-ss", "2", "-frames:v", "1", "-vf", "scale=-2:640", "-c:v", "libwebp",
+                  "-quality", "88", poster]
+    if subprocess.run(poster_cmd).returncode == 0 and os.path.exists(poster):
+        s3.upload_file(poster, bucket, poster_key, ExtraArgs={"ContentType": "image/webp"})
+print("READY Enhanced:", output_key, flush=True)
