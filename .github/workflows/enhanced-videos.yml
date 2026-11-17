@@ -1,0 +1,35 @@
+name: enhanced-videos
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/enhanced-videos.yml', 'tools/enhance_worker.py', 'upscaler/**']
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+concurrency:
+  group: enhanced-videos
+  cancel-in-progress: false
+permissions:
+  contents: read
+  packages: read
+jobs:
+  enhance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: pip install boto3 requests
+      - name: Sign in to the private upscaler image
+        run: echo "$REGISTRY_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+        env:
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Process one queued Enhanced video
+        run: python3 tools/enhance_worker.py
+        env:
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

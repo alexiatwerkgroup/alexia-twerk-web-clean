@@ -186,7 +186,7 @@ export async function onRequest({ request, env }) {
       const start = readyByVideo[r.vid] == null ? (r.start || 0) : readyByVideo[r.vid], hasFile = readyByVideo[r.vid] != null;
       if (!hasFile && !owner) continue;
       if (hasFile && !(await clipCanView(request, env, 'preview', slug, r.vid, start, 0))) continue;
-      items.push({ c: slug, id: r.vid, start, slow: 0, kind: 'preview', access: access[`${r.vid}/${start}/0`] || 'public', pending: !hasFile, name: r.name || slug, title: r.title || '', src: hasFile ? `/api/novinhas/featured?cs=1&c=${slug}&v=${r.vid}&t=${start}` : '', poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(r.vid)}.webp`, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(r.vid)}` });
+      items.push({ c: slug, id: r.vid, start, slow: 0, kind: 'preview', access: access[`${r.vid}/${start}/0`] || 'public', pending: !hasFile, queuedAt: !hasFile ? Number(r.added) || 0 : 0, name: r.name || slug, title: r.title || '', src: hasFile ? `/api/novinhas/featured?cs=1&c=${slug}&v=${r.vid}&t=${start}` : '', poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(r.vid)}.webp`, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(r.vid)}` });
     }
     return J({ items, owner });
   }

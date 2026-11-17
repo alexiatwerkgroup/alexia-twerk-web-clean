@@ -141,7 +141,7 @@
       var host = box.parentNode, room = Math.floor(box.getBoundingClientRect().left) - 20, side = room >= 100;
       if (!mini.box.classList.contains('strip')) { mini.box.classList.add('strip'); host.insertBefore(mini.box, box.nextSibling); }
       if (side) {
-        var sc = room >= 230 ? 2 : 1, sg = 8, sw = Math.min(118, Math.floor((Math.min(room, 260) - sg * (sc - 1)) / sc));
+        var sc = room >= 256 ? 3 : room >= 170 ? 2 : 1, sg = 8, sw = Math.min(118, Math.floor((Math.min(room, 380) - sg * (sc - 1)) / sc));
         host.style.position = 'relative'; mini.box.classList.add('lft'); mini.box.style.width = (sw * sc + sg * (sc - 1)) + 'px'; mini.grid.style.gridTemplateColumns = 'repeat(' + sc + ',' + sw + 'px)';
       } else { mini.box.classList.remove('lft'); mini.box.style.width = ''; mini.grid.style.gridTemplateColumns = ''; }
       [].forEach.call(cards, function (c) { c.style.display = ''; });
@@ -151,19 +151,23 @@
       Promise.all([
         fetch('/api/novinhas/mini?c=' + encodeURIComponent(slug) + '&n=12&t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }),
         fetch('/api/novinhas/featured?library=1&c=' + encodeURIComponent(slug) + '&t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }),
+        fetch('/api/novinhas/enhance?c=' + encodeURIComponent(slug) + '&t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }),
         fetch('/api/novinhas/mini?me=1', { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; })
       ]).then(function (res) {
-        var mj = res[0] || {}, pj = res[1] || {}, me = res[2] || {};
-        mini.owner = mini.owner || !!pj.owner || !!me.owner; mini.vip = mini.vip || !!me.vip || mini.owner; mini.user = mini.user || !!me.user;
+        var mj = res[0] || {}, pj = res[1] || {}, ej = res[2] || {}, me = res[3] || {};
+        mini.owner = mini.owner || !!pj.owner || !!ej.owner || !!me.owner; mini.vip = mini.vip || !!ej.vip || !!me.vip || mini.owner; mini.user = mini.user || !!ej.auth || !!me.user;
         mini.items = (mj.items || []).map(function (x) { x.kind = 'mini'; return x; });
-        var all = [ { label: 'MINICLIPS', items: mini.items }, { label: 'PREVIEWS', items: (pj.items || []) } ];
+        var enhancedItems = (ej.readyItems || []).map(function (x) { x.kind = 'enhanced'; return x; }).concat(ej.queuedItems || []);
+        var all = [ { label: 'MINICLIPS', items: mini.items }, { label: 'PREVIEWS', items: (pj.items || []) }, { label: 'ENHANCED', items: enhancedItems } ];
         mini.grid.innerHTML = '';
         all.forEach(function (section) {
           if (!section.items.length) return;
           var head = document.createElement('div'); head.className = 'np-mh np-msec'; head.textContent = section.label; mini.grid.appendChild(head);
           section.items.forEach(function (it) {
           var b = document.createElement('button'); b.type = 'button'; b.className = 'np-mc'; b.setAttribute('aria-label', 'Miniclip @' + it.name);
-          var label = it.pending ? (it.kind === 'preview' ? 'PREVIEW · EN COLA' : 'ENHANCED · EN COLA') : it.kind === 'preview' ? 'PREVIEW' : it.kind === 'enhanced' ? 'ENHANCED' : it.slow ? 'SLOW · 30s' : '30s';
+          var queuedAt = Number(it.queuedAt || 0); if (queuedAt && queuedAt < 1000000000000) queuedAt *= 1000;
+          var waitMins = queuedAt ? Math.max(0, Math.floor((Date.now() - queuedAt) / 60000)) : null;
+          var label = it.pending ? 'EN COLA' + (waitMins == null ? '' : ' · ' + waitMins + 'm') : it.kind === 'preview' ? 'PREVIEW' : it.kind === 'enhanced' ? 'ENHANCED' : it.slow ? 'SLOW · 30s' : '30s';
           b.innerHTML = (it.poster ? '<img alt="" loading="lazy" src="' + it.poster + '">' : '') + '<b' + (it.slow ? ' class="sl"' : '') + '>' + label + '</b>';
           var pv2 = null;
           b.addEventListener('mouseenter', function () { if (it.pending || !mini.vip || pv2 || !window.matchMedia('(hover:hover)').matches) return; pv2 = document.createElement('video'); pv2.src = it.src; pv2.muted = true; pv2.loop = true; pv2.playsInline = true; pv2.preload = 'metadata'; b.insertBefore(pv2, b.firstChild); pv2.play().catch(function () {}); });

@@ -69,13 +69,13 @@ export async function onRequest({ request, env }) {
   if (request.method === 'GET') {
     if (!SLUG.test(slug)) return J({ error: 'bad' }, 400);
     const w = await who(request, env), vip = await isVip(request, env), max = FREE * (vip ? VIPX : 1);
-    const q = await db.prepare('SELECT vid FROM nv_enh WHERE slug=?').bind(slug).all();
+    const q = await db.prepare('SELECT vid, added FROM nv_enh WHERE slug=? ORDER BY added').bind(slug).all();
     const ready = await readyIds(env, slug);
     let left = max;
     if (w.uid) { const u = await db.prepare('SELECT COUNT(*) n FROM nv_coin WHERE uid=? AND day=?').bind(w.uid, day()).first(); left = Math.max(0, max - ((u && u.n) || 0)); }
     const access = await clipAccessMap(db, 'enhanced', slug), readyItems = [], visibleReady = [];
     for (const vid of ready) if (await clipCanView(request, env, 'enhanced', slug, vid, 0, 0)) { visibleReady.push(vid); readyItems.push({ id: vid, start: 0, slow: 0, access: access[`${vid}/0/0`] || 'public', src: `/api/novinhas/enhance?s=1&c=${slug}&v=${vid}`, poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(vid)}.webp`, name: slug, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(vid)}` }); }
-    const queuedItems = w.owner ? (q.results || []).filter((x) => ready.indexOf(x.vid) < 0).map((x) => ({ id: x.vid, start: 0, slow: 0, access: access[`${x.vid}/0/0`] || 'public', kind: 'enhanced', pending: true, name: slug, poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(x.vid)}.webp`, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(x.vid)}` })) : [];
+    const queuedItems = w.owner ? (q.results || []).filter((x) => ready.indexOf(x.vid) < 0).map((x) => ({ id: x.vid, start: 0, slow: 0, access: access[`${x.vid}/0/0`] || 'public', kind: 'enhanced', pending: true, queuedAt: Number(x.added) || 0, name: slug, poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(x.vid)}.webp`, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(x.vid)}` })) : [];
     const queued = [];
     for (const x of (q.results || [])) if (ready.indexOf(x.vid) < 0 && (w.owner || await clipCanView(request, env, 'enhanced', slug, x.vid, 0, 0))) queued.push(x.vid);
     return J({ ready: visibleReady, readyItems, queued, queuedItems, left: w.owner ? 999 : left, max, vip: !!vip, owner: w.owner, auth: !!w.uid });
