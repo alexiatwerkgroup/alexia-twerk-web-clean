@@ -2,7 +2,7 @@
 //  POST /api/novinhas/mini {c,id,t,slow}                -> (cuenta) marca un miniclip; la cola se refleja en R2 _config/mini-queue.json
 //  POST /api/novinhas/mini {action:'remove',c,id,start,slow} -> (dueño) borra un miniclip (fila + archivos)
 //  GET  /api/novinhas/mini?me=1                         -> {owner,user,vip,left}
-//  GET  /api/novinhas/mini?c=<slug>&n=6                 -> miniclips listos del canal y, si faltan, de otros canales
+//  GET  /api/novinhas/mini?c=<slug>&n=6                 -> miniclips listos; el dueño también recibe toda la cola con portada
 //  GET  /api/novinhas/mini?s=1&k=<clave>                -> mp4 (con Range)   ·   &p=1 -> poster webp
 // Archivos en R2: <slug>/mini/m-<video>-<inicio>-<n|s>.mp4 (+ .webp). Los corta y sube mini.py desde la PC del dueño (la cola esta en _config/mini-queue.json).
 import { authenticate } from '../../_lib/auth.js';
@@ -124,5 +124,18 @@ export async function onRequest({ request, env }) {
   const access = slug ? await clipAccessMap(db, 'mini', slug) : {};
   const visible = [];
   for (const r of items) if (await clipCanView(request, env, 'mini', r.c, r.id, r.start, r.slow)) visible.push({ c: r.c, id: r.id, start: r.start, slow: r.slow, access: access[`${r.id}/${r.start}/${r.slow ? 1 : 0}`] || 'public', name: String(names[r.c] || r.c).replace(/^@/, ''), src: `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.key)}`, poster: r.poster ? `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.poster)}` : '', url: `/novinhas/canal/ver/?c=${r.c}&v=${String(r.id).padStart(2, '0')}`, mine: mine[`${r.c}/${r.id}/${r.start}/${r.slow ? 1 : 0}`] ? 1 : 0 });
-  return J({ items: visible }, 200, /twk_jwt=/.test(request.headers.get('Cookie') || '') || request.headers.get('Authorization') ? 'private, no-store' : 'public, max-age=60');
+  let queuedItems = [];
+  const me = await who(request, env);
+  if (slug && me && me.owner) {
+    const rows = (await db.prepare('SELECT slug, vid, start, slow, title, name, added FROM nv_mini WHERE slug = ? AND COALESCE(gone, 0) = 0 ORDER BY added, id').bind(slug).all()).results || [];
+    const readyKeys = new Set((await readyOf(env, slug)).map((x) => x.key));
+    queuedItems = await Promise.all(rows.filter((x) => !readyKeys.has(`${x.slug}/mini/m-${x.vid}-${x.start || 0}-${x.slow ? 's' : 'n'}.mp4`)).map(async (x) => {
+      const posterKey = `${x.slug}/previews/poster-${String(x.vid).padStart(2, '0')}.webp`;
+      let poster = '';
+      try { if (await env.NOVINHAS_VIDEOS.head(posterKey)) poster = `/api/novinhas/file?k=${encodeURIComponent(posterKey)}`; } catch (e) {}
+      return { c: x.slug, id: Number(x.vid), start: Number(x.start) || 0, slow: x.slow ? 1 : 0, kind: 'mini', pending: true, queuedAt: Number(x.added) || 0, access: access[`${x.vid}/${x.start || 0}/${x.slow ? 1 : 0}`] || 'public', name: String(x.name || names[x.slug] || x.slug).replace(/^@/, ''), title: x.title || '', poster, url: `/novinhas/canal/ver/?c=${x.slug}&v=${String(x.vid).padStart(2, '0')}` };
+    }));
+  }
+  const privateQueue = !!(me && me.owner);
+  return J({ items: visible, queuedItems }, 200, privateQueue || /twk_jwt=/.test(request.headers.get('Cookie') || '') || request.headers.get('Authorization') ? 'private, no-store' : 'public, max-age=60');
 }
