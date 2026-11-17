@@ -9,6 +9,10 @@ async function cached(env, key) {
 }
 export const vipCfg = (env) => cached(env, '_config/vip.json');
 export const codesCfg = (env) => cached(env, '_config/codes.json');
+export async function saveVipCfg(env, value) {
+  await env.NOVINHAS_VIDEOS.put('_config/vip.json', JSON.stringify(value), { httpMetadata: { contentType: 'application/json' } });
+  mem['_config/vip.json'] = { t: Date.now(), v: value };
+}
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 export async function sha256hex(s) { return hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s))); }
 export async function hmac(key, msg) {
@@ -24,7 +28,7 @@ async function codeOk(env, cid) {
   rev[cid] = { t: Date.now(), v }; return v;
 }
 // El dueño del sitio (sesion iniciada con su cuenta) ve todo, sin codigo.
-async function isOwner(request, env) {
+export async function isOwner(request, env) {
   try {
     if (!/twk_jwt=/.test(request.headers.get('Cookie') || '') && !request.headers.get('Authorization')) return false;
     const p = await authenticate(request, env); if (!p || !p.sub) return false;

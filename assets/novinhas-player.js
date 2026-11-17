@@ -509,12 +509,12 @@
       var list = side.querySelector('.np-list'), shown = 0;
       function more() {
         rest.slice(shown, shown + 20).forEach(function (x) {
-          var a = document.createElement('a'); a.className = 'np-item' + (x.locked ? ' lk' : '') + (seen[x.id] ? ' seen' : ''); a.href = x.locked ? '#' : urlFor(x, false);
+          var a = document.createElement('a'); a.className = 'np-item' + (x.locked ? ' lk' : '') + (x.vipOnly ? ' vip' : '') + (seen[x.id] ? ' seen' : ''); a.href = x.locked ? '#' : urlFor(x, false);
           if (x.locked) a.addEventListener('click', function (e) { e.preventDefault(); if (window.TWK_NQ) TWK_NQ.open(); });
           a.innerHTML = '<div class="np-th"><img loading="lazy" alt=""><span class="np-d"></span></div><div><strong></strong><span class="sub"></span></div>';
           a.querySelector('img').src = x.poster; a.querySelector('.np-d').textContent = x.duration ? fmt(x.duration) : '';
           a.querySelector('strong').textContent = x.title;
-          a.querySelector('.sub').textContent = x.locked ? 'VIP' : (seen[x.id] ? 'Viewed' : d.name);
+          a.querySelector('.sub').textContent = (x.vipOnly || x.locked) ? '🔒 VIP' : (seen[x.id] ? 'Viewed' : d.name);
           var th = a.querySelector('.np-th');
           if (x.locked) { var l = document.createElement('div'); l.className = 'np-lk'; l.innerHTML = LOCK; th.appendChild(l); }
           else if (seen[x.id]) { var vv = document.createElement('span'); vv.className = 'np-v'; vv.textContent = 'VIEWED'; th.appendChild(vv); }

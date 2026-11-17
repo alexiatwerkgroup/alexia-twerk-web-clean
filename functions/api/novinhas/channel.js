@@ -1,5 +1,5 @@
 // GET /api/novinhas/channel?c=<slug> -> datos del canal y sus videos, con el estado de bloqueo para este visitante.
-import { vipCfg, isVip, isLocked } from '../../_lib/vip.js';
+import { vipCfg, isVip, isLocked, isOwner } from '../../_lib/vip.js';
 // Canales retirados del sitio: no se sirven aunque sus archivos sigan en el bucket.
 export const REMOVED = new Set(['carol-videos']);
 export async function onRequestGet({ request, env }) {
@@ -18,11 +18,11 @@ export async function onRequestGet({ request, env }) {
     return json({ pruned: dead, left: data.videos.length });
   }
   const cfg = await vipCfg(env); const c = cfg && cfg.channels && cfg.channels[slug];
-  const vipChannel = !!(c && c.vip), unlocked = !vipChannel || (await isVip(request, env));
+  const vipChannel = !!(c && c.vip), unlocked = !vipChannel || (await isVip(request, env)), owner = await isOwner(request, env);
   const K = (k) => '/api/novinhas/file?k=' + k;
   const videos = (data.videos || []).map((v) => { const n = String(v.id).padStart(2, '0'); return {
     id: v.id, title: v.title, width: v.width, height: v.height, duration: v.duration,
-    locked: !unlocked && isLocked(cfg, slug, v.id), poster: K(`${slug}/previews/poster-${n}.webp`),
+    locked: !unlocked && isLocked(cfg, slug, v.id), vipOnly: owner ? isLocked(cfg, slug, v.id) : undefined, poster: K(`${slug}/previews/poster-${n}.webp`),
     video: K(`${slug}/full/video-${n}.mp4`), lowVideo: K(`${slug}/480h/video-${n}.mp4`) }; });
   return json({ slug, name: data.name || slug, vip: vipChannel, unlocked, free: vipChannel ? (c.free || []).length : videos.length, total: videos.length, videos });
 }
