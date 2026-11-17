@@ -8,6 +8,8 @@
 //  POST /api/novinhas/featured?hb=<slug> {d}  -> latido de presencia (cuantos estan viendo el canal)
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
+import { clipAccessMap, clipCanView } from '../../_lib/novinhas-clip-access.js';
+import { isVip } from '../../_lib/vip.js';
 // Previews de tarjeta de canal fijados por el dueño (slug -> id de video). Siempre mudos (los clips se reproducen con muted).
 const FIXED_THUMBS = { 'canal-da-maryh': 45 }; // unico fijo (orden del dueño 15 nov 2026); el resto rota al azar entre los elegidos
 const ROW_BAD = {}; // videos fuera de la fila "Never forgotten": 'slug:id' (orden del dueño 15 nov 2026)
@@ -42,6 +44,7 @@ async function randomAny(env, request, db, now, cur) {
       const ks = await clipList(env, db, slug, 200);
       if (ks.length) {
         const m = ks[Math.floor(Math.random() * ks.length)], pv = m.v, ps = m.st;
+        if (!(await clipCanView(request, env, 'preview', slug, pv, ps, 0))) continue;
         if (!(cur && cur.slug === slug && cur.vid === pv)) {
           const po = await env.NOVINHAS_VIDEOS.get(slug + '/_videos.json'), pd = po ? await po.json() : { videos: [] }, pvv = (pd.videos || []).filter((x) => x.id === pv)[0];
           if (pvv) {
@@ -57,6 +60,7 @@ async function randomAny(env, request, db, now, cur) {
     const v = vs[Math.floor(Math.random() * vs.length)], dur = Number(v.duration) || 0;
     if (cur && cur.slug === slug && cur.vid === v.id) continue;
     const st = dur > SECS + 4 ? Math.floor(Math.random() * (dur - SECS - 3)) : 0;
+    if (!(await clipCanView(request, env, 'preview', slug, v.id, st, 0))) continue;
     await db.prepare('DELETE FROM nv_feat WHERE auto = 1 AND id != ?').bind(cur ? cur.id : 0).run();
     await db.prepare('INSERT OR REPLACE INTO nv_feat (slug, vid, title, name, queued, added, start, auto) VALUES (?, ?, ?, ?, 0, ?, ?, 1)').bind(slug, v.id, v.title || '', d.name || slug, now, st).run();
     return await db.prepare('SELECT * FROM nv_feat WHERE slug = ? AND vid = ?').bind(slug, v.id).first();
@@ -66,10 +70,11 @@ async function randomAny(env, request, db, now, cur) {
 async function current(env, request, db, now) {
   let cur = await getS(db, 'cur'), since = await getS(db, 'since');
   let row = cur ? await db.prepare('SELECT * FROM nv_feat WHERE id = ?').bind(cur).first() : null;
-  if (row && now - since < HOLD) return { row, since };
-  let next = await db.prepare('SELECT * FROM nv_feat WHERE queued = 1 ORDER BY added, id LIMIT 1').first();
+  if (row && now - since < HOLD && await clipCanView(request, env, 'preview', row.slug, row.vid, row.start || 0, 0)) return { row, since };
+  const pending = (await db.prepare('SELECT * FROM nv_feat WHERE queued = 1 ORDER BY added, id').all()).results || [];
+  let next = null; for (const candidate of pending) if (await clipCanView(request, env, 'preview', candidate.slug, candidate.vid, candidate.start || 0, 0)) { next = candidate; break; }
   if (!next) next = await randomAny(env, request, db, now, row);
-  if (!next) return row ? { row, since: now } : null;
+  if (!next) return row && await clipCanView(request, env, 'preview', row.slug, row.vid, row.start || 0, 0) ? { row, since: now } : null;
   const claim = await db.prepare("UPDATE nv_feat_state SET v = ? WHERE k = 'since' AND v = ?").bind(now, since).run();
   if (!claim.meta || claim.meta.changes !== 1) { cur = await getS(db, 'cur'); since = await getS(db, 'since'); row = cur ? await db.prepare('SELECT * FROM nv_feat WHERE id = ?').bind(cur).first() : null; return row ? { row, since } : null; }
   await setS(db, 'cur', next.id);
@@ -162,26 +167,37 @@ export async function onRequest({ request, env }) {
   if (q.get('cs')) {
     const slug = q.get('c') || '', vid = parseInt(q.get('v'), 10), st = parseInt(q.get('t'), 10);
     if (!SLUG.test(slug) || !(vid > 0) || !(st >= 0)) return new Response('bad_request', { status: 400 });
+    if (!(await clipCanView(request, env, 'preview', slug, vid, st, 0))) return new Response('VIP access required', { status: 403 });
     const key = clipKey(slug, vid, st), ch = await env.NOVINHAS_VIDEOS.head(key); if (!ch) return new Response('not_found', { status: 404 });
-    const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size; let a0 = 0, b0 = tot - 1, sc = 200;
-    const hh = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': 'public, max-age=3600', 'X-Robots-Tag': 'noindex' });
-    if (mm) { if (mm[1] === '') a0 = Math.max(0, tot - parseInt(mm[2], 10)); else { a0 = parseInt(mm[1], 10); if (mm[2]) b0 = Math.min(parseInt(mm[2], 10), tot - 1); } if (!(a0 <= b0) || a0 >= tot) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + tot } }); sc = 206; hh.set('Content-Range', `bytes ${a0}-${b0}/${tot}`); }
+    const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size, vipView = await isVip(request, env), cap = vipView ? tot : Math.max(65536, Math.min(tot, Math.floor(tot / 4))); let a0 = 0, b0 = cap - 1, sc = vipView ? 200 : 206;
+    const hh = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': vipView ? 'private, no-store' : 'public, max-age=300', 'X-Robots-Tag': 'noindex' });
+    if (mm) { if (mm[1] === '') a0 = Math.max(0, cap - parseInt(mm[2], 10)); else a0 = parseInt(mm[1], 10); if (mm[2]) b0 = Math.min(parseInt(mm[2], 10), cap - 1); if (!(a0 <= b0) || a0 >= cap) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + cap } }); sc = 206; }
+    if (!vipView || mm) hh.set('Content-Range', `bytes ${a0}-${b0}/${cap}`);
     hh.set('Content-Length', String(b0 - a0 + 1));
     const co = await env.NOVINHAS_VIDEOS.get(key, { range: { offset: a0, length: b0 - a0 + 1 } });
     return new Response(co.body, { status: sc, headers: hh });
   }
+  if (q.get('library')) {
+    const slug = q.get('c') || ''; if (!SLUG.test(slug)) return J({ error: 'bad_request' }, 400);
+    const rows = await clipList(env, db, slug, 500), access = await clipAccessMap(db, 'preview', slug), items = [];
+    for (const r of rows) if (await clipCanView(request, env, 'preview', slug, r.v, r.st, 0)) items.push({ c: slug, id: r.v, start: r.st, slow: 0, kind: 'preview', access: access[`${r.v}/${r.st}/0`] || 'public', name: slug, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${r.v}&t=${r.st}`, poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(r.v)}.webp`, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(r.v)}` });
+    return J({ items, owner: await isOwner(request, env) });
+  }
   if (q.get('thumbs')) {
     const rows = (await db.prepare('SELECT id, slug, vid, start FROM nv_feat ORDER BY added, id').all()).results || [], by = {};
     rows.forEach((r) => { (by[r.slug] = by[r.slug] || []).push(r); });
+    const vipViewer = await isVip(request, env), accessCache = {};
+    await Promise.all(Object.keys(by).map(async (slug) => { accessCache[slug] = await clipAccessMap(db, 'preview', slug); }));
     const day = Math.floor(now / 3600), out = {}; // rota entre los elegidos del canal: 1 hora minimo cada uno
     const hash = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h; };
     for (const slug of Object.keys(by)) {
       if (!SLUG.test(slug)) continue;
+      const acc = accessCache[slug] || {}, allowed = (vid, start) => vipViewer || acc[`${vid}/${start || 0}/0`] !== 'vip';
       const have = {};
       (await clipList(env, db, slug, 500)).forEach((c) => { have[c.v] = String(c.st); });
       // Preview fijo (orden del dueño 14 nov 2026): no rota ni lo pisa 'thumbpin'. Solo se cambia si el dueño lo pide.
-      const fx = FIXED_THUMBS[slug]; if (fx && have[fx] != null) { out[slug] = { id: fx, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${fx}&t=${have[fx]}` }; continue; }
-      const ok = by[slug].filter((r) => have[r.vid] != null);
+      const fx = FIXED_THUMBS[slug]; if (fx && have[fx] != null && allowed(fx, have[fx])) { out[slug] = { id: fx, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${fx}&t=${have[fx]}` }; continue; }
+      const ok = by[slug].filter((r) => have[r.vid] != null && allowed(r.vid, have[r.vid]));
       if (!ok.length) continue;
       // Pin por canal: 'thumbpin:<slug>' (id de nv_feat) fija ese preview hasta que el dueño lo cambie
       let r = null; const pin = await getS(db, 'thumbpin:' + slug);
@@ -201,7 +217,9 @@ export async function onRequest({ request, env }) {
     const items = [], used = {};
     // Fijo unico: Maryh (45) primero. El resto: azar entre TODOS los canales (un clip por canal, semilla nueva en cada carga: sale distinto cada vez)
     let sd = (Math.floor(Math.random() * 4294967296) ^ now) >>> 0; const rn = () => { sd = (Math.imul(sd, 1664525) + 1013904223) >>> 0; return sd / 4294967296; };
-    const clipsOf = async (slug) => { const h = {}; (await clipList(env, db, slug, 500)).forEach((c) => { if (!bad[slug + ':' + c.v]) h[c.v] = c.st; }); return h; };
+    const vipViewer = await isVip(request, env), accessCache = {};
+    await Promise.all(chans.map(async (c) => { accessCache[c.slug] = await clipAccessMap(db, 'preview', c.slug); }));
+    const clipsOf = async (slug) => { const h = {}, acc = accessCache[slug] || {}; (await clipList(env, db, slug, 500)).forEach((c) => { if (!bad[slug + ':' + c.v] && (vipViewer || acc[`${c.v}/${c.st || 0}/0`] !== 'vip')) h[c.v] = c.st; }); return h; };
     const fixSlug = 'canal-da-maryh', fixId = FIXED_THUMBS[fixSlug];
     { const h = await clipsOf(fixSlug); if (fixId && h[fixId] != null && fixSlug in tot) { const r = all.filter((x) => x.slug === fixSlug && x.vid === fixId)[0]; items.push({ slug: fixSlug, name: (r && r.name) || fixSlug, total: tot[fixSlug], id: fixId, start: h[fixId] }); used[fixSlug] = 1; } }
     try { await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_pin (slug TEXT PRIMARY KEY, vid INTEGER, ts INTEGER)').run(); const pins = (await db.prepare('SELECT slug, vid FROM nv_row_pin').all()).results || []; for (const pn of pins) { if (used[pn.slug] || !(pn.slug in tot) || bad[pn.slug + ':' + pn.vid]) continue; const h = await clipsOf(pn.slug); if (h[pn.vid] == null) continue; const r = all.filter((x) => x.slug === pn.slug)[0], cc = chans.filter((c) => c.slug === pn.slug)[0] || {}; items.push({ slug: pn.slug, name: (r && r.name) || cc.name || pn.slug, total: tot[pn.slug], id: pn.vid, start: h[pn.vid], pin: 1 }); used[pn.slug] = 1; } } catch (e) {}
@@ -220,7 +238,7 @@ export async function onRequest({ request, env }) {
       const rnd = chans.filter((c) => !taken[c.slug]).sort(() => Math.random() - 0.5);
       for (const c of rnd) {
         if (items.length >= N) break;
-        const ks = (await clipList(env, db, c.slug, 200)).filter((m) => !bad[c.slug + ':' + m.v]);
+        const h = await clipsOf(c.slug), ks = Object.keys(h).map((v) => ({ v: +v, st: h[v] }));
         if (!ks.length) continue; const m = ks[Math.floor(Math.random() * ks.length)];
         items.push({ slug: c.slug, name: c.name || c.slug, total: c.total || 0, id: m.v, start: m.st });
       }
@@ -241,12 +259,15 @@ export async function onRequest({ request, env }) {
     const slug = q.get('c') || '', vid = parseInt(q.get('v'), 10);
     if (!SLUG.test(slug) || !(vid > 0)) return new Response('bad_request', { status: 400 });
     if (!(await db.prepare('SELECT id FROM nv_feat WHERE slug = ? AND vid = ?').bind(slug, vid).first())) return new Response('not_found', { status: 404 });
+    const featureRow = await db.prepare('SELECT start FROM nv_feat WHERE slug = ? AND vid = ?').bind(slug, vid).first();
+    if (!(await clipCanView(request, env, 'preview', slug, vid, featureRow && featureRow.start || 0, 0))) return new Response('VIP access required', { status: 403 });
     const st0 = (await db.prepare('SELECT start FROM nv_feat WHERE slug = ? AND vid = ?').bind(slug, vid).first() || {}).start || 0, ck = clipKey(slug, vid, st0);
     const ch = await env.NOVINHAS_VIDEOS.head(ck);
     if (ch) {
-      const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size; let a0 = 0, b0 = tot - 1, sc = 200;
-      const hh = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': 'public, max-age=3600', 'X-Robots-Tag': 'noindex' });
-      if (mm) { if (mm[1] === '') a0 = Math.max(0, tot - parseInt(mm[2], 10)); else { a0 = parseInt(mm[1], 10); if (mm[2]) b0 = Math.min(parseInt(mm[2], 10), tot - 1); } if (!(a0 <= b0) || a0 >= tot) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + tot } }); sc = 206; hh.set('Content-Range', `bytes ${a0}-${b0}/${tot}`); }
+      const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size, vipView = await isVip(request, env), cap = vipView ? tot : Math.max(65536, Math.min(tot, Math.floor(tot / 4))); let a0 = 0, b0 = cap - 1, sc = vipView ? 200 : 206;
+      const hh = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': vipView ? 'private, no-store' : 'public, max-age=300', 'X-Robots-Tag': 'noindex' });
+      if (mm) { if (mm[1] === '') a0 = Math.max(0, cap - parseInt(mm[2], 10)); else a0 = parseInt(mm[1], 10); if (mm[2]) b0 = Math.min(parseInt(mm[2], 10), cap - 1); if (!(a0 <= b0) || a0 >= cap) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + cap } }); sc = 206; }
+      if (!vipView || mm) hh.set('Content-Range', `bytes ${a0}-${b0}/${cap}`);
       hh.set('Content-Length', String(b0 - a0 + 1));
       const co = await env.NOVINHAS_VIDEOS.get(ck, { range: { offset: a0, length: b0 - a0 + 1 } });
       return new Response(co.body, { status: sc, headers: hh });

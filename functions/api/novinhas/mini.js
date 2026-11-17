@@ -8,6 +8,7 @@
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
 import { isVip } from '../../_lib/vip.js';
+import { clipAccessMap, clipCanView } from '../../_lib/novinhas-clip-access.js';
 const LIM = { n: { day: 3, total: 30 }, v: { day: 10, total: 100 } }; // cuentas normales 3 por dia y 30 en total, VIP 10 y 100 (el dueño no tiene tope)
 const SLUG = /^[a-z0-9-]{2,60}$/, KEY = /^([a-z0-9-]{2,60})\/mini\/m-(\d+)-(\d+)-([ns])\.(mp4|webp)$/, SECS = 30;
 const J = (o, s = 200, cc = 'no-store') => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': cc, 'X-Robots-Tag': 'noindex' } });
@@ -93,11 +94,15 @@ export async function onRequest({ request, env }) {
     const key = q.get('k') || '', m = KEY.exec(key);
     if (!m) return new Response('bad_request', { status: 400 });
     const isP = m[5] === 'webp';
+    if (!(await clipCanView(request, env, 'mini', m[1], +m[2], +m[3], m[4] === 's' ? 1 : 0))) return new Response('VIP access required', { status: 403 });
     const ch = await env.NOVINHAS_VIDEOS.head(key); if (!ch) return new Response('not_found', { status: 404 });
     if (isP) { const o = await env.NOVINHAS_VIDEOS.get(key); return new Response(o.body, { headers: { 'Content-Type': 'image/webp', 'Cache-Control': 'public, max-age=3600', 'X-Robots-Tag': 'noindex' } }); }
-    const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size; let a0 = 0, b0 = tot - 1, sc = 200;
-    const hh = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': 'public, max-age=3600', 'X-Robots-Tag': 'noindex' });
-    if (mm) { if (mm[1] === '') a0 = Math.max(0, tot - parseInt(mm[2], 10)); else { a0 = parseInt(mm[1], 10); if (mm[2]) b0 = Math.min(parseInt(mm[2], 10), tot - 1); } if (!(a0 <= b0) || a0 >= tot) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + tot } }); sc = 206; hh.set('Content-Range', `bytes ${a0}-${b0}/${tot}`); }
+    const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size, vipView = await isVip(request, env); let cap = tot;
+    if (!vipView) cap = Math.max(65536, Math.min(tot, Math.floor(tot * (5 / 30))));
+    let a0 = 0, b0 = cap - 1, sc = vipView ? 200 : 206;
+    const hh = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': vipView ? 'private, no-store' : 'public, max-age=300', 'X-Robots-Tag': 'noindex' });
+    if (mm) { if (mm[1] === '') a0 = Math.max(0, cap - parseInt(mm[2], 10)); else a0 = parseInt(mm[1], 10); if (mm[2]) b0 = Math.min(parseInt(mm[2], 10), cap - 1); if (!(a0 <= b0) || a0 >= cap) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + cap } }); sc = 206; }
+    if (!vipView || mm) hh.set('Content-Range', `bytes ${a0}-${b0}/${cap}`);
     hh.set('Content-Length', String(b0 - a0 + 1));
     const co = await env.NOVINHAS_VIDEOS.get(key, { range: { offset: a0, length: b0 - a0 + 1 } });
     return new Response(co.body, { status: sc, headers: hh });
@@ -111,10 +116,13 @@ export async function onRequest({ request, env }) {
   const items = [], seen = {};
   const push = (r) => { const k = r.key; if (seen[k] || items.length >= N) return; seen[k] = 1; items.push(r); };
   if (slug) (await readyOf(env, slug)).sort((a, b) => b.up - a.up).forEach(push);
-  if (items.length < N) {
+  if (!slug && items.length < N) {
     let chans = []; try { const r = await env.ASSETS.fetch(new URL('/novinhas/channels-live.json', request.url)); chans = (await r.json()).filter((c) => SLUG.test(c.slug) && c.slug !== slug); } catch (e) {}
     chans.sort(() => Math.random() - 0.5);
     for (const c of chans.slice(0, 10)) { if (items.length >= N) break; try { const rs = await readyOf(env, c.slug); rs.forEach((r) => { names[c.slug] = names[c.slug] || c.name; }); rs.sort(() => Math.random() - 0.5).slice(0, 2).forEach(push); } catch (e) {} }
   }
-  return J({ items: items.map((r) => ({ c: r.c, id: r.id, start: r.start, slow: r.slow, name: String(names[r.c] || r.c).replace(/^@/, ''), src: `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.key)}`, poster: r.poster ? `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.poster)}` : '', url: `/novinhas/canal/ver/?c=${r.c}&v=${String(r.id).padStart(2, '0')}`, mine: mine[`${r.c}/${r.id}/${r.start}/${r.slow ? 1 : 0}`] ? 1 : 0 })) }, 200, /twk_jwt=/.test(request.headers.get('Cookie') || '') || request.headers.get('Authorization') ? 'private, no-store' : 'public, max-age=60');
+  const access = slug ? await clipAccessMap(db, 'mini', slug) : {};
+  const visible = [];
+  for (const r of items) if (await clipCanView(request, env, 'mini', r.c, r.id, r.start, r.slow)) visible.push({ c: r.c, id: r.id, start: r.start, slow: r.slow, access: access[`${r.id}/${r.start}/${r.slow ? 1 : 0}`] || 'public', name: String(names[r.c] || r.c).replace(/^@/, ''), src: `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.key)}`, poster: r.poster ? `/api/novinhas/mini?s=1&k=${encodeURIComponent(r.poster)}` : '', url: `/novinhas/canal/ver/?c=${r.c}&v=${String(r.id).padStart(2, '0')}`, mine: mine[`${r.c}/${r.id}/${r.start}/${r.slow ? 1 : 0}`] ? 1 : 0 });
+  return J({ items: visible }, 200, /twk_jwt=/.test(request.headers.get('Cookie') || '') || request.headers.get('Authorization') ? 'private, no-store' : 'public, max-age=60');
 }
