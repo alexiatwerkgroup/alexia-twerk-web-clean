@@ -31,7 +31,7 @@ main .np-cn{display:flex;flex-direction:column;gap:5px;min-width:190px}main .np-
 (function(){var q=new URLSearchParams(location.search),slug=(q.get('c')||'').toLowerCase(),vid=parseInt(q.get('v'),10),stage=document.getElementById('stage');document.getElementById('back').href='/novinhas/canal/?c='+encodeURIComponent(slug);
 fetch('/api/novinhas/channel?c='+encodeURIComponent(slug),{credentials:'same-origin'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){var v=d.videos.filter(function(x){return x.id===vid})[0];if(!v)throw 0;document.title=v.title+' · '+d.name;document.getElementById('title').textContent=v.title;
 if(d.vip&&!d.unlocked){var s=document.createElement('script');s.src='/assets/novinhas-channel-quota.js';s.dataset.total=d.total;s.dataset.shown=d.free;s.dataset.target='#none';document.head.appendChild(s)}
-if(v.locked){stage.className='locked';stage.innerHTML='<img alt="" src="'+v.poster+'"><button type="button" class="twk-btn">UNLOCK WITH VIP</button>';stage.querySelector('button').onclick=function(){if(window.TWK_NQ)TWK_NQ.open()}}
+if(v.locked&&!v.teaser){stage.className='locked';stage.innerHTML='<img alt="" src="'+v.poster+'"><button type="button" class="twk-btn">UNLOCK WITH VIP</button>';stage.querySelector('button').onclick=function(){if(window.TWK_NQ)TWK_NQ.open()}}
 window.__nvd=d;window.__nvv=v;window.__nvs=slug;TWK_NP.init({slug:slug,data:d,vid:vid,stage:stage,side:document.getElementById('side'),bar:document.getElementById('bar')});if(window.__nvExtras)window.__nvExtras()
 }).catch(function(e){console.error(e);document.getElementById('msg').textContent='Video not available.'})})();
 </script><script src="/assets/novinhas-nav.js?v=20261114e"></script><script>

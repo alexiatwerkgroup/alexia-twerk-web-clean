@@ -105,11 +105,12 @@
 
     var v = null;
     function urlFor(x, auto) { return '/novinhas/canal/ver/?c=' + encodeURIComponent(slug) + '&v=' + pad(x.id) + (auto ? '&a=1' : ''); }
-    if (!cur.locked) {
+    if (!cur.locked || cur.teaser) {
     /* ---------- reproductor ---------- */
     var box = document.createElement('div'); box.className = 'np-stage' + (cur.height > cur.width ? ' np-tall' : '');
     var v = document.createElement('video');
     v.controls = true; v.playsInline = true; v.preload = 'auto'; v.poster = cur.poster; v.tabIndex = 0;
+    if (cur.teaser) { v.controls = true; v.preload = 'metadata'; }
     v.setAttribute('controlsList', 'nodownload noremoteplayback nofullscreen'); v.setAttribute('disablePictureInPicture', ''); v.removeAttribute('disablePictureInPicture');
     v.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     var vol = parseFloat(LS.get(VOL_KEY)); if (!isNaN(vol)) v.volume = Math.min(1, Math.max(0, vol));
@@ -124,7 +125,7 @@
     function mclose() { var mv = mbox.querySelector('video'); if (mv) { mv.pause(); mv.remove(); } mbox.classList.remove('on'); }
     mbox.addEventListener('click', function (e) { if (e.target === mbox || e.target.classList.contains('mx')) mclose(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && mbox.classList.contains('on')) mclose(); });
-    function accessPrompt() { mclose(); if (!mini.user) { say('Create a free account to keep watching'); setTimeout(function () { location.href = '/account'; }, 700); return; } if (window.TWK_NQ) window.TWK_NQ.open(); else location.href = '/paymentmethods/'; }
+    function accessPrompt() { mclose(); try { v.pause(); } catch (_) {} function route(user) { mini.user = !!user; if (!mini.user) { say('Create a free account to keep watching'); setTimeout(function () { location.href = '/account'; }, 700); return; } if (window.TWK_NQ) window.TWK_NQ.open(); else location.href = '/paymentmethods/'; } if (mini.user) { route(true); return; } fetch('/api/novinhas/mini?me=1', { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }).then(function (j) { route(!!j.user); }).catch(function () { route(false); }); }
     function mopen(it) {
       var holder = mbox.firstChild, old = holder.querySelector('video'); if (old) old.remove();
       var mv = document.createElement('video'); mv.src = it.src; mv.controls = true; mv.loop = false; mv.playsInline = true; mv.autoplay = true; mv.setAttribute('controlsList', 'nodownload noremoteplayback'); mv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
@@ -268,28 +269,31 @@
       clearInterval(nxT); nxT = setInterval(function () { n--; cd.textContent = n; if (n <= 0) { clearInterval(nxT); goTo(nextV, true); } }, 1000);
       nx.onclick = function (e) { var a = e.target.dataset && e.target.dataset.a; if (a === 'go') goTo(nextV, true); if (a === 'no') { clearInterval(nxT); nx.classList.remove('on'); } };
     }
-    v.addEventListener('ended', function () { if (LS.get(AUTO_KEY) !== '0') showNext(); });
+    v.addEventListener('ended', function () { if (!cur.teaser && LS.get(AUTO_KEY) !== '0') showNext(); });
 
     /* retomar + visto */
     var posKey = 'twk_nov_pos:' + slug + ':' + cur.id, lastSave = 0;
     v.addEventListener('loadedmetadata', function () {
+      if (cur.teaser) return;
       var p = parseFloat(LS.get(posKey));
       if (p > 8 && v.duration && p < v.duration - 8 && !v.dataset.resumed) { v.dataset.resumed = '1'; try { v.currentTime = p; say('Resumed at ' + fmt(p)); } catch (_) {} }
       var r = parseFloat(LS.get(SPEED_KEY)); if (r > 0) v.playbackRate = r;
     });
+    var teaserPrompted = false;
     v.addEventListener('timeupdate', function () {
+      if (cur.teaser) { if (!teaserPrompted && (v.ended || v.currentTime >= 4.95)) { teaserPrompted = true; v.pause(); accessPrompt(); } return; }
       var now = Date.now(); if (now - lastSave < 4000) return; lastSave = now;
       if (v.currentTime > 3) markSeen(slug, cur.id);
       if (v.duration && v.currentTime > v.duration - 8) LS.set(posKey, '0'); else LS.set(posKey, String(v.currentTime));
     });
     v.addEventListener('volumechange', function () { LS.set(VOL_KEY, String(v.muted ? v.volume : v.volume)); });
     v.addEventListener('ratechange', function () { LS.set(SPEED_KEY, String(v.playbackRate)); });
-    v.addEventListener('ended', function () { markSeen(slug, cur.id); LS.set(posKey, '0'); });
+    v.addEventListener('ended', function () { if (cur.teaser) { if (!teaserPrompted) { teaserPrompted = true; accessPrompt(); } return; } markSeen(slug, cur.id); LS.set(posKey, '0'); });
     /* Viewed fiable: se marca a los 2 s de reproduccion real, al pausar/salir y al terminar (sin depender del throttle de timeupdate) */
     var seenT = null;
-    v.addEventListener('playing', function () { clearTimeout(seenT); seenT = setTimeout(function () { if (!v.paused) markSeen(slug, cur.id); }, 2000); });
-    v.addEventListener('pause', function () { clearTimeout(seenT); if (v.currentTime > 2) markSeen(slug, cur.id); });
-    window.addEventListener('pagehide', function () { if (v.currentTime > 2) markSeen(slug, cur.id); });
+    v.addEventListener('playing', function () { if (cur.teaser) return; clearTimeout(seenT); seenT = setTimeout(function () { if (!v.paused) markSeen(slug, cur.id); }, 2000); });
+    v.addEventListener('pause', function () { if (cur.teaser) return; clearTimeout(seenT); if (v.currentTime > 2) markSeen(slug, cur.id); });
+    window.addEventListener('pagehide', function () { if (!cur.teaser && v.currentTime > 2) markSeen(slug, cur.id); });
 
     /* teclado */
     var SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -528,8 +532,7 @@
       var list = side.querySelector('.np-list'), shown = 0;
       function more() {
         rest.slice(shown, shown + 20).forEach(function (x) {
-          var a = document.createElement('a'); a.className = 'np-item' + (x.locked ? ' lk' : '') + (x.vipOnly ? ' vip' : '') + (seen[x.id] ? ' seen' : ''); a.href = x.locked ? '#' : urlFor(x, false);
-          if (x.locked) a.addEventListener('click', function (e) { e.preventDefault(); if (window.TWK_NQ) TWK_NQ.open(); });
+          var a = document.createElement('a'); a.className = 'np-item' + (x.locked ? ' lk' : '') + (x.vipOnly ? ' vip' : '') + (seen[x.id] ? ' seen' : ''); a.href = urlFor(x, false);
           a.innerHTML = '<div class="np-th"><img loading="lazy" alt=""><span class="np-d"></span></div><div><strong></strong><span class="sub"></span></div>';
           a.querySelector('img').src = x.poster; a.querySelector('.np-d').textContent = x.duration ? fmt(x.duration) : '';
           a.querySelector('strong').textContent = x.title;
