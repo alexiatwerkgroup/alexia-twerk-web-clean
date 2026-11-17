@@ -47,7 +47,7 @@ html body #sel .btn.vb.sw{color:#7dffa3;border-color:#1f5a35}
 'use strict';
 var LIVE_MS = 5000, REPORT_MS = 3600000;
 var range = 'month', TZ = -new Date().getTimezoneOffset();
-var live = null, rep = null, liveOkAt = 0, repOkAt = 0, liveBusy = false, repBusy = false, liveFail = 0, repFail = 0;
+var live = null, rep = null, liveOkAt = 0, repOkAt = 0, liveBusy = false, repBusy = false, repQueued = false, repRetryTimer = 0, repFail = 0, liveFail = 0;
 var uncOpen = false, denied = false, seenActionTs = 0, seenOnline = null, soundOn = false, audio = null;
 try { soundOn = localStorage.getItem('twk-visitor-sound') === '1'; } catch (e) {}
 
@@ -134,7 +134,7 @@ function peaksHtml(r) {
   return pk.map(function (x) {
     var d = x.k.split(' '), dd = d[0].split('-'), v = VD[x.verdict] || VD.mixto;
     var cs = x.countries.map(function (c) { return flag(c.c) + ' ' + esc(cn(c.c)) + ' <span class="m">' + c.u + '</span>'; }).join(' · ');
-    var why = x.verdict === 'robots' ? 'Cientos de cookies casi idénticas entraron juntas' + (x.windowSeconds ? ' en ' + x.windowSeconds + ' segundos' : '') + (x.fingerprint ? ' (todas ' + esc(x.fingerprint.fp) + ')' : '') + ', sin tocar ni scrollear como una persona. No son visitantes: ya están fuera de los números.' : x.verdict === 'real' ? 'Casi todos dieron señales humanas. Probablemente una promo, un mail o un post que funcionó.' : 'Parte es gente (' + F(x.real) + ') y parte robots (' + F(x.bots) + '). Los robots ya están descartados.';
+    var why = x.verdict === 'robots' ? 'Cientos de cookies nuevas con el mismo navegador/sistema/equipo aparecieron en varios países' + (x.windowSeconds ? ' en ' + x.windowSeconds + ' segundos' : '') + (x.fingerprint ? ' (' + esc(x.fingerprint.fp) + ')' : '') + '. Las señales de clic/scroll no alcanzan para validarlas como personas.' : x.verdict === 'real' ? 'La mayoría no coincide con la regla de oleada sospechosa. Puede ser una promo, un mail o un post que funcionó.' : 'Parte quedó como gente (' + F(x.real) + ') y parte como sospechosa (' + F(x.bots) + '). Las sospechosas ya están separadas.';
     return '<div class="pk"><div><b>' + DOW[new Date(+dd[0], +dd[1] - 1, +dd[2]).getDay()] + ' ' + dd[2] + '/' + dd[1] + (d[1] ? ' · ' + d[1] + ' h' : '') + '</b><br><span class="vd ' + v[0] + '">' + v[1] + '</span></div>' +
       '<div><b>' + F(x.raw) + '</b> cookies con señal → <b style="color:var(--ok)">' + F(x.real) + ' reales</b>' + (x.bots ? ' · <b style="color:var(--bad)">' + F(x.bots) + ' robots</b>' : '') + '<br><span class="m">' + why + '</span><br>' + (cs ? '<span class="m">De dónde: </span>' + cs : '') + '</div></div>';
   }).join('');
@@ -150,10 +150,10 @@ function hourChart(rows) {
 function defBox() {
   var s = (live && live.confirmSeconds) || 30;
   return '<details class="def"><summary>Cómo se cuenta cada número (leer una vez)</summary><ul>' +
-    '<li><b>Visitante real</b>: una persona con la página abierta. Se detecta porque su pestaña mandó señal (estuvo visible), tocó o scrolleó, tiene cuenta o hizo un clic medido.</li>' +
+    '<li><b>Visitante confirmado</b>: una visita con tiempo activo medido, cuenta o una acción conocida; las señales de clic/scroll solas no bastan. Las oleadas repetidas del mismo navegador en varios países se apartan como sospechosas.</li>' +
     '<li><b>Interesado</b>: un visitante real que además estuvo <b>' + s + ' s o más</b> en una misma página, tiene cuenta o hizo una acción.</li>' +
-    '<li><b>Tráfico automático</b>: cargas que nunca dieron señal (robots y escáneres de EE.UU., Países Bajos, Singapur, China, o rebotes instantáneos). <b>No son visitantes</b>: se muestran en gris solo para que veas cuánto ruido hay.</li>' +
-    '<li><b>Ahora en el sitio</b>: visitantes reales con señal en los últimos 90 s.</li>' +
+    '<li><b>Sin confirmar</b>: cargas sin tiempo activo, cuenta ni acción conocida; se separan y no entran en las métricas de personas.</li>' +
+    '<li><b>Ahora en el sitio</b>: visitantes confirmados con una señal reciente en los últimos 90 s.</li>' +
     '<li>«Hoy» cuenta desde las 00:00 de tu zona horaria.</li></ul></details>';
 }
 var LIVE_P = null; // hoy / semana / total (lo manda /api/stats/live)
@@ -251,8 +251,8 @@ function shell() {
     [['today', 'Hoy'], ['week', '7 días'], ['month', 'Mes actual'], ['all', 'Histórico']].map(function (p) { return '<button type="button" class="btn vb' + (p[0] === range ? ' on' : '') + '" data-d="' + p[0] + '">' + p[1] + '</button>'; }).join('') +
     '<button type="button" class="btn vb" id="refresh">Actualizar histórico ahora</button><button type="button" class="btn vb" id="snd"></button><a class="btn vb" href="/admin-users.html">Registrados</a><a class="btn vb" href="/admin/hunters/">Hunters</a></div></div>' +
     '<div class="status" id="status"></div><div id="def"></div><div id="live"><div class="gate">Consultando…</div></div><div id="money"></div><div id="rep"></div><div id="wc"></div>';
-  document.getElementById('sel').onclick = function (e) { var b = e.target.closest('[data-d]'); if (!b) return; range = b.dataset.d; document.querySelectorAll('#sel [data-d]').forEach(function (x) { x.classList.toggle('on', x === b); }); loadReport(); };
-  document.getElementById('refresh').onclick = function () { loadReport(); };
+  document.getElementById('sel').onclick = function (e) { var b = e.target.closest('[data-d]'); if (!b) return; range = b.dataset.d; document.querySelectorAll('#sel [data-d]').forEach(function (x) { x.classList.toggle('on', x === b); }); loadReport(true); };
+  document.getElementById('refresh').onclick = function () { loadReport(true); };
   var snd = document.getElementById('snd');
   function paint() { snd.textContent = soundOn ? '🔔 Sonido: activado' : '🔕 Activar sonido'; snd.classList.toggle('sw', soundOn); }
   snd.onclick = function () { soundOn = !soundOn; try { localStorage.setItem('twk-visitor-sound', soundOn ? '1' : '0'); } catch (e) {} if (soundOn) { armAudio(); setTimeout(bubble, 150); } paint(); };
@@ -262,7 +262,7 @@ function paintStatus() {
   var el = document.getElementById('status'); if (!el) return;
   var ls = liveOkAt ? Math.round((Date.now() - liveOkAt) / 1000) : null, stale = ls == null || ls > 20;
   el.innerHTML = '<span>' + (stale ? '<i class="dot bad"></i><b class="bad">Sin conexión con el servidor' + (ls != null ? ' hace ' + ls + ' s' : '') + '</b>' : '<i class="dot"></i><b class="ok">En vivo</b> · actualizado hace ' + ls + ' s (cada 5 s)') + '</span>' +
-    '<span>Histórico: ' + (repOkAt ? 'actualizado hace ' + ago(repOkAt) + ' (cada 1 h)' : 'consultando…') + (repFail ? ' · <b class="bad">el último intento falló, reintenta solo</b>' : '') + '</span>';
+    '<span>Histórico: ' + (repBusy ? 'actualizando…' : repOkAt ? 'actualizado hace ' + ago(repOkAt) : 'consultando…') + (repFail ? ' · <b class="bad">falló ' + repFail + (repFail === 1 ? ' intento' : ' intentos') + ' · reintento automático en curso</b>' : '') + '</span>';
 }
 function wireReport() {
   var mt = document.getElementById('mt'); if (mt) mt.value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
@@ -304,11 +304,18 @@ document.addEventListener('click', function (e) {
       .then(function (r) { return r.json(); }).then(function (j) { if (j && j.ok) loadMoney(true); else msg.textContent = 'No se pudo guardar.'; }).catch(function () { msg.textContent = 'No se pudo guardar.'; });
   }
 });
-function loadReport() {
-  if (repBusy || denied) return; repBusy = true; document.getElementById('refresh').textContent = 'Actualizando…';
+function loadReport(force) {
+  if (denied) return;
+  if (repBusy) { if (force) repQueued = true; return; }
+  if (repRetryTimer) { clearTimeout(repRetryTimer); repRetryTimer = 0; }
+  repBusy = true; var refresh = document.getElementById('refresh'); if (refresh) refresh.textContent = 'Actualizando…';
   api('/api/stats/report?range=' + range + '&tz=' + TZ).then(function (r) { rep = r; repOkAt = Date.now(); repFail = 0; keepForm(function () { document.getElementById('rep').innerHTML = repHtml(r); wireReport(); }); })
     .catch(function () { repFail++; })
-    .finally(function () { repBusy = false; var b = document.getElementById('refresh'); if (b) b.textContent = 'Actualizar histórico ahora'; paintStatus(); });
+    .finally(function () {
+      repBusy = false; var b = document.getElementById('refresh'); if (b) b.textContent = 'Actualizar histórico ahora'; paintStatus();
+      if (repQueued) { repQueued = false; loadReport(true); }
+      else if (repFail && !denied) repRetryTimer = setTimeout(function () { loadReport(false); }, Math.min(300000, 15000 * Math.pow(2, Math.min(repFail - 1, 4))));
+    });
 }
 
 
@@ -319,9 +326,9 @@ function ro(a, b) { return '<div class="row"><span>' + a + '</span><span>' + b +
 function whoHtml(d, name) {
   var v = d.visits, P = d.profile, A = d.account, vd = d.verdict, ok = vd === 'persona';
   var h = '<h3>' + esc(name) + '</h3><span class="pill ' + (ok ? 'pc' : 'pw') + '">' + esc(vd) + '</span>' + (P ? ' <span class="pill pa">' + esc(P.tier || 'sin nivel') + '</span>' : '') +
-    '<div class="m" style="margin-top:4px">' + (ok ? 'Dio señales de ser una persona (cuenta, interacción o acciones).' : 'No dio señales claras de persona: cuidado, puede ser un robot.') + '</div>';
+    '<div class="m" style="margin-top:4px">' + (ok ? 'Tiene cuenta, tiempo activo medido o una acción conocida; las señales de clic/scroll solas no confirman una visita.' : 'No alcanzó los criterios de confirmación; puede ser automatización o una visita breve.') + '</div>';
   if (P) h += '<div class="sec">Cuenta</div>' + ro('Registrada', dt(P.registered)) + ro('Última vez', dt(P.lastSeen)) + ro('Monedas ahora / ganadas', F(P.coins) + ' / ' + F(P.earned)) + ro('Racha', F(P.streak) + ' días') + ro('Tiempo total en el sitio', T(P.secondsOnSite)) + ro('Cuts vistos', F(P.cutsWatched)) + (P.country ? ro('País de la cuenta', flag(P.country) + ' ' + esc(cn(P.country))) : '');
-  h += '<div class="sec">Actividad medida</div>' + ro('Cargas de página', F(v.loads) + (v.cookies > 1 ? ' · ' + v.cookies + ' navegadores' : '')) + ro('Días distintos', F(v.days)) + ro('Primera / última', dt(v.first) + '<br>' + dt(v.last)) + ro('Tiempo activo total', T(v.seconds)) + ro('Mejor página', T(v.maxSeconds)) + ro('Scroll promedio', (v.scroll || 0) + '%') + ro('Interactuó (clic/scroll)', v.interacted ? 'sí' : 'no');
+  h += '<div class="sec">Actividad medida</div>' + ro('Cargas de página', F(v.loads) + (v.cookies > 1 ? ' · ' + v.cookies + ' navegadores' : '')) + ro('Días distintos', F(v.days)) + ro('Primera / última', dt(v.first) + '<br>' + dt(v.last)) + ro('Tiempo activo total', T(v.seconds)) + ro('Mejor página', T(v.maxSeconds)) + ro('Scroll promedio', (v.scroll || 0) + '%') + ro('El navegador reportó clic/scroll', v.interacted ? 'sí' : 'no');
   h += '<div class="sec">Dónde y con qué</div>' + ro('País', d.countries.map(function (c) { return flag(c.c) + ' ' + esc(cn(c.c)); }).join(', ') || '—') + ro('Ciudad', d.cities.map(function (c) { return esc(c.city); }).join(', ') || '—') + ro('Equipo', d.devices.map(function (x) { return esc([x.device, x.browser, x.os].filter(Boolean).join(' · ')); }).join('<br>') || '—') + ro('Llegó desde', esc(d.firstRef || 'directo'));
   if (d.pages.length) h += '<div class="sec">Páginas que más mira</div>' + d.pages.map(function (x) { return ro(pl(x.path), F(x.loads) + ' · ' + T(x.dur)); }).join('');
   if (d.eventCounts.length) h += '<div class="sec">Acciones</div>' + d.eventCounts.map(function (x) { return ro(esc(EV[x.name] || x.name), '×' + x.n); }).join('');

@@ -18,25 +18,28 @@ import { init, OWNER } from './analytics.js';
 
 export const CONFIRM_SECONDS = 30; // segundos activos en una misma página para ser INTERESADO
 export const ONLINE_MS = 90000; // la pestaña manda señal cada 30 s mientras está visible
+export const VALID_EVENT_SQL = "name IN ('pay_open','unlock_click','follow','copy_id','binance_ref','rabbit_click','nov_watch','nov_join','nov_play','signup_done','nov_signup')";
 
 // CTEs desde ?1 (ms): burst = cookies de una OLA DE ROBOTS, cv = visitantes reales, ci = interesados (subconjunto de cv). Se usan como  WITH ${REAL_CTE}
-//  Ola de robots: 8 o más cookies NUEVAS, sin interacción humana, con el mismo navegador/sistema/dispositivo, que entran en el mismo minuto.
+//  Ola sospechosa: 8 o más cookies nuevas, sin cuenta, con el mismo navegador/sistema/dispositivo y presencia en 3+ países durante el mismo minuto.
 //  (Datos reales: los picos de 400+ "visitantes" eran 230 Firefox/macOS de 10 países entrando en 12 segundos, cada uno a una página distinta, todos con 30 s exactos.)
 export const BURST_MIN = 8;
+// No permitir que un tiempo enviado antes de que transcurra ese tiempo cuente en las métricas.
+export const ACTIVE_SECONDS = "MIN(MAX(COALESCE(dur, 0), 0), MAX(0, CAST((COALESCE(last_active, ts) - ts) / 1000 AS INTEGER)))";
 export const REAL_CTE = `bm AS (
-  SELECT strftime('%Y-%m-%d %H:%M', ts / 1000, 'unixepoch') m, browser, os, device FROM tw_hits WHERE ts > ?1 AND human = 0 AND is_new = 1
-  GROUP BY 1, 2, 3, 4 HAVING COUNT(DISTINCT vid) >= ${BURST_MIN}),
+  SELECT strftime('%Y-%m-%d %H:%M', ts / 1000, 'unixepoch') m, browser, os, device FROM tw_hits WHERE ts > ?1 AND is_new = 1 AND uid IS NULL
+  GROUP BY 1, 2, 3, 4 HAVING COUNT(DISTINCT vid) >= ${BURST_MIN} AND COUNT(DISTINCT NULLIF(country, '')) >= 3),
 burst AS (
   SELECT DISTINCT h.vid FROM tw_hits h JOIN bm ON strftime('%Y-%m-%d %H:%M', h.ts / 1000, 'unixepoch') = bm.m AND h.browser = bm.browser AND h.os = bm.os AND h.device = bm.device
-  WHERE h.ts > ?1 AND h.human = 0),
+  WHERE h.ts > ?1 AND h.is_new = 1 AND h.uid IS NULL),
 cv AS (
-  SELECT vid FROM tw_hits WHERE ts > ?1 GROUP BY vid HAVING MAX(human) = 1 OR MAX(uid IS NOT NULL) = 1 OR (MAX(dur) > 0 AND vid NOT IN (SELECT vid FROM burst))
+  SELECT vid FROM tw_hits WHERE ts > ?1 GROUP BY vid HAVING MAX(uid IS NOT NULL) = 1 OR (MAX(${ACTIVE_SECONDS}) > 0 AND vid NOT IN (SELECT vid FROM burst))
   UNION
-  SELECT vid FROM tw_events WHERE ts > ?1 AND name <> 'vid_time'),
+  SELECT vid FROM tw_events WHERE ts > ?1 AND ${VALID_EVENT_SQL} AND vid NOT IN (SELECT vid FROM burst)),
 ci AS (
-  SELECT vid FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid HAVING MAX(dur) >= ${CONFIRM_SECONDS} OR MAX(uid IS NOT NULL) = 1
+  SELECT vid FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid HAVING MAX(${ACTIVE_SECONDS}) >= ${CONFIRM_SECONDS} OR MAX(uid IS NOT NULL) = 1
   UNION
-  SELECT vid FROM tw_events WHERE ts > ?1 AND name <> 'vid_time')`;
+  SELECT vid FROM tw_events WHERE ts > ?1 AND ${VALID_EVENT_SQL} AND vid NOT IN (SELECT vid FROM burst))`;
 
 export async function ownerOnly(request, env) {
   const identity = await authenticate(request, env);

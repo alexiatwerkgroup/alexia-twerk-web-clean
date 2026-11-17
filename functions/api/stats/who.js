@@ -1,7 +1,7 @@
 // GET /api/stats/who?uid=<id>  |  ?vid=<cookie>  -> SOLO DUEÑO. Ficha completa de una persona (tarjeta al pasar el mouse en el panel).
 // No devuelve mail ni datos de contacto: solo comportamiento medido y estado de la cuenta.
 import { json } from '../../_lib/http.js';
-import { CONFIRM_SECONDS, ownerOnly, NO_STORE, all } from '../../_lib/stats-core.js';
+import { ACTIVE_SECONDS, VALID_EVENT_SQL, CONFIRM_SECONDS, ownerOnly, NO_STORE, all } from '../../_lib/stats-core.js';
 
 const ID = /^[A-Za-z0-9_-]{6,64}$/;
 
@@ -25,16 +25,16 @@ export async function onRequestGet({ request, env }) {
   const ph = vids.map((_, i) => `?${i + 1}`).join(',');
 
   const [agg, days, countries, cities, devices, firstRef, pages, last, events, evNames] = await Promise.all([
-    safe(`SELECT COUNT(*) loads, COUNT(DISTINCT vid) cookies, MIN(ts) first, MAX(COALESCE(last_active, ts)) last, SUM(dur) dur, MAX(dur) maxdur, ROUND(AVG(CASE WHEN scroll > 0 THEN scroll END)) scroll, MAX(human) human FROM tw_hits WHERE vid IN (${ph})`, ...vids),
+    safe(`SELECT COUNT(*) loads, COUNT(DISTINCT vid) cookies, MIN(ts) first, MAX(COALESCE(last_active, ts)) last, SUM(${ACTIVE_SECONDS}) dur, MAX(${ACTIVE_SECONDS}) maxdur, ROUND(AVG(CASE WHEN scroll > 0 THEN scroll END)) scroll, MAX(human) human FROM tw_hits WHERE vid IN (${ph})`, ...vids),
     safe(`SELECT COUNT(DISTINCT date(ts/1000, 'unixepoch')) n FROM tw_hits WHERE vid IN (${ph})`, ...vids),
     safe(`SELECT country c, COUNT(*) n FROM tw_hits WHERE vid IN (${ph}) AND country <> '' GROUP BY country ORDER BY n DESC LIMIT 3`, ...vids),
     safe(`SELECT city, country c, COUNT(*) n FROM tw_hits WHERE vid IN (${ph}) AND city <> '' GROUP BY city, country ORDER BY n DESC LIMIT 3`, ...vids),
     safe(`SELECT device, browser, os, COUNT(*) n FROM tw_hits WHERE vid IN (${ph}) GROUP BY device, browser, os ORDER BY n DESC LIMIT 3`, ...vids),
     safe(`SELECT ref FROM tw_hits WHERE vid IN (${ph}) ORDER BY ts LIMIT 1`, ...vids),
-    safe(`SELECT CASE WHEN instr(path,'?') > 0 THEN substr(path,1,instr(path,'?')-1) ELSE path END path, COUNT(*) loads, SUM(dur) dur FROM tw_hits WHERE vid IN (${ph}) GROUP BY 1 ORDER BY loads DESC, dur DESC LIMIT 6`, ...vids),
-    safe(`SELECT ts, path, dur, scroll, ref FROM tw_hits WHERE vid IN (${ph}) ORDER BY ts DESC LIMIT 8`, ...vids),
-    safe(`SELECT ts, name, detail FROM tw_events WHERE vid IN (${ph}) AND name <> 'vid_time' ORDER BY ts DESC LIMIT 12`, ...vids),
-    safe(`SELECT name, COUNT(*) n FROM tw_events WHERE vid IN (${ph}) AND name <> 'vid_time' GROUP BY name ORDER BY n DESC`, ...vids),
+    safe(`SELECT CASE WHEN instr(path,'?') > 0 THEN substr(path,1,instr(path,'?')-1) ELSE path END path, COUNT(*) loads, SUM(${ACTIVE_SECONDS}) dur FROM tw_hits WHERE vid IN (${ph}) GROUP BY 1 ORDER BY loads DESC, dur DESC LIMIT 6`, ...vids),
+    safe(`SELECT ts, path, ${ACTIVE_SECONDS} dur, scroll, ref FROM tw_hits WHERE vid IN (${ph}) ORDER BY ts DESC LIMIT 8`, ...vids),
+    safe(`SELECT ts, name, detail FROM tw_events WHERE vid IN (${ph}) AND ${VALID_EVENT_SQL} ORDER BY ts DESC LIMIT 12`, ...vids),
+    safe(`SELECT name, COUNT(*) n FROM tw_events WHERE vid IN (${ph}) AND ${VALID_EVENT_SQL} GROUP BY name ORDER BY n DESC`, ...vids),
   ]);
   const a = agg[0] || {};
   const body = {
@@ -43,7 +43,7 @@ export async function onRequestGet({ request, env }) {
     countries, cities, devices, firstRef: (firstRef[0] || {}).ref || '', pages, last, events, eventCounts: evNames,
   };
   // Veredicto simple y explicado: persona o robot probable.
-  const real = !!(a.human || uid || (events.length)), sig = (a.maxdur || 0) > 0;
+  const real = !!(uid || (a.maxdur || 0) >= CONFIRM_SECONDS || events.length), sig = (a.maxdur || 0) > 0;
   body.verdict = real ? 'persona' : sig ? ((a.loads || 0) === 1 && (a.maxdur || 0) >= 18 && (a.maxdur || 0) <= 35 ? 'robot probable' : 'con señal') : 'sin señal (robot probable)';
   if (uid) {
     const [unlocks, coins, comments, views, catalog] = await Promise.all([
