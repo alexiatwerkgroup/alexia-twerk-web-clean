@@ -19,6 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pip install boto3
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - run: python3 tools/mini_worker.py
         env:
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
