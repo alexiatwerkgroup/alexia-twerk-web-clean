@@ -57,10 +57,10 @@
     '.np-next.on{display:flex}.np-next small{color:#e8b84a;letter-spacing:.14em;font-weight:800;font-size:11px}.np-next b{font-size:18px;max-width:560px;line-height:1.35}' +
     '.np-next img{width:150px;max-height:110px;object-fit:cover;border-radius:10px}' +
         '.np-help{position:absolute;inset:0;z-index:16;display:none;place-items:center;background:rgba(0,0,0,.82);padding:14px;overflow:auto}' +
-    '.np-minis{position:absolute;z-index:6;right:8px;top:8px;bottom:60px;display:none;flex-direction:column;gap:6px;pointer-events:none;font-family:system-ui,sans-serif}.np-minis.on{display:flex}' +
+    '.np-minis{position:absolute;z-index:6;left:8px;right:auto;top:8px;bottom:60px;display:none;flex-direction:column;gap:6px;pointer-events:none;font-family:system-ui,sans-serif}.np-minis.on{display:flex}' +
     '.np-mh{display:flex;align-items:center;gap:6px;font:900 10px/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#ffd76a;text-shadow:0 1px 3px #000}.np-mh i{width:8px;height:8px;border-radius:50%;background:#ff2d2d;box-shadow:0 0 6px #ff2d2d}' +
-    '.np-mg{display:grid;gap:8px;align-content:start;justify-content:end}' +
-    '.np-minis.strip{position:static;margin:12px 0 0;pointer-events:auto}.np-minis.strip .np-mg{grid-template-columns:repeat(auto-fill,minmax(96px,130px));justify-content:start}.np-minis.lft{position:absolute;right:100%;margin:0 14px 0 0;top:0}.np-minis.lft .np-mg{justify-content:end}' +
+    '.np-mg{display:grid;gap:8px;align-content:start;justify-content:start}' +
+    '.np-minis.strip{position:static;margin:12px 0 0;pointer-events:auto}.np-minis.strip .np-mg{grid-template-columns:repeat(auto-fill,minmax(96px,130px));justify-content:start}.np-minis.lft{position:absolute;right:100%;left:auto;margin:0 14px 0 0;top:0}.np-minis.lft .np-mg{justify-content:end}' +
     '.np-mc{position:relative;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:#111;border:1.5px solid #e8b84a;pointer-events:auto;cursor:pointer;padding:0;box-shadow:0 4px 14px rgba(0,0,0,.6);transition:transform .12s,filter .12s}.np-mc:hover{transform:translateY(-2px);filter:brightness(1.1)}' +
     '.np-mc img,.np-mc video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.np-mc video{background:#000}' +
     '.np-mc b{position:absolute;left:6px;bottom:6px;padding:3px 7px;border-radius:6px;background:rgba(0,0,0,.72);color:#fff;font:800 10px/1 system-ui,sans-serif;letter-spacing:.06em}.np-mc b.sl{background:linear-gradient(180deg,#9b5cff,#5b21b6)}' +
@@ -117,7 +117,7 @@
     box.appendChild(v);
 
     var toast = document.createElement('div'); toast.className = 'np-toast'; box.appendChild(toast);
-    /* ---------- miniclips (30 s) en el espacio libre de la derecha del video vertical ---------- */
+    /* ---------- miniclips y previews en el espacio libre a la izquierda del video ---------- */
     var mini = { box: document.createElement('div'), grid: document.createElement('div'), items: [], owner: false, vip: false, user: false };
     mini.box.className = 'np-minis'; mini.box.innerHTML = '<div class="np-mh"><i></i>CLIPS DEL CANAL</div>'; mini.grid.className = 'np-mg'; mini.box.appendChild(mini.grid); box.appendChild(mini.box);
     var mbox = document.createElement('div'); mbox.className = 'np-mbox'; mbox.innerHTML = '<div><button type="button" class="mx" aria-label="Close">&times;</button><div class="mi"></div></div>'; document.body.appendChild(mbox);
@@ -137,34 +137,26 @@
     }
     function minisLayout() {
       var cards = mini.grid.querySelectorAll('.np-mc'), n = cards.length; if (!n || !cur || !v.videoWidth) { mini.box.classList.remove('on'); return; }
-      var W = box.clientWidth, H = box.clientHeight, vw = Math.min(W, H * v.videoWidth / v.videoHeight), free = Math.floor((W - vw) / 2) - 14;
-      if (!(cur.height > cur.width) || free < 96) { /* video horizontal o sin espacio al costado: columna a la izquierda del reproductor (o tira debajo si no hay lugar) */
-        var host = box.parentNode, room = Math.floor(box.getBoundingClientRect().left) - 20, side = room >= 100;
-        if (!mini.box.classList.contains('strip')) { mini.box.classList.add('strip'); host.insertBefore(mini.box, box.nextSibling); }
-        if (side) {
-          var sc = room >= 230 ? 2 : 1, sg = 8, sw = Math.min(118, Math.floor((Math.min(room, 260) - sg * (sc - 1)) / sc));
-          host.style.position = 'relative'; mini.box.classList.add('lft'); mini.box.style.width = (sw * sc + sg * (sc - 1)) + 'px'; mini.grid.style.gridTemplateColumns = 'repeat(' + sc + ',' + sw + 'px)';
-        } else { mini.box.classList.remove('lft'); mini.box.style.width = ''; mini.grid.style.gridTemplateColumns = ''; }
-        [].forEach.call(cards, function (c) { c.style.display = ''; });
-        mini.box.classList.add('on'); return;
-      }
-      if (mini.box.classList.contains('strip')) { mini.box.classList.remove('strip', 'lft'); box.appendChild(mini.box); }
-      var cols = free >= 150 ? 3 : (free >= 100 ? 2 : 1), gap = 6, cw = Math.floor((Math.min(free, 420) - gap * (cols - 1)) / cols), ch = Math.round(cw * 16 / 9), avail = H - 68 - 18, rows = Math.max(1, Math.floor((avail + gap) / (ch + gap))), cnt = Math.min(n, cols * rows);
-      mini.box.style.width = (cw * cols + gap * (cols - 1)) + 'px'; mini.grid.style.gridTemplateColumns = 'repeat(' + cols + ',' + cw + 'px)';
-      [].forEach.call(cards, function (c, i) { c.style.display = i < cnt ? '' : 'none'; });
+      /* Mantener el rail fuera del reproductor y a su izquierda, incluso con video cuadrado o vertical. */
+      var host = box.parentNode, room = Math.floor(box.getBoundingClientRect().left) - 20, side = room >= 100;
+      if (!mini.box.classList.contains('strip')) { mini.box.classList.add('strip'); host.insertBefore(mini.box, box.nextSibling); }
+      if (side) {
+        var sc = room >= 230 ? 2 : 1, sg = 8, sw = Math.min(118, Math.floor((Math.min(room, 260) - sg * (sc - 1)) / sc));
+        host.style.position = 'relative'; mini.box.classList.add('lft'); mini.box.style.width = (sw * sc + sg * (sc - 1)) + 'px'; mini.grid.style.gridTemplateColumns = 'repeat(' + sc + ',' + sw + 'px)';
+      } else { mini.box.classList.remove('lft'); mini.box.style.width = ''; mini.grid.style.gridTemplateColumns = ''; }
+      [].forEach.call(cards, function (c) { c.style.display = ''; });
       mini.box.classList.add('on');
     }
     function minisLoad() {
       Promise.all([
         fetch('/api/novinhas/mini?c=' + encodeURIComponent(slug) + '&n=12&t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }),
         fetch('/api/novinhas/featured?library=1&c=' + encodeURIComponent(slug) + '&t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { items: [] }; }),
-        fetch('/api/novinhas/enhance?c=' + encodeURIComponent(slug) + '&t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; })
+        fetch('/api/novinhas/mini?me=1', { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; })
       ]).then(function (res) {
-        var mj = res[0] || {}, pj = res[1] || {}, ej = res[2] || {};
-        mini.owner = mini.owner || !!pj.owner || !!ej.owner; mini.vip = mini.vip || !!ej.vip || mini.owner;
+        var mj = res[0] || {}, pj = res[1] || {}, me = res[2] || {};
+        mini.owner = mini.owner || !!pj.owner || !!me.owner; mini.vip = mini.vip || !!me.vip || mini.owner; mini.user = mini.user || !!me.user;
         mini.items = (mj.items || []).map(function (x) { x.kind = 'mini'; return x; });
-        var enhancedItems = (ej.readyItems || []).map(function (x) { x.kind = 'enhanced'; return x; }).concat(ej.queuedItems || []);
-        var all = [ { label: 'MINICLIPS', items: mini.items }, { label: 'PREVIEWS', items: (pj.items || []) }, { label: 'ENHANCED', items: enhancedItems } ];
+        var all = [ { label: 'MINICLIPS', items: mini.items }, { label: 'PREVIEWS', items: (pj.items || []) } ];
         mini.grid.innerHTML = '';
         all.forEach(function (section) {
           if (!section.items.length) return;
