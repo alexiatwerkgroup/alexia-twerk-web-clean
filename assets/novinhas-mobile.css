@@ -1,0 +1,24 @@
+/* Novinhas · celular (<=900px): sin scroll horizontal, controles flotantes en un dock sin pisarse,
+   rankings como chips chicos que se agrandan al tocar. */
+@media(max-width:900px){
+  html,body{overflow-x:clip;max-width:100vw}
+  .tn2-w{max-width:100vw;padding-left:8px!important;padding-right:8px!important;gap:6px!important;box-sizing:border-box}
+  .nov-channel-card,.card{content-visibility:auto;contain-intrinsic-size:auto 96px}
+  .vt.nvp>section>.w{padding-left:14px!important;padding-right:14px!important}
+  /* Hall of Fame: chip abajo a la izquierda; al tocar se abre hacia arriba */
+  #nv-rank{left:10px!important;right:auto!important;top:auto!important;bottom:10px!important;width:max-content!important;max-width:calc(100vw - 150px);max-height:44px;overflow:hidden;border-radius:22px;transform:none!important;transition:max-height .24s ease,border-radius .2s ease;z-index:2147482990}
+  #nv-rank .nvr-toggle{padding:0 14px;height:44px;border-radius:22px;border-bottom:0;font-size:10px;letter-spacing:.05em;white-space:nowrap;gap:10px}
+  #nv-rank[data-open=true]{width:min(360px,calc(100vw - 20px))!important;max-width:none;max-height:min(72vh,560px);overflow-y:auto;border-radius:16px;box-shadow:0 10px 40px #000c}
+  #nv-rank[data-open=true] .nvr-toggle{border-radius:16px 16px 0 0;height:auto;padding:13px 14px;border-bottom:1px solid #ffffff14}
+  /* Donor ladder: pill chico abajo a la derecha; el panel ocupa el ancho al abrir */
+  #twd:not(.on){left:auto!important;right:10px!important;bottom:10px!important;width:auto!important}
+  #twd.on{left:10px!important;right:10px!important;bottom:10px!important}
+  #twd .pl{height:44px;padding:0 14px;font-size:12px}
+  #twd .pn{max-height:78vh}
+  /* Help y Estadísticas: arriba de los chips, redondos y chicos */
+  .th-b{left:10px!important;bottom:64px!important;height:44px!important;min-height:44px!important;width:44px;padding:0!important;justify-content:center}
+  .th-b span{display:none!important}
+  #twk-stats-shortcut{left:auto!important;right:10px!important;bottom:64px!important;padding:0 12px!important;height:44px!important;font-size:10px!important;z-index:9980}
+  .np-minis.strip .np-mg{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}
+}
+@media(max-width:380px){#nv-rank .nvr-toggle{font-size:9px;padding:0 10px}#twd .pl{font-size:11px;padding:0 11px}}
