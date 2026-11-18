@@ -7,5 +7,28 @@
 /* Desktop: pin the leaderboard to the viewport edge and give it the scale of the reference ladder. */
 @media(min-width:1421px){#nv-rank{left:12px;width:390px}.vt.nvp>section>.w{max-width:1500px;padding-left:430px}.nvr-head{padding:20px 19px 16px}.nvr-title{font-size:30px}.nvr-sub{font-size:12px}.nvr-langs{gap:6px;margin-top:13px}.nvr-langs button{min-width:42px;padding:6px 9px;font-size:10px}.nvr-sec{padding:15px 15px 12px}.nvr-sec-title{font-size:11px;margin-bottom:10px}.nvr-sec-title b{font-size:9px}.nvr-list{gap:6px}.nvr-item{grid-template-columns:26px 56px minmax(0,1fr);gap:10px;min-height:62px;padding:5px 7px;border-radius:11px}.nvr-rank{font-size:13px}.nvr-thumb{width:56px;height:56px;border-radius:8px}.nvr-name{font-size:13px}.nvr-count{font-size:10px}.nvr-empty{font-size:11px;padding:13px 8px}.nvr-foot{padding:9px 17px 14px;font-size:10px}}
 @media(min-width:1101px) and (max-width:1420px){#nv-rank{left:12px;width:310px}.vt.nvp>section>.w{max-width:1500px;padding-left:350px}.nvr-item{grid-template-columns:23px 48px minmax(0,1fr);gap:8px;min-height:56px}.nvr-thumb{width:48px;height:48px}.nvr-name{font-size:12px}}
-/* Park the full-size leaderboard along the bottom, leaving Help and the owner stats shortcut clear. */
-@media(min-width:1101px){#nv-rank{top:auto;bottom:12px;left:145px;width:350px;max-height:min(calc(100vh - 24px),1100px)}.vt.nvp>section>.w{padding-left:280px}}
+/* Balanced desktop layout: equal side panels and a genuinely centered channel column. */
+@media(min-width:1600px){
+  #nv-rank{top:110px;right:auto;bottom:12px;left:145px;width:350px;height:auto;max-height:none}
+  #nv-rank .nvr-head{padding:20px 19px 16px}
+  #nv-rank .nvr-title{font-size:30px}
+  #nv-rank .nvr-sub{font-size:12px}
+  #nv-rank .nvr-langs{gap:6px;margin-top:13px}
+  #nv-rank .nvr-langs button{min-width:42px;padding:6px 9px;font-size:10px}
+  #nv-rank .nvr-sec{padding:15px 15px 12px}
+  #nv-rank .nvr-sec-title{font-size:11px;margin-bottom:10px}
+  #nv-rank .nvr-sec-title b{font-size:9px}
+  #nv-rank .nvr-list{gap:6px}
+  #nv-rank .nvr-item{grid-template-columns:26px 56px minmax(0,1fr);gap:10px;min-height:62px;padding:5px 7px;border-radius:11px}
+  #nv-rank .nvr-rank{font-size:13px}
+  #nv-rank .nvr-thumb{width:56px;height:56px;border-radius:8px}
+  #nv-rank .nvr-name{font-size:13px}
+  #nv-rank .nvr-count{font-size:10px}
+  #nv-rank .nvr-empty{font-size:11px;padding:13px 8px}
+  #nv-rank .nvr-foot{padding:9px 17px 14px;font-size:10px}
+  .vt.nvp>section>.w{width:min(1500px,calc(100vw - 760px));max-width:1500px;padding-left:0!important;margin-left:auto;margin-right:auto}
+  #twd{right:14px!important;top:110px!important;bottom:12px!important;width:350px!important}
+  #twd .pn{width:350px!important;height:calc(100vh - 122px)!important;max-height:none!important;border-radius:17px!important;padding:20px!important;gap:9px!important}
+}
+/* Medium desktops retain the existing compact floating layout. */
+@media(min-width:1101px) and (max-width:1599px){#nv-rank{top:auto;bottom:12px;left:145px;width:310px;max-height:min(calc(100vh - 24px),1100px)}.vt.nvp>section>.w{padding-left:280px}}
