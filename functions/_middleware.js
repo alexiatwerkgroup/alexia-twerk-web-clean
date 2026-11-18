@@ -58,7 +58,7 @@ export async function onRequest(context) {
         await env.DB.prepare('INSERT INTO tw_hits (hid, ts, last_active, vid, path, country, region, city, tz, device, browser, os, lang, ref, is_new, reg, lat, lon, uid, iph) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
           .bind(hid, seenAt, seenAt, vid, hitPath, cf.country || '', cf.region || '', cf.city || '', cf.timezone || '', u.device, u.browser, u.os, lang, ref, isNew, reg, cf.latitude ? Math.round(cf.latitude * 10) / 10 : null, cf.longitude ? Math.round(cf.longitude * 10) / 10 : null, uid, iph).run(); } catch (e) {}
       })());
-      add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=7" defer></script>';
+      add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=8" defer></script>';
     }
     add += '<script src="/assets/twerkhub-counter.js?v=20261114-stats2" defer></script>';
     add += '<script>(function(){document.querySelectorAll(".tn2-lk a,.tn2 details nav a,.tf2 a").forEach(function(a){var h=a.getAttribute("href")||"";if(h.indexOf("/membership")===0||h.indexOf("/pt/membership")===0){a.href="/tokens/";a.textContent="BALANCE"}})})();</script>';

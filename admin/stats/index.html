@@ -63,6 +63,7 @@ function place(country, city) { return flag(country) + ' ' + (country ? esc(cn(c
 function pl(path) { var p = String(path || '/'); return '<a class="pl" href="' + esc(p.split('?')[0]) + '" target="_blank" rel="noopener noreferrer">' + esc(p.length > 46 ? p.slice(0, 46) + '…' : p) + '</a>'; }
 function badges(reasons) { var m = { tiempo: ['pt', '30 s+ en una página'], cuenta: ['pa', 'con cuenta'], 'acción': ['pc', 'hizo una acción'] }; return reasons.map(function (r) { return '<span class="pill ' + m[r][0] + '">' + m[r][1] + '</span>'; }).join(''); }
 function whoSpan(name, uid, vid) { var label = name || ('Visitante ' + String(vid || '').slice(0, 6)); return '<span class="who" data-uid="' + esc(uid || '') + '" data-vid="' + esc(vid || '') + '">' + esc(label) + '</span>'; }
+function eventLabel(e) { var label = esc(EV[e.name] || e.name); if (e.name === 'nov_watch' && e.detail) return label + ' (' + esc(e.detail) + ')'; return label; }
 function dlt(cur, prev) { if (prev == null) return ''; var d = cur - prev; return d === 0 ? ' <span class="m">=</span>' : ' <span style="color:' + (d > 0 ? 'var(--ok)' : 'var(--bad)') + ';font-size:11px">' + (d > 0 ? '▲' : '▼') + Math.abs(d) + '</span>'; }
 function bars(rows, key, label, prevOf) { var max = Math.max.apply(null, rows.map(function (r) { return r[key]; }).concat([1])); return rows.length ? rows.map(function (r) { return '<div class="bar"><span class="n" title="' + esc(label(r)) + '">' + esc(label(r)) + '</span><span class="t"><u style="width:' + Math.max(2, 100 * r[key] / max) + '%"></u></span><span class="v">' + F(r[key]) + (prevOf ? dlt(r[key], prevOf(r)) : '') + '</span></div>'; }).join('') : '<div class="m">Sin datos en este período</div>'; }
 
@@ -174,7 +175,7 @@ function onlineTable(list, d, emptyMsg) {
   var rows = list.map(function (o) {
     var state = o.reasons.length ? badges(o.reasons) : '<span class="pill pw">mirando</span><br><span class="m">' + Math.min(o.maxDur24h, 999) + ' s en su mejor página</span>';
     var who = '<b>' + whoSpan(o.user, o.uid, o.vidFull) + '</b><br>' + '<span class="m">' + place(o.country, o.city) + ' · ' + esc([o.device, o.browser, o.os].filter(Boolean).join(' · ')) + '</span>';
-    var ev = o.events.length ? o.events.map(function (e) { return esc(EV[e.name] || e.name) + ' <span class="m">(hace ' + ago(e.ts) + ')</span>'; }).join('<br>') : '<span class="m">solo mirando</span>';
+    var ev = o.events.length ? o.events.map(function (e) { return eventLabel(e) + ' <span class="m">(hace ' + ago(e.ts) + ')</span>'; }).join('<br>') : '<span class="m">solo mirando</span>';
     return '<tr><td>' + who + '</td><td>' + pl(o.path) + '</td><td>' + state + '</td><td>hace ' + ago(o.lastSignal) + '</td><td>' + T(o.dur) + ' · ' + o.scroll + '%</td><td>' + esc(o.ref || 'directo') + '</td><td>' + ev + '</td></tr>';
   }).join('');
   return '<div class="tw"><table><tr><th>Quién</th><th>Dónde está</th><th>Interés</th><th>Última señal</th><th>Tiempo / scroll en esta página</th><th>Vino de</th><th>Qué hizo</th></tr>' + (rows || '<tr><td colspan="7" class="m">' + emptyMsg + '</td></tr>') + '</table></div>';
@@ -197,7 +198,7 @@ function recentTable(list) {
   return '<div class="tw"><table><tr><th>Última vez</th><th>Quién</th><th>País / ciudad</th><th>Fuente</th><th>Recorrido (páginas y tiempo)</th><th>Tiempo total</th><th>¿Registrado?</th><th>¿Hunter?</th><th>Cartel hunter</th></tr>' + (rows || '<tr><td colspan="9" class="m">Todavía no hay visitantes en las últimas 24 h</td></tr>') + '</table></div>';
 }
 function liveHtml(d) {
-  var acts = (d.recentActions || []).map(function (e) { return '<div>' + esc(EV[e.name] || e.name) + (e.detail && e.name !== 'nov_watch' && e.name !== 'nov_play' ? ' · ' + esc(e.detail) : '') + '<br><small>' + whoSpan(e.user, e.uid, e.vid) + ' · ' + place(e.country, e.city) + ' · hace ' + ago(e.ts) + '</small></div>'; }).join('') || '<div class="m">Todavía no hay acciones</div>';
+  var acts = (d.recentActions || []).map(function (e) { return '<div>' + eventLabel(e) + (e.detail && e.name !== 'nov_watch' && e.name !== 'nov_play' ? ' · ' + esc(e.detail) : '') + '<br><small>' + whoSpan(e.user, e.uid, e.vid) + ' · ' + place(e.country, e.city) + ' · hace ' + ago(e.ts) + '</small></div>'; }).join('') || '<div class="m">Todavía no hay acciones</div>';
   var accs = (d.latestAccounts || []).map(function (a) { var t = new Date(String(a.registered_at).replace(' ', 'T') + 'Z'); return '<div><b>' + whoSpan(a.username || 'sin nombre', a.id, '') + '</b> <span class="pill pw">' + esc(a.tier || '—') + '</span><br><small>registrada ' + (isNaN(t) ? esc(a.registered_at) : 'hace ' + ago(t.getTime())) + '</small></div>'; }).join('');
   var conf = d.online || [];
   return liveKpis(d) + '<div class="g"><div class="c s12"><h2>Quién está en el sitio ahora<small>visitantes reales · se actualiza cada 5 segundos</small></h2>' + onlineTable(conf, d, 'Ningún visitante real en este momento') + '<h2 style="margin-top:22px">Últimos conectados<small>últimas 24 h · recorrido completo, país, fuente, tiempo, registro, hunter y cartel (el conteo del cartel empieza desde hoy)</small></h2>' + recentTable(d.recent) + '</div>' +

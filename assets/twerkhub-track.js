@@ -21,7 +21,11 @@
     if (t.closest('.twr')) add('rabbit_click');
     var nov = t.closest('[data-nov-action]');
     if (nov && (nov.dataset.novAction === 'watch' || nov.dataset.novAction === 'join')) {
-      add('nov_' + nov.dataset.novAction, nov.dataset.novLocation || '');
+      var detail = nov.dataset.novLocation || '';
+      if (nov.dataset.novAction === 'watch') {
+        try { detail = new URL(nov.href, location.href).searchParams.get('c') || detail; } catch (e) {}
+      }
+      add('nov_' + nov.dataset.novAction, detail);
     }
   }, true);
   document.addEventListener('play', function (e) {
