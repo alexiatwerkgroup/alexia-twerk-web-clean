@@ -45,27 +45,32 @@ cfg = get_json("_config/vip.json") or {}
 channels = cfg.get("channels", {})
 todo = []
 pages = s3.get_paginator("list_objects_v2").paginate(Bucket=bucket, Delimiter="/")
-for page in pages:
-    for prefix in page.get("CommonPrefixes", []):
-        slug = prefix["Prefix"].strip("/")
-        access = channels.get(slug, {})
-        if not access.get("vip"):
+slugs = [p["Prefix"].strip("/") for page in pages for p in page.get("CommonPrefixes", [])]
+for slug in slugs:
+    access = channels.get(slug, {})
+    if not access.get("vip"):
+        continue
+    catalog = get_json(f"{slug}/_videos.json") or {}
+    free = {int(x) for x in access.get("free", [])}
+    existing = set()
+    for page in s3.get_paginator("list_objects_v2").paginate(Bucket=bucket, Prefix=f"{slug}/teasers/"):
+        existing.update(obj["Key"] for obj in page.get("Contents", []))
+    for video in catalog.get("videos", []):
+        try:
+            vid = int(video["id"])
+        except (KeyError, TypeError, ValueError):
             continue
-        catalog = get_json(f"{slug}/_videos.json") or {}
-        free = {int(x) for x in access.get("free", [])}
-        for video in catalog.get("videos", []):
-            try:
-                vid = int(video["id"])
-            except (KeyError, TypeError, ValueError):
-                continue
-            if vid in free:
-                continue
-            n = f"{vid:02d}"
-            target = f"{slug}/teasers/video-{n}.mp4"
-            if not exists(target):
-                todo.append((slug, n, target))
+        if vid in free:
+            continue
+        n = f"{vid:02d}"
+        target = f"{slug}/teasers/video-{n}.mp4"
+        if target not in existing:
+            todo.append((slug, n, target))
 
-limit = 20
+# Prepare Claudio's main channel first; then continue with every other VIP channel.
+todo.sort(key=lambda item: (item[0] != "chica-twerk", item[0], int(item[1])))
+
+limit = 100
 print(f"Missing teasers: {len(todo)}; processing up to {limit}", flush=True)
 ok = errors = 0
 for slug, number, target in todo[:limit]:
