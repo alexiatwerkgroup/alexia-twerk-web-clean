@@ -62,6 +62,7 @@
     '.np-mg{display:grid;gap:8px;align-content:start;justify-content:start}' +
     '.np-minis.strip{position:static;margin:12px 0 0;pointer-events:auto}.np-minis.strip .np-mg{grid-template-columns:repeat(auto-fill,minmax(96px,130px));justify-content:start}.np-minis.lft{position:absolute;right:100%;left:auto;margin:0 14px 0 0;top:0;bottom:auto;height:auto}.np-minis.lft .np-mg{justify-content:end;max-height:calc(100vh - 120px);min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 4px 8px 0;scrollbar-width:thin;scrollbar-color:#e8b84a #171717}' +
     '.np-mc{position:relative;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:#111;border:1.5px solid #e8b84a;pointer-events:auto;cursor:pointer;padding:0;box-shadow:0 4px 14px rgba(0,0,0,.6);transition:transform .12s,filter .12s}.np-mc:hover{transform:translateY(-2px);filter:brightness(1.1)}' +
+    '.np-mc[data-more]{display:none!important}' +
     '.np-more{grid-column:1/-1;padding:9px 12px;border-radius:10px;border:1px solid #e8b84a;background:#14110a;color:#ffe9a8;font:700 12px system-ui,sans-serif;cursor:pointer;pointer-events:auto}' +
     '.np-mc img,.np-mc video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.np-mc video{background:#000}' +
     '.np-mc b{position:absolute;left:6px;bottom:6px;padding:3px 7px;border-radius:6px;background:rgba(0,0,0,.72);color:#fff;font:800 10px/1 system-ui,sans-serif;letter-spacing:.06em}.np-mc b.sl{background:linear-gradient(180deg,#9b5cff,#5b21b6)}' +
@@ -188,9 +189,9 @@
           });
           var cards = [].slice.call(mini.grid.querySelectorAll('.np-mc[data-sec="' + section.label + '"]'));
           if (cards.length > 6) {
-            cards.slice(6).forEach(function (c) { c.style.display = 'none'; c.dataset.more = '1'; });
+            cards.slice(6).forEach(function (c) { c.dataset.more = '1'; });
             var mb = document.createElement('button'); mb.type = 'button'; mb.className = 'np-more'; mb.textContent = 'Show ' + (cards.length - 6) + ' more';
-            mb.onclick = function () { cards.slice(6).forEach(function (c) { c.style.display = ''; delete c.dataset.more; }); mb.remove(); minisLayout(); };
+            mb.onclick = function () { cards.slice(6).forEach(function (c) { delete c.dataset.more; }); mb.remove(); minisLayout(); };
             mini.grid.appendChild(mb);
           }
         });
