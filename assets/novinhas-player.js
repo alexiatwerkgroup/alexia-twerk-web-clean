@@ -109,6 +109,7 @@
     /* ---------- reproductor ---------- */
     var box = document.createElement('div'); box.className = 'np-stage' + (cur.height > cur.width ? ' np-tall' : '');
     var v = document.createElement('video');
+    v.dataset.twRankVideo = String(cur.id);
     v.controls = true; v.playsInline = true; v.preload = 'auto'; v.poster = cur.poster; v.tabIndex = 0;
     if (cur.teaser) { v.controls = true; v.preload = 'metadata'; }
     v.setAttribute('controlsList', 'nodownload noremoteplayback nofullscreen'); v.setAttribute('disablePictureInPicture', ''); v.removeAttribute('disablePictureInPicture');
@@ -254,6 +255,7 @@
       if (!isFs() || x.locked) { location.href = urlFor(x, auto); return; }
       clearInterval(nxT); nx.classList.remove('on'); markSeen(slug, cur.id);
       cur = x; hasLow = !!cur.lowVideo && cur.lowVideo !== cur.video; idx = vids.indexOf(cur); nextV = neighbor(1); prevV = neighbor(-1);
+      v.dataset.twRankVideo = String(cur.id);
       posKey = 'twk_nov_pos:' + slug + ':' + cur.id; delete v.dataset.resumed;
       box.className = 'np-stage' + (cur.height > cur.width ? ' np-tall' : ''); v.poster = cur.poster;
       v.removeAttribute('data-src'); applyQuality(false); v.play().catch(function () {});

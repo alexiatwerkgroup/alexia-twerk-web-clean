@@ -30,6 +30,10 @@
   }, true);
   document.addEventListener('play', function (e) {
     if (location.pathname.indexOf('/novinhas/watch') === 0 && e.target && e.target.id === 'player') add('nov_play');
+    var v = e.target;
+    if (v && v.tagName === 'VIDEO' && v.closest && v.closest('.np-stage') && location.pathname.indexOf('/novinhas/canal/ver') === 0) {
+      try { var p = new URLSearchParams(location.search), c = p.get('c') || '', id = v.dataset.twRankVideo || p.get('v') || ''; if (/^[a-z0-9-]{2,60}$/.test(c) && /^\d{1,4}$/.test(id)) { var key = c + ':' + id; window.__twNovVideoViews = window.__twNovVideoViews || {}; if (!window.__twNovVideoViews[key]) { window.__twNovVideoViews[key] = 1; add('nov_video_view', key); } } } catch (err) {}
+    }
   }, true);
   // Tiempo real de reproducción en la página de video: segundos reproducidos y punto más lejano alcanzado (% del video).
   var vPlay = 0, vMax = 0, vDur = 0, vLast = -1, vSent = 0;
