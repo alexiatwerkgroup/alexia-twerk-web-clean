@@ -386,12 +386,15 @@ menu.onclick=function(e){var m=e.target.dataset&&e.target.dataset.m;if(m){set(m)
 var cur=null;
 function stop(v){try{v.pause();v.muted=true}catch(e){}}
 function play(v,snd){if(cur&&cur!==v)stop(cur);cur=v;v.muted=!snd;if(v.readyState<1)v.load();var p=v.play();if(p&&p.catch)p.catch(function(){v.muted=true;v.play().catch(function(){})})}
+var touch=window.matchMedia&&window.matchMedia('(hover: none)').matches;
+var io=null;if(touch&&'IntersectionObserver' in window){io=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;if(e.isIntersecting&&e.intersectionRatio>=.6){if(cur&&cur!==v)stop(cur);cur=v;v.muted=true;if(v.readyState<1)v.load();var p=v.play();if(p&&p.catch)p.catch(function(){})}else if(cur===v){stop(v);cur=null}else{try{v.pause()}catch(x){}}})},{threshold:[0,.6]})}
 document.querySelectorAll('.m .mv').forEach(function(h){var v=h.querySelector('video');if(!v)return;
- h.addEventListener('mouseenter',function(){play(v,true)});h.addEventListener('mouseleave',function(){stop(v)});
- h.addEventListener('touchstart',function(){if(v.paused)play(v,true);else stop(v)},{passive:true})});
+ if(!touch){h.addEventListener('mouseenter',function(){play(v,true)});h.addEventListener('mouseleave',function(){stop(v)})}
+ else{h.addEventListener('click',function(){if(v.paused||v.muted){play(v,true)}else{v.muted=true}})}
+ if(io)io.observe(v)});
 })();
 </script>
 <script src="/assets/novinhas-archive.js?v=20261110-anim1" defer></script><script src="/assets/twk-stats-btn.js?v=20261118-join1" defer></script><script src="/assets/twerkhub-activity.js?v=2" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script>
-<script>document.querySelectorAll(".grid article.m").forEach(function(a){var l=a.querySelector("a.gcta");if(!l)return;a.style.cursor="pointer";a.addEventListener("click",function(e){if(e.target.closest("a"))return;location.href=l.getAttribute("href")})});</script>
+<script>document.querySelectorAll(".grid article.m").forEach(function(a){var l=a.querySelector("a.gcta");if(!l)return;a.style.cursor="pointer";a.addEventListener("click",function(e){if(e.target.closest("a"))return;if(e.target.closest(".mv")&&window.matchMedia("(hover: none)").matches)return;location.href=l.getAttribute("href")})});</script>
 <script src="/assets/novinhas-featured.js?v=19" defer></script><script src="/assets/novinhas-identify.js?v=6" defer></script><script>(function(){function once(v){var K="nvLogoHeard",seen=false;try{seen=sessionStorage.getItem(K)==="1"}catch(e){}function rest(){try{v.currentTime=1e6}catch(e){}v.pause()}if(seen){if(v.readyState>=1)rest();else v.addEventListener("loadedmetadata",rest);return}v.volume=.5;v.addEventListener("ended",function(){try{sessionStorage.setItem(K,"1")}catch(e){}});var ev=["pointerdown","keydown","touchstart","wheel","mousemove"];function h(){ev.forEach(function(e){window.removeEventListener(e,h,true)});v.muted=false;try{v.currentTime=0}catch(e){}v.play().catch(function(){})}function arm(){ev.forEach(function(e){window.addEventListener(e,h,true)})}v.muted=false;var p=v.play();if(p&&p.catch)p.catch(function(){v.pause();try{v.currentTime=0}catch(e){}arm()})}window.nvLogoOnce=once;var v=document.getElementById("bf-vid");if(v)once(v)})()</script><script>(function(){var n=0,t=setInterval(function(){var h=document.getElementById('wtk-home');if(!h){clearInterval(t);return}if(window.TwkCoin&&TwkCoin.token){clearInterval(t);TwkCoin.token(h)}else if(++n>60)clearInterval(t)},250)})();</script>
 </body></html>
