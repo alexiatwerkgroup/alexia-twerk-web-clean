@@ -33,3 +33,20 @@
 }
 /* Medium desktops retain the existing compact floating layout. */
 @media(min-width:1101px) and (max-width:1599px){#nv-rank{top:auto;bottom:12px;left:145px;width:310px;max-height:min(calc(100vh - 24px),1100px)}.vt.nvp>section>.w{padding-left:280px}}
+
+/* Desktop: Hall of Fame pegado al borde izquierdo (espejo del Donor ladder), mismo alto anclado abajo,
+   contenido repartido para no dejar espacios vacios; Help queda a su derecha. */
+@media(min-width:1101px){
+  #nv-rank{left:14px!important;display:flex;flex-direction:column;overflow-x:hidden;overflow-y:auto}
+  #nv-rank .nvr-head,#nv-rank .nvr-foot{flex:none}
+  #nv-rank .nvr-sec{flex:1 0 auto;display:flex;flex-direction:column}
+  #nv-rank .nvr-sec .nvr-list{flex:1 0 auto;grid-auto-rows:minmax(48px,1fr)}
+  #nv-rank .nvr-foot{margin-top:auto}
+  body:has(#nv-rank) .th-b{left:calc(14px + 310px + 12px)!important}
+  body:has(#nv-rank) .th-t{left:calc(14px + 310px + 12px)!important}
+  body:has(#nv-rank) .th-w{left:calc(14px + 310px + 12px)!important}
+}
+@media(min-width:1600px){
+  #nv-rank{left:14px!important}
+  body:has(#nv-rank) .th-b,body:has(#nv-rank) .th-t,body:has(#nv-rank) .th-w{left:calc(14px + 350px + 12px)!important}
+}
