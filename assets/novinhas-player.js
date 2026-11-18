@@ -60,7 +60,7 @@
     '.np-minis{position:absolute;z-index:6;left:8px;right:auto;top:8px;bottom:60px;display:none;flex-direction:column;gap:6px;pointer-events:none;font-family:system-ui,sans-serif}.np-minis.on{display:flex}' +
     '.np-mh{display:flex;align-items:center;gap:6px;font:900 10px/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#ffd76a;text-shadow:0 1px 3px #000}.np-mh i{width:8px;height:8px;border-radius:50%;background:#ff2d2d;box-shadow:0 0 6px #ff2d2d}' +
     '.np-mg{display:grid;gap:8px;align-content:start;justify-content:start}' +
-    '.np-minis.strip{position:static;margin:12px 0 0;pointer-events:auto}.np-minis.strip .np-mg{grid-template-columns:repeat(auto-fill,minmax(96px,130px));justify-content:start}.np-minis.lft{position:absolute;right:100%;left:auto;margin:0 14px 0 0;top:0}.np-minis.lft .np-mg{justify-content:end;max-height:calc(100vh - 120px);overflow-y:auto;overscroll-behavior:contain;padding:0 4px 8px 0;scrollbar-width:thin;scrollbar-color:#e8b84a #171717}' +
+    '.np-minis.strip{position:static;margin:12px 0 0;pointer-events:auto}.np-minis.strip .np-mg{grid-template-columns:repeat(auto-fill,minmax(96px,130px));justify-content:start}.np-minis.lft{position:absolute;right:100%;left:auto;margin:0 14px 0 0;top:0;bottom:auto;height:auto}.np-minis.lft .np-mg{justify-content:end;max-height:calc(100vh - 120px);min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 4px 8px 0;scrollbar-width:thin;scrollbar-color:#e8b84a #171717}' +
     '.np-mc{position:relative;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:#111;border:1.5px solid #e8b84a;pointer-events:auto;cursor:pointer;padding:0;box-shadow:0 4px 14px rgba(0,0,0,.6);transition:transform .12s,filter .12s}.np-mc:hover{transform:translateY(-2px);filter:brightness(1.1)}' +
     '.np-mc img,.np-mc video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.np-mc video{background:#000}' +
     '.np-mc b{position:absolute;left:6px;bottom:6px;padding:3px 7px;border-radius:6px;background:rgba(0,0,0,.72);color:#fff;font:800 10px/1 system-ui,sans-serif;letter-spacing:.06em}.np-mc b.sl{background:linear-gradient(180deg,#9b5cff,#5b21b6)}' +
@@ -144,7 +144,10 @@
       if (side) {
         var sc = room >= 256 ? 3 : room >= 170 ? 2 : 1, sg = 8, sw = Math.min(118, Math.floor((Math.min(room, 380) - sg * (sc - 1)) / sc));
         host.style.position = 'relative'; mini.box.classList.add('lft'); mini.box.style.width = (sw * sc + sg * (sc - 1)) + 'px'; mini.grid.style.gridTemplateColumns = 'repeat(' + sc + ',' + sw + 'px)';
-      } else { mini.box.classList.remove('lft'); mini.box.style.width = ''; mini.grid.style.gridTemplateColumns = ''; }
+        var playerTop = box.getBoundingClientRect().top, info = document.querySelector('#info .np-info'), infoBottom = info ? info.getBoundingClientRect().bottom : box.getBoundingClientRect().bottom;
+        var panelHeight = Math.max(180, infoBottom - playerTop), heading = mini.box.querySelector('.np-mh');
+        mini.grid.style.maxHeight = Math.max(120, panelHeight - (heading ? heading.getBoundingClientRect().height : 30) - 8) + 'px';
+      } else { mini.box.classList.remove('lft'); mini.box.style.width = ''; mini.grid.style.gridTemplateColumns = ''; mini.grid.style.maxHeight = ''; }
       [].forEach.call(cards, function (c) { c.style.display = ''; });
       mini.box.classList.add('on');
     }
@@ -512,7 +515,7 @@
         }).catch(function () { rb.classList.remove('busy'); lab.textContent = 'Error'; clearTimeout(rt); rt = setTimeout(function () { lab.textContent = 'REC'; }, 2600); });
       };
     }).catch(function () {});
-    minisLoad(); try { new ResizeObserver(minisLayout).observe(box); } catch (_) { window.addEventListener('resize', minisLayout); } v.addEventListener('loadedmetadata', minisLayout);
+    minisLoad(); try { new ResizeObserver(minisLayout).observe(box); var infoBox = document.getElementById('info'); if (infoBox) new ResizeObserver(minisLayout).observe(infoBox); } catch (_) { window.addEventListener('resize', minisLayout); } v.addEventListener('loadedmetadata', minisLayout);
     if (o.bar) o.bar.replaceChildren(bar);
 
     }
