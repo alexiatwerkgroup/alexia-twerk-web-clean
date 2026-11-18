@@ -49,4 +49,9 @@
 @media(min-width:1600px){
   #nv-rank{left:14px!important}
   body:has(#nv-rank) .th-b,body:has(#nv-rank) .th-t,body:has(#nv-rank) .th-w{left:calc(14px + 350px + 12px)!important}
+  #twd .pn .tr,#twd .pn .rw{flex:1 1 auto}
+  #twd .pn .tr{min-height:34px}
+  #twd .pn .b1{flex:none}
+  #twd .pn .b2{flex:none}
+  #twd .pn .hd{flex:none}
 }
