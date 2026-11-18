@@ -109,8 +109,9 @@ export async function onRequestGet({ request, env }) {
     peaks.sort((x, y) => (x.k < y.k ? 1 : -1));
   }
   const k = one(0);
-  const funnelRows = await all(db, "SELECT name, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ?1 AND name IN ('signup_click','signup_start','signup_done','signup_verified','nov_signup') GROUP BY name", since);
-  const funnelEvents = Object.fromEntries(funnelRows.map(x => [x.name, Number(x.u) || 0]));
+  // Reuse the report's existing event aggregation rather than scanning D1 a
+  // second time; the new signup stages are already included in VALID_EVENT_SQL.
+  const funnelEvents = Object.fromEntries((res[11].results || []).map(x => [x.name, Number(x.u) || 0]));
   const visitors = res[15].results || [];
   const vids = visitors.map(v => v.vid), ph = vids.map((_, i) => `?${i + 2}`).join(',');
   const uids = [...new Set(visitors.map(v => v.uid).filter(Boolean))];
