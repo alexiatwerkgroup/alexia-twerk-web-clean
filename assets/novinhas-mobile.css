@@ -20,5 +20,8 @@
   .th-b span{display:none!important}
   #twk-stats-shortcut{left:auto!important;right:10px!important;bottom:64px!important;padding:0 12px!important;height:44px!important;font-size:10px!important;z-index:9980}
   .np-minis.strip .np-mg{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}
+  .tn2-w .twk-coin.hp{zoom:.72}.tn2-w .twk-pf{zoom:.9}.tn2-w>*{flex-shrink:1;min-width:0}.tn2-w{width:100%!important;margin:0!important;justify-content:space-between}
+  .banner h1,.banner h2,#name{font-size:clamp(22px,7.2vw,32px)!important;overflow-wrap:anywhere;line-height:1.1}
+  #nv-rank .nvr-title{font-size:24px}#nv-rank .nvr-sec-title{font-size:10px;letter-spacing:.08em}#nv-rank .nvr-sec-title b{font-size:8px}
 }
 @media(max-width:380px){#nv-rank .nvr-toggle{font-size:9px;padding:0 10px}#twd .pl{font-size:11px;padding:0 11px}}
