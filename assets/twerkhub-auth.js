@@ -347,7 +347,7 @@
       '<div class="twk-auth-crest">A·T</div>' +
       '<span class="twk-auth-eye">New member</span>' +
       '<h2 class="twk-auth-title">Create your <em>handle</em>.</h2>' +
-      '<p class="twk-auth-lede">Username + email + password. Email is required for account verification and recovery.</p>' +
+      '<p class="twk-auth-lede">Free account · get +200 tokens after email verification. Choose a username, email and password.</p>' +
       '<div class="twk-auth-form">' +
         '<div><label class="twk-auth-label" for="twk-auth-username">Username (public)</label>' +
         '<input class="twk-auth-input" id="twk-auth-username" type="text" required maxlength="32" minlength="2" placeholder="solo.collector" autocomplete="username" autocapitalize="none"></div>' +

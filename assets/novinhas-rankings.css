@@ -29,6 +29,7 @@
   .vt.nvp>section>.w{width:min(1500px,calc(100vw - 760px));max-width:1500px;padding-left:0!important;margin-left:auto;margin-right:auto}
   #twd{right:14px!important;top:110px!important;bottom:12px!important;width:350px!important}
   #twd .pn{width:350px!important;height:calc(100vh - 122px)!important;max-height:none!important;border-radius:17px!important;padding:20px!important;gap:9px!important}
+  #twk-stats-shortcut{right:380px!important;bottom:16px!important}
 }
 /* Medium desktops retain the existing compact floating layout. */
 @media(min-width:1101px) and (max-width:1599px){#nv-rank{top:auto;bottom:12px;left:145px;width:310px;max-height:min(calc(100vh - 24px),1100px)}.vt.nvp>section>.w{padding-left:280px}}

@@ -116,7 +116,7 @@ export async function onRequest(context) {
       await env.DB.prepare('UPDATE users SET email_verified = 1 WHERE id = ?').bind(userId).run();
     } catch (_) {}
   } else {
-  const limited = await limitByIP(context, 'new-account-day-v2', 86400, 1);
+  const limited = await limitByIP(context, 'new-account-day-v2', 86400, 5);
   if (limited) return limited;
     // Create new user. Password_hash is set to a sentinel "oauth:google:<sub>"
     // since the user can't log in via password — only via Google.

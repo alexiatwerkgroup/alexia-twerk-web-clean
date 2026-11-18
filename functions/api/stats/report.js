@@ -109,6 +109,8 @@ export async function onRequestGet({ request, env }) {
     peaks.sort((x, y) => (x.k < y.k ? 1 : -1));
   }
   const k = one(0);
+  const funnelRows = await all(db, "SELECT name, COUNT(DISTINCT vid) u FROM tw_events WHERE ts > ?1 AND name IN ('signup_click','signup_start','signup_done','signup_verified','nov_signup') GROUP BY name", since);
+  const funnelEvents = Object.fromEntries(funnelRows.map(x => [x.name, Number(x.u) || 0]));
   const visitors = res[15].results || [];
   const vids = visitors.map(v => v.vid), ph = vids.map((_, i) => `?${i + 2}`).join(',');
   const uids = [...new Set(visitors.map(v => v.uid).filter(Boolean))];
@@ -134,6 +136,8 @@ export async function onRequestGet({ request, env }) {
     kpi: { loads, cookies: k.cookies || 0, confirmed: k.confirmed || 0, byTime: k.byTime || 0, byAccount: k.byAccount || 0, byAction: k.byAction || 0, actions: k.actions || 0,
       interested: k.interested || 0, newReal: k.newReal || 0, avgSeconds: k.avgSeconds || 0, unconfirmedLoads: Math.max(0, loads - confirmedLoads), unconfirmedCookies: Math.max(0, (k.cookies || 0) - (k.confirmed || 0)),
       accountsTotal: one(12).total || 0, accountsInPeriod: (res[13].results || []).reduce((a, r) => a + r.n, 0),
+      signupClicks: funnelEvents.signup_click || 0, signupStarts: funnelEvents.signup_start || 0,
+      signupVerified: funnelEvents.signup_verified || 0,
       lastHit: one(17).lastHit || null, signups: one(17).signups || 0, intent: one(17).n || 0, intentPeople: one(17).u || 0 },
     prev: prevSince == null ? null : { since: prevSince, until: prevUntil, ...one(19), byIndex: res[20].results || [], countries: res[21].results || [], refs: res[22].results || [], pages: res[23].results || [] },
     peaks, botsByDay: res[base + 1].results || [], heat: res[base + 2].results || [], botCountries: res[base + 3].results || [], noSignal: { total: ((res[base + 5].results || [])[0] || {}).total || 0, conRef: ((res[base + 5].results || [])[0] || {}).conRef || 0 }, burst: { cookies: ((res[base + 4].results || [])[0] || {}).burstCookies || 0, minutes: ((res[base + 4].results || [])[0] || {}).burstMinutes || 0, min: BURST_MIN },

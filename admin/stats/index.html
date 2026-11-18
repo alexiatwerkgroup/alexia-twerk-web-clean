@@ -51,7 +51,7 @@ var live = null, rep = null, liveOkAt = 0, repOkAt = 0, liveBusy = false, repBus
 var uncOpen = false, denied = false, seenActionTs = 0, seenOnline = null, soundOn = false, audio = null;
 try { soundOn = localStorage.getItem('twk-visitor-sound') === '1'; } catch (e) {}
 
-var EV = { unlock_click: 'Clic en desbloquear', pay_open: 'Abrió el pago', copy_id: 'Copió el ID de Binance', binance_ref: 'Clic en crear cuenta Binance', follow: 'Activó avisos', rabbit_click: 'Clic al conejo', nov_watch: 'Entró a un canal de Novinhas', nov_play: 'Reprodujo un video de Novinhas', nov_join: 'Abrió el registro (Novinhas)', nov_signup: 'Se registró desde Novinhas', signup_done: 'Se registró' };
+var EV = { unlock_click: 'Clic en desbloquear', pay_open: 'Abrió el pago', copy_id: 'Copió el ID de Binance', binance_ref: 'Clic en crear cuenta Binance', follow: 'Activó avisos', rabbit_click: 'Clic al conejo', nov_watch: 'Entró a un canal de Novinhas', nov_play: 'Reprodujo un video de Novinhas', nov_join: 'Abrió el registro (Novinhas)', nov_signup: 'Se registró desde Novinhas', signup_click: 'Clic en crear cuenta gratis', signup_start: 'Empezó el registro', signup_done: 'Cuenta creada', signup_verified: 'Verificó el email' };
 var DOW = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 function F(n) { return (Number(n) || 0).toLocaleString('es-AR'); }
@@ -222,7 +222,7 @@ function repHtml(r) {
     '<div class="k"><span>Intención de compra</span><b>' + F(k.intentPeople) + '</b><i>personas con clic en desbloquear, pago o Binance (' + F(k.intent) + ' clics). <b>No son ventas confirmadas.</b>' + delta(k.intentPeople, r.prev && r.prev.intentPeople, r) + '</i></div>' +
     '<div class="k"><span>Registros</span><b>' + F(k.signups) + '</b><i>cuentas creadas en el período: ' + F(k.accountsInPeriod) + ' · ' + F(k.accountsTotal) + ' en total' + delta(k.accountsInPeriod, r.prev && r.prev.accounts, r) + '</i></div>' +
     '<div class="k"><span>Tiempo activo</span><b>' + T(k.avgSeconds) + '</b><i>promedio por visitante real · cuenta pestaña visible o video reproduciéndose' + pr3(function (x) { return x.avgSeconds; }, T) + '</i></div></div>';
-  var funnel = bars([{ n: 'Visitantes reales', u: k.confirmed }, { n: 'Interesados', u: k.interested }, { n: 'Intención de compra', u: k.intentPeople }, { n: 'Se registraron', u: k.signups }], 'u', function (x) { return x.n; });
+  var funnel = bars([{ n: 'Visitantes reales', u: k.confirmed }, { n: 'Interesados', u: k.interested }, { n: 'Clic en cuenta gratis', u: k.signupClicks }, { n: 'Empezaron el registro', u: k.signupStarts }, { n: 'Cuenta creada', u: k.signups }, { n: 'Email verificado', u: k.signupVerified }], 'u', function (x) { return x.n; });
   var marks = r.marks.slice(0, 8).map(function (m) { return '<div class="mk"><span class="pill pw">' + esc(m.channel || 'promo') + '</span><span>' + esc(m.label) + '</span><span class="m">' + new Date(m.ts).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</span><u data-del="' + Number(m.id) + '">borrar</u></div>'; }).join('');
   var vis = r.visitors.map(function (v) {
     var who = '<b>' + whoSpan(v.user, v.uid, v.vid) + '</b><br>' + '<span class="m">' + place(v.country, v.city) + '</span>';

@@ -3,10 +3,15 @@ export async function onRequestGet({ env }) {
   const headers = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=60', 'X-Robots-Tag': 'noindex' };
   if (!env.DB || !env.NOVINHAS_VIDEOS) return new Response(JSON.stringify({ channels: [], videos: [] }), { status: 503, headers });
   try {
-    const [channelRows, videoRows] = await Promise.all([
+    let [channelRows, videoRows] = await Promise.all([
       env.DB.prepare("SELECT detail slug,COUNT(*) views FROM tw_events WHERE name='nov_channel_view' AND detail GLOB '[a-z0-9-]*' GROUP BY detail ORDER BY views DESC,detail LIMIT 30").all(),
       env.DB.prepare("SELECT detail,COUNT(*) views FROM tw_events WHERE name='nov_video_view' AND detail LIKE '%:%' GROUP BY detail ORDER BY views DESC,detail LIMIT 30").all()
     ]);
+    // If channel-view events predate query retention or could not be written,
+    // recover the same all-time counts from first-party page hits.
+    if (!(channelRows.results || []).length) {
+      channelRows = await env.DB.prepare("SELECT substr(path,instr(path,'?c=')+3) slug,COUNT(*) views FROM tw_hits WHERE path LIKE '/novinhas/canal%?c=%' AND instr(path,'?c=')>0 GROUP BY slug ORDER BY views DESC,slug LIMIT 30").all();
+    }
     const cache = new Map();
     async function manifest(slug) {
       if (!/^[a-z0-9-]{2,60}$/.test(slug)) return null;

@@ -1,7 +1,7 @@
 // POST {h, d, s, ev:[{n,d}]}  (sendBeacon) -> updates time on page, scroll depth and events of one page view.
 import { json } from '../../_lib/http.js';
 import { init } from '../../_lib/analytics.js';
-const ALLOWED_EVENTS = new Set(['pay_open', 'unlock_click', 'follow', 'copy_id', 'binance_ref', 'rabbit_click', 'nov_watch', 'nov_join', 'nov_play', 'nov_video_view', 'signup_done', 'nov_signup', 'vid_time']);
+const ALLOWED_EVENTS = new Set(['pay_open', 'unlock_click', 'follow', 'copy_id', 'binance_ref', 'rabbit_click', 'nov_watch', 'nov_join', 'nov_play', 'nov_video_view', 'signup_click', 'signup_start', 'signup_done', 'signup_verified', 'nov_signup', 'vid_time']);
 export async function onRequestPost({ request, env }) {
   let b = {}; try { b = JSON.parse(await request.text()); } catch {}
   const h = String(b.h || ''); if (!/^[a-f0-9]{16}$/.test(h)) return json({ ok: false }, 400);

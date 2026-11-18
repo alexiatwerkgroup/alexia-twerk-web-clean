@@ -1,6 +1,16 @@
 (function(){
   if(window.__twkStats)return;
   window.__twkStats=1;
+  function showJoinCTA(){
+    var token='';try{token=(JSON.parse(localStorage.getItem('alexia-auth-v3')||'{}').token)||''}catch(e){}
+    if(token){try{var p=JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));if(!p.exp||p.exp*1000>Date.now())return}catch(e){}}
+    var lang=(document.documentElement.lang||'en').toLowerCase().slice(0,2),label=lang==='es'?'CREAR CUENTA · +200':lang==='pt'?'CRIAR CONTA · +200':'JOIN FREE · +200';
+    document.querySelectorAll('.tn2-lk a[href="/account"],.tn2 details nav a[href="/account"]').forEach(function(a){a.href='/account?utm_source=nav_join';a.textContent=label;a.classList.add('twk-join-cta');a.setAttribute('aria-label',label)});
+  }
+  function styleJoinCTA(){if(document.getElementById('twk-join-cta-style'))return;var s=document.createElement('style');s.id='twk-join-cta-style';s.textContent='.tn2-lk a.twk-join-cta,.tn2 details nav a.twk-join-cta{display:inline-flex;align-items:center;justify-content:center;border:1px solid #e8b84a;border-radius:10px;background:linear-gradient(180deg,#ffe27a,#e8b84a);color:#1a1100!important;font-weight:900;letter-spacing:.08em;padding:10px 13px;white-space:nowrap}.tn2 details nav a.twk-join-cta{margin:8px 12px;padding:12px 14px}';document.head.appendChild(s)}
+  styleJoinCTA();showJoinCTA();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',showJoinCTA,{once:true});
+  setTimeout(showJoinCTA,1200);
   // Keep a fixed, direct owner shortcut in addition to the visitor counter.
   var OWNER='alexiatwerkoficial@gmail.com';
   function addStatsLink(){

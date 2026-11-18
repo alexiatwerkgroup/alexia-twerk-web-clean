@@ -13,6 +13,7 @@
   document.addEventListener('click', function (e) {
     touch();
     var t = e.target; if (!t.closest) return;
+    var join = t.closest('a.twk-join-cta,a[href="/account"].twk-btn'); if (join) add('signup_click', (new URL(join.href, location.href)).searchParams.get('utm_source') || 'free_account');
     var a = t.closest('[data-pay]'); if (a) add('pay_open', a.dataset.pay);
     if (t.closest('.full')) add('unlock_click', (t.closest('.c') || {}).dataset ? t.closest('.c').dataset.n : '');
     if (t.closest('#follow')) add('follow');
@@ -47,8 +48,21 @@
   document.addEventListener('twk:signup-success', function (e) {
     var source = String(e.detail && e.detail.source || '');
     add(source.indexOf('novinhas_') === 0 ? 'nov_signup' : 'signup_done', source);
+    try { localStorage.setItem('twk_signup_pending_verification', '1'); } catch (_) {}
     send();
   });
+  function observeSignupStart(){
+    if(window.__twkSignupStartSeen)return;
+    var modal=document.querySelector('#twk-auth-modal[data-mode="signup"]');
+    var pageForm=document.querySelector('#twk-account-auth .twk-auth-sheet');
+    if(modal||pageForm){window.__twkSignupStartSeen=1;add('signup_start',location.pathname.indexOf('/account')===0?'account_page':'modal')}
+  }
+  observeSignupStart();
+  if(document.body&&window.MutationObserver){try{new MutationObserver(observeSignupStart).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-mode']})}catch(_){}}
+  if(new URLSearchParams(location.search).get('verified')==='1'){
+    add('signup_verified','email');
+    try{if(localStorage.getItem('twk_signup_pending_verification'))localStorage.removeItem('twk_signup_pending_verification')}catch(_){}
+  }
   function send() { tick(); scr(); vidEvent(); var b = JSON.stringify({ h: h, d: Math.round(vis / 1000), s: maxS, u: hum, i: interaction > lastSentInteraction ? interaction : 0, ev: ev }); lastSentInteraction = interaction; ev = []; sent++; try { navigator.sendBeacon('/api/analytics/track', new Blob([b], { type: 'application/json' })); } catch (e) {} }
   document.addEventListener('visibilitychange', function () { tick(); shown = !document.hidden; last = Date.now(); if (document.hidden) send(); });
   addEventListener('pagehide', send);

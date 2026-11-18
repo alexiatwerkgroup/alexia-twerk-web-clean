@@ -54,7 +54,9 @@ export async function onRequest(context) {
     if (u) return json({ ok: false, error: 'username_taken' }, 409, origin);
   }
 
-  const limited = await limitByIP(context, 'new-account-day-v2', 86400, 1);
+  // Permit a few legitimate signups behind shared household/mobile IPs while
+  // Turnstile and the separate hourly abuse limit continue to protect the route.
+  const limited = await limitByIP(context, 'new-account-day-v2', 86400, 5);
   if (limited) return limited;
   const id = uuidv4();
   let passwordHash;
