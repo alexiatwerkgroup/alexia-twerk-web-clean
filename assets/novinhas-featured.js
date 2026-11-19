@@ -39,20 +39,21 @@
       var p = v.play(); if (p && p.catch) p.catch(function () { v.muted = true; v.play().catch(function () {}); if (pass === 0) arm(); });
     }
     function next() { var i = (cur + 1) % vids.length; if (i === 0) pass++; play(i); }
-    var armed = false;
+    var armed = false, off = false;
     function arm() { if (armed) return; armed = true; var ev = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'mousemove']; var h = function () { ev.forEach(function (e) { window.removeEventListener(e, h, true); }); if (pass === 0 && cur >= 0) vids[cur].muted = false; }; ev.forEach(function (e) { window.addEventListener(e, h, true); }); }
     vids.forEach(function (v, i) {
       v.addEventListener('ended', function () { if (i === cur) { rest(i); next(); } });
-      cards[i].addEventListener('mouseenter', function () { hov = i; if (i === cur) return; v.muted = true; v.classList.add('on'); try { v.currentTime = 0; } catch (_) {} v.play().catch(function () {}); });
-      cards[i].addEventListener('mouseleave', function () { hov = -1; if (i !== cur) rest(i); });
+      cards[i].addEventListener('mouseenter', function () { hov = i; if (i === cur) return; if (cur >= 0 && vids[cur]) { vids[cur]._q = Date.now(); vids[cur].pause(); } v.muted = true; v.classList.add('on'); try { v.currentTime = 0; } catch (_) {} v.play().catch(function () {}); });
+      cards[i].addEventListener('mouseleave', function () { hov = -1; if (i !== cur) { rest(i); resume(); } });
     });
     /* Si el navegador pausa el preview en curso (ventana/pestana en segundo plano), se reanuda solo: la secuencia y el sonido siguen. */
-    vids.forEach(function (v, i) { v.addEventListener('pause', function () { if (Date.now() - (v._q || 0) < 600 || i !== cur || v.ended || hov === i) return; setTimeout(function () { if (i === cur && v.paused && !v.ended) v.play().catch(function () {}); }, 150); }); });
-    function resume() { var v = vids[cur]; if (v && v.paused && !v.ended) { var p = v.play(); if (p && p.catch) p.catch(function () { v.muted = true; v.play().catch(function () {}); }); } }
+    vids.forEach(function (v, i) { v.addEventListener('pause', function () { if (Date.now() - (v._q || 0) < 600 || i !== cur || v.ended || hov !== -1 || off) return; setTimeout(function () { if (i === cur && v.paused && !v.ended) v.play().catch(function () {}); }, 150); }); });
+    function resume() { if (off || hov !== -1) return; var v = vids[cur]; if (v && v.paused && !v.ended) { var p = v.play(); if (p && p.catch) p.catch(function () { v.muted = true; v.play().catch(function () {}); }); } }
     var lastT = -1, stall = 0;
-    function watchdog() { var v = vids[cur]; if (!v || v.ended || hov === cur) { stall = 0; return; } if (v.currentTime === lastT) { stall++; resume(); if (stall >= 4) { stall = 0; rest(cur); next(); } } else { stall = 0; } lastT = v.currentTime; }
+    function watchdog() { var v = vids[cur]; if (!v || v.ended || off || hov !== -1) { stall = 0; return; } if (v.currentTime === lastT) { stall++; resume(); if (stall >= 4) { stall = 0; rest(cur); next(); } } else { stall = 0; } lastT = v.currentTime; }
     document.addEventListener('visibilitychange', resume); window.addEventListener('focus', resume); window.addEventListener('blur', function () { setTimeout(resume, 200); });
     setInterval(watchdog, 1500);
+    if ('IntersectionObserver' in window) { new IntersectionObserver(function (es) { var now = !es[0].isIntersecting; if (now === off) return; off = now; if (off) { var v = vids[cur]; if (v) { v._q = Date.now(); v.pause(); } } else resume(); }, { threshold: 0.15 }).observe(box); }
     play(0);
   }).catch(function () {});
 })();
