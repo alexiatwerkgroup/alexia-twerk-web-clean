@@ -72,7 +72,11 @@ if not pending:
     sys.exit(0)
 
 # Una corrida procesa toda la cola, de a un video por vez (evita solapar inferencias en la GPU).
+GPU_OK = False
+
+
 def process(item, slug, vid, output_key):
+    global GPU_OK
     number = f"{vid:02d}"
     source = "/tmp/enhanced-source.mp4"
     result = "/tmp/enhanced-result.mp4"
@@ -97,7 +101,7 @@ def process(item, slug, vid, output_key):
 
     base = upscaler_url
     headers = {"X-Token": upscaler_token}
-    health_deadline = time.time() + 15 * 60
+    health_deadline = time.time() + (3 * 60 if not GPU_OK else 20)
     while time.time() < health_deadline:
         try:
             if requests.get(base + "/health", timeout=10).ok:
@@ -107,7 +111,9 @@ def process(item, slug, vid, output_key):
         print("Waiting for Salad GPU endpoint", flush=True)
         time.sleep(15)
     else:
-        sys.exit("Salad GPU endpoint did not become ready")
+        print("Salad GPU endpoint is OFF (health != 200): Enhanced queue stays pending, will retry next run", flush=True)
+        sys.exit(0)
+    GPU_OK = True
 
     with open(source, "rb") as stream:
         response = requests.post(

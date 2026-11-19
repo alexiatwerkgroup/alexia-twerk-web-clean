@@ -37,5 +37,5 @@
   verifyOwner();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',verifyOwner,{once:true});
   window.setTimeout(verifyOwner,1500);
-  ['novinhas-hunter.js?v=20261115-rep3','twk-coin.js?v=20261115-tkb4','twk-i18n.js?v=20261116-es1','twk-models-nav.js?v=20261105-alexia-paused-5','twk-profile.js?v=20261105-walletfix','twk-lang.js?v=20261104-info'].forEach(function(src){var s=document.createElement('script');s.src='/assets/'+src;s.defer=true;document.head.appendChild(s)});
+  ['novinhas-hunter.js?v=20261115-rep3','twk-coin.js?v=20261115-tkb4','twk-i18n.js?v=20261116-es1','twk-models-nav.js?v=20261105-alexia-paused-5','twk-profile.js?v=20261105-walletfix','twk-lang.js?v=20261104-info'].forEach(function(src){if(/^novinhas-hunter/.test(src)&&document.querySelector('script[src*="novinhas-hunter.js"]'))return;var s=document.createElement('script');s.src='/assets/'+src;s.defer=true;document.head.appendChild(s)});
 })();

@@ -19,18 +19,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pip install boto3
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: which ffmpeg >/dev/null 2>&1 || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
       - run: python3 tools/mini_worker.py
         env:
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - run: python3 tools/preview_worker.py
+      - if: always()
+        run: python3 tools/preview_worker.py
         env:
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - run: python3 tools/locked_teaser_worker.py
+      - if: always()
+        continue-on-error: true
+        run: python3 tools/locked_teaser_worker.py
         env:
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

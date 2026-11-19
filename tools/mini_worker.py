@@ -38,7 +38,8 @@ try:
             s3.upload_file(pj, B, key[:-4] + '.webp', ExtraArgs={'ContentType': 'image/webp'})
         ok += 1; print('SUBIDO', key, flush=True)
     print('Listo:', ok, 'subidos,', err, 'errores')
-    sys.exit(1 if err else 0)
+    if err: print('::warning title=mini_worker::%d clips con error (fuente faltante o corte); se reintentan en la proxima corrida' % err)
+    sys.exit(0)
 except SystemExit:
     raise
 except Exception as e:
