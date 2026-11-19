@@ -9,6 +9,9 @@ import { authenticate } from './_lib/auth.js';
 import { init, parseUA, isBot, cookie, OWNER } from './_lib/analytics.js';
 const DISC = '<div class="twk-disc" role="note" style="margin:0;padding:18px 16px;border-top:1px solid rgba(255,255,255,.12);background:#000;color:#9d9db0;font:11px/1.6 system-ui,Arial,sans-serif;text-align:center;letter-spacing:.02em"><b style="color:#fff">18+ ADULTS ONLY.</b> If you are under 18 you cannot enter this site. All performers in Twerkhub original content are 18 or older and appear under a written agreement.</div>';
 
+const NAV_CREATORS = '<a href="/creators">Creators</a>', NAV_NOVINHAS = '<a class="nv-navlogo" href="/novinhas/" aria-label="Novinhas"><span>Novinhas</span></a>';
+const NAV_NOVINHAS_CSS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap"><style>.tn2 a.nv-navlogo{font:700 30px/1 "Dancing Script","Pacifico",cursive!important;letter-spacing:0!important;text-transform:none!important;padding-top:0!important;padding-bottom:0!important}.tn2 a.nv-navlogo span{background:linear-gradient(180deg,#ffb3d6,#ff4f9a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;filter:drop-shadow(0 0 8px rgba(255,79,154,.45));display:inline-block;padding:0 2px}.tn2 a.nv-navlogo:hover span{filter:drop-shadow(0 0 12px rgba(255,79,154,.8)) brightness(1.1)}.tn2 nav a.nv-navlogo{font-size:26px!important}</style>';
+function novinhasNav(h) { if (h.indexOf(NAV_CREATORS) < 0) return h; return h.replace(/<div class="tn2-lk">[\s\S]*?<\/div>/, (x) => x.replace(NAV_CREATORS, NAV_NOVINHAS)).replace(/<details><summary[\s\S]*?<\/details>/, (x) => x.replace(NAV_CREATORS, NAV_NOVINHAS)); }
 export async function onRequest(context) {
   const paused = await explicitPauseResponse(context.request);
   if (paused) return paused;
@@ -36,6 +39,7 @@ export async function onRequest(context) {
     if (request.method !== 'GET' || url.pathname.startsWith('/api/') || !ct.includes('text/html') || !res.body || res.status !== 200) return res;
     try { spare = res.clone(); } catch (e) {}
     const html = (await res.text()).replace(/supabase-config\.js(?:\?[^"'<>\s]*)?/g, 'supabase-config.js?v=20261103-confirm').replace(/twerkhub-auth\.js(?:\?[^"'<>\s]*)?/g, 'twerkhub-auth.js?v=20261107-novinhas-return').replace(/twk-stats-btn\.js(?:\?[^"'<>\s]*)?/g, 'twk-stats-btn.js?v=20261118-join1');
+    const page = novinhasNav(html);
     const ua = request.headers.get('user-agent') || '';
     const track = env.DB && !isBot(ua) && cookie(request, 'twx') !== '1' && !url.pathname.startsWith('/admin/');
     let add = html.includes('class="twk-disc"') ? '' : DISC;
@@ -76,8 +80,9 @@ export async function onRequest(context) {
     if (!html.includes('/assets/twk-ui.css')) add += '<link rel="stylesheet" href="/assets/twk-ui.css?v=1">';
     if (!html.includes('/assets/twk-helpbot.js')) add += '<script src="/assets/twk-helpbot.js?v=3" defer></script>';
     if (!html.includes('/assets/twk-stats-btn.js')) add += '<script src="/assets/twk-stats-btn.js?v=20261118-join1" defer></script>';
-    const i = html.lastIndexOf('</body>');
-    const out = i >= 0 ? html.slice(0, i) + add + html.slice(i) : html + add;
+    if (page.indexOf('class="nv-navlogo"') >= 0) add += NAV_NOVINHAS_CSS;
+    const i = page.lastIndexOf('</body>');
+    const out = i >= 0 ? page.slice(0, i) + add + page.slice(i) : page + add;
     h.delete('content-length'); h.delete('content-encoding'); h.delete('etag');
     return new Response(out, { status: res.status, statusText: res.statusText, headers: h });
   } catch (e) {

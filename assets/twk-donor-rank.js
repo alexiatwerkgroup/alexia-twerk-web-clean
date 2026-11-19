@@ -18,7 +18,7 @@
     '#twd .tp{display:flex;align-items:flex-start;gap:8px}#twd h3{margin:0;font:600 16px system-ui;color:#fff;flex:1}#twd .su{margin:0;color:#a99b72;font-size:11px}' +
     '#twd .lg{display:flex;gap:2px}#twd .lg button,#twd .xx{background:none;border:1px solid #3a3115;color:#a99b72;border-radius:6px;font:600 10px system-ui;padding:3px 6px;cursor:pointer}#twd .lg button.on{background:#e8b84a;color:#1a1100;border-color:#e8b84a}#twd .xx{font-size:15px;line-height:1;padding:1px 7px}' +
     '#twd .tr{border:1px dashed #3a3115;border-radius:12px;padding:7px 9px;display:flex;align-items:center;gap:9px}#twd .tr b{color:#e8b84a;font:600 14px system-ui;width:74px;white-space:nowrap;flex:none}#twd .pp{display:flex;gap:4px;flex:1;flex-wrap:nowrap}#twd .pp i{width:15px;height:15px;border-radius:50%;border:1.5px solid #e8b84a;flex:none}#twd .pp i.f{background:#e8b84a}#twd .tr span{font-size:11px;color:#a99b72;text-align:right;min-width:52px;white-space:nowrap}' +
-    '#twd .rw{display:flex;align-items:center;gap:7px;padding:4px 8px;border:1px solid #3a3115;border-radius:10px;background:#14110a}#twd .rw.g{border-color:#e8b84a;background:#2a2208}#twd .rw.e{border-style:dashed;background:none;color:#a99b72}' +
+    '#twd .rw{display:flex;align-items:center;gap:7px;aspect-ratio:auto;height:auto;min-height:0;flex:none;padding:4px 8px;border:1px solid #3a3115;border-radius:10px;background:#14110a}#twd .rw.gd{border-color:#e8b84a;background:#2a2208}#twd .rw.e{border-style:dashed;background:none;color:#a99b72}' +
     '#twd .n{width:15px;text-align:center;color:#a99b72;font-size:11px}#twd .av{width:22px;height:22px;border-radius:50%;border:1px solid #3a3115;display:flex;align-items:center;justify-content:center;flex:none}#twd .av svg{width:13px;height:13px;fill:#e8b84a}#twd .nm{flex:1}#twd .am{font-weight:600;color:#e8b84a}' +
     '#twd .ct{display:flex;align-items:center;gap:6px;font-size:11px;color:#e8b84a;margin:1px 0}#twd .ct:before,#twd .ct:after{content:"";flex:1;border-top:1px dashed #e8b84a}' +
     '#twd .b1,#twd .b2{display:flex;align-items:center;justify-content:center;height:42px;border-radius:10px;font:600 14px system-ui;text-decoration:none;cursor:pointer}#twd .b1{background:linear-gradient(180deg,#ffe27a,#f0b90b 55%,#c98f00);color:#1a1100;margin-top:3px;box-shadow:0 4px 16px rgba(232,184,74,.28)}#twd .b2{border:1.5px solid #e8b84a;color:#ffe9a8;height:38px;font-size:13px}#twd .b1:hover{filter:brightness(1.1)}' +
@@ -43,7 +43,7 @@
     h += '<div class="ct">' + o.pz + '</div>';
     for (var i = 0; i < 10; i++) {
       var r = it[i];
-      h += r ? '<div class="rw' + (i === 0 ? ' g' : '') + '"><span class="n">' + (i + 1) + '</span><span class="av">' + U + '</span><span class="nm">' + (i === 0 ? o.ld : o.an) + ' ' + esc(r.n) + '</span><span class="am">' + money(r.amt) + '</span></div>'
+      h += r ? '<div class="rw' + (i === 0 ? ' gd' : '') + '"><span class="n">' + (i + 1) + '</span><span class="av">' + U + '</span><span class="nm">' + (i === 0 ? o.ld : o.an) + ' ' + esc(r.n) + '</span><span class="am">' + money(r.amt) + '</span></div>'
              : '<div class="rw e"><span class="n">' + (i + 1) + '</span><span class="av">' + U + '</span><span class="nm">' + o.em + ' · ' + o.pl + '</span></div>';
       if (i === 4) h += '<div class="ct">' + o.ql + '</div>';
     }

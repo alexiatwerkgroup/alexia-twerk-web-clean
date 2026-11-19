@@ -46,7 +46,11 @@ channels = cfg.get("channels", {})
 todo = []
 pages = s3.get_paginator("list_objects_v2").paginate(Bucket=bucket, Delimiter="/")
 slugs = [p["Prefix"].strip("/") for page in pages for p in page.get("CommonPrefixes", [])]
+# Canales retirados del sitio: no tienen videos en R2 y gastaban los 100 intentos de cada corrida.
+REMOVED = {"carol-videos"}
 for slug in slugs:
+    if slug in REMOVED:
+        continue
     access = channels.get(slug, {})
     if not access.get("vip"):
         continue
