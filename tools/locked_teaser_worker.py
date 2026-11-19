@@ -76,8 +76,10 @@ todo.sort(key=lambda item: (item[0] != "chica-twerk", item[0], int(item[1])))
 
 limit = 100
 print(f"Missing teasers: {len(todo)}; processing up to {limit}", flush=True)
-ok = errors = 0
-for slug, number, target in todo[:limit]:
+ok = errors = missing = 0
+for slug, number, target in todo:
+    if ok + errors >= limit:
+        break
     source, output = "/tmp/locked-source.mp4", "/tmp/locked-teaser.mp4"
     for path in (source, output):
         try:
@@ -87,8 +89,8 @@ for slug, number, target in todo[:limit]:
     try:
         s3.download_file(bucket, f"{slug}/full/video-{number}.mp4", source)
     except ClientError as exc:
-        errors += 1
-        print(f"ERROR source missing: {slug}/{number}", flush=True)
+        missing += 1
+        print(f"SKIP source missing: {slug}/{number}", flush=True)
         continue
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", source, "-t", "5",
            "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
@@ -101,5 +103,7 @@ for slug, number, target in todo[:limit]:
     ok += 1
     print(f"READY teaser: {slug}/{number}", flush=True)
 
-print(f"Done: {ok} teasers created; {errors} errors", flush=True)
-sys.exit(1 if errors else 0)
+print(f"Done: {ok} teasers created; {errors} encode errors; {missing} skipped (source missing)", flush=True)
+if errors:
+    print(f"::warning title=locked_teaser::{errors} teasers con error de encode; se reintentan en la proxima corrida")
+sys.exit(0)
