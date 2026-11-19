@@ -14,4 +14,4 @@ function load(){fetch('/api/novinhas/featured?list=1',{credentials:'same-origin'
  var c=d.current,items=d.items,q=items.filter(function(i){return i.queued&&!(c&&i.id===c.id)}),rest=items.filter(function(i){return !i.queued&&!(c&&i.id===c.id)}),cu=items.filter(function(i){return c&&i.id===c.id});
  v.innerHTML='<h2>Live now</h2>'+(cu.map(function(i){return row(i,c,d)}).join('')||'<p class="s">Nothing yet.</p>')+(cu.length?'<p><button data-a="next">Skip to next</button></p>':'')+'<h2>Queue ('+q.length+')</h2>'+(q.map(function(i){return row(i,c,d)}).join('')||'<p class="s">Empty: random rotation from the saved ones.</p>')+'<h2>Saved by you ('+rest.length+')</h2>'+rest.map(function(i){return row(i,c,d)}).join('')})}
 document.getElementById('v').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;post({action:b.dataset.a,item:b.dataset.i}).then(load)});load();
-</script><script src="/assets/novinhas-hunter.js?v=20261115-rep5" defer></script></body></html>
+</script><script src="/assets/novinhas-hunter.js?v=20261118-gd" defer></script></body></html>
