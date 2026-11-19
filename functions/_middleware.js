@@ -38,7 +38,7 @@ export async function onRequest(context) {
     const ct = res.headers.get('content-type') || '';
     if (request.method !== 'GET' || url.pathname.startsWith('/api/') || !ct.includes('text/html') || !res.body || res.status !== 200) return res;
     try { spare = res.clone(); } catch (e) {}
-    const html = (await res.text()).replace(/supabase-config\.js(?:\?[^"'<>\s]*)?/g, 'supabase-config.js?v=20261103-confirm').replace(/twerkhub-auth\.js(?:\?[^"'<>\s]*)?/g, 'twerkhub-auth.js?v=20261107-novinhas-return').replace(/twk-stats-btn\.js(?:\?[^"'<>\s]*)?/g, 'twk-stats-btn.js?v=20261118-join2');
+    const html = (await res.text()).replace(/supabase-config\.js(?:\?[^"'<>\s]*)?/g, 'supabase-config.js?v=20261103-confirm').replace(/twerkhub-auth\.js(?:\?[^"'<>\s]*)?/g, 'twerkhub-auth.js?v=20261107-novinhas-return').replace(/twk-stats-btn\.js(?:\?[^"'<>\s]*)?/g, 'twk-stats-btn.js?v=20261118-gd3');
     const page = novinhasNav(html);
     const ua = request.headers.get('user-agent') || '';
     const track = env.DB && !isBot(ua) && cookie(request, 'twx') !== '1' && !url.pathname.startsWith('/admin/');
@@ -79,7 +79,7 @@ export async function onRequest(context) {
     add += '<script>(function(){document.querySelectorAll(".tn2-lk a,.tn2 details nav a,.tf2 a").forEach(function(a){var h=a.getAttribute("href")||"";if(h.indexOf("/membership")===0||h.indexOf("/pt/membership")===0){a.href="/tokens/";a.textContent="BALANCE"}})})();</script>';
     if (!html.includes('/assets/twk-ui.css')) add += '<link rel="stylesheet" href="/assets/twk-ui.css?v=1">';
     if (!html.includes('/assets/twk-helpbot.js')) add += '<script src="/assets/twk-helpbot.js?v=3" defer></script>';
-    if (!html.includes('/assets/twk-stats-btn.js')) add += '<script src="/assets/twk-stats-btn.js?v=20261118-join2" defer></script>';
+    if (!html.includes('/assets/twk-stats-btn.js')) add += '<script src="/assets/twk-stats-btn.js?v=20261118-gd3" defer></script>';
     if (page.indexOf('class="nv-navlogo"') >= 0) add += NAV_NOVINHAS_CSS;
     const i = page.lastIndexOf('</body>');
     const out = i >= 0 ? page.slice(0, i) + add + page.slice(i) : page + add;
