@@ -17,6 +17,8 @@
     return wrap;
   }
   function addTools(a, slug, item) {
+    if (a.dataset.novThumbAdminReady === '1') return;
+    a.dataset.novThumbAdminReady = '1';
     var wrap = wrapCard(a), bar = document.createElement('div'), count = document.createElement('span'), status = document.createElement('span');
     bar.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 2px 2px';
     count.style.cssText = 'margin-right:auto;color:#ffe9a6;font:800 10px/1.2 system-ui,sans-serif';
@@ -83,7 +85,13 @@
       var item = d.thumbs[slug] || null, img = a.querySelector('img');
       if (!d.owner) {
         if (!item || !item.src || !img) return;
+        var existing = a.querySelector('video[data-nov-thumb-preview]');
+        if (existing) {
+          if (window.TWKNovMotion && existing.dataset.novMotionWatched !== '1') { existing.dataset.novMotionWatched = '1'; window.TWKNovMotion.watch(existing, 0); }
+          return;
+        }
         var v = document.createElement('video'); v.muted = true; v.loop = false; v.playsInline = true; v.preload = 'none'; v.poster = img.currentSrc || img.src; v.src = item.src;
+        v.dataset.novThumbPreview = '1';
         v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
         v.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;pointer-events:none';
         img.style.display = 'none'; v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); }); img.parentNode.insertBefore(v, img);
@@ -93,7 +101,8 @@
       addTools(a, slug, item);
       if (item && item.src && img) {
         var v = a.querySelector('video');
-        if (v) {
+        if (v && v.dataset.novMotionWatched !== '1') {
+          v.dataset.novMotionWatched = '1';
           v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); });
           if (window.TWKNovMotion) window.TWKNovMotion.watch(v, 0);
         }
