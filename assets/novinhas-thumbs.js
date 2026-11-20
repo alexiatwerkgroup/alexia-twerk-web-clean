@@ -134,9 +134,22 @@
       flushTimer = 0; if (busy || !queue.length) return;
       var cards = queue.splice(0, 24), slugs = cards.map(slugOf).filter(Boolean);
       if (!slugs.length) { if (queue.length) scheduleFlush(); return; }
+      // Pinned minis rarely change: serve non-owner visitors from a 10-minute local cache.
+      var isOwner = !!authHeaders(false).Authorization, cachedThumbs = {}, hit = [], miss = [];
+      if (!isOwner) {
+        cards.forEach(function (a) {
+          var sl = slugOf(a), c = null;
+          try { c = JSON.parse(localStorage.getItem('nvThumb:' + sl) || 'null'); } catch (e) {}
+          if (c && Date.now() - c.t < 600000) { cachedThumbs[sl] = c.v; hit.push(a); } else miss.push(a);
+        });
+        if (hit.length) applyBatch(hit, { thumbs: cachedThumbs, owner: false });
+        cards = miss; slugs = cards.map(slugOf).filter(Boolean);
+        if (!slugs.length) { if (queue.length) scheduleFlush(); return; }
+      }
       var url = '/api/novinhas/featured?thumbs=1&clips=1&' + slugs.map(function (s) { return 'c=' + encodeURIComponent(s); }).join('&');
       busy = true;
       fetch(url, { credentials: 'same-origin', cache: 'no-store', headers: authHeaders(false) }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+        if (d && d.thumbs && !d.owner) { slugs.forEach(function (sl) { try { localStorage.setItem('nvThumb:' + sl, JSON.stringify({ t: Date.now(), v: d.thumbs[sl] || null })); } catch (e) {} }); }
         if (d && d.thumbs) applyBatch(cards, d);
         else cards.forEach(function (a) { processed.delete(a); if (cardObserver) cardObserver.observe(a); });
       }).catch(function () { cards.forEach(function (a) { processed.delete(a); if (cardObserver) cardObserver.observe(a); }); }).finally(function () { busy = false; if (queue.length) scheduleFlush(); });
