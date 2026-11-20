@@ -266,7 +266,8 @@ export async function onRequest({ request, env }) {
     const miniHidden = (await db.prepare('SELECT slug,vid,start,slow FROM nv_thumb_mini_hidden').all()).results || [], miniHiddenBy = {};
     miniHidden.forEach((r) => { (miniHiddenBy[r.slug] = miniHiddenBy[r.slug] || []).push(`${r.vid}:${r.start}:${r.slow?1:0}`); });
     const slugs = Array.from(new Set(Object.keys(featureBy).concat(owner ? Object.keys(miniBy) : [], Object.keys(oldBy), Object.keys(miniPinBy)))).filter((s) => SLUG.test(s));
-    const miniReady = {};
+    const miniReady = {}, previewAccess = {};
+    await Promise.all(slugs.filter((s) => featureBy[s]).map(async (slug) => { previewAccess[slug] = await clipAccessMap(db, 'preview', slug); }));
     await Promise.all(slugs.filter((s) => (owner || miniPinBy[s]) && miniBy[s] && miniBy[s].length).map(async (slug) => {
       try {
         const l = await env.NOVINHAS_VIDEOS.list({prefix:slug+'/mini/m-',limit:1000}), keys = new Set((l.objects||[]).map((o)=>o.key));
@@ -289,7 +290,7 @@ export async function onRequest({ request, env }) {
       for (const vid of featureBy[slug]||[]) {
         if (have[vid]==null || (hiddenBy[slug]||[]).includes(vid)) continue;
         const start=have[vid];
-        if (!vipViewer && !(await clipCanView(request,env,'preview',slug,vid,start,0))) continue;
+        if (!vipViewer && (previewAccess[slug] || {})[`${vid}/${start}/0`] === 'vip') continue;
         feature.push({kind:'preview',id:vid,start,slow:0,src:`/api/novinhas/featured?cs=1&c=${slug}&v=${vid}&t=${start}`});
       }
       const hideMini=miniHiddenBy[slug]||[], minis=(miniReady[slug]||[]).filter((x)=>!hideMini.includes(`${x.id}:${x.start}:${x.slow}`));
