@@ -75,7 +75,8 @@ function api(path) {
 }
 
 /* ---------- sonido: solo con una acción real o una persona confirmada nueva ---------- */
-function bubble() { if (!soundOn || !audio || audio.state !== 'running') return; var t = audio.currentTime, o = audio.createOscillator(), g = audio.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(820, t); o.frequency.exponentialRampToValueAtTime(430, t + .085); o.frequency.exponentialRampToValueAtTime(620, t + .17); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.055, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + .25); o.connect(g); g.connect(audio.destination); o.start(t); o.stop(t + .26); }
+function bubble() { if (!soundOn || !audio || audio.state !== 'running') return; var t = audio.currentTime, c = audio.createDynamicsCompressor(), m = audio.createGain(); m.gain.value = .9; c.connect(m); m.connect(audio.destination);
+  [[880, 0], [1320, .13]].forEach(function (n) { var s = t + n[1], o = audio.createOscillator(), o2 = audio.createOscillator(), g = audio.createGain(); o.type = 'sine'; o2.type = 'triangle'; o.frequency.setValueAtTime(n[0], s); o2.frequency.setValueAtTime(n[0] * 2, s); g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(.55, s + .015); g.gain.exponentialRampToValueAtTime(.0001, s + .34); o.connect(g); o2.connect(g); g.connect(c); o.start(s); o2.start(s); o.stop(s + .36); o2.stop(s + .36); }); }
 function armAudio() { if (!soundOn) return; try { var AC = window.AudioContext || window.webkitAudioContext; audio = audio || new AC(); audio.resume(); } catch (e) {} }
 document.addEventListener('pointerdown', armAudio, { passive: true });
 document.addEventListener('toggle', function (e) { if (e.target && e.target.id === 'unc') uncOpen = e.target.open; }, true);
