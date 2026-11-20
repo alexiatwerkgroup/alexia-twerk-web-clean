@@ -15,6 +15,17 @@ const FIXED_THUMBS = { 'canal-da-maryh': 45 }; // unico fijo (orden del dueño 1
 const ROW_BAD = {}; // videos fuera de la fila "Never forgotten": 'slug:id' (orden del dueño 15 nov 2026)
 const HOLD = 3600, SECS = 20, SLUG = /^[a-z0-9-]{2,60}$/;
 const J = (o, s = 200, cc = 'no-store') => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', 'Cache-Control': cc, 'X-Robots-Tag': 'noindex' } });
+async function ensureThumbPins(db, now) {
+  await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_pins (slug TEXT NOT NULL, vid INTEGER NOT NULL, pinned_at INTEGER NOT NULL, PRIMARY KEY (slug, vid))').run();
+  await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_hidden (slug TEXT NOT NULL, vid INTEGER NOT NULL, hidden_at INTEGER NOT NULL, PRIMARY KEY (slug, vid))').run();
+  await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_pin_migration (done INTEGER PRIMARY KEY)').run();
+  const migrated = await db.prepare('SELECT done FROM nv_thumb_pin_migration WHERE done = 1').first();
+  if (!migrated) {
+    try { await db.prepare('INSERT OR IGNORE INTO nv_thumb_pins (slug, vid, pinned_at) SELECT f.slug, f.vid, ? FROM nv_feat_state s JOIN nv_feat f ON f.id = s.v WHERE s.k LIKE \'thumbpin:%\' AND s.v > 0').bind(now).run(); } catch (e) {}
+    await db.prepare("INSERT OR IGNORE INTO nv_thumb_pins (slug, vid, pinned_at) SELECT 'canal-da-maryh', 45, 0 WHERE EXISTS (SELECT 1 FROM nv_feat WHERE slug = 'canal-da-maryh' AND vid = 45)").run();
+    await db.prepare('INSERT OR IGNORE INTO nv_thumb_pin_migration (done) VALUES (1)').run();
+  }
+}
 async function isOwner(request, env) {
   try {
     const p = await authenticate(request, env); if (!p || !p.sub) return false;
@@ -136,7 +147,35 @@ export async function onRequest({ request, env }) {
     if (b.action === 'rowpin') { if (!SLUG.test(b.slug || '') || !(+b.id > 0)) return J({ error: 'bad_request' }, 400); await db.prepare('CREATE TABLE IF NOT EXISTS nv_row_pin (slug TEXT PRIMARY KEY, vid INTEGER, ts INTEGER)').run(); await db.prepare('INSERT OR REPLACE INTO nv_row_pin (slug, vid, ts) VALUES (?, ?, ?)').bind(b.slug, +b.id, now).run(); return J({ ok: true }); }
     if (b.action === 'next') { await setS(db, 'since', 0); return J({ ok: true }); }
     if (b.action === 'remove') { await db.prepare('DELETE FROM nv_feat WHERE id = ?').bind(+b.item || 0).run(); return J({ ok: true }); }
-    if (b.action === 'thumbpin') { if (!SLUG.test(b.c || '')) return J({ error: 'bad_request' }, 400); await setS(db, 'thumbpin:' + b.c, +b.item || 0); return J({ ok: true }); }
+    if (b.action === 'thumbset' || b.action === 'thumbpin') {
+      const slug = b.c || '', state = b.action === 'thumbpin' ? 'pin' : b.state, rawItem = Number(b.item || b.vid);
+      if (!SLUG.test(slug) || !Number.isSafeInteger(rawItem) || rawItem < 1 || ['pin', 'free', 'hide'].indexOf(state) < 0) return J({ error: 'bad_request' }, 400);
+      const legacy = b.action === 'thumbpin' ? await db.prepare('SELECT vid FROM nv_feat WHERE id = ? AND slug = ?').bind(rawItem, slug).first() : null;
+      const item = legacy ? Number(legacy.vid) : rawItem;
+      await ensureThumbPins(db, now);
+      const row = await db.prepare('SELECT 1 x FROM nv_feat WHERE slug = ? AND vid = ? AND auto = 0').bind(slug, item).first();
+      if (!row) return J({ error: 'no_such_preview' }, 404);
+      const ready = await clipList(env, db, slug, 500); if (!ready.some((x) => x.v === item)) return J({ error: 'preview_not_ready' }, 409);
+      const pinned = (await db.prepare('SELECT vid FROM nv_thumb_pins WHERE slug = ? ORDER BY pinned_at, vid').bind(slug).all()).results || [], already = pinned.some((x) => Number(x.vid) === item);
+      if (state === 'pin') {
+        if (!already && pinned.length >= 2) return J({ ok: false, error: 'pin_limit', max: 2, pinned: pinned.map((x) => Number(x.vid)) }, 409);
+        const hidden = await db.prepare('SELECT 1 x FROM nv_thumb_hidden WHERE slug = ? AND vid = ?').bind(slug, item).first();
+        if (hidden) await db.prepare('DELETE FROM nv_thumb_hidden WHERE slug = ? AND vid = ?').bind(slug, item).run();
+        if (!already) {
+          await db.prepare('INSERT OR IGNORE INTO nv_thumb_pins (slug, vid, pinned_at) SELECT ?, ?, ? WHERE (SELECT COUNT(*) FROM nv_thumb_pins WHERE slug = ?) < 2').bind(slug, item, Date.now(), slug).run();
+          const exists = await db.prepare('SELECT 1 x FROM nv_thumb_pins WHERE slug = ? AND vid = ?').bind(slug, item).first();
+          if (!exists) return J({ ok: false, error: 'pin_limit', max: 2 }, 409);
+        }
+      } else if (state === 'free') {
+        await db.prepare('DELETE FROM nv_thumb_pins WHERE slug = ? AND vid = ?').bind(slug, item).run();
+      } else {
+        await db.prepare('DELETE FROM nv_thumb_pins WHERE slug = ? AND vid = ?').bind(slug, item).run();
+        await db.prepare('INSERT OR REPLACE INTO nv_thumb_hidden (slug, vid, hidden_at) VALUES (?, ?, ?)').bind(slug, item, now).run();
+      }
+      const saved = (await db.prepare('SELECT vid FROM nv_thumb_pins WHERE slug = ? ORDER BY pinned_at, vid').bind(slug).all()).results || [];
+      const hidden = (await db.prepare('SELECT vid FROM nv_thumb_hidden WHERE slug = ?').bind(slug).all()).results || [];
+      return J({ ok: true, pinned: saved.map((x) => Number(x.vid)), hidden: hidden.map((x) => Number(x.vid)), max: 2 });
+    }
     if (b.action === 'requeue') { await db.prepare('UPDATE nv_feat SET queued = 1, added = ? WHERE id = ?').bind(now, +b.item || 0).run(); return J({ ok: true }); }
     if (b.action === 'now') { const it = +b.item || 0; await setS(db, 'cur', it); await setS(db, 'since', now); await db.prepare('UPDATE nv_feat SET queued = 0, shown = shown + 1, last = ? WHERE id = ?').bind(now, it).run(); return J({ ok: true }); }
     const id = parseInt(b.id, 10);
@@ -191,9 +230,14 @@ export async function onRequest({ request, env }) {
     return J({ items, owner });
   }
   if (q.get('thumbs')) {
-    const rows = (await db.prepare('SELECT id, slug, vid, start FROM nv_feat ORDER BY added, id').all()).results || [], by = {};
+    const rows = (await db.prepare('SELECT id, slug, vid, start FROM nv_feat WHERE auto = 0 ORDER BY added, id').all()).results || [], by = {};
     rows.forEach((r) => { (by[r.slug] = by[r.slug] || []).push(r); });
-    const vipViewer = await isVip(request, env), accessCache = {};
+    const vipViewer = await isVip(request, env), owner = await isOwner(request, env), accessCache = {};
+    await ensureThumbPins(db, now);
+    const pinRows = (await db.prepare('SELECT slug, vid FROM nv_thumb_pins ORDER BY pinned_at, vid').all()).results || [], pinBySlug = {};
+    pinRows.forEach((r) => { (pinBySlug[r.slug] = pinBySlug[r.slug] || []).push(Number(r.vid)); });
+    const hiddenRows = (await db.prepare('SELECT slug, vid FROM nv_thumb_hidden').all()).results || [], hiddenBySlug = {};
+    hiddenRows.forEach((r) => { (hiddenBySlug[r.slug] = hiddenBySlug[r.slug] || []).push(Number(r.vid)); });
     await Promise.all(Object.keys(by).map(async (slug) => { accessCache[slug] = await clipAccessMap(db, 'preview', slug); }));
     const day = Math.floor(now / 3600), out = {}; // rota entre los elegidos del canal: 1 hora minimo cada uno
     const hash = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h; };
@@ -202,17 +246,13 @@ export async function onRequest({ request, env }) {
       const acc = accessCache[slug] || {}, allowed = (vid, start) => vipViewer || acc[`${vid}/${start || 0}/0`] !== 'vip';
       const have = {};
       (await clipList(env, db, slug, 500)).forEach((c) => { have[c.v] = String(c.st); });
-      // Preview fijo (orden del dueño 14 nov 2026): no rota ni lo pisa 'thumbpin'. Solo se cambia si el dueño lo pide.
-      const fx = FIXED_THUMBS[slug]; if (fx && have[fx] != null && allowed(fx, have[fx])) { out[slug] = { id: fx, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${fx}&t=${have[fx]}` }; continue; }
-      const ok = by[slug].filter((r) => have[r.vid] != null && allowed(r.vid, have[r.vid]));
+      const hidden = hiddenBySlug[slug] || [], ok = by[slug].filter((r) => have[r.vid] != null && allowed(r.vid, have[r.vid]) && hidden.indexOf(Number(r.vid)) < 0);
       if (!ok.length) continue;
-      // Pin por canal: 'thumbpin:<slug>' (id de nv_feat) fija ese preview hasta que el dueño lo cambie
-      let r = null; const pin = await getS(db, 'thumbpin:' + slug);
-      if (pin) r = ok.filter((x) => x.id === pin)[0] || null;
-      if (!r) r = ok[hash(slug + ':' + day) % ok.length];
-      out[slug] = { id: r.vid, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${r.vid}&t=${have[r.vid]}` };
+      const pinned = (pinBySlug[slug] || []).filter((id) => ok.some((x) => Number(x.vid) === id));
+      const r = pinned.length ? ok.filter((x) => Number(x.vid) === pinned[hash(slug + ':' + day) % pinned.length])[0] : ok[hash(slug + ':' + day) % ok.length];
+      out[slug] = { id: r.vid, src: `/api/novinhas/featured?cs=1&c=${slug}&v=${r.vid}&t=${have[r.vid]}`, ...(owner ? { pinned, hidden, choices: ok.map((x) => ({ id: Number(x.vid), src: `/api/novinhas/featured?cs=1&c=${slug}&v=${x.vid}&t=${have[x.vid]}` })) } : {}) };
     }
-    return J({ day, thumbs: out }, 200, 'public, max-age=300');
+    return J({ day, owner, thumbs: out }, 200, 'no-store');
   }
   if (q.get('row')) {
     const N = Math.min(20, Math.max(1, parseInt(q.get('row'), 10) || 8)); let chans = [];
