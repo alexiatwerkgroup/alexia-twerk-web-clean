@@ -1,7 +1,7 @@
 // GET /api/stats/report?range=today|month|all|7|30|90&tz=-180  -> SOLO DUEÑO. Histórico del período (el panel lo pide cada 1 hora o con el botón).
 // Todos los números de personas usan la definición única de _lib/stats-core.js (CONFIRMADO).
 import { json } from '../../_lib/http.js';
-import { REAL_CTE, ACTIVE_SECONDS, VALID_EVENT_SQL, CONFIRM_SECONDS, BURST_MIN, ownerOnly, NO_STORE, tzInfo, all } from '../../_lib/stats-core.js';
+import { REAL_CTE, ACTIVE_SECONDS, INTERACT_SECONDS, VALID_EVENT_SQL, CONFIRM_SECONDS, BURST_MIN, ownerOnly, NO_STORE, tzInfo, all } from '../../_lib/stats-core.js';
 
 // Intención de compra = clic en desbloquear, abrir el pago, copiar el ID de Binance o clic en crear cuenta Binance. NO son ventas confirmadas.
 const INTENT = ['unlock_click', 'pay_open', 'copy_id', 'binance_ref'];
@@ -32,7 +32,8 @@ async function compute(request, env) {
       (SELECT COUNT(*) FROM (SELECT vid FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid HAVING MAX(uid IS NOT NULL) = 1)) byAccount,
       (SELECT COUNT(DISTINCT vid) FROM tw_events WHERE ts > ?1 AND ${VALID_EVENT_SQL} AND vid IN cv) byAction,
       (SELECT COUNT(*) FROM tw_events WHERE ts > ?1 AND ${VALID_EVENT_SQL} AND vid IN cv) actions,
-      (SELECT ROUND(AVG(t)) FROM (SELECT SUM(${ACTIVE_SECONDS}) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid)) avgSeconds`),
+      (SELECT ROUND(AVG(t)) FROM (SELECT SUM(${INTERACT_SECONDS}) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid)) avgSeconds,
+      (SELECT ROUND(AVG(t)) FROM (SELECT SUM(${ACTIVE_SECONDS}) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid)) avgOpenSeconds`),
     /*1*/ q(`SELECT d, COUNT(*) u FROM (
         SELECT ${D} d, vid FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY d, vid HAVING MAX(${ACTIVE_SECONDS}) > 0 OR MAX(uid IS NOT NULL) = 1
         UNION
@@ -133,13 +134,13 @@ async function compute(request, env) {
   // Tiempo por persona: la mediana representa al visitante típico; el promedio lo inflan unas pocas pestañas abiertas horas.
   let medianSeconds = 0, p90Seconds = 0;
   try {
-    const per = (await all(db, `WITH ${REAL_CTE} SELECT SUM(${ACTIVE_SECONDS}) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid`, since)).map(r => Number(r.t) || 0).filter(t => t > 0).sort((x, y) => x - y);
+    const per = (await all(db, `WITH ${REAL_CTE} SELECT SUM(${INTERACT_SECONDS}) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid`, since)).map(r => Number(r.t) || 0).filter(t => t > 0).sort((x, y) => x - y);
     if (per.length) { medianSeconds = Math.round(per[Math.floor((per.length - 1) / 2)]); p90Seconds = Math.round(per[Math.floor((per.length - 1) * 0.9)]); }
   } catch (e) {}
   return json({
     ok: true, now, range, tz, fromTs: since || (one(16).first) || now, cmpLabel, confirmSeconds: CONFIRM_SECONDS, since: (one(16).first) || null,
     kpi: { loads, cookies: k.cookies || 0, confirmed: k.confirmed || 0, byTime: k.byTime || 0, byAccount: k.byAccount || 0, byAction: k.byAction || 0, actions: k.actions || 0,
-      interested: k.interested || 0, newReal: k.newReal || 0, avgSeconds: k.avgSeconds || 0, medianSeconds, p90Seconds, unconfirmedLoads: Math.max(0, loads - confirmedLoads), unconfirmedCookies: Math.max(0, (k.cookies || 0) - (k.confirmed || 0)),
+      interested: k.interested || 0, newReal: k.newReal || 0, avgSeconds: k.avgSeconds || 0, avgOpenSeconds: k.avgOpenSeconds || 0, medianSeconds, p90Seconds, unconfirmedLoads: Math.max(0, loads - confirmedLoads), unconfirmedCookies: Math.max(0, (k.cookies || 0) - (k.confirmed || 0)),
       accountsTotal: one(12).total || 0, accountsInPeriod: (res[13].results || []).reduce((a, r) => a + r.n, 0),
       signupClicks: funnelEvents.signup_click || 0, signupStarts: funnelEvents.signup_start || 0,
       signupVerified: funnelEvents.signup_verified || 0,
