@@ -31,10 +31,21 @@ try:
             try: s3.download_file(B, '%s/%s/video-%s.mp4' % (c, pre, nn), src); got = True; break
             except ClientError: pass
         if not got: err += 1; print('ERROR fuente', c, nn); continue
-        cmd = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-ss', str(st), '-i', src] + (['-t', '15', '-an', '-vf', 'setpts=2.0*PTS', '-r', '30'] if slow else ['-t', '30', '-an']) + ['-c:v', 'libx264', '-preset', 'veryfast', '-crf', '19', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-y', out]
+        # Emit up to 30 s, or the real remaining source duration. Slow motion
+        # doubles the available playback time; -t is an output-time limit.
+        try:
+            probe = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', src], capture_output=True, text=True, check=True)
+            source_duration = float(probe.stdout.strip())
+            clip_secs = min(30.0, max(0.0, source_duration - st) * (2 if slow else 1))
+        except Exception:
+            clip_secs = 30.0
+        if clip_secs < 0.25:
+            err += 1; print('ERROR duracion insuficiente', key, flush=True); continue
+        cmd = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-ss', str(st), '-i', src, '-t', ('%.3f' % clip_secs), '-an'] + (['-vf', 'setpts=2.0*PTS', '-r', '30'] if slow else []) + ['-c:v', 'libx264', '-preset', 'veryfast', '-crf', '19', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-y', out]
         if subprocess.run(cmd).returncode != 0 or not os.path.exists(out): err += 1; print('ERROR corte', key); continue
         s3.upload_file(out, B, key, ExtraArgs={'ContentType': 'video/mp4'})
-        if subprocess.run(['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error', '-i', out, '-ss', '2', '-frames:v', '1', '-vf', 'scale=-2:640', '-c:v', 'libwebp', '-quality', '88', pj]).returncode == 0 and os.path.exists(pj):
+        poster_at = min(2.0, clip_secs / 2.0)
+        if subprocess.run(['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error', '-i', out, '-ss', ('%.3f' % poster_at), '-frames:v', '1', '-vf', 'scale=-2:640', '-c:v', 'libwebp', '-quality', '88', pj]).returncode == 0 and os.path.exists(pj):
             s3.upload_file(pj, B, key[:-4] + '.webp', ExtraArgs={'ContentType': 'image/webp'})
         ok += 1; print('SUBIDO', key, flush=True)
     print('Listo:', ok, 'subidos,', err, 'errores')

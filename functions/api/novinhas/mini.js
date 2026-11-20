@@ -78,11 +78,14 @@ export async function onRequest({ request, env }) {
     const vip = me.owner || (await isVip(request, env));
     if (slow && !vip) return J({ ok: false, error: 'vip_only_slow' }, 403);
     if (!me.owner) { const ql = await quota(db, me.id, now, vip); if (ql.today <= 0) return J({ ok: false, error: 'daily_limit', max: ql.day }, 429); if (ql.total <= 0) return J({ ok: false, error: 'total_limit', max: ql.max }, 429); }
-    const src = slow ? SECS / 2 : SECS; // en camara lenta (0.5x) 15 s de video original ocupan 30 s
-    const t = Math.max(0, Math.min(Math.floor(Number(b.t) || 0), Math.max(0, Math.floor((Number(v.duration) || 0) - src))));
+    // Un clip puede terminar con el video fuente: aceptar y anunciar su duración real.
+    // En cámara lenta, cada segundo fuente produce dos segundos de clip.
+    const duration = Number(v.duration) > 0 ? Number(v.duration) : SECS;
+    const t = Math.max(0, Math.min(Math.floor(Number(b.t) || 0), Math.max(0, Math.floor(duration - 1))));
+    const secs = Math.max(1, Math.min(SECS, Math.floor((duration - t) * (slow ? 2 : 1))));
     await db.prepare('INSERT INTO nv_mini (slug, vid, start, slow, title, name, added, uid) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(slug, vid, start, slow) DO UPDATE SET gone = 0, uid = excluded.uid, added = excluded.added WHERE COALESCE(nv_mini.gone, 0) = 1').bind(b.c, id, t, slow, v.title || '', d.name || b.c, now, me.id).run();
     const n = await mirror(env, db);
-    return J({ ok: true, start: t, slow, secs: SECS, total: n });
+    return J({ ok: true, start: t, slow, secs, total: n });
   }
   if (q.get('me')) {
     const me = await who(request, env); if (!me) return J({ owner: false, user: false, vip: await isVip(request, env) });
