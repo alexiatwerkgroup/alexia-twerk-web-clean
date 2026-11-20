@@ -87,7 +87,7 @@
         v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
         v.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;pointer-events:none';
         img.style.display = 'none'; v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); }); img.parentNode.insertBefore(v, img);
-        if (window.TWKNovMotion) window.TWKNovMotion.watch(v, 1);
+        if (window.TWKNovMotion) window.TWKNovMotion.watch(v, 0);
         return;
       }
       addTools(a, slug, item);
@@ -95,7 +95,7 @@
         var v = a.querySelector('video');
         if (v) {
           v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); });
-          if (window.TWKNovMotion) window.TWKNovMotion.watch(v, 1);
+          if (window.TWKNovMotion) window.TWKNovMotion.watch(v, 0);
         }
       }
     });
@@ -104,7 +104,7 @@
     if (flushTimer || busy || !queue.length) return;
     flushTimer = setTimeout(function () {
       flushTimer = 0; if (busy || !queue.length) return;
-      var cards = queue.splice(0, 8), slugs = cards.map(slugOf).filter(Boolean);
+      var cards = queue.splice(0, 12), slugs = cards.map(slugOf).filter(Boolean);
       if (!slugs.length) { if (queue.length) scheduleFlush(); return; }
       var url = '/api/novinhas/featured?thumbs=1&clips=1&' + slugs.map(function (s) { return 'c=' + encodeURIComponent(s); }).join('&');
       busy = true;
