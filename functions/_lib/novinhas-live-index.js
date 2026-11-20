@@ -3,6 +3,7 @@ const CACHE_MS = 5 * 60 * 1000;
 const SLUG = /^[a-z0-9-]{2,60}$/;
 let memory = null;
 let pending = null;
+let pendingForce = false;
 
 async function staticOrder(request, env) {
   try {
@@ -66,17 +67,27 @@ async function discover(env, preferred) {
 
 export async function getNovinhasLiveIndex(request, env) {
   const now = Date.now();
-  if (memory && now - memory.cachedAt < CACHE_MS) return memory.value;
-  if (pending) return pending;
+  const url = new URL(request.url);
+  // The public page sends a new cache key every five-minute refresh. Honor it
+  // here too, so channels and progress do not reuse different isolate caches.
+  const forceRefresh = url.searchParams.has('refresh') || url.searchParams.has('t');
+  if (!forceRefresh && memory && now - memory.cachedAt < CACHE_MS) return memory.value;
+  if (pending) {
+    if (!forceRefresh || pendingForce) return pending;
+    await pending.catch(() => {});
+    return getNovinhasLiveIndex(request, env);
+  }
   pending = (async () => {
     try {
-      const cache = await env.NOVINHAS_VIDEOS.get(CACHE_KEY);
-      if (cache) {
-        const data = await cache.json();
-        const t = Date.parse(data.updatedAt || '');
-        if (Number.isFinite(t) && now - t < CACHE_MS) {
-          memory = { cachedAt: now, value: data };
-          return data;
+      if (!forceRefresh) {
+        const cache = await env.NOVINHAS_VIDEOS.get(CACHE_KEY);
+        if (cache) {
+          const data = await cache.json();
+          const t = Date.parse(data.updatedAt || '');
+          if (Number.isFinite(t) && now - t < CACHE_MS) {
+            memory = { cachedAt: now, value: data };
+            return data;
+          }
         }
       }
     } catch {}
@@ -88,6 +99,7 @@ export async function getNovinhasLiveIndex(request, env) {
     memory = { cachedAt: now, value };
     return value;
   })();
+  pendingForce = forceRefresh;
   try { return await pending; }
-  finally { pending = null; }
+  finally { pending = null; pendingForce = false; }
 }
