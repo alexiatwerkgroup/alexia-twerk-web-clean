@@ -1,5 +1,7 @@
 /* Animated mini previews for channel cards. Owners can pin up to two previews per channel. */
 (function () {
+  if (window.__twkNovThumbsInstalled) return;
+  window.__twkNovThumbsInstalled = true;
   var grid = document.querySelector('.nov-featured-grid'), processed = new WeakSet(), queue = [], flushTimer = 0, busy = false;
   if (!grid) return;
   function authHeaders(json) {
@@ -10,16 +12,29 @@
   }
   function slugOf(a) { var m = /[?&]c=([^&]+)/.exec(a.getAttribute('href')); try { return m ? decodeURIComponent(m[1]) : ''; } catch (e) { return ''; } }
   function wrapCard(a) {
-    var parent = a.parentNode, wrap = document.createElement('div');
+    var existing = a.closest('.nov-thumb-admin-wrap'), wrap;
+    if (existing && grid.contains(existing)) {
+      // Flatten wrappers left by older double initialization; retain one wrapper/card.
+      var ancestor = existing.parentElement && existing.parentElement.closest('.nov-thumb-admin-wrap');
+      if (ancestor && grid.contains(ancestor)) { ancestor.appendChild(a); existing.remove(); wrap = ancestor; }
+      else wrap = existing;
+      wrap.querySelectorAll(':scope > .nov-thumb-admin-wrap').forEach(function (nested) { nested.remove(); });
+      wrap.querySelectorAll(':scope > div').forEach(function (child) { if (child !== a && child.querySelector('button')) child.remove(); });
+      return wrap;
+    }
+    var parent = a.parentNode; wrap = document.createElement('div');
     wrap.className = 'nov-thumb-admin-wrap';
     wrap.style.cssText = 'min-width:0;width:100%;display:flex;flex-direction:column';
     parent.insertBefore(wrap, a); wrap.appendChild(a); a.style.width = '100%';
     return wrap;
   }
   function addTools(a, slug, item) {
-    if (a.dataset.novThumbAdminReady === '1') return;
+    var oldWrap = a.closest('.nov-thumb-admin-wrap');
+    if (a.dataset.novThumbAdminReady === '1' && oldWrap && oldWrap.querySelector(':scope > .nov-thumb-tools')) return;
     a.dataset.novThumbAdminReady = '1';
     var wrap = wrapCard(a), bar = document.createElement('div'), count = document.createElement('span'), status = document.createElement('span');
+    bar.className = 'nov-thumb-tools';
+    status.className = 'nov-thumb-status';
     bar.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 2px 2px';
     count.style.cssText = 'margin-right:auto;color:#ffe9a6;font:800 10px/1.2 system-ui,sans-serif';
     status.style.cssText = 'width:100%;min-height:13px;color:#cdbd9a;font:600 10px/1.2 system-ui,sans-serif';
@@ -28,23 +43,26 @@
       x[0].type = 'button'; x[0].textContent = x[1];
       x[0].style.cssText = 'padding:5px 9px;border:1px solid #8d6a2d;border-radius:999px;background:#18130d;color:#ffe9a6;font:800 10px/1.2 system-ui,sans-serif;cursor:pointer';
     });
-    var choice = item || null, choices = item && item.choices || [], pinned = item && item.pinned || [], video = null;
+    var choice = item || null, choices = [], pinned = item && item.pinned || [], seenClipIds = Object.create(null), video = null;
+    (item && item.choices || []).forEach(function (x) { var id = String(Number(x.id)); if (!seenClipIds[id]) { seenClipIds[id] = true; choices.push(x); } });
     var img = a.querySelector('img');
     if (item && item.src && img) {
+      a.querySelectorAll('video').forEach(function (extra) { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(extra); extra.remove(); });
       video = document.createElement('video'); video.muted = true; video.loop = false; video.playsInline = true; video.preload = 'none'; video.poster = img.currentSrc || img.src; video.src = item.src;
+      video.dataset.novThumbPreview = '1';
       video.setAttribute('muted', ''); video.setAttribute('playsinline', '');
       video.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;pointer-events:none';
-      img.style.display = 'none';
-      video.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(video); img.style.display = ''; if (video.parentNode) video.parentNode.removeChild(video); });
+      img.style.setProperty('display', 'none', 'important');
+      video.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(video); img.style.removeProperty('display'); if (video.parentNode) video.parentNode.removeChild(video); });
       img.parentNode.insertBefore(video, img);
     }
     function itemKey(x) { var kind = x.kind || 'preview'; return kind === 'preview' ? 'preview:' + Number(x.id) : kind + ':' + Number(x.id) + ':' + (Number(x.start) || 0) + ':' + (x.slow ? 1 : 0); }
-    function contains(x) { return pinned.some(function (p) { return typeof p === 'number' ? (x.kind || 'preview') === 'preview' && Number(p) === Number(x.id) : itemKey(p) === itemKey(x); }); }
+    function contains(x) { return pinned.some(function (p) { return (typeof p === 'number' ? Number(p) : Number(p.id)) === Number(x.id); }); }
     function setChoice(next) {
       choice = next || null;
       if (!video) return;
-      if (!choice) { if (video.parentNode) video.parentNode.removeChild(video); if (img) img.style.display = ''; return; }
-      if (img) img.style.display = 'none';
+      if (!choice) { if (video.parentNode) video.parentNode.removeChild(video); if (img) img.style.removeProperty('display'); return; }
+      if (img) img.style.setProperty('display', 'none', 'important');
       if (!video.parentNode && img && img.parentNode) img.parentNode.insertBefore(video, img);
       var posterId = String(Number(choice.id)).padStart(2, '0');
       video.poster = '/api/novinhas/file?k=' + encodeURIComponent(slug + '/previews/poster-' + posterId + '.webp');
@@ -68,7 +86,7 @@
         return r.json().then(function (d) { if (!r.ok) { var e = new Error(d.error || 'request_failed'); e.data = d; throw e; } return d; });
       });
     }
-    pin.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (pin.disabled) return; say('Guardando…'); post('pin').then(function (d) { pinned = d.pinned || []; say('Mini clip fijado'); paint(); }).catch(function (err) { say(err.data && err.data.error === 'pin_limit' ? 'Máximo 2 por canal: quitá uno para cambiarlo.' : 'No se pudo fijar.'); paint(); }); };
+    pin.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (pin.disabled) return; say('Guardando…'); post('pin').then(function (d) { pinned = d.pinned || []; say('Mini clip fijado'); paint(); }).catch(function (err) { say(err.data && err.data.error === 'pin_limit' ? 'Máximo 2 por canal: quitá uno para cambiarlo.' : err.data && err.data.error === 'duplicate_pin' ? 'Ese video ya está fijado en este canal.' : 'No se pudo fijar.'); paint(); }); };
     pass.onclick = function (e) {
       e.preventDefault(); e.stopPropagation(); if (pass.disabled) return;
       var currentKey = choice && itemKey(choice), i = choices.findIndex(function (x) { return currentKey && itemKey(x) === currentKey; });
@@ -87,24 +105,25 @@
         if (!item || !item.src || !img) return;
         var existing = a.querySelector('video[data-nov-thumb-preview]');
         if (existing) {
-          if (window.TWKNovMotion && existing.dataset.novMotionWatched !== '1') { existing.dataset.novMotionWatched = '1'; window.TWKNovMotion.watch(existing, 0); }
+          a.querySelectorAll('video[data-nov-thumb-preview]').forEach(function (extra) { if (extra !== existing) { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(extra); extra.remove(); } });
+          if (window.TWKNovMotion && existing.dataset.novMotionWatched !== '1') { existing.dataset.novMotionWatched = '1'; window.TWKNovMotion.watch(existing, -1, false, 1800); }
           return;
         }
         var v = document.createElement('video'); v.muted = true; v.loop = false; v.playsInline = true; v.preload = 'none'; v.poster = img.currentSrc || img.src; v.src = item.src;
         v.dataset.novThumbPreview = '1';
         v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
         v.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;pointer-events:none';
-        img.style.display = 'none'; v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); }); img.parentNode.insertBefore(v, img);
-        if (window.TWKNovMotion) window.TWKNovMotion.watch(v, 0);
+        img.style.setProperty('display', 'none', 'important'); v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.removeProperty('display'); if (v.parentNode) v.parentNode.removeChild(v); }); img.parentNode.insertBefore(v, img);
+        if (window.TWKNovMotion) window.TWKNovMotion.watch(v, -1, false, 1800);
         return;
       }
       addTools(a, slug, item);
       if (item && item.src && img) {
-        var v = a.querySelector('video');
+        var v = a.querySelector('video[data-nov-thumb-preview]');
         if (v && v.dataset.novMotionWatched !== '1') {
           v.dataset.novMotionWatched = '1';
-          v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); });
-          if (window.TWKNovMotion) window.TWKNovMotion.watch(v, 0);
+          v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.removeProperty('display'); if (v.parentNode) v.parentNode.removeChild(v); });
+          if (window.TWKNovMotion) window.TWKNovMotion.watch(v, -1, false, 1800);
         }
       }
     });
@@ -128,7 +147,22 @@
     scheduleFlush();
   }, { rootMargin: '450px 0px', threshold: 0.01 }) : null;
   function initializeCards() {
-    var cards = [].slice.call(grid.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]')).filter(function (a) { return !processed.has(a); });
+    var all = [].slice.call(grid.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]'));
+    all.forEach(function (a) {
+      var wraps = []; for (var p = a.parentElement; p && p !== grid; p = p.parentElement) if (p.classList.contains('nov-thumb-admin-wrap')) wraps.push(p);
+      var wrap = wraps[wraps.length - 1];
+      if (wrap && wraps.length > 1) { wrap.appendChild(a); wraps.slice(0, -1).forEach(function (extra) { if (extra !== wrap && grid.contains(extra)) extra.remove(); }); }
+      var host = a.closest('.nov-thumb-admin-wrap') || a;
+      var controlRows = Array.prototype.filter.call(host.children, function (el) { return el.tagName === 'DIV' && el.querySelector('button'); });
+      controlRows.forEach(function (bar, i) { if (i) bar.remove(); });
+      var statuses = host.querySelectorAll(':scope > .nov-thumb-status');
+      statuses.forEach(function (status, i) { if (i) status.remove(); });
+      var videos = a.querySelectorAll('video');
+      videos.forEach(function (v, i) { if (i) { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); v.remove(); } });
+      var images = a.querySelectorAll('img');
+      images.forEach(function (img, i) { if (i) img.remove(); });
+    });
+    var cards = all.filter(function (a) { return !processed.has(a); });
     cards.forEach(function (a) { processed.add(a); if (cardObserver) cardObserver.observe(a); else queue.push(a); });
     if (!cardObserver) scheduleFlush();
   }

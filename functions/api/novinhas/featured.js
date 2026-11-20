@@ -21,6 +21,10 @@ async function ensureThumbPins(db, now) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_mini_pins (slug TEXT NOT NULL, vid INTEGER NOT NULL, start INTEGER NOT NULL, slow INTEGER NOT NULL DEFAULT 0, pinned_at INTEGER NOT NULL, PRIMARY KEY (slug, vid, start, slow))').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_mini_hidden (slug TEXT NOT NULL, vid INTEGER NOT NULL, start INTEGER NOT NULL, slow INTEGER NOT NULL DEFAULT 0, hidden_at INTEGER NOT NULL, PRIMARY KEY (slug, vid, start, slow))').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_pin_migration (done INTEGER PRIMARY KEY)').run();
+  // A preview and a mini segment from the same source video are still one clip.
+  // Keep one pin per source video so the two slots cannot render identical clips.
+  await db.prepare('DELETE FROM nv_thumb_mini_pins WHERE EXISTS (SELECT 1 FROM nv_thumb_pins p WHERE p.slug = nv_thumb_mini_pins.slug AND p.vid = nv_thumb_mini_pins.vid)').run();
+  await db.prepare('DELETE FROM nv_thumb_mini_pins WHERE EXISTS (SELECT 1 FROM nv_thumb_mini_pins p WHERE p.slug = nv_thumb_mini_pins.slug AND p.vid = nv_thumb_mini_pins.vid AND (p.pinned_at < nv_thumb_mini_pins.pinned_at OR (p.pinned_at = nv_thumb_mini_pins.pinned_at AND (p.start < nv_thumb_mini_pins.start OR (p.start = nv_thumb_mini_pins.start AND p.slow < nv_thumb_mini_pins.slow)))))').run();
   const migrated = await db.prepare('SELECT done FROM nv_thumb_pin_migration WHERE done = 1').first();
   if (!migrated) {
     try { await db.prepare('INSERT OR IGNORE INTO nv_thumb_pins (slug, vid, pinned_at) SELECT f.slug, f.vid, ? FROM nv_feat_state s JOIN nv_feat f ON f.id = s.v WHERE s.k LIKE \'thumbpin:%\' AND s.v > 0').bind(now).run(); } catch (e) {}
@@ -171,6 +175,10 @@ export async function onRequest({ request, env }) {
       }
       const oldCount = await db.prepare('SELECT COUNT(*) n FROM nv_thumb_pins WHERE slug = ?').bind(slug).first(), miniCount = await db.prepare('SELECT COUNT(*) n FROM nv_thumb_mini_pins WHERE slug = ?').bind(slug).first(), pinCount = Number(oldCount && oldCount.n || 0) + Number(miniCount && miniCount.n || 0);
       if (state === 'pin') {
+        const sameVideo = kind === 'mini'
+          ? await db.prepare('SELECT 1 x FROM nv_thumb_pins WHERE slug = ? AND vid = ? UNION ALL SELECT 1 x FROM nv_thumb_mini_pins WHERE slug = ? AND vid = ? AND NOT (start = ? AND slow = ?) LIMIT 1').bind(slug, item, slug, item, start, slow).first()
+          : await db.prepare('SELECT 1 x FROM nv_thumb_mini_pins WHERE slug = ? AND vid = ? LIMIT 1').bind(slug, item).first();
+        if (sameVideo) return J({ ok: false, error: 'duplicate_pin', max: 2 }, 409);
         if (!already && pinCount >= 2) return J({ ok: false, error: 'pin_limit', max: 2 }, 409);
         if (!already) {
           if (kind === 'mini') {

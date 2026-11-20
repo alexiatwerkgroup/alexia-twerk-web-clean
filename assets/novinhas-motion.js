@@ -1,6 +1,9 @@
 /* One short preview at a time across the Novinhas home page. */
 (function () {
   'use strict';
+  // Live navigation can reinsert scripts; keep a single shared preview scheduler.
+  if (window.__twkNovMotionInstalled) return;
+  window.__twkNovMotionInstalled = true;
   var entries = new Map(), active = null, timer = 0, idleTimer = 0;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
   function visibleRows() {
@@ -22,7 +25,7 @@
   function finish(v) {
     if (active !== v) return;
     var x = entries.get(v); if (x) x.last = Date.now();
-    stop(v, true); clearTimeout(idleTimer); idleTimer = setTimeout(start, 1000);
+    stop(v, true); clearTimeout(idleTimer); idleTimer = setTimeout(start, 160);
   }
   function start() {
     if (active) return;
@@ -44,13 +47,18 @@
     });
     clearTimeout(idleTimer); idleTimer = setTimeout(start, 120);
   }, { rootMargin: '80px 0px', threshold: [0, 0.2, 0.5] }) : null;
-  function watch(v, priority, force) {
+  function watch(v, priority, force, duration) {
     if (!observer || !v) return;
     var old = entries.get(v);
-    entries.set(v, { visible: old ? old.visible : false, failed: false, priority: Number(priority) || 0, force: !!force, last: old ? old.last : 0 });
+    if (old) {
+      old.priority = Number(priority) || 0; old.force = !!force; old.duration = Number(duration) || 1800;
+      return;
+    }
+    var x = { visible: false, failed: false, priority: Number(priority) || 0, force: !!force, duration: Number(duration) || 1800, last: 0 };
+    entries.set(v, x);
     v.loop = false; v.preload = 'none';
     v.addEventListener('playing', function onPlay() {
-      if (active === v && !timer) timer = setTimeout(function () { finish(v); }, 5000);
+      if (active === v && !timer) timer = setTimeout(function () { finish(v); }, x.duration);
     });
     v.addEventListener('ended', function () { finish(v); });
     v.addEventListener('error', function () { var x = entries.get(v); if (x) x.failed = true; finish(v); });

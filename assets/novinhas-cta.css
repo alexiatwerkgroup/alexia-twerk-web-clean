@@ -95,6 +95,8 @@
 .nvp .nov-channel-card img, .nvp .nov-channel-card video, .nvp .nov-channel-art { width: 82px; height: 112px; flex: none; border-radius: 9px; object-fit: cover; object-position: center; }
 /* Ocultar img cuando hay video en el mismo card (evita doble miniatura) */
 .nvp .nov-channel-card:has(video) img { display: none !important; }
+.nvp .nov-channel-card video[data-nov-thumb-preview] ~ img { display: none !important; }
+.nvp .nov-channel-card video[data-nov-thumb-preview] { order: -1; }
 .nvp .nov-channel-art { display: grid; place-items: center; background: linear-gradient(140deg, #3d1b32, #18121b); color: #ff72b4; font: 400 56px Anton, Impact, sans-serif; }
 .nvp .nov-channel-art-alt { background: linear-gradient(140deg, #453215, #18151a); color: #ffc06d; }
 .nvp .nov-channel-card > div { display: grid; align-content: center; gap: 5px; min-width: 0; }
