@@ -36,7 +36,8 @@
       video.addEventListener('error', function () { img.style.display = ''; if (video.parentNode) video.parentNode.removeChild(video); });
       img.parentNode.insertBefore(video, img);
     }
-    function contains(id) { return pinned.map(Number).indexOf(Number(id)) >= 0; }
+    function itemKey(x) { var kind = x.kind || 'preview'; return kind === 'preview' ? 'preview:' + Number(x.id) : kind + ':' + Number(x.id) + ':' + (Number(x.start) || 0) + ':' + (x.slow ? 1 : 0); }
+    function contains(x) { return pinned.some(function (p) { return typeof p === 'number' ? (x.kind || 'preview') === 'preview' && Number(p) === Number(x.id) : itemKey(p) === itemKey(x); }); }
     function setChoice(next) {
       choice = next || null;
       if (!video) return;
@@ -47,7 +48,7 @@
       if (video.getBoundingClientRect().bottom > 0 && video.getBoundingClientRect().top < window.innerHeight) video.play().catch(function () {});
     }
     function paint() {
-      var isPinned = !!choice && contains(choice.id), n = pinned.length;
+      var isPinned = !!choice && contains(choice), n = pinned.length;
       count.textContent = n + '/2 fijados';
       pin.textContent = isPinned ? 'Fijado' : 'Fijar'; pin.disabled = !choice || isPinned || n >= 2;
       pass.disabled = choices.length < 2; remove.disabled = !choice;
@@ -59,7 +60,7 @@
     function post(state) {
       if (!choice) return Promise.resolve(null);
       var headers = authHeaders(true);
-      return fetch('/api/novinhas/featured', { method: 'POST', credentials: 'same-origin', headers: headers, body: JSON.stringify({ action: 'thumbset', c: slug, item: Number(choice.id), state: state }) }).then(function (r) {
+      return fetch('/api/novinhas/featured', { method: 'POST', credentials: 'same-origin', headers: headers, body: JSON.stringify({ action: 'thumbset', c: slug, item: Number(choice.id), kind: choice.kind || 'preview', start: Number(choice.start) || 0, slow: choice.slow ? 1 : 0, state: state }) }).then(function (r) {
         return r.json().then(function (d) { if (!r.ok) { var e = new Error(d.error || 'request_failed'); e.data = d; throw e; } return d; });
       });
     }
@@ -70,7 +71,7 @@
       setChoice(choices[(i + 1 + choices.length) % choices.length]);
       say('Mini clip pasado. Los fijados se conservaron.'); paint();
     };
-    remove.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (remove.disabled) return; var removedId = Number(choice.id); say('Quitando…'); post('hide').then(function (d) { pinned = d.pinned || []; choices = choices.filter(function (x) { return Number(x.id) !== removedId; }); setChoice(choices.length ? choices[0] : null); say('Mini clip quitado de este canal'); paint(); }).catch(function () { say('No se pudo quitar.'); paint(); }); };
+    remove.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (remove.disabled) return; var removedKey = itemKey(choice); say('Quitando…'); post('hide').then(function (d) { pinned = d.pinned || []; choices = choices.filter(function (x) { return itemKey(x) !== removedKey; }); setChoice(choices.length ? choices[0] : null); say('Mini clip quitado de este canal'); paint(); }).catch(function () { say('No se pudo quitar.'); paint(); }); };
     bar.append(count, pin, pass, remove); wrap.append(bar, status); paint();
   }
   function initializeCards() {
@@ -78,7 +79,7 @@
     if (!cards.length) return;
     cards.forEach(function (a) { processed.add(a); });
     var headers = authHeaders(false);
-    fetch('/api/novinhas/featured?thumbs=1&n=' + Math.floor(Date.now() / 60000), { credentials: 'same-origin', cache: 'no-store', headers: headers }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    fetch('/api/novinhas/featured?thumbs=1&clips=1&n=' + Math.floor(Date.now() / 60000), { credentials: 'same-origin', cache: 'no-store', headers: headers }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.thumbs) return;
     cards.forEach(function (a) {
       var slug = slugOf(a); if (!slug) return;

@@ -18,6 +18,8 @@ const J = (o, s = 200, cc = 'no-store') => new Response(JSON.stringify(o), { sta
 async function ensureThumbPins(db, now) {
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_pins (slug TEXT NOT NULL, vid INTEGER NOT NULL, pinned_at INTEGER NOT NULL, PRIMARY KEY (slug, vid))').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_hidden (slug TEXT NOT NULL, vid INTEGER NOT NULL, hidden_at INTEGER NOT NULL, PRIMARY KEY (slug, vid))').run();
+  await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_mini_pins (slug TEXT NOT NULL, vid INTEGER NOT NULL, start INTEGER NOT NULL, slow INTEGER NOT NULL DEFAULT 0, pinned_at INTEGER NOT NULL, PRIMARY KEY (slug, vid, start, slow))').run();
+  await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_mini_hidden (slug TEXT NOT NULL, vid INTEGER NOT NULL, start INTEGER NOT NULL, slow INTEGER NOT NULL DEFAULT 0, hidden_at INTEGER NOT NULL, PRIMARY KEY (slug, vid, start, slow))').run();
   await db.prepare('CREATE TABLE IF NOT EXISTS nv_thumb_pin_migration (done INTEGER PRIMARY KEY)').run();
   const migrated = await db.prepare('SELECT done FROM nv_thumb_pin_migration WHERE done = 1').first();
   if (!migrated) {
@@ -148,33 +150,52 @@ export async function onRequest({ request, env }) {
     if (b.action === 'next') { await setS(db, 'since', 0); return J({ ok: true }); }
     if (b.action === 'remove') { await db.prepare('DELETE FROM nv_feat WHERE id = ?').bind(+b.item || 0).run(); return J({ ok: true }); }
     if (b.action === 'thumbset' || b.action === 'thumbpin') {
-      const slug = b.c || '', state = b.action === 'thumbpin' ? 'pin' : b.state, rawItem = Number(b.item || b.vid);
+      const slug = b.c || '', state = b.action === 'thumbpin' ? 'pin' : b.state, rawItem = Number(b.item || b.vid), kind = b.kind === 'mini' ? 'mini' : 'preview', start = Math.max(0, parseInt(b.start, 10) || 0), slow = b.slow ? 1 : 0;
       if (!SLUG.test(slug) || !Number.isSafeInteger(rawItem) || rawItem < 1 || ['pin', 'free', 'hide'].indexOf(state) < 0) return J({ error: 'bad_request' }, 400);
       const legacy = b.action === 'thumbpin' ? await db.prepare('SELECT vid FROM nv_feat WHERE id = ? AND slug = ?').bind(rawItem, slug).first() : null;
       const item = legacy ? Number(legacy.vid) : rawItem;
       await ensureThumbPins(db, now);
-      const row = await db.prepare('SELECT 1 x FROM nv_feat WHERE slug = ? AND vid = ? AND auto = 0').bind(slug, item).first();
-      if (!row) return J({ error: 'no_such_preview' }, 404);
-      const ready = await clipList(env, db, slug, 500); if (!ready.some((x) => x.v === item)) return J({ error: 'preview_not_ready' }, 409);
-      const pinned = (await db.prepare('SELECT vid FROM nv_thumb_pins WHERE slug = ? ORDER BY pinned_at, vid').bind(slug).all()).results || [], already = pinned.some((x) => Number(x.vid) === item);
+      let row, already = false;
+      if (kind === 'mini') {
+        row = await db.prepare('SELECT 1 x FROM nv_mini WHERE slug = ? AND vid = ? AND start = ? AND slow = ? AND COALESCE(gone, 0) = 0').bind(slug, item, start, slow).first();
+        if (!row) return J({ error: 'no_such_miniclip' }, 404);
+        const key = `${slug}/mini/m-${item}-${start}-${slow ? 's' : 'n'}.mp4`;
+        if (!(await env.NOVINHAS_VIDEOS.head(key))) return J({ error: 'miniclip_not_ready' }, 409);
+        if (!(await clipCanView(request, env, 'mini', slug, item, start, slow))) return J({ error: 'miniclip_unavailable' }, 403);
+        already = !!(await db.prepare('SELECT 1 x FROM nv_thumb_mini_pins WHERE slug = ? AND vid = ? AND start = ? AND slow = ?').bind(slug, item, start, slow).first());
+      } else {
+        row = await db.prepare('SELECT 1 x FROM nv_feat WHERE slug = ? AND vid = ? AND auto = 0').bind(slug, item).first();
+        if (!row) return J({ error: 'no_such_preview' }, 404);
+        const ready = await clipList(env, db, slug, 500); if (!ready.some((x) => x.v === item)) return J({ error: 'preview_not_ready' }, 409);
+        already = !!(await db.prepare('SELECT 1 x FROM nv_thumb_pins WHERE slug = ? AND vid = ?').bind(slug, item).first());
+      }
+      const oldCount = await db.prepare('SELECT COUNT(*) n FROM nv_thumb_pins WHERE slug = ?').bind(slug).first(), miniCount = await db.prepare('SELECT COUNT(*) n FROM nv_thumb_mini_pins WHERE slug = ?').bind(slug).first(), pinCount = Number(oldCount && oldCount.n || 0) + Number(miniCount && miniCount.n || 0);
       if (state === 'pin') {
-        if (!already && pinned.length >= 2) return J({ ok: false, error: 'pin_limit', max: 2, pinned: pinned.map((x) => Number(x.vid)) }, 409);
-        const hidden = await db.prepare('SELECT 1 x FROM nv_thumb_hidden WHERE slug = ? AND vid = ?').bind(slug, item).first();
-        if (hidden) await db.prepare('DELETE FROM nv_thumb_hidden WHERE slug = ? AND vid = ?').bind(slug, item).run();
+        if (!already && pinCount >= 2) return J({ ok: false, error: 'pin_limit', max: 2 }, 409);
         if (!already) {
-          await db.prepare('INSERT OR IGNORE INTO nv_thumb_pins (slug, vid, pinned_at) SELECT ?, ?, ? WHERE (SELECT COUNT(*) FROM nv_thumb_pins WHERE slug = ?) < 2').bind(slug, item, Date.now(), slug).run();
-          const exists = await db.prepare('SELECT 1 x FROM nv_thumb_pins WHERE slug = ? AND vid = ?').bind(slug, item).first();
-          if (!exists) return J({ ok: false, error: 'pin_limit', max: 2 }, 409);
+          if (kind === 'mini') {
+            await db.prepare('DELETE FROM nv_thumb_mini_hidden WHERE slug = ? AND vid = ? AND start = ? AND slow = ?').bind(slug, item, start, slow).run();
+            await db.prepare('INSERT OR IGNORE INTO nv_thumb_mini_pins (slug, vid, start, slow, pinned_at) SELECT ?, ?, ?, ?, ? WHERE ((SELECT COUNT(*) FROM nv_thumb_pins WHERE slug = ?) + (SELECT COUNT(*) FROM nv_thumb_mini_pins WHERE slug = ?)) < 2').bind(slug, item, start, slow, Date.now(), slug, slug).run();
+          } else {
+            await db.prepare('DELETE FROM nv_thumb_hidden WHERE slug = ? AND vid = ?').bind(slug, item).run();
+            await db.prepare('INSERT OR IGNORE INTO nv_thumb_pins (slug, vid, pinned_at) SELECT ?, ?, ? WHERE ((SELECT COUNT(*) FROM nv_thumb_pins WHERE slug = ?) + (SELECT COUNT(*) FROM nv_thumb_mini_pins WHERE slug = ?)) < 2').bind(slug, item, Date.now(), slug, slug).run();
+          }
         }
       } else if (state === 'free') {
-        await db.prepare('DELETE FROM nv_thumb_pins WHERE slug = ? AND vid = ?').bind(slug, item).run();
+        if (kind === 'mini') await db.prepare('DELETE FROM nv_thumb_mini_pins WHERE slug = ? AND vid = ? AND start = ? AND slow = ?').bind(slug, item, start, slow).run();
+        else await db.prepare('DELETE FROM nv_thumb_pins WHERE slug = ? AND vid = ?').bind(slug, item).run();
       } else {
-        await db.prepare('DELETE FROM nv_thumb_pins WHERE slug = ? AND vid = ?').bind(slug, item).run();
-        await db.prepare('INSERT OR REPLACE INTO nv_thumb_hidden (slug, vid, hidden_at) VALUES (?, ?, ?)').bind(slug, item, now).run();
+        if (kind === 'mini') {
+          await db.prepare('DELETE FROM nv_thumb_mini_pins WHERE slug = ? AND vid = ? AND start = ? AND slow = ?').bind(slug, item, start, slow).run();
+          await db.prepare('INSERT OR REPLACE INTO nv_thumb_mini_hidden (slug, vid, start, slow, hidden_at) VALUES (?, ?, ?, ?, ?)').bind(slug, item, start, slow, now).run();
+        } else {
+          await db.prepare('DELETE FROM nv_thumb_pins WHERE slug = ? AND vid = ?').bind(slug, item).run();
+          await db.prepare('INSERT OR REPLACE INTO nv_thumb_hidden (slug, vid, hidden_at) VALUES (?, ?, ?)').bind(slug, item, now).run();
+        }
       }
-      const saved = (await db.prepare('SELECT vid FROM nv_thumb_pins WHERE slug = ? ORDER BY pinned_at, vid').bind(slug).all()).results || [];
-      const hidden = (await db.prepare('SELECT vid FROM nv_thumb_hidden WHERE slug = ?').bind(slug).all()).results || [];
-      return J({ ok: true, pinned: saved.map((x) => Number(x.vid)), hidden: hidden.map((x) => Number(x.vid)), max: 2 });
+      const saved = (await db.prepare('SELECT vid FROM nv_thumb_pins WHERE slug = ? ORDER BY pinned_at, vid').bind(slug).all()).results || [], savedMini = (await db.prepare('SELECT vid,start,slow FROM nv_thumb_mini_pins WHERE slug = ? ORDER BY pinned_at, vid, start').bind(slug).all()).results || [];
+      const hidden = (await db.prepare('SELECT vid FROM nv_thumb_hidden WHERE slug = ?').bind(slug).all()).results || [], hiddenMini = (await db.prepare('SELECT vid,start,slow FROM nv_thumb_mini_hidden WHERE slug = ?').bind(slug).all()).results || [];
+      return J({ ok: true, pinned: saved.map((x) => ({ kind: 'preview', id: Number(x.vid) })).concat(savedMini.map((x) => ({ kind: 'mini', id: Number(x.vid), start: Number(x.start), slow: Number(x.slow) }))), hidden: hidden.map((x) => Number(x.vid)).concat(hiddenMini.map((x) => `mini:${x.vid}:${x.start}:${x.slow}`)), max: 2 });
     }
     if (b.action === 'requeue') { await db.prepare('UPDATE nv_feat SET queued = 1, added = ? WHERE id = ?').bind(now, +b.item || 0).run(); return J({ ok: true }); }
     if (b.action === 'now') { const it = +b.item || 0; await setS(db, 'cur', it); await setS(db, 'since', now); await db.prepare('UPDATE nv_feat SET queued = 0, shown = shown + 1, last = ? WHERE id = ?').bind(now, it).run(); return J({ ok: true }); }
@@ -228,6 +249,58 @@ export async function onRequest({ request, env }) {
       items.push({ c: slug, id: r.vid, start, slow: 0, kind: 'preview', access: access[`${r.vid}/${start}/0`] || 'public', pending: !hasFile, queuedAt: !hasFile ? Number(r.added) || 0 : 0, name: r.name || slug, title: r.title || '', src: hasFile ? `/api/novinhas/featured?cs=1&c=${slug}&v=${r.vid}&t=${start}` : '', poster: `/api/novinhas/file?k=${slug}/previews/poster-${pad(r.vid)}.webp`, url: `/novinhas/canal/ver/?c=${slug}&v=${pad(r.vid)}` });
     }
     return J({ items, owner });
+  }
+  if (q.get('thumbs') && q.get('clips') === '1') {
+    const rows = (await db.prepare('SELECT slug,vid FROM nv_feat WHERE auto=0 ORDER BY added,id').all()).results || [], featureBy = {};
+    rows.forEach((r) => { (featureBy[r.slug] = featureBy[r.slug] || new Set()).add(Number(r.vid)); });
+    const miniRows = (await db.prepare('SELECT slug,vid,start,slow FROM nv_mini WHERE COALESCE(gone,0)=0').all()).results || [], miniBy = {};
+    miniRows.forEach((r) => { (miniBy[r.slug] = miniBy[r.slug] || []).push(r); });
+    const owner = await isOwner(request, env), vipViewer = await isVip(request, env);
+    await ensureThumbPins(db, now);
+    const oldPins = (await db.prepare('SELECT slug,vid FROM nv_thumb_pins ORDER BY pinned_at,vid').all()).results || [], oldBy = {};
+    oldPins.forEach((r) => { (oldBy[r.slug] = oldBy[r.slug] || []).push(Number(r.vid)); });
+    const miniPins = (await db.prepare('SELECT slug,vid,start,slow FROM nv_thumb_mini_pins ORDER BY pinned_at,vid,start').all()).results || [], miniPinBy = {};
+    miniPins.forEach((r) => { (miniPinBy[r.slug] = miniPinBy[r.slug] || []).push({ kind:'mini', id:Number(r.vid), start:Number(r.start), slow:Number(r.slow) }); });
+    const oldHidden = (await db.prepare('SELECT slug,vid FROM nv_thumb_hidden').all()).results || [], hiddenBy = {};
+    oldHidden.forEach((r) => { (hiddenBy[r.slug] = hiddenBy[r.slug] || []).push(Number(r.vid)); });
+    const miniHidden = (await db.prepare('SELECT slug,vid,start,slow FROM nv_thumb_mini_hidden').all()).results || [], miniHiddenBy = {};
+    miniHidden.forEach((r) => { (miniHiddenBy[r.slug] = miniHiddenBy[r.slug] || []).push(`${r.vid}:${r.start}:${r.slow?1:0}`); });
+    const slugs = Array.from(new Set(Object.keys(featureBy).concat(owner ? Object.keys(miniBy) : [], Object.keys(oldBy), Object.keys(miniPinBy)))).filter((s) => SLUG.test(s));
+    const miniReady = {};
+    await Promise.all(slugs.filter((s) => (owner || miniPinBy[s]) && miniBy[s] && miniBy[s].length).map(async (slug) => {
+      try {
+        const l = await env.NOVINHAS_VIDEOS.list({prefix:slug+'/mini/m-',limit:1000}), keys = new Set((l.objects||[]).map((o)=>o.key));
+        const access = await clipAccessMap(db,'mini',slug), ready = [];
+        for (const m of miniBy[slug]) {
+          const id=Number(m.vid), start=Number(m.start)||0, slow=m.slow?1:0, key=`${slug}/mini/m-${id}-${start}-${slow?'s':'n'}.mp4`;
+          if (!keys.has(key) || (!vipViewer && access[`${id}/${start}/${slow}`]==='vip')) continue;
+          if (!vipViewer && !(await clipCanView(request,env,'mini',slug,id,start,slow))) continue;
+          ready.push({kind:'mini',id,start,slow,src:`/api/novinhas/mini?s=1&k=${encodeURIComponent(key)}`});
+        }
+        miniReady[slug]=ready;
+      } catch(e) { miniReady[slug]=[]; }
+    }));
+    const day=Math.floor(now/3600), out={};
+    const hash=(s)=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h;};
+    const keyOf=(x)=>`${x.kind||'preview'}:${x.id}:${Number(x.start)||0}:${x.slow?1:0}`;
+    for (const slug of slugs) {
+      const feature=[], have={};
+      if (featureBy[slug]) (await clipList(env,db,slug,500)).forEach((x)=>{have[x.v]=Number(x.st)||0;});
+      for (const vid of featureBy[slug]||[]) {
+        if (have[vid]==null || (hiddenBy[slug]||[]).includes(vid)) continue;
+        const start=have[vid];
+        if (!vipViewer && !(await clipCanView(request,env,'preview',slug,vid,start,0))) continue;
+        feature.push({kind:'preview',id:vid,start,slow:0,src:`/api/novinhas/featured?cs=1&c=${slug}&v=${vid}&t=${start}`});
+      }
+      const hideMini=miniHiddenBy[slug]||[], minis=(miniReady[slug]||[]).filter((x)=>!hideMini.includes(`${x.id}:${x.start}:${x.slow}`));
+      const choices=feature.concat(minis), pinned=[];
+      (oldBy[slug]||[]).forEach((vid)=>{const x=feature.find((z)=>z.id===vid);if(x)pinned.push(x);});
+      (miniPinBy[slug]||[]).forEach((p)=>{const x=minis.find((z)=>keyOf(z)===keyOf(p));if(x)pinned.push(x);});
+      if (!choices.length) continue;
+      const pool=pinned.length?pinned:choices, chosen=pool[hash(slug+':'+day)%pool.length];
+      out[slug]={id:chosen.id,start:chosen.start,slow:chosen.slow,kind:chosen.kind,src:chosen.src,...(owner?{pinned:pinned.map((x)=>({kind:x.kind,id:x.id,start:x.start,slow:x.slow})),hidden:hiddenBy[slug]||[],choices:choices.map((x)=>({kind:x.kind,id:x.id,start:x.start,slow:x.slow,src:x.src}))}:{})};
+    }
+    return J({day,owner,thumbs:out},200,'no-store');
   }
   if (q.get('thumbs')) {
     const rows = (await db.prepare('SELECT id, slug, vid, start FROM nv_feat WHERE auto = 0 ORDER BY added, id').all()).results || [], by = {};
