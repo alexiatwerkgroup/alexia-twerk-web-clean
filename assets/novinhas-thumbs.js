@@ -132,7 +132,7 @@
     if (flushTimer || busy || !queue.length) return;
     flushTimer = setTimeout(function () {
       flushTimer = 0; if (busy || !queue.length) return;
-      var cards = queue.splice(0, 12), slugs = cards.map(slugOf).filter(Boolean);
+      var cards = queue.splice(0, 24), slugs = cards.map(slugOf).filter(Boolean);
       if (!slugs.length) { if (queue.length) scheduleFlush(); return; }
       var url = '/api/novinhas/featured?thumbs=1&clips=1&' + slugs.map(function (s) { return 'c=' + encodeURIComponent(s); }).join('&');
       busy = true;
@@ -140,12 +140,12 @@
         if (d && d.thumbs) applyBatch(cards, d);
         else cards.forEach(function (a) { processed.delete(a); if (cardObserver) cardObserver.observe(a); });
       }).catch(function () { cards.forEach(function (a) { processed.delete(a); if (cardObserver) cardObserver.observe(a); }); }).finally(function () { busy = false; if (queue.length) scheduleFlush(); });
-    }, 30);
+    }, 0);
   }
   var cardObserver = 'IntersectionObserver' in window ? new IntersectionObserver(function (entries) {
     entries.forEach(function (e) { if (!e.isIntersecting) return; cardObserver.unobserve(e.target); queue.push(e.target); });
     scheduleFlush();
-  }, { rootMargin: '450px 0px', threshold: 0.01 }) : null;
+  }, { rootMargin: '900px 0px', threshold: 0.01 }) : null;
   function initializeCards() {
     var all = [].slice.call(grid.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]'));
     all.forEach(function (a) {
@@ -167,5 +167,6 @@
     if (!cardObserver) scheduleFlush();
   }
   initializeCards();
-  new MutationObserver(initializeCards).observe(grid, { childList: true });
+  var initQueued = 0;
+  new MutationObserver(function () { if (initQueued) return; initQueued = requestAnimationFrame(function () { initQueued = 0; initializeCards(); }); }).observe(grid, { childList: true });
 })();

@@ -24,17 +24,39 @@
     a.append(img, body);
     return a;
   }
+  function sameText(node, text) { if (node && node.textContent !== text) node.textContent = text; }
+  function updateCard(a, c) {
+    var kids = a.lastElementChild && a.lastElementChild.children;
+    if (!kids || kids.length < 3) return;
+    sameText(kids[1], String(c.name || c.slug || ''));
+    sameText(kids[2], (Number(c.total) || 0).toLocaleString() + ' videos · Novinhas Archive');
+  }
+  function slugOfCard(a) { var m = /[?&]c=([^&]+)/.exec(a.getAttribute('href') || ''); try { return m ? decodeURIComponent(m[1]) : ''; } catch (e) { return ''; } }
   function refresh() {
-    fetch('/api/novinhas/channels?t=' + Math.floor(Date.now() / 300000), { cache: 'no-store' })
+    fetch('/api/novinhas/channels?t=' + Math.floor(Date.now() / 300000))
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data || !Array.isArray(data.channels) || !data.channels.length) return;
-        var frag = document.createDocumentFragment();
-        data.channels.forEach(function (c) { frag.appendChild(channelCard(c)); });
-        grid.replaceChildren(frag);
+        // Reconcile in place: cards (and their images / mini previews) already on the page are kept,
+        // so nothing reloads. Only new channels are added and gone channels removed.
+        var existing = {}, changed = false;
+        [].slice.call(grid.querySelectorAll('a.nov-channel-live')).forEach(function (a) { existing[slugOfCard(a)] = a; });
+        var seen = {}, frag = document.createDocumentFragment();
+        data.channels.forEach(function (c) {
+          var slug = String(c.slug || ''); seen[slug] = true;
+          if (existing[slug]) updateCard(existing[slug], c);
+          else { frag.appendChild(channelCard(c)); changed = true; }
+        });
+        Object.keys(existing).forEach(function (slug) {
+          if (seen[slug]) return;
+          var a = existing[slug], w = a.closest('.nov-thumb-admin-wrap') || a;
+          if (window.TWKNovMotion) a.querySelectorAll('video').forEach(function (v) { window.TWKNovMotion.unwatch(v); });
+          w.remove(); changed = true;
+        });
+        if (frag.childNodes.length) grid.appendChild(frag);
         var heading = document.querySelector('.nov-featured-sub');
-        if (heading) heading.textContent = 'Deleted YouTube & Instagram dancer channels, restored and reorganized here. ' + data.channelsDone + ' channels are live · more are being rebuilt.';
-        document.dispatchEvent(new CustomEvent('novinhas:channels-updated', { detail: data }));
+        sameText(heading, 'Deleted YouTube & Instagram dancer channels, restored and reorganized here. ' + data.channelsDone + ' channels are live · more are being rebuilt.');
+        if (changed || !window.__novOrderedOnce) document.dispatchEvent(new CustomEvent('novinhas:channels-updated', { detail: data }));
       })
       .catch(function () {});
   }

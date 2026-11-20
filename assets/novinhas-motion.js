@@ -35,6 +35,11 @@
     // the shared scheduler still allows only one video to play at a time.
     if (reduce && reduce.matches && !next.x.force) return;
     var v = next.v; active = v;
+    // Warm up the next two clips (metadata+first frames) so each mini starts instantly,
+    // without ever downloading more than 3 at once.
+    var ahead = visibleRows().filter(function (r) { return r.v !== v; }).slice(0, 2);
+    ahead.forEach(function (r) { if (r.v.preload === 'none') { r.v.preload = 'auto'; } });
+    if (v.preload === 'none') v.preload = 'auto';
     try { v.currentTime = 0; } catch (e) {}
     var p = v.play();
     if (p && p.catch) p.catch(function () { var x = entries.get(v); if (x) x.failed = true; finish(v); });
