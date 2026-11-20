@@ -6,7 +6,7 @@
   window.__twkNovMotionInstalled = true;
   var conn = navigator.connection || {};
   var small = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-  var MAX = (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) ? 2 : (small ? 4 : 10);
+  var MAX = (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) ? 2 : (small ? 4 : Infinity);
   var entries = new Map(), actives = new Map(), idleTimer = 0;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
   function visibleRows() {
@@ -38,8 +38,10 @@
   function start() {
     if (document.hidden) return;
     var rows = visibleRows();
-    while (actives.size < MAX && rows.length) {
+    while (rows.length) {
       var next = rows.shift(), v = next.v;
+      // PC: everything visible moves at once. Capped only on phones / data saver. Ranking previews (force) always play.
+      if (actives.size >= MAX && !next.x.force) continue;
       // Hottest Videos are an explicit five-second preview request from the site owner:
       // they keep moving even when the OS reduced-motion preference is on.
       if (reduce && reduce.matches && !next.x.force) continue;
@@ -70,7 +72,8 @@
     entries.set(v, x);
     v.loop = false; v.preload = 'none';
     v.addEventListener('playing', function () {
-      if (actives.has(v) && !actives.get(v)) actives.set(v, setTimeout(function () { finish(v); }, x.duration));
+      // Each clip plays for its own original length (until 'ended'); the timeout is only a safety net.
+      if (actives.has(v) && !actives.get(v)) actives.set(v, setTimeout(function () { finish(v); }, 120000));
     });
     v.addEventListener('ended', function () { finish(v); });
     v.addEventListener('error', function () { var y = entries.get(v); if (y) y.failed = true; finish(v); });
