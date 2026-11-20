@@ -1,6 +1,6 @@
 /* Animated mini previews for channel cards. Owners can pin up to two previews per channel. */
 (function () {
-  var grid = document.querySelector('.nov-featured-grid'), processed = new WeakSet();
+  var grid = document.querySelector('.nov-featured-grid'), processed = new WeakSet(), queue = [], flushTimer = 0, busy = false;
   if (!grid) return;
   function authHeaders(json) {
     var h = {};
@@ -76,12 +76,7 @@
     remove.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (remove.disabled) return; var removedKey = itemKey(choice); say('Quitando…'); post('hide').then(function (d) { pinned = d.pinned || []; choices = choices.filter(function (x) { return itemKey(x) !== removedKey; }); setChoice(choices.length ? choices[0] : null); say('Mini clip quitado de este canal'); paint(); }).catch(function () { say('No se pudo quitar.'); paint(); }); };
     bar.append(count, pin, pass, remove); wrap.append(bar, status); paint();
   }
-  function initializeCards() {
-    var cards = [].slice.call(grid.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]')).filter(function (a) { return !processed.has(a); });
-    if (!cards.length) return;
-    cards.forEach(function (a) { processed.add(a); });
-    var headers = authHeaders(false);
-    fetch('/api/novinhas/featured?thumbs=1&clips=1&n=' + Math.floor(Date.now() / 60000), { credentials: 'same-origin', cache: 'no-store', headers: headers }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+  function applyBatch(cards, d) {
     if (!d || !d.thumbs) return;
     cards.forEach(function (a) {
       var slug = slugOf(a); if (!slug) return;
@@ -104,7 +99,29 @@
         }
       }
     });
-    }).catch(function () {});
+  }
+  function scheduleFlush() {
+    if (flushTimer || busy || !queue.length) return;
+    flushTimer = setTimeout(function () {
+      flushTimer = 0; if (busy || !queue.length) return;
+      var cards = queue.splice(0, 8), slugs = cards.map(slugOf).filter(Boolean);
+      if (!slugs.length) { if (queue.length) scheduleFlush(); return; }
+      var url = '/api/novinhas/featured?thumbs=1&clips=1&' + slugs.map(function (s) { return 'c=' + encodeURIComponent(s); }).join('&');
+      busy = true;
+      fetch(url, { credentials: 'same-origin', cache: 'no-store', headers: authHeaders(false) }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+        if (d && d.thumbs) applyBatch(cards, d);
+        else cards.forEach(function (a) { processed.delete(a); if (cardObserver) cardObserver.observe(a); });
+      }).catch(function () { cards.forEach(function (a) { processed.delete(a); if (cardObserver) cardObserver.observe(a); }); }).finally(function () { busy = false; if (queue.length) scheduleFlush(); });
+    }, 30);
+  }
+  var cardObserver = 'IntersectionObserver' in window ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (!e.isIntersecting) return; cardObserver.unobserve(e.target); queue.push(e.target); });
+    scheduleFlush();
+  }, { rootMargin: '450px 0px', threshold: 0.01 }) : null;
+  function initializeCards() {
+    var cards = [].slice.call(grid.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]')).filter(function (a) { return !processed.has(a); });
+    cards.forEach(function (a) { processed.add(a); if (cardObserver) cardObserver.observe(a); else queue.push(a); });
+    if (!cardObserver) scheduleFlush();
   }
   initializeCards();
   new MutationObserver(initializeCards).observe(grid, { childList: true });

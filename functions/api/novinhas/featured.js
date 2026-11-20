@@ -265,7 +265,9 @@ export async function onRequest({ request, env }) {
     oldHidden.forEach((r) => { (hiddenBy[r.slug] = hiddenBy[r.slug] || []).push(Number(r.vid)); });
     const miniHidden = (await db.prepare('SELECT slug,vid,start,slow FROM nv_thumb_mini_hidden').all()).results || [], miniHiddenBy = {};
     miniHidden.forEach((r) => { (miniHiddenBy[r.slug] = miniHiddenBy[r.slug] || []).push(`${r.vid}:${r.start}:${r.slow?1:0}`); });
-    const slugs = Array.from(new Set(Object.keys(featureBy).concat(owner ? Object.keys(miniBy) : [], Object.keys(oldBy), Object.keys(miniPinBy)))).filter((s) => SLUG.test(s));
+    const requested = new Set(q.getAll('c').filter((s) => SLUG.test(s)));
+    const slugs = Array.from(new Set(Object.keys(featureBy).concat(owner ? Object.keys(miniBy) : [], Object.keys(oldBy), Object.keys(miniPinBy))))
+      .filter((s) => SLUG.test(s) && (!requested.size || requested.has(s)));
     const miniReady = {}, previewAccess = {};
     // R2 list() was previously called serially for every featured channel below.
     // Bound concurrency for both clip families: this keeps the page responsive
