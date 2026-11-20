@@ -22,7 +22,7 @@
     var l = t.closest('a[href*="binance.com"]'); if (l) add('binance_ref');
     if (t.closest('.twr')) add('rabbit_click');
     var nov = t.closest('[data-nov-action]');
-    if (nov && (nov.dataset.novAction === 'watch' || nov.dataset.novAction === 'join')) {
+    if (nov && (nov.dataset.novAction === 'watch' || nov.dataset.novAction === 'join' || nov.dataset.novAction === 'identify' || nov.dataset.novAction === 'vip')) {
       var detail = nov.dataset.novLocation || '';
       if (nov.dataset.novAction === 'watch') {
         try { detail = new URL(nov.href, location.href).searchParams.get('c') || detail; } catch (e) {}
@@ -35,6 +35,10 @@
     var v = e.target;
     if (v && v.tagName === 'VIDEO' && v.closest && v.closest('.np-stage') && location.pathname.indexOf('/novinhas/canal/ver') === 0) {
       try { var p = new URLSearchParams(location.search), c = p.get('c') || '', id = v.dataset.twRankVideo || p.get('v') || ''; if (/^[a-z0-9-]{2,60}$/.test(c) && /^\d{1,4}$/.test(id)) { var key = c + ':' + id; window.__twNovVideoViews = window.__twNovVideoViews || {}; if (!window.__twNovVideoViews[key]) { window.__twNovVideoViews[key] = 1; add('nov_video_view', key); } } } catch (err) {}
+    }
+    if (v && v.tagName === 'VIDEO' && v.closest && v.closest('.np-mbox') && v.dataset.twNovMini) {
+      var mk = v.dataset.twNovMini; window.__twNovMiniViews = window.__twNovMiniViews || {};
+      if (!window.__twNovMiniViews[mk]) { window.__twNovMiniViews[mk] = 1; add('nov_miniclip_view', mk); }
     }
   }, true);
   // Tiempo real de reproducción en la página de video: segundos reproducidos y punto más lejano alcanzado (% del video).

@@ -1,7 +1,7 @@
 // POST {h, d, s, ev:[{n,d}]}  (sendBeacon) -> updates time on page, scroll depth and events of one page view.
 import { json } from '../../_lib/http.js';
 import { init } from '../../_lib/analytics.js';
-const ALLOWED_EVENTS = new Set(['pay_open', 'unlock_click', 'follow', 'copy_id', 'binance_ref', 'rabbit_click', 'nov_watch', 'nov_join', 'nov_play', 'nov_video_view', 'signup_click', 'signup_start', 'signup_done', 'signup_verified', 'nov_signup', 'vid_time']);
+const ALLOWED_EVENTS = new Set(['pay_open', 'unlock_click', 'follow', 'copy_id', 'binance_ref', 'rabbit_click', 'nov_watch', 'nov_join', 'nov_identify', 'nov_vip', 'nov_miniclip_view', 'nov_play', 'nov_video_view', 'signup_click', 'signup_start', 'signup_done', 'signup_verified', 'nov_signup', 'vid_time']);
 export async function onRequestPost({ request, env }) {
   let b = {}; try { b = JSON.parse(await request.text()); } catch {}
   const h = String(b.h || ''); if (!/^[a-f0-9]{16}$/.test(h)) return json({ ok: false }, 400);
@@ -25,6 +25,6 @@ export async function onRequestPost({ request, env }) {
   await env.DB.prepare("UPDATE tw_hits SET dur = MAX(dur, ?), scroll = MAX(scroll, ?), human = MAX(human, ?), last_active = ?, last_engaged = CASE WHEN ? IS NULL THEN last_engaged ELSE MAX(COALESCE(last_engaged, 0), ?) END, country = COALESCE(NULLIF(?, ''), country), region = COALESCE(NULLIF(?, ''), region), city = COALESCE(NULLIF(?, ''), city), tz = COALESCE(NULLIF(?, ''), tz), lat = COALESCE(?, lat), lon = COALESCE(?, lon) WHERE hid = ?")
     .bind(d, s, b.u ? 1 : 0, now, engaged, engaged, country, region, city, timezone, lat, lon, h).run();
   const ev = Array.isArray(b.ev) ? b.ev.slice(0, 12) : [];
-  for (const e of ev) { const n = String(e && e.n || ''); if (!ALLOWED_EVENTS.has(n)) continue; if (n === 'vid_time') await env.DB.prepare("DELETE FROM tw_events WHERE hid = ? AND name = 'vid_time'").bind(h).run(); await env.DB.prepare('INSERT INTO tw_events (ts, hid, vid, name, detail) VALUES (?,?,?,?,?)').bind(Date.now(), h, row.vid, n, String(e.d || '').slice(0, n === 'nov_video_view' ? 80 : 40)).run(); }
+  for (const e of ev) { const n = String(e && e.n || ''); if (!ALLOWED_EVENTS.has(n)) continue; if (n === 'vid_time') await env.DB.prepare("DELETE FROM tw_events WHERE hid = ? AND name = 'vid_time'").bind(h).run(); await env.DB.prepare('INSERT INTO tw_events (ts, hid, vid, name, detail) VALUES (?,?,?,?,?)').bind(Date.now(), h, row.vid, n, String(e.d || '').slice(0, ['nov_video_view', 'nov_miniclip_view'].indexOf(n) >= 0 ? 80 : 40)).run(); }
   return json({ ok: true });
 }

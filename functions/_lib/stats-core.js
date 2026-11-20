@@ -18,7 +18,7 @@ import { init, OWNER } from './analytics.js';
 
 export const CONFIRM_SECONDS = 30; // segundos activos en una misma página para ser INTERESADO
 export const ONLINE_MS = 90000; // la pestaña manda señal cada 30 s mientras está visible
-export const VALID_EVENT_SQL = "name IN ('pay_open','unlock_click','follow','copy_id','binance_ref','rabbit_click','nov_watch','nov_join','nov_play','signup_click','signup_start','signup_done','signup_verified','nov_signup')";
+export const VALID_EVENT_SQL = "name IN ('pay_open','unlock_click','follow','copy_id','binance_ref','rabbit_click','nov_watch','nov_channel_view','nov_join','nov_identify','nov_vip','nov_play','nov_video_view','nov_miniclip_view','signup_click','signup_start','signup_done','signup_verified','nov_signup')";
 
 // CTEs desde ?1 (ms): burst = cookies de una OLA DE ROBOTS, cv = visitantes reales, ci = interesados (subconjunto de cv). Se usan como  WITH ${REAL_CTE}
 //  Ola sospechosa: 8 o más cookies nuevas, sin cuenta, con el mismo navegador/sistema/dispositivo y presencia en 3+ países durante el mismo minuto.

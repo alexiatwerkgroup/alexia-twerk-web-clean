@@ -73,7 +73,7 @@ export async function onRequest(context) {
           } catch (e) {}
         }
       })());
-      add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=10" defer></script>';
+      add += '<script>window.__twh="' + hid + '"</script><script src="/assets/twerkhub-track.js?v=11" defer></script>';
     }
     add += '<script src="/assets/twerkhub-counter.js?v=20261114-stats2" defer></script>';
     add += '<script>(function(){document.querySelectorAll(".tn2-lk a,.tn2 details nav a,.tf2 a").forEach(function(a){var h=a.getAttribute("href")||"";if(h.indexOf("/membership")===0||h.indexOf("/pt/membership")===0){a.href="/tokens/";a.textContent="BALANCE"}})})();</script>';
