@@ -13,9 +13,7 @@ async function periods(db, todayStart) {
   PCACHE = { t: Date.now(), d: todayStart, v: { today: m(g(0)), week: m(g(1)), all: m(g(2)), accountsWeek: g(3).week || 0 } };
   return PCACHE.v;
 }
-export async function onRequestGet({ request, env }) {
-  const denied = await ownerOnly(request, env);
-  if (denied) return denied;
+async function compute(request, env) {
   const db = env.DB, url = new URL(request.url), now = Date.now();
   const { todayStart } = tzInfo(url, now);
   const since24 = now - 86400000, hourAgo = now - 3600000, onlineSince = now - ONLINE_MS;
@@ -101,4 +99,34 @@ export async function onRequestGet({ request, env }) {
   body.recentActions = (res[5].results || []).map(e => ({ vid: e.vid, uid: e.uid || '', ts: e.ts, name: e.name, detail: e.detail, country: e.country, city: e.city, user: e.uid ? names[e.uid] || '' : '' }));
   body.latestAccounts = res[6].results || [];
   return json(body, 200, '', NO_STORE);
+}
+
+// ---- Caché + respaldo: el cálculo cuesta ~150-250 mil filas leídas de D1; sin esto el panel agota el cupo diario y empieza a fallar. ----
+const LAST = new Map();
+async function cached(request, env, ctx, ttl, compute) {
+  const u = new URL(request.url);
+  const key = new Request('https://twerkhub.lat/__statscache' + u.pathname + u.search.replace(/[&?]_=\d+/, ''));
+  const cache = caches.default;
+  try { const hit = await cache.match(key); if (hit) { const r = new Response(hit.body, hit); r.headers.set('X-Stats-Cache', 'HIT'); return r; } } catch (e) {}
+  try {
+    const res = await compute();
+    if (res.status === 200) {
+      const body = await res.clone().text();
+      LAST.set(key.url, body);
+      const put = cache.put(key, new Response(body, { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=' + ttl } }));
+      if (ctx && ctx.waitUntil) ctx.waitUntil(put.catch(() => {})); 
+    }
+    return res;
+  } catch (e) {
+    const old = LAST.get(key.url);
+    if (old) { try { const j = JSON.parse(old); j.stale = true; j.staleReason = String(e && e.message || e).slice(0, 100); return new Response(JSON.stringify(j), { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }); } catch (_) {} }
+    return new Response(JSON.stringify({ ok: false, error: 'db_unavailable', detail: String(e && e.message || e).slice(0, 100) }), { status: 503, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } });
+  }
+}
+
+export async function onRequestGet(ctx) {
+  const { request, env } = ctx;
+  const denied = await ownerOnly(request, env);
+  if (denied) return denied;
+  return cached(request, env, ctx, 30, () => compute(request, env));
 }
