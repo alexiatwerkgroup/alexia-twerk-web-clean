@@ -374,7 +374,7 @@
     stage.replaceChildren(box);
     applyQuality(false); qRender();
     var q = new URLSearchParams(location.search);
-    v.play().catch(function () { v.muted = true; v.play().then(function () { say('Tap the volume to unmute'); }).catch(function () {}); });
+    v.play().catch(function () { say('Press play to start the video with sound'); });
 
     /* resolucion + cuenta regresiva (todos) y fecha de grabacion (solo el dueño) */
     var meta = document.createElement('div'); meta.className = 'np-meta';
