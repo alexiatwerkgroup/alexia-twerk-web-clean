@@ -26,6 +26,8 @@ export const VALID_EVENT_SQL = "name IN ('pay_open','unlock_click','follow','cop
 export const BURST_MIN = 8;
 // No permitir que un tiempo enviado antes de que transcurra ese tiempo cuente en las métricas.
 export const ACTIVE_SECONDS = "MIN(MAX(COALESCE(dur, 0), 0), MAX(0, CAST((COALESCE(last_active, ts) - ts) / 1000 AS INTEGER)))";
+// Tiempo CON interacción (video reproduciéndose o actividad en los últimos 5 min). Filas viejas sin dato (act NULL) usan el tiempo de pestaña abierta.
+export const INTERACT_SECONDS = `MIN(${ACTIVE_SECONDS}, COALESCE(act, ${ACTIVE_SECONDS}))`;
 export const REAL_CTE = `bm AS (
   SELECT strftime('%Y-%m-%d %H:%M', ts / 1000, 'unixepoch') m, browser, os, device FROM tw_hits WHERE ts > ?1 AND is_new = 1 AND uid IS NULL
   GROUP BY 1, 2, 3, 4 HAVING COUNT(DISTINCT vid) >= ${BURST_MIN} AND COUNT(DISTINCT NULLIF(country, '')) >= 3),
@@ -48,7 +50,17 @@ export async function ownerOnly(request, env) {
   const row = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(identity.sub).first();
   if (String(row?.email || '').toLowerCase() !== OWNER) return json({ ok: false, error: 'owner_only' }, 403);
   await init(env.DB);
+  await ensureAct(env.DB);
   return null;
+}
+
+// Columna act (segundos con interacción). Se crea una sola vez por isolate; tolera la carrera 'duplicate column'.
+let actReady = false;
+export async function ensureAct(db) {
+  if (actReady) return;
+  try { await db.prepare('ALTER TABLE tw_hits ADD COLUMN act INTEGER').run(); }
+  catch (e) { if (!/duplicate column name/i.test(String(e?.message || e))) throw e; }
+  actReady = true;
 }
 
 export const NO_STORE = { 'Cache-Control': 'private, no-store' };

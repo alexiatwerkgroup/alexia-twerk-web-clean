@@ -1,12 +1,13 @@
 /* Twerkhub first-party tracker: active time on page, scroll depth and a few intent events. No personal data. */
 (function () {
   var h = window.__twh; if (!h || window.__twt) return; window.__twt = 1;
-  var hum = 0, vis = 0, last = Date.now(), shown = !document.hidden, maxS = 0, ev = [], sent = 0, interaction = 0, lastSentInteraction = 0;
+  var hum = 0, vis = 0, eng = 0, last = Date.now(), shown = !document.hidden, maxS = 0, ev = [], sent = 0, interaction = 0, lastSentInteraction = 0;
   var lastTouch = Date.now(), IDLE_MS = 300000;
   function touch() { hum = 1; interaction = lastTouch = Date.now(); }
   // Tiempo activo = pestaña visible O un video reproduciéndose (mirar con el navegador tapado o en segundo plano también es tiempo en la página).
   function playing() { try { var vs = document.getElementsByTagName('video'); for (var i = 0; i < vs.length; i++) { var q = vs[i]; if (!q.paused && !q.ended && q.readyState > 2) return true; } } catch (e) {} return false; }
-  function tick() { if (shown || playing()) vis += Date.now() - last; last = Date.now(); }
+  // vis = pestaña abierta (visible o con video). eng = tiempo CON interacción: video reproduciéndose, o pestaña visible con scroll/clic/movimiento en los últimos 5 min.
+  function tick() { var n = Date.now(), dt = n - last, pl = playing(); if (shown || pl) vis += dt; if (pl || (shown && n - lastTouch < IDLE_MS)) eng += dt; last = n; }
   function scr() { var d = document.documentElement, t = (window.scrollY || 0) + innerHeight, p = Math.round(100 * t / Math.max(d.scrollHeight, 1)); if (p > maxS) maxS = Math.min(100, p); }
   addEventListener('scroll', function () { touch(); scr(); }, { passive: true }); scr();
   ['pointermove', 'touchstart', 'keydown', 'mousedown'].forEach(function (t) { addEventListener(t, touch, { passive: true }); });
@@ -68,7 +69,7 @@
     add('signup_verified','email');
     try{if(localStorage.getItem('twk_signup_pending_verification'))localStorage.removeItem('twk_signup_pending_verification')}catch(_){}
   }
-  function send() { tick(); scr(); vidEvent(); var b = JSON.stringify({ h: h, d: Math.round(vis / 1000), s: maxS, u: hum, i: interaction > lastSentInteraction ? interaction : 0, ev: ev }); lastSentInteraction = interaction; ev = []; sent++; try { navigator.sendBeacon('/api/analytics/track', new Blob([b], { type: 'application/json' })); } catch (e) {} }
+  function send() { tick(); scr(); vidEvent(); var b = JSON.stringify({ h: h, d: Math.round(vis / 1000), a: Math.round(eng / 1000), s: maxS, u: hum, i: interaction > lastSentInteraction ? interaction : 0, ev: ev }); lastSentInteraction = interaction; ev = []; sent++; try { navigator.sendBeacon('/api/analytics/track', new Blob([b], { type: 'application/json' })); } catch (e) {} }
   document.addEventListener('visibilitychange', function () { tick(); shown = !document.hidden; last = Date.now(); if (document.hidden) send(); });
   addEventListener('pagehide', send);
   setTimeout(send, 15000);

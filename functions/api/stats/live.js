@@ -1,12 +1,12 @@
 // GET /api/stats/live?tz=-180[&lite=1]  -> SOLO DUEÑO. Lo que tiene que verse al instante (el panel lo pide cada 5 s).
 import { json } from '../../_lib/http.js';
-import { REAL_CTE, ACTIVE_SECONDS, VALID_EVENT_SQL, ONLINE_MS, CONFIRM_SECONDS, ownerOnly, NO_STORE, tzInfo, all } from '../../_lib/stats-core.js';
+import { REAL_CTE, ACTIVE_SECONDS, INTERACT_SECONDS, VALID_EVENT_SQL, ONLINE_MS, CONFIRM_SECONDS, ownerOnly, NO_STORE, tzInfo, all } from '../../_lib/stats-core.js';
 
 // Hoy / semana (7 dias) / total: se recalcula cada 2 min (el panel pide /live cada 5 s y el total recorre toda la tabla).
 let PCACHE = { t: 0, v: null };
 async function periods(db, todayStart) {
   if (PCACHE.v && Date.now() - PCACHE.t < 120000 && PCACHE.d === todayStart) return PCACHE.v;
-  const per = since => db.prepare(`WITH ${REAL_CTE} SELECT (SELECT COUNT(*) FROM cv) confirmed, (SELECT COUNT(*) FROM ci) interested, (SELECT COUNT(*) FROM tw_events WHERE ts > ?1 AND ${VALID_EVENT_SQL} AND vid IN cv) actions, (SELECT ROUND(AVG(t)) FROM (SELECT SUM(${ACTIVE_SECONDS}) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid)) avgSeconds`).bind(since);
+  const per = since => db.prepare(`WITH ${REAL_CTE} SELECT (SELECT COUNT(*) FROM cv) confirmed, (SELECT COUNT(*) FROM ci) interested, (SELECT COUNT(*) FROM tw_events WHERE ts > ?1 AND ${VALID_EVENT_SQL} AND vid IN cv) actions, (SELECT ROUND(AVG(t)) FROM (SELECT SUM(${INTERACT_SECONDS}) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid)) avgSeconds, (SELECT ROUND(AVG(t)) FROM (SELECT SUM(${ACTIVE_SECONDS}) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid)) avgOpenSeconds`).bind(since);
   const r = await db.batch([per(todayStart), per(todayStart - 6 * 86400000), per(0), db.prepare("SELECT SUM(CASE WHEN registered_at >= datetime(?1/1000,'unixepoch') THEN 1 ELSE 0 END) week FROM profiles").bind(todayStart - 6 * 86400000)]);
   const g = i => (r[i].results || [])[0] || {};
   const m = o => ({ confirmed: o.confirmed || 0, interested: o.interested || 0, actions: o.actions || 0, avgSeconds: o.avgSeconds || 0 });
