@@ -359,7 +359,8 @@ document.addEventListener('mouseover', function (e) {
 });
 document.addEventListener('mouseout', function (e) { var w = e.target.closest && e.target.closest('.who'), box = e.target.closest && e.target.closest('#wc'); if (w || box) hideWho(); });
 
-shell(); loadLive(); loadReport(); loadMoney(true);
+// Escalonado: en vivo primero; histórico y ventas después, para no pegarle a la base todo junto (la base se sobrecarga y tumba el resto del sitio).
+shell(); loadLive(); setTimeout(function () { loadReport(); }, 6000); setTimeout(function () { loadMoney(true); }, 9000);
 setInterval(loadMoney, 60000);
 setInterval(loadLive, LIVE_MS);
 setInterval(loadReport, REPORT_MS);
