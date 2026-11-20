@@ -6,7 +6,7 @@ export async function onRequestPost({ request, env }) {
   let b = {}; try { b = JSON.parse(await request.text()); } catch {}
   const h = String(b.h || ''); if (!/^[a-f0-9]{16}$/.test(h)) return json({ ok: false }, 400);
   await init(env.DB);
-  const requestedDuration = Math.max(0, Math.min(3600, parseInt(b.d) || 0)), s = Math.max(0, Math.min(100, parseInt(b.s) || 0));
+  const requestedDuration = Math.max(0, Math.min(172800, parseInt(b.d) || 0)), s = Math.max(0, Math.min(100, parseInt(b.s) || 0));
   const row = await env.DB.prepare('SELECT vid, ts, uid FROM tw_hits WHERE hid = ?').bind(h).first();
   if (!row) return json({ ok: false }, 404);
   const cf = request.cf || {};
