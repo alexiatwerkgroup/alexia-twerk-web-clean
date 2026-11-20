@@ -3,6 +3,7 @@ import json
 import os
 import subprocess
 import sys
+import urllib.request
 
 import boto3
 from botocore.config import Config
@@ -20,6 +21,29 @@ s3 = boto3.client("s3", endpoint_url=endpoint, aws_access_key_id=access_key,
                   aws_secret_access_key=secret_key, region_name="auto",
                   config=Config(retries={"max_attempts": 3}))
 bucket = "novinhas"
+
+
+def hot_videos_without_preview():
+    """Prioritize the public ranking's hot videos that still lack a safe preview."""
+    url = "https://twerkhub.lat/api/novinhas/rankings"
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 TwerkhubPreviewWorker/1.0"})
+        with urllib.request.urlopen(request, timeout=12) as response:
+            data = json.loads(response.read())
+        missing = set()
+        for video in (data.get("videos") or [])[:5]:
+            if video.get("previewSrc") or not video.get("slug"):
+                continue
+            try:
+                video_id = int(video.get("id", 0))
+            except (TypeError, ValueError):
+                continue
+            if video_id > 0:
+                missing.add((str(video["slug"]), video_id))
+        return missing
+    except Exception as exc:
+        print(f"Ranking priority unavailable; using regular queue: {type(exc).__name__}", flush=True)
+        return set()
 
 
 def get_json(key):
@@ -71,8 +95,13 @@ for slug in slugs:
         if target not in existing:
             todo.append((slug, n, target))
 
-# Prepare Claudio's main channel first; then continue with every other VIP channel.
-todo.sort(key=lambda item: (item[0] != "chica-twerk", item[0], int(item[1])))
+# Fill missing previews for the current five hottest videos first, then continue
+# the regular teaser queue without changing VIP access rules.
+hot = hot_videos_without_preview()
+todo.sort(key=lambda item: ((item[0], int(item[1])) not in hot,
+                           item[0] != "chica-twerk", item[0], int(item[1])))
+if hot:
+    print("Ranking videos prioritized:", ", ".join(f"{c} #{v}" for c, v in sorted(hot)), flush=True)
 
 limit = 100
 print(f"Missing teasers: {len(todo)}; processing up to {limit}", flush=True)
@@ -86,12 +115,17 @@ for slug, number, target in todo:
             os.remove(path)
         except OSError:
             pass
+    source_key = f"{slug}/full/video-{number}.mp4"
     try:
-        s3.download_file(bucket, f"{slug}/full/video-{number}.mp4", source)
-    except ClientError as exc:
-        missing += 1
-        print(f"SKIP source missing: {slug}/{number}", flush=True)
-        continue
+        s3.download_file(bucket, source_key, source)
+    except ClientError:
+        source_key = f"{slug}/480h/video-{number}.mp4"
+        try:
+            s3.download_file(bucket, source_key, source)
+        except ClientError:
+            missing += 1
+            print(f"SKIP source missing: {slug}/{number}", flush=True)
+            continue
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", source, "-t", "5",
            "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
            "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-y", output]

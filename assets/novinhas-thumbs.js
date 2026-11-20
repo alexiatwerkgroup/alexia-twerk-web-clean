@@ -29,11 +29,11 @@
     var choice = item || null, choices = item && item.choices || [], pinned = item && item.pinned || [], video = null;
     var img = a.querySelector('img');
     if (item && item.src && img) {
-      video = document.createElement('video'); video.muted = true; video.loop = true; video.playsInline = true; video.preload = 'metadata'; video.src = item.src;
+      video = document.createElement('video'); video.muted = true; video.loop = false; video.playsInline = true; video.preload = 'none'; video.src = item.src;
       video.setAttribute('muted', ''); video.setAttribute('playsinline', '');
       video.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;pointer-events:none';
       img.style.display = 'none';
-      video.addEventListener('error', function () { img.style.display = ''; if (video.parentNode) video.parentNode.removeChild(video); });
+      video.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(video); img.style.display = ''; if (video.parentNode) video.parentNode.removeChild(video); });
       img.parentNode.insertBefore(video, img);
     }
     function itemKey(x) { var kind = x.kind || 'preview'; return kind === 'preview' ? 'preview:' + Number(x.id) : kind + ':' + Number(x.id) + ':' + (Number(x.start) || 0) + ':' + (x.slow ? 1 : 0); }
@@ -44,8 +44,8 @@
       if (!choice) { if (video.parentNode) video.parentNode.removeChild(video); if (img) img.style.display = ''; return; }
       if (img) img.style.display = 'none';
       if (!video.parentNode && img && img.parentNode) img.parentNode.insertBefore(video, img);
-      video.src = choice.src; video.load();
-      if (video.getBoundingClientRect().bottom > 0 && video.getBoundingClientRect().top < window.innerHeight) video.play().catch(function () {});
+      video.src = choice.src;
+      if (window.TWKNovMotion) window.TWKNovMotion.refresh(video);
     }
     function paint() {
       var isPinned = !!choice && contains(choice), n = pinned.length;
@@ -67,7 +67,7 @@
     pin.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (pin.disabled) return; say('Guardando…'); post('pin').then(function (d) { pinned = d.pinned || []; say('Mini clip fijado'); paint(); }).catch(function (err) { say(err.data && err.data.error === 'pin_limit' ? 'Máximo 2 por canal: quitá uno para cambiarlo.' : 'No se pudo fijar.'); paint(); }); };
     pass.onclick = function (e) {
       e.preventDefault(); e.stopPropagation(); if (pass.disabled) return;
-      var i = choices.findIndex(function (x) { return choice && Number(x.id) === Number(choice.id); });
+      var currentKey = choice && itemKey(choice), i = choices.findIndex(function (x) { return currentKey && itemKey(x) === currentKey; });
       setChoice(choices[(i + 1 + choices.length) % choices.length]);
       say('Mini clip pasado. Los fijados se conservaron.'); paint();
     };
@@ -86,21 +86,19 @@
       var item = d.thumbs[slug] || null, img = a.querySelector('img');
       if (!d.owner) {
         if (!item || !item.src || !img) return;
-        var v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata'; v.src = item.src;
+        var v = document.createElement('video'); v.muted = true; v.loop = false; v.playsInline = true; v.preload = 'none'; v.src = item.src;
         v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
         v.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;pointer-events:none';
-        img.style.display = 'none'; v.addEventListener('error', function () { img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); }); img.parentNode.insertBefore(v, img);
-        if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) v.play().catch(function () {}); else v.pause(); }); }, { rootMargin: '140px' }); io.observe(v); }
-        else v.play().catch(function () {});
+        img.style.display = 'none'; v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); }); img.parentNode.insertBefore(v, img);
+        if (window.TWKNovMotion) window.TWKNovMotion.watch(v, 1);
         return;
       }
       addTools(a, slug, item);
       if (item && item.src && img) {
         var v = a.querySelector('video');
         if (v) {
-          v.addEventListener('error', function () { img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); });
-          if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) v.play().catch(function () {}); else v.pause(); }); }, { rootMargin: '140px' }); io.observe(v); }
-          else v.play().catch(function () {});
+          v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); });
+          if (window.TWKNovMotion) window.TWKNovMotion.watch(v, 1);
         }
       }
     });
