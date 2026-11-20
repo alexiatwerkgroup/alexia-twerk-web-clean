@@ -31,7 +31,8 @@ export const REAL_CTE = `bm AS (
   GROUP BY 1, 2, 3, 4 HAVING COUNT(DISTINCT vid) >= ${BURST_MIN} AND COUNT(DISTINCT NULLIF(country, '')) >= 3),
 burst AS (
   SELECT DISTINCT h.vid FROM tw_hits h JOIN bm ON strftime('%Y-%m-%d %H:%M', h.ts / 1000, 'unixepoch') = bm.m AND h.browser = bm.browser AND h.os = bm.os AND h.device = bm.device
-  WHERE h.ts > ?1 AND h.is_new = 1 AND h.uid IS NULL),
+  WHERE h.ts > ?1 AND h.is_new = 1 AND h.uid IS NULL
+    AND h.vid NOT IN (SELECT vid FROM tw_hits WHERE ts > ?1 AND (human = 1 OR last_engaged IS NOT NULL))),
 cv AS (
   SELECT vid FROM tw_hits WHERE ts > ?1 GROUP BY vid HAVING MAX(uid IS NOT NULL) = 1 OR (MAX(${ACTIVE_SECONDS}) > 0 AND vid NOT IN (SELECT vid FROM burst))
   UNION
