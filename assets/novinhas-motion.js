@@ -93,6 +93,7 @@
     if (document.hidden) { Array.from(actives.keys()).forEach(function (v) { stop(v, false); }); }
     else schedule(100);
   });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) schedule(100); });
   if (reduce && reduce.addEventListener) reduce.addEventListener('change', function (e) {
     if (e.matches) Array.from(actives.keys()).forEach(function (v) { var x = entries.get(v); if (!x || !x.force) stop(v, true); });
     else schedule(0);

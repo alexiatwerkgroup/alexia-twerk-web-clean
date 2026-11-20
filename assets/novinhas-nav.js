@@ -50,3 +50,21 @@
   }
   if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
 })();
+
+/* Going back to the page you came from (home <-> channel <-> video) = browser Back, so the previous page
+   is restored instantly from the back/forward cache (minis already running, same scroll) instead of reloading. */
+(function () {
+  if (window.__twkNovBackInstalled) return; window.__twkNovBackInstalled = true;
+  var ref = null;
+  try { if (document.referrer) { var r = new URL(document.referrer); if (r.origin === location.origin) ref = r.pathname + r.search; } } catch (e) {}
+  if (!ref || history.length < 2) return;
+  function norm(p) { return p.replace(/\/index\.html$/, '/'); }
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest && e.target.closest('a[href]'); if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+    var u; try { u = new URL(a.href, location.href); } catch (x) { return; }
+    if (u.origin !== location.origin || u.hash && u.pathname + u.search === location.pathname + location.search) return;
+    if (norm(u.pathname) + u.search !== norm(ref)) return;
+    e.preventDefault(); history.back();
+  }, true);
+})();
