@@ -45,7 +45,7 @@ html body #sel .btn.vb.sw{color:#7dffa3;border-color:#1f5a35}
 <script>
 (function () {
 'use strict';
-var LIVE_MS = 5000, REPORT_MS = 3600000;
+var LIVE_MS = 15000, REPORT_MS = 3600000;
 var range = 'month', TZ = -new Date().getTimezoneOffset();
 var live = null, rep = null, liveOkAt = 0, repOkAt = 0, liveBusy = false, repBusy = false, repQueued = false, repRetryTimer = 0, repFail = 0, liveFail = 0;
 var uncOpen = false, denied = false, seenActionTs = 0, seenOnline = null, soundOn = false, audio = null;
@@ -221,7 +221,7 @@ function repHtml(r) {
     '<div class="k" style="opacity:.85"><span>Tráfico automático (ignorado)</span><b style="color:#9a9aaa;text-shadow:none">' + F(bots) + '</b><i>cargaron y nunca dieron señal. No cuentan como visitantes. ' + (r.noSignal ? '<b>' + F(r.noSignal.conRef) + '</b> llegaron desde un link (pueden ser rebotes de gente real) y <b>' + F(Math.max(0, r.noSignal.total - r.noSignal.conRef)) + '</b> entraron directo sin señal (casi seguro robots).' : '') + '</i></div>' +
     '<div class="k"><span>Intención de compra</span><b>' + F(k.intentPeople) + '</b><i>personas con clic en desbloquear, pago o Binance (' + F(k.intent) + ' clics). <b>No son ventas confirmadas.</b>' + delta(k.intentPeople, r.prev && r.prev.intentPeople, r) + '</i></div>' +
     '<div class="k"><span>Registros</span><b>' + F(k.signups) + '</b><i>cuentas creadas en el período: ' + F(k.accountsInPeriod) + ' · ' + F(k.accountsTotal) + ' en total' + delta(k.accountsInPeriod, r.prev && r.prev.accounts, r) + '</i></div>' +
-    '<div class="k"><span>Tiempo activo</span><b>' + T(k.avgSeconds) + '</b><i>promedio por visitante real · cuenta pestaña visible o video reproduciéndose' + pr3(function (x) { return x.avgSeconds; }, T) + '</i></div></div>';
+    '<div class="k"><span>Tiempo activo</span><b>' + T(k.avgSeconds) + '</b><i>promedio por visitante real · <b>mediana ' + T(k.medianSeconds || 0) + '</b> (el típico) · 9 de 10 menos de ' + T(k.p90Seconds || 0) + ' · cuenta pestaña visible o video reproduciéndose' + pr3(function (x) { return x.avgSeconds; }, T) + '</i></div></div>';
   var funnel = bars([{ n: 'Visitantes reales', u: k.confirmed }, { n: 'Interesados', u: k.interested }, { n: 'Clic en cuenta gratis', u: k.signupClicks }, { n: 'Empezaron el registro', u: k.signupStarts }, { n: 'Cuenta creada', u: k.signups }, { n: 'Email verificado', u: k.signupVerified }], 'u', function (x) { return x.n; });
   var marks = r.marks.slice(0, 8).map(function (m) { return '<div class="mk"><span class="pill pw">' + esc(m.channel || 'promo') + '</span><span>' + esc(m.label) + '</span><span class="m">' + new Date(m.ts).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + '</span><u data-del="' + Number(m.id) + '">borrar</u></div>'; }).join('');
   var vis = r.visitors.map(function (v) {
@@ -261,8 +261,8 @@ function shell() {
 }
 function paintStatus() {
   var el = document.getElementById('status'); if (!el) return;
-  var ls = liveOkAt ? Math.round((Date.now() - liveOkAt) / 1000) : null, stale = ls == null || ls > 20;
-  el.innerHTML = '<span>' + (stale ? '<i class="dot bad"></i><b class="bad">Sin conexión con el servidor' + (ls != null ? ' hace ' + ls + ' s' : '') + '</b>' : '<i class="dot"></i><b class="ok">En vivo</b> · actualizado hace ' + ls + ' s (cada 5 s)') + '</span>' +
+  var ls = liveOkAt ? Math.round((Date.now() - liveOkAt) / 1000) : null, stale = ls == null || ls > 60;
+  el.innerHTML = '<span>' + (stale ? '<i class="dot bad"></i><b class="bad">Sin conexión con el servidor' + (ls != null ? ' hace ' + ls + ' s' : '') + '</b>' : '<i class="dot"></i><b class="ok">En vivo</b> · actualizado hace ' + ls + ' s (cada 15 s)') + '</span>' +
     '<span>Histórico: ' + (repBusy ? 'actualizando…' : repOkAt ? 'actualizado hace ' + ago(repOkAt) : 'consultando…') + (repFail ? ' · <b class="bad">falló ' + repFail + (repFail === 1 ? ' intento' : ' intentos') + ' · reintento automático en curso</b>' : '') + '</span>';
 }
 function wireReport() {

@@ -6,9 +6,7 @@ import { REAL_CTE, ACTIVE_SECONDS, VALID_EVENT_SQL, CONFIRM_SECONDS, BURST_MIN, 
 // Intención de compra = clic en desbloquear, abrir el pago, copiar el ID de Binance o clic en crear cuenta Binance. NO son ventas confirmadas.
 const INTENT = ['unlock_click', 'pay_open', 'copy_id', 'binance_ref'];
 
-export async function onRequestGet({ request, env }) {
-  const denied = await ownerOnly(request, env);
-  if (denied) return denied;
+async function compute(request, env) {
   const db = env.DB, url = new URL(request.url), now = Date.now();
   const { tz, off, todayStart } = tzInfo(url, now);
   const rq = String(url.searchParams.get('range') || url.searchParams.get('days') || 'month');
@@ -132,10 +130,16 @@ export async function onRequestGet({ request, env }) {
       ref: refBy[v.vid] || '', pages: pages.slice(0, 4), morePages: Math.max(0, pages.length - 4), events: events.slice(0, 5), reasons };
   });
   const loads = k.loads || 0, confirmedLoads = k.confirmedLoads || 0;
+  // Tiempo por persona: la mediana representa al visitante típico; el promedio lo inflan unas pocas pestañas abiertas horas.
+  let medianSeconds = 0, p90Seconds = 0;
+  try {
+    const per = (await all(db, `WITH ${REAL_CTE} SELECT SUM(${ACTIVE_SECONDS}) t FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid`, since)).map(r => Number(r.t) || 0).filter(t => t > 0).sort((x, y) => x - y);
+    if (per.length) { medianSeconds = Math.round(per[Math.floor((per.length - 1) / 2)]); p90Seconds = Math.round(per[Math.floor((per.length - 1) * 0.9)]); }
+  } catch (e) {}
   return json({
     ok: true, now, range, tz, fromTs: since || (one(16).first) || now, cmpLabel, confirmSeconds: CONFIRM_SECONDS, since: (one(16).first) || null,
     kpi: { loads, cookies: k.cookies || 0, confirmed: k.confirmed || 0, byTime: k.byTime || 0, byAccount: k.byAccount || 0, byAction: k.byAction || 0, actions: k.actions || 0,
-      interested: k.interested || 0, newReal: k.newReal || 0, avgSeconds: k.avgSeconds || 0, unconfirmedLoads: Math.max(0, loads - confirmedLoads), unconfirmedCookies: Math.max(0, (k.cookies || 0) - (k.confirmed || 0)),
+      interested: k.interested || 0, newReal: k.newReal || 0, avgSeconds: k.avgSeconds || 0, medianSeconds, p90Seconds, unconfirmedLoads: Math.max(0, loads - confirmedLoads), unconfirmedCookies: Math.max(0, (k.cookies || 0) - (k.confirmed || 0)),
       accountsTotal: one(12).total || 0, accountsInPeriod: (res[13].results || []).reduce((a, r) => a + r.n, 0),
       signupClicks: funnelEvents.signup_click || 0, signupStarts: funnelEvents.signup_start || 0,
       signupVerified: funnelEvents.signup_verified || 0,
@@ -146,4 +150,34 @@ export async function onRequestGet({ request, env }) {
     refs: res[6].results || [], pages: res[7].results || [], devices: res[8].results || [], browsers: res[9].results || [], oses: res[10].results || [],
     actions: res[11].results || [], accountsByDay: res[13].results || [], marks: res[14].results || [], visitors: list,
   }, 200, '', NO_STORE);
+}
+
+// ---- Caché + respaldo: el cálculo cuesta ~150-250 mil filas leídas de D1; sin esto el panel agota el cupo diario y empieza a fallar. ----
+const LAST = new Map();
+async function cached(request, env, ctx, ttl, compute) {
+  const u = new URL(request.url);
+  const key = new Request('https://twerkhub.lat/__statscache' + u.pathname + u.search.replace(/[&?]_=\d+/, ''));
+  const cache = caches.default;
+  try { const hit = await cache.match(key); if (hit) { const r = new Response(hit.body, hit); r.headers.set('X-Stats-Cache', 'HIT'); return r; } } catch (e) {}
+  try {
+    const res = await compute();
+    if (res.status === 200) {
+      const body = await res.clone().text();
+      LAST.set(key.url, body);
+      const put = cache.put(key, new Response(body, { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=' + ttl } }));
+      if (ctx && ctx.waitUntil) ctx.waitUntil(put.catch(() => {})); 
+    }
+    return res;
+  } catch (e) {
+    const old = LAST.get(key.url);
+    if (old) { try { const j = JSON.parse(old); j.stale = true; j.staleReason = String(e && e.message || e).slice(0, 100); return new Response(JSON.stringify(j), { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }); } catch (_) {} }
+    return new Response(JSON.stringify({ ok: false, error: 'db_unavailable', detail: String(e && e.message || e).slice(0, 100) }), { status: 503, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } });
+  }
+}
+
+export async function onRequestGet(ctx) {
+  const { request, env } = ctx;
+  const denied = await ownerOnly(request, env);
+  if (denied) return denied;
+  return cached(request, env, ctx, 300, () => compute(request, env));
 }
