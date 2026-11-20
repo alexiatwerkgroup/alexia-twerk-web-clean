@@ -24,9 +24,10 @@
     document.querySelectorAll('[data-cat-count]').forEach(function(el){var key=el.dataset.catCount;var total=key==='all'?data.records.length:data.records.filter(function(r){return Array.isArray(r.categories)&&r.categories.indexOf(key)>=0}).length;el.textContent=number(total)});
   }
   function paintInv(){
-    fetch('/novinhas/inventory.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(inv){[['folders',inv.folders],['done-videos',inv.doneVideos],['done-channels',inv.doneChannels]].forEach(function(pair){document.querySelectorAll('[data-na-stat="'+pair[0]+'"]').forEach(function(el){if(Number(pair[1])>0)animateStat(el,Number(pair[1]))})})}).catch(function(){});
+    fetch('/novinhas/inventory.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(inv){[['folders',inv.folders]].forEach(function(pair){document.querySelectorAll('[data-na-stat="'+pair[0]+'"]').forEach(function(el){if(Number(pair[1])>0)animateStat(el,Number(pair[1]))})})}).catch(function(){});
+    fetch('/api/novinhas/stats?refresh='+Math.floor(Date.now()/300000),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(stats){if(!stats)return;[['done-videos',stats.videos&&stats.videos.done],['done-channels',stats.channels&&stats.channels.done]].forEach(function(pair){document.querySelectorAll('[data-na-stat="'+pair[0]+'"]').forEach(function(el){if(Number(pair[1])>=0)animateStat(el,Number(pair[1]))})})}).catch(function(){});
   }
-  paintInv();
+  paintInv();window.setInterval(paintInv,300000);
   var inventory=fetch('/novinhas/catalog.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('inventory unavailable');return r.json()});
   if(!grid){inventory.then(paintStats).catch(function(){});return;}
   function match(r){

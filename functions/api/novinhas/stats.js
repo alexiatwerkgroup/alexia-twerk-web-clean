@@ -1,4 +1,5 @@
 // Estadisticas reales de Novinhas para la home. GET /api/novinhas/stats -> {channels:{done,total}, videos:{done,total}, enhanced:{done,total}, watching, likes, free}
+import { getNovinhasLiveIndex } from '../../_lib/novinhas-live-index.js';
 let TOTAL_CHANNELS = 1061, TOTAL_VIDEOS = 12565; const FREE = 10, SLUG = /^[a-z0-9-]{2,60}$/;
 const J = (o) => new Response(JSON.stringify(o), { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=900', 'X-Robots-Tag': 'noindex' } });
 async function scan(env, chans) {
@@ -31,5 +32,6 @@ export async function onRequest({ request, env, waitUntil }) {
   try { const w = await env.DB.prepare('SELECT COUNT(DISTINCT dev) c FROM nv_presence WHERE ts > ?').bind(now - 600).first(); watching = w ? w.c : 0; } catch (e) {}
   try { const l = await env.DB.prepare('SELECT COUNT(*) c FROM nv_votes').first(); likes = l ? l.c : 0; } catch (e) {}
   let chosen = 0; try { const c = await env.DB.prepare('SELECT COUNT(*) c FROM nv_enh').first(); chosen = c ? c.c : 0; } catch (e) {}
-  return J({ channels: { done: inv.doneChannels || chans.length, total: TOTAL_CHANNELS }, videos: { done: inv.doneVideos || videos, total: TOTAL_VIDEOS }, enhanced: { done: enhanced, total: Math.max(chosen, enhanced) }, watching, likes, free: FREE });
+  let live = null; try { if (env.NOVINHAS_VIDEOS) live = await getNovinhasLiveIndex(request, env); } catch (e) {}
+  return J({ channels: { done: live ? live.channelsDone : (inv.doneChannels || chans.length), total: TOTAL_CHANNELS }, videos: { done: live ? live.videosDone : (inv.doneVideos || videos), total: TOTAL_VIDEOS }, enhanced: { done: enhanced, total: Math.max(chosen, enhanced) }, watching, likes, free: FREE });
 }

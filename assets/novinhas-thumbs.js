@@ -1,7 +1,7 @@
 /* Animated mini previews for channel cards. Owners can pin up to two previews per channel. */
 (function () {
-  var cards = [].slice.call(document.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]'));
-  if (!cards.length) return;
+  var grid = document.querySelector('.nov-featured-grid'), processed = new WeakSet();
+  if (!grid) return;
   function authHeaders(json) {
     var h = {};
     try { var t = (JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token; if (t) h.Authorization = 'Bearer ' + t; } catch (e) {}
@@ -71,8 +71,12 @@
     remove.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (remove.disabled) return; var removedId = Number(choice.id); say('Quitando…'); post('hide').then(function (d) { pinned = d.pinned || []; choices = choices.filter(function (x) { return Number(x.id) !== removedId; }); setChoice(choices.length ? choices[0] : null); say('Mini clip quitado de este canal'); paint(); }).catch(function () { say('No se pudo quitar.'); paint(); }); };
     bar.append(count, pin, pass, remove); wrap.append(bar, status); paint();
   }
-  var headers = authHeaders(false);
-  fetch('/api/novinhas/featured?thumbs=1&n=' + Math.floor(Date.now() / 60000), { credentials: 'same-origin', cache: 'no-store', headers: headers }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+  function initializeCards() {
+    var cards = [].slice.call(grid.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]')).filter(function (a) { return !processed.has(a); });
+    if (!cards.length) return;
+    cards.forEach(function (a) { processed.add(a); });
+    var headers = authHeaders(false);
+    fetch('/api/novinhas/featured?thumbs=1&n=' + Math.floor(Date.now() / 60000), { credentials: 'same-origin', cache: 'no-store', headers: headers }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.thumbs) return;
     cards.forEach(function (a) {
       var slug = slugOf(a); if (!slug) return;
@@ -97,5 +101,8 @@
         }
       }
     });
-  }).catch(function () {});
+    }).catch(function () {});
+  }
+  initializeCards();
+  new MutationObserver(initializeCards).observe(grid, { childList: true });
 })();
