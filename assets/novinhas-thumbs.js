@@ -66,7 +66,9 @@
     pin.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (pin.disabled) return; say('Guardando…'); post('pin').then(function (d) { pinned = d.pinned || []; say('Mini clip fijado'); paint(); }).catch(function (err) { say(err.data && err.data.error === 'pin_limit' ? 'Máximo 2 por canal: quitá uno para cambiarlo.' : 'No se pudo fijar.'); paint(); }); };
     pass.onclick = function (e) {
       e.preventDefault(); e.stopPropagation(); if (pass.disabled) return;
-      say('Pasando…'); post('free').then(function (d) { pinned = d.pinned || []; var i = choices.findIndex(function (x) { return choice && Number(x.id) === Number(choice.id); }); setChoice(choices[(i + 1 + choices.length) % choices.length]); say('Mini clip pasado. Fijalo si te gusta.'); paint(); }).catch(function () { say('No se pudo pasar.'); paint(); });
+      var i = choices.findIndex(function (x) { return choice && Number(x.id) === Number(choice.id); });
+      setChoice(choices[(i + 1 + choices.length) % choices.length]);
+      say('Mini clip pasado. Los fijados se conservaron.'); paint();
     };
     remove.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (remove.disabled) return; var removedId = Number(choice.id); say('Quitando…'); post('hide').then(function (d) { pinned = d.pinned || []; choices = choices.filter(function (x) { return Number(x.id) !== removedId; }); setChoice(choices.length ? choices[0] : null); say('Mini clip quitado de este canal'); paint(); }).catch(function () { say('No se pudo quitar.'); paint(); }); };
     bar.append(count, pin, pass, remove); wrap.append(bar, status); paint();
