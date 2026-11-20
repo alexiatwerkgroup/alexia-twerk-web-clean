@@ -52,6 +52,33 @@ export async function onRequestGet({ request, env }) {
       if (!(await env.NOVINHAS_VIDEOS.head(key))) return null;
       return { id: chosen, previewSrc: `/api/novinhas/featured?cs=1&c=${encodeURIComponent(slug)}&v=${chosen}&t=${start}` };
     }
+    const pinnedClips = [];
+    for (const [slug, pins] of Object.entries(pinsBySlug)) {
+      if (!/^[a-z0-9-]{2,60}$/.test(slug)) continue;
+      const m = await manifest(slug);
+      if (!m || !Array.isArray(m.videos)) continue;
+      for (const id of pins) {
+        if (!Number.isInteger(id) || id < 0 || id > 9999) continue;
+        const row = await env.DB.prepare('SELECT start FROM nv_feat WHERE slug=? AND vid=? AND auto=0').bind(slug, id).first();
+        if (!row) continue;
+        const start = Number(row.start) || 0;
+        if (!(await clipCanView(request, env, 'preview', slug, id, start, 0))) continue;
+        const key = `${slug}/clips/c-${id}-${start}.mp4`;
+        if (!(await env.NOVINHAS_VIDEOS.head(key))) continue;
+        const video = m.videos.find(x => Number(x.id) === id);
+        const pad = String(id).padStart(2, '0');
+        pinnedClips.push({
+          slug,
+          name: String(video?.title || m.name || slug).slice(0, 100),
+          poster: `/api/novinhas/file?k=${encodeURIComponent(`${slug}/previews/poster-${pad}.webp`)}`,
+          previewSrc: `/api/novinhas/featured?cs=1&c=${encodeURIComponent(slug)}&v=${id}&t=${start}`,
+          url: `/novinhas/canal/?c=${encodeURIComponent(slug)}`,
+          pinned: true
+        });
+        if (pinnedClips.length === 5) break;
+      }
+      if (pinnedClips.length === 5) break;
+    }
     for (const row of channelRows.results || []) {
       const m = await manifest(String(row.slug || ''));
       if (!m || !Array.isArray(m.videos) || !m.videos.length) continue;
@@ -83,7 +110,7 @@ export async function onRequestGet({ request, env }) {
       videos.push({ slug, id, name: String(v.title || m.name || slug).slice(0, 100), views: Number(row.views) || 0, poster: `/api/novinhas/file?k=${encodeURIComponent(`${slug}/previews/poster-${pad}.webp`)}`, ...(previewSrc ? { previewSrc } : {}), url: `/novinhas/canal/ver/?c=${encodeURIComponent(slug)}&v=${encodeURIComponent(pad)}` });
       if (videos.length === 5) break;
     }
-    return new Response(JSON.stringify({ channels, videos }), { headers });
+    return new Response(JSON.stringify({ channels, pins: pinnedClips, videos }), { headers });
   } catch {
     return new Response(JSON.stringify({ channels: [], videos: [] }), { status: 500, headers });
   }
