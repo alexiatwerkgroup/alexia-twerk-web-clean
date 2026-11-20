@@ -1,4 +1,7 @@
 // Public all-time Novinhas rankings, based on visits collected since launch.
+import { clipCanView } from '../../_lib/novinhas-clip-access.js';
+import { isVip, isLocked, vipCfg } from '../../_lib/vip.js';
+
 export async function onRequestGet({ request, env }) {
   // ?order=1 -> orden completo de TODOS los canales por visitas (para ordenar las tarjetas de /novinhas/ igual que el ranking).
   if (new URL(request.url).searchParams.get('order')) {
@@ -29,21 +32,55 @@ export async function onRequestGet({ request, env }) {
       return cache.get(slug);
     }
     const channels = [];
+    // Pull the owner's pinned mini-clip choice into each Hall of Fame channel card.
+    // If a channel has two pins, rotate deterministically once per day.
+    const pinsBySlug = {};
+    try {
+      const pins = (await env.DB.prepare('SELECT slug,vid,pinned_at FROM nv_thumb_pins ORDER BY pinned_at,vid').all()).results || [];
+      for (const p of pins) (pinsBySlug[p.slug] = pinsBySlug[p.slug] || []).push(Number(p.vid));
+    } catch (e) {}
+    const day = Math.floor(Date.now() / 86400000);
+    async function pinnedPreview(slug) {
+      const pins = pinsBySlug[slug] || [];
+      if (!pins.length) return null;
+      const chosen = pins[day % pins.length];
+      const row = await env.DB.prepare('SELECT start FROM nv_feat WHERE slug=? AND vid=? AND auto=0').bind(slug, chosen).first();
+      if (!row) return null;
+      const start = Number(row.start) || 0;
+      if (!(await clipCanView(request, env, 'preview', slug, chosen, start, 0))) return null;
+      const key = `${slug}/clips/c-${chosen}-${start}.mp4`;
+      if (!(await env.NOVINHAS_VIDEOS.head(key))) return null;
+      return { id: chosen, previewSrc: `/api/novinhas/featured?cs=1&c=${encodeURIComponent(slug)}&v=${chosen}&t=${start}` };
+    }
     for (const row of channelRows.results || []) {
       const m = await manifest(String(row.slug || ''));
       if (!m || !Array.isArray(m.videos) || !m.videos.length) continue;
       const first = String(m.videos[0].id).padStart(2, '0');
-      channels.push({ slug: row.slug, name: String(m.name || row.slug).slice(0, 100), views: Number(row.views) || 0, poster: `/api/novinhas/file?k=${encodeURIComponent(`${row.slug}/previews/poster-${first}.webp`)}`, url: `/novinhas/canal/?c=${encodeURIComponent(row.slug)}` });
+      const pinned = await pinnedPreview(String(row.slug));
+      const previewId = pinned ? String(pinned.id).padStart(2, '0') : first;
+      channels.push({ slug: row.slug, name: String(m.name || row.slug).slice(0, 100), views: Number(row.views) || 0, poster: `/api/novinhas/file?k=${encodeURIComponent(`${row.slug}/previews/poster-${previewId}.webp`)}`, ...(pinned ? { previewSrc: pinned.previewSrc } : {}), url: `/novinhas/canal/?c=${encodeURIComponent(row.slug)}` });
       if (channels.length === 5) break;
     }
     const videos = [];
+    const vipConfig = await vipCfg(env), vipViewer = await isVip(request, env);
     for (const row of videoRows.results || []) {
       const key = String(row.detail || ''), at = key.lastIndexOf(':'), slug = key.slice(0, at), id = Number(key.slice(at + 1));
       if (at < 1 || !Number.isInteger(id) || id < 0 || id > 9999) continue;
       const m = await manifest(slug), v = m && Array.isArray(m.videos) ? m.videos.find(x => Number(x.id) === id) : null;
       if (!v) continue;
       const pad = String(id).padStart(2, '0');
-      videos.push({ slug, id, name: String(v.title || m.name || slug).slice(0, 100), views: Number(row.views) || 0, poster: `/api/novinhas/file?k=${encodeURIComponent(`${slug}/previews/poster-${pad}.webp`)}`, url: `/novinhas/canal/ver/?c=${encodeURIComponent(slug)}&v=${encodeURIComponent(pad)}` });
+      let previewSrc = '';
+      const locked = isLocked(vipConfig, slug, id);
+      if (locked && !vipViewer) {
+        // Locked videos may only use the separate public teaser asset.
+        const teaser = `${slug}/teasers/video-${pad}.mp4`;
+        if (await env.NOVINHAS_VIDEOS.head(teaser)) previewSrc = `/api/novinhas/file?k=${encodeURIComponent(teaser)}`;
+      } else {
+        let media = `${slug}/480h/video-${pad}.mp4`;
+        if (!(await env.NOVINHAS_VIDEOS.head(media))) media = `${slug}/full/video-${pad}.mp4`;
+        if (await env.NOVINHAS_VIDEOS.head(media)) previewSrc = `/api/novinhas/file?k=${encodeURIComponent(media)}`;
+      }
+      videos.push({ slug, id, name: String(v.title || m.name || slug).slice(0, 100), views: Number(row.views) || 0, poster: `/api/novinhas/file?k=${encodeURIComponent(`${slug}/previews/poster-${pad}.webp`)}`, ...(previewSrc ? { previewSrc } : {}), url: `/novinhas/canal/ver/?c=${encodeURIComponent(slug)}&v=${encodeURIComponent(pad)}` });
       if (videos.length === 5) break;
     }
     return new Response(JSON.stringify({ channels, videos }), { headers });
