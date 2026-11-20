@@ -52,38 +52,43 @@ export async function onRequestGet({ request, env }) {
       if (!(await env.NOVINHAS_VIDEOS.head(key))) return null;
       return { id: chosen, previewSrc: `/api/novinhas/featured?cs=1&c=${encodeURIComponent(slug)}&v=${chosen}&t=${start}` };
     }
-    for (const row of channelRows.results || []) {
-      const m = await manifest(String(row.slug || ''));
-      if (!m || !Array.isArray(m.videos) || !m.videos.length) continue;
-      const first = String(m.videos[0].id).padStart(2, '0');
-      const pinned = await pinnedPreview(String(row.slug));
-      const previewId = pinned ? String(pinned.id).padStart(2, '0') : first;
-      channels.push({ slug: row.slug, name: String(m.name || row.slug).slice(0, 100), views: Number(row.views) || 0, poster: `/api/novinhas/file?k=${encodeURIComponent(`${row.slug}/previews/poster-${previewId}.webp`)}`, ...(pinned ? { previewSrc: pinned.previewSrc } : {}), url: `/novinhas/canal/?c=${encodeURIComponent(row.slug)}` });
-      if (channels.length === 5) break;
+    const channelCandidates = channelRows.results || [];
+    for (let i = 0; i < channelCandidates.length && channels.length < 5; i += 12) {
+      const batch = await Promise.all(channelCandidates.slice(i, i + 12).map(async (row) => {
+        const slug = String(row.slug || ''), m = await manifest(slug);
+        if (!m || !Array.isArray(m.videos) || !m.videos.length) return null;
+        const pinned = await pinnedPreview(slug);
+        const previewId = String(pinned ? pinned.id : m.videos[0].id).padStart(2, '0');
+        return { slug, name: String(m.name || slug).slice(0, 100), views: Number(row.views) || 0, poster: `/api/novinhas/file?k=${encodeURIComponent(`${slug}/previews/poster-${previewId}.webp`)}`, ...(pinned ? { previewSrc: pinned.previewSrc } : {}), url: `/novinhas/canal/?c=${encodeURIComponent(slug)}` };
+      }));
+      channels.push(...batch.filter(Boolean));
     }
     const videos = [];
     const vipConfig = await vipCfg(env), vipViewer = await isVip(request, env);
-    for (const row of videoRows.results || []) {
-      const key = String(row.detail || ''), at = key.lastIndexOf(':'), slug = key.slice(0, at), id = Number(key.slice(at + 1));
-      if (at < 1 || !Number.isInteger(id) || id < 0 || id > 9999) continue;
-      const m = await manifest(slug), v = m && Array.isArray(m.videos) ? m.videos.find(x => Number(x.id) === id) : null;
-      if (!v) continue;
-      const pad = String(id).padStart(2, '0');
-      let previewSrc = '';
-      const locked = isLocked(vipConfig, slug, id);
-      if (locked && !vipViewer) {
-        // Locked videos may only use the separate public teaser asset.
-        const teaser = `${slug}/teasers/video-${pad}.mp4`;
-        if (await env.NOVINHAS_VIDEOS.head(teaser)) previewSrc = `/api/novinhas/file?k=${encodeURIComponent(teaser)}`;
-      } else {
-        let media = `${slug}/480h/video-${pad}.mp4`;
-        if (!(await env.NOVINHAS_VIDEOS.head(media))) media = `${slug}/full/video-${pad}.mp4`;
-        if (await env.NOVINHAS_VIDEOS.head(media)) previewSrc = `/api/novinhas/file?k=${encodeURIComponent(media)}`;
-      }
-      videos.push({ slug, id, name: String(v.title || m.name || slug).slice(0, 100), views: Number(row.views) || 0, poster: `/api/novinhas/file?k=${encodeURIComponent(`${slug}/previews/poster-${pad}.webp`)}`, ...(previewSrc ? { previewSrc } : {}), url: `/novinhas/canal/ver/?c=${encodeURIComponent(slug)}&v=${encodeURIComponent(pad)}` });
-      if (videos.length === 5) break;
+    const videoCandidates = videoRows.results || [];
+    for (let i = 0; i < videoCandidates.length && videos.length < 5; i += 10) {
+      const batch = await Promise.all(videoCandidates.slice(i, i + 10).map(async (row) => {
+        const key = String(row.detail || ''), at = key.lastIndexOf(':'), slug = key.slice(0, at), id = Number(key.slice(at + 1));
+        if (at < 1 || !Number.isInteger(id) || id < 0 || id > 9999) return null;
+        const m = await manifest(slug), v = m && Array.isArray(m.videos) ? m.videos.find(x => Number(x.id) === id) : null;
+        if (!v) return null;
+        const pad = String(id).padStart(2, '0');
+        let previewSrc = '';
+        const locked = isLocked(vipConfig, slug, id);
+        if (locked && !vipViewer) {
+          // Locked videos may only use the separate public teaser asset.
+          const teaser = `${slug}/teasers/video-${pad}.mp4`;
+          if (await env.NOVINHAS_VIDEOS.head(teaser)) previewSrc = `/api/novinhas/file?k=${encodeURIComponent(teaser)}`;
+        } else {
+          let media = `${slug}/480h/video-${pad}.mp4`;
+          if (!(await env.NOVINHAS_VIDEOS.head(media))) media = `${slug}/full/video-${pad}.mp4`;
+          if (await env.NOVINHAS_VIDEOS.head(media)) previewSrc = `/api/novinhas/file?k=${encodeURIComponent(media)}`;
+        }
+        return { slug, id, name: String(v.title || m.name || slug).slice(0, 100), views: Number(row.views) || 0, poster: `/api/novinhas/file?k=${encodeURIComponent(`${slug}/previews/poster-${pad}.webp`)}`, ...(previewSrc ? { previewSrc } : {}), url: `/novinhas/canal/ver/?c=${encodeURIComponent(slug)}&v=${encodeURIComponent(pad)}` };
+      }));
+      videos.push(...batch.filter(Boolean));
     }
-    return new Response(JSON.stringify({ channels, videos }), { headers });
+    return new Response(JSON.stringify({ channels: channels.slice(0, 5), videos: videos.slice(0, 5) }), { headers });
   } catch {
     return new Response(JSON.stringify({ channels: [], videos: [] }), { status: 500, headers });
   }

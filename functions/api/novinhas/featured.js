@@ -267,8 +267,18 @@ export async function onRequest({ request, env }) {
     miniHidden.forEach((r) => { (miniHiddenBy[r.slug] = miniHiddenBy[r.slug] || []).push(`${r.vid}:${r.start}:${r.slow?1:0}`); });
     const slugs = Array.from(new Set(Object.keys(featureBy).concat(owner ? Object.keys(miniBy) : [], Object.keys(oldBy), Object.keys(miniPinBy)))).filter((s) => SLUG.test(s));
     const miniReady = {}, previewAccess = {};
-    await Promise.all(slugs.filter((s) => featureBy[s]).map(async (slug) => { previewAccess[slug] = await clipAccessMap(db, 'preview', slug); }));
-    await Promise.all(slugs.filter((s) => (owner || miniPinBy[s]) && miniBy[s] && miniBy[s].length).map(async (slug) => {
+    // R2 list() was previously called serially for every featured channel below.
+    // Bound concurrency for both clip families: this keeps the page responsive
+    // without flooding R2/D1 when an owner has saved clips on many channels.
+    async function inBatches(values, size, fn) {
+      for (let i = 0; i < values.length; i += size) {
+        await Promise.all(values.slice(i, i + size).map(fn));
+      }
+    }
+    await inBatches(slugs.filter((s) => featureBy[s]), 20, async (slug) => {
+      try { previewAccess[slug] = await clipAccessMap(db, 'preview', slug); } catch (e) { previewAccess[slug] = {}; }
+    });
+    await inBatches(slugs.filter((s) => (owner || miniPinBy[s]) && miniBy[s] && miniBy[s].length), 12, async (slug) => {
       try {
         const l = await env.NOVINHAS_VIDEOS.list({prefix:slug+'/mini/m-',limit:1000}), keys = new Set((l.objects||[]).map((o)=>o.key));
         const access = await clipAccessMap(db,'mini',slug), ready = [];
@@ -280,13 +290,21 @@ export async function onRequest({ request, env }) {
         }
         miniReady[slug]=ready;
       } catch(e) { miniReady[slug]=[]; }
-    }));
+    });
     const day=Math.floor(now/3600), out={};
     const hash=(s)=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h;};
     const keyOf=(x)=>`${x.kind||'preview'}:${x.id}:${Number(x.start)||0}:${x.slow?1:0}`;
+    const featureReady = {};
+    await inBatches(slugs.filter((s) => featureBy[s]), 12, async (slug) => {
+      try {
+        const have = {};
+        (await clipList(env,db,slug,500)).forEach((x) => { have[x.v] = Number(x.st)||0; });
+        featureReady[slug] = have;
+      } catch (e) { featureReady[slug] = {}; }
+    });
     for (const slug of slugs) {
       const feature=[], have={};
-      if (featureBy[slug]) (await clipList(env,db,slug,500)).forEach((x)=>{have[x.v]=Number(x.st)||0;});
+      if (featureReady[slug]) Object.assign(have, featureReady[slug]);
       for (const vid of featureBy[slug]||[]) {
         if (have[vid]==null || (hiddenBy[slug]||[]).includes(vid)) continue;
         const start=have[vid];

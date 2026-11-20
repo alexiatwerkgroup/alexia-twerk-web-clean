@@ -29,7 +29,7 @@
     var choice = item || null, choices = item && item.choices || [], pinned = item && item.pinned || [], video = null;
     var img = a.querySelector('img');
     if (item && item.src && img) {
-      video = document.createElement('video'); video.muted = true; video.loop = false; video.playsInline = true; video.preload = 'none'; video.src = item.src;
+      video = document.createElement('video'); video.muted = true; video.loop = false; video.playsInline = true; video.preload = 'none'; video.poster = img.currentSrc || img.src; video.src = item.src;
       video.setAttribute('muted', ''); video.setAttribute('playsinline', '');
       video.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;pointer-events:none';
       img.style.display = 'none';
@@ -44,6 +44,8 @@
       if (!choice) { if (video.parentNode) video.parentNode.removeChild(video); if (img) img.style.display = ''; return; }
       if (img) img.style.display = 'none';
       if (!video.parentNode && img && img.parentNode) img.parentNode.insertBefore(video, img);
+      var posterId = String(Number(choice.id)).padStart(2, '0');
+      video.poster = '/api/novinhas/file?k=' + encodeURIComponent(slug + '/previews/poster-' + posterId + '.webp');
       video.src = choice.src;
       if (window.TWKNovMotion) window.TWKNovMotion.refresh(video);
     }
@@ -86,7 +88,7 @@
       var item = d.thumbs[slug] || null, img = a.querySelector('img');
       if (!d.owner) {
         if (!item || !item.src || !img) return;
-        var v = document.createElement('video'); v.muted = true; v.loop = false; v.playsInline = true; v.preload = 'none'; v.src = item.src;
+        var v = document.createElement('video'); v.muted = true; v.loop = false; v.playsInline = true; v.preload = 'none'; v.poster = img.currentSrc || img.src; v.src = item.src;
         v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
         v.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;pointer-events:none';
         img.style.display = 'none'; v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.display = ''; if (v.parentNode) v.parentNode.removeChild(v); }); img.parentNode.insertBefore(v, img);

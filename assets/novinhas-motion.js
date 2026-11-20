@@ -25,8 +25,12 @@
     stop(v, true); clearTimeout(idleTimer); idleTimer = setTimeout(start, 1000);
   }
   function start() {
-    if (active || (reduce && reduce.matches)) return;
+    if (active) return;
     var next = visibleRows()[0]; if (!next) return;
+    // Hottest Videos are an explicit five-second preview request from the site owner.
+    // Keep those previews moving even when the OS reduced-motion preference is on;
+    // the shared scheduler still allows only one video to play at a time.
+    if (reduce && reduce.matches && !next.x.force) return;
     var v = next.v; active = v;
     try { v.currentTime = 0; } catch (e) {}
     var p = v.play();
@@ -40,10 +44,10 @@
     });
     clearTimeout(idleTimer); idleTimer = setTimeout(start, 120);
   }, { rootMargin: '80px 0px', threshold: [0, 0.2, 0.5] }) : null;
-  function watch(v, priority) {
+  function watch(v, priority, force) {
     if (!observer || !v) return;
     var old = entries.get(v);
-    entries.set(v, { visible: old ? old.visible : false, failed: false, priority: Number(priority) || 0, last: old ? old.last : 0 });
+    entries.set(v, { visible: old ? old.visible : false, failed: false, priority: Number(priority) || 0, force: !!force, last: old ? old.last : 0 });
     v.loop = false; v.preload = 'none';
     v.addEventListener('playing', function onPlay() {
       if (active === v && !timer) timer = setTimeout(function () { finish(v); }, 5000);
