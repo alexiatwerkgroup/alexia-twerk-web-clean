@@ -153,8 +153,10 @@ async function compute(request, env) {
 }
 
 // ---- Caché + respaldo: el cálculo cuesta ~150-250 mil filas leídas de D1; sin esto el panel agota el cupo diario y empieza a fallar. ----
-const LAST = new Map();
-async function cached(request, env, ctx, ttl, compute) {
+const LAST = new Map(), INFLIGHT = new Map();
+async function cached(request, env, ctx, ttl, compute0) {
+  // Un solo cálculo a la vez por clave: pedidos simultáneos comparten el mismo resultado en vez de multiplicar la carga en D1.
+  const compute = async () => { const k = request.url; let p = INFLIGHT.get(k); if (!p) { p = compute0().then(async r => { const t = await r.text(); return { status: r.status, t, h: r.headers.get('content-type') }; }).finally(() => INFLIGHT.delete(k)); INFLIGHT.set(k, p); } const o = await p; return new Response(o.t, { status: o.status, headers: { 'content-type': o.h || 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }); };
   const u = new URL(request.url);
   const key = new Request('https://twerkhub.lat/__statscache' + u.pathname + u.search.replace(/[&?]_=\d+/, ''));
   const cache = caches.default;
