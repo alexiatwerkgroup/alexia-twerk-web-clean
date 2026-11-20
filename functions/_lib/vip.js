@@ -28,12 +28,17 @@ async function codeOk(env, cid) {
   rev[cid] = { t: Date.now(), v }; return v;
 }
 // El dueño del sitio (sesion iniciada con su cuenta) ve todo, sin codigo.
+const OWNER_OK = new Map();
 export async function isOwner(request, env) {
   try {
     if (!/twk_jwt=/.test(request.headers.get('Cookie') || '') && !request.headers.get('Authorization')) return false;
     const p = await authenticate(request, env); if (!p || !p.sub) return false;
+    // El dueño ya verificado se recuerda 10 min: si D1 se sobrecarga un instante no se le niega el acceso a su propio panel.
+    const hit = OWNER_OK.get(p.sub); if (hit && Date.now() - hit < 600000) return true;
     const u = await env.DB.prepare('SELECT email FROM profiles WHERE id = ?').bind(p.sub).first();
-    return !!u && String(u.email).toLowerCase() === OWNER;
+    const ok = !!u && String(u.email).toLowerCase() === OWNER;
+    if (ok) OWNER_OK.set(p.sub, Date.now());
+    return ok;
   } catch (e) { return false; }
 }
 export async function isVip(request, env) {
