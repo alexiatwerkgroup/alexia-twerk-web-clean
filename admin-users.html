@@ -316,17 +316,28 @@ function unlockLinks(l){ if(!l||!l.length) return ''; var via={coins:'monedas',t
       return 0;
     });
   }
-  function fmtDate(t){ if (!t) return '—'; try { return new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}); } catch(_){ return '—'; } }
+  // Las fechas de la base vienen en UTC sin "Z" ("2026-11-20 14:00:00"): sin esto el navegador las lee como hora local y quedan en el futuro (-7900s).
+  function toMs(t){
+    if (t instanceof Date) return t.getTime();
+    if (typeof t === 'number') return t;
+    var x = String(t).trim();
+    if (/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/.test(x)) x = x.replace(' ', 'T') + 'Z';
+    return new Date(x).getTime();
+  }
+  function fmtDate(t){ if (!t) return '—'; try { var ms = toMs(t); if (isNaN(ms)) return '—'; return new Date(ms).toLocaleDateString('es-AR',{year:'numeric',month:'short',day:'2-digit'}); } catch(_){ return '—'; } }
   function fmtRelative(t){
     if (!t) return '—';
     try {
-      var d = new Date(t).getTime();
-      var diff = Math.floor((Date.now() - d) / 1000);
-      if (diff < 60)        return diff + 's ago';
-      if (diff < 3600)      return Math.floor(diff/60) + 'm ago';
-      if (diff < 86400)     return Math.floor(diff/3600) + 'h ago';
-      if (diff < 86400*30)  return Math.floor(diff/86400) + 'd ago';
-      return new Date(t).toLocaleDateString('en-US',{month:'short',day:'2-digit'});
+      var d = toMs(t); if (isNaN(d)) return '—';
+      var diff = Math.max(0, Math.floor((Date.now() - d) / 1000));
+      if (diff < 60)        return 'hace instantes';
+      var min = Math.floor(diff / 60);
+      if (min < 60)         return 'hace ' + min + ' min';
+      var h = Math.floor(min / 60), m = min % 60;
+      if (h < 24)           return 'hace ' + h + ' h' + (m ? ' ' + m + ' min' : '');
+      var days = Math.floor(h / 24), hh = h % 24;
+      if (days < 30)        return 'hace ' + days + ' d' + (hh ? ' ' + hh + ' h' : '');
+      return new Date(d).toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
     } catch(_){ return '—'; }
   }
   function fmtDuration(secs){
