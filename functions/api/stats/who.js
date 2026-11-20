@@ -43,7 +43,7 @@ export async function onRequestGet({ request, env }) {
     countries, cities, devices, firstRef: (firstRef[0] || {}).ref || '', pages, last, events, eventCounts: evNames,
   };
   // Veredicto simple y explicado: persona o robot probable.
-  const real = !!(uid || (a.maxdur || 0) >= CONFIRM_SECONDS || events.length), sig = (a.maxdur || 0) > 0;
+  const real = !!(uid || a.human || (a.maxdur || 0) >= CONFIRM_SECONDS || events.length), sig = (a.maxdur || 0) > 0;
   body.verdict = real ? 'persona' : sig ? ((a.loads || 0) === 1 && (a.maxdur || 0) >= 18 && (a.maxdur || 0) <= 35 ? 'robot probable' : 'con señal') : 'sin señal (robot probable)';
   if (uid) {
     const [unlocks, coins, comments, views, catalog] = await Promise.all([
