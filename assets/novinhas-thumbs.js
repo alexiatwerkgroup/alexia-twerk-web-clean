@@ -96,6 +96,65 @@
     remove.onclick = function (e) { e.preventDefault(); e.stopPropagation(); if (remove.disabled) return; var removedKey = itemKey(choice); say('Quitando…'); post('hide').then(function (d) { pinned = d.pinned || []; choices = choices.filter(function (x) { return itemKey(x) !== removedKey; }); setChoice(choices.length ? choices[0] : null); say('Mini clip quitado de este canal'); paint(); }).catch(function () { say('No se pudo quitar.'); paint(); }); };
     bar.append(count, pin, pass, remove); wrap.append(bar, status); paint();
   }
+
+  // ---- Mini cache (desktop, anonymous visitors): minis are downloaded quietly in the background into the browser's
+  // Cache Storage (disk) and played from there on this and later visits. Phones / data saver / logged-in users skip it.
+  var MC = (function () {
+    var NAME = 'twk-nov-minis-v1', MAX_ENTRIES = 220, TTL = 12 * 3600 * 1000, PARALLEL = 3;
+    var conn = navigator.connection || {}, ua = navigator.userAgent || '';
+    var desktop = !(window.matchMedia && window.matchMedia('(max-width: 760px)').matches) && !/Mobi|Android|iPhone|iPad/i.test(ua);
+    var logged = false; try { logged = !!((JSON.parse(localStorage.getItem('alexia-auth-v3') || '{}') || {}).token); } catch (e) {}
+    var ok = !!(window.caches && window.fetch && window.URL && URL.createObjectURL) && desktop && !logged && !conn.saveData && !/(^|-)(2g|3g)$/.test(conn.effectiveType || '');
+    var queue = [], queued = Object.create(null), running = 0, urls = Object.create(null), puts = 0, cachePromise = null;
+    function open() { return cachePromise || (cachePromise = caches.open(NAME)); }
+    function fresh(resp) { var t = Number(resp.headers.get('x-twk-t')) || 0; return t && Date.now() - t < TTL; }
+    function blobUrl(src) {
+      if (urls[src]) return Promise.resolve(urls[src]);
+      return open().then(function (c) { return c.match(src); }).then(function (r) {
+        if (!r || !fresh(r)) return null;
+        return r.blob().then(function (b) { return (urls[src] = URL.createObjectURL(b)); });
+      }).catch(function () { return null; });
+    }
+    function swap(v, url) {
+      function go() { if (v.dataset.novMiniSrc === url) return; v.dataset.novMiniSrc = url; v.src = url; if (window.TWKNovMotion) window.TWKNovMotion.refresh(v); }
+      if (v.paused) go(); else v.addEventListener('ended', go, { once: true });
+    }
+    function prune(c) {
+      if (++puts % 10) return;
+      c.keys().then(function (ks) { if (ks.length > MAX_ENTRIES) ks.slice(0, ks.length - MAX_ENTRIES).forEach(function (k) { c.delete(k); }); }).catch(function () {});
+    }
+    function pump() {
+      if (document.hidden) return;
+      while (running < PARALLEL && queue.length) {
+        (function (src) {
+          running++;
+          open().then(function (c) {
+            return c.match(src).then(function (r) {
+              if (r && fresh(r)) return;
+              return fetch(src, { credentials: 'omit', priority: 'low' }).then(function (resp) {
+                var cc = resp.headers.get('cache-control') || '';
+                if (resp.status !== 200 || /no-store|private/i.test(cc)) return;
+                return resp.blob().then(function (b) {
+                  var h = new Headers(resp.headers); h.set('x-twk-t', String(Date.now()));
+                  return c.put(src, new Response(b, { status: 200, headers: h })).then(function () { prune(c); });
+                });
+              });
+            });
+          }).catch(function () {}).then(function () { running--; setTimeout(pump, 40); });
+        })(queue.shift());
+      }
+    }
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) pump(); });
+    return {
+      on: ok,
+      // Called for every mini: play from disk cache if present, and queue a silent download if not.
+      use: function (v, src) {
+        if (!ok || !src) return;
+        blobUrl(src).then(function (u) { if (u && v.isConnected) swap(v, u); });
+        if (!queued[src]) { queued[src] = 1; queue.push(src); (window.requestIdleCallback || function (f) { return setTimeout(f, 600); })(pump); }
+      }
+    };
+  })();
   function applyBatch(cards, d) {
     if (!d || !d.thumbs) return;
     cards.forEach(function (a) {
@@ -107,6 +166,7 @@
         if (existing) {
           a.querySelectorAll('video[data-nov-thumb-preview]').forEach(function (extra) { if (extra !== existing) { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(extra); extra.remove(); } });
           if (window.TWKNovMotion && existing.dataset.novMotionWatched !== '1') { existing.dataset.novMotionWatched = '1'; window.TWKNovMotion.watch(existing, -1, false, 1800); }
+          MC.use(existing, item.src);
           return;
         }
         var v = document.createElement('video'); v.muted = true; v.loop = false; v.playsInline = true; v.preload = 'none'; v.poster = img.currentSrc || img.src; v.src = item.src;
@@ -115,6 +175,7 @@
         v.style.cssText = 'width:82px;height:112px;min-width:82px;min-height:112px;max-width:82px;max-height:112px;object-fit:cover;flex:none;border-radius:9px;background:#000;pointer-events:none';
         img.style.setProperty('display', 'none', 'important'); v.addEventListener('error', function () { if (window.TWKNovMotion) window.TWKNovMotion.unwatch(v); img.style.removeProperty('display'); if (v.parentNode) v.parentNode.removeChild(v); }); img.parentNode.insertBefore(v, img);
         if (window.TWKNovMotion) window.TWKNovMotion.watch(v, -1, false, 1800);
+        MC.use(v, item.src);
         return;
       }
       addTools(a, slug, item);
@@ -180,6 +241,14 @@
     if (!cardObserver) scheduleFlush();
   }
   initializeCards();
+  // Desktop: once the page has settled, quietly load the minis of the cards that are still far away so they are cached too.
+  function sweepAll() {
+    if (!MC.on || !cardObserver) return;
+    var rest = [].slice.call(grid.querySelectorAll('a.nov-channel-card[href*="/novinhas/canal/?c="]')).filter(function (a) { return !a.dataset.novSwept && !a.querySelector('video[data-nov-thumb-preview]'); });
+    rest.forEach(function (a) { a.dataset.novSwept = '1'; cardObserver.unobserve(a); queue.push(a); });
+    scheduleFlush();
+  }
+  if (MC.on) { if (document.readyState === 'complete') setTimeout(sweepAll, 3000); else window.addEventListener('load', function () { setTimeout(sweepAll, 3000); }); }
   var initQueued = 0;
   new MutationObserver(function () { if (initQueued) return; initQueued = requestAnimationFrame(function () { initQueued = 0; initializeCards(); }); }).observe(grid, { childList: true });
 })();
