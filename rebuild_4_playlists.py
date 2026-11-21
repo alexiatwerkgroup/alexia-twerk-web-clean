@@ -65,7 +65,7 @@ PLAYLISTS = [
         "kicker": "/ TTL Archive · VIP-tier only",
         "h1_main": "TTL · <em>Latin</em> Models.",
         "h1_sub": "1,500+ private 4K cuts",
-        "intro": "The complete TTL Latin model archive in MP4 4K. VIP-tier only — scattered low-quality reuploads exist online; this is the source.",
+        "intro": "The complete TTL Latin model archive in MP4 4K. VIP-tier only — scattered low-quality reuploads exist online; this is the source. Note: the 1,500+ videos of this archive are a separate VIP-tier access and are NOT included in the Novinhas VIP pass.",
         "meta_desc": "Twerkhub TTL · Complete Latin model archive · 1,500+ MP4 4K cuts · VIP only. Scattered low-quality reuploads exist on Google; this is the source.",
         "vip_locked": True,
     },
