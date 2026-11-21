@@ -6,6 +6,46 @@ import { REAL_CTE, ACTIVE_SECONDS, INTERACT_SECONDS, VALID_EVENT_SQL, CONFIRM_SE
 // Intención de compra = clic en desbloquear, abrir el pago, copiar el ID de Binance o clic en crear cuenta Binance. NO son ventas confirmadas.
 const INTENT = ['unlock_click', 'pay_open', 'copy_id', 'binance_ref'];
 
+
+// ---- Ejecución unificada: una sentencia con todas las consultas "q" (y otra con las "qp") ----
+// Antes cada consulta recalculaba el filtro de visitantes reales (~345 mil filas leídas c/u): ~30 consultas = D1 "overloaded".
+function aliasesOf(sql) {
+  const s = sql.replace(/\s+/g, ' ').trim(); let i = 0, depth = 0, q = '', start = -1, end = s.length, items = [], cur = '';
+  const m = /^SELECT\s/i.exec(s); if (!m) throw new Error('no_select'); i = m[0].length;
+  for (; i < s.length; i++) {
+    const c = s[i];
+    if (q) { cur += c; if (c === q) q = ''; continue; }
+    if (c === "'" || c === '"') { q = c; cur += c; continue; }
+    if (c === '(') depth++; if (c === ')') depth--;
+    if (depth === 0 && /^\sFROM\s/i.test(s.slice(i, i + 6))) { items.push(cur); cur = ''; end = i; break; }
+    if (depth === 0 && c === ',') { items.push(cur); cur = ''; continue; }
+    cur += c;
+  }
+  if (cur.trim()) items.push(cur);
+  return items.map(x => { x = x.trim(); const a = /\sAS\s+(\w+)$/i.exec(x) || /[\s)](\w+)$/.exec(x); const n = a ? a[1] : x; if (!/^\w+$/.test(n)) throw new Error('alias:' + x); return n; });
+}
+const JSQL = (sql) => { const cols = aliasesOf(sql); return `(SELECT COALESCE(json_group_array(json_object(${cols.map(c => `'${c}',${c}`).join(',')})), '[]') FROM (${sql}))`; };
+async function runItems(db, items, cfg) {
+  const prepared = items.map(it => (it && it.kind ? null : it));
+  const idx = (k) => items.map((it, i) => (it && it.kind === k ? i : -1)).filter(i => i >= 0);
+  const iq = idx('q'), ip = idx('p'), out = new Array(items.length);
+  const merged = [];
+  if (iq.length) merged.push({ ids: iq, st: db.prepare(`WITH ${REAL_CTE} SELECT ${iq.map((i, n) => `${JSQL(items[i].sql)} c${n}`).join(', ')}`).bind(cfg.since) });
+  if (ip.length) merged.push({ ids: ip, st: db.prepare(`WITH ${cfg.PREV_CTE} SELECT ${ip.map((i, n) => `${JSQL(items[i].sql)} c${n}`).join(', ')}`).bind(cfg.prevSince, cfg.prevUntil) });
+  const plainIdx = prepared.map((p, i) => (p ? i : -1)).filter(i => i >= 0);
+  try {
+    const r = await db.batch([...plainIdx.map(i => prepared[i]), ...merged.map(m => m.st)]);
+    plainIdx.forEach((i, n) => { out[i] = r[n]; });
+    merged.forEach((m, k) => { const row = (r[plainIdx.length + k].results || [])[0] || {}; m.ids.forEach((i, n) => { out[i] = { results: JSON.parse(row['c' + n] || '[]') }; }); });
+    return out;
+  } catch (e) {
+    // Si D1 esta saturado no insistimos con el camino viejo (pesado): se propaga y el cache entrega el ultimo informe bueno.
+    if (/overload|too many|limit|timeout|exceeded|network/i.test(String(e && e.message || e))) throw e;
+    // Error de SQL en la version unificada: respaldo con una consulta por vez (comportamiento anterior).
+    return db.batch(items.map(it => (it && it.kind ? db.prepare(`WITH ${it.kind === 'p' ? cfg.PREV_CTE : REAL_CTE} ${it.sql}`).bind(...(it.kind === 'p' ? [cfg.prevSince, cfg.prevUntil] : [cfg.since, ...(it.extra || [])])) : it)));
+  }
+}
+
 async function compute(request, env) {
   const db = env.DB, url = new URL(request.url), now = Date.now();
   const { tz, off, todayStart } = tzInfo(url, now);
@@ -21,11 +61,12 @@ async function compute(request, env) {
   else if (range === 'all') since = 0;
   else { since = now - range * 86400000; }
   const PREV_CTE = REAL_CTE.replace(/ts > \?1/g, 'ts > ?1 AND ts <= ?2');
-  const qp = (sql) => db.prepare(`WITH ${PREV_CTE} ${sql}`).bind(prevSince, prevUntil);
-  const q = (sql, ...extra) => db.prepare(`WITH ${REAL_CTE} ${sql}`).bind(since, ...extra);
+  // q/qp solo ANOTAN la consulta; runItems las junta en UNA sola sentencia por periodo (el filtro de "visitantes reales" se calcula una vez, no ~30).
+  const qp = (sql) => ({ kind: 'p', sql });
+  const q = (sql, ...extra) => ({ kind: 'q', sql, extra });
   const D = `date(ts/1000+${off},'unixepoch')`;
   const INTENT_SQL = INTENT.map(n => `'${n}'`).join(',');
-  const res = await db.batch([
+  const res = await runItems(db, [
     /*0*/ q(`SELECT (SELECT COUNT(*) FROM ci) interested, (SELECT COUNT(DISTINCT CASE WHEN is_new = 1 THEN vid END) FROM tw_hits WHERE ts > ?1 AND vid IN cv) newReal, (SELECT COUNT(*) FROM tw_hits WHERE ts > ?1) loads, (SELECT COUNT(DISTINCT vid) FROM tw_hits WHERE ts > ?1) cookies, (SELECT COUNT(*) FROM cv) confirmed,
       (SELECT COUNT(*) FROM tw_hits WHERE ts > ?1 AND vid IN cv) confirmedLoads,
       (SELECT COUNT(*) FROM (SELECT vid FROM tw_hits WHERE ts > ?1 AND vid IN cv GROUP BY vid HAVING MAX(${ACTIVE_SECONDS}) >= ${CONFIRM_SECONDS})) byTime,
@@ -86,7 +127,7 @@ async function compute(request, env) {
     /*E3*/ q(`SELECT country c, COUNT(DISTINCT vid) u FROM tw_hits WHERE ts > ?1 AND vid IN burst AND country <> '' GROUP BY country ORDER BY u DESC LIMIT 8`),
     /*E4*/ q(`SELECT (SELECT COUNT(DISTINCT vid) FROM tw_hits WHERE ts > ?1 AND vid IN burst) burstCookies, (SELECT COUNT(*) FROM bm) burstMinutes`),
     /*E5*/ q(`SELECT COUNT(DISTINCT vid) total, COUNT(DISTINCT CASE WHEN ref IS NOT NULL AND ref <> '' THEN vid END) conRef FROM tw_hits WHERE ts > ?1 AND vid NOT IN cv AND vid NOT IN burst`),
-  ]));
+  ]), { since, prevSince, prevUntil, PREV_CTE });
   const one = i => (res[i].results || [])[0] || {};
   const base = 19 + (prevSince == null ? 0 : 5);
   const peakRows = res[base].results || [];
@@ -169,10 +210,14 @@ async function cached(request, env, ctx, ttl, compute0) {
       LAST.set(key.url, body);
       const put = cache.put(key, new Response(body, { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=' + ttl } }));
       if (ctx && ctx.waitUntil) ctx.waitUntil(put.catch(() => {})); 
+      const lastKey = new Request(key.url + '&__last=1');
+      const put2 = cache.put(lastKey, new Response(body, { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=86400' } }));
+      if (ctx && ctx.waitUntil) ctx.waitUntil(put2.catch(() => {}));
     }
     return res;
   } catch (e) {
-    const old = LAST.get(key.url);
+    let old = LAST.get(key.url);
+    if (!old) { try { const h = await cache.match(new Request(key.url + '&__last=1')); if (h) old = await h.text(); } catch (e2) {} }
     if (old) { try { const j = JSON.parse(old); j.stale = true; j.staleReason = String(e && e.message || e).slice(0, 100); return new Response(JSON.stringify(j), { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }); } catch (_) {} }
     return new Response(JSON.stringify({ ok: false, error: 'db_unavailable', detail: String(e && e.message || e).slice(0, 100) }), { status: 503, headers: { 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } });
   }
