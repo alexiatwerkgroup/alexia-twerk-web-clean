@@ -13,6 +13,8 @@ const NAV_CREATORS = '<a href="/creators">Creators</a>', NAV_NOVINHAS = '<a clas
 const NAV_NOVINHAS_CSS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap"><style>.tn2 .twk-coin{flex:none!important;flex-shrink:0!important;min-width:max-content}.tn2 a.nv-navlogo{font:700 24px/1 "Dancing Script","Pacifico",cursive!important;white-space:nowrap;letter-spacing:0!important;text-transform:none!important;padding-top:0!important;padding-bottom:0!important}.tn2 a.nv-navlogo span{background:linear-gradient(180deg,#ffb3d6,#ff4f9a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;filter:drop-shadow(0 0 8px rgba(255,79,154,.45));display:inline-block;padding:0 2px}.tn2 a.nv-navlogo:hover span{filter:drop-shadow(0 0 12px rgba(255,79,154,.8)) brightness(1.1)}.tn2 nav a.nv-navlogo{font-size:24px!important}</style>';
 function novinhasNav(h) { if (h.indexOf(NAV_CREATORS) < 0) return h; return h.replace(/<div class="tn2-lk">[\s\S]*?<\/div>/, (x) => x.replace(NAV_CREATORS, NAV_NOVINHAS)).replace(/<details><summary[\s\S]*?<\/details>/, (x) => x.replace(NAV_CREATORS, NAV_NOVINHAS)); }
 export async function onRequest(context) {
+  // SEO: las copias en *.pages.dev (fase-2-production, alexia-twerk-web-clean, previews) no deben indexarse; 301 al dominio real, misma ruta y query.
+  { const u = new URL(context.request.url); if (u.hostname.endsWith('.pages.dev')) return Response.redirect('https://twerkhub.lat' + u.pathname + u.search, 301); }
   const paused = await explicitPauseResponse(context.request);
   if (paused) return paused;
   const limited = await authAbuseResponse(context);
