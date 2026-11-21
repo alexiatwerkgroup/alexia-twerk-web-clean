@@ -239,31 +239,6 @@ def escape_html(s: str) -> str:
 
 
 VIP_BANNER = """
-<section class="twerkhub-pl-vip-gate" aria-label="VIP archive gate">
-  <div class="twerkhub-pl-vip-inner">
-    <div class="twerkhub-pl-vip-icon" aria-hidden="true">🔒</div>
-    <h2>VIP archive · 1,500+ uncut cuts</h2>
-    <p>The complete TTL Latin model collection in MP4 4K. Members of the VIP tier unlock the full grid below — every clip in original quality, no reuploads, no compression artifacts.</p>
-    <a class="twerkhub-pl-vip-cta" href="/paymentmethods/">Unlock the full archive · Upgrade to VIP →</a>
-    <p class="twerkhub-pl-vip-note">Scattered low-quality reuploads exist on Google; this is the source.</p>
-  </div>
-</section>
-<style>
-.twerkhub-pl-vip-gate{margin:30px auto;max-width:1200px;padding:0 26px}
-.twerkhub-pl-vip-inner{position:relative;border:2px solid rgba(255,180,84,.5);border-radius:24px;padding:42px 32px;text-align:center;background:linear-gradient(135deg,rgba(255,45,135,.08),rgba(255,180,84,.06),rgba(157,78,221,.08));overflow:hidden}
-.twerkhub-pl-vip-inner::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,180,84,.18),transparent 60%);pointer-events:none}
-.twerkhub-pl-vip-icon{font-size:42px;margin-bottom:14px;position:relative}
-.twerkhub-pl-vip-inner h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,4vw,42px);font-weight:900;color:#fff;margin-bottom:12px;letter-spacing:-.01em;position:relative}
-.twerkhub-pl-vip-inner p{color:rgba(255,255,255,.78);font-size:16px;max-width:560px;margin:0 auto 22px;line-height:1.6;position:relative}
-.twerkhub-pl-vip-note{font-size:12px!important;color:rgba(255,255,255,.45)!important;font-style:italic;margin-top:18px!important;letter-spacing:.04em}
-.twerkhub-pl-vip-cta{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:999px;background:linear-gradient(135deg,#ff2d87,#ffb454);color:#1a0a14!important;font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:13px;box-shadow:0 14px 32px rgba(255,45,135,.4);transition:transform .25s,box-shadow .25s;position:relative}
-.twerkhub-pl-vip-cta:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(255,45,135,.55)}
-.twk-vip-locked .vcard .vthumb img{filter:blur(8px) brightness(.6);transition:filter .35s}
-.twk-vip-locked .vcard{cursor:not-allowed;position:relative}
-.twk-vip-locked .vcard::after{content:"🔒";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px;z-index:5;text-shadow:0 4px 18px rgba(0,0,0,.85);pointer-events:none}
-.twk-vip-locked .vcard:hover .vthumb img{filter:blur(6px) brightness(.7)}
-.twk-vip-locked .vcard:hover::after{transform:translate(-50%,-50%) scale(1.15)}
-</style>
 """
 
 
