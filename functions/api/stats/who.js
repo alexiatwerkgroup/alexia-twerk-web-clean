@@ -1,5 +1,5 @@
 // GET /api/stats/who?uid=<id>  |  ?vid=<cookie>  -> SOLO DUEÑO. Ficha completa de una persona (tarjeta al pasar el mouse en el panel).
-// No devuelve mail ni datos de contacto: solo comportamiento medido y estado de la cuenta.
+// Devuelve comportamiento medido, estado de la cuenta y el mail de la cuenta (solo para el dueño, ownerOnly).
 import { json } from '../../_lib/http.js';
 import { ACTIVE_SECONDS, VALID_EVENT_SQL, CONFIRM_SECONDS, ownerOnly, NO_STORE, all } from '../../_lib/stats-core.js';
 
@@ -18,7 +18,7 @@ export async function onRequestGet({ request, env }) {
     const p = (await safe('SELECT id, email, username, tier, tokens, total_earned, streak, registered_at, last_seen_at, last_active_at, seconds_on_site, cuts_watched, country FROM profiles WHERE id = ?1', uid))[0];
     if (!p) return json({ ok: false, error: 'not_found' }, 404, '', NO_STORE);
     email = String(p.email || '').toLowerCase();
-    profile = { username: p.username || '', tier: p.tier || '', coins: p.tokens || 0, earned: p.total_earned || 0, streak: p.streak || 0, registered: p.registered_at || null, lastSeen: p.last_seen_at || p.last_active_at || null, secondsOnSite: p.seconds_on_site || 0, cutsWatched: p.cuts_watched || 0, country: p.country || '' };
+    profile = { username: p.username || '', email: String(p.email || ''), tier: p.tier || '', coins: p.tokens || 0, earned: p.total_earned || 0, streak: p.streak || 0, registered: p.registered_at || null, lastSeen: p.last_seen_at || p.last_active_at || null, secondsOnSite: p.seconds_on_site || 0, cutsWatched: p.cuts_watched || 0, country: p.country || '' };
     vids = (await safe('SELECT DISTINCT vid FROM tw_hits WHERE uid = ?1 LIMIT 30', uid)).map(r => r.vid);
   } else vids = [vidParam];
   if (!vids.length) vids = ['-'];
