@@ -276,8 +276,12 @@
     '.twk-auth-checkbox input{accent-color:#ff2d87;width:14px;height:14px;}' +
     '.twk-auth-link{background:none;border:0;color:#ff7eb0;text-decoration:underline;cursor:pointer;font:600 12px Inter,sans-serif;padding:0;}' +
     '.twk-auth-link:hover{color:#fff;}' +
-    '.twk-auth-error{display:none;color:#ff6fa8;font-size:12px;font-weight:700;text-align:center;margin-top:4px;}' +
+    '.twk-auth-error{display:none;color:#ffd6e6;font-size:12.5px;font-weight:700;text-align:center;margin-top:4px;line-height:1.45;background:rgba(255,45,100,.14);border:1px solid rgba(255,80,120,.65);padding:10px 12px;border-radius:10px;}' +
     '.twk-auth-error.is-visible{display:block;}' +
+    '.twk-auth-input.is-bad{border-color:#ff4d7a;box-shadow:0 0 0 3px rgba(255,77,122,.18);}' +
+    '.twk-uname-hint{display:none;margin-top:6px;font:700 12px/1.4 Inter,sans-serif;color:#ffd6e6;background:rgba(255,45,100,.14);border:1px solid rgba(255,80,120,.65);padding:8px 10px;border-radius:8px;}' +
+    '.twk-uname-hint.is-visible{display:block;}' +
+    '.twk-uname-hint button{background:none;border:0;padding:0;margin-left:4px;color:#fff;text-decoration:underline;font:800 12px Inter,sans-serif;cursor:pointer;}' +
     '.twk-auth-success{display:none;color:#1ee08f;font-size:12.5px;text-align:center;margin-top:8px;line-height:1.5;background:rgba(30,224,143,.08);border:1px solid rgba(30,224,143,.35);padding:10px 12px;border-radius:10px;}' +
     '.twk-auth-success.is-visible{display:block;}' +
     '.twk-auth-submit{margin-top:10px;width:100%;padding:14px;border-radius:10px;background:linear-gradient(180deg,#ff2d87,#9d4edd);color:#fff;font:800 11px/1 Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;border:0;cursor:pointer;box-shadow:0 14px 30px rgba(255,45,135,.36);}' +
@@ -350,7 +354,7 @@
       '<p class="twk-auth-lede">Free account · get +200 tokens after email verification. Choose a username, email and password.</p>' +
       '<div class="twk-auth-form">' +
         '<div><label class="twk-auth-label" for="twk-auth-username">Username (public)</label>' +
-        '<input class="twk-auth-input" id="twk-auth-username" type="text" required maxlength="32" minlength="2" placeholder="solo.collector" autocomplete="username" autocapitalize="none"></div>' +
+        '<input class="twk-auth-input" id="twk-auth-username" type="text" required maxlength="32" minlength="2" placeholder="solo.collector" autocomplete="username" autocapitalize="none"><div class="twk-uname-hint" id="twk-uname-hint" role="alert"></div></div>' +
         '<div><label class="twk-auth-label" for="twk-auth-email">Email</label>' +
         '<input class="twk-auth-input" id="twk-auth-email" type="email" required maxlength="120" placeholder="you@domain.com" autocomplete="email" autocapitalize="none"></div>' +
         '<div><label class="twk-auth-label" for="twk-auth-password">Password (min 6)</label>' +
@@ -446,9 +450,29 @@
     var okEl = root.querySelector('#twk-auth-success');
     function showError(m){ errEl.textContent = m; errEl.classList.add('is-visible'); if (okEl) okEl.classList.remove('is-visible'); }
     function showOk(m){ if (!okEl) return; okEl.innerHTML = m; okEl.classList.add('is-visible'); errEl.classList.remove('is-visible'); }
+    var unameEl = root.querySelector('#twk-auth-username');
+    var hintEl = root.querySelector('#twk-uname-hint');
+    function cleanName(v){
+      return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,'_').replace(/[^A-Za-z0-9_.\-]/g,'').slice(0,32);
+    }
+    function checkName(){
+      if (!unameEl || !hintEl) return true;
+      var v = unameEl.value, bad = v.length > 0 && !/^[A-Za-z0-9_.\-]*$/.test(v);
+      unameEl.classList.toggle('is-bad', bad);
+      if (bad) {
+        var sug = cleanName(v);
+        hintEl.innerHTML = 'Username cannot have spaces, accents or special characters. Use only letters, numbers, dots, dashes or underscores.' + (sug.length >= 2 ? ' <button type="button" id="twk-uname-fix">Use &quot;' + escapeHtml(sug) + '&quot;</button>' : '');
+        hintEl.classList.add('is-visible');
+        var fx = hintEl.querySelector('#twk-uname-fix');
+        if (fx) fx.addEventListener('click', function(){ unameEl.value = sug; checkName(); });
+      } else { hintEl.classList.remove('is-visible'); }
+      return !bad;
+    }
+    if (unameEl && hintEl) unameEl.addEventListener('input', checkName);
     root.addEventListener('submit', async function(ev){
       ev.preventDefault();
       var btn = root.querySelector('.twk-auth-submit');
+      if (isSignUp && !checkName()) { unameEl.focus(); return; }
       var u = root.querySelector('#twk-auth-username').value;
       var pw = root.querySelector('#twk-auth-password').value;
       var em = isSignUp ? (root.querySelector('#twk-auth-email')||{}).value : '';
