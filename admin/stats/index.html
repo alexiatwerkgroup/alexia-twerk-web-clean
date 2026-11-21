@@ -48,7 +48,7 @@ html body #sel .btn.vb.sw{color:#7dffa3;border-color:#1f5a35}
 var LIVE_MS = 15000, REPORT_MS = 3600000;
 var range = 'month', TZ = -new Date().getTimezoneOffset();
 var live = null, rep = null, liveOkAt = 0, repOkAt = 0, liveBusy = false, repBusy = false, repQueued = false, repRetryTimer = 0, repFail = 0, liveFail = 0;
-var uncOpen = false, denied = false, seenActionTs = 0, seenOnline = null, soundOn = false, audio = null;
+var uncOpen = false, denied = false, seenActionTs = 0, seenOnline = null, seenAccts = null, soundOn = false, audio = null;
 try { soundOn = localStorage.getItem('twk-visitor-sound') === '1'; } catch (e) {}
 
 var EV = { unlock_click: 'Clic en desbloquear', pay_open: 'Abrió el pago', copy_id: 'Copió el ID de Binance', binance_ref: 'Clic en crear cuenta Binance', follow: 'Activó avisos', rabbit_click: 'Clic al conejo', nov_watch: 'Clic en un canal de Novinhas', nov_channel_view: 'Entró a un canal de Novinhas', nov_video_view: 'Reprodujo un video de Novinhas', nov_miniclip_view: 'Reprodujo un miniclip de Novinhas', nov_play: 'Reprodujo un video de Novinhas', nov_identify: 'Abrió búsqueda / identificación', nov_vip: 'Abrió el checkout VIP de Novinhas', nov_join: 'Abrió el registro (Novinhas)', nov_signup: 'Se registró desde Novinhas', signup_click: 'Clic en crear cuenta gratis', signup_start: 'Empezó el registro', signup_done: 'Cuenta creada', signup_verified: 'Verificó el email' };
@@ -77,16 +77,23 @@ function api(path) {
 /* ---------- sonido: solo con una acción real o una persona confirmada nueva ---------- */
 function bubble() { if (!soundOn || !audio || audio.state !== 'running') return; var t = audio.currentTime, c = audio.createDynamicsCompressor(), m = audio.createGain(); m.gain.value = .9; c.connect(m); m.connect(audio.destination);
   [[880, 0], [1320, .13]].forEach(function (n) { var s = t + n[1], o = audio.createOscillator(), o2 = audio.createOscillator(), g = audio.createGain(); o.type = 'sine'; o2.type = 'triangle'; o.frequency.setValueAtTime(n[0], s); o2.frequency.setValueAtTime(n[0] * 2, s); g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(.55, s + .015); g.gain.exponentialRampToValueAtTime(.0001, s + .34); o.connect(g); o2.connect(g); g.connect(c); o.start(s); o2.start(s); o.stop(s + .36); o2.stop(s + .36); }); }
+/* sonido suave: persona conectada / acción nueva (quinta ascendente, seno cálido) */
+function chime() { if (!soundOn || !audio || audio.state !== 'running') return; var t = audio.currentTime, f = audio.createBiquadFilter(), m = audio.createGain(); f.type = 'lowpass'; f.frequency.value = 2600; m.gain.value = .7; f.connect(m); m.connect(audio.destination);
+  [[523.25, 0], [783.99, .16]].forEach(function (n) { var s = t + n[1], o = audio.createOscillator(), o2 = audio.createOscillator(), g = audio.createGain(), g2 = audio.createGain(); o.type = 'sine'; o2.type = 'sine'; o.frequency.setValueAtTime(n[0], s); o2.frequency.setValueAtTime(n[0] * 2, s); g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(.2, s + .03); g.gain.exponentialRampToValueAtTime(.0001, s + .7); g2.gain.value = .12; o.connect(g); o2.connect(g2); g2.connect(g); g.connect(f); o.start(s); o2.start(s); o.stop(s + .72); o2.stop(s + .72); }); }
 function armAudio() { if (!soundOn) return; try { var AC = window.AudioContext || window.webkitAudioContext; audio = audio || new AC(); audio.resume(); } catch (e) {} }
 document.addEventListener('pointerdown', armAudio, { passive: true });
 document.addEventListener('toggle', function (e) { if (e.target && e.target.id === 'unc') uncOpen = e.target.open; }, true);
 function checkSound(d) {
-  var acts = d.recentActions || [], newest = acts.length ? acts[0].ts : 0, ring = false;
+  var acts = d.recentActions || [], newest = acts.length ? acts[0].ts : 0, ring = false, acct = false;
   if (seenActionTs && newest > seenActionTs) ring = true;
   if (newest) seenActionTs = Math.max(seenActionTs, newest);
   var now = {}; (d.online || []).forEach(function (o) { if (o.confirmed) now[o.vid] = 1; });
   if (seenOnline) Object.keys(now).forEach(function (v) { if (!seenOnline[v]) ring = true; });
-  seenOnline = now; if (ring) bubble();
+  seenOnline = now;
+  var ids = {}; (d.latestAccounts || []).forEach(function (a) { ids[a.id] = 1; });
+  if (seenAccts) Object.keys(ids).forEach(function (k) { if (!seenAccts[k]) acct = true; });
+  seenAccts = ids;
+  if (acct) bubble(); else if (ring) chime();
 }
 
 /* ---------- gráficos ---------- */
@@ -257,7 +264,7 @@ function shell() {
   document.getElementById('refresh').onclick = function () { loadReport(true); };
   var snd = document.getElementById('snd');
   function paint() { snd.textContent = soundOn ? '🔔 Sonido: activado' : '🔕 Activar sonido'; snd.classList.toggle('sw', soundOn); }
-  snd.onclick = function () { soundOn = !soundOn; try { localStorage.setItem('twk-visitor-sound', soundOn ? '1' : '0'); } catch (e) {} if (soundOn) { armAudio(); setTimeout(bubble, 150); } paint(); };
+  snd.onclick = function () { soundOn = !soundOn; try { localStorage.setItem('twk-visitor-sound', soundOn ? '1' : '0'); } catch (e) {} if (soundOn) { armAudio(); setTimeout(chime, 150); } paint(); };
   paint(); armAudio();
 }
 function paintStatus() {
