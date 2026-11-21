@@ -11,3 +11,10 @@ export function computeTier(tokens) {
   if (t >= 3000)  return 'medium';
   return 'basic';
 }
+
+// Un nivel asignado a mano (cliente que pagó) no se pisa al ganar puntos: se conserva el mayor entre el nivel actual y el calculado por puntos.
+const RANK = { basic: 0, medium: 1, premium: 2, vip: 3 };
+export function keepTier(current, computed) {
+  const a = RANK[String(current || '').toLowerCase()] ?? 0, b = RANK[computed] ?? 0;
+  return a > b ? String(current).toLowerCase() : computed;
+}

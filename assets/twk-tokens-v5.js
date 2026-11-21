@@ -103,7 +103,17 @@
     if (b >= TIERS.medium) return 'medium';
     return 'basic';
   }
+  // Nivel pagado/asignado desde el servidor: nunca baja por tener pocos puntos.
+  var TIER_RANK = { basic: 0, medium: 1, premium: 2, vip: 3 };
+  var FLOOR_KEY = 'alexia_tokens_v1.floor_tier';
+  function floorTier() { var v = String(read(FLOOR_KEY, '') || '').toLowerCase(); return TIER_RANK[v] > 0 ? v : ''; }
+  function setFloorFromServer(serverTier, serverBal) {
+    var st = String(serverTier || '').toLowerCase();
+    if ((TIER_RANK[st] || 0) > (TIER_RANK[tierFromBalance(serverBal | 0)] || 0)) write(FLOOR_KEY, st); else write(FLOOR_KEY, '');
+  }
+  function effTier(b) { var c = tierFromBalance(b), f = floorTier(); return f && TIER_RANK[f] > TIER_RANK[c] ? f : c; }
   function nextTierFor(b) {
+    if (floorTier() === 'vip') return null;
     if (b < TIERS.medium)  return { key: 'medium',  at: TIERS.medium };
     if (b < TIERS.premium) return { key: 'premium', at: TIERS.premium };
     if (b < TIERS.vip)     return { key: 'vip',     at: TIERS.vip };
@@ -161,7 +171,7 @@
     return {
       balance: localBal,
       total:   localTot,
-      tier:    tierFromBalance(localBal),
+      tier:    effTier(localBal),
       streak:  read(KEYS.streak, 0) | 0,
       nextTier: nextTierFor(localBal),
       founder: false,
@@ -174,7 +184,7 @@
   }
   function setBalance(newBal) {
     write(KEYS.balance, Math.max(0, newBal | 0));
-    write(KEYS.tier, tierFromBalance(read(KEYS.balance, 0)));
+    write(KEYS.tier, effTier(read(KEYS.balance, 0)));
     broadcast();
   }
   function broadcast(detail) {
@@ -203,7 +213,7 @@
         if (!data || !data.ok) return;
         // Server-canonical values overwrite local — trust server.
         if (typeof data.balance === 'number') write(KEYS.balance, data.balance);
-        if (typeof data.tier === 'string')    write(KEYS.tier, data.tier);
+        if (typeof data.tier === 'string')    { write(KEYS.tier, data.tier); setFloorFromServer(data.tier, data.balance); }
         broadcast();
       })
       .catch(function () {});
@@ -245,6 +255,7 @@
           write(KEYS.balance, serverBal);
           write(KEYS.total,   Number(data.profile.total_earned || 0) | 0);
           write(KEYS.tier,    String(data.profile.tier || tierFromBalance(serverBal)));
+          setFloorFromServer(data.profile.tier, serverBal);
           broadcast();
         }
       })
@@ -279,7 +290,7 @@
     write(KEYS.balance, newBal);
     write(KEYS.total,   (read(KEYS.total, 0) | 0) + amount);
     var prevTier = founder ? 'vip' : tierFromBalance(prevBal);
-    var newTier  = founder ? 'vip' : tierFromBalance(newBal);
+    var newTier  = founder ? 'vip' : effTier(newBal);
     write(KEYS.tier, newTier);
     syncGrantToServer(amount, reason);
     toast(amount, reason || 'Earned', founder ? 'FOUNDER' : tierLabel(newTier));
@@ -306,7 +317,7 @@
     var bal = read(KEYS.balance, 0) | 0;
     if (bal < amount) return false;
     write(KEYS.balance, bal - amount);
-    write(KEYS.tier, tierFromBalance(bal - amount));
+    write(KEYS.tier, effTier(bal - amount));
     broadcast();
     return true;
   }

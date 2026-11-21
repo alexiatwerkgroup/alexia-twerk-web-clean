@@ -6,7 +6,7 @@
 
 import { authenticate } from '../../_lib/auth.js';
 import { json, preflight } from '../../_lib/http.js';
-import { computeTier } from '../../_lib/tier.js';
+import { computeTier, keepTier } from '../../_lib/tier.js';
 
 const DAILY_BASE = 50;
 const STREAK_BONUS_PER_DAY = 5;
@@ -36,7 +36,7 @@ export async function onRequest(context) {
   const yesterday = yesterdayUtcDate();
 
   const profile = await env.DB.prepare(
-    'SELECT tokens, total_earned, streak, last_login_date FROM profiles WHERE id = ?'
+    'SELECT tokens, total_earned, streak, last_login_date, tier FROM profiles WHERE id = ?'
   )
     .bind(payload.sub)
     .first();
@@ -45,7 +45,7 @@ export async function onRequest(context) {
 
   if (profile.last_login_date === today) {
     return json(
-      { ok: true, granted: 0, balance: profile.tokens, streak: profile.streak, tier: computeTier(profile.tokens), already_claimed: true },
+      { ok: true, granted: 0, balance: profile.tokens, streak: profile.streak, tier: keepTier(profile.tier, computeTier(profile.tokens)), already_claimed: true },
       200,
       origin
     );
@@ -57,7 +57,7 @@ export async function onRequest(context) {
   const granted = DAILY_BASE + streakBonus;
   const newBalance = (profile.tokens || 0) + granted;
   const newTotal = (profile.total_earned || 0) + granted;
-  const newTier = computeTier(newBalance);
+  const newTier = keepTier(profile.tier, computeTier(newBalance));
 
   try {
     await env.DB.prepare(

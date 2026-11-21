@@ -7,7 +7,7 @@
 
 import { authenticate } from '../../_lib/auth.js';
 import { json, preflight, readJSON } from '../../_lib/http.js';
-import { computeTier } from '../../_lib/tier.js';
+import { computeTier, keepTier } from '../../_lib/tier.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -29,7 +29,7 @@ export async function onRequest(context) {
   const reason = String(body.reason || '').slice(0, 64);
 
   const profile = await env.DB.prepare(
-    'SELECT tokens, total_earned FROM profiles WHERE id = ?'
+    'SELECT tokens, total_earned, tier FROM profiles WHERE id = ?'
   )
     .bind(payload.sub)
     .first();
@@ -48,7 +48,7 @@ export async function onRequest(context) {
 
   const newBalance = (profile.tokens || 0) + amount;
   const newTotal = (profile.total_earned || 0) + amount;
-  const newTier = computeTier(newBalance);
+  const newTier = keepTier(profile.tier, computeTier(newBalance));
 
   try {
     await env.DB.prepare(
