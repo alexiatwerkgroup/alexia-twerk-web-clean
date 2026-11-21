@@ -368,7 +368,7 @@ document.addEventListener('mouseover', function (e) {
 document.addEventListener('mouseout', function (e) { var w = e.target.closest && e.target.closest('.who'), box = e.target.closest && e.target.closest('#wc'); if (w || box) hideWho(); });
 
 // Escalonado: en vivo primero; histórico y ventas después, para no pegarle a la base todo junto (la base se sobrecarga y tumba el resto del sitio).
-shell(); loadLive(); setTimeout(function () { loadReport(); }, 6000); setTimeout(function () { loadMoney(true); }, 9000);
+shell(); (function () { try { var q = new URLSearchParams(location.search).get('uid'); if (q && /^[A-Za-z0-9_-]{8,64}$/.test(q)) setTimeout(function () { var s = document.createElement('span'); s.className = 'who'; s.dataset.uid = q; s.textContent = 'Ficha'; s.style.cssText = 'position:fixed;top:12px;left:12px;z-index:50;padding:4px 10px;background:#15151a;border:1px solid #333;border-radius:8px'; document.body.appendChild(s); showWho(s); }, 800); } catch (e) {} })(); loadLive(); setTimeout(function () { loadReport(); }, 6000); setTimeout(function () { loadMoney(true); }, 9000);
 setInterval(loadMoney, 60000);
 setInterval(loadLive, LIVE_MS);
 setInterval(loadReport, REPORT_MS);
