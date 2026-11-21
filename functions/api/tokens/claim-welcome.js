@@ -4,7 +4,7 @@
 
 import { authenticate } from '../../_lib/auth.js';
 import { json, preflight } from '../../_lib/http.js';
-import { computeTier } from '../../_lib/tier.js';
+import { computeTier, keepTier } from '../../_lib/tier.js';
 
 const WELCOME_BONUS = 200;
 
@@ -20,7 +20,7 @@ export async function onRequest(context) {
   if (!payload || !payload.sub) return json({ ok: false, error: 'unauthorized' }, 401, origin);
 
   const profile = await env.DB.prepare(
-    'SELECT tokens, total_earned, welcomed FROM profiles WHERE id = ?'
+    'SELECT tokens, total_earned, welcomed, tier FROM profiles WHERE id = ?'
   )
     .bind(payload.sub)
     .first();
@@ -29,7 +29,7 @@ export async function onRequest(context) {
 
   if (profile.welcomed) {
     return json(
-      { ok: true, granted: 0, balance: profile.tokens, tier: computeTier(profile.tokens), already_welcomed: true },
+      { ok: true, granted: 0, balance: profile.tokens, tier: keepTier(profile.tier, computeTier(profile.tokens)), already_welcomed: true },
       200,
       origin
     );
@@ -37,7 +37,7 @@ export async function onRequest(context) {
 
   const newBalance = (profile.tokens || 0) + WELCOME_BONUS;
   const newTotal = (profile.total_earned || 0) + WELCOME_BONUS;
-  const newTier = computeTier(newBalance);
+  const newTier = keepTier(profile.tier, computeTier(newBalance));
 
   try {
     await env.DB.prepare(
