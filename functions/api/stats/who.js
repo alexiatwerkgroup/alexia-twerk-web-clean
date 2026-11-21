@@ -24,7 +24,7 @@ export async function onRequestGet({ request, env }) {
   if (!vids.length) vids = ['-'];
   const ph = vids.map((_, i) => `?${i + 1}`).join(',');
 
-  const [agg, days, countries, cities, devices, firstRef, pages, last, events, evNames] = await Promise.all([
+  const [agg, days, countries, cities, devices, firstRef, pages, last, events, evNames, bestPg] = await Promise.all([
     safe(`SELECT COUNT(*) loads, COUNT(DISTINCT vid) cookies, MIN(ts) first, MAX(COALESCE(last_active, ts)) last, SUM(${ACTIVE_SECONDS}) dur, MAX(${ACTIVE_SECONDS}) maxdur, ROUND(AVG(CASE WHEN scroll > 0 THEN scroll END)) scroll, MAX(human) human FROM tw_hits WHERE vid IN (${ph})`, ...vids),
     safe(`SELECT COUNT(DISTINCT date(ts/1000, 'unixepoch')) n FROM tw_hits WHERE vid IN (${ph})`, ...vids),
     safe(`SELECT country c, COUNT(*) n FROM tw_hits WHERE vid IN (${ph}) AND country <> '' GROUP BY country ORDER BY n DESC LIMIT 3`, ...vids),
@@ -35,11 +35,12 @@ export async function onRequestGet({ request, env }) {
     safe(`SELECT ts, path, ${ACTIVE_SECONDS} dur, scroll, ref FROM tw_hits WHERE vid IN (${ph}) ORDER BY ts DESC LIMIT 8`, ...vids),
     safe(`SELECT ts, name, detail FROM tw_events WHERE vid IN (${ph}) AND ${VALID_EVENT_SQL} ORDER BY ts DESC LIMIT 12`, ...vids),
     safe(`SELECT name, COUNT(*) n FROM tw_events WHERE vid IN (${ph}) AND ${VALID_EVENT_SQL} GROUP BY name ORDER BY n DESC`, ...vids),
+    safe(`SELECT CASE WHEN instr(path,'?') > 0 THEN substr(path,1,instr(path,'?')-1) ELSE path END path, ${ACTIVE_SECONDS} dur FROM tw_hits WHERE vid IN (${ph}) ORDER BY dur DESC LIMIT 1`, ...vids),
   ]);
   const a = agg[0] || {};
   const body = {
     ok: true, now: Date.now(), kind: uid ? 'cuenta' : 'visitante', profile, confirmSeconds: CONFIRM_SECONDS,
-    visits: { loads: a.loads || 0, cookies: a.cookies || 0, days: (days[0] || {}).n || 0, first: a.first || null, last: a.last || null, seconds: a.dur || 0, maxSeconds: a.maxdur || 0, scroll: a.scroll || 0, interacted: !!a.human },
+    visits: { loads: a.loads || 0, cookies: a.cookies || 0, days: (days[0] || {}).n || 0, first: a.first || null, last: a.last || null, seconds: a.dur || 0, maxSeconds: a.maxdur || 0, maxPath: (bestPg[0] || {}).path || '', scroll: a.scroll || 0, interacted: !!a.human },
     countries, cities, devices, firstRef: (firstRef[0] || {}).ref || '', pages, last, events, eventCounts: evNames,
   };
   // Veredicto simple y explicado: persona o robot probable.
