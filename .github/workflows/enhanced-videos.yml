@@ -3,8 +3,9 @@ on:
   push:
     branches: [main]
     paths: ['.github/workflows/enhanced-videos.yml', 'tools/enhance_worker.py', 'upscaler/**']
-  schedule:
-    - cron: '*/5 * * * *'
+  # PAUSADO (sin crédito en Salad). Reactivar al cargar saldo: descomentar las 2 líneas siguientes.
+  # schedule:
+  #   - cron: '*/5 * * * *'
   workflow_dispatch:
 concurrency:
   group: enhanced-videos
