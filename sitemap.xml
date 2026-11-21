@@ -841,4 +841,8 @@
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://twerkhub.lat/site-map</loc>
+    <lastmod>2026-11-21</lastmod>
+  </url>
 </urlset>
