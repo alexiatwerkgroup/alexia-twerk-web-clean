@@ -1,9 +1,9 @@
 <!doctype html><html lang="en"><head>
 <meta property="og:title" content="My Token Vault | Twerkhub">
-<meta property="og:description" content="Your Twerkhub token vault: balance, daily streak, ways to earn and tiers. Tokens are free, earned by visiting and watching.">
+<meta property="og:description" content="Your Twerkhub token vault: balance, daily streak, and ways to earn. Tokens are free, earned by visiting and watching.">
 <meta property="og:image" content="https://twerkhub.lat/logo-twerkhub.png">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Token Vault | Twerkhub</title>
-<meta name="description" content="Your Twerkhub token vault: balance, daily streak, ways to earn and tiers. Tokens are free, earned by visiting and watching.">
+<meta name="description" content="Your Twerkhub token vault: balance, daily streak, and ways to earn. Tokens are free, earned by visiting and watching.">
 <link rel="canonical" href="https://twerkhub.lat/tokens/"><meta name="theme-color" content="#000000"><meta name="robots" content="noindex,follow">
 <style>body{margin:0;background:#000;color:#fff}.vt{--bg:#000;--ac:#ff8f00;--pk:#ff4fa3;--mut:#a6a6b2;--card:#101014;--line:#26262c;background:radial-gradient(900px 420px at 80% -60px,rgba(255,143,0,.16),transparent),#000;color:#fff;font-family:Inter,system-ui,sans-serif;min-height:70vh}
 .vt *{box-sizing:border-box}.vt a{color:inherit;text-decoration:none}
@@ -46,8 +46,6 @@
   <h1>Your <em>stash.</em></h1>
   <p class="lead" id="vlead">Tokens are points you earn just by being here. Spend them on short clips and perks. Nothing to buy.</p>
   <div class="bal"><span id="vbal">0</span><small>tokens</small></div>
-  <div class="tier"><span class="tb" id="vtier">Basic</span><span id="vnext">Next tier: Medium at 3,000</span></div>
-  <div class="bar"><i id="vbar"></i></div>
   <div class="cta"><a class="btn k" href="/jenny/">Spend them on Jenny <svg class="ic"><use href="#i-arrow"/></svg></a><button class="btn t" id="vsnd" type="button">Sound on</button></div>
   <div class="gate" id="vgate" hidden><b>Log in to start.</b> New accounts get 200 welcome tokens and 30 more every day. <a href="/account">Log in or sign up</a></div>
  </div>
@@ -97,10 +95,13 @@
 <section><div class="w"><div class="eyebrow">/ Tokens vs coins</div><h2>Two different things</h2>
  <div class="two"><div class="card"><h3>Tokens</h3><p><b style="color:#8dffa6">Free.</b> Earned by visiting, watching and inviting. They unlock Jenny's short clips (500 each) and perks.</p></div><div class="card"><h3>Coins</h3><p><b style="color:#ffd27a">$0.50 each.</b> Bought with Binance. 1 coin unlocks 1 full video in original quality.</p></div></div>
 </div></section>
-<section><div class="w">
- <div class="eyebrow">/ The ladder</div><h2>Four tiers</h2>
- <div class="ladder" id="vladder"></div>
- <p class="note">Tiers follow your balance. You can also join a tier with a paid <a href="/tokens/">membership</a>.</p>
+<section id="access"><div class="w">
+ <div class="eyebrow">/ Get access</div><h2>What you can buy</h2>
+ <p class="sub">Two things, nothing else. Tokens are not needed for either.</p>
+ <div class="two">
+  <div class="card"><svg class="ic"><use href="#i-lock"/></svg><h3>Novinhas VIP pass</h3><p>One payment, access to the whole Novinhas archive. Other archives are sold separately.</p><a class="go" href="/novinhas/">Open Novinhas <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+  <div class="card"><svg class="ic"><use href="#i-lock"/></svg><h3>Exclusive models</h3><p>Videos sold one by one or made on request, straight from our exclusive models.</p><a class="go" href="/jenny/">See the exclusive catalog <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+ </div>
 </div></section>
 
 <section><div class="w">
@@ -119,7 +120,6 @@
 <script>document.addEventListener('DOMContentLoaded',function(){
 var K='alexia_tokens_v1.';function g(k,d){try{var v=localStorage.getItem(K+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 var T=window.AlexiaTokens,R=(T&&T.REWARDS)||{dailyLogin:30,streakBonus:15,streakCap:7,pageVisit:5,videoWatch:10,videoComplete:10,share:50,referral:200};
-var TH=[['Basic',0],['Medium',3000],['Premium',9000],['VIP Top',50000]];
 function $(i){return document.getElementById(i)}
 function fmt(n){return n.toLocaleString('en-US')}
 var shown=0;
@@ -128,16 +128,12 @@ function render(first){
  var logged=T&&T.isLoggedIn&&T.isLoggedIn(),s=(T&&T.getState())||{balance:0,streak:0,tier:'basic'},b=s.balance||0;
  $('vgate').hidden=!!logged;
  if(first){shown=0}count(b);
- var ti=0;TH.forEach(function(x,i){if(b>=x[1])ti=i});var nx=TH[ti+1];
- $('vtier').textContent=TH[ti][0];$('vnext').textContent=nx?('Next tier: '+nx[0]+' at '+fmt(nx[1])+' · '+fmt(nx[1]-b)+' to go'):'Top tier reached';
- setTimeout(function(){$('vbar').style.width=(nx?Math.min(100,Math.max(3,(b-TH[ti][1])/(nx[1]-TH[ti][1])*100)):100)+'%'},80);
  var st=s.streak||0,td=new Date().toDateString(),claimed=g('last_login',null)===td;
  var h='';for(var d=1;d<=7;d++){var amt=R.dailyLogin+Math.min(d,R.streakCap)*R.streakBonus;h+='<div class="dy'+(d<=st?' on':'')+(d===st+1&&!claimed?' now':'')+'"><b>+'+amt+'</b><span>DAY '+d+'</span></div>'}
  $('vdays').innerHTML=h;
  $('vtoday').textContent=!logged?'Log in to start your streak.':(claimed?('Today is claimed. Streak: '+st+' day'+(st==1?'':'s')+'. Come back tomorrow.'):'Your daily bonus is waiting. Reload to claim it.');
  var caps=[['Visit a page','+'+R.pageVisit,'New pages only','daily_pages',50],['Watch a video','+'+R.videoWatch,'Start any playlist video','daily_watches',20],['Finish a video','+'+R.videoComplete,'Watch 80% or more','daily_finishes',10],['Share the site','+'+R.share,'Tell a friend','daily_shares',3],['Daily login','+'+R.dailyLogin,'Plus streak bonus up to +'+(R.streakCap*R.streakBonus),null,0]];
  $('vearn').innerHTML=caps.map(function(c){var u=c[3]?g(c[3],0):0;return '<div class="er"><b>'+c[1]+'</b><h4>'+c[0]+'</h4><p>'+c[2]+'</p>'+(c[3]?'<div class="pb"><i style="width:'+Math.min(100,u/c[4]*100)+'%"></i></div><small>'+u+' / '+c[4]+' today</small>':'<small>'+(claimed?'Claimed today':'Not claimed yet')+'</small>')+'</div>'}).join('');
- $('vladder').innerHTML=TH.map(function(x,i){return '<div class="lt'+(i<ti?' done':'')+(i===ti?' on':'')+'"><b>'+x[0]+'</b><span>'+(x[1]?fmt(x[1])+' tokens':'Free entry')+'</span></div>'}).join('');
 }
 function snd(){return window.TwkCoin&&TwkCoin.soundOn()}
 function setS(){$('vsnd').textContent=snd()?'Sound on':'Sound off'}
