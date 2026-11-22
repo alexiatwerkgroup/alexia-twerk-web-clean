@@ -6,7 +6,7 @@
   window.__twkNovMotionInstalled = true;
   var conn = navigator.connection || {};
   var small = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-  var MAX = (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) ? 2 : (small ? 4 : Infinity);
+  var MAX = (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) ? 2 : (small ? 4 : 6);
   var entries = new Map(), actives = new Map(), idleTimer = 0;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
   function visibleRows() {
@@ -40,7 +40,7 @@
     var rows = visibleRows();
     while (rows.length) {
       var next = rows.shift(), v = next.v;
-      // PC: everything visible moves at once. Capped only on phones / data saver. Ranking previews (force) always play.
+      // Max 6 minis at once on PC (4 on phones, 2 on data saver): more simultaneous decoders drop frames and freeze everything. Ranking previews (force) always play.
       if (actives.size >= MAX && !next.x.force) continue;
       // Hottest Videos are an explicit five-second preview request from the site owner:
       // they keep moving even when the OS reduced-motion preference is on.
@@ -72,8 +72,8 @@
     entries.set(v, x);
     v.loop = false; v.preload = 'none';
     v.addEventListener('playing', function () {
-      // Each clip plays for its own original length (until 'ended'); the timeout is only a safety net.
-      if (actives.has(v) && !actives.get(v)) actives.set(v, setTimeout(function () { finish(v); }, 120000));
+      // Cards rotate: a mini plays up to ~10 s (or until it ends) so the 6 PC slots cycle through every visible card.
+      if (actives.has(v) && !actives.get(v)) actives.set(v, setTimeout(function () { finish(v); }, x.force ? 120000 : 10000));
     });
     v.addEventListener('ended', function () { finish(v); });
     v.addEventListener('error', function () { var y = entries.get(v); if (y) y.failed = true; finish(v); });
