@@ -3,6 +3,7 @@
 
 /*
   Cache-Control: public, max-age=0, must-revalidate
+  Rating: RTA-5042-1996-1400-1577-RTA
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN

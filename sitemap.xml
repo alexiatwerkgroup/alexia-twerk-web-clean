@@ -181,6 +181,9 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://twerkhub.lat/content-removal</loc>
+  </url>
+  <url>
     <loc>https://twerkhub.lat/terms</loc>
     <lastmod>2026-11-21</lastmod>
     <changefreq>weekly</changefreq>
