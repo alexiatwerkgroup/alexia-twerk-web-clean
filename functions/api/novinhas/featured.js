@@ -359,7 +359,16 @@ export async function onRequest({ request, env }) {
       (oldBy[slug]||[]).forEach((vid)=>{const x=feature.find((z)=>z.id===vid);if(x)pinned.push(x);});
       (miniPinBy[slug]||[]).forEach((p)=>{const x=minis.find((z)=>keyOf(z)===keyOf(p));if(x)pinned.push(x);});
       if (!choices.length) continue;
-      const pool=pinned.length?pinned:choices, chosen=pool[hash(slug+':'+day)%pool.length];
+      // Regla: se elige al azar en CADA carga de pagina (no por hora). Con UN solo fijado, ese fijado pesa doble (PIN_WEIGHT) y el resto rota; con 2 fijados se sortea entre ellos; sin fijados, entre todos.
+      const PIN_WEIGHT=2;
+      let chosen;
+      if (pinned.length===1) {
+        const others=choices.filter((x)=>keyOf(x)!==keyOf(pinned[0])), r=Math.random()*(others.length+PIN_WEIGHT);
+        chosen=(r<PIN_WEIGHT||!others.length)?pinned[0]:others[Math.min(others.length-1,Math.floor(r-PIN_WEIGHT))];
+      } else {
+        const pool=pinned.length?pinned:choices;
+        chosen=pool[Math.floor(Math.random()*pool.length)];
+      }
       out[slug]={id:chosen.id,start:chosen.start,slow:chosen.slow,kind:chosen.kind,src:chosen.src,...(owner?{pinned:pinned.map((x)=>({kind:x.kind,id:x.id,start:x.start,slow:x.slow})),hidden:hiddenBy[slug]||[],choices:choices.map((x)=>({kind:x.kind,id:x.id,start:x.start,slow:x.slow,src:x.src}))}:{})};
     }
     return J({day,owner,thumbs:out},200,'no-store');

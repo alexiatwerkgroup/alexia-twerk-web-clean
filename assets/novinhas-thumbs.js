@@ -201,7 +201,7 @@
         cards.forEach(function (a) {
           var sl = slugOf(a), c = null;
           try { c = JSON.parse(localStorage.getItem('nvThumb:' + sl) || 'null'); } catch (e) {}
-          if (c && Date.now() - c.t < 600000) { cachedThumbs[sl] = c.v; hit.push(a); } else miss.push(a);
+          miss.push(a); // sin cache local: el mini se sortea de nuevo en cada carga de la pagina
         });
         if (hit.length) applyBatch(hit, { thumbs: cachedThumbs, owner: false });
         cards = miss; slugs = cards.map(slugOf).filter(Boolean);
@@ -210,7 +210,6 @@
       var url = '/api/novinhas/featured?thumbs=1&clips=1&' + slugs.map(function (s) { return 'c=' + encodeURIComponent(s); }).join('&');
       busy = true;
       fetch(url, { credentials: 'same-origin', cache: 'no-store', headers: authHeaders(false) }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
-        if (d && d.thumbs && !d.owner) { slugs.forEach(function (sl) { try { localStorage.setItem('nvThumb:' + sl, JSON.stringify({ t: Date.now(), v: d.thumbs[sl] || null })); } catch (e) {} }); }
         if (d && d.thumbs) applyBatch(cards, d);
         else cards.forEach(function (a) { processed.delete(a); if (cardObserver) cardObserver.observe(a); });
       }).catch(function () { cards.forEach(function (a) { processed.delete(a); if (cardObserver) cardObserver.observe(a); }); }).finally(function () { busy = false; if (queue.length) scheduleFlush(); });
