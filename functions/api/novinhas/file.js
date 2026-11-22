@@ -1,7 +1,7 @@
 // GET /api/novinhas/file?k=<canal>/<full|480h|previews>/<video-NN.mp4|poster-NN.webp>
 // Sirve videos y portadas de Novinhas desde el bucket R2 (binding NOVINHAS_VIDEOS). Soporta Range.
 // Los videos bloqueados (canal VIP, fuera de los libres) solo se entregan con la cookie VIP valida.
-import { vipCfg, isVip, isLocked } from '../../_lib/vip.js';
+import { vipCfg, isVip, isLocked, isOwner, retiredCfg, isRetired } from '../../_lib/vip.js';
 const KEY = /^([a-z0-9-]{2,60})\/(?:(full|480h|teasers)\/video-(\d{2,3})\.mp4|(previews)\/poster-(\d{2,3})\.webp)$/;
 
 // Canales retirados del sitio: no se sirven aunque sus archivos sigan en el bucket.
@@ -12,6 +12,7 @@ export async function onRequestGet({ request, env }) {
   const km = KEY.exec(key); if (!km) return fail(400, 'bad_request');
   if (REMOVED.has(km[1])) return fail(404, 'not_found');
   if (!env.NOVINHAS_VIDEOS) return fail(500, 'not_configured');
+  if (isRetired(await retiredCfg(env), km[1], km[3] || km[5]) && !(await isOwner(request, env))) return fail(404, 'not_found');
   const isPoster = !!km[4], isTeaser = km[2] === 'teasers'; let priv = false;
   if (!isPoster) {
     const cfg = await vipCfg(env);

@@ -1,4 +1,4 @@
-import { isOwner, isVip } from './vip.js';
+import { isOwner, isVip, retiredCfg, isRetired } from './vip.js';
 
 let accessTableReady;
 export async function ensureClipAccess(db) {
@@ -15,6 +15,7 @@ export async function clipAccessMap(db, kind, slug) {
 }
 
 export async function clipCanView(request, env, kind, slug, vid, start = 0, slow = 0) {
+  if (isRetired(await retiredCfg(env), slug, vid)) return await isOwner(request, env);
   if (await isOwner(request, env) || await isVip(request, env)) return true;
   await ensureClipAccess(env.DB);
   const row = await env.DB.prepare('SELECT access FROM nv_clip_access WHERE kind=? AND slug=? AND vid=? AND start=? AND slow=?').bind(kind, slug, vid, start || 0, slow ? 1 : 0).first();

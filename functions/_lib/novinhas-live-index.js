@@ -1,3 +1,4 @@
+import { retiredCfg, isRetired } from './vip.js';
 const CACHE_KEY = '_config/novinhas-live-index.json';
 const CACHE_MS = 5 * 60 * 1000;
 const SLUG = /^[a-z0-9-]{2,60}$/;
@@ -33,7 +34,8 @@ async function discover(env, preferred) {
         const object = await env.NOVINHAS_VIDEOS.get(`${slug}/_videos.json`);
         if (!object) return null;
         const manifest = await object.json();
-        const videos = Array.isArray(manifest.videos) ? manifest.videos : [];
+        const retCfg = await retiredCfg(env);
+        const videos = (Array.isArray(manifest.videos) ? manifest.videos : []).filter((v) => !isRetired(retCfg, slug, v.id));
         if (!videos.length) return null;
         const old = preferredBySlug.get(slug) || {};
         const first = String(videos[0].id).padStart(2, '0');
@@ -41,7 +43,7 @@ async function discover(env, preferred) {
           slug,
           name: String(old.name || manifest.name || slug).slice(0, 120),
           total: videos.length,
-          poster: old.poster || Number(first),
+          poster: (old.poster && !isRetired(retCfg, slug, old.poster)) ? old.poster : Number(first),
           ...(old.img ? { img: old.img } : {})
         };
       } catch { return null; }
