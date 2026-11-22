@@ -23,6 +23,9 @@
     '.np-stage.np-tall{height:min(74vh,640px)}' +
     '.np-stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;outline:0}' +
     '.np-stage:fullscreen,.np-stage:-webkit-full-screen{max-height:none;height:100%;border-radius:0}' +
+    /* Rendimiento en pantalla completa: sin blur ni animaciones infinitas (glow/parpadeo) sobre el video; cada cuadro obliga a repintar todo el overlay */
+    '.np-stage:fullscreen .np-enh,.np-stage:-webkit-full-screen .np-enh,.np-stage:fullscreen .np-enh .ne-big,.np-stage:-webkit-full-screen .np-enh .ne-big{animation:none!important}' +
+    '.np-stage:fullscreen .np-fs,.np-stage:fullscreen .twk-q-btn,.np-stage:-webkit-full-screen .np-fs,.np-stage:-webkit-full-screen .twk-q-btn{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}' +
     '.np-toast{position:absolute;left:50%;top:14%;transform:translateX(-50%);padding:10px 18px;border-radius:999px;background:rgba(0,0,0,.72);color:#fff;font:700 15px system-ui,sans-serif;pointer-events:none;opacity:0;transition:opacity .18s;z-index:14;white-space:nowrap}' +
     '.np-toast.on{opacity:1}' +
     '.np-fs{position:absolute;right:10px;top:10px;z-index:12;width:38px;height:38px;border:0;border-radius:10px;cursor:pointer;color:#2a1a00;background:linear-gradient(180deg,#fff0a8,#f7c83a 45%,#d99a0b);box-shadow:0 4px 0 #8a6205,0 8px 18px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.7);display:grid;place-items:center;padding:0}' +
