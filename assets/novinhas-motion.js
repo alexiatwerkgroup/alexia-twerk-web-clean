@@ -6,7 +6,7 @@
   window.__twkNovMotionInstalled = true;
   var conn = navigator.connection || {};
   var small = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-  var MAX = (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) ? 2 : (small ? 6 : 30);
+  var MAX = (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) ? 2 : (small ? 4 : 14);
   var entries = new Map(), actives = new Map(), idleTimer = 0;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
   function visibleRows() {
@@ -42,7 +42,7 @@
     var rows = visibleRows();
     while (rows.length) {
       var next = rows.shift(), v = next.v;
-      // Max 30 card minis at once on PC (6 on phones, 2 on data saver), ranking previews not counted: more simultaneous decoders drop frames and freeze everything. Ranking previews (force) always play.
+      // Max 14 card minis at once on PC (4 on phones, 2 on data saver), ranking previews not counted: more simultaneous decoders drop frames and freeze everything. Ranking previews (force) always play.
       if (!next.x.force && nonForced() >= MAX) continue;
       // Hottest Videos are an explicit five-second preview request from the site owner:
       // they keep moving even when the OS reduced-motion preference is on.
