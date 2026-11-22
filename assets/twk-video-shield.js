@@ -91,6 +91,8 @@
       ':fullscreen .' + CTA_CLASS + '-sub,:-webkit-full-screen .' + CTA_CLASS + '-sub,.' + WRAP_CLASS + ':fullscreen .' + CTA_CLASS + '-sub{font-size:11px}' +
       '@media(max-width:540px){.' + CTA_CLASS + '{top:10px;left:10px;padding:8px 12px 9px}.' + CTA_CLASS + '-title{font-size:11.5px}.' + CTA_CLASS + '-sub{font-size:8px}}' +
       '@media(prefers-reduced-motion:reduce){.' + CTA_CLASS + '{animation:none}.' + CTA_CLASS + '::before{display:none}}' +
+      // Fullscreen perf: blur + infinite glow/shimmer animations over a playing video force the GPU to recomposite every frame (lag). Static pill in fullscreen only.
+      ':fullscreen .' + CTA_CLASS + ',:-webkit-full-screen .' + CTA_CLASS + ',.' + WRAP_CLASS + ':fullscreen .' + CTA_CLASS + '{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;animation:none!important;will-change:auto!important}:fullscreen .' + CTA_CLASS + '::before,:-webkit-full-screen .' + CTA_CLASS + '::before{display:none!important;animation:none!important}' +
       '.' + CAP_CLASS  + '{position:absolute;inset:0;z-index:5;background:transparent;border:0;padding:0;margin:0;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}' +
       '.' + CAP_CLASS  + ':focus-visible{outline:none}' +
       '.' + CTRLS_CLASS + '{position:absolute;bottom:10px;right:10px;z-index:10;display:flex;gap:6px;align-items:center}' +
