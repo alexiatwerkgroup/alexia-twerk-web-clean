@@ -1,0 +1,21 @@
+name: merge-channel
+on:
+  workflow_dispatch:
+    inputs:
+      src: { description: 'origen', required: true }
+      dst: { description: 'destino', required: true }
+      dry: { description: 'dry = solo contar', required: false, default: '' }
+permissions:
+  contents: read
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install boto3
+      - run: python3 tools/merge_channel.py "${{ inputs.src }}" "${{ inputs.dst }}" ${{ inputs.dry }}
+        env:
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
