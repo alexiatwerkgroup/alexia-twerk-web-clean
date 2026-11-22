@@ -176,5 +176,10 @@ export async function authenticate(request, env) {
   if (!secret) return null;
   const token = extractToken(request);
   if (!token) return null;
-  return verifyJWT(token, secret);
+  const p = await verifyJWT(token, secret);
+  if (p) return p;
+  // Un Bearer viejo/vencido en localStorage no debe anular una cookie valida (el dueño perdia los switches de Novinhas).
+  const m = (request.headers.get('Cookie') || '').match(/(?:^|;\s*)twk_jwt=([^;]+)/);
+  if (m) { let c = ''; try { c = decodeURIComponent(m[1]); } catch (e) {} if (c && c !== token) return verifyJWT(c, secret); }
+  return null;
 }
