@@ -9,7 +9,8 @@
   if(!document.querySelector('link[href*="twk-ui.css"]')){var ui=document.createElement('link');ui.rel='stylesheet';ui.href='/assets/twk-ui.css?v=1';document.head.appendChild(ui);}
   function build(){
     var d=document.createElement('div');d.id='twk18';
-    d.innerHTML='<div class="b"><h2>ADULTS ONLY · 18+</h2><p>This page contains sexually explicit material. All models are over 18 and appear under written contract. By entering you confirm that you are at least 18 years old and that viewing adult content is legal where you live.</p><button class="y" type="button">I am 18 or older · Enter</button><a class="n" href="https://www.google.com">Leave</a></div>';
+    var nv=/^\/novinhas(\/|$)/.test(location.pathname);var msg=nv?'This page contains adult material from a third-party archive. Videos with any doubt about a performer\'s age are removed. By entering you confirm that you are at least 18 years old and that viewing adult content is legal where you live. To request a removal: twerkhub.lat/content-removal':'This page contains sexually explicit material. All models are over 18 and appear under written contract. By entering you confirm that you are at least 18 years old and that viewing adult content is legal where you live.';
+    d.innerHTML='<div class="b"><h2>ADULTS ONLY · 18+</h2><p>'+msg+'</p><button class="y" type="button">I am 18 or older · Enter</button><a class="n" href="https://www.google.com">Leave</a></div>';
     document.body.appendChild(d);
     d.querySelector('.y').onclick=function(){try{localStorage.setItem(K,'1')}catch(e){} d.remove(); st.remove();};
   }

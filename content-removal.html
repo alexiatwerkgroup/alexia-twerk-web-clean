@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta property="og:image" content="https://twerkhub.lat/logo-twerkhub.png">
+
+<script>(function(){if(!document.getElementById('twk-toast-host-v3')){var h=document.createElement('div');h.id='twk-toast-host-v3';h.style.cssText='position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;';document.documentElement.insertBefore(h,document.body);}})();</script>
+<script src="/assets/twk-bot-detect.js?v=20260511-bd1"></script>
+<script src="/assets/twk-guardian.js?v=20260509-g1"></script>
+<script data-twk="thumb-fallback-v3">(function(){
+function fix(){
+  document.querySelectorAll('img').forEach(function(i){
+    var src=i.src||'';
+    var vidM=src.match(/ytimg\.com\/vi\/([\w-]{11})/);
+    var vid=i.dataset.vid||(vidM?vidM[1]:null);
+    if(!vid)return;
+    if(i.loading==='lazy')i.loading='eager';
+    var bad=!i.src||i.naturalWidth<=120||src.endsWith('default.jpg')||src.indexOf('thumb-unavailable')>-1;
+    if(bad){
+      var tries=['hqdefault.jpg','mqdefault.jpg','0.jpg','sddefault.jpg','maxresdefault.jpg'];
+      var ti=0;
+      var tryNext=function(){
+        if(ti>=tries.length)return;
+        i.src='https://i.ytimg.com/vi/'+vid+'/'+tries[ti++];
+      };
+      i.onerror=function(){tryNext();};
+      i.onload=function(){if(this.naturalWidth<=120){tryNext();}};
+      tryNext();
+    }
+  });
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}
+setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,3500);
+})();</script>
+<script data-twk="thumb-v4">(function(){function tryNext(i,vid,arr,idx){if(idx>=arr.length){i.style.display='none';return;}i.onerror=function(){tryNext(i,vid,arr,idx+1);};i.onload=function(){if(i.naturalWidth<=120){tryNext(i,vid,arr,idx+1);}};i.src='https://i.ytimg.com/vi/'+vid+'/'+arr[idx];}function fix(){document.querySelectorAll('img').forEach(function(i){var m=(i.src||'').match(/ytimg\.com\/vi\/([\w-]{11})/);var vid=i.dataset.vid||(m?m[1]:null);if(!vid)return;if(i.loading==='lazy')i.loading='eager';if(i.complete&&i.naturalWidth<=120){tryNext(i,vid,['hqdefault.jpg','mqdefault.jpg','sddefault.jpg','maxresdefault.jpg','0.jpg'],0);}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fix);}else{fix();}setTimeout(fix,400);setTimeout(fix,1500);setTimeout(fix,4000);})();</script>
+<script>(function(){var F='twk_killed_20260509_v2';if(localStorage.getItem(F)==='1')return;var done=false;function finish(){if(done)return;done=true;localStorage.setItem(F,'1');location.reload(true)}if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}).catch(function(){}).then(function(){if('caches' in window){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))})}}).catch(function(){}).then(finish);setTimeout(finish,3000)}else{finish()}})();</script>
+<style>.twerkhub-tokens-toast{display:inline-flex!important;align-items:center!important;gap:12px!important;max-width:320px!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-plus{display:inline-block!important;flex-shrink:0!important;font-size:22px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;color:#1ee08f!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-body{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;flex:1 1 auto!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-title{display:block!important;font-size:13px!important;font-weight:800!important;color:#fff!important;line-height:1.25!important}.twerkhub-tokens-toast .twerkhub-tokens-toast-sub{display:block!important;font-size:9.5px!important;font-weight:700!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#1ee08f!important;opacity:.85!important}.twk-thumb-dead::after,.twk-thumb-maybe-dead::after{display:none!important;content:none!important}img[src$="/thumb-unavailable.svg"]{opacity:0!important;visibility:hidden!important}.twk-thumb-dead{pointer-events:auto!important;cursor:pointer!important}a.twk-thumb-dead{pointer-events:auto!important}</style>
+<style id="twk-force-thumbs">.rh-thumb img,img[src*="i.ytimg.com"]{opacity:1!important;visibility:visible!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}.rh-thumb,.pack-thumb,.fp-thumb,.video-thumb,.twerkhub-pl-more-playlists img{background:#0a0a14}</style>
+<script>(function(){function force(){try{var imgs=document.querySelectorAll('img[src*="i.ytimg.com"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];im.setAttribute('loading','eager');im.style.opacity='1';im.style.visibility='visible';im.style.display='block';if(!im.dataset.twkOrigSrc){im.dataset.twkOrigSrc=im.getAttribute('src')||'';}var s=im.getAttribute('src');if(s)im.src=s;}}catch(_){}}function recover(){try{var bad=document.querySelectorAll('img[src*="thumb-unavailable"]');for(var i=0;i<bad.length;i++){var im=bad[i];if(im.dataset.twkOrigSrc){im.src=im.dataset.twkOrigSrc;}}}catch(_){}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){force();recover();});}else{force();recover();}setTimeout(function(){force();recover();},500);setTimeout(function(){force();recover();},2000);})();</script>
+<style id="twk-sr-only-seo">.twk-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}</style>
+<script src="/assets/twerkhub-sw-killer.js?v=20260425-p2" async></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Content removal · Twerkhub · 18+</title>
+<meta name="description" content="How to request the removal of a video from Twerkhub: urgent cases, people who appear in a video, and rights holders (DMCA).">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://twerkhub.lat/content-removal">
+<link rel="alternate" hreflang="en" href="https://twerkhub.lat/content-removal">
+<link rel="alternate" hreflang="x-default" href="https://twerkhub.lat/content-removal">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Twerkhub · Content removal">
+<meta property="og:description" content="Request the removal of a video. Urgent cases, people who appear, rights holders.">
+<meta property="og:url" content="https://twerkhub.lat/content-removal">
+<meta name="theme-color" content="#05050a">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap&family=Anton">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Twerkhub Terms of Service","url":"https://twerkhub.lat/content-removal","inLanguage":"en","dateModified":"2026-04-24","publisher":{"@type":"Organization","name":"Twerkhub","url":"https://twerkhub.lat/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://twerkhub.lat/"},{"@type":"ListItem","position":2,"name":"Terms","item":"https://twerkhub.lat/content-removal"}]}</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f5f5fb;background:#05050a;line-height:1.72;min-height:100vh;padding-bottom:120px}
+a{color:#ff6fa8;text-decoration:underline;text-underline-offset:3px}
+a:hover{color:#ffb454}
+.twk-wrap{max-width:760px;margin:0 auto;padding:120px 28px 40px}
+.twk-kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff6fa8;margin-bottom:14px}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,5vw,60px);font-weight:900;line-height:1.1;letter-spacing:-.02em;margin-bottom:20px}
+h2{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:900;margin:44px 0 12px;color:#fff}
+p,li{color:#d8d8e2;margin-bottom:14px;font-size:16px}
+ul{padding-left:22px;margin-bottom:14px}
+strong{color:#fff;font-weight:700}
+.twk-updated{color:#8a8a96;font-size:13.5px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.12em;margin-bottom:40px}
+.twk-back{display:inline-block;margin-top:40px;padding:12px 26px;border-radius:999px;background:linear-gradient(135deg,#ff8a00,#9d4edd);color:#fff;font-weight:800;letter-spacing:.04em;text-transform:uppercase;font-size:13px;text-decoration:none}
+</style>
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSFR7FHCLS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YSFR7FHCLS', { send_page_view: true });
+</script>
+<link rel="stylesheet" href="/assets/twerkhub-bundle.css?v=20261110-typescale1">
+<link rel="stylesheet" href="/assets/twerkhub-ph-theme.css?v=20261110-typescale1">
+<style id="twk-hide-collection-cta">
+.twk-video-shield-cta,
+.twk-hero-affiliate-overlay,
+a.twk-video-shield-cta,
+a.twk-hero-affiliate-overlay,
+[class*="video-shield-cta"],
+[class*="hero-affiliate-overlay"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+</style>
+<link rel="stylesheet" href="/assets/twk-kill-pink-pills.css?v=20260513-kill-pink-pills">
+</head>
+<body class="twerkhub-page twerkhub-ph-theme">
+<a href="#main" class="twk-sr-only">Skip to content</a>
+
+<!-- TWK_SHELL_V2 -->
+<link rel="stylesheet" href="/assets/twk-shell-v2.css?v=20261110-typescale1">
+<header class="tn2"><div class="tn2-w"><a class="tn2-logo" href="/" aria-label="Twerkhub home"><img src="/assets/patreon-logo-final.png" alt="Twerkhub.lat" width="190" height="43"></a>
+<div class="tn2-lk"><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/account">My account</a><a class="tn2-jn" href="/jenny/">Jenny VIP</a></div>
+<details><summary aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/community">Community</a><a href="/account">My account</a></nav></details></div></header>
+<script>(function(){var p=location.pathname.replace(/\/index\.html$/,'/');document.querySelectorAll('.tn2-lk a').forEach(function(a){var h=a.getAttribute('href');if(h.length>1&&h.indexOf('#')<0&&p.indexOf(h.replace(/\/$/,''))===0)a.classList.add('on')})})();</script>
+<script>
+(function(){
+  try{var p=location.pathname.replace(/\/index\.html$/,'/');var map={'/':'home','/creators':'creators','/community':'community','/membership':'membership','/account.html':'account','/profile.html':'profile','/alexia-video-packs':'hotpacks'};var key=map[p];if(p.indexOf('/playlist')===0)key='playlists';else if(p.indexOf('/creator/')===0||p.indexOf('/twerk-dancer/')===0)key='creators';if(key){var a=document.querySelector('.twk-nav-v1-links a[data-nav="'+key+'"]');if(a){a.classList.add('is-active');a.setAttribute('aria-current','page');}}}catch(e){}
+  try{var n=document.getElementById('twk-nav-v1-live-n');if(n){var v=parseInt(sessionStorage.getItem('twkLiveN')||'0',10);if(!v||v<300||v>500)v=380+Math.floor(Math.random()*80);n.textContent=v;function tick(){var d=Math.floor(Math.random()*5)-2;v=Math.max(300,Math.min(500,v+d));n.textContent=v;sessionStorage.setItem('twkLiveN',v);setTimeout(tick,4000+Math.random()*3000);}setTimeout(tick,4000);}}catch(e){}
+  function eagerizeThumbs(){try{var imgs=document.querySelectorAll('img[loading="lazy"]');imgs.forEach(function(img){if(img.src && (img.src.indexOf('ytimg.com')!==-1 || img.src.indexOf('/logo-twerkhub')!==-1)){img.loading='eager';if(img.fetchPriority==='auto'||!img.fetchPriority)img.fetchPriority='high';var s=img.src;if(!img.complete||img.naturalWidth===0){img.src='';img.src=s;}}});}catch(e){}}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',eagerizeThumbs);}else{eagerizeThumbs();}
+  setTimeout(eagerizeThumbs,1000);setTimeout(eagerizeThumbs,3000);
+  function loadOnce(src,id){if(document.getElementById(id))return;var s=document.createElement('script');s.src=src;s.id=id;s.async=false;document.head.appendChild(s);}
+  loadOnce('/assets/supabase-config.js?v=20260509-d1-p8-no-transient-logout','twk-loader-supabase-config');
+  loadOnce('/assets/twk-tokens-v3.js?v=20260513-blindaje-v62','twk-loader-token-system');
+  loadOnce('/assets/twerkhub-auth.js?v=20260509-d1-p8-hardsync','twk-loader-twerkhub-auth');
+})();
+</script>
+
+
+<div class="twk-wrap">
+  <div class="twk-kicker">/ Legal · content removal</div>
+  <h1>Content removal</h1>
+  <p class="twk-updated">Last updated: November 22, 2026</p>
+  <p>Twerkhub is an adults-only platform (18+). If something on the site should not be here, tell us and we will act. <em>Español: si algo del sitio no debería estar, avisanos y actuamos.</em></p>
+
+  <h2>1. Urgent: possible minor or content shared without consent</h2>
+  <p>If you think a person in a video may be under 18, or the video was shared without the consent of the person who appears in it, write to <a href="mailto:dmca@twerkhub.lat?subject=URGENT%20removal">dmca@twerkhub.lat</a> with the subject <b>URGENT</b> and the page address (URL). We remove the video first and review it afterwards. Where the law requires it, we report to the competent authorities. We aim to act within 24 hours.</p>
+  <p><em>Español: si creés que alguien es menor de 18, o que el video se publicó sin consentimiento de quien aparece, escribí con el asunto URGENT y el link. Lo retiramos primero y lo revisamos después. Buscamos actuar dentro de las 24 horas.</em></p>
+
+  <h2>2. You appear in a video</h2>
+  <p>Anyone who appears in a video can ask for it to be removed, with no need to explain why. Write to <a href="mailto:privacy@twerkhub.lat?subject=Removal%20request">privacy@twerkhub.lat</a> with the page address (URL) and a way to confirm it is you (we will never ask for more than needed).</p>
+  <p><em>Español: cualquier persona que aparece en un video puede pedir que se retire, sin dar explicaciones. Escribí con el link y alguna forma de confirmar que sos vos.</em></p>
+
+  <h2>3. You own the rights (DMCA / copyright)</h2>
+  <p>Write to <a href="mailto:dmca@twerkhub.lat?subject=DMCA%20notice">dmca@twerkhub.lat</a> with the page address (URL), proof that you own the content or act for the owner, and your contact details. If you act for someone else (a manager, for example), include proof of permission.</p>
+  <p><em>Español: titulares de derechos, escriban con el link, la prueba de que el contenido es suyo y sus datos de contacto. Si actúan por otra persona, incluyan prueba de autorización.</em></p>
+
+  <h2>How we handle your request</h2>
+  <ul>
+    <li>You get a reply to your email. Requests in English or Spanish are fine.</li>
+    <li>Videos about which there is any doubt are retired from public view while we review them. Retired videos can no longer be played.</li>
+    <li>We keep a private record of what was removed, when and why.</li>
+  </ul>
+  <p><em>Español: respondemos por correo, en inglés o español. Los videos con dudas se retiran de la vista pública mientras los revisamos, y guardamos un registro privado de qué se retiró, cuándo y por qué.</em></p>
+
+  <a class="twk-back" href="/">← Back to home</a>
+</div>
+<style id="twk-related-css">.twk-related,.twk-mf{grid-column:1/-1!important}
+.twk-related{max-width:1200px;margin:60px auto 40px;padding:24px 26px;border-top:1px solid rgba(255,255,255,.08);font-family:'Inter',ui-sans-serif,system-ui,sans-serif}
+.twk-related-head{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px}
+.twk-related ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px}
+.twk-related a{display:block;padding:9px 12px;border-radius:8px;color:rgba(230,230,240,.82);text-decoration:none;font-size:13px;line-height:1.35;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .15s,color .15s,transform .15s}
+.twk-related a:hover{background:rgba(255,46,135,.12);color:#fff;border-color:rgba(255,46,135,.3);transform:translateY(-1px)}
+@media(max-width:760px){.twk-related{margin:36px auto 24px;padding:18px 16px}.twk-related ul{grid-template-columns:1fr 1fr;gap:6px 10px}.twk-related a{padding:8px 10px;font-size:12px}}
+</style>
+<section class="twk-related" data-twk="related" aria-label="Related pages">
+  <div class="twk-related-head">Related on Twerkhub</div>
+  <ul>
+    <li><a href="/">The Platform for the uncut ones.</a></li>
+    <li><a href="/creators">All Creators</a></li>
+    <li><a href="/about">Built for the uncut ones.</a></li>
+    <li><a href="/glossary">Every word in the scene, explained.</a></li>
+    <li><a href="/community">The inside conversation.</a></li>
+    <li><a href="/top-100-twerk-videos">Top 100 Twerk Videos</a></li>
+  </ul>
+</section>
+
+<!-- TWK_MEGA_FOOTER_V1 -->
+<style>
+.twk-mf{
+  background:#05050a;color:#c7c7d3;font-family:'Inter',-apple-system,sans-serif;font-size:13.5px;line-height:1.55;
+  border-top:1px solid rgba(255,255,255,.06);padding:64px 0 28px;margin-top:80px;position:relative;z-index:1;
+}
+.twk-mf *{box-sizing:border-box}
+.twk-mf-wrap{max-width:1480px;margin:0 auto;padding:0 32px}
+/* secondary: earn tokens free */
+.twk-mf-earn{
+  background:rgba(255,255,255,.018);border:1px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px 24px;margin-bottom:54px;
+}
+.twk-mf-earn-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:14px;margin-bottom:18px}
+.twk-mf-earn-head h4{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#fff;
+}
+.twk-mf-earn-head h4 b{color:#ffd78a}
+.twk-mf-earn-head p{font-size:12px;color:#8a8a99}
+.twk-mf-earn-head a{
+  color:#c7c7d3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:2px;transition:color .25s,border-color .25s;
+}
+.twk-mf-earn-head a:hover{color:#ffd78a;border-color:#ffd78a}
+.twk-mf-earn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.twk-mf-rule{
+  background:transparent;border:1px solid rgba(255,255,255,.08);padding:14px 12px;border-radius:8px;text-align:center;text-decoration:none;color:inherit;display:block;
+  transition:border-color .2s;
+}
+.twk-mf-rule:hover{border-color:rgba(255,180,84,.4)}
+.twk-mf-rule-act{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#8a8a99;margin-bottom:6px;
+}
+.twk-mf-rule-tk{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:18px;font-weight:700;color:#ffd78a;
+}
+.twk-mf-rule-tk b{font-weight:900}
+
+.twk-mf-row{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:42px;padding-bottom:42px;margin-bottom:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.twk-mf-row+.twk-mf-row{padding-top:42px;padding-bottom:42px}
+.twk-mf-brand{display:block;line-height:1;margin-bottom:14px}
+.twk-mf-brand img{display:block;width:auto;max-width:200px;height:auto;}
+.twk-mf-row p{color:#8a8a99;font-size:13px;line-height:1.7;max-width:340px}
+.twk-mf-row h5{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#ffd78a;margin:0 0 18px;
+}
+.twk-mf-row ul{list-style:none;padding:0;margin:0}
+.twk-mf-row ul li{margin-bottom:8px;line-height:1.4}
+.twk-mf-row ul a{
+  color:#c7c7d3;font-size:13.5px;text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;
+}
+.twk-mf-row ul a:hover{color:#ff6fa8;padding-left:5px}
+.twk-mf-bottom{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:24px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#5a5a68;
+}
+.twk-mf-bottom a{color:#8a8a99;text-decoration:none;margin:0 4px}
+.twk-mf-bottom a:hover{color:#ff6fa8}
+@media(max-width:1100px){
+  .twk-mf-earn-grid{grid-template-columns:repeat(2,1fr)}
+  .twk-mf-row{grid-template-columns:1fr 1fr;gap:28px}
+}
+@media(max-width:720px){
+  .twk-mf-wrap{padding:0 18px}
+  .twk-mf-earn-grid{grid-template-columns:1fr}
+  .twk-mf-row{grid-template-columns:1fr;gap:24px}
+}
+</style>
+<footer class="tf2"><div class="tf2-w"><div class="tf2-cols">
+<div><a class="tn2-logo" href="/">TWERK<b>HUB</b></a><p style="margin-top:14px;max-width:300px">If you know, you know.</p></div>
+<div><h4>Explore</h4><a href="/jenny/">Jenny VIP</a><a href="/#playlists">Playlists</a><a href="/creators">Creators</a><a href="/tokens/">Membership</a><a href="/blog/">Blog</a></div>
+<div><h4>Community</h4><a href="https://discord.gg/WWn8ZgQMjn" rel="noopener">Discord</a><a href="https://t.me/+0xNr69raiIlmYWRh" rel="noopener">Telegram</a><a href="https://x.com/twerkhuboficial" rel="noopener">X</a><a href="https://www.patreon.com/twerkhuboficial" rel="noopener">Patreon</a></div>
+<div><h4>Site</h4><a href="/site-map">Site map</a><a href="/account">My account</a><a href="/contact">Contact</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/es/">Español</a><a href="/pt/">Português</a><a href="/ru/">Русский</a></div>
+</div><p class="tf2-legal">Adults only. All models are over 18 and appear under written contract. Minors are not allowed to enter this site. © Twerkhub.</p></div></footer>
+<!-- /TWK_MEGA_FOOTER_V1 -->
+
+
+<script defer src="/assets/online-count-global.js?v=20260426-p1"></script>
+<script defer src="/assets/twk-lang-switcher.js?v=20260426-p2"></script>
+<script defer src="/assets/twerkhub-watchdog.js?v=20260426-p1"></script>
+<script defer src="/assets/js/twerkhub-ga4-video-tracking.js"></script>
+<script defer src="/assets/js/twerkhub-ga4-conversion-tracking.js"></script>
+<script src="/assets/js/image-seo-engine.js" defer></script>
+  <script src="/assets/thumb-fallback.js?v=20260512-fix2" defer></script>
+<script defer src="/assets/profile-stats-live.js?v=20260509-p3-deltacap"></script>
+<script defer src="/assets/session-tracker.js?v=20260503-p2"></script>
+<script defer src="/assets/twerkhub-pill-into-nav.js?v=20260506-p7"></script>
+
+<!-- twk-email-capture:START -->
+<script defer src="/assets/twerkhub-email-capture.js?v=20260509-ec3-noblur-keep-home" data-twk-email-capture></script>
+<!-- twk-email-capture:END -->
+
+<!-- twk-related-auto:START -->
+<style id="twk-rel-auto-css">.twk-rel-auto{max-width:1320px;margin:50px auto 30px;padding:0 26px;font-family:"Inter",ui-sans-serif,system-ui,sans-serif}.twk-rel-auto-head{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#ff9000;margin-bottom:18px;display:block}.twk-rel-auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:880px){.twk-rel-auto-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.twk-rel-auto-grid{grid-template-columns:1fr}}.twk-rel-auto-card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(20,20,32,.5);text-decoration:none;color:#f5f5fb;transition:transform .25s,border-color .25s,background .25s}.twk-rel-auto-card:hover{transform:translateY(-2px);border-color:rgba(255,45,135,.45);background:rgba(30,20,40,.7)}.twk-rel-auto-cat{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff6fa8}.twk-rel-auto-title{font-family:"Inter",sans-serif;font-size:14px;font-weight:600;line-height:1.35;color:#e9e9f0}</style>
+<aside class="twk-rel-auto" aria-label="Related pages">
+  <span class="twk-rel-auto-head">★ More from the archive</span>
+  <div class="twk-rel-auto-grid">
+    <a href="/" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">The Platform for the uncut ones.</span>
+    </a>
+    <a href="/community" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">The inside conversation.</span>
+    </a>
+    <a href="/glossary" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Every word in the scene, explained.</span>
+    </a>
+    <a href="/about" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Built for the uncut ones.</span>
+    </a>
+    <a href="/admin-users" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Twerkhub Admin · Stats</span>
+    </a>
+    <a href="/akihabara-cosplay-fancam" class="twk-rel-auto-card" data-cat="misc">
+      <span class="twk-rel-auto-cat">misc</span>
+      <span class="twk-rel-auto-title">Akihabara Cosplay · Otaku District</span>
+    </a>
+  </div>
+</aside>
+<!-- twk-related-auto:END -->
+
+<!-- Toast host container (guaranteed rendering) -->
+<div id="twk-toast-host-v3" style="position:fixed;top:80px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;"></div>
+<script src="/assets/twk-thumb-to-video.js?v=20260513-blindaje-v6299876544" defer></script>
+<script src="/assets/twk-kill-pink-pills.js?v=20260513-kill-pink-pills" defer></script>
+<script src="/assets/twk-stats-btn.js?v=20261118-gd3" defer></script><script src="/assets/twerkhub-rabbit.js?v=20261102" defer></script></body>
+</html>
