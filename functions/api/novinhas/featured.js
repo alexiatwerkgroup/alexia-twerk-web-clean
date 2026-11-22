@@ -127,7 +127,7 @@ async function mirrorClips(env, db) {
 }
 // ---- Minis cacheables: visitantes anonimos (sin cookie VIP/sesion) reciben 200 completo, cacheable en navegador y en el borde. VIP/owner no cambian.
 const nvAnon = (request) => !/twk_(?:vip|jwt)=/.test(request.headers.get('Cookie') || '') && !request.headers.get('Authorization');
-function nvClipKey(url, slug, vid, st) { return new Request(`${url.origin}/__nv/clip/${encodeURIComponent(slug)}/${vid}/${st}`); }
+function nvClipKey(url, slug, vid, st, sm) { return new Request(`${url.origin}/__nv/clip${sm ? 'sm' : ''}/${encodeURIComponent(slug)}/${vid}/${st}`); }
 function nvServeBuf(buf, rangeHeader, baseHeaders) {
   const tot = buf.byteLength, h = new Headers(baseHeaders), m = /^bytes=(\d*)-(\d*)$/.exec(rangeHeader || '');
   if (!m) { h.set('Content-Length', String(tot)); return new Response(buf, { status: 200, headers: h }); }
@@ -145,7 +145,7 @@ export async function onRequest({ request, env }) {
   if (csAnon) {
     const sl = q.get('c') || '', vv = parseInt(q.get('v'), 10), tt = parseInt(q.get('t'), 10);
     if (SLUG.test(sl) && vv > 0 && tt >= 0) {
-      csKey = nvClipKey(url, sl, vv, tt);
+      csKey = nvClipKey(url, sl, vv, tt, !!q.get('sm'));
       const rg = request.headers.get('Range');
       try { const hit = await caches.default.match(new Request(csKey.url, rg ? { headers: { Range: rg } } : {})); if (hit) { const hr = new Response(hit.body, hit); hr.headers.set('X-NV-Cache', 'HIT'); return hr; } } catch (e) {}
     }
@@ -259,17 +259,21 @@ export async function onRequest({ request, env }) {
     if (!SLUG.test(slug) || !(vid > 0) || !(st >= 0)) return new Response('bad_request', { status: 400 });
     if (REMOVED_CHANNELS.has(slug)) return new Response('not_found', { status: 404 });
     if (!(await clipCanView(request, env, 'preview', slug, vid, st, 0))) return new Response('VIP access required', { status: 403 });
-    const key = clipKey(slug, vid, st), ch = await env.NOVINHAS_VIDEOS.head(key); if (!ch) return new Response('not_found', { status: 404 });
+    // sm=1 (tarjetas de canales): version liviana 270 px en <slug>/cards/ (tools/card_clips.py); si aun no existe se sirve el clip original.
+    let key = clipKey(slug, vid, st), ch = null, isCard = false;
+    if (q.get('sm')) { const ck = `${slug}/cards/c-${vid}-${st}.mp4`, cc = await env.NOVINHAS_VIDEOS.head(ck); if (cc) { key = ck; ch = cc; isCard = true; } }
+    if (!ch) ch = await env.NOVINHAS_VIDEOS.head(key);
+    if (!ch) return new Response('not_found', { status: 404 });
     if (csKey) {
       // Anonimo: cuerpo completo (primer cuarto, como antes) con cache largo; se guarda en el borde y se sirve con soporte de Range.
-      const capA = Math.max(65536, Math.min(ch.size, Math.floor(ch.size / 4))), obj = await env.NOVINHAS_VIDEOS.get(key, { range: { offset: 0, length: capA } });
+      const capA = isCard ? ch.size : Math.max(65536, Math.min(ch.size, Math.floor(ch.size / 4))), obj = await env.NOVINHAS_VIDEOS.get(key, { range: { offset: 0, length: capA } });
       if (!obj) return new Response('not_found', { status: 404 });
       const buf = await obj.arrayBuffer();
       const bh = { 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': 'public, max-age=86400, s-maxage=1800', 'X-Robots-Tag': 'noindex', 'X-NV-Cache': 'MISS' };
       try { await caches.default.put(csKey, new Response(buf, { status: 200, headers: Object.assign({}, bh, { 'Content-Length': String(buf.byteLength) }) })); } catch (e) {}
       return nvServeBuf(buf, request.headers.get('Range'), bh);
     }
-    const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size, vipView = await isVip(request, env), cap = vipView ? tot : Math.max(65536, Math.min(tot, Math.floor(tot / 4))); let a0 = 0, b0 = cap - 1, sc = vipView ? 200 : 206;
+    const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size, vipView = await isVip(request, env), cap = (vipView || isCard) ? tot : Math.max(65536, Math.min(tot, Math.floor(tot / 4))); let a0 = 0, b0 = cap - 1, sc = vipView ? 200 : 206;
     const hh = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': vipView ? 'private, no-store' : 'public, max-age=300', 'X-Robots-Tag': 'noindex' });
     if (mm) { if (mm[1] === '') a0 = Math.max(0, cap - parseInt(mm[2], 10)); else a0 = parseInt(mm[1], 10); if (mm[2]) b0 = Math.min(parseInt(mm[2], 10), cap - 1); if (!(a0 <= b0) || a0 >= cap) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + cap } }); sc = 206; }
     if (!vipView || mm) hh.set('Content-Range', `bytes ${a0}-${b0}/${cap}`);
@@ -352,7 +356,7 @@ export async function onRequest({ request, env }) {
         if (have[vid]==null || (hiddenBy[slug]||[]).includes(vid)) continue;
         const start=have[vid];
         if (!vipViewer && (previewAccess[slug] || {})[`${vid}/${start}/0`] === 'vip') continue;
-        feature.push({kind:'preview',id:vid,start,slow:0,src:`/api/novinhas/featured?cs=1&c=${slug}&v=${vid}&t=${start}`});
+        feature.push({kind:'preview',id:vid,start,slow:0,src:`/api/novinhas/featured?cs=1&sm=1&c=${slug}&v=${vid}&t=${start}`});
       }
       const hideMini=miniHiddenBy[slug]||[], minis=(miniReady[slug]||[]).filter((x)=>!hideMini.includes(`${x.id}:${x.start}:${x.slow}`));
       const choices=feature.concat(minis), pinned=[];
@@ -455,7 +459,7 @@ export async function onRequest({ request, env }) {
     const st0 = (await db.prepare('SELECT start FROM nv_feat WHERE slug = ? AND vid = ?').bind(slug, vid).first() || {}).start || 0, ck = clipKey(slug, vid, st0);
     const ch = await env.NOVINHAS_VIDEOS.head(ck);
     if (ch) {
-      const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size, vipView = await isVip(request, env), cap = vipView ? tot : Math.max(65536, Math.min(tot, Math.floor(tot / 4))); let a0 = 0, b0 = cap - 1, sc = vipView ? 200 : 206;
+      const mm = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') || ''), tot = ch.size, vipView = await isVip(request, env), cap = (vipView || isCard) ? tot : Math.max(65536, Math.min(tot, Math.floor(tot / 4))); let a0 = 0, b0 = cap - 1, sc = vipView ? 200 : 206;
       const hh = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': vipView ? 'private, no-store' : 'public, max-age=300', 'X-Robots-Tag': 'noindex' });
       if (mm) { if (mm[1] === '') a0 = Math.max(0, cap - parseInt(mm[2], 10)); else a0 = parseInt(mm[1], 10); if (mm[2]) b0 = Math.min(parseInt(mm[2], 10), cap - 1); if (!(a0 <= b0) || a0 >= cap) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + cap } }); sc = 206; }
       if (!vipView || mm) hh.set('Content-Range', `bytes ${a0}-${b0}/${cap}`);
