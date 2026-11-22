@@ -1,0 +1,21 @@
+name: fix-low-clips
+on:
+  workflow_dispatch:
+    inputs:
+      slug: { description: 'canal (slug)', required: true }
+      dry: { description: 'dry = solo listar', required: false, default: '' }
+permissions:
+  contents: read
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install boto3
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: python3 tools/fix_low_clips.py "${{ inputs.slug }}" ${{ inputs.dry }}
+        env:
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
