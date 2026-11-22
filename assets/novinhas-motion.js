@@ -6,7 +6,7 @@
   window.__twkNovMotionInstalled = true;
   var conn = navigator.connection || {};
   var small = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-  var MAX = (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) ? 2 : (small ? 4 : 12);
+  var MAX = (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) ? 2 : (small ? 6 : 30);
   var entries = new Map(), actives = new Map(), idleTimer = 0;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
   function visibleRows() {
@@ -24,6 +24,8 @@
     });
     return rows;
   }
+  // Los previews del ranking (force) no ocupan lugar del tope: antes comian los cupos y las tarjetas se movian de a 2-3.
+  function nonForced() { var n = 0; actives.forEach(function (_, v) { var x = entries.get(v); if (!x || !x.force) n++; }); return n; }
   function stop(v, reset) {
     if (!actives.has(v)) return;
     clearTimeout(actives.get(v)); actives.delete(v);
@@ -40,8 +42,8 @@
     var rows = visibleRows();
     while (rows.length) {
       var next = rows.shift(), v = next.v;
-      // Max 12 minis at once on PC (4 on phones, 2 on data saver): more simultaneous decoders drop frames and freeze everything. Ranking previews (force) always play.
-      if (actives.size >= MAX && !next.x.force) continue;
+      // Max 30 card minis at once on PC (6 on phones, 2 on data saver), ranking previews not counted: more simultaneous decoders drop frames and freeze everything. Ranking previews (force) always play.
+      if (!next.x.force && nonForced() >= MAX) continue;
       // Hottest Videos are an explicit five-second preview request from the site owner:
       // they keep moving even when the OS reduced-motion preference is on.
       if (reduce && reduce.matches && !next.x.force) continue;
