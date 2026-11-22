@@ -8,6 +8,13 @@ async function cached(env, key) {
   mem[key] = { t: Date.now(), v }; return v;
 }
 export const vipCfg = (env) => cached(env, '_config/vip.json');
+// Videos "retirados" (RET): siguen en R2 pero no se listan ni se sirven a nadie salvo al dueño.
+export const retiredCfg = async (env) => (await cached(env, '_config/retired.json')) || {};
+export const isRetired = (cfg, slug, id) => !!(cfg && Array.isArray(cfg[slug]) && cfg[slug].includes(Number(id)));
+export async function saveRetiredCfg(env, value) {
+  await env.NOVINHAS_VIDEOS.put('_config/retired.json', JSON.stringify(value), { httpMetadata: { contentType: 'application/json' } });
+  mem['_config/retired.json'] = { t: Date.now(), v: value };
+}
 export const codesCfg = (env) => cached(env, '_config/codes.json');
 export async function saveVipCfg(env, value) {
   await env.NOVINHAS_VIDEOS.put('_config/vip.json', JSON.stringify(value), { httpMetadata: { contentType: 'application/json' } });
