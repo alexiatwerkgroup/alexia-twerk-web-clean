@@ -20,11 +20,10 @@ export async function onRequestGet({ request, env }) {
   const cfg = await vipCfg(env); const c = cfg && cfg.channels && cfg.channels[slug];
   const vipChannel = !!(c && c.vip), unlocked = !vipChannel || (await isVip(request, env)), owner = await isOwner(request, env);
   const ret = await retiredCfg(env);
-  if (!owner) data.videos = (data.videos || []).filter((v) => !isRetired(ret, slug, v.id));
   const K = (k) => '/api/novinhas/file?k=' + k;
-  const videos = (data.videos || []).map((v) => { const n = String(v.id).padStart(2, '0'), locked = !unlocked && isLocked(cfg, slug, v.id); return {
-    id: v.id, retired: owner ? isRetired(ret, slug, v.id) : undefined, title: v.title, width: v.width, height: v.height, duration: v.duration,
+  const videos = (data.videos || []).map((v) => { const n = String(v.id).padStart(2, '0'), locked = !unlocked && isLocked(cfg, slug, v.id), hidden = !owner && isRetired(ret, slug, v.id); return {
+    id: v.id, retired: isRetired(ret, slug, v.id) || undefined, title: v.title, width: v.width, height: v.height, duration: v.duration,
     locked, vipOnly: owner ? isLocked(cfg, slug, v.id) : undefined, poster: K(`${slug}/previews/poster-${n}.webp`),
-    video: locked ? K(`${slug}/teasers/video-${n}.mp4`) : K(`${slug}/full/video-${n}.mp4`), lowVideo: locked ? null : K(`${slug}/480h/video-${n}.mp4`), teaser: locked }; });
+    video: hidden ? null : locked ? K(`${slug}/teasers/video-${n}.mp4`) : K(`${slug}/full/video-${n}.mp4`), lowVideo: locked || hidden ? null : K(`${slug}/480h/video-${n}.mp4`), teaser: locked && !hidden }; });
   return json({ slug, name: data.name || slug, vip: vipChannel, unlocked, free: vipChannel ? (c.free || []).length : videos.length, total: videos.length, videos });
 }
