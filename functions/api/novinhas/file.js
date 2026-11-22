@@ -12,8 +12,10 @@ export async function onRequestGet({ request, env }) {
   const km = KEY.exec(key); if (!km) return fail(400, 'bad_request');
   if (REMOVED.has(km[1])) return fail(404, 'not_found');
   if (!env.NOVINHAS_VIDEOS) return fail(500, 'not_configured');
-  if (isRetired(await retiredCfg(env), km[1], km[3] || km[5]) && !(await isOwner(request, env))) return fail(404, 'not_found');
-  const isPoster = !!km[4], isTeaser = km[2] === 'teasers'; let priv = false;
+  const isPoster = !!km[4];
+  // Retirados: la portada queda visible; video y teaser solo para el dueño.
+  if (!isPoster && isRetired(await retiredCfg(env), km[1], km[3]) && !(await isOwner(request, env))) return fail(404, 'not_found');
+  const isTeaser = km[2] === 'teasers'; let priv = false;
   if (!isPoster) {
     const cfg = await vipCfg(env);
     const locked = isLocked(cfg, km[1], km[3]);
