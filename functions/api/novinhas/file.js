@@ -1,11 +1,11 @@
 // GET /api/novinhas/file?k=<canal>/<full|480h|previews>/<video-NN.mp4|poster-NN.webp>
 // Sirve videos y portadas de Novinhas desde el bucket R2 (binding NOVINHAS_VIDEOS). Soporta Range.
 // Los videos bloqueados (canal VIP, fuera de los libres) solo se entregan con la cookie VIP valida.
-import { vipCfg, isVip, isLocked, isOwner, retiredCfg, isRetired } from '../../_lib/vip.js';
+import { vipCfg, isVip, isLocked, isOwner, retiredCfg, isRetired, REMOVED_CHANNELS } from '../../_lib/vip.js';
 const KEY = /^([a-z0-9-]{2,60})\/(?:(full|480h|teasers)\/video-(\d{2,3})\.mp4|(previews)\/poster-(\d{2,3})\.webp)$/;
 
 // Canales retirados del sitio: no se sirven aunque sus archivos sigan en el bucket.
-const REMOVED = new Set(['carol-videos']);
+const REMOVED = REMOVED_CHANNELS;
 export async function onRequestGet({ request, env }) {
   const fail = (s, m) => new Response(m, { status: s, headers: { 'Cache-Control': 'no-store' } });
   const key = new URL(request.url).searchParams.get('k') || '';

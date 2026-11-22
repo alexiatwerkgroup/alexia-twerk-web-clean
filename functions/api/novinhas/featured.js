@@ -9,7 +9,7 @@
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
 import { clipAccessMap, clipCanView } from '../../_lib/novinhas-clip-access.js';
-import { isVip } from '../../_lib/vip.js';
+import { isVip, REMOVED_CHANNELS } from '../../_lib/vip.js';
 // Previews de tarjeta de canal fijados por el dueño (slug -> id de video). Siempre mudos (los clips se reproducen con muted).
 const FIXED_THUMBS = { 'canal-da-maryh': 45 }; // unico fijo (orden del dueño 15 nov 2026); el resto rota al azar entre los elegidos
 const ROW_BAD = {}; // videos fuera de la fila "Never forgotten": 'slug:id' (orden del dueño 15 nov 2026)
@@ -257,6 +257,7 @@ export async function onRequest({ request, env }) {
   if (q.get('cs')) {
     const slug = q.get('c') || '', vid = parseInt(q.get('v'), 10), st = parseInt(q.get('t'), 10);
     if (!SLUG.test(slug) || !(vid > 0) || !(st >= 0)) return new Response('bad_request', { status: 400 });
+    if (REMOVED_CHANNELS.has(slug)) return new Response('not_found', { status: 404 });
     if (!(await clipCanView(request, env, 'preview', slug, vid, st, 0))) return new Response('VIP access required', { status: 403 });
     const key = clipKey(slug, vid, st), ch = await env.NOVINHAS_VIDEOS.head(key); if (!ch) return new Response('not_found', { status: 404 });
     if (csKey) {
@@ -344,6 +345,7 @@ export async function onRequest({ request, env }) {
       } catch (e) { featureReady[slug] = {}; }
     });
     for (const slug of slugs) {
+      if (REMOVED_CHANNELS.has(slug)) continue;
       const feature=[], have={};
       if (featureReady[slug]) Object.assign(have, featureReady[slug]);
       for (const vid of featureBy[slug]||[]) {
@@ -375,7 +377,7 @@ export async function onRequest({ request, env }) {
     const day = Math.floor(now / 3600), out = {}; // rota entre los elegidos del canal: 1 hora minimo cada uno
     const hash = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h; };
     for (const slug of Object.keys(by)) {
-      if (!SLUG.test(slug)) continue;
+      if (!SLUG.test(slug) || REMOVED_CHANNELS.has(slug)) continue;
       const acc = accessCache[slug] || {}, allowed = (vid, start) => vipViewer || acc[`${vid}/${start || 0}/0`] !== 'vip';
       const have = {};
       (await clipList(env, db, slug, 500)).forEach((c) => { have[c.v] = String(c.st); });
@@ -437,7 +439,7 @@ export async function onRequest({ request, env }) {
   }
   if (q.get('s')) {
     const slug = q.get('c') || '', vid = parseInt(q.get('v'), 10);
-    if (!SLUG.test(slug) || !(vid > 0)) return new Response('bad_request', { status: 400 });
+    if (!SLUG.test(slug) || !(vid > 0) || REMOVED_CHANNELS.has(slug)) return new Response('bad_request', { status: 400 });
     if (!(await db.prepare('SELECT id FROM nv_feat WHERE slug = ? AND vid = ?').bind(slug, vid).first())) return new Response('not_found', { status: 404 });
     const featureRow = await db.prepare('SELECT start FROM nv_feat WHERE slug = ? AND vid = ?').bind(slug, vid).first();
     if (!(await clipCanView(request, env, 'preview', slug, vid, featureRow && featureRow.start || 0, 0))) return new Response('VIP access required', { status: 403 });
