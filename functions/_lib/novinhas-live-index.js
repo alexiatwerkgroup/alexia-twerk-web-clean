@@ -1,4 +1,4 @@
-import { retiredCfg, isRetired } from './vip.js';
+import { retiredCfg, isRetired, REMOVED_CHANNELS } from './vip.js';
 const CACHE_KEY = '_config/novinhas-live-index.json';
 const CACHE_MS = 5 * 60 * 1000;
 const SLUG = /^[a-z0-9-]{2,60}$/;
@@ -20,7 +20,7 @@ async function discover(env, preferred) {
     const page = await env.NOVINHAS_VIDEOS.list({ delimiter: '/', limit: 1000, ...(cursor ? { cursor } : {}) });
     for (const prefix of page.delimitedPrefixes || []) {
       const slug = String(prefix).replace(/\/$/, '');
-      if (SLUG.test(slug)) listed.add(slug);
+      if (SLUG.test(slug) && !REMOVED_CHANNELS.has(slug)) listed.add(slug);
     }
     cursor = page.truncated ? page.cursor : undefined;
   } while (cursor);

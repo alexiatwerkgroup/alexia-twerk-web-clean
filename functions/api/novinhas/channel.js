@@ -1,7 +1,7 @@
 // GET /api/novinhas/channel?c=<slug> -> datos del canal y sus videos, con el estado de bloqueo para este visitante.
-import { vipCfg, isVip, isLocked, isOwner, retiredCfg, isRetired } from '../../_lib/vip.js';
+import { vipCfg, isVip, isLocked, isOwner, retiredCfg, isRetired, REMOVED_CHANNELS } from '../../_lib/vip.js';
 // Canales retirados del sitio: no se sirven aunque sus archivos sigan en el bucket.
-export const REMOVED = new Set(['carol-videos']);
+export const REMOVED = REMOVED_CHANNELS;
 export async function onRequestGet({ request, env }) {
   const json = (o, s) => new Response(JSON.stringify(o), { status: s || 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
   const slug = new URL(request.url).searchParams.get('c') || '';
