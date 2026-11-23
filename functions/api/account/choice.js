@@ -1,5 +1,6 @@
 import { json } from '../../_lib/http.js';
 import { init, cookie } from '../../_lib/analytics.js';
+import { ACTIVE_SECONDS } from '../../_lib/stats-core.js';
 
 export async function onRequestPost({ request, env }) {
   const vid = cookie(request, 'twv');
@@ -7,7 +8,7 @@ export async function onRequestPost({ request, env }) {
   let body = {}; try { body = await request.json(); } catch {}
   await init(env.DB);
   const [activity, existing, hit] = await Promise.all([
-    env.DB.prepare("SELECT COALESCE(SUM(dur),0) AS seconds, (SELECT COUNT(*) FROM tw_events WHERE vid = ? AND name IN ('nov_video_view','nov_play')) AS videos FROM tw_hits WHERE vid = ? AND human = 1").bind(vid, vid).first(),
+    env.DB.prepare(`SELECT COALESCE(SUM(${ACTIVE_SECONDS}),0) AS seconds, (SELECT COUNT(*) FROM tw_events WHERE vid = ? AND name IN ('nov_video_view','nov_play')) AS videos FROM tw_hits WHERE vid = ?`).bind(vid, vid).first(),
     env.DB.prepare("SELECT detail FROM tw_events WHERE vid = ? AND name = 'account_choice' ORDER BY ts DESC LIMIT 1").bind(vid).first(),
     env.DB.prepare('SELECT hid FROM tw_hits WHERE vid = ? ORDER BY ts DESC LIMIT 1').bind(vid).first()
   ]);
