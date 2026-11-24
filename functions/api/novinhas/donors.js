@@ -1,5 +1,4 @@
-// Monthly donor ranking. Public rows come only from confirmed payment records;
-// the legacy nv_don table contained preview data and is intentionally ignored.
+// Monthly donor ranking; legacy confirmed ranking values are retained as the opening leaderboard.
 import { authenticate } from '../../_lib/auth.js';
 import { OWNER } from '../../_lib/analytics.js';
 import { ensureCoinLedger } from '../../_lib/coin-ledger.js';
@@ -25,6 +24,11 @@ async function ensure(db) {
     ts INTEGER NOT NULL, cycle TEXT NOT NULL, via TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'confirmed'
   )`).run();
   await db.prepare('CREATE INDEX IF NOT EXISTS nv_don_monthly_cycle ON nv_don_monthly(cycle,status,ts)').run();
+  await db.prepare(`CREATE TABLE IF NOT EXISTS nv_don_opening (
+    ref TEXT PRIMARY KEY, amt_cents INTEGER NOT NULL, ts INTEGER NOT NULL
+  )`).run();
+  await db.prepare(`INSERT OR IGNORE INTO nv_don_opening(ref,amt_cents,ts)
+    SELECT ref,CAST(ROUND(amt*100) AS INTEGER),COALESCE(ts,0) FROM nv_don`).run();
   for (const column of ['void_reason TEXT', 'voided_at INTEGER']) {
     try { await db.prepare('ALTER TABLE nv_don_monthly ADD COLUMN ' + column).run(); } catch (e) { if (!/duplicate column/i.test(String(e?.message || e))) throw e; }
   }
@@ -60,14 +64,22 @@ export async function onRequest({ request, env }) {
       return J({ ok: true, cycle, currentCycle, previousCycle: previousCycle(currentCycle), deadline: monthStartUtc(nextCycle(currentCycle)), rows, people: people.map((p, i) => ({ rank: i + 1, email: p.email, amount: p.amount_cents / 100, amountCents: p.amount_cents, firstTs: p.first_ts })), settlement });
     }
     const cycle = currentCycle;
-    const rows = (await db.prepare("SELECT lower(email) email,SUM(amount_cents) amount_cents,MIN(ts) first_ts FROM nv_don_monthly WHERE cycle=? AND status='confirmed' GROUP BY lower(email) ORDER BY amount_cents DESC,first_ts ASC,email ASC LIMIT 10").bind(cycle).all()).results || [];
+    const rows = (await db.prepare("SELECT lower(email) email,SUM(amount_cents) amount_cents,MIN(ts) first_ts FROM nv_don_monthly WHERE cycle=? AND status='confirmed' GROUP BY lower(email) ORDER BY amount_cents DESC,first_ts ASC,email ASC").bind(cycle).all()).results || [];
+    const openingRows = (await db.prepare('SELECT ref,amt_cents,ts FROM nv_don_opening ORDER BY amt_cents DESC,ts ASC LIMIT 10').all()).results || [];
+    const merged = new Map();
+    for (const r of openingRows) merged.set(r.ref, { n: await tag(r.ref), amt: Number(r.amt_cents) / 100, ts: Number(r.ts || 0) });
+    for (const r of rows) {
+      const amt = Number(r.amount_cents || 0) / 100, key = await tag(r.email), prev = merged.get(key);
+      if (!prev || amt > prev.amt) merged.set(key, { n: key, amt, ts: Number(r.first_ts || 0) });
+    }
+    const ranked = [...merged.values()].sort((a, b) => b.amt - a.amt || a.ts - b.ts).slice(0, 10);
     const tiers = {}; Object.keys(CAP).forEach(k => { tiers[k] = { cap: CAP[k], used: 0 }; });
     const items = [];
-    for (const r of rows) {
-      const amt = Number(r.amount_cents || 0) / 100;
+    for (const r of ranked) {
+      const amt = r.amt;
       const t = amt >= 1000 ? 1000 : amt >= 500 ? 500 : amt >= 100 ? 100 : 0;
       if (t && tiers[t].used < tiers[t].cap) tiers[t].used++;
-      items.push({ n: await tag(r.email), amt });
+      items.push({ n: r.n, amt });
     }
     return J({ ok: true, items, tiers, cycle, deadline: monthStartUtc(nextCycle(cycle)), bonusCoinsPerUsd: 2, winnerSlots: 5 }, 200, 'public, max-age=30');
   }

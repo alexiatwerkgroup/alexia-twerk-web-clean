@@ -87,6 +87,6 @@ $('lg').onclick=function(e){var l=e.target.dataset&&e.target.dataset.l;if(l){L=l
 $('br').onclick=function(){function op(){window.TWK_DON&&window.TWK_DON.open(true)}if(window.TWK_DON){op();return}var s=document.createElement('script');s.src='/assets/twk-donor-rank.js?v=20261124-monthly-credit1';s.onload=op;document.head.appendChild(s)};
 draw();
 var donorDeadline=0;function updateDonorClock(){var e=$('month-clock');if(!donorDeadline)return;var n=Math.max(0,donorDeadline-Date.now()),d=Math.floor(n/86400000);n-=d*86400000;var h=Math.floor(n/3600000);n-=h*3600000;var m=Math.floor(n/60000);n-=m*60000;var s=Math.floor(n/1000);e.textContent=d+'d '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
-fetch('/api/novinhas/donors',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.deadline){donorDeadline=Number(j.deadline);updateDonorClock()}}).catch(function(){});setInterval(updateDonorClock,1000);
+fetch('/api/novinhas/donors',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.deadline){donorDeadline=Number(j.deadline);updateDonorClock();$('month-clock').classList.add('ready')}}).catch(function(){});setInterval(updateDonorClock,1000);
 </script>
 <script src="/assets/twk-stats-btn.js?v=20261118-gd3" defer></script></body></html>
