@@ -1,6 +1,6 @@
 // Public all-time Novinhas rankings, based on visits collected since launch.
 import { clipCanView } from '../../_lib/novinhas-clip-access.js';
-import { isVip, isLocked, vipCfg } from '../../_lib/vip.js';
+import { isVip, isLocked, vipCfg, REMOVED_CHANNELS } from '../../_lib/vip.js';
 
 export async function onRequestGet({ request, env }) {
   // ?order=1 -> orden completo de TODOS los canales por visitas (para ordenar las tarjetas de /novinhas/ igual que el ranking).
@@ -10,7 +10,7 @@ export async function onRequestGet({ request, env }) {
     try {
       let rows = (await env.DB.prepare("SELECT detail slug,COUNT(*) views FROM tw_events WHERE name='nov_channel_view' AND detail GLOB '[a-z0-9-]*' GROUP BY detail ORDER BY views DESC,detail").all()).results || [];
       if (!rows.length) rows = (await env.DB.prepare("SELECT substr(path,instr(path,'?c=')+3) slug,COUNT(*) views FROM tw_hits WHERE path LIKE '/novinhas/canal%?c=%' AND instr(path,'?c=')>0 GROUP BY slug ORDER BY views DESC,slug").all()).results || [];
-      return new Response(JSON.stringify({ order: rows.filter((r) => /^[a-z0-9-]{2,60}$/.test(String(r.slug || ''))).map((r) => ({ slug: r.slug, views: Number(r.views) || 0 })) }), { headers: h });
+      return new Response(JSON.stringify({ order: rows.filter((r) => /^[a-z0-9-]{2,60}$/.test(String(r.slug || '')) && !REMOVED_CHANNELS.has(String(r.slug || ''))).map((r) => ({ slug: r.slug, views: Number(r.views) || 0 })) }), { headers: h });
     } catch (e) { return new Response(JSON.stringify({ order: [] }), { status: 500, headers: h }); }
   }
   const headers = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=60', 'X-Robots-Tag': 'noindex' };
@@ -52,7 +52,7 @@ export async function onRequestGet({ request, env }) {
       if (!(await env.NOVINHAS_VIDEOS.head(key))) return null;
       return { id: chosen, previewSrc: `/api/novinhas/featured?cs=1&c=${encodeURIComponent(slug)}&v=${chosen}&t=${start}` };
     }
-    const channelCandidates = channelRows.results || [];
+    const channelCandidates = (channelRows.results || []).filter((row) => !REMOVED_CHANNELS.has(String(row.slug || '')));
     for (let i = 0; i < channelCandidates.length && channels.length < 5; i += 12) {
       const batch = await Promise.all(channelCandidates.slice(i, i + 12).map(async (row) => {
         const slug = String(row.slug || ''), m = await manifest(slug);
@@ -65,7 +65,7 @@ export async function onRequestGet({ request, env }) {
     }
     const videos = [];
     const vipConfig = await vipCfg(env), vipViewer = await isVip(request, env);
-    const videoCandidates = videoRows.results || [];
+    const videoCandidates = (videoRows.results || []).filter((row) => !REMOVED_CHANNELS.has(String(String(row.detail || '').split(':')[0])));
     for (let i = 0; i < videoCandidates.length && videos.length < 5; i += 10) {
       const batch = await Promise.all(videoCandidates.slice(i, i + 10).map(async (row) => {
         const key = String(row.detail || ''), at = key.lastIndexOf(':'), slug = key.slice(0, at), id = Number(key.slice(at + 1));

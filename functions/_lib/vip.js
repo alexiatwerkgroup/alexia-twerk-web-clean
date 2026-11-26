@@ -9,7 +9,7 @@ async function cached(env, key) {
 }
 export const vipCfg = (env) => cached(env, '_config/vip.json');
 // Canales retirados del sitio (RET de canal completo): los archivos siguen en R2 pero no se listan ni se sirven.
-export const REMOVED_CHANNELS = new Set(['carol-videos', 'dudaaa-ofc-2020-2-17-18-36-14', 'sarah']);
+export const REMOVED_CHANNELS = new Set(['carol-videos', 'dudaaa-ofc-2020-2-17-18-36-14', 'sarah', 'nayara-youtuber']);
 // Videos "retirados" (RET): siguen en R2 pero no se listan ni se sirven a nadie salvo al dueño.
 export const retiredCfg = async (env) => (await cached(env, '_config/retired.json')) || {};
 export const isRetired = (cfg, slug, id) => !!(cfg && Array.isArray(cfg[slug]) && cfg[slug].includes(Number(id)));
